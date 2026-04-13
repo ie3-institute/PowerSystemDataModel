@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 public class SqlTimeSeriesMappingSource extends TimeSeriesMappingSource {
-  private final EntityPersistenceNamingStrategy entityPersistenceNamingStrategy;
   private final String queryFull;
   private final String tableName;
   private final SqlDataSource dataSource;
@@ -30,7 +29,6 @@ public class SqlTimeSeriesMappingSource extends TimeSeriesMappingSource {
     this.dataSource =
         new SqlDataSource(
             connector, schemaName, new DatabaseNamingStrategy(entityPersistenceNamingStrategy));
-    this.entityPersistenceNamingStrategy = entityPersistenceNamingStrategy;
 
     this.tableName =
         entityPersistenceNamingStrategy.getEntityName(MappingEntry.class).orElseThrow();

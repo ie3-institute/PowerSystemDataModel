@@ -20,13 +20,13 @@ class EvInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == ev.uuid
-      assert operationTime == ev.operationTime
-      assert operator == ev.operator
-      assert id == ev.id
-      assert qCharacteristics == ev.qCharacteristics
-      assert type == SystemParticipantTestData.evTypeInput
-      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      uuid == ev.uuid
+      operationTime == ev.operationTime
+      operator == ev.operator
+      id == ev.id
+      qCharacteristics == ev.qCharacteristics
+      type == SystemParticipantTestData.evTypeInput
+      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 
@@ -39,16 +39,17 @@ class EvInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == ev.uuid
-      assert operationTime == ev.operationTime
-      assert operator == ev.operator
-      assert id == ev.id
-      assert qCharacteristics == ev.qCharacteristics
-      assert type.sRated == ev.type.sRated * 2d
-      assert type.sRatedDC == ev.type.sRatedDC * 2d
-      assert type.eStorage == ev.type.eStorage * 2d
-      assert type.eCons == ev.type.eCons * 2d
-      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      uuid == ev.uuid
+      operationTime == ev.operationTime
+      operator == ev.operator
+      id == ev.id
+      qCharacteristics == ev.qCharacteristics
+      type.sRated == ev.type.sRated * 2d
+      sRated() == ev.type.sRated * 2d
+      type.sRatedDC == ev.type.sRatedDC * 2d
+      type.eStorage == ev.type.eStorage * 2d
+      type.eCons == ev.type.eCons * 2d
+      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

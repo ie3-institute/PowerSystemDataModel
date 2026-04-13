@@ -15,6 +15,7 @@ import org.locationtech.jts.geom.Point;
 public class NodeGraphicInput extends GraphicInput implements HasNodes {
   /** The NodeInput to this graphic data */
   private final NodeInput node;
+
   /** The geometric point of this node */
   private final Point point;
 
@@ -30,6 +31,27 @@ public class NodeGraphicInput extends GraphicInput implements HasNodes {
     super(uuid, graphicLayer, path);
     this.node = node;
     this.point = point;
+  }
+
+  /**
+   * @param uuid of the input entity
+   * @param graphicLayer Description of the graphic layer, this graphic is located on
+   * @param path A graphic representation as path
+   * @param node The NodeInput to this graphic data
+   * @param point The geometric point of this node
+   * @param additionalInformation That were provided by the source
+   */
+  public NodeGraphicInput(
+      UUID uuid,
+      String graphicLayer,
+      LineString path,
+      NodeInput node,
+      Point point,
+      Map<String, String> additionalInformation) {
+    super(uuid, graphicLayer, path);
+    this.node = node;
+    this.point = point;
+    setAdditionalInformation(additionalInformation);
   }
 
   public NodeInput getNode() {
@@ -66,6 +88,8 @@ public class NodeGraphicInput extends GraphicInput implements HasNodes {
         + node.getUuid()
         + ", point="
         + point
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

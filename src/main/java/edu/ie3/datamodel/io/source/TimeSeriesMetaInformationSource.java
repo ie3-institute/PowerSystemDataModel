@@ -9,6 +9,7 @@ import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.models.profile.LoadProfile;
+import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
@@ -17,7 +18,7 @@ import java.util.UUID;
 /** Source for all available time series with their {@link UUID} and {@link ColumnScheme} */
 public abstract class TimeSeriesMetaInformationSource {
 
-  protected Map<String, LoadProfileMetaInformation> loadProfileMetaInformation;
+  protected Map<PowerProfileKey, LoadProfileMetaInformation> loadProfileMetaInformation;
 
   /**
    * Get a mapping from time series {@link UUID} to its meta information {@link
@@ -41,7 +42,7 @@ public abstract class TimeSeriesMetaInformationSource {
    *
    * @return that mapping
    */
-  public Map<String, LoadProfileMetaInformation> getLoadProfileMetaInformation() {
+  public Map<PowerProfileKey, LoadProfileMetaInformation> getLoadProfileMetaInformation() {
     return Collections.unmodifiableMap(loadProfileMetaInformation);
   }
 

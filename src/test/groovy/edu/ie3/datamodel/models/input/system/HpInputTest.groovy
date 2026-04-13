@@ -21,14 +21,14 @@ class HpInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == hpInput.uuid
-      assert operationTime == hpInput.operationTime
-      assert operator == hpInput.operator
-      assert id == hpInput.id
-      assert qCharacteristics == hpInput.qCharacteristics
-      assert thermalBus == SystemParticipantTestData.thermalBus
-      assert type == SystemParticipantTestData.hpTypeInput
-      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      uuid == hpInput.uuid
+      operationTime == hpInput.operationTime
+      operator == hpInput.operator
+      id == hpInput.id
+      qCharacteristics == hpInput.qCharacteristics
+      thermalBus == SystemParticipantTestData.thermalBus
+      type == SystemParticipantTestData.hpTypeInput
+      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 
@@ -41,15 +41,16 @@ class HpInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == hpInput.uuid
-      assert operationTime == hpInput.operationTime
-      assert operator == hpInput.operator
-      assert id == hpInput.id
-      assert qCharacteristics == hpInput.qCharacteristics
-      assert thermalBus == hpInput.thermalBus
-      assert type.sRated == hpInput.type.sRated * 2d
-      assert type.pThermal == hpInput.type.pThermal * 2d
-      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      uuid == hpInput.uuid
+      operationTime == hpInput.operationTime
+      operator == hpInput.operator
+      id == hpInput.id
+      qCharacteristics == hpInput.qCharacteristics
+      thermalBus == hpInput.thermalBus
+      type.sRated == hpInput.type.sRated * 2d
+      sRated() == hpInput.type.sRated * 2d
+      type.pThermal == hpInput.type.pThermal * 2d
+      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

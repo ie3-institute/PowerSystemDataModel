@@ -83,11 +83,11 @@ Model of a wind energy converter.
 
    * - operator
      -
-     -
+     - [optional]
 
-   * - operationTime
+   * - operatesFrom/operatesUntil
      -
-     - Timely restriction of operation
+     - Timely restriction of operation [optional]
 
    * - node
      -
@@ -101,15 +101,10 @@ Model of a wind energy converter.
      -
      -
 
-   * - marketReaction
-     -
-     - Whether to adapt output based on (volatile)
-       market price or not
-
    * - controllingEm
      -
      - UUID reference to an [Energy Management Unit](#em_model) that is controlling
-       this system participant. Field can be empty or missing, if this participant
+       this system participant. Field can be empty, if this participant
        is not controlled.
 
 ```

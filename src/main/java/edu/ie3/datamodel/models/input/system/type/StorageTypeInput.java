@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.DimensionlessRate;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
@@ -21,10 +22,13 @@ import tech.units.indriya.ComparableQuantity;
 public class StorageTypeInput extends SystemParticipantTypeInput {
   /** Energy capacity (typically in kWh) */
   private final ComparableQuantity<Energy> eStorage;
+
   /** Maximum permissible active power (typically in kW) */
   private final ComparableQuantity<Power> pMax;
+
   /** Maximum permissible gradient of active power change (typically % / h) */
   private final ComparableQuantity<DimensionlessRate> activePowerGradient;
+
   /** Efficiency of the charging and discharging process (typically in %) */
   private final ComparableQuantity<Dimensionless> eta;
 
@@ -56,6 +60,39 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     this.pMax = pMax.to(StandardUnits.ACTIVE_POWER_IN);
     this.activePowerGradient = activePowerGradient.to(StandardUnits.ACTIVE_POWER_GRADIENT);
     this.eta = eta.to(StandardUnits.EFFICIENCY);
+  }
+
+  /**
+   * @param uuid of the input entity
+   * @param id of this type of Storage
+   * @param capex capital expense for this type of Storage (typically in €)
+   * @param opex operating expense for this type of Storage (typically in €/MWh)
+   * @param eStorage stored energy capacity
+   * @param sRated Rated apparent power of integrated inverter
+   * @param cosPhiRated power factor for integrated inverter
+   * @param pMax maximum permissible active power of the integrated inverter
+   * @param activePowerGradient maximum permissible gradient of active power change
+   * @param eta efficiency of the charging and discharging process
+   * @param additionalInformation Of the input
+   */
+  public StorageTypeInput(
+      UUID uuid,
+      String id,
+      ComparableQuantity<Currency> capex,
+      ComparableQuantity<EnergyPrice> opex,
+      ComparableQuantity<Energy> eStorage,
+      ComparableQuantity<Power> sRated,
+      double cosPhiRated,
+      ComparableQuantity<Power> pMax,
+      ComparableQuantity<DimensionlessRate> activePowerGradient,
+      ComparableQuantity<Dimensionless> eta,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
+    this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
+    this.pMax = pMax.to(StandardUnits.ACTIVE_POWER_IN);
+    this.activePowerGradient = activePowerGradient.to(StandardUnits.ACTIVE_POWER_GRADIENT);
+    this.eta = eta.to(StandardUnits.EFFICIENCY);
+    setAdditionalInformation(additionalInformation);
   }
 
   public ComparableQuantity<Dimensionless> getEta() {
@@ -108,7 +145,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
         + getOpex()
         + ", sRated="
         + getsRated()
-        + ", cosphiRated="
+        + ", cosPhiRated="
         + getCosPhiRated()
         + "eStorage="
         + eStorage
@@ -118,6 +155,8 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
         + activePowerGradient
         + ", eta="
         + eta
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

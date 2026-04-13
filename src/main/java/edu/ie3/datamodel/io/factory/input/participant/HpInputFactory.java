@@ -11,30 +11,30 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.HpInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
+import edu.ie3.datamodel.models.input.system.type.HpTypeInput;
+import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
+import java.util.Map;
 import java.util.UUID;
 
 public class HpInputFactory
-    extends SystemParticipantInputEntityFactory<HpInput, HpInputEntityData> {
+    extends ThermalSystemParticipantInputFactory<HpInput, HpTypeInput, HpInputEntityData> {
 
   public HpInputFactory() {
     super(HpInput.class);
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[0];
-  }
-
-  @Override
-  protected HpInput buildModel(
-      HpInputEntityData data,
+  protected HpInput createThermalSystemModel(
       UUID uuid,
       String id,
-      NodeInput node,
-      ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
-      OperationTime operationTime) {
-    final EmInput em = data.getControllingEm().orElse(null);
+      OperationTime operationTime,
+      NodeInput node,
+      ThermalBusInput thermalBusInput,
+      ReactivePowerCharacteristic qCharacteristics,
+      EmInput em,
+      HpTypeInput typeInput,
+      Map<String, String> additionalInformation) {
 
     return new HpInput(
         uuid,
@@ -42,9 +42,10 @@ public class HpInputFactory
         operator,
         operationTime,
         node,
-        data.getThermalBusInput(),
+        thermalBusInput,
         qCharacteristics,
         em,
-        data.getTypeInput());
+        typeInput,
+        additionalInformation);
   }
 }

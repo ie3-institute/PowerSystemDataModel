@@ -27,11 +27,11 @@ model can be derived.
 
    * - operator
      -
-     -
+     - [optional]
 
-   * - operationTime
+   * - operatesFrom/operatesUntil
      -
-     - Timely restriction of operation
+     - Timely restriction of operation [optional]
 
    * - node
      -
@@ -52,7 +52,7 @@ model can be derived.
    * - controllingEm
      -
      - UUID reference to an [Energy Management Unit](#em_model) that is controlling
-       this system participant. Field can be empty or missing, if this participant
+       this system participant. Field can be empty, if this participant
        is not controlled.
 
 ```

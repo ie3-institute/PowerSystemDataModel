@@ -11,6 +11,7 @@ import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Angle;
@@ -23,20 +24,25 @@ public class PvInput extends SystemParticipantInput {
 
   /** Albedo value (typically a value between 0 and 1) */
   private final double albedo;
+
   /** Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦) */
   private final ComparableQuantity<Angle> azimuth;
+
   /** Efficiency of converter (typically in %) */
   private final ComparableQuantity<Dimensionless> etaConv;
+
   /** Tilted inclination from horizontal (typically in °) */
   private final ComparableQuantity<Angle> elevationAngle;
+
   /** Generator correction factor merging different technical influences */
   private final double kG;
+
   /** Temperature correction factor */
   private final double kT;
-  /** Is this asset market oriented? */
-  private final boolean marketReaction;
+
   /** Rated apparent power (typically in kVA) */
   private final ComparableQuantity<Power> sRated;
+
   /** Rated power factor */
   private final double cosPhiRated;
 
@@ -56,7 +62,6 @@ public class PvInput extends SystemParticipantInput {
    * @param elevationAngle Tilted inclination from horizontal (typically in °)
    * @param kG Generator correction factor merging different technical influences
    * @param kT Generator correction factor merging different technical influences
-   * @param marketReaction Is this asset market oriented?
    * @param sRated Rated apparent power (typically in kVA)
    * @param cosPhiRated Power factor
    */
@@ -74,7 +79,6 @@ public class PvInput extends SystemParticipantInput {
       ComparableQuantity<Angle> elevationAngle,
       double kG,
       double kT,
-      boolean marketReaction,
       ComparableQuantity<Power> sRated,
       double cosPhiRated) {
     super(uuid, id, operator, operationTime, node, qCharacteristics, em);
@@ -84,9 +88,57 @@ public class PvInput extends SystemParticipantInput {
     this.elevationAngle = elevationAngle.to(StandardUnits.SOLAR_ELEVATION_ANGLE);
     this.kG = kG;
     this.kT = kT;
-    this.marketReaction = marketReaction;
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.cosPhiRated = cosPhiRated;
+  }
+
+  /**
+   * Constructor for an operated photovoltaic plant
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param node the asset is connected to
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param albedo Albedo value (typically a value between 0 and 1)
+   * @param azimuth Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)
+   * @param etaConv Efficiency of converter (typically in %)
+   * @param elevationAngle Tilted inclination from horizontal (typically in °)
+   * @param kG Generator correction factor merging different technical influences
+   * @param kT Generator correction factor merging different technical influences
+   * @param sRated Rated apparent power (typically in kVA)
+   * @param cosPhiRated Power factor
+   * @param additionalInformation That were provided by the source
+   */
+  public PvInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      NodeInput node,
+      ReactivePowerCharacteristic qCharacteristics,
+      EmInput em,
+      double albedo,
+      ComparableQuantity<Angle> azimuth,
+      ComparableQuantity<Dimensionless> etaConv,
+      ComparableQuantity<Angle> elevationAngle,
+      double kG,
+      double kT,
+      ComparableQuantity<Power> sRated,
+      double cosPhiRated,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    this.albedo = albedo;
+    this.azimuth = azimuth.to(StandardUnits.AZIMUTH);
+    this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
+    this.elevationAngle = elevationAngle.to(StandardUnits.SOLAR_ELEVATION_ANGLE);
+    this.kG = kG;
+    this.kT = kT;
+    this.sRated = sRated.to(StandardUnits.S_RATED);
+    this.cosPhiRated = cosPhiRated;
+    setAdditionalInformation(additionalInformation);
   }
 
   /**
@@ -103,7 +155,6 @@ public class PvInput extends SystemParticipantInput {
    * @param elevationAngle Tilted inclination from horizontal (typically in °)
    * @param kG Generator correction factor merging different technical influences
    * @param kT Generator correction factor merging different technical influences
-   * @param marketReaction Is this asset market oriented?
    * @param sRated Rated apparent power (typically in kVA)
    * @param cosPhiRated Power factor
    */
@@ -119,7 +170,6 @@ public class PvInput extends SystemParticipantInput {
       ComparableQuantity<Angle> elevationAngle,
       double kG,
       double kT,
-      boolean marketReaction,
       ComparableQuantity<Power> sRated,
       double cosPhiRated) {
     super(uuid, id, node, qCharacteristics, em);
@@ -129,7 +179,6 @@ public class PvInput extends SystemParticipantInput {
     this.elevationAngle = elevationAngle.to(StandardUnits.SOLAR_ELEVATION_ANGLE);
     this.kG = kG;
     this.kT = kT;
-    this.marketReaction = marketReaction;
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.cosPhiRated = cosPhiRated;
   }
@@ -150,10 +199,6 @@ public class PvInput extends SystemParticipantInput {
     return elevationAngle;
   }
 
-  public boolean isMarketReaction() {
-    return marketReaction;
-  }
-
   public double getCosPhiRated() {
     return cosPhiRated;
   }
@@ -170,6 +215,11 @@ public class PvInput extends SystemParticipantInput {
     return sRated;
   }
 
+  @Override
+  public ComparableQuantity<Power> sRated() {
+    return sRated;
+  }
+
   public PvInputCopyBuilder copy() {
     return new PvInputCopyBuilder(this);
   }
@@ -182,7 +232,6 @@ public class PvInput extends SystemParticipantInput {
     return Double.compare(pvInput.albedo, albedo) == 0
         && Double.compare(pvInput.kG, kG) == 0
         && Double.compare(pvInput.kT, kT) == 0
-        && marketReaction == pvInput.marketReaction
         && Double.compare(pvInput.cosPhiRated, cosPhiRated) == 0
         && azimuth.equals(pvInput.azimuth)
         && etaConv.equals(pvInput.etaConv)
@@ -193,16 +242,7 @@ public class PvInput extends SystemParticipantInput {
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(),
-        albedo,
-        azimuth,
-        etaConv,
-        elevationAngle,
-        kG,
-        kT,
-        marketReaction,
-        sRated,
-        cosPhiRated);
+        super.hashCode(), albedo, azimuth, etaConv, elevationAngle, kG, kT, sRated, cosPhiRated);
   }
 
   @Override
@@ -234,12 +274,12 @@ public class PvInput extends SystemParticipantInput {
         + kG
         + ", kT="
         + kT
-        + ", marketReaction="
-        + marketReaction
         + ", sRated="
         + sRated
-        + ", cosphiRated="
+        + ", cosPhiRated="
         + cosPhiRated
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 
@@ -259,7 +299,6 @@ public class PvInput extends SystemParticipantInput {
     private ComparableQuantity<Angle> elevationAngle;
     private double kG;
     private double kT;
-    private boolean marketReaction;
     private ComparableQuantity<Power> sRated;
     private double cosPhiRated;
 
@@ -271,7 +310,6 @@ public class PvInput extends SystemParticipantInput {
       this.elevationAngle = entity.getElevationAngle();
       this.kG = entity.getkG();
       this.kT = entity.getkT();
-      this.marketReaction = entity.isMarketReaction();
       this.sRated = entity.getsRated();
       this.cosPhiRated = entity.getCosPhiRated();
     }
@@ -303,11 +341,6 @@ public class PvInput extends SystemParticipantInput {
 
     public PvInputCopyBuilder kT(double kT) {
       this.kT = kT;
-      return thisInstance();
-    }
-
-    public PvInputCopyBuilder marketReaction(boolean marketReaction) {
-      this.marketReaction = marketReaction;
       return thisInstance();
     }
 
@@ -343,7 +376,6 @@ public class PvInput extends SystemParticipantInput {
           elevationAngle,
           kG,
           kT,
-          marketReaction,
           sRated,
           cosPhiRated);
     }

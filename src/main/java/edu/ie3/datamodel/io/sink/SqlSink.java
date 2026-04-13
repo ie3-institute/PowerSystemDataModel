@@ -190,7 +190,7 @@ public class SqlSink {
       void persistList(List<C> entities, Class<C> cls, DbGridMetadata identifier)
           throws SQLException {
     // Check if there are only elements of the same class
-    Class<?> firstClass = entities.get(0).getClass();
+    Class<?> firstClass = entities.getFirst().getClass();
     boolean allSameClass = entities.stream().allMatch(e -> e.getClass() == firstClass);
 
     if (allSameClass) {
@@ -252,7 +252,7 @@ public class SqlSink {
       String timeSeriesIdentifier;
 
       if (timeSeries instanceof LoadProfileTimeSeries<?> lpts) {
-        timeSeriesIdentifier = lpts.getLoadProfile().getKey();
+        timeSeriesIdentifier = lpts.getPowerProfileKey().getValue();
         queryBuilder = this::basicInsertQueryValuesLPTS;
       } else {
         timeSeriesIdentifier = timeSeries.getUuid().toString();
@@ -447,7 +447,9 @@ public class SqlSink {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  /** @return insertion order for unique entities */
+  /**
+   * @return insertion order for unique entities
+   */
   private static List<Class<?>> hierarchicInsert() {
     List<Class<?>> sortedInsert = new ArrayList<>();
     sortedInsert.add(AssetTypeInput.class); // 1. Types

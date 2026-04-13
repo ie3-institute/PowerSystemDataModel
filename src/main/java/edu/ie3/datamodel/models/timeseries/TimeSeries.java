@@ -5,7 +5,8 @@
 */
 package edu.ie3.datamodel.models.timeseries;
 
-import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.models.Entity;
+import edu.ie3.datamodel.models.Uniqueness;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import java.time.ZonedDateTime;
@@ -19,16 +20,22 @@ import java.util.*;
  * @param <R> Type of the value, the time series will return
  */
 public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value, R extends Value>
-    extends UniqueEntity {
+    implements Entity, Uniqueness {
+  private final UUID uuid;
   private final Set<E> entries;
 
   protected TimeSeries(Set<E> entries) {
-    this.entries = Collections.unmodifiableSet(entries);
+    this(UUID.randomUUID(), entries);
   }
 
   protected TimeSeries(UUID uuid, Set<E> entries) {
-    super(uuid);
+    this.uuid = uuid;
     this.entries = Collections.unmodifiableSet(entries);
+  }
+
+  @Override
+  public UUID getUuid() {
+    return uuid;
   }
 
   /**
@@ -70,15 +77,7 @@ public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value, 
    * @param time Reference in time
    * @return The next later known time instant
    */
-  protected abstract Optional<ZonedDateTime> getNextDateTime(ZonedDateTime time);
-
-  /**
-   * Get all {@link ZonedDateTime}s after the given time.
-   *
-   * @param time given time
-   * @return a list of all time keys
-   */
-  public abstract List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time);
+  public abstract Optional<ZonedDateTime> getNextDateTime(ZonedDateTime time);
 
   /**
    * Get the most recent available value before or at the given time step as a TimeBasedValue
@@ -125,6 +124,6 @@ public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value, 
 
   @Override
   public String toString() {
-    return "TimeSeries{" + "uuid=" + getUuid() + ", #entries=" + entries.size() + '}';
+    return "TimeSeries{" + "#entries=" + entries.size() + '}';
   }
 }

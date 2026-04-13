@@ -5,33 +5,26 @@
 */
 package edu.ie3.datamodel.models.timeseries.repetitive;
 
-import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
+import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /**
- * Describes a bdew load profile time series with repetitive values that can be calculated from a
+ * Describes a BDEW load profile time series with repetitive values that can be calculated from a
  * pattern. Each value of this timeseries is given in W.
  */
 public class BdewLoadProfileTimeSeries extends LoadProfileTimeSeries<BdewLoadValues> {
 
   public BdewLoadProfileTimeSeries(
-      UUID uuid,
-      BdewStandardLoadProfile loadProfile,
+      PowerProfileKey powerProfileKey,
       Set<LoadProfileEntry<BdewLoadValues>> values,
       ComparableQuantity<Power> maxPower,
       ComparableQuantity<Energy> profileEnergyScaling) {
-    super(uuid, loadProfile, values, maxPower, profileEnergyScaling);
-  }
-
-  @Override
-  public BdewStandardLoadProfile getLoadProfile() {
-    return (BdewStandardLoadProfile) super.getLoadProfile();
+    super(powerProfileKey, values, maxPower, profileEnergyScaling);
   }
 
   @Override
@@ -48,13 +41,6 @@ public class BdewLoadProfileTimeSeries extends LoadProfileTimeSeries<BdewLoadVal
 
   @Override
   public String toString() {
-    return "BDEWLoadProfileTimeSeries{"
-        + "uuid="
-        + getUuid()
-        + "loadProfile="
-        + getLoadProfile()
-        + ", valueMapping="
-        + getValueMapping()
-        + '}';
+    return "BDEW" + super.toString();
   }
 }

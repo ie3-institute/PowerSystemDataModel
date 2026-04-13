@@ -72,12 +72,16 @@ public class GraphicElements implements InputContainer<GraphicInput> {
     return new GraphicElementsCopyBuilder(this);
   }
 
-  /** @return unmodifiable Set of all node graphic data for this grid */
+  /**
+   * @return unmodifiable Set of all node graphic data for this grid
+   */
   public Set<NodeGraphicInput> getNodeGraphics() {
     return Collections.unmodifiableSet(nodeGraphics);
   }
 
-  /** @return unmodifiable Set of all line graphic data for this grid */
+  /**
+   * @return unmodifiable Set of all line graphic data for this grid
+   */
   public Set<LineGraphicInput> getLineGraphics() {
     return Collections.unmodifiableSet(lineGraphics);
   }

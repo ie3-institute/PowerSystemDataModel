@@ -23,11 +23,6 @@ public class StorageInputFactory
   }
 
   @Override
-  protected String[] getAdditionalFields() {
-    return new String[0];
-  }
-
-  @Override
   protected StorageInput buildModel(
       SystemParticipantTypedEntityData<StorageTypeInput> data,
       UUID uuid,
@@ -39,6 +34,14 @@ public class StorageInputFactory
     final EmInput em = data.getControllingEm().orElse(null);
     final StorageTypeInput typeInput = data.getTypeInput();
     return new StorageInput(
-        uuid, id, operator, operationTime, node, qCharacteristics, em, typeInput);
+        uuid,
+        id,
+        operator,
+        operationTime,
+        node,
+        qCharacteristics,
+        em,
+        typeInput,
+        data.getFieldsToValues());
   }
 }

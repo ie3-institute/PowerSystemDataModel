@@ -13,15 +13,9 @@ import java.util.UUID;
 
 public class SwitchInputFactory
     extends ConnectorInputEntityFactory<SwitchInput, ConnectorInputEntityData> {
-  private static final String CLOSED = "closed";
 
   public SwitchInputFactory() {
     super(SwitchInput.class);
-  }
-
-  @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {CLOSED};
   }
 
   @Override
@@ -46,6 +40,7 @@ public class SwitchInputFactory
           parallelDevices);
     }
 
-    return new SwitchInput(uuid, id, operator, operationTime, nodeA, nodeB, closed);
+    return new SwitchInput(
+        uuid, id, operator, operationTime, nodeA, nodeB, closed, data.getFieldsToValues());
   }
 }

@@ -13,6 +13,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput;
 import edu.ie3.util.geo.GeoUtils;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Length;
@@ -27,10 +28,13 @@ public class LineInput extends ConnectorInput implements HasType {
 
   /** Type of this line, containing default values for lines of this kind */
   private final LineTypeInput type;
+
   /** Length of this line */
   private final ComparableQuantity<Length> length;
+
   /** Coordinates of this line */
   private final LineString geoPosition;
+
   /** Description of an optional weather dependent operation curve */
   private final OlmCharacteristicInput olmCharacteristic;
 
@@ -67,6 +71,44 @@ public class LineInput extends ConnectorInput implements HasType {
     this.length = length.to(StandardUnits.LINE_LENGTH);
     this.geoPosition = GeoUtils.buildSafeLineString(geoPosition);
     this.olmCharacteristic = olmCharacteristic;
+  }
+
+  /**
+   * Constructor for an operated line
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param nodeA Grid node at one side of the line
+   * @param nodeB Grid node at the other side of the line
+   * @param parallelDevices overall amount of parallel lines to automatically construct (e.g.
+   *     parallelDevices = 2 will build a total of two lines using the specified parameters)
+   * @param type of line
+   * @param length of this line
+   * @param geoPosition Coordinates of this line
+   * @param olmCharacteristic Description of an optional weather dependent operation curve
+   * @param additionalInformation That were provided by the source
+   */
+  public LineInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      NodeInput nodeA,
+      NodeInput nodeB,
+      int parallelDevices,
+      LineTypeInput type,
+      ComparableQuantity<Length> length,
+      LineString geoPosition,
+      OlmCharacteristicInput olmCharacteristic,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices);
+    this.type = type;
+    this.length = length.to(StandardUnits.LINE_LENGTH);
+    this.geoPosition = GeoUtils.buildSafeLineString(geoPosition);
+    this.olmCharacteristic = olmCharacteristic;
+    setAdditionalInformation(additionalInformation);
   }
 
   /**
@@ -163,6 +205,8 @@ public class LineInput extends ConnectorInput implements HasType {
         + geoPosition
         + ", olmCharacteristic="
         + olmCharacteristic
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

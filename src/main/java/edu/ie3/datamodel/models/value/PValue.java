@@ -17,7 +17,9 @@ public class PValue implements Value {
   /** Active power */
   private final ComparableQuantity<Power> p;
 
-  /** @param p Active power */
+  /**
+   * @param p Active power
+   */
   public PValue(ComparableQuantity<Power> p) {
     this.p = p == null ? null : p.to(StandardUnits.ACTIVE_POWER_IN);
   }

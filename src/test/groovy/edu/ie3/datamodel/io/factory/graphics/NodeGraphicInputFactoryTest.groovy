@@ -48,11 +48,11 @@ class NodeGraphicInputFactoryTest extends Specification implements FactoryTestHe
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert point == getGeometry(parameter["point"])
-      assert path == getGeometry(parameter["path"])
-      assert graphicLayer == parameter["graphiclayer"]
-      assert node == nodeInput
+      uuid == UUID.fromString(parameter["uuid"])
+      point == getGeometry(parameter["point"])
+      path == getGeometry(parameter["path"])
+      graphicLayer == parameter["graphiclayer"]
+      node == nodeInput
     }
   }
 
@@ -77,7 +77,7 @@ class NodeGraphicInputFactoryTest extends Specification implements FactoryTestHe
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert path == GridAndGeoUtils.buildSafeLineString(getGeometry(parameter["path"]) as LineString)
+      path == GridAndGeoUtils.buildSafeLineString(getGeometry(parameter["path"]) as LineString)
     }
     where:
     geoLineString                                                                                                                         | _

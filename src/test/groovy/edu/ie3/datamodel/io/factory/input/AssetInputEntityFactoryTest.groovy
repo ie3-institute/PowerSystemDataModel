@@ -5,8 +5,14 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.*
+import static edu.ie3.datamodel.utils.CollectionUtils.newSet
+
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.exceptions.NotImplementedException
+import edu.ie3.datamodel.io.naming.FieldNamingStrategy
+import edu.ie3.datamodel.io.naming.ModelFields
+import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.AssetInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -20,6 +26,11 @@ import java.time.ZonedDateTime
  * Tests a minimal extension of {@link AssetInputEntityFactory}
  */
 class AssetInputEntityFactoryTest extends Specification implements FactoryTestHelper {
+
+  def setupSpec() {
+    // registering fields for the asset
+    ModelFields.register(TestAssetInput, newSet(FieldNamingStrategy.UUID, ID), newSet(OPERATOR, OPERATES_FROM, OPERATES_UNTIL))
+  }
 
   def "An AssetInputFactory should contain exactly the expected class for parsing"() {
     given:
@@ -47,10 +58,36 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime == OperationTime.notLimited()
-      assert operator == operatorInput
-      assert id == parameter["id"]
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime == OperationTime.notLimited()
+      operator == operatorInput
+      id == parameter["id"]
+    }
+  }
+
+  def "An AssetInputFactory should parse a additional information correctly"() {
+    given:
+    def inputFactory = new TestAssetInputFactory()
+    Map<String, String> parameter = [
+      "uuid"       : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id"         : "TestID",
+      "additional" : "information"
+    ]
+    def inputClass = TestAssetInput
+    def operatorInput = Mock(OperatorInput)
+
+    when:
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
+
+    then:
+    input.success
+    input.data.get().getClass() == inputClass
+    input.data.get().with {
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime == OperationTime.notLimited()
+      operator == operatorInput
+      id == parameter["id"]
+      additionalInformation == ["additional": "information"]
     }
   }
 
@@ -73,10 +110,10 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime == OperationTime.notLimited()
-      assert operator == operatorInput
-      assert id == parameter["id"]
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime == OperationTime.notLimited()
+      operator == operatorInput
+      id == parameter["id"]
     }
 
     where:
@@ -106,12 +143,12 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime.startDate.present
-      assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
-      assert !operationTime.endDate.present
-      assert operator == operatorInput
-      assert id == parameter["id"]
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime.startDate.present
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      !operationTime.endDate.present
+      operator == operatorInput
+      id == parameter["id"]
     }
   }
 
@@ -133,12 +170,12 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert !operationTime.startDate.present
-      assert operationTime.endDate.present
-      assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
-      assert operator == operatorInput
-      assert id == parameter["id"]
+      uuid == UUID.fromString(parameter["uuid"])
+      !operationTime.startDate.present
+      operationTime.endDate.present
+      operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
+      operator == operatorInput
+      id == parameter["id"]
     }
   }
 
@@ -161,13 +198,13 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime.startDate.present
-      assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
-      assert operationTime.endDate.present
-      assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
-      assert operator == operatorInput
-      assert id == parameter["id"]
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime.startDate.present
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      operationTime.endDate.present
+      operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
+      operator == operatorInput
+      id == parameter["id"]
     }
   }
 
@@ -187,10 +224,10 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime == OperationTime.notLimited()
-      assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
-      assert id == parameter["id"]
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime == OperationTime.notLimited()
+      operator == OperatorInput.NO_OPERATOR_ASSIGNED
+      id == parameter["id"]
     }
   }
 
@@ -211,12 +248,12 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime.startDate.present
-      assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
-      assert !operationTime.endDate.present
-      assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
-      assert id == parameter["id"]
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime.startDate.present
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      !operationTime.endDate.present
+      operator == OperatorInput.NO_OPERATOR_ASSIGNED
+      id == parameter["id"]
     }
   }
 
@@ -237,12 +274,12 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert !operationTime.startDate.present
-      assert operationTime.endDate.present
-      assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
-      assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
-      assert id == parameter["id"]
+      uuid == UUID.fromString(parameter["uuid"])
+      !operationTime.startDate.present
+      operationTime.endDate.present
+      operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
+      operator == OperatorInput.NO_OPERATOR_ASSIGNED
+      id == parameter["id"]
     }
   }
 
@@ -264,23 +301,22 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime.startDate.present
-      assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
-      assert operationTime.endDate.present
-      assert operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
-      assert operator == OperatorInput.NO_OPERATOR_ASSIGNED
-      assert id == parameter["id"]
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime.startDate.present
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      operationTime.endDate.present
+      operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
+      operator == OperatorInput.NO_OPERATOR_ASSIGNED
+      id == parameter["id"]
     }
   }
 
   def "An AssetInputFactory should throw an exception on invalid or incomplete fields"() {
     given:
-    def inputFactory = new TestAssetInputFactory()
-    def actualFields = TestAssetInputFactory.newSet("uuid", "operates_from", "operates_until")
+    def actualFields = newSet("uuid", "operates_from", "operates_until")
 
     when:
-    Try<Void, FactoryException> input = inputFactory.validate(actualFields, TestAssetInput)
+    Try<Void, FactoryException> input = DataSource.validate(actualFields, TestAssetInput)
 
     then:
     input.failure
@@ -297,8 +333,9 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
   }
 
   private static class TestAssetInput extends AssetInput {
-    TestAssetInput(UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
+    TestAssetInput(UUID uuid, String id, OperatorInput operator, OperationTime operationTime, Map<String, String> additionalInformation) {
       super(uuid, id, operator, operationTime)
+      setAdditionalInformation(additionalInformation)
     }
 
     @Override
@@ -314,13 +351,8 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     }
 
     @Override
-    protected String[] getAdditionalFields() {
-      return new String[0]
-    }
-
-    @Override
     protected TestAssetInput buildModel(AssetInputEntityData data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
-      return new TestAssetInput(uuid, id, operator, operationTime)
+      return new TestAssetInput(uuid, id, operator, operationTime, data.getFieldsToValues())
     }
   }
 }

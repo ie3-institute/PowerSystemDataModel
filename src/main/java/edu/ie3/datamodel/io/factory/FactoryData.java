@@ -42,8 +42,32 @@ public abstract class FactoryData {
   }
 
   /**
+   * Checks if the field is empty.
+   *
+   * @param field to check
+   * @return {@code true} if either the key is not present or the field is empty
+   */
+  public boolean isFieldEmpty(String field) {
+    String value = fieldsToAttributes.getOrDefault(field, null);
+    return value == null || value.isEmpty();
+  }
+
+  /**
+   * Checks if the field is empty.
+   *
+   * @param field to check
+   * @return {@code true} if either the key is not present or the field is empty
+   */
+  public boolean isFieldBlank(String field) {
+    String value = fieldsToAttributes.getOrDefault(field, null);
+    return value == null || value.isBlank();
+  }
+
+  /**
    * Returns field value for given field name. Throws {@link FactoryException} if field does not
    * exist.
+   *
+   * <p>Note: This method removes the field from the map.
    *
    * @param field field name
    * @return field value
@@ -52,17 +76,19 @@ public abstract class FactoryData {
     if (!fieldsToAttributes.containsKey(field))
       throw new FactoryException(String.format("Field \"%s\" not found in EntityData", field));
 
-    return fieldsToAttributes.get(field);
+    return fieldsToAttributes.remove(field);
   }
 
   /**
    * Returns field value for given field name, or empty Optional if field does not exist.
    *
+   * <p>Note: This method removes the field from the map.
+   *
    * @param field field name
    * @return field value
    */
   public Optional<String> getFieldOptional(String field) {
-    return Optional.ofNullable(fieldsToAttributes.get(field));
+    return Optional.ofNullable(fieldsToAttributes.remove(field));
   }
 
   /**
@@ -81,6 +107,8 @@ public abstract class FactoryData {
   /**
    * Returns field value for given field name, or empty Optional if field does not exist.
    *
+   * <p>Note: This method removes the field from the map.
+   *
    * @param field field name
    * @param unit unit of Quantity
    * @param <Q> unit type parameter
@@ -88,7 +116,7 @@ public abstract class FactoryData {
    */
   public <Q extends Quantity<Q>> Optional<ComparableQuantity<Q>> getQuantityOptional(
       String field, Unit<Q> unit) {
-    return Optional.ofNullable(fieldsToAttributes.get(field))
+    return Optional.ofNullable(fieldsToAttributes.remove(field))
         .filter(str -> !str.isEmpty())
         .map(Double::parseDouble)
         .map(value -> Quantities.getQuantity(value, unit));
@@ -102,13 +130,15 @@ public abstract class FactoryData {
    * @return int value
    */
   public int getInt(String field) {
+    String fieldValue = getField(field);
+
     try {
-      return Integer.parseInt(getField(field));
+      return Integer.parseInt(fieldValue);
     } catch (NumberFormatException nfe) {
       throw new FactoryException(
           String.format(
               "Exception while trying to parse field \"%s\" with supposed int value \"%s\"",
-              field, getField(field)),
+              field, fieldValue),
           nfe);
     }
   }
@@ -121,13 +151,15 @@ public abstract class FactoryData {
    * @return double value
    */
   public double getDouble(String field) {
+    String fieldValue = getField(field);
+
     try {
-      return Double.parseDouble(getField(field));
+      return Double.parseDouble(fieldValue);
     } catch (NumberFormatException nfe) {
       throw new FactoryException(
           String.format(
               "Exception while trying to parse field \"%s\" with supposed double value \"%s\"",
-              field, getField(field)),
+              field, fieldValue),
           nfe);
     }
   }
@@ -140,13 +172,15 @@ public abstract class FactoryData {
    * @return UUID
    */
   public UUID getUUID(String field) {
+    String fieldValue = getField(field);
+
     try {
-      return UUID.fromString(getField(field));
+      return UUID.fromString(fieldValue);
     } catch (IllegalArgumentException iae) {
       throw new FactoryException(
           String.format(
               "Exception while trying to parse UUID of field \"%s\" with value \"%s\"",
-              field, getField(field)),
+              field, fieldValue),
           iae);
     }
   }

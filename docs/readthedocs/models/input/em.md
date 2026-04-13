@@ -35,12 +35,12 @@ Participants are connected to an EM each via their `em` field.
 
    * - controlStrategy
      -
-     - String representation (e.g. name) of a control strategy
+     - String representation (e.g. name) of a control strategy. E.g.: PRIORITIZED or PROPORTIONAL
 
    * - controllingEm
      -
      - Reference to a superior Energy Management Unit that is controlling this EM.
-       Field can be empty or missing, if this EM itself is not controlled.
+       Field can be empty, if this EM itself is not controlled.
 
 ```
 

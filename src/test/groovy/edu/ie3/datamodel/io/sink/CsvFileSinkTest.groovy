@@ -34,23 +34,14 @@ import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.DomesticHotWaterStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
-import edu.ie3.datamodel.models.result.system.EmResult
-import edu.ie3.datamodel.models.result.system.EvResult
-import edu.ie3.datamodel.models.result.system.EvcsResult
-import edu.ie3.datamodel.models.result.system.FlexOptionsResult
-import edu.ie3.datamodel.models.result.system.PvResult
-import edu.ie3.datamodel.models.result.system.WecResult
+import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.datamodel.models.timeseries.TimeSeries
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.datamodel.models.value.Value
-import edu.ie3.test.common.GridTestData
-import edu.ie3.test.common.SampleJointGrid
-import edu.ie3.test.common.SystemParticipantTestData
-import edu.ie3.test.common.ThermalUnitInputTestData
-import edu.ie3.test.common.TimeSeriesTestData
+import edu.ie3.test.common.*
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.io.FileIOUtils
 import spock.lang.Shared
@@ -59,6 +50,7 @@ import tech.units.indriya.quantity.Quantities
 
 import java.nio.file.Path
 import javax.measure.Quantity
+import javax.measure.quantity.Energy
 import javax.measure.quantity.Power
 
 class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
@@ -124,7 +116,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
           new ResultEntityProcessor(EvResult),
           new ResultEntityProcessor(EvcsResult),
           new ResultEntityProcessor(EmResult),
-          new ResultEntityProcessor(FlexOptionsResult),
+          new ResultEntityProcessor(PowerLimitFlexOptionsResult),
+          new ResultEntityProcessor(EnergyBoundariesFlexOptionsResult),
           new InputEntityProcessor(Transformer2WInput),
           new InputEntityProcessor(NodeInput),
           new InputEntityProcessor(EvcsInput),
@@ -155,7 +148,10 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     Quantity<Power> pRef = Quantities.getQuantity(5.1, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMin = Quantities.getQuantity(-6, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMax = Quantities.getQuantity(6, StandardUnits.ACTIVE_POWER_RESULT)
-    FlexOptionsResult flexOptionsResult = new FlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, pRef, pMin, pMax)
+    Quantity<Energy> eMin = Quantities.getQuantity(-0.05, StandardUnits.ENERGY_RESULT)
+    Quantity<Energy> eMax = Quantities.getQuantity(0.06, StandardUnits.ENERGY_RESULT)
+    PowerLimitFlexOptionsResult powerLimitFlexOptionsResult = new PowerLimitFlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, pRef, pMin, pMax)
+    EnergyBoundariesFlexOptionsResult energyBoundariesFlexOptionsResult = new EnergyBoundariesFlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, eMin, eMax, pMin, pMax)
 
     when:
     csvFileSink.persistAll([
@@ -163,7 +159,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
       wecResult,
       evcsResult,
       emResult,
-      flexOptionsResult,
+      powerLimitFlexOptionsResult,
+      energyBoundariesFlexOptionsResult,
       GridTestData.transformerCtoG,
       GridTestData.lineGraphicCtoD,
       GridTestData.nodeGraphicC,
@@ -182,7 +179,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     testBaseFolderPath.resolve("pv_res.csv").toFile().exists()
     testBaseFolderPath.resolve("evcs_res.csv").toFile().exists()
     testBaseFolderPath.resolve("em_res.csv").toFile().exists()
-    testBaseFolderPath.resolve("flex_options_res.csv").toFile().exists()
+    testBaseFolderPath.resolve("power_limit_flex_options_res.csv").toFile().exists()
+    testBaseFolderPath.resolve("energy_boundaries_flex_options_res.csv").toFile().exists()
     testBaseFolderPath.resolve("transformer_2_w_type_input.csv").toFile().exists()
     testBaseFolderPath.resolve("node_input.csv").toFile().exists()
     testBaseFolderPath.resolve("transformer_2_w_input.csv").toFile().exists()
@@ -261,7 +259,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         Quantities.getQuantity(41.01871871948242, DEGREE_GEOM),
         0.8999999761581421,
         1,
-        false,
         Quantities.getQuantity(25d, KILOVOLTAMPERE),
         0.95
         )
@@ -296,7 +293,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         Quantities.getQuantity(41.01871871948242, DEGREE_GEOM),
         0.8999999761581421,
         1,
-        false,
         Quantities.getQuantity(25d, KILOVOLTAMPERE),
         0.95
         )
@@ -357,6 +353,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     testBaseFolderPath.resolve("storage_type_input.csv").toFile().exists()
     testBaseFolderPath.resolve("transformer_2_w_input.csv").toFile().exists()
     testBaseFolderPath.resolve("transformer_2_w_type_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("em_input.csv").toFile().exists()
 
     cleanup:
     csvFileSink.shutdown()

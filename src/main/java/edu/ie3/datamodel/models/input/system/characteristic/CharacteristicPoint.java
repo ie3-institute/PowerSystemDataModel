@@ -47,7 +47,7 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
     String trimmed = input.trim();
     if (!trimmed.startsWith("(") || !trimmed.endsWith(")"))
       throw new ParsingException(buildExceptionMessage(input));
-    String[] entries = trimmed.replaceAll("^\\(|\\)$", "").split(",");
+    String[] entries = trimmed.replaceAll("(^\\()|(\\)$)", "").split(",");
     if (entries.length != 2) throw new ParsingException(buildExceptionMessage(input));
 
     try {
@@ -85,12 +85,16 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
     return "Cannot parse " + input + " to CharacteristicCoordinate. " + message;
   }
 
-  /** @return the position on the abscissa */
+  /**
+   * @return the position on the abscissa
+   */
   public ComparableQuantity<A> getX() {
     return x;
   }
 
-  /** @return the position on the ordinate */
+  /**
+   * @return the position on the ordinate
+   */
   public ComparableQuantity<O> getY() {
     return y;
   }
@@ -127,7 +131,7 @@ public class CharacteristicPoint<A extends Quantity<A>, O extends Quantity<O>>
    * are on the same location there, the ordinate is taken into account.
    *
    * @param b The other point
-   * @return The comparision result
+   * @return The comparison result
    */
   @Override
   public int compareTo(CharacteristicPoint<A, O> b) {

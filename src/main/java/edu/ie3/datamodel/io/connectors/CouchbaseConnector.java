@@ -137,7 +137,9 @@ public class CouchbaseConnector implements DataConnector {
     cluster.disconnect();
   }
 
-  /** @return the bucket name */
+  /**
+   * @return the bucket name
+   */
   public String getBucketName() {
     return bucketName;
   }
@@ -153,7 +155,7 @@ public class CouchbaseConnector implements DataConnector {
   }
 
   /**
-   * Returns futures for every key search result, will be executed asychnchronously
+   * Returns futures for every key search result, will be executed asynchronously
    *
    * @param keys the keys to get the documents for
    * @return list of futures for every key search result

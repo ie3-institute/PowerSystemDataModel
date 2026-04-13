@@ -15,16 +15,22 @@ import edu.ie3.datamodel.models.input.IdCoordinateInput;
  */
 public abstract class IdCoordinateFactory
     extends Factory<IdCoordinateInput, SimpleFactoryData, IdCoordinateInput> {
-  protected IdCoordinateFactory() {
-    super(IdCoordinateInput.class);
+  protected IdCoordinateFactory(Class<? extends IdCoordinateInput> clazz) {
+    super(clazz, IdCoordinateInput.class);
   }
 
-  /** @return the field id for the coordinate id */
+  /**
+   * @return the field id for the coordinate id
+   */
   public abstract String getIdField();
 
-  /** @return the field id for the coordinate latitude */
+  /**
+   * @return the field id for the coordinate latitude
+   */
   public abstract String getLatField();
 
-  /** @return the field id for the coordinate longitude */
+  /**
+   * @return the field id for the coordinate longitude
+   */
   public abstract String getLonField();
 }

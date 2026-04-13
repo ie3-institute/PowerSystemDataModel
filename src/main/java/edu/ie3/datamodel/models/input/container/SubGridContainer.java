@@ -16,6 +16,7 @@ import java.util.Objects;
 public class SubGridContainer extends GridContainer {
   /** subnet number of this grid */
   private final int subnet;
+
   /** Predominantly apparent voltage level in this single grid */
   private final VoltageLevel predominantVoltageLevel;
 
@@ -24,9 +25,10 @@ public class SubGridContainer extends GridContainer {
       int subnet,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
+      EnergyManagementUnits emUnits,
       GraphicElements graphics)
       throws InvalidGridException {
-    super(gridName, rawGrid, systemParticipants, graphics);
+    super(gridName, rawGrid, systemParticipants, emUnits, graphics);
     this.subnet = subnet;
     this.predominantVoltageLevel = ContainerUtils.determinePredominantVoltLvl(rawGrid, subnet);
   }
@@ -112,7 +114,12 @@ public class SubGridContainer extends GridContainer {
     @Override
     public SubGridContainer build() throws InvalidGridException {
       return new SubGridContainer(
-          getGridName(), subnet, getRawGrid(), getSystemParticipants(), getGraphics());
+          getGridName(),
+          subnet,
+          getRawGrid(),
+          getSystemParticipants(),
+          getEmUnits(),
+          getGraphics());
     }
   }
 }

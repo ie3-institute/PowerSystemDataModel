@@ -26,17 +26,17 @@ class EvcsInputTest extends Specification {
 
     then:
     alteredEntity.with {
-      assert uuid == evcsInput.uuid
-      assert operationTime == evcsInput.operationTime
-      assert operator == evcsInput.operator
-      assert id == evcsInput.id
-      assert qCharacteristics == evcsInput.qCharacteristics
-      assert type == ChargingPointTypeUtils.TeslaSuperChargerV3
-      assert cosPhiRated == 0.7d
-      assert chargingPoints == 1
-      assert locationType == EvcsLocationType.CHARGING_HUB_HIGHWAY
-      assert v2gSupport
-      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      uuid == evcsInput.uuid
+      operationTime == evcsInput.operationTime
+      operator == evcsInput.operator
+      id == evcsInput.id
+      qCharacteristics == evcsInput.qCharacteristics
+      type == ChargingPointTypeUtils.TeslaSuperChargerV3
+      cosPhiRated == 0.7d
+      chargingPoints == 1
+      locationType == EvcsLocationType.CHARGING_HUB_HIGHWAY
+      v2gSupport
+      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 
@@ -49,17 +49,18 @@ class EvcsInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == evcsInput.uuid
-      assert operationTime == evcsInput.operationTime
-      assert operator == evcsInput.operator
-      assert id == evcsInput.id
-      assert qCharacteristics == evcsInput.qCharacteristics
-      assert type.sRated == evcsInput.type.sRated * 2d
-      assert cosPhiRated == evcsInput.cosPhiRated
-      assert chargingPoints == evcsInput.chargingPoints
-      assert locationType == evcsInput.locationType
-      assert v2gSupport == evcsInput.v2gSupport
-      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      uuid == evcsInput.uuid
+      operationTime == evcsInput.operationTime
+      operator == evcsInput.operator
+      id == evcsInput.id
+      qCharacteristics == evcsInput.qCharacteristics
+      type.sRated == evcsInput.type.sRated * 2d
+      sRated() == evcsInput.type.sRated * 2d
+      cosPhiRated == evcsInput.cosPhiRated
+      chargingPoints == evcsInput.chargingPoints
+      locationType == evcsInput.locationType
+      v2gSupport == evcsInput.v2gSupport
+      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

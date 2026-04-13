@@ -24,13 +24,6 @@ public abstract class ConnectorInputEntityFactory<
         T extends ConnectorInput, D extends ConnectorInputEntityData>
     extends AssetInputEntityFactory<T, D> {
 
-  /**
-   * Attribute that _can_, but does not _have to_ be present for the creation of {@link
-   * ConnectorInput}s. Thus, this attribute name declaration can be used in subclasses of {@link
-   * ConnectorInputEntityFactory}
-   */
-  protected static final String PARALLEL_DEVICES = "parallelDevices";
-
   @SafeVarargs
   protected ConnectorInputEntityFactory(Class<? extends T>... allowedClasses) {
     super(allowedClasses);

@@ -15,6 +15,8 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import java.util.*;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes a system asset that is connected to a node */
 public abstract class SystemParticipantInput extends AssetInput implements HasNodes, HasEm {
@@ -76,6 +78,18 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     this.qCharacteristics = qCharacteristics;
     this.controllingEm = em;
   }
+
+  /**
+   * Returns the rated apparent power of the system participant, which is either stored within the
+   * {@link SystemParticipantInput} or linked {@link
+   * edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput}.
+   *
+   * <p>Note: This cannot be a getter, because the accompanying field might not be present in
+   * subclasses.
+   *
+   * @return The rated apparent power.
+   */
+  public abstract ComparableQuantity<Power> sRated();
 
   public NodeInput getNode() {
     return node;
@@ -178,7 +192,9 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
       return qCharacteristics;
     }
 
-    /** @return The {@link EmInput} controlling this system participant. CAN BE NULL. */
+    /**
+     * @return The {@link EmInput} controlling this system participant. CAN BE NULL.
+     */
     public EmInput getEm() {
       return em;
     }

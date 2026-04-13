@@ -5,7 +5,7 @@ If you feel, something is missing, please contact us!
 
 ## Requirements
 
-Java > v 17
+PowerSystemDataModel requires Java to be at least Version 21.
 
 ## Where to get
 
@@ -20,22 +20,14 @@ On [Maven central](https://search.maven.org/artifact/com.github.ie3-institute/Po
 <dependency>
   <groupId>com.github.ie3-institute</groupId>
   <artifactId>PowerSystemDataModel</artifactId>
-  <version>5.0.1</version>
+  <version>9.0.0</version>
 </dependency>
 ```
 
-### Snapshot releases
+### Releases
 
 Available on [OSS Sonatype](https://s01.oss.sonatype.org/).
-Add the correct repository:
-
-```xml
-<repositories>
-  <repository>https://s01.oss.sonatype.org/content/repositories/snapshots</repository>
-</repositories>
-```
-
-and add the dependency:
+Add the dependency:
 
 ```xml
 <dependency>

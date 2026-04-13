@@ -16,8 +16,8 @@ public abstract class RepetitiveTimeSeries<
         E extends TimeSeriesEntry<V>, V extends Value, R extends Value>
     extends TimeSeries<E, V, R> {
 
-  protected RepetitiveTimeSeries(UUID uuid, Set<E> entries) {
-    super(uuid, entries);
+  protected RepetitiveTimeSeries(Set<E> entries) {
+    super(entries);
   }
 
   /**
@@ -31,11 +31,5 @@ public abstract class RepetitiveTimeSeries<
   @Override
   public Optional<R> getValue(ZonedDateTime time) {
     return Optional.ofNullable(calc(time));
-  }
-
-  @Override
-  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) {
-    // dummy value
-    return getNextDateTime(time).map(List::of).orElseGet(Collections::emptyList);
   }
 }

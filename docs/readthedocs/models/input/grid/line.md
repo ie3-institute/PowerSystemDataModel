@@ -73,11 +73,11 @@ A list with some standard line types can be found here: [Standard Line Types](#s
 
    * - operator
      - –
-     -
+     - [optional]
 
-   * - operationTime
+   * - operatesFrom/operatesUntil
      - –
-     - Timely restriction of operation
+     - Timely restriction of operation [optional]
 
    * - nodeA
      - –
@@ -116,9 +116,9 @@ A list with some standard line types can be found here: [Standard Line Types](#s
 
 ## Standard Line Types
 
-Following there are some standard line types with their source. A ``csv file`` containing the types listed below can be found
-[here](https://github.com/ie3-institute/PowerSystemDataModel/tree/dev/input/StandardAssetTypes). This file can be used directly
-for any simulation with ``simona``.
+Following there are some standard line types with their source. To retrieve the data call the method `TypeSource.getStandardLineTypes()`.
+A ``csv file`` containing the types listed below can be found [here](https://github.com/ie3-institute/PowerSystemDataModel/tree/dev/input/StandardAssetTypes).
+This file can be used directly for any simulation with ``simona``.
 The lines which source is ``simBench`` are from [here](https://simbench.de/en/download/datasets/).
 
 
@@ -133,13 +133,13 @@ Some standard overhead lines.
    
    
    * - uuid
-     - b
-     - g
-     - iMax
+     - b [µS / km]
+     - g [µS / km]
+     - iMax [A]
      - id
-     - r
-     - vRated
-     - x
+     - r [Ω / km]
+     - vRated [kV]
+     - x [Ω / km]
      - source
      
    * - 91617ab8-3de2-4fba-be45-a54473ba09a9
@@ -316,13 +316,13 @@ Some standard cables.
    
    
    * - uuid
-     - b
-     - g
-     - iMax
+     - b [µS / km]
+     - g [µS / km]
+     - iMax [A]
      - id
-     - r
-     - vRated
-     - x
+     - r [Ω / km]
+     - vRated [kV]
+     - x [Ω / km]
      - source
 
    * - cc59abd4-770b-45d2-98c8-919c91f1ca4b

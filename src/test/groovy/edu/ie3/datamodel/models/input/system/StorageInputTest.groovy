@@ -20,13 +20,13 @@ class StorageInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == storageInput.uuid
-      assert operationTime == storageInput.operationTime
-      assert operator == storageInput.operator
-      assert id == storageInput.id
-      assert qCharacteristics == storageInput.qCharacteristics
-      assert type == SystemParticipantTestData.storageTypeInput
-      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      uuid == storageInput.uuid
+      operationTime == storageInput.operationTime
+      operator == storageInput.operator
+      id == storageInput.id
+      qCharacteristics == storageInput.qCharacteristics
+      type == SystemParticipantTestData.storageTypeInput
+      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 
@@ -39,15 +39,16 @@ class StorageInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == storageInput.uuid
-      assert operationTime == storageInput.operationTime
-      assert operator == storageInput.operator
-      assert id == storageInput.id
-      assert qCharacteristics == storageInput.qCharacteristics
-      assert type.sRated == storageInput.type.sRated * 2d
-      assert type.eStorage == storageInput.type.eStorage * 2d
-      assert type.pMax == storageInput.type.pMax * 2d
-      assert controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      uuid == storageInput.uuid
+      operationTime == storageInput.operationTime
+      operator == storageInput.operator
+      id == storageInput.id
+      qCharacteristics == storageInput.qCharacteristics
+      type.sRated == storageInput.type.sRated * 2d
+      sRated() == storageInput.type.sRated * 2d
+      type.eStorage == storageInput.type.eStorage * 2d
+      type.pMax == storageInput.type.pMax * 2d
+      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 }

@@ -16,7 +16,9 @@ public class EnergyPriceValue implements Value {
   /** Price of energy (typically in €/MWh) */
   private final ComparableQuantity<EnergyPrice> price;
 
-  /** @param price per MWh */
+  /**
+   * @param price per MWh
+   */
   public EnergyPriceValue(ComparableQuantity<EnergyPrice> price) {
     this.price = price == null ? null : price.to(StandardUnits.ENERGY_PRICE);
   }
@@ -30,12 +32,14 @@ public class EnergyPriceValue implements Value {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     EnergyPriceValue that = (EnergyPriceValue) o;
-    return Objects.equals(price, that.price);
+
+    return Objects.equals(price.getValue().doubleValue(), that.price.getValue().doubleValue())
+        && Objects.equals(price.getUnit(), that.price.getUnit());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(price);
+    return Objects.hash(price.getValue().doubleValue(), price.getUnit());
   }
 
   @Override

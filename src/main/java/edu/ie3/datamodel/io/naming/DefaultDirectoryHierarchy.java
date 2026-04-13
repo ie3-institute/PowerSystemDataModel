@@ -173,18 +173,6 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
   }
 
   /**
-   * Gives the {@link #baseDirectory}).
-   *
-   * @return An Option to the base directory as a string
-   * @deprecated Use {@link edu.ie3.datamodel.io.connectors.CsvFileConnector} instead
-   */
-  @Deprecated(since = "3.0", forRemoval = true)
-  @Override
-  public Optional<Path> getBaseDirectory() {
-    return Optional.of(this.baseDirectory);
-  }
-
-  /**
    * Gives the correct sub directory (w.r.t. {@link #baseDirectory}) for the provided class.
    *
    * @param cls Class to define the sub directory for
@@ -255,6 +243,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
         Constants.INPUT_SUB_TREE.resolve("participants"),
         true,
         Stream.of(
+                AcInput.class,
                 BmInput.class,
                 ChpInput.class,
                 EvInput.class,
@@ -270,6 +259,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
         Constants.RESULT_SUB_TREE.resolve("participants"),
         false,
         Stream.of(
+                AcResult.class,
                 BmResult.class,
                 ChpResult.class,
                 EvResult.class,
@@ -281,7 +271,8 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
                 StorageResult.class,
                 WecResult.class,
                 EmResult.class,
-                FlexOptionsResult.class)
+                PowerLimitFlexOptionsResult.class,
+                EnergyBoundariesFlexOptionsResult.class)
             .collect(Collectors.toSet())),
     TIME_SERIES(
         PARTICIPANTS_INPUT.relPath.resolve("time_series"),

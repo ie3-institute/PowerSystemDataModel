@@ -14,8 +14,10 @@ import java.util.UUID;
 public abstract class AssetInput extends UniqueInputEntity implements Operable {
   /** Time for which the entity is operated */
   private final OperationTime operationTime;
+
   /** The operator of this asset */
   private final OperatorInput operator;
+
   /** Name or ID of the asset */
   private final String id;
 

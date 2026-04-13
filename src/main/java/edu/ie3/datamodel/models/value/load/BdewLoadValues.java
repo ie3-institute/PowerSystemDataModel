@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.value.load;
 
+import static edu.ie3.datamodel.models.profile.BdewStandardLoadProfile.*;
 import static edu.ie3.datamodel.models.value.load.BdewLoadValues.BdewSeason.WINTER;
 import static edu.ie3.datamodel.models.value.load.BdewLoadValues.BdewSeason.getSeason;
 import static java.lang.Math.pow;
@@ -14,6 +15,7 @@ import static tech.units.indriya.unit.Units.WATT;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
+import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.value.PValue;
 import java.io.*;
 import java.time.Month;
@@ -26,7 +28,7 @@ import java.util.stream.Stream;
 import tech.units.indriya.quantity.Quantities;
 
 /** Load values for a {@link BdewStandardLoadProfile} */
-public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile> {
+public final class BdewLoadValues implements LoadValues {
   public final BdewScheme scheme;
   private transient Map<BdewKey, Double> values;
 
@@ -83,14 +85,16 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
     if (lastDayOfYear) {
       Stream<BdewKey> keys =
           switch (scheme) {
-            case BDEW1999 -> Stream.of(
-                new Bdew1999Key(WINTER, DayType.SATURDAY),
-                new Bdew1999Key(WINTER, DayType.SUNDAY),
-                new Bdew1999Key(WINTER, DayType.WEEKDAY));
-            case BDEW2025 -> Stream.of(
-                new Bdew2025Key(DECEMBER, DayType.SATURDAY),
-                new Bdew2025Key(DECEMBER, DayType.SUNDAY),
-                new Bdew2025Key(DECEMBER, DayType.WEEKDAY));
+            case BDEW1999 ->
+                Stream.of(
+                    new Bdew1999Key(WINTER, DayType.SATURDAY),
+                    new Bdew1999Key(WINTER, DayType.SUNDAY),
+                    new Bdew1999Key(WINTER, DayType.WEEKDAY));
+            case BDEW2025 ->
+                Stream.of(
+                    new Bdew2025Key(DECEMBER, DayType.SATURDAY),
+                    new Bdew2025Key(DECEMBER, DayType.SUNDAY),
+                    new Bdew2025Key(DECEMBER, DayType.WEEKDAY));
           };
 
       stream = keys.map(values::get);
@@ -102,14 +106,15 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
   }
 
   @Override
-  public PValue getValue(ZonedDateTime time, BdewStandardLoadProfile loadProfile) {
-    double power =
-        switch (loadProfile) {
-          case H0, H25, P25, S25 ->
-          /* For the residential average profile, a dynamization has to be taken into account */
-          dynamization(getPower(time), time.getDayOfYear()); // leap years are ignored
-          default -> getPower(time);
-        };
+  public PValue getValue(ZonedDateTime time, PowerProfileKey powerProfileKey) {
+    double power;
+
+    if (powerProfileKey.equalsAny(H0, H25, P25, S25)) {
+      /* For the residential average profile, a dynamization has to be taken into account */
+      power = dynamization(getPower(time), time.getDayOfYear()); // leap years are ignored
+    } else {
+      power = getPower(time);
+    }
 
     return new PValue(Quantities.getQuantity(power, WATT));
   }
@@ -262,11 +267,12 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
       return switch (key) {
         case "Wi", "Winter" -> WINTER;
         case "Su", "Summer" -> SUMMER;
-        case "Tr", "Intermediate" -> TRANSITION;
-        default -> throw new ParsingException(
-            "There is no season for key:"
-                + key
-                + ". Permissible keys: 'Wi', 'Winter', 'Su', 'Summer', 'Tr', 'Intermediate'");
+        case "Tr", "Transition" -> TRANSITION;
+        default ->
+            throw new ParsingException(
+                "There is no season for key:"
+                    + key
+                    + ". Permissible keys: 'Wi', 'Winter', 'Su', 'Summer', 'Tr', 'Transition'");
       };
     }
 
@@ -461,8 +467,8 @@ public final class BdewLoadValues implements LoadValues<BdewStandardLoadProfile>
      * Maps the {@link BdewKey} to a new value.
      *
      * @param mapper function
-     * @return the new {@link BdewMap}
      * @param <R> type of new values
+     * @return the new {@link BdewMap}
      */
     public <R> Map<BdewKey, R> map(Function<V, R> mapper) {
       HashMap<BdewKey, R> map = new HashMap<>();

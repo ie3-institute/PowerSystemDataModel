@@ -25,12 +25,14 @@ class CsvResultEntitySourceTest extends Specification implements CsvTestDataMeta
     // non-existent (empty)
     def chpResults = csvResultEntitySource.chpResults
     def hpResults = csvResultEntitySource.hpResults
+    def acResults = csvResultEntitySource.acResults
     def evResults = csvResultEntitySource.evResults
     def evcsResults = csvResultEntitySource.evcsResults
     def loadResults = csvResultEntitySource.loadResults
     def storageResults = csvResultEntitySource.storageResults
     def thermalHouseResults = csvResultEntitySource.thermalHouseResults
-    def flexOptionsResults = csvResultEntitySource.flexOptionsResults
+    def powerLimitFlexOptionsResults = csvResultEntitySource.powerLimitFlexOptionsResults
+    def energyBoundariesFlexOptionsResults = csvResultEntitySource.energyBoundariesFlexOptionsResults
 
     then:
     wecResults.size() == retd.WEC_RESULT_SIZE
@@ -38,8 +40,9 @@ class CsvResultEntitySourceTest extends Specification implements CsvTestDataMeta
     bmResults.size() == retd.BM_RESULT_SIZE
     fixedFeedInResults.size() == retd.FIXED_FEED_IN_RESULT_SIZE
     emResults.size() == retd.EM_RESULT_SIZE
-    chpResults.empty && hpResults.empty && evResults.empty && evcsResults.empty &&
-        loadResults.empty && storageResults.empty && thermalHouseResults.empty && flexOptionsResults.empty
+    chpResults.empty && hpResults.empty && acResults.empty && evResults.empty && evcsResults.empty &&
+        loadResults.empty && storageResults.empty && thermalHouseResults.empty && powerLimitFlexOptionsResults.empty &&
+        energyBoundariesFlexOptionsResults.empty
 
     bmResults.first().inputModel == retd.BM_INPUT_MODEL
     bmResults.first().p == retd.BM_ACTIVE_POWER

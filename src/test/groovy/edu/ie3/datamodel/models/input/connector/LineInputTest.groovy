@@ -69,13 +69,13 @@ class LineInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == line.uuid
-      assert operationTime == line.operationTime
-      assert operator == GridTestData.profBroccoli
-      assert id == "line_A_C"
-      assert nodeA == GridTestData.nodeA
-      assert nodeB == GridTestData.nodeC
-      assert length == Quantities.getQuantity(10, Units.METRE)
+      uuid == line.uuid
+      operationTime == line.operationTime
+      operator == GridTestData.profBroccoli
+      id == "line_A_C"
+      nodeA == GridTestData.nodeA
+      nodeB == GridTestData.nodeC
+      length == Quantities.getQuantity(10, Units.METRE)
     }
   }
 
@@ -95,6 +95,7 @@ class LineInputTest extends Specification {
         ", type=3bed3eb3-9790-4874-89b5-a5434d408088" +
         ", length=0.003 km" +
         ", geoPosition=LINESTRING (7.411111 51.492528, 7.414116 51.484136)" +
-        ", olmCharacteristic=OlmCharacteristicInput{points=[CharacteristicCoordinate{x=0.0 m/s, y=1 p.u.}]}}"
+        ", olmCharacteristic=OlmCharacteristicInput{points=[CharacteristicCoordinate{x=0.0 m/s, y=1 p.u.}]}" +
+        ", additionalInformation={}}"
   }
 }

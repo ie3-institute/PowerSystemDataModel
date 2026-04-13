@@ -26,11 +26,11 @@ Model of an ideal switch connecting two node models of the same voltage level
 
    * - operator
      -
-     -
+     - [optional]
 
-   * - operationTime
+   * - operatesFrom/operatesUntil
      -
-     - Timely restriction of operation
+     - Timely restriction of operation [optional]
 
    * - nodeA
      -

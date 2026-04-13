@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.input.connector;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -37,6 +38,32 @@ public class SwitchInput extends ConnectorInput {
       boolean closed) {
     super(uuid, id, operator, operationTime, nodeA, nodeB, 1);
     this.closed = closed;
+  }
+
+  /**
+   * Constructor for an operated switch
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param nodeA Grid node at one side of the switch
+   * @param nodeB Grid node at the other side of the switch
+   * @param closed Is the switching state 'closed'?
+   * @param additionalInformation Of the model
+   */
+  public SwitchInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      NodeInput nodeA,
+      NodeInput nodeB,
+      boolean closed,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, operator, operationTime, nodeA, nodeB, 1);
+    this.closed = closed;
+    setAdditionalInformation(additionalInformation);
   }
 
   /**
@@ -95,6 +122,8 @@ public class SwitchInput extends ConnectorInput {
         + getParallelDevices()
         + ", closed="
         + closed
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

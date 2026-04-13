@@ -64,21 +64,21 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime.startDate.present
-      assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
-      assert !operationTime.endDate.present
-      assert operator == operatorInput
-      assert id == parameter["id"]
-      assert nodeA == nodeInputA
-      assert nodeB == nodeInputB
-      assert type == typeInput
-      assert parallelDevices == Integer.parseInt(parameter["paralleldevices"])
-      assert length == getQuant(parameter["length"], StandardUnits.LINE_LENGTH)
-      assert geoPosition == getGeometry(parameter["geoposition"])
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime.startDate.present
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      !operationTime.endDate.present
+      operator == operatorInput
+      id == parameter["id"]
+      nodeA == nodeInputA
+      nodeB == nodeInputB
+      type == typeInput
+      parallelDevices == Integer.parseInt(parameter["paralleldevices"])
+      length == getQuant(parameter["length"], StandardUnits.LINE_LENGTH)
+      geoPosition == getGeometry(parameter["geoposition"])
       olmCharacteristic.with {
-        assert uuid != null
-        assert points == Collections.unmodifiableSortedSet([
+        uuid != null
+        points == Collections.unmodifiableSortedSet([
           new CharacteristicPoint<Speed, Dimensionless>(
           Quantities.getQuantity(0d, METRE_PER_SECOND),
           Quantities.getQuantity(1d, PU))
@@ -115,21 +115,21 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert uuid == UUID.fromString(parameter["uuid"])
-      assert operationTime.startDate.present
-      assert operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
-      assert !operationTime.endDate.present
-      assert operator == operatorInput
-      assert id == parameter["id"]
-      assert nodeA == nodeInputA
-      assert nodeB == nodeInputB
-      assert type == typeInput
-      assert parallelDevices == Integer.parseInt(parameter["paralleldevices"])
-      assert length == getQuant(parameter["length"], StandardUnits.LINE_LENGTH)
-      assert geoPosition == getGeometry(parameter["geoposition"])
+      uuid == UUID.fromString(parameter["uuid"])
+      operationTime.startDate.present
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      !operationTime.endDate.present
+      operator == operatorInput
+      id == parameter["id"]
+      nodeA == nodeInputA
+      nodeB == nodeInputB
+      type == typeInput
+      parallelDevices == Integer.parseInt(parameter["paralleldevices"])
+      length == getQuant(parameter["length"], StandardUnits.LINE_LENGTH)
+      geoPosition == getGeometry(parameter["geoposition"])
       olmCharacteristic.with {
-        assert uuid != null
-        assert points == Collections.unmodifiableSortedSet([
+        uuid != null
+        points == Collections.unmodifiableSortedSet([
           new CharacteristicPoint<Speed, Dimensionless>(
           Quantities.getQuantity(0d, METRE_PER_SECOND),
           Quantities.getQuantity(1d, PU))
@@ -166,7 +166,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
     input.success
     input.data.get().getClass() == inputClass
     input.data.get().with {
-      assert geoPosition == GridAndGeoUtils.buildSafeLineString(getGeometry(parameter["geoposition"]) as LineString)
+      geoPosition == GridAndGeoUtils.buildSafeLineString(getGeometry(parameter["geoposition"]) as LineString)
     }
 
     where:

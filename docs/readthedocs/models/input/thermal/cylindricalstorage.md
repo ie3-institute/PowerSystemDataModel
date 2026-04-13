@@ -26,15 +26,15 @@ Model of a cylindrical thermal storage using a fluid to store thermal energy.
 
    * - operator
      -
-     -
+     - [optional]
 
-   * - operationTime
+   * - operatesFrom/operatesUntil
      -
-     - Timely restriction of operation
+     - Timely restriction of operation [optional]
 
    * - thermalBus
      -
-     - Connection point to the thermal system
+     - UUID of the [thermal bus](#thermal-bus-model)
 
    * - storageVolumeLvl
      - m³
@@ -49,7 +49,7 @@ Model of a cylindrical thermal storage using a fluid to store thermal energy.
      - Temperature of the outlet
 
    * - c
-     - kWh / (K :math:`\cdot` m³)
+     - kWh / (K &middot; m³)
      - Specific heat capacity of the storage medium
      
    * - pThermalMax

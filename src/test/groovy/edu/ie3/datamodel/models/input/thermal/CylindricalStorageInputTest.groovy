@@ -24,15 +24,15 @@ class CylindricalStorageInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == cylindricalStorageInput.uuid
-      assert id == cylindricalStorageInput.id
-      assert operator == cylindricalStorageInput.operator
-      assert operationTime == cylindricalStorageInput.operationTime
-      assert thermalBus == cylindricalStorageInput.thermalBus
-      assert storageVolumeLvl == ThermalUnitInputTestData.storageVolumeLvl
-      assert inletTemp == ThermalUnitInputTestData.inletTemp
-      assert returnTemp == ThermalUnitInputTestData.returnTemp
-      assert c == ThermalUnitInputTestData.c
+      uuid == cylindricalStorageInput.uuid
+      id == cylindricalStorageInput.id
+      operator == cylindricalStorageInput.operator
+      operationTime == cylindricalStorageInput.operationTime
+      thermalBus == cylindricalStorageInput.thermalBus
+      storageVolumeLvl == ThermalUnitInputTestData.storageVolumeLvl
+      inletTemp == ThermalUnitInputTestData.inletTemp
+      returnTemp == ThermalUnitInputTestData.returnTemp
+      c == ThermalUnitInputTestData.c
     }
   }
 
@@ -45,16 +45,16 @@ class CylindricalStorageInputTest extends Specification {
 
     then:
     alteredUnit.with {
-      assert uuid == cylindricalStorageInput.uuid
-      assert id == cylindricalStorageInput.id
-      assert operator == cylindricalStorageInput.operator
-      assert operationTime == cylindricalStorageInput.operationTime
-      assert thermalBus == cylindricalStorageInput.thermalBus
-      assert storageVolumeLvl == cylindricalStorageInput.storageVolumeLvl * 2d
-      assert inletTemp == cylindricalStorageInput.inletTemp
-      assert returnTemp == cylindricalStorageInput.returnTemp
-      assert c == cylindricalStorageInput.c
-      assert pThermalMax == cylindricalStorageInput.pThermalMax * 2d
+      uuid == cylindricalStorageInput.uuid
+      id == cylindricalStorageInput.id
+      operator == cylindricalStorageInput.operator
+      operationTime == cylindricalStorageInput.operationTime
+      thermalBus == cylindricalStorageInput.thermalBus
+      storageVolumeLvl == cylindricalStorageInput.storageVolumeLvl * 2d
+      inletTemp == cylindricalStorageInput.inletTemp
+      returnTemp == cylindricalStorageInput.returnTemp
+      c == cylindricalStorageInput.c
+      pThermalMax == cylindricalStorageInput.pThermalMax * 2d
     }
   }
 }

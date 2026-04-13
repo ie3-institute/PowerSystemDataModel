@@ -21,7 +21,9 @@ public record DbGridMetadata(String gridName, UUID uuid) {
     return GRID_NAME_COLUMN + "=" + gridName + ", " + GRID_UUID_COLUMN + "=" + uuid.toString();
   }
 
-  /** @return Stream with grid uuid */
+  /**
+   * @return Stream with grid uuid
+   */
   public Stream<String> getStreamForQuery() {
     return Stream.of(quote(uuid.toString(), "'"));
   }

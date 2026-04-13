@@ -14,13 +14,17 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.HpTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 
 /** Describes a heat pump */
 public class HpInput extends SystemParticipantInput implements HasType, HasThermalBus {
   /** Type of this heat pump, containing default values for heat pump of this kind */
   private final HpTypeInput type;
+
   /** The thermal bus, this model is connected to */
   private final ThermalBusInput thermalBus;
 
@@ -57,6 +61,37 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
    *
    * @param uuid of the input entity
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param node the asset is connected to
+   * @param thermalBus The thermal bus, this model is connected to
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param type of HP
+   * @param additionalInformation That were provided by the source
+   */
+  public HpInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      NodeInput node,
+      ThermalBusInput thermalBus,
+      ReactivePowerCharacteristic qCharacteristics,
+      EmInput em,
+      HpTypeInput type,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    this.thermalBus = thermalBus;
+    this.type = type;
+    setAdditionalInformation(additionalInformation);
+  }
+
+  /**
+   * Constructor for an operated, always on heat pump
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
    * @param node the asset is connected to
    * @param thermalBus The thermal bus, this model is connected to
    * @param qCharacteristics Description of a reactive power characteristic
@@ -84,6 +119,11 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
   @Override
   public ThermalBusInput getThermalBus() {
     return thermalBus;
+  }
+
+  @Override
+  public ComparableQuantity<Power> sRated() {
+    return this.type.getsRated();
   }
 
   public HpInputCopyBuilder copy() {
@@ -124,6 +164,8 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
         + type.getUuid()
         + ", thermalBus="
         + thermalBus.getUuid()
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

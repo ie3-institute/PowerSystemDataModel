@@ -19,20 +19,18 @@ import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.interval.ClosedInterval
 import org.testcontainers.containers.Container
-import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.postgresql.PostgreSQLContainer
 import org.testcontainers.spock.Testcontainers
 import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-import java.time.format.DateTimeFormatter
-
 @Testcontainers
 class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper {
 
   @Shared
-  PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:14.2")
+  PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:18.3")
 
   @Shared
   SqlConnector connector
@@ -42,9 +40,6 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
 
   @Shared
   DatabaseNamingStrategy namingStrategy
-
-  @Shared
-  DateTimeFormatter dateTimeFormatter
 
   static String schemaName = "public"
 
@@ -75,9 +70,8 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
         )
 
     namingStrategy = new DatabaseNamingStrategy()
-    dateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
 
-    pSource = SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation, dateTimeFormatter)
+    pSource = SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation)
   }
 
   def "The factory method in SqlTimeSeriesSource builds a time series source for all supported column types"() {
@@ -85,7 +79,7 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
     def metaInformation = new IndividualTimeSeriesMetaInformation(uuid, columnScheme)
 
     when:
-    def source = SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation, dateTimeFormatter)
+    def source = SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation)
     def timeSeries = source.timeSeries
 
     then:
@@ -110,7 +104,7 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
         )
 
     when:
-    SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation, dateTimeFormatter)
+    SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation)
 
     then:
     def e = thrown(SourceException)
@@ -126,7 +120,7 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
     value.get() == P_VALUE_00MIN
   }
 
-  def "The cSqlTimeSeriesSource returns the last value, if there is no current value"() {
+  def "The SqlTimeSeriesSource returns the last value, if there is no current value"() {
     given:
     def time = TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:13:00Z")
 

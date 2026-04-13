@@ -12,8 +12,11 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointType;
 import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 
 public class EvcsInput extends SystemParticipantInput {
 
@@ -76,6 +79,44 @@ public class EvcsInput extends SystemParticipantInput {
    * @param qCharacteristics Description of a reactive power characteristic
    * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type type of the charging points available to this charging station
+   * @param chargingPoints number of charging points available at this charging station
+   * @param cosPhiRated rated cos phi
+   * @param locationType the location type
+   * @param v2gSupport whether charging station supports vehicle to grid
+   * @param additionalInformation That were provided by the source
+   */
+  public EvcsInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      NodeInput node,
+      ReactivePowerCharacteristic qCharacteristics,
+      EmInput em,
+      ChargingPointType type,
+      int chargingPoints,
+      double cosPhiRated,
+      EvcsLocationType locationType,
+      boolean v2gSupport,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    this.type = type;
+    this.chargingPoints = chargingPoints;
+    this.cosPhiRated = cosPhiRated;
+    this.locationType = locationType;
+    this.v2gSupport = v2gSupport;
+    setAdditionalInformation(additionalInformation);
+  }
+
+  /**
+   * @param uuid Unique identifier
+   * @param id Human readable identifier
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param node that the asset is connected to
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param type type of the charging points available to this charging station
    * @param cosPhiRated rated cos phi
    * @param locationType the location type
    * @param v2gSupport whether charging station supports vehicle to grid
@@ -106,6 +147,7 @@ public class EvcsInput extends SystemParticipantInput {
         locationType,
         v2gSupport);
   }
+
   /**
    * @param uuid Unique identifier
    * @param id Human readable identifier
@@ -182,6 +224,11 @@ public class EvcsInput extends SystemParticipantInput {
   }
 
   @Override
+  public ComparableQuantity<Power> sRated() {
+    return this.type.getsRated();
+  }
+
+  @Override
   public EvcsInputCopyBuilder copy() {
     return new EvcsInputCopyBuilder(this);
   }
@@ -230,6 +277,8 @@ public class EvcsInput extends SystemParticipantInput {
         + locationType
         + ", v2gSupport="
         + getV2gSupport()
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

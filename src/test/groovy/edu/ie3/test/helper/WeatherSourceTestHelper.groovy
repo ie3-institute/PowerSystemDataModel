@@ -7,18 +7,17 @@ package edu.ie3.test.helper
 
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
+import edu.ie3.datamodel.models.value.GroundTemperatureValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.util.quantities.QuantityUtil
 
 trait WeatherSourceTestHelper {
 
-  static boolean equalsIgnoreUUID(IndividualTimeSeries<WeatherValue> ts1,
-      IndividualTimeSeries<WeatherValue> ts2) {
+  static boolean equalsIgnoreUUID(IndividualTimeSeries<WeatherValue> ts1, IndividualTimeSeries<WeatherValue> ts2) {
     return equalsIgnoreUUID(ts1.entries, ts2.entries)
   }
 
-  static boolean equalsIgnoreUUID(Collection<TimeBasedValue<WeatherValue>> c1,
-      Collection<TimeBasedValue<WeatherValue>> c2) {
+  static boolean equalsIgnoreUUID(Collection<TimeBasedValue<WeatherValue>> c1, Collection<TimeBasedValue<WeatherValue>> c2) {
     if (c1 == null || c2 == null) return (c1 == null && c2 == null)
     if (c1.size() != c2.size()) return false
     for (TimeBasedValue<WeatherValue> value1 : c1) {
@@ -27,16 +26,33 @@ trait WeatherSourceTestHelper {
     return true
   }
 
-  static boolean equalsIgnoreUUID(TimeBasedValue<WeatherValue> val1, TimeBasedValue<WeatherValue> val2) {
-    if (val1.time != val2.time) return false
+  static boolean equalsIgnoreUUID(TimeBasedValue<WeatherValue> weatherA, TimeBasedValue<WeatherValue> weatherB) {
+    if (weatherA.time != weatherB.time) return false
 
-    def weatherValue1 = val1.value
-    def weatherValue2 = val2.value
+    def weatherValueA = weatherA.value
+    def weatherValueB = weatherB.value
 
-    return weatherValue1.solarIrradiance.directIrradiance.present == weatherValue2.solarIrradiance.directIrradiance.present && QuantityUtil.isEquivalentAbs(weatherValue1.solarIrradiance.directIrradiance.get(), weatherValue2.solarIrradiance.directIrradiance.get(), 1E-10) &&
-        weatherValue1.solarIrradiance.diffuseIrradiance.present == weatherValue2.solarIrradiance.diffuseIrradiance.present && QuantityUtil.isEquivalentAbs(weatherValue1.solarIrradiance.diffuseIrradiance.get(), weatherValue2.solarIrradiance.diffuseIrradiance.get(), 1E-10) &&
-        weatherValue1.temperature.temperature.present == weatherValue2.temperature.temperature.present && QuantityUtil.isEquivalentAbs(weatherValue1.temperature.temperature.get(), weatherValue2.temperature.temperature.get(), 1E-10) &&
-        weatherValue1.wind.velocity.present == weatherValue2.wind.velocity.present && QuantityUtil.isEquivalentAbs(weatherValue1.wind.velocity.get(), weatherValue2.wind.velocity.get(), 1E-10) &&
-        weatherValue1.wind.direction.present == weatherValue2.wind.direction.present && QuantityUtil.isEquivalentAbs(weatherValue1.wind.direction.get(), weatherValue2.wind.direction.get(), 1E-10)
+    def mandatoryValues = weatherValueA.solarIrradiance.directIrradiance.present == weatherValueB.solarIrradiance.directIrradiance.present && QuantityUtil.isEquivalentAbs(weatherValueA.solarIrradiance.directIrradiance.get(), weatherValueB.solarIrradiance.directIrradiance.get(), 1E-10) &&
+        weatherValueA.solarIrradiance.diffuseIrradiance.present == weatherValueB.solarIrradiance.diffuseIrradiance.present && QuantityUtil.isEquivalentAbs(weatherValueA.solarIrradiance.diffuseIrradiance.get(), weatherValueB.solarIrradiance.diffuseIrradiance.get(), 1E-10) &&
+        weatherValueA.temperature.temperature.present == weatherValueB.temperature.temperature.present && QuantityUtil.isEquivalentAbs(weatherValueA.temperature.temperature.get(), weatherValueB.temperature.temperature.get(), 1E-10) &&
+        weatherValueA.wind.velocity.present == weatherValueB.wind.velocity.present && QuantityUtil.isEquivalentAbs(weatherValueA.wind.velocity.get(), weatherValueB.wind.velocity.get(), 1E-10) &&
+        weatherValueA.wind.direction.present == weatherValueB.wind.direction.present && QuantityUtil.isEquivalentAbs(weatherValueA.wind.direction.get(), weatherValueB.wind.direction.get(), 1E-10)
+
+    if (!mandatoryValues) return false
+
+    if (!compareOptionalTemperature(weatherValueA.groundTemperatureLevel1, weatherValueB.groundTemperatureLevel1)) return false
+    if (!compareOptionalTemperature(weatherValueA.groundTemperatureLevel2, weatherValueB.groundTemperatureLevel2)) return false
+
+    return true
+  }
+
+  static boolean compareOptionalTemperature(Optional<GroundTemperatureValue> optA,Optional<GroundTemperatureValue> optB) {
+    if (optA.isPresent() != optB.isPresent()) return false
+    if (!optA.isPresent()) return true
+    return QuantityUtil.isEquivalentAbs(
+        optA.get().getTemperature().get(),
+        optB.get().getTemperature().get(),
+        1E-10
+        )
   }
 }

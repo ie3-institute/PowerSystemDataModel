@@ -30,19 +30,8 @@ import java.util.UUID;
 public class EvcsInputFactory
     extends SystemParticipantInputEntityFactory<EvcsInput, SystemParticipantEntityData> {
 
-  private static final String TYPE = "type";
-  private static final String CHARGING_POINTS = "chargingPoints";
-  private static final String COS_PHI_RATED = "cosPhiRated";
-  private static final String LOCATION_TYPE = "locationType";
-  private static final String V2G_SUPPORT = "v2gSupport";
-
   public EvcsInputFactory() {
     super(EvcsInput.class);
-  }
-
-  @Override
-  protected String[] getAdditionalFields() {
-    return new String[] {TYPE, CHARGING_POINTS, COS_PHI_RATED, LOCATION_TYPE, V2G_SUPPORT};
   }
 
   @Override
@@ -56,26 +45,29 @@ public class EvcsInputFactory
       OperationTime operationTime) {
     final EmInput em = data.getControllingEm().orElse(null);
     final ChargingPointType type;
+    String typeFieldValue = data.getField(TYPE);
+
     try {
-      type = ChargingPointTypeUtils.parse(data.getField(TYPE));
+      type = ChargingPointTypeUtils.parse(typeFieldValue);
     } catch (ChargingPointTypeException e) {
       throw new FactoryException(
           String.format(
               "Exception while trying to parse field \"%s\" with supposed int value \"%s\"",
-              TYPE, data.getField(TYPE)),
+              TYPE, typeFieldValue),
           e);
     }
     final int chargingPoints = data.getInt(CHARGING_POINTS);
     final double cosPhi = data.getDouble(COS_PHI_RATED);
 
     final EvcsLocationType locationType;
+    String locationFieldValue = data.getField(LOCATION_TYPE);
     try {
-      locationType = EvcsLocationTypeUtils.parse(data.getField(LOCATION_TYPE));
+      locationType = EvcsLocationTypeUtils.parse(locationFieldValue);
     } catch (ParsingException e) {
       throw new FactoryException(
           String.format(
               "Exception while trying to parse field \"%s\" with supposed int value \"%s\"",
-              LOCATION_TYPE, data.getField(LOCATION_TYPE)),
+              LOCATION_TYPE, locationFieldValue),
           e);
     }
 
@@ -93,6 +85,7 @@ public class EvcsInputFactory
         chargingPoints,
         cosPhi,
         locationType,
-        v2gSupport);
+        v2gSupport,
+        data.getFieldsToValues());
   }
 }
