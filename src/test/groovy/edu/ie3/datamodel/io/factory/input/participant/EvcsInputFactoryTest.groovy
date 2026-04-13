@@ -78,15 +78,15 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
           new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PowerSystemUnits.PU), Quantities.getQuantity(1d, PowerSystemUnits.PU))
         ] as TreeSet)
       }
-      assert controllingEm == Optional.of(emUnit)
-      assert type == ChargingPointTypeUtils.HouseholdSocket
-      assert chargingPoints == Integer.parseInt(parameter["chargingpoints"])
-      assert cosPhiRated == Double.parseDouble(parameter["cosphirated"])
-      assert locationTypes == [
+      controllingEm == Optional.of(emUnit)
+      type == ChargingPointTypeUtils.HouseholdSocket
+      chargingPoints == Integer.parseInt(parameter["chargingpoints"])
+      cosPhiRated == Double.parseDouble(parameter["cosphirated"])
+      locationTypes == [
         EvcsLocationType.CHARGING_HUB_TOWN,
         EvcsLocationType.STREET
       ]
-      assert !v2gSupport
+      !v2gSupport
     }
   }
 
@@ -102,8 +102,8 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
       "type"            : "-- invalid --",
       "chargingpoints"  : "4",
       "cosphirated"     : "0.95",
-      "locationtypes"    : "[CHARGING_HUB_TOWN]",
-      "v2gsupport"     : "false"
+      "locationtypes"   : "[CHARGING_HUB_TOWN]",
+      "v2gsupport"      : "false"
     ]
     def inputClass = EvcsInput
     def nodeInput = Mock(NodeInput)

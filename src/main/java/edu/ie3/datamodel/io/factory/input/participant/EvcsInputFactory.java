@@ -24,9 +24,6 @@ import java.util.UUID;
 /**
  * Factory to create instances of {@link EvcsInput}s based on {@link SystemParticipantEntityData}
  * and additional fields.
- *
- * @version 0.1
- * @since 26.07.20
  */
 public class EvcsInputFactory
     extends SystemParticipantInputEntityFactory<EvcsInput, SystemParticipantEntityData> {
@@ -71,7 +68,7 @@ public class EvcsInputFactory
     } catch (ParsingException e) {
       throw new FactoryException(
           String.format(
-              "Exception while trying to parse field \"%s\" with supposed int value \"%s\"",
+              "Exception while trying to parse field \"%s\" with supposed value \"%s\"",
               LOCATION_TYPES, locationFieldValue),
           e);
     }
