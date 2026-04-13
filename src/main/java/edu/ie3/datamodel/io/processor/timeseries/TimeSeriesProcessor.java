@@ -337,6 +337,6 @@ public class TimeSeriesProcessor<
     return eligibleKeys.stream()
         .map(TimeSeriesProcessorKey::getTimeSeriesClass)
         .distinct()
-        .collect(Collectors.toList());
+        .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
   }
 }

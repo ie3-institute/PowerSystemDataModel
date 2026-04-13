@@ -16,7 +16,7 @@ import tech.units.indriya.ComparableQuantity;
 public abstract class AbstractThermalStorageInputFactory<T extends AbstractStorageInput>
     extends AssetInputEntityFactory<T, ThermalUnitInputEntityData> {
 
-  public AbstractThermalStorageInputFactory(Class<T> clazz) {
+  protected AbstractThermalStorageInputFactory(Class<T> clazz) {
     super(clazz);
   }
 

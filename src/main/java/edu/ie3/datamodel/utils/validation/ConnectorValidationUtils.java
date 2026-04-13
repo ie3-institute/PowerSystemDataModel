@@ -483,17 +483,13 @@ public class ConnectorValidationUtils extends ValidationUtils {
       ConnectorInput connectorInput, boolean shouldBeDifferent) throws InvalidEntityException {
     boolean isDifferent =
         connectorInput.getNodeA().getSubnet() != connectorInput.getNodeB().getSubnet();
-    if (shouldBeDifferent && !isDifferent) {
-      if (connectorInput.getNodeA().getSubnet() == connectorInput.getNodeB().getSubnet()) {
-        throw new InvalidEntityException(
-            connectorInput.getClass().getSimpleName() + " connects the same subnet, but shouldn't",
-            connectorInput);
-      }
-    }
-    if (!shouldBeDifferent && isDifferent) {
+    if (shouldBeDifferent != isDifferent) {
+      String detail =
+          shouldBeDifferent
+              ? "connects the same subnet, but shouldn't"
+              : "connects different subnets, but shouldn't";
       throw new InvalidEntityException(
-          connectorInput.getClass().getSimpleName() + " connects different subnets, but shouldn't",
-          connectorInput);
+          connectorInput.getClass().getSimpleName() + " " + detail, connectorInput);
     }
   }
 
