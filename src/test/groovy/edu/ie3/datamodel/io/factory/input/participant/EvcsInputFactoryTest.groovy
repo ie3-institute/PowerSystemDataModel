@@ -24,7 +24,6 @@ import javax.measure.quantity.Dimensionless
 /**
  * Testing EvcsInputFactory
  *
- * @version 0.1* @since 26.07.20
  */
 class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
 

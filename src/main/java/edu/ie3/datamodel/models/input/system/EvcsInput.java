@@ -38,7 +38,7 @@ public class EvcsInput extends SystemParticipantInput {
 
   /**
    * @param uuid Unique identifier
-   * @param id Human readable identifier
+   * @param id Human-readable identifier
    * @param operator of the asset
    * @param operationTime Time for which the entity is operated
    * @param node that the asset is connected to
@@ -76,7 +76,7 @@ public class EvcsInput extends SystemParticipantInput {
 
   /**
    * @param uuid Unique identifier
-   * @param id Human readable identifier
+   * @param id Human-readable identifier
    * @param operator of the asset
    * @param operationTime Time for which the entity is operated
    * @param node that the asset is connected to
@@ -114,7 +114,7 @@ public class EvcsInput extends SystemParticipantInput {
 
   /**
    * @param uuid Unique identifier
-   * @param id Human readable identifier
+   * @param id Human-readable identifier
    * @param operator of the asset
    * @param operationTime Time for which the entity is operated
    * @param node that the asset is connected to
@@ -154,7 +154,7 @@ public class EvcsInput extends SystemParticipantInput {
 
   /**
    * @param uuid Unique identifier
-   * @param id Human readable identifier
+   * @param id Human-readable identifier
    * @param node that the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
@@ -188,7 +188,7 @@ public class EvcsInput extends SystemParticipantInput {
 
   /**
    * @param uuid Unique identifier
-   * @param id Human readable identifier
+   * @param id Human-readable identifier
    * @param node that the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
    * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
@@ -292,9 +292,6 @@ public class EvcsInput extends SystemParticipantInput {
   /**
    * A builder pattern based approach to create copies of {@link EvcsInput} entities with altered
    * field values. For detailed field descriptions refer to java docs of {@link EvcsInput}
-   *
-   * @version 0.1
-   * @since 05.06.20
    */
   public static class EvcsInputCopyBuilder
       extends SystemParticipantInputCopyBuilder<EvcsInputCopyBuilder> {
