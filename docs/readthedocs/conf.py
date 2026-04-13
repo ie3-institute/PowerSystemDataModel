@@ -23,7 +23,7 @@ author = 'Institute of Energy Systems, Energy Efficiency and Energy Economics'
 
 # The full version, including alpha/beta/rc tags
 version = '9.0'
-release = '9.1.0'
+release = '9.0.0'
 
 pygments_style = 'tango'
 add_function_parentheses = True
