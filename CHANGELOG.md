@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+## [9.0.0] - 2026-04-13
+
 ### Added
 - Added weatherSource documentation [#1390](https://github.com/ie3-institute/PowerSystemDataModel/issues/1390)
 - Added standard asset parameter for `3wTransformer` in `ReadTheDocs` [#1417](https://github.com/ie3-institute/PowerSystemDataModel/issues/1417)
@@ -448,7 +450,8 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/8.1.0...HEAD
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/9.0.0...HEAD
+[9.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/8.1.0...9.0.0
 [8.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/8.0.0...8.1.0
 [8.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/7.0.0...8.0.0
 [7.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/6.0.0...7.0.0
