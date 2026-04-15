@@ -24,14 +24,9 @@ class JointGridContainerTest extends Specification {
   [] as Set,
   [] as Set)
 
-
-  private static final GraphicElements GRAPHIC_ELEMENTS = new GraphicElements(
-  [] as Set,
-  [] as Set)
-
   def "A single subgrid can be used to build a JointGridContainer"() {
     when:
-    def jointGridContainer = new JointGridContainer(GRID_NAME, RAW_GRID, emptySystemParticipants, emptyEnergyManagementUnits, GRAPHIC_ELEMENTS)
+    def jointGridContainer = new JointGridContainer(GRID_NAME, RAW_GRID, emptySystemParticipants, emptyEnergyManagementUnits)
 
     then:
     noExceptionThrown()
@@ -40,11 +35,10 @@ class JointGridContainerTest extends Specification {
 
   def "A JointGridContainer's copy method should work as expected"() {
     given:
-    def jointGridContainer = new JointGridContainer(GRID_NAME, RAW_GRID, emptySystemParticipants, emptyEnergyManagementUnits, GRAPHIC_ELEMENTS)
+    def jointGridContainer = new JointGridContainer(GRID_NAME, RAW_GRID, emptySystemParticipants, emptyEnergyManagementUnits)
     def rawGrid = new RawGridElements(List.of(GridTestData.lineAtoB, GridTestData.transformerAtoBtoC))
     def systemParticipants = new SystemParticipants(List.of(SystemParticipantTestData.bmInput))
     def emUnits = new EnergyManagementUnits(Set.of(EnergyManagementTestData.emInput))
-    def graphics = new GraphicElements(Set.of(GridTestData.nodeGraphicD), Set.of(GridTestData.lineGraphicCtoD))
 
     when:
     def modifiedJointGridContainer = jointGridContainer.copy()
@@ -52,7 +46,6 @@ class JointGridContainerTest extends Specification {
         .rawGrid(rawGrid)
         .systemParticipants(systemParticipants)
         .emUnits(emUnits)
-        .graphics(graphics)
         .build()
 
     then:
@@ -60,6 +53,5 @@ class JointGridContainerTest extends Specification {
     modifiedJointGridContainer.rawGrid == rawGrid
     modifiedJointGridContainer.systemParticipants == systemParticipants
     modifiedJointGridContainer.emUnits == emUnits
-    modifiedJointGridContainer.graphics == graphics
   }
 }
