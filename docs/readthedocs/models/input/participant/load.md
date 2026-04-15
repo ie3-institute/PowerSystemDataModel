@@ -90,7 +90,7 @@ commonly known German standard electricity load profiles, defined by the bdew (B
 Wasserwirtschaft; engl. Federal Association of the Energy and Water Industry). For more details see
 [the corresponding website (German only)](https://www.bdew.de/energie/standardlastprofile-strom/).
 
-Furthermore there are {code}`TemperatureDependantLoadProfiles` which can be used to note usage of load profiles for night heating storages or heat pumps for example.
+Furthermore, there are {code}`TemperatureDependantLoadProfiles` which can be used to note usage of load profiles for night heating storages or heat pumps for example.
 The profiles rely on the VDN description for interruptable loads.
 For more details see [here (German only)](https://www.bdew.de/media/documents/LPuVe-Praxisleitfaden.pdf).
 {code}`NbwTemperatureDependantLoadProfiles` provides sample temperature dependant load profiles that can be used.

@@ -16,7 +16,7 @@ import javax.measure.quantity.ElectricCurrent;
 import javax.measure.quantity.ElectricPotential;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.LineInput} */
+/** Describes the type of {@link edu.ie3.datamodel.models.input.connector.LineInput} */
 public class LineTypeInput extends AssetTypeInput {
   /** Specific phase-to-ground susceptance for this type of line (typically in µS/km) */
   private final ComparableQuantity<SpecificConductance> b;
