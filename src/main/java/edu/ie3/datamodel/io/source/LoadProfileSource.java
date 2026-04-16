@@ -18,7 +18,6 @@ import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.csv.CsvDataSource;
 import edu.ie3.datamodel.io.source.csv.CsvLoadProfileSource;
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
-import edu.ie3.datamodel.models.profile.PowerProfile;
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
@@ -76,7 +75,7 @@ public abstract class LoadProfileSource<V extends LoadValues> extends EntitySour
   }
 
   /**
-   * Returns the resolution for the given {@link PowerProfile}.
+   * Returns the resolution for the given {@link PowerProfileKey}.
    *
    * @param powerProfileKey given load profile key
    * @return the resolution in seconds.

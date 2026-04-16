@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Increase test coverage for TimeBasedWeatherValueData [#1609](https://github.com/ie3-institute/PowerSystemDataModel/issues/1609)
 
+### Fixed
+
+### Changed
+- Updated load documentation [#1608](https://github.com/ie3-institute/PowerSystemDataModel/issues/1608)
+
 ## [9.0.0] - 2026-04-13
 
 ### Added
