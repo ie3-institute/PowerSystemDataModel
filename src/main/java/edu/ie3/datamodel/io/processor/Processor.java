@@ -235,8 +235,16 @@ public abstract class Processor<T> {
           "DayOfWeek",
           "Season",
           "ChargingPointType",
-          "EvcsLocationType" ->
+          "EvcsLocationTypes" ->
           resultStringBuilder.append(methodReturnObject.toString());
+      case "List", "ArrayList" -> {
+        if (methodReturnObject instanceof Collection<?> collection) {
+          resultStringBuilder.append(
+              collection.stream().map(Object::toString).collect(Collectors.joining(",", "[", "]")));
+        } else {
+          resultStringBuilder.append(methodReturnObject.toString());
+        }
+      }
       case "Quantity", "ComparableQuantity" ->
           resultStringBuilder.append(handleQuantity((Quantity<?>) methodReturnObject, fieldName));
       case "Optional" ->

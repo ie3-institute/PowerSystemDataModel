@@ -24,11 +24,12 @@ class EvcsLocationTypeUtilsTest extends Specification {
 
   def "The EvcsLocationTypeUtils should parse valid evcs location type strings as expected"() {
     given:
-    EvcsLocationType parsed = parse(parsableString)
+    List<EvcsLocationType> parsed = parse(parsableString)
 
     expect:
-    parsed == expectedObj
-    parsed.name().toLowerCase().replaceAll("[-_]*", "") == parsableString.toLowerCase().replaceAll("[-_]*", "")
+    parsed.size() == 1
+    parsed[0] == expectedObj
+    parsed[0].name().toLowerCase().replaceAll("[-_]*", "") == parsableString.toLowerCase().replaceAll("[-_]*", "")
 
     where:
     parsableString           || expectedObj
@@ -40,6 +41,19 @@ class EvcsLocationTypeUtilsTest extends Specification {
     "CHARGING_HUB_HIGHWAY"   || CHARGING_HUB_HIGHWAY
     "charging_hub_highway"   || CHARGING_HUB_HIGHWAY // lower case
     "charginghubhighway"     || CHARGING_HUB_HIGHWAY // lower case without underscores
+  }
+
+  def "The EvcsLocationTypeUtils should parse multiple evcs location type strings as expected"() {
+    given:
+    List<EvcsLocationType> parsed = parse(parsableString)
+
+    expect:
+    parsed == expectedObj
+
+    where:
+    parsableString           || expectedObj
+    "WORK, CUSTOMER_PARKING" || [WORK, CUSTOMER_PARKING]
+    "HOME,WORK,STREET"       || [HOME, WORK, STREET]
   }
 
   def "The EvcsLocationTypeUtils should throw exceptions as expected when invalid evcs location type string is provided"() {

@@ -242,7 +242,6 @@ class InputEntityProcessorTest extends Specification {
       "type"            : SystemParticipantTestData.evInput.type.getUuid().toString(),
       "controllingEm"   : SystemParticipantTestData.evInput.controllingEm.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
     ]
-
     LoadInput        | SystemParticipantTestData.loadInput        || [
       "uuid"               : SystemParticipantTestData.loadInput.uuid.toString(),
       "cosPhiRated"        : SystemParticipantTestData.loadInput.cosPhiRated.toString(),
@@ -291,7 +290,7 @@ class InputEntityProcessorTest extends Specification {
       "type"            : SystemParticipantTestData.evcsInput.type.toString(),
       "cosPhiRated"     : SystemParticipantTestData.evcsInput.cosPhiRated.toString(),
       "chargingPoints"  : SystemParticipantTestData.evcsInput.chargingPoints.toString(),
-      "locationType"    : SystemParticipantTestData.evcsInput.locationType.name(),
+      "locationTypes"   : SystemParticipantTestData.evcsInput.locationTypes.toString(),
       "v2gSupport"      : SystemParticipantTestData.evcsInput.v2gSupport.toString(),
       "controllingEm"   : SystemParticipantTestData.evcsInput.controllingEm.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
     ]

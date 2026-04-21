@@ -20,7 +20,9 @@ class EvcsInputTest extends Specification {
     def alteredEntity = evcsInput.copy()
         .type(ChargingPointTypeUtils.TeslaSuperChargerV3)
         .cosPhiRated(0.7d).chargingPoints(1)
-        .locationType(EvcsLocationType.CHARGING_HUB_HIGHWAY)
+        .locationTypes([
+          EvcsLocationType.CHARGING_HUB_HIGHWAY
+        ])
         .v2gSupport(true)
         .build()
 
@@ -34,7 +36,9 @@ class EvcsInputTest extends Specification {
       type == ChargingPointTypeUtils.TeslaSuperChargerV3
       cosPhiRated == 0.7d
       chargingPoints == 1
-      locationType == EvcsLocationType.CHARGING_HUB_HIGHWAY
+      locationTypes == [
+        EvcsLocationType.CHARGING_HUB_HIGHWAY
+      ]
       v2gSupport
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
@@ -58,7 +62,7 @@ class EvcsInputTest extends Specification {
       sRated() == evcsInput.type.sRated * 2d
       cosPhiRated == evcsInput.cosPhiRated
       chargingPoints == evcsInput.chargingPoints
-      locationType == evcsInput.locationType
+      locationTypes == evcsInput.locationTypes
       v2gSupport == evcsInput.v2gSupport
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
