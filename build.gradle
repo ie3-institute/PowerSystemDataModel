@@ -5,7 +5,7 @@ plugins {
   id 'signing'
   id 'pmd' // code check, working on source code
   id 'com.diffplug.spotless' version '8.4.0' //code format
-  id 'com.github.spotbugs' version '6.5.0' // code check, working on byte code
+  id 'com.github.spotbugs' version '6.5.1' // code check, working on byte code
   id 'de.undercouch.download' version '5.7.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
@@ -20,7 +20,7 @@ ext {
   groovyBinaryVersion = "5.0.5"
 
   junitVersion = '6.0.3'
-  testcontainersVersion = '2.0.4'
+  testcontainersVersion = '2.0.5'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
@@ -96,7 +96,7 @@ dependencies {
 
   // Databases
   implementation 'org.influxdb:influxdb-java:2.25'
-  implementation 'com.couchbase.client:java-client:3.11.1'
+  implementation 'com.couchbase.client:java-client:3.11.2'
   runtimeOnly 'org.postgresql:postgresql:42.7.10' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.21.0' // I/O functionalities
