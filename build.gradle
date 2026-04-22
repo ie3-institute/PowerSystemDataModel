@@ -102,6 +102,8 @@ dependencies {
   implementation 'commons-io:commons-io:2.21.0' // I/O functionalities
   implementation 'commons-codec:commons-codec:1.21.0' // needed by commons-compress
   implementation 'org.apache.commons:commons-compress:1.28.0' // I/O functionalities
+
+  implementation 'tools.jackson.core:jackson-databind:3.0.3'
 }
 
 tasks.withType(JavaCompile) {

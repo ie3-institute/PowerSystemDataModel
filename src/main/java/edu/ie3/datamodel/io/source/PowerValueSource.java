@@ -8,14 +8,19 @@ package edu.ie3.datamodel.io.source;
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.value.PValue;
 import java.time.ZonedDateTime;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
 import java.util.function.Supplier;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /** Interface defining base functionality for power value sources. */
-public sealed interface PowerValueSource<I extends PowerValueSource.PowerValueIdentifier>
+public sealed interface PowerValueSource<
+        I extends PowerValueSource.PowerValueIdentifier,
+        O extends PowerValueSource.PowerOutputValue>
     permits PowerValueSource.MarkovBased, PowerValueSource.TimeSeriesBased {
 
   /** Returns the profile of this source. */
@@ -29,7 +34,7 @@ public sealed interface PowerValueSource<I extends PowerValueSource.PowerValueId
    * @param data input data that is used to calculate the next power value.
    * @return A supplier for an option on the value at the given time step.
    */
-  Supplier<Optional<PValue>> getValueSupplier(I data);
+  Supplier<O> getValueSupplier(I data);
 
   /**
    * Method to determine the next timestamp for which data is present.
@@ -49,10 +54,11 @@ public sealed interface PowerValueSource<I extends PowerValueSource.PowerValueId
   // non-sealed implementations
 
   /** Interface for time-series-based power value sources. */
-  non-sealed interface TimeSeriesBased extends PowerValueSource<TimeSeriesInputValue> {}
+  non-sealed interface TimeSeriesBased
+      extends PowerValueSource<TimeSeriesInputValue, TimeSeriesOutputValue> {}
 
   /** Interface for markov-chain-based power value sources. */
-  non-sealed interface MarkovBased extends PowerValueSource<PowerValueIdentifier> {}
+  non-sealed interface MarkovBased extends PowerValueSource<MarkovIdentifier, MarkovOutputValue> {}
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // input data
@@ -61,7 +67,7 @@ public sealed interface PowerValueSource<I extends PowerValueSource.PowerValueId
    * Interface for the input data of {@link #getValueSupplier(PowerValueIdentifier)}. The data is
    * used to determine the next power.
    */
-  sealed interface PowerValueIdentifier permits PowerValueSource.TimeSeriesInputValue {
+  sealed interface PowerValueIdentifier permits TimeSeriesInputValue, MarkovIdentifier {
     /** Returns the timestamp for which a power value is needed. */
     ZonedDateTime time();
   }
@@ -72,4 +78,53 @@ public sealed interface PowerValueSource<I extends PowerValueSource.PowerValueId
    * @param time
    */
   record TimeSeriesInputValue(ZonedDateTime time) implements PowerValueIdentifier {}
+
+  /**
+   * Input data for Markov-based power value sources, containing everything needed for a single
+   * simonaMarkovLoad step.
+   *
+   * <p>Provide either {@code previousState} (typical for subsequent steps) or an {@code
+   * initialNormalizedValue} (for the first step). The {@code randomSeed} enables reproducible
+   * sampling.
+   */
+  record MarkovIdentifier(
+      ZonedDateTime time,
+      OptionalInt previousState,
+      OptionalDouble initialNormalizedValue,
+      long randomSeed)
+      implements PowerValueIdentifier {
+
+    public MarkovIdentifier {
+      Objects.requireNonNull(time, "time");
+      Objects.requireNonNull(previousState, "previousState");
+      Objects.requireNonNull(initialNormalizedValue, "initialNormalizedValue");
+      if (previousState.isEmpty() && initialNormalizedValue.isEmpty()) {
+        throw new IllegalArgumentException(
+            "Need either previous state or an initial normalized value to start the Markov chain.");
+      }
+    }
+  }
+
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  // output data
+
+  /** Interface for the output data of {@link #getValueSupplier(PowerValueIdentifier)}. */
+  sealed interface PowerOutputValue
+      permits PowerValueSource.TimeSeriesOutputValue, PowerValueSource.MarkovOutputValue {
+    Optional<PValue> value();
+  }
+
+  /**
+   * Interface for time-series-based power values.
+   *
+   * @param value
+   */
+  record TimeSeriesOutputValue(Optional<PValue> value) implements PowerOutputValue {
+    public static Supplier<TimeSeriesOutputValue> from(Supplier<Optional<PValue>> supplier) {
+      return () -> new TimeSeriesOutputValue(supplier.get());
+    }
+  }
+
+  /** Output data for Markov-based power values, including the next state. */
+  record MarkovOutputValue(Optional<PValue> value, int nextState) implements PowerOutputValue {}
 }

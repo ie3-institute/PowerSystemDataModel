@@ -13,7 +13,6 @@ import edu.ie3.datamodel.io.naming.timeseries.FileLoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.LoadProfileSource;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
-import edu.ie3.datamodel.models.value.PValue;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
@@ -71,8 +70,8 @@ public class CsvLoadProfileSource<V extends LoadValues> extends LoadProfileSourc
   }
 
   @Override
-  public Supplier<Optional<PValue>> getValueSupplier(TimeSeriesInputValue data) {
-    return loadProfileTimeSeries.supplyValue(data.time());
+  public Supplier<TimeSeriesOutputValue> getValueSupplier(TimeSeriesInputValue data) {
+    return TimeSeriesOutputValue.from(loadProfileTimeSeries.supplyValue(data.time()));
   }
 
   @Override

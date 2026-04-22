@@ -93,6 +93,96 @@ You may extend / alter the naming with pre- or suffix by calling `new EntityPers
      - *prefix_* lpts *_profileKey* *_suffix*
 ```
 
+#### Individual Time Series
+
+Let's spend a few more words on the individual time series:
+Those files are meant to carry different types of content - one might give information about wholesale market prices,
+the other is a record of power values provided by a real system.
+To be able to understand, what's inside of the file, the *columnScheme* part of the file name gives insight of its
+content.
+
+For example, you have an IndividualTimeSeries CSV file for energy prices, then you use the key `c` from the table below
+for columnScheme `its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1.csv`.
+The CSV file must then have the appropriate format for the key `c` :
+
+```text
+   time,price
+   2020-01-01T00:00:00Z,100.0
+```
+
+The CSV file requires a unique identification number.
+The UUID (Universally Unique Identifier) can be created [here](https://www.uuidgenerator.net/).
+You can also use the Method `java.util.UUID#randomUUID` to create a UUID.
+This is the UUID from the example above `2fcb3e53-b94a-4b96-bea4-c469e499f1a1`.
+
+The following keys are supported until now:
+```{list-table}
+   :widths: auto
+   :class: wrapping
+   :header-rows: 1
+
+   * - Key
+     - Information and supported head line.
+   * - c
+     - An energy price (e.g. in €/MWh; c stands for charge).
+       Permissible head line: ``time,price``
+   * - p
+     - Active power.
+       Permissible head line: ``time,p``
+   * - pq
+     - Active and reactive power.
+       Permissible head line: ``time,p,q``
+   * - h
+     - Heat power demand.
+       Permissible head line: ``time,h``
+   * - ph
+     - Active and heat power.
+       Permissible head line: ``time,p,h``
+   * - pqh
+     - Active, reactive and heat power.
+       Permissible head line: ``time,p,q,h``
+   * - v
+     - Voltage mangnitude in pu and angle in °.
+       Permissible head line: ``time,vMag,vAng``
+   * - weather
+     - Weather information.
+       Permissible head line: ``time,coordinate,direct_irradiation,diffuse_irradiation,temperature,wind_velocity,wind_direction``
+
+```
+
+
+##### Load Profile Time Series
+
+The following profiles are supported until now:
+
+Note:
+Load profile keys must be unique across all load-profile sources. Do not use the same profile key
+for both CSV (lpts_*) and Markov JSON (markov_*), e.g. avoid having both lpts_h0.csv and
+markov_h0.json.
+
+Markov-based load models (`markov_*`) do not support energy scaling. Calls to
+`getProfileEnergyScaling()` will always return `Optional.empty()`.
+
+```{list-table}
+   :widths: auto
+   :class: wrapping
+   :header-rows: 1
+
+   * - Key
+     - Information
+     - Supported head line.
+   * - e.g.: H0
+     - BDEW standard load profiles 1999 ([source](https://www.bdew.de/energie/standardlastprofile-strom/))
+     - Permissible head line: ``SuSa,SuSu,SuWd,TrSa,TrSu,TrWd,WiSa,WiSu,WiWd,quarterHour``
+   * - e.g.: h25
+     - BDEW standard load profiles 2025 ([source](https://www.bdew.de/energie/standardlastprofile-strom/))
+     - Permissible head line: ``janSa,janSu,janWd,febSa,febSu,febWd,marSa,marSu,marWd,aprSa,aprSu,aprWd,maySa,maySu,mayWd,junSa,junSu,junWd,julSa,julSu,julWd,augSa,augSu,augWd,sepSa,sepSu,sepWd,octSa,octSu,octWd,novSa,novSu,novWd,decSa,decSu,decWd,quarterHour``
+   * - random
+     - A random load proile based on: ``Kays - Agent-based simulation environment for improving the planning of distribution grids``
+     - Permissible head line: ``kSa,kSu,kWd,mySa,mySu,myWd,sigmaSa,sigmaSu,sigmaWd,quarterHour``
+
+```
+
 ### Results
 
 ```{list-table}

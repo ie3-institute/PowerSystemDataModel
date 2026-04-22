@@ -29,6 +29,7 @@ import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.DomesticHotWaterStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
+import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel;
 import edu.ie3.datamodel.models.result.CongestionResult;
 import edu.ie3.datamodel.models.result.NodeResult;
 import edu.ie3.datamodel.models.result.connector.LineResult;
@@ -62,6 +63,7 @@ public final class ModelFields extends FieldNamingStrategy {
   private static final Map<Class<?>, Set<String>> unsupportedFields = new HashMap<>();
   private static final Map<Class<? extends Value>, List<Set<String>>> valueMandatoryFields =
       new HashMap<>();
+  private static final Map<Class<?>, List<Set<String>>> genericMandatoryFields = new HashMap<>();
 
   /**
    * Retrieves a list that contains combinations of mandatory fields for the provided class.
@@ -75,7 +77,7 @@ public final class ModelFields extends FieldNamingStrategy {
     } else if (Value.class.isAssignableFrom(clazz)) {
       return valueMandatoryFields.getOrDefault(clazz, Collections.emptyList());
     } else {
-      return Collections.emptyList();
+      return genericMandatoryFields.getOrDefault(clazz, Collections.emptyList());
     }
   }
 
@@ -148,6 +150,20 @@ public final class ModelFields extends FieldNamingStrategy {
   }
 
   /**
+   * Method to register mandatory fields for a class that is neither an {@link Entity} nor a {@link
+   * Value}.
+   *
+   * <p>NOTE: This method will only add fields, if no fields are registered yet!
+   *
+   * @param clazz for which fields should be registered
+   * @param mandatoryFields the mandatory field combinations to register
+   */
+  @SafeVarargs
+  public static void registerGeneric(Class<?> clazz, Set<String>... mandatoryFields) {
+    ModelFields.genericMandatoryFields.putIfAbsent(clazz, List.of(mandatoryFields));
+  }
+
+  /**
    * Method to register mandatory fields for a given entity class.
    *
    * <p>NOTE: This method will only add fields, if no fields are registered yet!
@@ -208,6 +224,31 @@ public final class ModelFields extends FieldNamingStrategy {
     // registering em fields
     registerMandatory(EmInput.class, assetFields, CONTROLLING_EM, CONTROL_STRATEGY);
     registerOptional(EmInput.class, assetOptionalFields);
+
+    // markov load model fields
+    registerGeneric(
+        MarkovLoadModel.class,
+        newSet(
+            MARKOV_SCHEMA,
+            MARKOV_GENERATED_AT,
+            MARKOV_GENERATOR,
+            MARKOV_TIME_MODEL,
+            MARKOV_VALUE_MODEL,
+            MARKOV_PARAMETERS,
+            MARKOV_DATA,
+            MARKOV_GENERATOR_NAME,
+            MARKOV_GENERATOR_VERSION,
+            MARKOV_BUCKET_COUNT,
+            MARKOV_SAMPLING_INTERVAL,
+            MARKOV_TIMEZONE,
+            MARKOV_DISCRETIZATION_STATES,
+            MARKOV_DISCRETIZATION_THRESHOLDS,
+            MARKOV_MAX_POWER_VALUE,
+            MARKOV_MAX_POWER_UNIT,
+            MARKOV_MIN_POWER_VALUE,
+            MARKOV_MIN_POWER_UNIT,
+            MARKOV_TRANSITION_VALUES,
+            MARKOV_GMM_BUCKETS));
   }
 
   /**
