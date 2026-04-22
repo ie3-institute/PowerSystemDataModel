@@ -58,6 +58,40 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
   }
 
   /**
+   * Constructor for an operated measurement unit
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param node Grid node, the asset is attached to
+   * @param vMag True, if the voltage magnitude is measured
+   * @param vAng True, if the voltage angle is measured
+   * @param p True, if the nodal residual active power is measured
+   * @param q True, if the reactive power is measured
+   * @param additionalInformation That were provided by the source
+   */
+  public MeasurementUnitInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      NodeInput node,
+      boolean vMag,
+      boolean vAng,
+      boolean p,
+      boolean q,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, operator, operationTime);
+    this.node = node;
+    this.vMag = vMag;
+    this.vAng = vAng;
+    this.p = p;
+    this.q = q;
+    setAdditionalInformation(additionalInformation);
+  }
+
+  /**
    * Constructor for an operated, always on measurement unit
    *
    * @param uuid of the input entity
@@ -141,6 +175,8 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
         + p
         + ", q="
         + q
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

@@ -14,7 +14,6 @@ import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
@@ -25,20 +24,6 @@ import tech.units.indriya.ComparableQuantity;
 public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult> {
   public ThermalResultFactory() {
     super(
-        ThermalHouseResult.class,
-        CylindricalStorageResult.class,
-        DomesticHotWaterStorageResult.class);
-  }
-
-  /**
-   * Create a new factory to build {@link ThermalResultFactory}s and utilize the given date time
-   * formatter pattern to parse date time strings
-   *
-   * @param dateTimeFormatter parse date time strings
-   */
-  public ThermalResultFactory(DateTimeFormatter dateTimeFormatter) {
-    super(
-        dateTimeFormatter,
         ThermalHouseResult.class,
         CylindricalStorageResult.class,
         DomesticHotWaterStorageResult.class);

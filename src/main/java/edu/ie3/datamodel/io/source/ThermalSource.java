@@ -36,7 +36,7 @@ public class ThermalSource extends AssetEntitySource {
   private final ThermalHouseInputFactory thermalHouseInputFactory;
 
   // enriching function
-  protected static BiEnrichFunction<
+  protected static final BiEnrichFunction<
           EntityData, OperatorInput, ThermalBusInput, ThermalUnitInputEntityData>
       thermalUnitEnricher =
           (data, operators, buses) ->

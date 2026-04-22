@@ -75,6 +75,53 @@ public class Transformer3WInput extends TransformerInput implements HasType {
   }
 
   /**
+   * Constructor for an operated three winding transformer
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param nodeA The higher voltage node
+   * @param nodeB The middle voltage node
+   * @param nodeC The lower voltage node
+   * @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.
+   *     parallelDevices = 2 will build a total of two transformers using the specified parameters)
+   * @param type of 3W transformer
+   * @param tapPos Tap Position of this transformer
+   * @param autoTap true, if there is an automated regulation activated for this transformer
+   * @param additionalInformation Of the input
+   */
+  public Transformer3WInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      NodeInput nodeA,
+      NodeInput nodeB,
+      NodeInput nodeC,
+      int parallelDevices,
+      Transformer3WTypeInput type,
+      int tapPos,
+      boolean autoTap,
+      Map<String, String> additionalInformation) {
+    this(
+        uuid,
+        id,
+        operator,
+        operationTime,
+        nodeA,
+        nodeB,
+        nodeC,
+        parallelDevices,
+        type,
+        tapPos,
+        autoTap,
+        false);
+    connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC);
+    setAdditionalInformation(additionalInformation);
+  }
+
+  /**
    * Constructor for an operated three winding transformer that allows setting the internal node as
    * slack node. This is normally needed if a larger grid is split up into subgrids and the three
    * winding transformer is located in a subgrid that does not hold the highest voltage side of the
@@ -286,6 +333,8 @@ public class Transformer3WInput extends TransformerInput implements HasType {
         + nodeC.getUuid()
         + ", type="
         + type.getUuid()
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

@@ -9,7 +9,6 @@ import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.system.PowerLimitFlexOptionsResult;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -19,16 +18,6 @@ public class PowerLimitFlexOptionsResultFactory
 
   public PowerLimitFlexOptionsResultFactory() {
     super(PowerLimitFlexOptionsResult.class);
-  }
-
-  /**
-   * Create a new factory to build {@link PowerLimitFlexOptionsResult}s and utilize the given date
-   * time formatter pattern to parse date time strings
-   *
-   * @param dateTimeFormatter to parse date time strings
-   */
-  public PowerLimitFlexOptionsResultFactory(DateTimeFormatter dateTimeFormatter) {
-    super(dateTimeFormatter, PowerLimitFlexOptionsResult.class);
   }
 
   @Override

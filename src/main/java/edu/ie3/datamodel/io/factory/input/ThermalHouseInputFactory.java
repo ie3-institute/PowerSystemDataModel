@@ -55,6 +55,7 @@ public class ThermalHouseInputFactory
         upperTemperatureLimit,
         lowerTemperatureLimit,
         housingType,
-        numberInhabitants);
+        numberInhabitants,
+        data.getFieldsToValues());
   }
 }

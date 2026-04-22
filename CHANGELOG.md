@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+
+### Fixed
+
+### Changed
+- Updated load documentation [#1608](https://github.com/ie3-institute/PowerSystemDataModel/issues/1608)
+
+## [9.0.0] - 2026-04-13
+
+### Added
 - Added weatherSource documentation [#1390](https://github.com/ie3-institute/PowerSystemDataModel/issues/1390)
 - Added standard asset parameter for `3wTransformer` in `ReadTheDocs` [#1417](https://github.com/ie3-institute/PowerSystemDataModel/issues/1417)
 - Added getter sRated for SystemParticipant inputs and updated them in tests in src[#1412](https://github.com/ie3-institute/PowerSystemDataModel/issues/1412)
@@ -20,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Provided field information in validation messages [#1397](https://github.com/ie3-institute/PowerSystemDataModel/issues/1397)
 - Added standard line and transformer types to resources [#1579](https://github.com/ie3-institute/PowerSystemDataModel/issues/1579)
 - Added SQL to CSV export to documentation [#1581](https://github.com/ie3-institute/PowerSystemDataModel/issues/1581)
+- Parsing of additional model information from sources [#1570](https://github.com/ie3-institute/PowerSystemDataModel/issues/1570)
 
 ### Fixed
 - Fixed small issues in tests [#1400](https://github.com/ie3-institute/PowerSystemDataModel/issues/1400)
@@ -34,6 +44,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed handling of erroneous field values in `EntitySource.enrichWithDefault()` [#1511](https://github.com/ie3-institute/PowerSystemDataModel/issues/1511)
 - Fixed some minor typos and inconsistencies in variable naming [#1542](https://github.com/ie3-institute/PowerSystemDataModel/issues/1542)
 - Aligned temperature processing in `COSMO` and `ICON` factories to Kelvin [#1521](https://github.com/ie3-institute/PowerSystemDataModel/issues/1521)
+- Correctly persist EmInput entities in CsvFileSink [#1337](https://github.com/ie3-institute/PowerSystemDataModel/issues/1337)
+- Proper handle duplicated headline exceptions in CsvDataSource [#1595](https://github.com/ie3-institute/PowerSystemDataModel/issues/1595)
+- Align CSV header formatting to RFC 4180 standards in tests [1544](https://github.com/ie3-institute/PowerSystemDataModel/issues/1544)
 
 ### Changed
 - Updated CI-Pipeline to run task `Deploy` and `Staging` only for `Main` [#1403](https://github.com/ie3-institute/PowerSystemDataModel/issues/1403)
@@ -57,6 +70,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed `operationTime` to `operationFrom` and `operationUntil` in read the docs [1507](https://github.com/ie3-institute/PowerSystemDataModel/issues/1507)
 - Refactored validation of value classes [#1561](https://github.com/ie3-institute/PowerSystemDataModel/issues/1561)
 - Handled SonarQube Issues [#1588](https://github.com/ie3-institute/PowerSystemDataModel/issues/1588)
+- Updated `Couchbase` version within the tests [#1586](https://github.com/ie3-institute/PowerSystemDataModel/issues/1586)
+- Use the default time pattern for persisting time series keys [#766](https://github.com/ie3-institute/PowerSystemDataModel/issues/766) 
+- Handled some more SonarQube Issues [#1598](https://github.com/ie3-institute/PowerSystemDataModel/issues/1598)
 
 ## [8.1.0] - 2025-07-25
 
@@ -441,7 +457,8 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/8.1.0...HEAD
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/9.0.0...HEAD
+[9.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/8.1.0...9.0.0
 [8.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/8.0.0...8.1.0
 [8.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/7.0.0...8.0.0
 [7.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/6.0.0...7.0.0

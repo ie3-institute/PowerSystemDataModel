@@ -25,6 +25,6 @@ public final class LineGraphicInputFactory
   @Override
   protected LineGraphicInput buildModel(
       LineGraphicInputEntityData data, UUID uuid, String graphicLayer, LineString path) {
-    return new LineGraphicInput(uuid, graphicLayer, path, data.getLine());
+    return new LineGraphicInput(uuid, graphicLayer, path, data.getLine(), data.getFieldsToValues());
   }
 }
