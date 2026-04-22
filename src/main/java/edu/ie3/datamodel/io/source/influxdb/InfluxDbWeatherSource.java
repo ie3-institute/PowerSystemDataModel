@@ -146,34 +146,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
           toWeatherValues(fallbackResult)
               .sorted((a, b) -> b.getTime().compareTo(a.getTime()))
               .toList();
-      if (!fallbackValues.isEmpty()) {
-        ZonedDateTime fallbackTime = fallbackValues.get(0).getTime();
-        ZonedDateTime stepRef = fallbackValues.size() > 1 ? fallbackValues.get(1).getTime() : null;
-        if (isFallbackAcceptable(date, fallbackTime, stepRef)) {
-          log.warn(
-              "No weather data for coordinate {} at {}. Using last known value from {}.",
-              coordinate,
-              date,
-              fallbackTime);
-          return fallbackValues.get(0);
-        }
-        throw new NoDataException(
-            "No weather data found for coordinate "
-                + coordinate
-                + " at "
-                + date
-                + ": last known value from "
-                + fallbackTime
-                + " exceeds the maximum fallback of "
-                + MAX_FALLBACK_STEPS
-                + " steps.");
-      }
-      throw new NoDataException(
-          "No weather data found for coordinate "
-              + coordinate
-              + " at "
-              + date
-              + " and no earlier data available.");
+      return applyFallbackOrThrow(date, coordinate, fallbackValues);
     }
   }
 

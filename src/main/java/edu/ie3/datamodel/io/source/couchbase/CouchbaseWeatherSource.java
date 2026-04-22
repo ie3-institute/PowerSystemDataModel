@@ -181,50 +181,10 @@ public class CouchbaseWeatherSource extends WeatherSource {
     }
   }
 
-  /**
-   * Tries to find the last known weather value before the given date as a fallback when no exact
-   * match exists. Accepts the fallback only if it is within {@link
-   * WeatherSource#MAX_FALLBACK_STEPS} time steps of the requested date.
-   *
-   * @param date the requested date
-   * @param coordinate the coordinate point
-   * @param coordinateId the coordinate ID
-   * @return the last known weather value before date
-   * @throws NoDataException if no earlier data is available or the gap exceeds the allowed steps
-   * @throws SourceException if the stored data points are inconsistently ordered
-   */
   private TimeBasedValue<WeatherValue> getLastKnownWeather(
       ZonedDateTime date, Point coordinate, Integer coordinateId)
       throws SourceException, NoDataException {
-    List<TimeBasedValue<WeatherValue>> fallbacks = queryLastWeatherBefore(date, coordinateId);
-    if (!fallbacks.isEmpty()) {
-      ZonedDateTime fallbackTime = fallbacks.get(0).getTime();
-      ZonedDateTime stepRef = fallbacks.size() > 1 ? fallbacks.get(1).getTime() : null;
-      if (isFallbackAcceptable(date, fallbackTime, stepRef)) {
-        log.warn(
-            "No weather data for coordinate {} at {}. Using last known value from {}.",
-            coordinate,
-            date,
-            fallbackTime);
-        return fallbacks.get(0);
-      }
-      throw new NoDataException(
-          "No weather data found for coordinate "
-              + coordinate
-              + " at "
-              + date
-              + ": last known value from "
-              + fallbackTime
-              + " exceeds the maximum fallback of "
-              + MAX_FALLBACK_STEPS
-              + " steps.");
-    }
-    throw new NoDataException(
-        "No weather data found for coordinate "
-            + coordinate
-            + " at "
-            + date
-            + " and no earlier data available.");
+    return applyFallbackOrThrow(date, coordinate, queryLastWeatherBefore(date, coordinateId));
   }
 
   /**

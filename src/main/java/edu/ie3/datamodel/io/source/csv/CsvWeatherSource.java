@@ -128,47 +128,18 @@ public class CsvWeatherSource extends WeatherSource {
       return exact.get();
     }
 
-    // Fallback: try the last known value before the requested date (within MAX_FALLBACK_STEPS)
-    Optional<ZonedDateTime> previousTime = timeSeries.getPreviousDateTime(date);
-    if (previousTime.isPresent()) {
-      ZonedDateTime t1 = previousTime.get();
-      ZonedDateTime stepRef = timeSeries.getPreviousDateTime(t1).orElse(null);
-      if (isFallbackAcceptable(date, t1, stepRef)) {
-        TimeBasedValue<WeatherValue> fallback =
-            timeSeries
-                .getTimeBasedValue(t1)
-                .orElseThrow(
-                    () ->
-                        new NoDataException(
-                            "No weather data found for coordinate "
-                                + coordinate
-                                + " at fallback time "
-                                + t1));
-        log.warn(
-            "No weather data for coordinate {} at {}. Using last known value from {}.",
-            coordinate,
-            date,
-            fallback.getTime());
-        return fallback;
-      }
-      throw new NoDataException(
-          "No weather data found for coordinate "
-              + coordinate
-              + " at "
-              + date
-              + ": last known value from "
-              + t1
-              + " exceeds the maximum fallback of "
-              + MAX_FALLBACK_STEPS
-              + " steps.");
+    List<TimeBasedValue<WeatherValue>> fallbacks = new ArrayList<>(2);
+    timeSeries
+        .getPreviousDateTime(date)
+        .flatMap(timeSeries::getTimeBasedValue)
+        .ifPresent(fallbacks::add);
+    if (!fallbacks.isEmpty()) {
+      timeSeries
+          .getPreviousDateTime(fallbacks.get(0).getTime())
+          .flatMap(timeSeries::getTimeBasedValue)
+          .ifPresent(fallbacks::add);
     }
-
-    throw new NoDataException(
-        "No weather data found for coordinate "
-            + coordinate
-            + " at "
-            + date
-            + " and no earlier data available.");
+    return applyFallbackOrThrow(date, coordinate, fallbacks);
   }
 
   @Override

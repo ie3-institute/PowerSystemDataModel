@@ -6,8 +6,8 @@
 package edu.ie3.datamodel.exceptions;
 
 /**
- * Exception that should be used whenever no data is received{@link
- * edu.ie3.datamodel.io.source.DataSource}
+ * Exception that should be used whenever no data is received from a {@link
+ * edu.ie3.datamodel.io.source.DataSource}.
  */
 public class NoDataException extends Exception {
 

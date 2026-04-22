@@ -219,6 +219,56 @@ public abstract class WeatherSource extends EntitySource {
   }
 
   /**
+   * Applies the fallback decision when no exact match exists at the requested time.
+   *
+   * <p>The caller passes the up to two most recent {@link TimeBasedValue}s before {@code date},
+   * ordered most-recent first. If the list is empty, a {@link NoDataException} is thrown. Otherwise
+   * {@link #isFallbackAcceptable} decides: on success a warning is logged and the most recent value
+   * is returned. On failure a {@link NoDataException} describing the exceeded fallback window is
+   * thrown.
+   *
+   * @param date the originally requested date
+   * @param coordinate the requested coordinate (used only for log/error messages)
+   * @param fallbackValues up to two most recent values strictly before {@code date}, ordered
+   *     most-recent first
+   * @return the most recent fallback value, when accepted
+   * @throws NoDataException if no fallback is available or the gap exceeds the allowed steps
+   * @throws SourceException if the two fallback timestamps are inconsistently ordered
+   */
+  protected TimeBasedValue<WeatherValue> applyFallbackOrThrow(
+      ZonedDateTime date, Point coordinate, List<TimeBasedValue<WeatherValue>> fallbackValues)
+      throws SourceException, NoDataException {
+    if (fallbackValues.isEmpty()) {
+      throw new NoDataException(
+          "No weather data found for coordinate "
+              + coordinate
+              + " at "
+              + date
+              + " and no earlier data available.");
+    }
+    ZonedDateTime fallbackTime = fallbackValues.get(0).getTime();
+    ZonedDateTime stepRef = fallbackValues.size() > 1 ? fallbackValues.get(1).getTime() : null;
+    if (isFallbackAcceptable(date, fallbackTime, stepRef)) {
+      log.warn(
+          "No weather data for coordinate {} at {}. Using last known value from {}.",
+          coordinate,
+          date,
+          fallbackTime);
+      return fallbackValues.get(0);
+    }
+    throw new NoDataException(
+        "No weather data found for coordinate "
+            + coordinate
+            + " at "
+            + date
+            + ": last known value from "
+            + fallbackTime
+            + " exceeds the maximum fallback of "
+            + MAX_FALLBACK_STEPS
+            + " steps.");
+  }
+
+  /**
    * Validates that the result map is not empty and warns about coordinates with no data.
    *
    * @param result the result map to validate
