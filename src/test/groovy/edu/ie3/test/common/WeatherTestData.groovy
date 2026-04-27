@@ -20,7 +20,7 @@ import javax.measure.quantity.Length
 
 abstract class WeatherTestData {
 
-  static final class DummyIdCoordinateSource extends IdCoordinateSource implements CsvTestDataMeta {
+  static class DummyIdCoordinateSource extends IdCoordinateSource implements CsvTestDataMeta {
 
     @Override
     Optional<Set<String>> getSourceFields() throws SourceException {

@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.sql;
 
 import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
 
+import edu.ie3.datamodel.exceptions.NoDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
@@ -31,6 +32,7 @@ public class SqlWeatherSource extends WeatherSource {
   private final SqlDataSource dataSource;
 
   private static final String WHERE = " WHERE ";
+  private static final String COORDINATE_AND = "=? AND ";
   private final String tableName;
 
   /**
@@ -40,6 +42,7 @@ public class SqlWeatherSource extends WeatherSource {
   private final String queryTimeInterval;
 
   private final String queryTimeAndCoordinate;
+  private final String queryLastBeforeAndCoordinate;
   private final String queryTimeIntervalAndCoordinates;
   private final String queryTimeKeysAfter;
   private final String getQueryTimeKeysAfterAndCoordinate;
@@ -75,6 +78,9 @@ public class SqlWeatherSource extends WeatherSource {
     this.queryTimeAndCoordinate =
         createQueryStringForTimeAndCoordinate(
             schemaName, weatherTableName, dbTimeColumnName, dbCoordinateIdColumnName);
+    this.queryLastBeforeAndCoordinate =
+        createQueryStringForLastBeforeAndCoordinate(
+            schemaName, weatherTableName, dbTimeColumnName, dbCoordinateIdColumnName);
     this.queryTimeIntervalAndCoordinates =
         createQueryStringForTimeIntervalAndCoordinates(
             schemaName, weatherTableName, dbTimeColumnName, dbCoordinateIdColumnName);
@@ -93,7 +99,7 @@ public class SqlWeatherSource extends WeatherSource {
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval) throws SourceException {
+      ClosedInterval<ZonedDateTime> timeInterval) throws NoDataException, SourceException {
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
         buildTimeBasedValues(
             weatherFactory,
@@ -103,22 +109,35 @@ public class SqlWeatherSource extends WeatherSource {
                   ps.setTimestamp(1, Timestamp.from(timeInterval.getLower().toInstant()));
                   ps.setTimestamp(2, Timestamp.from(timeInterval.getUpper().toInstant()));
                 }));
+    if (timeBasedValues.isEmpty()) {
+      throw new NoDataException(
+          "No weather data found for the given time interval: " + timeInterval);
+    }
     return mapWeatherValuesToPoints(timeBasedValues);
   }
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
-      throws SourceException {
-    Set<Integer> coordinateIds =
+      throws SourceException, NoDataException {
+
+    if (coordinates.isEmpty())
+      throw new NoDataException("No coordinates provided for weather data query.");
+
+    Map<Point, Integer> knownCoordinates =
         coordinates.stream()
-            .map(idCoordinateSource::getId)
-            .flatMap(Optional::stream)
-            .collect(Collectors.toSet());
-    if (coordinateIds.isEmpty()) {
-      log.warn("Unable to match coordinates to coordinate ID");
-      return Collections.emptyMap();
-    }
+            .flatMap(c -> idCoordinateSource.getId(c).map(id -> Map.entry(c, id)).stream())
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+    List<Point> unknownCoordinates =
+        coordinates.stream().filter(c -> !knownCoordinates.containsKey(c)).toList();
+
+    if (!unknownCoordinates.isEmpty())
+      log.warn(
+          "Unable to find coordinate IDs for the following coordinates, skipping: {}",
+          unknownCoordinates);
+
+    Set<Integer> coordinateIds = new HashSet<>(knownCoordinates.values());
 
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
         buildTimeBasedValues(
@@ -133,16 +152,16 @@ public class SqlWeatherSource extends WeatherSource {
                   ps.setTimestamp(3, Timestamp.from(timeInterval.getUpper().toInstant()));
                 }));
 
-    return mapWeatherValuesToPoints(timeBasedValues);
+    return validateAndWarnMissing(
+        mapWeatherValuesToPoints(timeBasedValues), coordinates, timeInterval);
   }
 
   @Override
-  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate)
-      throws SourceException {
+  public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
+      throws SourceException, NoDataException {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
-      log.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
-      return Optional.empty();
+      throw new NoDataException("No coordinate ID found for the given point: " + coordinate);
     }
 
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
@@ -155,10 +174,24 @@ public class SqlWeatherSource extends WeatherSource {
                   ps.setTimestamp(2, Timestamp.from(date.toInstant()));
                 }));
 
-    if (timeBasedValues.isEmpty()) return Optional.empty();
-    if (timeBasedValues.size() > 1)
-      log.warn("Retrieved more than one result value, using the first");
-    return Optional.of(timeBasedValues.getFirst());
+    if (!timeBasedValues.isEmpty()) {
+      if (timeBasedValues.size() > 1)
+        log.warn("Retrieved more than one result value, using the first");
+      return timeBasedValues.get(0);
+    }
+
+    // Fallback: try the last known value before the requested date (within MAX_FALLBACK_STEPS)
+    List<TimeBasedValue<WeatherValue>> fallbackValues =
+        buildTimeBasedValues(
+            weatherFactory,
+            dataSource.executeQuery(
+                queryLastBeforeAndCoordinate,
+                ps -> {
+                  ps.setInt(1, coordinateId.get());
+                  ps.setTimestamp(2, Timestamp.from(date.toInstant()));
+                }));
+
+    return applyFallbackOrThrow(date, coordinate, fallbackValues);
   }
 
   @Override
@@ -254,7 +287,7 @@ public class SqlWeatherSource extends WeatherSource {
         + weatherTableName
         + WHERE
         + coordinateColumnName
-        + "=? AND "
+        + COORDINATE_AND
         + timeColumnName
         + " > ?;";
   }
@@ -278,9 +311,36 @@ public class SqlWeatherSource extends WeatherSource {
     return createBaseQueryString(schemaName, weatherTableName)
         + WHERE
         + coordinateColumnName
-        + "=? AND "
+        + COORDINATE_AND
         + timeColumnName
         + "=?;";
+  }
+
+  /**
+   * Creates a query to retrieve the most recent entry for the given coordinate strictly before the
+   * given time with the following pattern: <br>
+   * {@code <base query> WHERE <coordinate column>=? AND <time column> < ? ORDER BY <time column>
+   * DESC LIMIT 2;}
+   *
+   * @param schemaName the name of the database schema
+   * @param weatherTableName the name of the database table
+   * @param timeColumnName the name of the column holding the timestamp info
+   * @param coordinateColumnName name of the column holding the coordinate id
+   * @return the query string
+   */
+  private String createQueryStringForLastBeforeAndCoordinate(
+      String schemaName,
+      String weatherTableName,
+      String timeColumnName,
+      String coordinateColumnName) {
+    return createBaseQueryString(schemaName, weatherTableName)
+        + WHERE
+        + coordinateColumnName
+        + COORDINATE_AND
+        + timeColumnName
+        + " < ? ORDER BY "
+        + timeColumnName
+        + " DESC LIMIT 2;";
   }
 
   /**

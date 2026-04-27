@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.csv
 
 import static edu.ie3.datamodel.models.StandardUnits.*
 
+import edu.ie3.datamodel.exceptions.NoDataException
 import edu.ie3.datamodel.io.factory.timeseries.CosmoTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
@@ -18,6 +19,7 @@ import edu.ie3.datamodel.models.value.TemperatureValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.datamodel.models.value.WindValue
 import edu.ie3.test.common.CosmoWeatherTestData
+import edu.ie3.test.common.WeatherTestData
 import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.geo.GeoUtils
@@ -50,8 +52,8 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     def optTimeBasedValue = source.getWeather(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.COORDINATE_193186)
 
     then:
-    optTimeBasedValue.present
-    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
+    optTimeBasedValue != null
+    equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
   }
 
   def "A CsvWeatherSource can read multiple time series values for multiple coordinates"() {
@@ -80,7 +82,6 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeSeries193186)
     equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeSeries193187)
   }
-
 
   def "A CsvWeatherSource can read all weather data in a given time interval"() {
     given:
@@ -233,6 +234,83 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     actual.empty
   }
 
+  def "A CsvWeatherSource falls back to the last known value when no exact weather data is found for a coordinate at a specific time"() {
+    given:
+    def futureTime = CosmoWeatherTestData.TIME_17H.plusHours(3)
+    def expectedFallback = new TimeBasedValue(CosmoWeatherTestData.TIME_17H, CosmoWeatherTestData.WEATHER_VALUE_193186_17H)
+
+    when:
+    def result = source.getWeather(futureTime, CosmoWeatherTestData.COORDINATE_193186)
+
+    then:
+    result != null
+    equalsIgnoreUUID(result, expectedFallback)
+  }
+
+  def "A CsvWeatherSource throws NoDataException when no weather data is found for a coordinate at a specific time and no earlier data is available"() {
+    given:
+    def timeBeforeAllData = CosmoWeatherTestData.TIME_15H.minusHours(1)
+
+    when:
+    source.getWeather(timeBeforeAllData, CosmoWeatherTestData.COORDINATE_193186)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data found for coordinate")
+    ex.message.contains("no earlier data available")
+  }
+
+  def "A CsvWeatherSource throws NoDataException when the fallback is beyond the maximum allowed steps"() {
+    given:
+    def farFutureTime = CosmoWeatherTestData.TIME_17H.plusHours(4)
+
+    when:
+    source.getWeather(farFutureTime, CosmoWeatherTestData.COORDINATE_193186)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data found for coordinate")
+    ex.message.contains("exceeds the maximum fallback")
+  }
+
+  def "A CsvWeatherSource returns partial results when one coordinate has a valid ID but no data in the CSV files"() {
+    given:
+    def phantomPoint = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(99d, 99d))
+    def extendedSource = new WeatherTestData.DummyIdCoordinateSource() {
+          Optional<Integer> getId(Point point) {
+            if (point == phantomPoint) return Optional.of(99999)
+            return super.getId(point)
+          }
+        }
+    def partialSource = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), extendedSource, new CosmoTimeBasedWeatherValueFactory())
+    def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.TIME_17H)
+
+    when:
+    def result = partialSource.getWeather(timeInterval, [
+      CosmoWeatherTestData.COORDINATE_193186,
+      phantomPoint
+    ])
+
+    then: "only the coordinate with actual CSV data is returned, no exception is thrown"
+    result.keySet().size() == 1
+    result.containsKey(CosmoWeatherTestData.COORDINATE_193186)
+    !result.containsKey(phantomPoint)
+  }
+
+  def "The CsvWeatherSource returns all time keys after a given time for a specific coordinate"() {
+    given:
+    def time = CosmoWeatherTestData.TIME_15H
+
+    when:
+    def actual = source.getTimeKeysAfter(time, CosmoWeatherTestData.COORDINATE_193186)
+
+    then:
+    actual == [
+      CosmoWeatherTestData.TIME_16H,
+      CosmoWeatherTestData.TIME_17H
+    ]
+  }
+
   def "The CsvWeatherSource returns all time keys after a given time key correctly"() {
     given:
     def time = CosmoWeatherTestData.TIME_15H
@@ -241,13 +319,13 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     def actual = source.getTimeKeysAfter(time)
 
     then:
-    actual.size() == 3
+    actual.size() == 2
 
     actual.get(CosmoWeatherTestData.COORDINATE_193186) == [
       CosmoWeatherTestData.TIME_16H,
       CosmoWeatherTestData.TIME_17H
     ]
     actual.get(CosmoWeatherTestData.COORDINATE_193187) == [CosmoWeatherTestData.TIME_16H]
-    actual.get(CosmoWeatherTestData.COORDINATE_193188) == []
+    !actual.containsKey(CosmoWeatherTestData.COORDINATE_193188)
   }
 }

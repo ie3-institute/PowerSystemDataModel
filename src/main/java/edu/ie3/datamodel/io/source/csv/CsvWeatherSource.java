@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.csv;
 import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.checkWeatherUniqueness;
 
 import edu.ie3.datamodel.exceptions.DuplicateEntitiesException;
+import edu.ie3.datamodel.exceptions.NoDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
@@ -79,31 +80,83 @@ public class CsvWeatherSource extends WeatherSource {
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval) {
-    return trimMapToInterval(coordinateToTimeSeries, timeInterval);
+      ClosedInterval<ZonedDateTime> timeInterval) throws NoDataException {
+
+    Map<Point, IndividualTimeSeries<WeatherValue>> result =
+        trimMapToInterval(coordinateToTimeSeries, timeInterval);
+
+    if (result.isEmpty()) {
+      throw new NoDataException(
+          "No weather data found for the given time interval: " + timeInterval);
+    }
+
+    return result;
   }
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
+      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
+      throws NoDataException {
+
+    if (coordinates.isEmpty())
+      throw new NoDataException("No coordinates provided for weather data query.");
+
     Map<Point, IndividualTimeSeries<WeatherValue>> filteredMap =
         coordinateToTimeSeries.entrySet().stream()
             .filter(entry -> coordinates.contains(entry.getKey()))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    return trimMapToInterval(filteredMap, timeInterval);
+
+    Map<Point, IndividualTimeSeries<WeatherValue>> result =
+        trimMapToInterval(filteredMap, timeInterval);
+
+    return validateAndWarnMissing(result, coordinates, timeInterval);
   }
 
   @Override
-  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
+  public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
+      throws SourceException, NoDataException {
     IndividualTimeSeries<WeatherValue> timeSeries = coordinateToTimeSeries.get(coordinate);
-    if (timeSeries == null) return Optional.empty();
-    return timeSeries.getTimeBasedValue(date);
+
+    if (timeSeries == null) {
+      if (idCoordinateSource.getId(coordinate).isEmpty())
+        throw new NoDataException("No coordinate ID found for the given point: " + coordinate);
+      throw new NoDataException("No weather data found for the given coordinate: " + coordinate);
+    }
+
+    Optional<TimeBasedValue<WeatherValue>> exact = timeSeries.getTimeBasedValue(date);
+    if (exact.isPresent()) {
+      return exact.get();
+    }
+
+    List<TimeBasedValue<WeatherValue>> fallbacks = new ArrayList<>(2);
+    timeSeries
+        .getPreviousDateTime(date)
+        .flatMap(timeSeries::getTimeBasedValue)
+        .ifPresent(fallbacks::add);
+    if (!fallbacks.isEmpty()) {
+      timeSeries
+          .getPreviousDateTime(fallbacks.get(0).getTime())
+          .flatMap(timeSeries::getTimeBasedValue)
+          .ifPresent(fallbacks::add);
+    }
+    return applyFallbackOrThrow(date, coordinate, fallbacks);
   }
 
   @Override
   public Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time) {
     return coordinateToTimeSeries.entrySet().stream()
-        .collect(Collectors.toMap(Map.Entry::getKey, t -> t.getValue().getTimeKeysAfter(time)));
+        .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getTimeKeysAfter(time)))
+        .entrySet()
+        .stream()
+        .filter(e -> !e.getValue().isEmpty())
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
+
+  @Override
+  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time, Point coordinate) {
+    IndividualTimeSeries<WeatherValue> series = coordinateToTimeSeries.get(coordinate);
+    if (series == null) return Collections.emptyList();
+    return series.getTimeKeysAfter(time);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -120,11 +173,16 @@ public class CsvWeatherSource extends WeatherSource {
       ClosedInterval<ZonedDateTime> timeInterval) {
     // decided against parallel mode here as it likely wouldn't pay off as the expected coordinate
     // count is too low
-    return map.entrySet().stream()
-        .collect(
-            Collectors.toMap(
-                Map.Entry::getKey,
-                entry -> TimeSeriesUtils.trimTimeSeriesToInterval(entry.getValue(), timeInterval)));
+    Map<Point, IndividualTimeSeries<WeatherValue>> trimmed = new HashMap<>();
+    map.forEach(
+        (point, timeSeries) -> {
+          IndividualTimeSeries<WeatherValue> trimmedSeries =
+              TimeSeriesUtils.trimTimeSeriesToInterval(timeSeries, timeInterval);
+          if (!trimmedSeries.getEntries().isEmpty()) {
+            trimmed.put(point, trimmedSeries);
+          }
+        });
+    return trimmed;
   }
 
   /**

@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.exceptions.NoDataException
 import edu.ie3.datamodel.io.factory.timeseries.IconTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
@@ -43,8 +44,8 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
     def optTimeBasedValue = source.getWeather(IconWeatherTestData.TIME_15H, IconWeatherTestData.COORDINATE_67775)
 
     then:
-    optTimeBasedValue.present
-    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
+    optTimeBasedValue != null
+    equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
   }
 
   def "A CsvWeatherSource can read multiple time series values for multiple coordinates"() {
@@ -298,5 +299,113 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
       IconWeatherTestData.TIME_17H
     ]
     actual.get(IconWeatherTestData.COORDINATE_67776) == [IconWeatherTestData.TIME_16H]
+  }
+
+  def "A CsvWeatherSource throws NoDataException when no weather data is found for coordinate"() {
+    given:
+    def unknownCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(0.0, 0.0))
+
+    when:
+    source.getWeather(IconWeatherTestData.TIME_15H, unknownCoordinate)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No coordinate ID found for the given point")
+    ex.message.contains(unknownCoordinate.toString())
+  }
+
+  def "A CsvWeatherSource falls back to the last known value when no exact weather data is found for a coordinate at a specific time"() {
+    given:
+    def futureTime = IconWeatherTestData.TIME_17H.plusHours(3)
+    def expectedFallback = new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)
+
+    when:
+    def result = source.getWeather(futureTime, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    result != null
+    equalsIgnoreUUID(result, expectedFallback)
+  }
+
+  def "A CsvWeatherSource throws NoDataException when no weather data is found for a coordinate at a specific time and no earlier data is available"() {
+    given:
+    def timeBeforeAllData = IconWeatherTestData.TIME_15H.minusHours(1)
+
+    when:
+    source.getWeather(timeBeforeAllData, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data found for coordinate")
+    ex.message.contains("no earlier data available")
+  }
+
+  def "A CsvWeatherSource throws NoDataException when the fallback is beyond the maximum allowed steps"() {
+    given:
+    def farFutureTime = IconWeatherTestData.TIME_17H.plusHours(4)
+
+    when:
+    source.getWeather(farFutureTime, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data found for coordinate")
+    ex.message.contains("exceeds the maximum fallback")
+  }
+
+  def "A CsvWeatherSource returns partial results when one coordinate has a valid ID but no data in the CSV files"() {
+    given:
+    def phantomPoint = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(99d, 99d))
+    def extendedSource = new WeatherTestData.DummyIdCoordinateSource() {
+          Optional<Integer> getId(Point point) {
+            if (point == phantomPoint) return Optional.of(99999)
+            return super.getId(point)
+          }
+        }
+    def partialSource = new CsvWeatherSource(",", weatherIconFolderPath, new FileNamingStrategy(), extendedSource, new IconTimeBasedWeatherValueFactory())
+    def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H, IconWeatherTestData.TIME_17H)
+
+    when:
+    def result = partialSource.getWeather(timeInterval, [
+      IconWeatherTestData.COORDINATE_67775,
+      phantomPoint
+    ])
+
+    then: "only the coordinate with actual CSV data is returned, no exception is thrown"
+    result.keySet().size() == 1
+    result.containsKey(IconWeatherTestData.COORDINATE_67775)
+    !result.containsKey(phantomPoint)
+  }
+
+  def "The CsvWeatherSource returns all time keys after a given time for a specific coordinate"() {
+    given:
+    def time = IconWeatherTestData.TIME_15H
+
+    when:
+    def actual = source.getTimeKeysAfter(time, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    actual == [
+      IconWeatherTestData.TIME_16H,
+      IconWeatherTestData.TIME_17H
+    ]
+  }
+
+  def "A CsvWeatherSource returns partial results for mixed valid and invalid coordinates"() {
+    given:
+    def validCoordinate = IconWeatherTestData.COORDINATE_67775
+    def invalidCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(999d, 999d))
+    def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H, IconWeatherTestData.TIME_17H)
+
+    when:
+    def result = source.getWeather(timeInterval, [
+      validCoordinate,
+      invalidCoordinate
+    ])
+
+    then:
+    result.size() == 1
+    result.containsKey(validCoordinate)
+    !result.containsKey(invalidCoordinate)
   }
 }
