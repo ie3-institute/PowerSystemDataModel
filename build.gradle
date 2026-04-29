@@ -97,10 +97,10 @@ dependencies {
   // Databases
   implementation 'org.influxdb:influxdb-java:2.25'
   implementation 'com.couchbase.client:java-client:3.11.2'
-  runtimeOnly 'org.postgresql:postgresql:42.7.10' // postgresql jdbc driver required during runtime
+  runtimeOnly 'org.postgresql:postgresql:42.7.11' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.22.0' // I/O functionalities
-  implementation 'commons-codec:commons-codec:1.21.0' // needed by commons-compress
+  implementation 'commons-codec:commons-codec:1.22.0' // needed by commons-compress
   implementation 'org.apache.commons:commons-compress:1.28.0' // I/O functionalities
 }
 
