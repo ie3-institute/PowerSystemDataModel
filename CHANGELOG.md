@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Updated load documentation [#1608](https://github.com/ie3-institute/PowerSystemDataModel/issues/1608)
+- Removed `GraphicElements` from `GridContainer` [#1601](https://github.com/ie3-institute/PowerSystemDataModel/issues/1601)
 
 ## [9.0.0] - 2026-04-13
 
