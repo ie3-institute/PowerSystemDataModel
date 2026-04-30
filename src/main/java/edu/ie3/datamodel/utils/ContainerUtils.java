@@ -473,6 +473,7 @@ public class ContainerUtils {
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
+      EnergyManagementUnits energyManagementUnits,
       GraphicElements graphics)
       throws InvalidGridException {
     /* Collect the different sub nets. Through the validation of lines, it is ensured, that no galvanically connected
@@ -480,11 +481,12 @@ public class ContainerUtils {
     SortedSet<Integer> subnetNumbers = determineSubnetNumbers(rawGrid.getNodes());
 
     /* Build the single sub grid models */
-    HashMap<Integer, SubGridContainer> subgrids =
-        buildSubGridContainers(gridName, subnetNumbers, rawGrid, systemParticipants, graphics);
+    HashMap<Integer, SubGridContainer> subGrids =
+        buildSubGridContainers(
+            gridName, subnetNumbers, rawGrid, systemParticipants, energyManagementUnits, graphics);
 
     /* Build the graph structure denoting the topology of the grid */
-    return buildSubGridTopologyGraph(subgrids, rawGrid);
+    return buildSubGridTopologyGraph(subGrids, rawGrid);
   }
 
   /**
@@ -512,6 +514,7 @@ public class ContainerUtils {
       SortedSet<Integer> subnetNumbers,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
+      EnergyManagementUnits energyManagementUnits,
       GraphicElements graphics)
       throws InvalidGridException {
     HashMap<Integer, SubGridContainer> subGrids = new HashMap<>(subnetNumbers.size());
@@ -524,7 +527,12 @@ public class ContainerUtils {
       subGrids.put(
           subnetNumber,
           new SubGridContainer(
-              gridName, subnetNumber, rawGridElements, systemParticipantElements, graphicElements));
+              gridName,
+              subnetNumber,
+              rawGridElements,
+              systemParticipantElements,
+              energyManagementUnits,
+              graphicElements));
     }
     return subGrids;
   }
@@ -550,7 +558,7 @@ public class ContainerUtils {
     for (Transformer2WInput transformer : rawGridElements.getTransformer2Ws()) {
       try {
         TransformerSubGridContainers subGridContainers =
-            getSubGridContainers(transformer, rawGridElements, subGrids);
+            getSubGridContainers(transformer, subGrids);
         mutableGraph.addEdge(
             subGridContainers.containerA,
             subGridContainers.containerB,
@@ -569,7 +577,7 @@ public class ContainerUtils {
     for (Transformer3WInput transformer : rawGridElements.getTransformer3Ws()) {
       try {
         TransformerSubGridContainers subGridContainers =
-            getSubGridContainers(transformer, rawGridElements, subGrids);
+            getSubGridContainers(transformer, subGrids);
         mutableGraph.addEdge(
             subGridContainers.containerA,
             subGridContainers.containerB,
@@ -638,16 +646,12 @@ public class ContainerUtils {
    * switch gears are reflected as well.
    *
    * @param transformer Specific transformer to determine sub grid containers for
-   * @param rawGridElements Collection of all grid elements
    * @param subGrids Mapping from sub grid number to sub grid container
    * @return All surrounding sub grid containers
-   * @throws TopologyException If the most upstream node (considering switchgear) cannot be
-   *     determined
+   * @throws TopologyException if one of the required sub grid containers cannot be determined
    */
   private static TransformerSubGridContainers getSubGridContainers(
-      TransformerInput transformer,
-      RawGridElements rawGridElements,
-      Map<Integer, SubGridContainer> subGrids)
+      TransformerInput transformer, Map<Integer, SubGridContainer> subGrids)
       throws TopologyException {
     /* Get the sub grid container at port A */
     SubGridContainer containerA = subGrids.get(transformer.getNodeA().getSubnet());
@@ -655,11 +659,34 @@ public class ContainerUtils {
     /* Get the sub grid container at port B */
     SubGridContainer containerB = subGrids.get(transformer.getNodeB().getSubnet());
 
+    // validate found containers for 2-winding transformer
+    if (containerA == null || containerB == null) {
+      throw new TopologyException(
+          "Cannot determine sub grid container(s) for transformer '"
+              + transformer.getId()
+              + "' ("
+              + transformer.getUuid()
+              + "). Found containerA="
+              + containerA
+              + ", containerB="
+              + containerB);
+    }
+
     /* Get the sub grid container at port C, if this is a three winding transformer */
     if (transformer instanceof Transformer3WInput transformer3WInput) {
       SubGridContainer containerC = subGrids.get(transformer3WInput.getNodeC().getSubnet());
+      if (containerC == null) {
+        throw new TopologyException(
+            "Cannot determine sub grid container at port C for transformer '"
+                + transformer.getId()
+                + "' ("
+                + transformer.getUuid()
+                + "). Found containerC=null");
+      }
       return new TransformerSubGridContainers(containerA, containerB, containerC);
-    } else return new TransformerSubGridContainers(containerA, containerB);
+    } else {
+      return new TransformerSubGridContainers(containerA, containerB);
+    }
   }
 
   /**
@@ -695,6 +722,9 @@ public class ContainerUtils {
     GraphicElements graphicElements =
         new GraphicElements(
             subGridContainers.stream().map(GridContainer::getGraphics).collect(Collectors.toSet()));
+    EnergyManagementUnits energyManagementUnits =
+        new EnergyManagementUnits(
+            subGridContainers.stream().map(GridContainer::getEmUnits).collect(Collectors.toSet()));
 
     Map<Integer, SubGridContainer> subGridMapping =
         subGridContainers.stream()
@@ -703,7 +733,12 @@ public class ContainerUtils {
     SubGridTopologyGraph subGridTopologyGraph = buildSubGridTopologyGraph(subGridMapping, rawGrid);
 
     return new JointGridContainer(
-        gridName, rawGrid, systemParticipants, graphicElements, subGridTopologyGraph);
+        gridName,
+        rawGrid,
+        systemParticipants,
+        energyManagementUnits,
+        graphicElements,
+        subGridTopologyGraph);
   }
 
   /**
@@ -876,6 +911,7 @@ public class ContainerUtils {
             subGridContainer.getRawGrid().getSwitches(),
             subGridContainer.getRawGrid().getMeasurementUnits()),
         subGridContainer.getSystemParticipants(),
+        subGridContainer.getEmUnits(),
         new GraphicElements(newNodeGraphics, subGridContainer.getGraphics().getLineGraphics()));
   }
 }

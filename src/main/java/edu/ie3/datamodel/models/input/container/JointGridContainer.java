@@ -23,14 +23,15 @@ public class JointGridContainer extends GridContainer {
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
+      EnergyManagementUnits emUnits,
       GraphicElements graphics)
       throws InvalidGridException {
-    super(gridName, rawGrid, systemParticipants, graphics);
+    super(gridName, rawGrid, systemParticipants, emUnits, graphics);
 
     /* Build sub grid dependency */
     this.subGridTopologyGraph =
         ContainerUtils.buildSubGridTopologyGraph(
-            this.gridName, this.rawGrid, this.systemParticipants, this.graphics);
+            this.gridName, this.rawGrid, this.systemParticipants, this.emUnits, this.graphics);
     checkSubGridTopologyGraph(subGridTopologyGraph);
   }
 
@@ -38,9 +39,10 @@ public class JointGridContainer extends GridContainer {
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
+      EnergyManagementUnits emUnits,
       GraphicElements graphics,
       SubGridTopologyGraph subGridTopologyGraph) {
-    super(gridName, rawGrid, systemParticipants, graphics);
+    super(gridName, rawGrid, systemParticipants, emUnits, graphics);
     this.subGridTopologyGraph = subGridTopologyGraph;
     checkSubGridTopologyGraph(this.subGridTopologyGraph);
   }
@@ -117,6 +119,7 @@ public class JointGridContainer extends GridContainer {
           getGridName(),
           getRawGrid(),
           getSystemParticipants(),
+          getEmUnits(),
           getGraphics(),
           subGridTopologyGraph);
     }

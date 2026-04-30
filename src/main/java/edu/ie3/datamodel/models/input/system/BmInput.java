@@ -14,6 +14,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
@@ -62,6 +63,41 @@ public class BmInput extends SystemParticipantInput implements HasType {
     this.type = type;
     this.costControlled = costControlled;
     this.feedInTariff = feedInTariff.to(StandardUnits.ENERGY_PRICE);
+  }
+
+  /**
+   * Constructor for an operated biomass plant
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param node the asset is connected to
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param type of BM
+   * @param costControlled Does this plant increase the output power if the revenues exceed the
+   *     energy generation costs?
+   * @param feedInTariff Granted feed in tariff (typically in €/MWh)
+   * @param additionalInformation That were provided by the source
+   */
+  public BmInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      NodeInput node,
+      ReactivePowerCharacteristic qCharacteristics,
+      EmInput em,
+      BmTypeInput type,
+      boolean costControlled,
+      ComparableQuantity<EnergyPrice> feedInTariff,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    this.type = type;
+    this.costControlled = costControlled;
+    this.feedInTariff = feedInTariff.to(StandardUnits.ENERGY_PRICE);
+    setAdditionalInformation(additionalInformation);
   }
 
   /**
@@ -152,6 +188,8 @@ public class BmInput extends SystemParticipantInput implements HasType {
         + costControlled
         + ", feedInTariff="
         + feedInTariff
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

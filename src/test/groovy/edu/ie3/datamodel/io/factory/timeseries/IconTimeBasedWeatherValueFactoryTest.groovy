@@ -28,7 +28,7 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
     def expected = Quantities.getQuantity(expectedValue, PowerSystemUnits.DEGREE_GEOM)
 
     when:
-    def actual = IconTimeBasedWeatherValueFactory.getWindDirection(data)
+    def actual = IconTimeBasedWeatherValueFactory.getWindValue(data).direction.get()
 
     then:
     actual.getUnit() == StandardUnits.WIND_DIRECTION
@@ -55,7 +55,7 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
     def expected = Quantities.getQuantity(expectedValue, PowerSystemUnits.METRE_PER_SECOND)
 
     when:
-    def actual = IconTimeBasedWeatherValueFactory.getWindVelocity(data)
+    def actual = IconTimeBasedWeatherValueFactory.getWindValue(data).velocity.get()
 
     then:
     actual.getUnit() == StandardUnits.WIND_VELOCITY

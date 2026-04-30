@@ -13,6 +13,7 @@ import edu.ie3.datamodel.models.input.system.HpInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.HpTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
+import java.util.Map;
 import java.util.UUID;
 
 public class HpInputFactory
@@ -32,9 +33,19 @@ public class HpInputFactory
       ThermalBusInput thermalBusInput,
       ReactivePowerCharacteristic qCharacteristics,
       EmInput em,
-      HpTypeInput typeInput) {
+      HpTypeInput typeInput,
+      Map<String, String> additionalInformation) {
 
     return new HpInput(
-        uuid, id, operator, operationTime, node, thermalBusInput, qCharacteristics, em, typeInput);
+        uuid,
+        id,
+        operator,
+        operationTime,
+        node,
+        thermalBusInput,
+        qCharacteristics,
+        em,
+        typeInput,
+        additionalInformation);
   }
 }

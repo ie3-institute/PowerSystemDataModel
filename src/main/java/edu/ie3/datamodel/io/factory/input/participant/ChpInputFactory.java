@@ -41,6 +41,7 @@ public class ChpInputFactory
         qCharacteristics,
         em,
         data.getTypeInput(),
-        data.getThermalStorageInput());
+        data.getThermalStorageInput(),
+        data.getFieldsToValues());
   }
 }

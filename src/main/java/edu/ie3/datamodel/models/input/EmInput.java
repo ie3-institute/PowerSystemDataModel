@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.input;
 import edu.ie3.datamodel.io.extractor.HasEm;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.UniqueEntity;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -43,6 +44,31 @@ public class EmInput extends AssetInput implements HasEm {
     super(uuid, id, operator, operationTime);
     this.controlStrategy = emControlStrategy;
     this.controllingEm = controllingEm;
+  }
+
+  /**
+   * Constructor for an operated energy management system
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime time for which the entity is operated
+   * @param emControlStrategy the control strategy
+   * @param controllingEm The {@link EmInput} controlling this em unit. Null, if not applicable.
+   * @param additionalInformation That were provided by the source
+   */
+  public EmInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      String emControlStrategy,
+      EmInput controllingEm,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, operator, operationTime);
+    this.controlStrategy = emControlStrategy;
+    this.controllingEm = controllingEm;
+    setAdditionalInformation(additionalInformation);
   }
 
   /**
@@ -97,6 +123,8 @@ public class EmInput extends AssetInput implements HasEm {
         + getControlStrategy()
         + ", controllingEm="
         + getControllingEm().map(UniqueEntity::getUuid).map(UUID::toString).orElse("")
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + "}";
   }
 

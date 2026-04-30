@@ -77,6 +77,7 @@ public class ContainerNodeUpdateUtil {
         grid.getGridName(),
         updatedEntities.rawGridElements(),
         updatedEntities.systemParticipants(),
+        grid.getEmUnits(),
         updatedEntities.graphicElements());
   }
 
@@ -112,6 +113,7 @@ public class ContainerNodeUpdateUtil {
         grid.getSubnet(),
         updatedEntities.rawGridElements(),
         updatedEntities.systemParticipants(),
+        grid.getEmUnits(),
         updatedEntities.graphicElements());
   }
 
@@ -538,7 +540,7 @@ public class ContainerNodeUpdateUtil {
    * new nodes mapping affects at least one transformer. This is necessary because by policy, the
    * geoPosition of a transformer is determined by its nodeA. If multiple transformers are now
    * chained together e.g. nodeA - trafoAtoD - nodeD - trafoDtoG - nodeG than all transformer nodes
-   * needs to be updated if at least one of the provided nodes is affected. Otherwise inconsistency
+   * needs to be updated if at least one of the provided nodes is affected. Otherwise, inconsistency
    * would occur because transformers would end up with multiple geoPositions which is physically
    * not possible.
    *

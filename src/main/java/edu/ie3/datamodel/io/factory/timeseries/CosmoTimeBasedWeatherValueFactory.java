@@ -8,11 +8,9 @@ package edu.ie3.datamodel.io.factory.timeseries;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
-import edu.ie3.util.TimeUtil;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
@@ -26,14 +24,6 @@ import tech.units.indriya.unit.Units;
  * value mapping in the typical PowerSystemDataModel (PSDM) column scheme
  */
 public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFactory {
-
-  public CosmoTimeBasedWeatherValueFactory(TimeUtil timeUtil) {
-    super(timeUtil);
-  }
-
-  public CosmoTimeBasedWeatherValueFactory(DateTimeFormatter dateTimeFormatter) {
-    super(dateTimeFormatter);
-  }
 
   public CosmoTimeBasedWeatherValueFactory() {
     super();

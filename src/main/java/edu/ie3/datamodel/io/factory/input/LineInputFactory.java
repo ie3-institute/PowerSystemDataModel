@@ -43,18 +43,22 @@ public class LineInputFactory
         data.getLineString(GEO_POSITION)
             .orElse(GridAndGeoUtils.buildSafeLineStringBetweenNodes(nodeA, nodeB));
     final OlmCharacteristicInput olmCharacteristic;
-    try {
-      olmCharacteristic =
-          data.containsKey(OLM_CHARACTERISTIC) && !data.getField(OLM_CHARACTERISTIC).isEmpty()
-              ? new OlmCharacteristicInput(data.getField(OLM_CHARACTERISTIC))
-              : OlmCharacteristicInput.CONSTANT_CHARACTERISTIC;
-    } catch (ParsingException e) {
-      throw new FactoryException(
-          "Cannot parse the following overhead line monitoring characteristic: '"
-              + data.getField(OLM_CHARACTERISTIC)
-              + "'",
-          e);
+
+    if (!data.isFieldEmpty(OLM_CHARACTERISTIC)) {
+      String value = data.getField(OLM_CHARACTERISTIC);
+
+      try {
+        olmCharacteristic = new OlmCharacteristicInput(value);
+      } catch (ParsingException e) {
+        throw new FactoryException(
+            "Cannot parse the following overhead line monitoring characteristic: '" + value + "'",
+            e);
+      }
+
+    } else {
+      olmCharacteristic = OlmCharacteristicInput.CONSTANT_CHARACTERISTIC;
     }
+
     return new LineInput(
         uuid,
         id,
@@ -66,6 +70,7 @@ public class LineInputFactory
         type,
         length,
         geoPosition,
-        olmCharacteristic);
+        olmCharacteristic,
+        data.getFieldsToValues());
   }
 }

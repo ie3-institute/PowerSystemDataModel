@@ -14,6 +14,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.AcTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
@@ -53,6 +54,37 @@ public class AcInput extends SystemParticipantInput implements HasType, HasTherm
     super(uuid, id, operator, operationTime, node, qCharacteristics, em);
     this.thermalBus = thermalBus;
     this.type = type;
+  }
+
+  /**
+   * Constructor for an operated air condition
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param node the asset is connected to
+   * @param thermalBus The thermal bus, this model is connected to
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param type of AC
+   * @param additionalInformation That were provided by the source
+   */
+  public AcInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      NodeInput node,
+      ThermalBusInput thermalBus,
+      ReactivePowerCharacteristic qCharacteristics,
+      EmInput em,
+      AcTypeInput type,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    this.thermalBus = thermalBus;
+    this.type = type;
+    setAdditionalInformation(additionalInformation);
   }
 
   /**
@@ -132,6 +164,8 @@ public class AcInput extends SystemParticipantInput implements HasType, HasTherm
         + type.getUuid()
         + ", thermalBus="
         + thermalBus.getUuid()
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

@@ -14,7 +14,6 @@ import edu.ie3.datamodel.models.result.connector.LineResult;
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult;
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
@@ -24,17 +23,6 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
 
   public ConnectorResultFactory() {
     super(LineResult.class, Transformer2WResult.class, Transformer3WResult.class);
-  }
-
-  /**
-   * Create a new factory to build {@link ConnectorResult}s and utilize the given date time
-   * formatter pattern to parse date time strings
-   *
-   * @param dateTimeFormatter to parse date time strings
-   */
-  public ConnectorResultFactory(DateTimeFormatter dateTimeFormatter) {
-    super(
-        dateTimeFormatter, LineResult.class, Transformer2WResult.class, Transformer3WResult.class);
   }
 
   @Override

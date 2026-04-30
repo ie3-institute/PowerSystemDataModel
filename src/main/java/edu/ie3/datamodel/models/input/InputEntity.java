@@ -5,7 +5,8 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import edu.ie3.datamodel.models.AdditionalInformation;
 import edu.ie3.datamodel.models.Entity;
 
 /** Interface to describe all input entities. */
-public interface InputEntity extends Entity {}
+public interface InputEntity extends Entity, AdditionalInformation {}

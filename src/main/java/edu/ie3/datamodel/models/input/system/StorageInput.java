@@ -12,6 +12,7 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.StorageTypeInput;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
@@ -45,6 +46,34 @@ public class StorageInput extends SystemParticipantInput implements HasType {
       StorageTypeInput type) {
     super(uuid, id, operator, operationTime, node, qCharacteristics, em);
     this.type = type;
+  }
+
+  /**
+   * Constructor for an operated storage
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime time for which the entity is operated
+   * @param node the asset is connected to
+   * @param qCharacteristics Description of a reactive power characteristic for integrated inverter
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param type of storage
+   * @param additionalInformation That were provided by the source
+   */
+  public StorageInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      NodeInput node,
+      ReactivePowerCharacteristic qCharacteristics,
+      EmInput em,
+      StorageTypeInput type,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    this.type = type;
+    setAdditionalInformation(additionalInformation);
   }
 
   /**
@@ -114,6 +143,8 @@ public class StorageInput extends SystemParticipantInput implements HasType {
         + getControllingEm()
         + ", type="
         + type.getUuid()
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

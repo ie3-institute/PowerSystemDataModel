@@ -6,8 +6,6 @@
 package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.models.value.WeatherValue;
-import edu.ie3.util.TimeUtil;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Abstract factory to handle the conversion from "flat" field to value mapping onto actual {@link
@@ -18,14 +16,6 @@ public abstract class TimeBasedWeatherValueFactory
 
   protected TimeBasedWeatherValueFactory() {
     super(WeatherValue.class);
-  }
-
-  protected TimeBasedWeatherValueFactory(DateTimeFormatter dateTimeFormatter) {
-    super(WeatherValue.class, dateTimeFormatter);
-  }
-
-  protected TimeBasedWeatherValueFactory(TimeUtil timeUtil) {
-    super(WeatherValue.class, timeUtil);
   }
 
   /**

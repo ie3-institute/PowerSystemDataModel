@@ -34,6 +34,14 @@ public class EvInputFactory
     final EmInput em = data.getControllingEm().orElse(null);
 
     return new EvInput(
-        uuid, id, operator, operationTime, node, qCharacteristics, em, data.getTypeInput());
+        uuid,
+        id,
+        operator,
+        operationTime,
+        node,
+        qCharacteristics,
+        em,
+        data.getTypeInput(),
+        data.getFieldsToValues());
   }
 }

@@ -12,6 +12,7 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -52,6 +53,40 @@ public class Transformer2WInput extends TransformerInput implements HasType {
     super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     connectsNodesToCorrectVoltageSides(nodeA, nodeB);
     this.type = type;
+  }
+
+  /**
+   * Constructor for an operated two winding transformer
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param nodeA higher voltage node
+   * @param nodeB lower voltage node
+   * @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.
+   *     parallelDevices = 2 will build a total of two transformers using the specified parameters)
+   * @param type of 2W transformer
+   * @param tapPos Tap position of this transformer
+   * @param autoTap True, if the tap position of the transformer is adapted automatically
+   * @param additionalInformation Of the input
+   */
+  public Transformer2WInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      NodeInput nodeA,
+      NodeInput nodeB,
+      int parallelDevices,
+      Transformer2WTypeInput type,
+      int tapPos,
+      boolean autoTap,
+      Map<String, String> additionalInformation) {
+    super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
+    connectsNodesToCorrectVoltageSides(nodeA, nodeB);
+    this.type = type;
+    setAdditionalInformation(additionalInformation);
   }
 
   /**
@@ -123,6 +158,8 @@ public class Transformer2WInput extends TransformerInput implements HasType {
         + getParallelDevices()
         + ", type="
         + type.getUuid()
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

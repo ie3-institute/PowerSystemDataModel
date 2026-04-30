@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.connector.type;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.*;
@@ -100,6 +101,58 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     this.tapNeutr = tapNeutr;
     this.tapMin = tapMin;
     this.tapMax = tapMax;
+  }
+
+  /**
+   * @param uuid of the input entity
+   * @param id of the type
+   * @param rSc Short circuit resistance
+   * @param xSc Short circuit reactance
+   * @param sRated Rated apparent power (typically in kVA)
+   * @param vRatedA Rated voltage of the high voltage winding
+   * @param vRatedB Rated voltage of the low voltage winding
+   * @param gM Phase-to-ground conductance
+   * @param bM Phase-to-ground susceptance
+   * @param dV Voltage magnitude deviation per tap position
+   * @param dPhi Voltage angle deviation per tap position
+   * @param tapSide Selection of winding, where the tap changer is installed. Low voltage, if true
+   * @param tapNeutr Neutral tap position
+   * @param tapMin Minimum available tap position
+   * @param tapMax Maximum available tap position
+   * @param additionalInformation Of the input
+   */
+  public Transformer2WTypeInput(
+      UUID uuid,
+      String id,
+      ComparableQuantity<ElectricResistance> rSc,
+      ComparableQuantity<ElectricResistance> xSc,
+      ComparableQuantity<Power> sRated,
+      ComparableQuantity<ElectricPotential> vRatedA,
+      ComparableQuantity<ElectricPotential> vRatedB,
+      ComparableQuantity<ElectricConductance> gM,
+      ComparableQuantity<ElectricConductance> bM,
+      ComparableQuantity<Dimensionless> dV,
+      ComparableQuantity<Angle> dPhi,
+      boolean tapSide,
+      int tapNeutr,
+      int tapMin,
+      int tapMax,
+      Map<String, String> additionalInformation) {
+    super(uuid, id);
+    this.rSc = rSc.to(StandardUnits.RESISTANCE);
+    this.xSc = xSc.to(StandardUnits.REACTANCE);
+    this.sRated = sRated.to(StandardUnits.S_RATED);
+    this.vRatedA = vRatedA.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    this.vRatedB = vRatedB.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    this.gM = gM.to(StandardUnits.CONDUCTANCE);
+    this.bM = bM.to(StandardUnits.SUSCEPTANCE);
+    this.dV = dV.to(StandardUnits.DV_TAP);
+    this.dPhi = dPhi.to(StandardUnits.DPHI_TAP);
+    this.tapSide = tapSide;
+    this.tapNeutr = tapNeutr;
+    this.tapMin = tapMin;
+    this.tapMax = tapMax;
+    setAdditionalInformation(additionalInformation);
   }
 
   public ComparableQuantity<ElectricResistance> getrSc() {
@@ -231,6 +284,8 @@ public class Transformer2WTypeInput extends AssetTypeInput {
         + tapMin
         + ", tapMax="
         + tapMax
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

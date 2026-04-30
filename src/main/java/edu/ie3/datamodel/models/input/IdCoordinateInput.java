@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input;
 
 import edu.ie3.util.geo.GeoUtils;
+import java.util.Map;
 import org.locationtech.jts.geom.Point;
 
 public sealed class IdCoordinateInput implements InputEntity {
@@ -25,6 +26,11 @@ public sealed class IdCoordinateInput implements InputEntity {
 
   public Point point() {
     return point;
+  }
+
+  @Override
+  public Map<String, String> getAdditionalInformation() {
+    return Map.of();
   }
 
   /**

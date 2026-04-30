@@ -13,6 +13,7 @@ import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharact
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.RepetitiveTimeSeries;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Energy;
@@ -70,6 +71,43 @@ public class LoadInput extends SystemParticipantInput {
     this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
     this.sRated = sRated.to(StandardUnits.S_RATED);
     this.cosPhiRated = cosPhiRated;
+  }
+
+  /**
+   * Constructor for an operated load
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param node the asset is connected to
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param powerProfileKey Key of the load profile to use for this model
+   * @param eConsAnnual Annually consumed energy (typically in kWh)
+   * @param sRated Rated apparent power (in kVA)
+   * @param cosPhiRated Rated power factor
+   * @param additionalInformation That were provided by the source
+   */
+  public LoadInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      NodeInput node,
+      ReactivePowerCharacteristic qCharacteristics,
+      EmInput em,
+      PowerProfileKey powerProfileKey,
+      ComparableQuantity<Energy> eConsAnnual,
+      ComparableQuantity<Power> sRated,
+      double cosPhiRated,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    this.loadProfile = powerProfileKey;
+    this.eConsAnnual = eConsAnnual.to(StandardUnits.ENERGY_IN);
+    this.sRated = sRated.to(StandardUnits.S_RATED);
+    this.cosPhiRated = cosPhiRated;
+    setAdditionalInformation(additionalInformation);
   }
 
   /**
@@ -254,6 +292,8 @@ public class LoadInput extends SystemParticipantInput {
         + sRated
         + ", cosPhiRated="
         + cosPhiRated
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 

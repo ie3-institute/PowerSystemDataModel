@@ -93,12 +93,7 @@ public class EnergyManagementSource extends AssetEntitySource {
         assetEntityDataStream.collect(
             Collectors.partitioningBy(
                 dataTry ->
-                    dataTry
-                        .map(
-                            data ->
-                                data.containsKey(CONTROLLING_EM)
-                                    && !data.getField(CONTROLLING_EM).isBlank())
-                        .getOrElse(() -> true)));
+                    dataTry.map(data -> !data.isFieldBlank(CONTROLLING_EM)).getOrElse(() -> true)));
 
     List<Try<AssetInputEntityData, SourceException>> rootEmsEntityData = split.get(false);
     List<Try<AssetInputEntityData, SourceException>> others = split.get(true);

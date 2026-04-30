@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -26,6 +27,19 @@ public class OperatorInput extends UniqueInputEntity {
   public OperatorInput(UUID uuid, String id) {
     super(uuid);
     this.id = id;
+  }
+
+  /**
+   * Constructor for an Operator
+   *
+   * @param uuid Unique identifier
+   * @param id Human readable identifier
+   * @param additionalInformation That were provided by the source
+   */
+  public OperatorInput(UUID uuid, String id, Map<String, String> additionalInformation) {
+    super(uuid);
+    this.id = id;
+    setAdditionalInformation(additionalInformation);
   }
 
   public String getId() {
@@ -51,7 +65,15 @@ public class OperatorInput extends UniqueInputEntity {
 
   @Override
   public String toString() {
-    return "OperatorInput{" + "uuid=" + getUuid() + ", id='" + id + '\'' + '}';
+    return "OperatorInput{"
+        + "uuid="
+        + getUuid()
+        + ", id='"
+        + id
+        + '\''
+        + ", additionalInformation="
+        + getAdditionalInformation()
+        + '}';
   }
 
   /**

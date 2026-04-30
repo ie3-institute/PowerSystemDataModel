@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.utils;
 
+import edu.ie3.util.StringUtils;
 import java.util.*;
 
 public class CollectionUtils {
@@ -44,13 +45,13 @@ public class CollectionUtils {
 
   public static Set<String> toSnakeCase(Set<String> set) {
     TreeSet<String> newSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-    newSet.addAll(set.stream().map(edu.ie3.util.StringUtils::camelCaseToSnakeCase).toList());
+    newSet.addAll(set.stream().map(StringUtils::camelCaseToSnakeCase).toList());
     return newSet;
   }
 
   public static Set<String> toCamelCase(Set<String> set) {
     TreeSet<String> newSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-    newSet.addAll(set.stream().map(edu.ie3.util.StringUtils::snakeCaseToCamelCase).toList());
+    newSet.addAll(set.stream().map(StringUtils::snakeCaseToCamelCase).toList());
     return newSet;
   }
 

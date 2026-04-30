@@ -34,24 +34,14 @@ import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.DomesticHotWaterStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
-import edu.ie3.datamodel.models.result.system.EmResult
-import edu.ie3.datamodel.models.result.system.EnergyBoundariesFlexOptionsResult
-import edu.ie3.datamodel.models.result.system.EvResult
-import edu.ie3.datamodel.models.result.system.EvcsResult
-import edu.ie3.datamodel.models.result.system.PowerLimitFlexOptionsResult
-import edu.ie3.datamodel.models.result.system.PvResult
-import edu.ie3.datamodel.models.result.system.WecResult
+import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.datamodel.models.timeseries.TimeSeries
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.EnergyPriceValue
 import edu.ie3.datamodel.models.value.Value
-import edu.ie3.test.common.GridTestData
-import edu.ie3.test.common.SampleJointGrid
-import edu.ie3.test.common.SystemParticipantTestData
-import edu.ie3.test.common.ThermalUnitInputTestData
-import edu.ie3.test.common.TimeSeriesTestData
+import edu.ie3.test.common.*
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.io.FileIOUtils
 import spock.lang.Shared
@@ -363,6 +353,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     testBaseFolderPath.resolve("storage_type_input.csv").toFile().exists()
     testBaseFolderPath.resolve("transformer_2_w_input.csv").toFile().exists()
     testBaseFolderPath.resolve("transformer_2_w_type_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("em_input.csv").toFile().exists()
 
     cleanup:
     csvFileSink.shutdown()

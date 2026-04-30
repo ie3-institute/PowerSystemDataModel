@@ -35,7 +35,7 @@ Participants are connected to an EM each via their `em` field.
 
    * - controlStrategy
      -
-     - String representation (e.g. name) of a control strategy
+     - String representation (e.g. name) of a control strategy. E.g.: PRIORITIZED or PROPORTIONAL
 
    * - controllingEm
      -

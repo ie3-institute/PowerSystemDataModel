@@ -78,7 +78,8 @@ public class SystemParticipantTypeInputFactory
     ComparableQuantity<Power> sRatedDC =
         data.getQuantity(S_RATED_DC, StandardUnits.ACTIVE_POWER_IN);
 
-    return new EvTypeInput(uuid, id, capEx, opEx, eStorage, eCons, sRated, cosPhi, sRatedDC);
+    return new EvTypeInput(
+        uuid, id, capEx, opEx, eStorage, eCons, sRated, cosPhi, sRatedDC, data.getFieldsToValues());
   }
 
   private SystemParticipantTypeInput buildHpTypeInput(
@@ -91,7 +92,8 @@ public class SystemParticipantTypeInputFactory
       double cosPhi) {
     ComparableQuantity<Power> pThermal = data.getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
 
-    return new HpTypeInput(uuid, id, capEx, opEx, sRated, cosPhi, pThermal);
+    return new HpTypeInput(
+        uuid, id, capEx, opEx, sRated, cosPhi, pThermal, data.getFieldsToValues());
   }
 
   private SystemParticipantTypeInput buildAcTypeInput(
@@ -104,7 +106,8 @@ public class SystemParticipantTypeInputFactory
       double cosPhi) {
     ComparableQuantity<Power> pThermal = data.getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
 
-    return new AcTypeInput(uuid, id, capEx, opEx, sRated, cosPhi, pThermal);
+    return new AcTypeInput(
+        uuid, id, capEx, opEx, sRated, cosPhi, pThermal, data.getFieldsToValues());
   }
 
   private SystemParticipantTypeInput buildBmTypeInput(
@@ -120,7 +123,8 @@ public class SystemParticipantTypeInputFactory
     ComparableQuantity<Dimensionless> etaConv =
         data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY);
 
-    return new BmTypeInput(uuid, id, capEx, opEx, loadGradient, sRated, cosPhi, etaConv);
+    return new BmTypeInput(
+        uuid, id, capEx, opEx, loadGradient, sRated, cosPhi, etaConv, data.getFieldsToValues());
   }
 
   private SystemParticipantTypeInput buildWecTypeInput(
@@ -150,7 +154,17 @@ public class SystemParticipantTypeInputFactory
     }
 
     return new WecTypeInput(
-        uuid, id, capEx, opEx, sRated, cosPhi, cpCharacteristic, etaConv, rotorArea, hubHeight);
+        uuid,
+        id,
+        capEx,
+        opEx,
+        sRated,
+        cosPhi,
+        cpCharacteristic,
+        etaConv,
+        rotorArea,
+        hubHeight,
+        data.getFieldsToValues());
   }
 
   private SystemParticipantTypeInput buildChpTypeInput(
@@ -171,7 +185,17 @@ public class SystemParticipantTypeInputFactory
     ComparableQuantity<Power> pOwn = data.getQuantity(P_OWN, StandardUnits.ACTIVE_POWER_IN);
 
     return new ChpTypeInput(
-        uuid, id, capEx, opEx, etaEl, etaThermal, sRated, cosPhi, pThermal, pOwn);
+        uuid,
+        id,
+        capEx,
+        opEx,
+        etaEl,
+        etaThermal,
+        sRated,
+        cosPhi,
+        pThermal,
+        pOwn,
+        data.getFieldsToValues());
   }
 
   private SystemParticipantTypeInput buildStorageTypeInput(
@@ -189,6 +213,16 @@ public class SystemParticipantTypeInputFactory
     ComparableQuantity<Dimensionless> eta = data.getQuantity(ETA, StandardUnits.EFFICIENCY);
 
     return new StorageTypeInput(
-        uuid, id, capEx, opEx, eStorage, sRated, cosPhi, pMax, activePowerGradient, eta);
+        uuid,
+        id,
+        capEx,
+        opEx,
+        eStorage,
+        sRated,
+        cosPhi,
+        pMax,
+        activePowerGradient,
+        eta,
+        data.getFieldsToValues());
   }
 }

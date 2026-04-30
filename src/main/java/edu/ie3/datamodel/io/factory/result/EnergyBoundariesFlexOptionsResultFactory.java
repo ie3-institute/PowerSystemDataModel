@@ -9,7 +9,6 @@ import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.system.EnergyBoundariesFlexOptionsResult;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -20,16 +19,6 @@ public class EnergyBoundariesFlexOptionsResultFactory
 
   public EnergyBoundariesFlexOptionsResultFactory() {
     super(EnergyBoundariesFlexOptionsResult.class);
-  }
-
-  /**
-   * Create a new factory to build {@link EnergyBoundariesFlexOptionsResult}s and utilize the given
-   * date time formatter pattern to parse date time strings
-   *
-   * @param dateTimeFormatter to parse date time strings
-   */
-  public EnergyBoundariesFlexOptionsResultFactory(DateTimeFormatter dateTimeFormatter) {
-    super(dateTimeFormatter, EnergyBoundariesFlexOptionsResult.class);
   }
 
   @Override
