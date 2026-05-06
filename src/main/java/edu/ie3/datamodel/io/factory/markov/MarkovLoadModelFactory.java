@@ -5,15 +5,11 @@
 */
 package edu.ie3.datamodel.io.factory.markov;
 
-import static edu.ie3.datamodel.utils.CollectionUtils.newSet;
-
 import edu.ie3.datamodel.io.factory.Factory;
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel;
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel.*;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import tools.jackson.databind.JsonNode;
 
 /**
@@ -59,27 +55,5 @@ public class MarkovLoadModelFactory
         parameters,
         transitionData,
         Optional.of(gmmBuckets));
-  }
-
-  @Override
-  protected List<Set<String>> getFields(Class<? extends MarkovLoadModel> entityClass) {
-    Set<String> requiredFields =
-        newSet(
-            "schema",
-            "generatedAt",
-            "generator.name",
-            "generator.version",
-            "timeModel.bucketCount",
-            "timeModel.bucketEncoding.formula",
-            "timeModel.samplingIntervalMinutes",
-            "timeModel.timezone",
-            "valueModel.valueUnit",
-            "valueModel.normalization.method",
-            "valueModel.discretization.states",
-            "valueModel.discretization.thresholdsRight",
-            "data.transitions.shape",
-            "data.transitions.values",
-            "data.gmms.buckets");
-    return List.of(requiredFields);
   }
 }

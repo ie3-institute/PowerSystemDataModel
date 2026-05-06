@@ -362,6 +362,7 @@ public class MarkovLoadModel {
    */
   private StepResult simulateStep(int bucket, int currentState, SplittableRandom rng) {
     double[] row = transitions[bucket][currentState];
+    // TODO: Remove distribution if possible
     double[] distribution = sanitizeDistribution(bucket, row);
     if (distribution.length == 0) {
       return new StepResult(currentState, 0d);
@@ -519,6 +520,7 @@ public class MarkovLoadModel {
      * State-bin layout: the number of states and the right-edge thresholds that separate
      * neighbouring states. The list contains {@code states - 1} entries.
      */
+    // TODO: Replace Autoboxing of List<Double>
     public record Discretization(int states, List<Double> thresholdsRight) {}
   }
 
@@ -541,6 +543,7 @@ public class MarkovLoadModel {
      *     dumps a stack trace every N seconds so hangs during GMM fitting can be diagnosed. Carried
      *     through for JSON round-trip only; unused at simulation time.
      */
+    // TODO: Remove boxing from Optional<Integer>
     public record GmmParameters(
         String valueColumn, Optional<Integer> verbose, Optional<Integer> heartbeatSeconds) {}
   }
