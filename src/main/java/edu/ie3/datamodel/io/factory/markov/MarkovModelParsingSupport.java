@@ -21,7 +21,7 @@ interface MarkovModelParsingSupport {
   default Generator parseGenerator(JsonNode generatorNode) {
     String name = extractText(generatorNode, "name");
     String version = extractText(generatorNode, "version");
-    Map<String, String> config = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    Map<String, String> config = new LinkedHashMap<>();
     JsonNode configNode = generatorNode.path("config");
     if (configNode.isObject()) {
       for (Map.Entry<String, JsonNode> entry : configNode.properties()) {
@@ -230,63 +230,36 @@ interface MarkovModelParsingSupport {
   }
 
   default double[][][] parseTransitionValues(JsonNode valuesNode, int buckets, int stateCount) {
-    if (!valuesNode.isArray()) {
-      throw new FactoryException("Transition values must be a three dimensional array");
-    }
-    if (valuesNode.size() != buckets) {
+    if (!valuesNode.isArray() || valuesNode.size() != buckets) {
       throw new FactoryException(
-          "Transition values provided " + valuesNode.size() + " buckets. Expected " + buckets);
+          "Transition values must be a three dimensional array with " + buckets + " buckets");
     }
     double[][][] values = new double[buckets][stateCount][stateCount];
-    int bucketIndex = 0;
-    for (JsonNode bucketNode : valuesNode) {
-      fillBucket(values, bucketNode, bucketIndex, stateCount);
-      bucketIndex++;
+    for (int b = 0; b < buckets; b++) {
+      JsonNode bucketNode = valuesNode.get(b);
+      if (bucketNode.size() != stateCount) {
+        throw new FactoryException(
+            "Bucket " + b + " contained " + bucketNode.size() + " rows. Expected " + stateCount);
+      }
+      for (int r = 0; r < stateCount; r++) {
+        JsonNode rowNode = bucketNode.get(r);
+        if (rowNode.size() != stateCount) {
+          throw new FactoryException(
+              "Row "
+                  + r
+                  + " in bucket "
+                  + b
+                  + " had "
+                  + rowNode.size()
+                  + " columns. Expected "
+                  + stateCount);
+        }
+        for (int c = 0; c < stateCount; c++) {
+          values[b][r][c] = rowNode.get(c).asDouble();
+        }
+      }
     }
     return values;
-  }
-
-  default void fillBucket(
-      double[][][] values, JsonNode bucketNode, int bucketIndex, int stateCount) {
-    int rowIndex = 0;
-    for (JsonNode rowNode : bucketNode) {
-      fillRow(values, rowNode, bucketIndex, rowIndex, stateCount);
-      rowIndex++;
-    }
-    if (rowIndex != stateCount) {
-      throw new FactoryException(
-          "Bucket " + bucketIndex + " contained " + rowIndex + " rows. Expected " + stateCount);
-    }
-  }
-
-  default void fillRow(
-      double[][][] values, JsonNode rowNode, int bucketIndex, int rowIndex, int stateCount) {
-    if (rowIndex >= stateCount) {
-      throw new FactoryException("Too many rows in transition matrix for bucket " + bucketIndex);
-    }
-    int columnIndex = 0;
-    for (JsonNode probNode : rowNode) {
-      if (columnIndex >= stateCount) {
-        throw new FactoryException(
-            "Too many columns in transition matrix for bucket "
-                + bucketIndex
-                + ", row "
-                + rowIndex);
-      }
-      values[bucketIndex][rowIndex][columnIndex] = probNode.asDouble();
-      columnIndex++;
-    }
-    if (columnIndex != stateCount) {
-      throw new FactoryException(
-          "Row "
-              + rowIndex
-              + " in bucket "
-              + bucketIndex
-              + " had "
-              + columnIndex
-              + " columns. Expected "
-              + stateCount);
-    }
   }
 
   default List<Double> readDoubleArray(JsonNode node, String field) {

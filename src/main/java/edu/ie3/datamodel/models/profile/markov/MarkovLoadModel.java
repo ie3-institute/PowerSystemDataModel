@@ -65,6 +65,14 @@ public class MarkovLoadModel {
   // Constructor
   // =====================================================================================
 
+  /**
+   * Builds a model from the JSON-derived sections, deriving runtime caches (transition arrays,
+   * discretization thresholds, per-state GMM data) and validating overall consistency.
+   *
+   * @throws IllegalArgumentException if GMM data is missing, the normalization range is
+   *     non-positive, or the transition tensor does not match {@code bucketCount * stateCount *
+   *     stateCount}
+   */
   public MarkovLoadModel(
       String schema,
       ZonedDateTime generatedAt,
@@ -119,6 +127,7 @@ public class MarkovLoadModel {
     validateTransitionDimensions();
   }
 
+  /** Verifies that the parsed transition tensor matches the declared bucket and state counts. */
   private void validateTransitionDimensions() {
     if (transitions.length != bucketCount) {
       throw new IllegalArgumentException(
@@ -142,6 +151,11 @@ public class MarkovLoadModel {
 
   // Constructor helpers
 
+  /**
+   * Converts the JSON-shaped {@link GmmBuckets} (lists of doubles) into a runtime {@code
+   * GmmStateData[][]} backed by primitive arrays for fast sampling. States with no GMM data are
+   * preserved as {@code null} entries; {@link #sanitizeDistribution} routes around them.
+   */
   private GmmStateData[][] buildGmmStates(GmmBuckets buckets) {
     List<GmmBuckets.GmmBucket> bucketList = buckets.buckets();
     if (bucketList.size() != bucketCount) {
@@ -163,6 +177,7 @@ public class MarkovLoadModel {
     return lookup;
   }
 
+  /** Converts a JSON power reference into a typed quantity. Only {@code "kW"} is accepted. */
   private ComparableQuantity<Power> convertPowerReference(
       ValueModel.Normalization.PowerReference reference) {
     if (!"kW".equalsIgnoreCase(reference.unit())) {
@@ -238,7 +253,7 @@ public class MarkovLoadModel {
     return Optional.of(maxPowerFromModel);
   }
 
-  /** Markov models do not define an energy scaling factor. */
+  /** Not implemented yet. Future feature */
   public Optional<ComparableQuantity<Energy>> getProfileEnergyScaling() {
     return Optional.empty();
   }
@@ -253,6 +268,7 @@ public class MarkovLoadModel {
   //     5. scale
   // =====================================================================================
 
+  /** Runs the full five-step simulation pipeline and packages the result for the caller. */
   private PowerValueSource.MarkovOutputValue computeStep(PowerValueSource.MarkovIdentifier data) {
     int bucket = bucketId(data.time());
     int currentState = resolveState(data);
@@ -264,6 +280,11 @@ public class MarkovLoadModel {
 
   // Step 1: Determine time bucket
 
+  /**
+   * Maps a timestamp into one of {@code bucketCount} buckets, encoded as {@code month *
+   * MONTH_FACTOR + weekendFlag * WEEKEND_FACTOR + quarterHour}. Each bucket has its own transition
+   * matrix and per-state GMM, so the result drives every subsequent lookup.
+   */
   private int bucketId(ZonedDateTime time) {
     ZonedDateTime zoned = time.withZoneSameInstant(zoneId);
     int month = zoned.getMonthValue() - 1;
@@ -273,6 +294,7 @@ public class MarkovLoadModel {
         month * MONTH_FACTOR + weekendFlag * WEEKEND_FACTOR + quarterHour, bucketCount);
   }
 
+  /** True for Saturdays and Sundays. */
   private boolean isWeekend(ZonedDateTime time) {
     DayOfWeek day = time.getDayOfWeek();
     return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
@@ -280,6 +302,13 @@ public class MarkovLoadModel {
 
   // Step 2: Resolve current state
 
+  /**
+   * Resolves the Markov state used as the starting point of this step. If the caller supplied a
+   * previous state, it is used directly; otherwise the supplied {@code initialNormalizedValue} is
+   * discretized via {@link #discretize}.
+   *
+   * @throws IllegalArgumentException if a supplied previous state is out of bounds
+   */
   private int resolveState(PowerValueSource.MarkovIdentifier input) {
     if (input.previousState().isPresent()) {
       int state = input.previousState().getAsInt();
@@ -292,8 +321,13 @@ public class MarkovLoadModel {
     return discretize(normalized);
   }
 
+  /**
+   * Returns the state-bin index for a normalized value, using the right-edges in {@code
+   * discretizationThresholds}. The input is clamped to {@code [0, 1]} to absorb minor
+   * floating-point drift on caller-supplied values.
+   */
   private int discretize(double normalized) {
-    double value = clamp01(normalized);
+    double value = Math.clamp(normalized, 0d, 1d);
     for (int i = 0; i < discretizationThresholds.length; i++) {
       if (value <= discretizationThresholds[i]) {
         return i;
@@ -304,6 +338,11 @@ public class MarkovLoadModel {
 
   // Step 3: Derive deterministic seed
 
+  /**
+   * Produces a deterministic RNG seed for one simulation step by mixing the request seed with the
+   * bucket, state and time slot. Identical inputs always yield the same output, which is required
+   * for reproducibility across simulation runs.
+   */
   private long deriveSeed(PowerValueSource.MarkovIdentifier input, int bucket, int state) {
     long seed = input.randomSeed();
     seed = 31 * seed + bucket;
@@ -316,19 +355,28 @@ public class MarkovLoadModel {
 
   // Step 4: Simulate transition and sample value
 
+  /**
+   * Performs one Markov step: sanitize and renormalize the transition row, draw a next state, then
+   * sample its GMM. If no usable transitions remain (empty row, or every reachable state has no GMM
+   * data), the model stays in {@code currentState} and emits a normalized value of {@code 0}.
+   */
   private StepResult simulateStep(int bucket, int currentState, SplittableRandom rng) {
     double[] row = transitions[bucket][currentState];
     double[] distribution = sanitizeDistribution(bucket, row);
     if (distribution.length == 0) {
       return new StepResult(currentState, 0d);
     }
-    int nextStateIndex = drawState(distribution, rng);
+    int nextStateIndex = drawWeighted(distribution, rng);
     double normalized = sampleNormalizedValue(bucket, nextStateIndex, rng);
     return new StepResult(nextStateIndex, normalized);
   }
 
+  /**
+   * Filters the raw transition row so the chain never transitions into a state that lacks GMM data,
+   * then renormalizes the remaining probabilities. Returns an empty array if no usable mass
+   * remains.
+   */
   private double[] sanitizeDistribution(int bucket, double[] row) {
-    // Ignore invalid probabilities and states without GMM data, then renormalize.
     double[] sanitized = new double[stateCount];
     double sum = 0d;
     for (int state = 0; state < stateCount; state++) {
@@ -351,39 +399,46 @@ public class MarkovLoadModel {
     return sanitized;
   }
 
-  private int drawState(double[] distribution, SplittableRandom rng) {
+  /**
+   * Picks an index by weighted random sampling. The {@code weights} array must be non-negative and
+   * sum to (approximately) one; used both to draw the next Markov state and to draw a GMM
+   * component.
+   */
+  private static int drawWeighted(double[] weights, SplittableRandom rng) {
     double sample = rng.nextDouble();
     double cumulative = 0d;
-    for (int i = 0; i < distribution.length; i++) {
-      cumulative += distribution[i];
+    for (int i = 0; i < weights.length; i++) {
+      cumulative += weights[i];
       if (sample <= cumulative) {
         return i;
       }
     }
-    return distribution.length - 1;
+    return weights.length - 1;
   }
 
+  /**
+   * Draws a normalized power value from the GMM at {@code (bucket, state)}. Returns {@code 0} if
+   * that cell has no GMM data. The result is clamped to {@code [0, 1]} because Gaussian tails are
+   * unbounded; without clamping, {@link #scale} could return values outside {@code [minPower,
+   * maxPower]}.
+   */
   private double sampleNormalizedValue(int bucket, int state, SplittableRandom rng) {
     GmmStateData gmm = gmmStates[bucket][state];
     if (gmm == null) {
       return 0d;
     }
-    return clamp01(gmm.sample(rng));
+    return Math.clamp(gmm.sample(rng), 0d, 1d);
   }
 
   // Step 5: Scale normalized value to power
 
+  /**
+   * Maps a normalized {@code [0, 1]} value into actual power via {@code minPower + value *
+   * (maxPower - minPower)}.
+   */
   private ComparableQuantity<Power> scale(double normalizedValue) {
     ComparableQuantity<Power> range = maxPowerFromModel.subtract(minPowerFromModel);
     return minPowerFromModel.add(range.multiply(normalizedValue)).asType(Power.class);
-  }
-
-  // Utility
-
-  private double clamp01(double value) {
-    if (value < 0d) return 0d;
-    if (value > 1d) return 1d;
-    return value;
   }
 
   // =====================================================================================
@@ -413,31 +468,13 @@ public class MarkovLoadModel {
      * distribution.
      */
     private double sample(SplittableRandom rng) {
-      int component = drawComponent(rng.nextDouble());
+      int component = drawWeighted(weights, rng);
       double mean = means[component];
       double variance = Math.max(0d, variances[component]);
       if (variance == 0d) {
         return mean;
       }
-      return mean + Math.sqrt(variance) * nextGaussian(rng);
-    }
-
-    private int drawComponent(double sample) {
-      double cumulative = 0d;
-      for (int i = 0; i < weights.length; i++) {
-        cumulative += weights[i];
-        if (sample <= cumulative) {
-          return i;
-        }
-      }
-      return weights.length - 1;
-    }
-
-    /** Box-Muller transform to generate a standard normal random variate. */
-    private double nextGaussian(SplittableRandom rng) {
-      double u1 = Math.max(Double.MIN_VALUE, rng.nextDouble());
-      double u2 = rng.nextDouble();
-      return Math.sqrt(-2.0d * Math.log(u1)) * Math.cos(2.0d * Math.PI * u2);
+      return mean + Math.sqrt(variance) * rng.nextGaussian();
     }
   }
 
@@ -445,39 +482,82 @@ public class MarkovLoadModel {
   // Data records (JSON structure)
   // =====================================================================================
 
+  /**
+   * Provenance metadata for the trained model: trainer name, version (e.g. a git SHA) and the
+   * free-form configuration that produced this JSON.
+   */
   public record Generator(String name, String version, Map<String, String> config) {}
 
+  /**
+   * Temporal layout of the model: number of buckets, the (documentation-only) encoding formula used
+   * by the trainer, the sampling interval in minutes, and the IANA timezone the buckets are defined
+   * in.
+   */
   public record TimeModel(
       int bucketCount,
       String bucketEncodingFormula,
       int samplingIntervalMinutes,
       String timezone) {}
 
+  /** Value-space configuration: physical unit, normalization range and state discretization. */
   public record ValueModel(
       String valueUnit, Normalization normalization, Discretization discretization) {
 
+    /**
+     * Normalization range used to map between normalized {@code [0, 1]} values and physical power.
+     * Both {@code maxPower} and {@code minPower} are required at construction time; the optional
+     * wrapping only reflects the JSON shape.
+     */
     public record Normalization(
         String method, Optional<PowerReference> maxPower, Optional<PowerReference> minPower) {
 
+      /** A value/unit pair from the JSON normalization block. Only {@code "kW"} is supported. */
       public record PowerReference(double value, String unit) {}
     }
 
+    /**
+     * State-bin layout: the number of states and the right-edge thresholds that separate
+     * neighbouring states. The list contains {@code states - 1} entries.
+     */
     public record Discretization(int states, List<Double> thresholdsRight) {}
   }
 
+  /** Optional metadata describing how the trainer produced the transitions and GMMs. */
   public record Parameters(TransitionParameters transitions, GmmParameters gmm) {
 
+    /**
+     * Strategy used by the trainer when a transition row had no observations (e.g. {@code
+     * "self_loop"}). Carried through for traceability; not used at simulation time.
+     */
     public record TransitionParameters(String emptyRowStrategy) {}
 
+    /**
+     * GMM-fitting metadata.
+     *
+     * @param valueColumn name of the column the trainer fit on
+     * @param verbose scikit-learn verbosity used during fitting
+     * @param heartbeatSeconds stuck-process watchdog interval used by the simonaMarkovLoad Python
+     *     trainer: when set, the trainer enables {@code faulthandler.dump_traceback_later} and
+     *     dumps a stack trace every N seconds so hangs during GMM fitting can be diagnosed. Carried
+     *     through for JSON round-trip only; unused at simulation time.
+     */
     public record GmmParameters(
         String valueColumn, Optional<Integer> verbose, Optional<Integer> heartbeatSeconds) {}
   }
 
+  /**
+   * The 3D transition tensor {@code values[bucket][currentState][nextState] = probability}, plus
+   * the dtype and encoding metadata from the JSON. {@link #equals} and {@link #hashCode} are
+   * overridden so two records with equal array contents compare equal; the synthetic record
+   * versions would otherwise compare arrays by identity.
+   */
   public record TransitionData(String dtype, String encoding, double[][][] values) {
+    /** Number of time buckets, i.e. the outer dimension of {@link #values()}. */
     public int bucketCount() {
       return values.length;
     }
 
+    /** Number of states, i.e. the inner dimension of {@link #values()}. */
     public int stateCount() {
       return values.length == 0 ? 0 : values[0].length;
     }
@@ -495,25 +575,23 @@ public class MarkovLoadModel {
     public int hashCode() {
       return Objects.hash(dtype, encoding, Arrays.deepHashCode(values));
     }
-
-    @Override
-    public String toString() {
-      return "TransitionData{"
-          + "dtype='"
-          + dtype
-          + '\''
-          + ", encoding='"
-          + encoding
-          + '\''
-          + ", values="
-          + Arrays.deepToString(values)
-          + '}';
-    }
   }
 
+  /**
+   * Per-bucket Gaussian Mixture Models. The outer list has {@code bucketCount} entries (one per
+   * time bucket); each {@link GmmBucket} has {@code stateCount} {@link GmmState} entries (one per
+   * state). A {@link GmmState} may be {@code null} when no observations were available for that
+   * (bucket, state) pair.
+   */
   public record GmmBuckets(List<GmmBucket> buckets) {
+    /** GMM data for one time bucket, indexed by state. Entries may be {@code null}. */
     public record GmmBucket(List<GmmState> states) {}
 
+    /**
+     * Parameters of one Gaussian Mixture Model: per-component {@code weights}, {@code means} and
+     * {@code variances}. Each component is a 1-D Gaussian; the trainer chooses 1-3 components per
+     * (bucket, state) cell using BIC.
+     */
     public record GmmState(List<Double> weights, List<Double> means, List<Double> variances) {
 
       private GmmStateData toStateData() {
