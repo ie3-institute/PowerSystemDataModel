@@ -565,15 +565,26 @@ public class MarkovLoadModel {
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
-      if (!(o instanceof TransitionData other)) return false;
-      return Objects.equals(dtype, other.dtype)
-          && Objects.equals(encoding, other.encoding)
-          && Arrays.deepEquals(values, other.values);
+      return o instanceof TransitionData(String d, String e, double[][][] v)
+          && Objects.equals(dtype, d)
+          && Objects.equals(encoding, e)
+          && Arrays.deepEquals(values, v);
     }
 
     @Override
     public int hashCode() {
       return Objects.hash(dtype, encoding, Arrays.deepHashCode(values));
+    }
+
+    @Override
+    public String toString() {
+      return "TransitionData[dtype="
+          + dtype
+          + ", encoding="
+          + encoding
+          + ", values="
+          + Arrays.deepToString(values)
+          + "]";
     }
   }
 
