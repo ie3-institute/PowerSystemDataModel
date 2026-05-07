@@ -82,26 +82,6 @@ class MarkovLoadModelTest extends Specification {
     output.value().get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 2.6d
   }
 
-  def "supplier returns zero power when transitions row has no usable probabilities"() {
-    given:
-    def model = loadModel(emptyTransitions(), missingStateGmms())
-    def input = new PowerValueSource.MarkovIdentifier(
-        ZonedDateTime.parse("2025-01-01T00:00:00Z"),
-        OptionalInt.of(0),
-        OptionalDouble.empty(),
-        7L
-        )
-
-    when:
-    def supplier = model.getValueSupplier(input)
-    def output = supplier.get()
-
-    then:
-    output.nextState() == 0 // stays in current state
-    output.value().isPresent()
-    output.value().get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 1d
-  }
-
   private loadModel(String transitions, String states) {
     def json = modelJson(transitions, states)
     def root = objectMapper.readTree(json)
@@ -143,30 +123,6 @@ class MarkovLoadModelTest extends Specification {
           [1.0, 0.0],
           [0.0, 1.0]
         ]
-      ]
-    """.stripIndent()
-  }
-
-  private static String emptyTransitions() {
-    return """
-      [
-        [
-          [0.0, 0.0],
-          [0.0, 0.0]
-        ]
-      ]
-    """.stripIndent()
-  }
-
-  private static String missingStateGmms() {
-    return """
-      [
-        {
-          "weights": [1.0],
-          "means": [0.4],
-          "variances": [0.0]
-        },
-        null
       ]
     """.stripIndent()
   }

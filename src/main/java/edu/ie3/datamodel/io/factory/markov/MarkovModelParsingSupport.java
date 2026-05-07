@@ -195,10 +195,10 @@ interface MarkovModelParsingSupport {
     }
   }
 
-  default Optional<Integer> optionalInt(JsonNode node, String field) {
+  default OptionalInt optionalInt(JsonNode node, String field) {
     JsonNode value = node.get(field);
-    if (value == null || value.isNull()) return Optional.empty();
-    return Optional.of(value.asInt());
+    if (value == null || value.isNull()) return OptionalInt.empty();
+    return OptionalInt.of(value.asInt());
   }
 
   default int[] parseTransitionShape(JsonNode transitionsNode) {

@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.SplittableRandom;
 import java.util.function.Supplier;
 import javax.measure.quantity.Energy;
@@ -356,48 +357,15 @@ public class MarkovLoadModel {
   // Step 4: Simulate transition and sample value
 
   /**
-   * Performs one Markov step: sanitize and renormalize the transition row, draw a next state, then
-   * sample its GMM. If no usable transitions remain (empty row, or every reachable state has no GMM
-   * data), the model stays in {@code currentState} and emits a normalized value of {@code 0}.
+   * Performs one Markov step: draw the next state from the transition row, then sample its GMM. The
+   * simonaMarkovLoad trainer guarantees that every state with non-zero incoming transition
+   * probability also has GMM data (empty rows fall back to a self-loop on the current state), so no
+   * per-step row sanitization is needed.
    */
   private StepResult simulateStep(int bucket, int currentState, SplittableRandom rng) {
-    double[] row = transitions[bucket][currentState];
-    // TODO: Remove distribution if possible
-    double[] distribution = sanitizeDistribution(bucket, row);
-    if (distribution.length == 0) {
-      return new StepResult(currentState, 0d);
-    }
-    int nextStateIndex = drawWeighted(distribution, rng);
+    int nextStateIndex = drawWeighted(transitions[bucket][currentState], rng);
     double normalized = sampleNormalizedValue(bucket, nextStateIndex, rng);
     return new StepResult(nextStateIndex, normalized);
-  }
-
-  /**
-   * Filters the raw transition row so the chain never transitions into a state that lacks GMM data,
-   * then renormalizes the remaining probabilities. Returns an empty array if no usable mass
-   * remains.
-   */
-  private double[] sanitizeDistribution(int bucket, double[] row) {
-    double[] sanitized = new double[stateCount];
-    double sum = 0d;
-    for (int state = 0; state < stateCount; state++) {
-      double sanitizedValue = 0d;
-      if (state < row.length) {
-        double value = row[state];
-        if (value > 0d && gmmStates[bucket][state] != null) {
-          sanitizedValue = value;
-          sum += value;
-        }
-      }
-      sanitized[state] = sanitizedValue;
-    }
-    if (sum <= 0d) {
-      return new double[0];
-    }
-    for (int i = 0; i < sanitized.length; i++) {
-      sanitized[i] /= sum;
-    }
-    return sanitized;
   }
 
   /**
@@ -520,7 +488,6 @@ public class MarkovLoadModel {
      * State-bin layout: the number of states and the right-edge thresholds that separate
      * neighbouring states. The list contains {@code states - 1} entries.
      */
-    // TODO: Replace Autoboxing of List<Double>
     public record Discretization(int states, List<Double> thresholdsRight) {}
   }
 
@@ -543,9 +510,8 @@ public class MarkovLoadModel {
      *     dumps a stack trace every N seconds so hangs during GMM fitting can be diagnosed. Carried
      *     through for JSON round-trip only; unused at simulation time.
      */
-    // TODO: Remove boxing from Optional<Integer>
     public record GmmParameters(
-        String valueColumn, Optional<Integer> verbose, Optional<Integer> heartbeatSeconds) {}
+        String valueColumn, OptionalInt verbose, OptionalInt heartbeatSeconds) {}
   }
 
   /**

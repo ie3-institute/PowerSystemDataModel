@@ -97,8 +97,8 @@ class JsonMarkovProfileSourceTest extends Specification {
     source.getMaxPower().isPresent()
     source.getMaxPower().get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 10d
     output.value().isPresent()
-    output.nextState() == 0
-    output.value().get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 10d
+    output.nextState() == 1
+    output.value().get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 5.25d
   }
 
   private static String validModelJson() {
@@ -154,11 +154,15 @@ class JsonMarkovProfileSourceTest extends Specification {
               {
                 "states": [
                     {
-                      "weights": [0.6],
+                      "weights": [1.0],
                       "means": [1.0],
-                    "variances": [0.0]
+                      "variances": [0.0]
                     },
-                  null
+                    {
+                      "weights": [1.0],
+                      "means": [0.5],
+                      "variances": [0.0]
+                    }
                 ]
               }
             ]
