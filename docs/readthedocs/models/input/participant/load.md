@@ -95,3 +95,7 @@ The profiles rely on the VDN description for interruptable loads.
 For more details see [here (German only)](https://www.bdew.de/media/documents/LPuVe-Praxisleitfaden.pdf).
 {code}`NbwTemperatureDependantLoadProfiles` provides sample temperature dependant load profiles that can be used.
 The `NbwTemperatureDependantLoadProfiles` consists of load profiles "ep1" for heat pumps and "ez2" for night storage heating.
+
+Markov-chain-based load profiles can be used for stochastic load simulation. These profiles are produced
+by an external Python trainer and loaded from JSON files. For details on the JSON schema and the simulation pipeline,
+see the [Markov-based Load Profiles](markov-load-model) documentation.
