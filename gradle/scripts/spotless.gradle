@@ -25,6 +25,7 @@ spotless {
     leadingTabsToSpaces 2
   }
 
+
   groovyGradle {
     // same as groovy, but for .gradle (defaults to '*.gradle')
     target '*.gradle', 'gradle/scripts/*.gradle'
