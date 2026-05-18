@@ -2,7 +2,7 @@
  * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
-*/
+ */
 package edu.ie3.datamodel.io.source.csv
 
 import static edu.ie3.datamodel.models.StandardUnits.ENERGY_PRICE
