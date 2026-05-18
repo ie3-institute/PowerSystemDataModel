@@ -4,12 +4,12 @@ plugins {
   id 'maven-publish'
   id 'signing'
   id 'pmd' // code check, working on source code
-  id 'com.diffplug.spotless' version '8.4.0' //code format
-  id 'com.github.spotbugs' version '6.5.0' // code check, working on byte code
+  id 'com.diffplug.spotless' version '8.5.1' //code format
+  id 'com.github.spotbugs' version '6.5.4' // code check, working on byte code
   id 'de.undercouch.download' version '5.7.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
-  id "org.sonarqube" version "7.2.3.7755" // sonarqube
+  id "org.sonarqube" version "7.3.0.8198" // sonarqube
   id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
   id 'com.gradleup.shadow' version '9.4.1' // fat jar
 }
@@ -17,10 +17,10 @@ plugins {
 ext {
   //version (changing these should be considered thoroughly!)
   javaVersion = JavaVersion.VERSION_21
-  groovyBinaryVersion = "5.0.5"
+  groovyBinaryVersion = "5.0.6"
 
   junitVersion = '6.0.3'
-  testcontainersVersion = '2.0.4'
+  testcontainersVersion = '2.0.5'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
 }
@@ -56,7 +56,7 @@ dependencies {
   //	 ie³ power system utils
   implementation 'com.github.ie3-institute:PowerSystemUtils:3.1.0'
 
-  implementation 'tech.units:indriya:2.2.3'
+  implementation 'tech.units:indriya:2.2.4'
 
   // JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
   implementation ('org.locationtech.jts:jts-core:1.20.0'){
@@ -89,18 +89,18 @@ dependencies {
   testImplementation "org.testcontainers:testcontainers-couchbase:$testcontainersVersion"
 
   // logging
-  implementation platform('org.apache.logging.log4j:log4j-bom:2.25.4')
+  implementation platform('org.apache.logging.log4j:log4j-bom:2.26.0')
   implementation 'org.apache.logging.log4j:log4j-api' // log4j
   implementation 'org.apache.logging.log4j:log4j-core' // log4j
   implementation 'org.apache.logging.log4j:log4j-slf4j-impl' // log4j -> slf4j
 
   // Databases
   implementation 'org.influxdb:influxdb-java:2.25'
-  implementation 'com.couchbase.client:java-client:3.11.1'
-  runtimeOnly 'org.postgresql:postgresql:42.7.10' // postgresql jdbc driver required during runtime
+  implementation 'com.couchbase.client:java-client:3.11.2'
+  runtimeOnly 'org.postgresql:postgresql:42.7.11' // postgresql jdbc driver required during runtime
 
-  implementation 'commons-io:commons-io:2.21.0' // I/O functionalities
-  implementation 'commons-codec:commons-codec:1.21.0' // needed by commons-compress
+  implementation 'commons-io:commons-io:2.22.0' // I/O functionalities
+  implementation 'commons-codec:commons-codec:1.22.0' // needed by commons-compress
   implementation 'org.apache.commons:commons-compress:1.28.0' // I/O functionalities
 }
 
