@@ -57,7 +57,7 @@ class CommonVoltageLevelTest extends Specification {
 
     then:
     VoltageLevelException ex = thrown()
-    ex.message == "The provided id \"HS\" and rated voltage \"500 V\" could possibly meet the voltage level \"Niederspannung\" (Interval [0 kV, 10 kV)), but are inconsistent."
+    ex.message == "The provided id \"HS\" and rated voltage \"500 V\" could possibly meet the voltage level \"Niederspannung\" (Interval [0.0 kV, 10 kV)), but are inconsistent."
   }
 
   def "A common voltage level should test the equality correctly"() {
