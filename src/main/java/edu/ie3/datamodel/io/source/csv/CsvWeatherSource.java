@@ -129,15 +129,13 @@ public class CsvWeatherSource extends WeatherSource {
     }
 
     List<TimeBasedValue<WeatherValue>> fallbacks = new ArrayList<>(2);
-    timeSeries
-        .getPreviousDateTime(date)
-        .flatMap(timeSeries::getTimeBasedValue)
-        .ifPresent(fallbacks::add);
-    if (!fallbacks.isEmpty()) {
-      timeSeries
-          .getPreviousDateTime(fallbacks.get(0).getTime())
-          .flatMap(timeSeries::getTimeBasedValue)
-          .ifPresent(fallbacks::add);
+    ZonedDateTime cursor = date;
+    for (int i = 0; i < 2; i++) {
+      Optional<TimeBasedValue<WeatherValue>> previous =
+          timeSeries.getPreviousDateTime(cursor).flatMap(timeSeries::getTimeBasedValue);
+      if (previous.isEmpty()) break;
+      fallbacks.add(previous.get());
+      cursor = previous.get().getTime();
     }
     return applyFallbackOrThrow(date, coordinate, fallbacks);
   }
