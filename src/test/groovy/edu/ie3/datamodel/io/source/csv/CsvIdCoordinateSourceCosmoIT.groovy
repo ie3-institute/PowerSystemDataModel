@@ -24,8 +24,9 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
   def setupSpec() {
     source = new CsvIdCoordinateSource(new CosmoIdCoordinateFactory(), new CsvDataSource(csvSep, coordinatesCosmoFolderPath, fileNamingStrategy))
   }
-
+  
   def "The CsvCoordinateSource is able to create a valid stream from a coordinate file"() {
+    given:
     def expectedStream = Stream.of(
         ["id": "106580", "latGeo": "39.602772", "latRot": "-10", "longGeo": "1.279336", "longRot": "-6.8125", "tid": "1"],
         ["id": "106581", "latGeo": "39.610001", "latRot": "-10", "longGeo": "1.358673", "longRot": "-6.75", "tid": "2"],
@@ -37,7 +38,7 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
 
     then:
     actualStream.success
-    actualStream.data.get().toList() == expectedStream.collect(Collectors.toList())
+    actualStream.data.get().toList() == expectedStream.toList()
   }
 
   def "The CsvCoordinateSource is able to return the source fields from a coordinate file"() {
