@@ -25,6 +25,22 @@ class CsvIdCoordinateSourceIconIT extends Specification implements CsvTestDataMe
     source = new CsvIdCoordinateSource(new IconIdCoordinateFactory(), new CsvDataSource(csvSep, coordinatesIconFolderPath, fileNamingStrategy))
   }
 
+  def "The CsvCoordinateSource is able to create a valid stream from a coordinate file"() {
+    def expectedStream = Stream.of(
+        ["id": "67775", "latitude": "51.5", "longitude": "7.438", "coordinateType": "ICON"],
+        ["id": "531137", "latitude": "51.5", "longitude": "7.375", "coordinateType": "ICON"],
+        ["id": "551525", "latitude": "51.438", "longitude": "7.438", "coordinateType": "ICON"],
+        ["id": "278150", "latitude": "51.438", "longitude": "7.375", "coordinateType": "ICON"]
+        )
+
+    when:
+    def actualStream = source.buildStreamWithFieldsToAttributesMap()
+
+    then:
+    actualStream.success
+    actualStream.data.get().toList() == expectedStream.collect(Collectors.toList())
+  }
+
   def "The CsvIdCoordinateSource is able to look up a specific point or an empty Optional otherwise" () {
     given:
     def knownCoordinateId = 551525
