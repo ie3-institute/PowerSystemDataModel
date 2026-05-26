@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+- Added explicit handling for cases where no weather data is received from any source [#554](https://github.com/ie3-institute/PowerSystemDataModel/issues/554)
 
 ### Fixed
 
