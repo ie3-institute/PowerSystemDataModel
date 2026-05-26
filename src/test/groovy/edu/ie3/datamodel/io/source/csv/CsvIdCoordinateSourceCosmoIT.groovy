@@ -27,11 +27,10 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
 
   def "The CsvCoordinateSource is able to create a valid stream from a coordinate file"() {
     def expectedStream = Stream.of(
-        ["id": "67775", "latitude": "51.5", "longitude": "7.438", "coordinateType": "ICON"],
-        ["id": "531137", "latitude": "51.5", "longitude": "7.375", "coordinateType": "ICON"],
-        ["id": "551525", "latitude": "51.438", "longitude": "7.438", "coordinateType": "ICON"],
-        ["id": "278150", "latitude": "51.438", "longitude": "7.375", "coordinateType": "ICON"]
-        )
+        ["id": "106580", "latGeo": "39.602772", "latRot": "-10", "longGeo": "1.279336", "longRot": "-6.8125", "tid": "1"],
+        ["id": "106581", "latGeo": "39.610001", "latRot": "-10", "longGeo": "1.358673", "longRot": "-6.75", "tid": "2"],
+        ["id": "106582", "latGeo": "39.617161", "latRot": "-10", "longGeo": "1.438028", "longRot": "-6.6875", "tid": "3"],
+        ["id": "106583", "latGeo": "39.624249", "latRot": "-10", "longGeo": "1.5174021", "longRot": "-6.625", "tid": "4"])
 
     when:
     def actualStream = source.buildStreamWithFieldsToAttributesMap()
