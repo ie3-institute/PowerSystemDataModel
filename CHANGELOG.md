@@ -47,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Correctly persist EmInput entities in CsvFileSink [#1337](https://github.com/ie3-institute/PowerSystemDataModel/issues/1337)
 - Proper handle duplicated headline exceptions in CsvDataSource [#1595](https://github.com/ie3-institute/PowerSystemDataModel/issues/1595)
 - Align CSV header formatting to RFC 4180 standards in tests [1544](https://github.com/ie3-institute/PowerSystemDataModel/issues/1544)
-- Remove redundant tests for CsvIdCoordinateSource in Icon and Cosmo integration tests [#1594](https://github.com/ie3-institute/PowerSystemDataModel/issues/1594)
+- Fix false positive tests in csvidcoordinatesourcecosmoit and csvidcoordinatesourceiconit [#1594](https://github.com/ie3-institute/PowerSystemDataModel/issues/1594)
 
 ### Changed
 - Updated CI-Pipeline to run task `Deploy` and `Staging` only for `Main` [#1403](https://github.com/ie3-institute/PowerSystemDataModel/issues/1403)
