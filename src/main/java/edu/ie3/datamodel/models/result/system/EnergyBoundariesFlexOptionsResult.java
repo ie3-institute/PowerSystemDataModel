@@ -69,15 +69,15 @@ public class EnergyBoundariesFlexOptionsResult extends FlexOptionsResult {
         + ", inputModel="
         + getInputModel()
         + ", eState="
-        + geteState()
+        + eState
         + ", eMin="
-        + geteMin()
+        + eMin
         + ", eMax="
-        + geteMax()
+        + eMax
         + ", pMin="
-        + getpMin()
+        + pMin
         + ", pMax="
-        + getpMax()
+        + pMax
         + '}';
   }
 
