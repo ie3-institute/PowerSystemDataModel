@@ -59,6 +59,7 @@ public abstract class Processor<T> {
           "pThermal",
           "pRef",
           "pMin",
+          "eState",
           "eMin",
           "eMax");
 
