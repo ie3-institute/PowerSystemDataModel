@@ -305,6 +305,15 @@ public final class ModelFields extends FieldNamingStrategy {
 
     // adding unsupported fields
     ModelFields.unsupportedFields.put(SwitchInput.class, newSet(PARALLEL_DEVICES));
+
+    Stream.of(
+            NodeInput.class,
+            SwitchInput.class,
+            LineInput.class,
+            Transformer2WInput.class,
+            Transformer3WInput.class,
+            MeasurementUnitInput.class)
+        .forEach(c -> registerOptional(c, assetOptionalFields));
   }
 
   /** Method for registering all participant fields. */
