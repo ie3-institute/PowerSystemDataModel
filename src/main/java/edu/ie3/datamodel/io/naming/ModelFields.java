@@ -410,7 +410,8 @@ public final class ModelFields extends FieldNamingStrategy {
 
     registerMandatory(PowerLimitFlexOptionsResult.class, result, P_REF, P_MIN, P_MAX);
 
-    registerMandatory(EnergyBoundariesFlexOptionsResult.class, result, E_MIN, E_MAX, P_MIN, P_MAX);
+    registerMandatory(
+        EnergyBoundariesFlexOptionsResult.class, result, E_STATE, E_MIN, E_MAX, P_MIN, P_MAX);
 
     registerMandatory(NodeResult.class, result, V_MAG, V_ANG);
 
