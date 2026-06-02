@@ -25,11 +25,13 @@ public class EnergyBoundariesFlexOptionsResultFactory
   protected EnergyBoundariesFlexOptionsResult buildModel(EntityData data) {
     ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
     UUID inputModelUuid = data.getUUID(INPUT_MODEL);
+    ComparableQuantity<Energy> eState = data.getQuantity(E_STATE, StandardUnits.ENERGY_RESULT);
     ComparableQuantity<Energy> eMin = data.getQuantity(E_MIN, StandardUnits.ENERGY_RESULT);
     ComparableQuantity<Energy> eMax = data.getQuantity(E_MAX, StandardUnits.ENERGY_RESULT);
     ComparableQuantity<Power> pMin = data.getQuantity(P_MIN, StandardUnits.ACTIVE_POWER_RESULT);
     ComparableQuantity<Power> pMax = data.getQuantity(P_MAX, StandardUnits.ACTIVE_POWER_RESULT);
 
-    return new EnergyBoundariesFlexOptionsResult(zdtTime, inputModelUuid, eMin, eMax, pMin, pMax);
+    return new EnergyBoundariesFlexOptionsResult(
+        zdtTime, inputModelUuid, eState, eMin, eMax, pMin, pMax);
   }
 }

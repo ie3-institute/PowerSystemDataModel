@@ -146,7 +146,7 @@ public interface DataSource {
       }
 
       // find all unused fields
-      Set<String> unused = getUnusedFields(harmonizedActualFields, validSchemes);
+      Set<String> unused = getUnusedFields(harmonizedActualFields, validSchemes, optionalFields);
 
       if (!unused.isEmpty()) {
         log.info(
@@ -209,7 +209,7 @@ public interface DataSource {
    * @return a set of unused fields
    */
   private static Set<String> getUnusedFields(
-      Set<String> actualFields, List<Set<String>> validFieldSets) {
+      Set<String> actualFields, List<Set<String>> validFieldSets, Set<String> optionalFields) {
     // checking for additional fields
     // and returning the set with the least additional fields
     return validFieldSets.stream()
@@ -217,6 +217,7 @@ public interface DataSource {
             s -> {
               Set<String> set = new HashSet<>(actualFields);
               set.removeAll(s);
+              set.removeAll(optionalFields);
               return set;
             })
         .min(Comparator.comparing(Collection::size))
