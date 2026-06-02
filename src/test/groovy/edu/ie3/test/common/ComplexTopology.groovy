@@ -11,7 +11,6 @@ import static edu.ie3.test.common.SystemParticipantTestData.emptySystemParticipa
 import edu.ie3.datamodel.graph.SubGridGate
 import edu.ie3.datamodel.graph.SubGridTopologyGraph
 import edu.ie3.datamodel.models.input.connector.ConnectorPort
-import edu.ie3.datamodel.models.input.container.GraphicElements
 import edu.ie3.datamodel.models.input.container.JointGridContainer
 import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.datamodel.models.input.container.SubGridContainer
@@ -46,10 +45,7 @@ class ComplexTopology extends GridTestData {
   gridName,
   rawGrid,
   emptySystemParticipants,
-  emptyEnergyManagementUnits,
-  new GraphicElements(
-  [] as Set,
-  [] as Set))
+  emptyEnergyManagementUnits)
 
   public static final HashMap<Integer, SubGridContainer> expectedSubGrids = new HashMap<>()
 
@@ -67,10 +63,7 @@ class ComplexTopology extends GridTestData {
         [] as Set,
         [] as Set),
         emptySystemParticipants,
-        emptyEnergyManagementUnits,
-        new GraphicElements(
-        [] as Set,
-        [] as Set)
+        emptyEnergyManagementUnits
         )
         )
     expectedSubGrids.put(2, new SubGridContainer(
@@ -84,10 +77,7 @@ class ComplexTopology extends GridTestData {
         [] as Set,
         [] as Set),
         emptySystemParticipants,
-        emptyEnergyManagementUnits,
-        new GraphicElements(
-        [] as Set,
-        [] as Set)
+        emptyEnergyManagementUnits
         )
         )
     expectedSubGrids.put(3, new SubGridContainer(
@@ -101,10 +91,7 @@ class ComplexTopology extends GridTestData {
         [] as Set,
         [] as Set),
         emptySystemParticipants,
-        emptyEnergyManagementUnits,
-        new GraphicElements(
-        [] as Set,
-        [] as Set)
+        emptyEnergyManagementUnits
         )
         )
     expectedSubGrids.put(4, new SubGridContainer(
@@ -118,10 +105,7 @@ class ComplexTopology extends GridTestData {
         [] as Set,
         [] as Set),
         emptySystemParticipants,
-        emptyEnergyManagementUnits,
-        new GraphicElements(
-        [] as Set,
-        [] as Set)
+        emptyEnergyManagementUnits
         )
         )
     expectedSubGrids.put(5, new SubGridContainer(
@@ -138,10 +122,7 @@ class ComplexTopology extends GridTestData {
         [] as Set,
         [] as Set),
         emptySystemParticipants,
-        emptyEnergyManagementUnits,
-        new GraphicElements(
-        [] as Set,
-        [] as Set)
+        emptyEnergyManagementUnits
         )
         )
     expectedSubGrids.put(6, new SubGridContainer(
@@ -158,10 +139,7 @@ class ComplexTopology extends GridTestData {
         [] as Set,
         [] as Set),
         emptySystemParticipants,
-        emptyEnergyManagementUnits,
-        new GraphicElements(
-        [] as Set,
-        [] as Set)
+        emptyEnergyManagementUnits
         )
         )
 
