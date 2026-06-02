@@ -122,10 +122,11 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     Quantity<Power> pRef = Quantities.getQuantity(5.1, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMin = Quantities.getQuantity(-6, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMax = Quantities.getQuantity(6, StandardUnits.ACTIVE_POWER_RESULT)
+    Quantity<Energy> eState = Quantities.getQuantity(0.01, StandardUnits.ENERGY_RESULT)
     Quantity<Energy> eMin = Quantities.getQuantity(-0.05, StandardUnits.ENERGY_RESULT)
     Quantity<Energy> eMax = Quantities.getQuantity(0.06, StandardUnits.ENERGY_RESULT)
     PowerLimitFlexOptionsResult powerLimitFlexOptionsResult = new PowerLimitFlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, pRef, pMin, pMax)
-    EnergyBoundariesFlexOptionsResult energyBoundariesFlexOptionsResult = new EnergyBoundariesFlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, eMin, eMax, pMin, pMax)
+    EnergyBoundariesFlexOptionsResult energyBoundariesFlexOptionsResult = new EnergyBoundariesFlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, eState, eMin, eMax, pMin, pMax)
 
     when:
     sink.persistAll([

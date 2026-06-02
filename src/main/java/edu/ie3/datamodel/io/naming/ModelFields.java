@@ -305,6 +305,15 @@ public final class ModelFields extends FieldNamingStrategy {
 
     // adding unsupported fields
     ModelFields.unsupportedFields.put(SwitchInput.class, newSet(PARALLEL_DEVICES));
+
+    Stream.of(
+            NodeInput.class,
+            SwitchInput.class,
+            LineInput.class,
+            Transformer2WInput.class,
+            Transformer3WInput.class,
+            MeasurementUnitInput.class)
+        .forEach(c -> registerOptional(c, assetOptionalFields));
   }
 
   /** Method for registering all participant fields. */
@@ -402,7 +411,8 @@ public final class ModelFields extends FieldNamingStrategy {
 
     registerMandatory(PowerLimitFlexOptionsResult.class, result, P_REF, P_MIN, P_MAX);
 
-    registerMandatory(EnergyBoundariesFlexOptionsResult.class, result, E_MIN, E_MAX, P_MIN, P_MAX);
+    registerMandatory(
+        EnergyBoundariesFlexOptionsResult.class, result, E_STATE, E_MIN, E_MAX, P_MIN, P_MAX);
 
     registerMandatory(NodeResult.class, result, V_MAG, V_ANG);
 

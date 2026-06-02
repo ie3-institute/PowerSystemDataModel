@@ -75,7 +75,7 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
   protected Try<String, QuantityException> handleProcessorSpecificQuantity(
       Quantity<?> quantity, String fieldName) {
     return switch (fieldName) {
-      case "energy", "eConsAnnual", "eStorage", "eMin", "eMax":
+      case "energy", "eConsAnnual", "eStorage", "eState", "eMin", "eMax":
         yield Success.of(
             quantityValToOptionalString(
                 quantity.asType(Energy.class).to(StandardUnits.ENERGY_RESULT)));

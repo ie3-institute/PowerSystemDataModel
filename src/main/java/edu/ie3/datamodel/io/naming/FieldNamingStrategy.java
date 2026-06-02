@@ -40,8 +40,9 @@ public class FieldNamingStrategy {
   public static final String S_RATED_DC = "sRatedDC";
 
   // energy
-  public static final String E_MAX = "eMax";
+  public static final String E_STATE = "eState";
   public static final String E_MIN = "eMin";
+  public static final String E_MAX = "eMax";
 
   // node
   public static final String SLACK = "slack";

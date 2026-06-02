@@ -4,14 +4,14 @@ plugins {
   id 'maven-publish'
   id 'signing'
   id 'pmd' // code check, working on source code
-  id 'com.diffplug.spotless' version '8.5.1' //code format
-  id 'com.github.spotbugs' version '6.5.4' // code check, working on byte code
+  id 'com.diffplug.spotless' version '8.6.0' //code format
+  id 'com.github.spotbugs' version '6.5.5' // code check, working on byte code
   id 'de.undercouch.download' version '5.7.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
   id "org.sonarqube" version "7.3.0.8198" // sonarqube
   id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
-  id 'com.gradleup.shadow' version '9.4.1' // fat jar
+  id 'com.gradleup.shadow' version '9.4.2' // fat jar
 }
 
 ext {
@@ -19,7 +19,7 @@ ext {
   javaVersion = JavaVersion.VERSION_21
   groovyBinaryVersion = "5.0.6"
 
-  junitVersion = '6.0.3'
+  junitVersion = '6.1.0'
   testcontainersVersion = '2.0.5'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
@@ -96,7 +96,7 @@ dependencies {
 
   // Databases
   implementation 'org.influxdb:influxdb-java:2.25'
-  implementation 'com.couchbase.client:java-client:3.11.2'
+  implementation 'com.couchbase.client:java-client:3.11.3'
   runtimeOnly 'org.postgresql:postgresql:42.7.11' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.22.0' // I/O functionalities
