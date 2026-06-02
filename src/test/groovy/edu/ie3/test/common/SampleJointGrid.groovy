@@ -16,7 +16,6 @@ import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.container.EnergyManagementUnits
-import edu.ie3.datamodel.models.input.container.GraphicElements
 import edu.ie3.datamodel.models.input.container.JointGridContainer
 import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.datamodel.models.input.container.SystemParticipants
@@ -48,8 +47,7 @@ class SampleJointGrid extends SystemParticipantTestData {
         "sampleGrid",
         rawGridElements,
         systemParticipants(rawGridElements),
-        new EnergyManagementUnits(Collections.singleton(emInput)),
-        new GraphicElements(Collections.emptySet()))
+        new EnergyManagementUnits(Collections.singleton(emInput)))
   }
 
   private static SystemParticipants systemParticipants(RawGridElements rawGridElements)

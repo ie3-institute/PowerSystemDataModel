@@ -15,16 +15,13 @@ import tech.units.indriya.ComparableQuantity;
 /** An energy boundaries flexibility options result of a model (system participant or EM agent). */
 public class EnergyBoundariesFlexOptionsResult extends FlexOptionsResult {
 
-  /**
-   * Downward energy flexibility potential (from the current state of energy) of the model at the
-   * given point in simulation time.
-   */
+  /** State of energy of the model at the given point in simulation time. */
+  private final ComparableQuantity<Energy> eState;
+
+  /** Minimum state of energy of the model at the given point in simulation time. */
   private final ComparableQuantity<Energy> eMin;
 
-  /**
-   * Upward energy flexibility potential (from the current state of energy) of the model at the
-   * given point in simulation time.
-   */
+  /** Maximum state of energy of the model at the given point in simulation time. */
   private final ComparableQuantity<Energy> eMax;
 
   /**
@@ -32,23 +29,28 @@ public class EnergyBoundariesFlexOptionsResult extends FlexOptionsResult {
    *
    * @param time Date and time when the result is produced.
    * @param inputModel The UUID of the input model that produces the result.
-   * @param eMin The downward energy flexibility potential (from the current state of energy) of the
-   *     model at the given point in simulation time.
-   * @param eMax The upward energy flexibility potential (from the current state of energy) of the
-   *     model at the given point in simulation time.
+   * @param eState State of energy of the model at the given point in simulation time.
+   * @param eMin Minimum state of energy of the model at the given point in simulation time.
+   * @param eMax Maximum state of energy of the model at the given point in simulation time.
    * @param pMin The minimum active power of the model at the given point in simulation time.
    * @param pMax The maximum active power of the model at the given point in simulation time.
    */
   public EnergyBoundariesFlexOptionsResult(
       ZonedDateTime time,
       UUID inputModel,
+      ComparableQuantity<Energy> eState,
       ComparableQuantity<Energy> eMin,
       ComparableQuantity<Energy> eMax,
       ComparableQuantity<Power> pMin,
       ComparableQuantity<Power> pMax) {
     super(time, inputModel, pMin, pMax);
+    this.eState = eState;
     this.eMin = eMin;
     this.eMax = eMax;
+  }
+
+  public ComparableQuantity<Energy> geteState() {
+    return eState;
   }
 
   public ComparableQuantity<Energy> geteMin() {
@@ -66,14 +68,16 @@ public class EnergyBoundariesFlexOptionsResult extends FlexOptionsResult {
         + getTime()
         + ", inputModel="
         + getInputModel()
+        + ", eState="
+        + eState
         + ", eMin="
-        + geteMin()
+        + eMin
         + ", eMax="
-        + geteMax()
+        + eMax
         + ", pMin="
-        + getpMin()
+        + pMin
         + ", pMax="
-        + getpMax()
+        + pMax
         + '}';
   }
 
@@ -85,11 +89,11 @@ public class EnergyBoundariesFlexOptionsResult extends FlexOptionsResult {
 
     EnergyBoundariesFlexOptionsResult that = (EnergyBoundariesFlexOptionsResult) o;
 
-    return eMin.equals(that.eMin) && eMax.equals(that.eMax);
+    return eState.equals(that.eState) && eMin.equals(that.eMin) && eMax.equals(that.eMax);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), eMin, eMax);
+    return Objects.hash(super.hashCode(), eState, eMin, eMax);
   }
 }

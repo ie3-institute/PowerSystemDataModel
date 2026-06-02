@@ -17,8 +17,6 @@ import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.container.*;
-import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
-import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.util.quantities.interfaces.SpecificResistance;
@@ -398,26 +396,6 @@ public class ContainerUtils {
   }
 
   /**
-   * Filters all graphic elements for the provided subnet.
-   *
-   * @param input The model to filter
-   * @param subnet The filter criterion
-   * @return A {@link GraphicElements} filtered for the subnet
-   */
-  public static GraphicElements filterForSubnet(GraphicElements input, int subnet) {
-    Set<NodeGraphicInput> nodeGraphics =
-        input.getNodeGraphics().stream()
-            .filter(entity -> entity.getNode().getSubnet() == subnet)
-            .collect(Collectors.toSet());
-    Set<LineGraphicInput> lineGraphics =
-        input.getLineGraphics().stream()
-            .filter(entity -> entity.getLine().getNodeB().getSubnet() == subnet)
-            .collect(Collectors.toSet());
-
-    return new GraphicElements(nodeGraphics, lineGraphics);
-  }
-
-  /**
    * Determining the predominant voltage level in this grid by counting the occurrences of the
    * different voltage levels
    *
@@ -466,15 +444,13 @@ public class ContainerUtils {
    * @param gridName Name of the grid
    * @param rawGrid Container model of raw grid elements
    * @param systemParticipants Container model of system participants
-   * @param graphics Container element of graphic elements
    * @return An immutable, directed graph of sub grid topologies.
    */
   public static SubGridTopologyGraph buildSubGridTopologyGraph(
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
-      EnergyManagementUnits energyManagementUnits,
-      GraphicElements graphics)
+      EnergyManagementUnits energyManagementUnits)
       throws InvalidGridException {
     /* Collect the different sub nets. Through the validation of lines, it is ensured, that no galvanically connected
      * grid has more than one subnet number assigned */
@@ -483,7 +459,7 @@ public class ContainerUtils {
     /* Build the single sub grid models */
     HashMap<Integer, SubGridContainer> subGrids =
         buildSubGridContainers(
-            gridName, subnetNumbers, rawGrid, systemParticipants, energyManagementUnits, graphics);
+            gridName, subnetNumbers, rawGrid, systemParticipants, energyManagementUnits);
 
     /* Build the graph structure denoting the topology of the grid */
     return buildSubGridTopologyGraph(subGrids, rawGrid);
@@ -506,7 +482,6 @@ public class ContainerUtils {
    * @param subnetNumbers Set of available subnet numbers
    * @param rawGrid Container model with all raw grid elements
    * @param systemParticipants Container model with all system participant inputs
-   * @param graphics Container model with all graphic elements
    * @return A mapping from subnet number to container model with sub grid elements
    */
   private static HashMap<Integer, SubGridContainer> buildSubGridContainers(
@@ -514,15 +489,13 @@ public class ContainerUtils {
       SortedSet<Integer> subnetNumbers,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
-      EnergyManagementUnits energyManagementUnits,
-      GraphicElements graphics)
+      EnergyManagementUnits energyManagementUnits)
       throws InvalidGridException {
     HashMap<Integer, SubGridContainer> subGrids = new HashMap<>(subnetNumbers.size());
     for (int subnetNumber : subnetNumbers) {
       RawGridElements rawGridElements = ContainerUtils.filterForSubnet(rawGrid, subnetNumber);
       SystemParticipants systemParticipantElements =
           ContainerUtils.filterForSubnet(systemParticipants, subnetNumber);
-      GraphicElements graphicElements = ContainerUtils.filterForSubnet(graphics, subnetNumber);
 
       subGrids.put(
           subnetNumber,
@@ -531,8 +504,7 @@ public class ContainerUtils {
               subnetNumber,
               rawGridElements,
               systemParticipantElements,
-              energyManagementUnits,
-              graphicElements));
+              energyManagementUnits));
     }
     return subGrids;
   }
@@ -719,9 +691,6 @@ public class ContainerUtils {
             subGridContainers.stream()
                 .map(GridContainer::getSystemParticipants)
                 .collect(Collectors.toSet()));
-    GraphicElements graphicElements =
-        new GraphicElements(
-            subGridContainers.stream().map(GridContainer::getGraphics).collect(Collectors.toSet()));
     EnergyManagementUnits energyManagementUnits =
         new EnergyManagementUnits(
             subGridContainers.stream().map(GridContainer::getEmUnits).collect(Collectors.toSet()));
@@ -733,12 +702,7 @@ public class ContainerUtils {
     SubGridTopologyGraph subGridTopologyGraph = buildSubGridTopologyGraph(subGridMapping, rawGrid);
 
     return new JointGridContainer(
-        gridName,
-        rawGrid,
-        systemParticipants,
-        energyManagementUnits,
-        graphicElements,
-        subGridTopologyGraph);
+        gridName, rawGrid, systemParticipants, energyManagementUnits, subGridTopologyGraph);
   }
 
   /**
@@ -853,36 +817,6 @@ public class ContainerUtils {
                 })
             .collect(Collectors.toSet());
 
-    // update node input graphics (2 winding transformers and 3 winding transformers)
-    /// map old to new
-    Map<NodeGraphicInput, NodeGraphicInput> oldToNewNodeGraphics =
-        subGridContainer.getGraphics().getNodeGraphics().stream()
-            .filter(nodeGraphic -> oldToNewTrafo2WANodes.containsKey(nodeGraphic.getNode()))
-            .filter(nodeGraphic -> oldToNewTrafo3WANodes.containsKey(nodeGraphic.getNode()))
-            .map(
-                oldNodeGraphic -> {
-                  NodeInput newNode =
-                      oldToNewTrafo2WANodes.containsKey(oldNodeGraphic.getNode())
-                          ? oldToNewTrafo2WANodes.get(oldNodeGraphic.getNode())
-                          : oldToNewTrafo3WANodes.get(oldNodeGraphic.getNode());
-
-                  return new AbstractMap.SimpleEntry<>(
-                      oldNodeGraphic, oldNodeGraphic.copy().node(newNode).build());
-                })
-            .collect(
-                Collectors.toMap(
-                    AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
-
-    /// remove old node graphics, add new ones
-    Set<NodeGraphicInput> newNodeGraphics =
-        Stream.concat(
-                // filter old ones
-                subGridContainer.getGraphics().getNodeGraphics().stream()
-                    .filter(nodeGraphic -> !oldToNewNodeGraphics.containsKey(nodeGraphic)),
-                // add the new trafo2w ones
-                oldToNewNodeGraphics.values().stream())
-            .collect(Collectors.toSet());
-
     // update nodes in raw grid by removing the old transformer nodes and add all new ones
     Set<NodeInput> newNodes =
         Stream.concat(
@@ -911,7 +845,6 @@ public class ContainerUtils {
             subGridContainer.getRawGrid().getSwitches(),
             subGridContainer.getRawGrid().getMeasurementUnits()),
         subGridContainer.getSystemParticipants(),
-        subGridContainer.getEmUnits(),
-        new GraphicElements(newNodeGraphics, subGridContainer.getGraphics().getLineGraphics()));
+        subGridContainer.getEmUnits());
   }
 }

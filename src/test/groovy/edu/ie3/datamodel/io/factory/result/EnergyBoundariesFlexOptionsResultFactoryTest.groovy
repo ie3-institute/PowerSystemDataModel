@@ -34,6 +34,7 @@ class EnergyBoundariesFlexOptionsResultFactoryTest extends Specification impleme
     Map<String, String> parameter = [
       "time"      : "2020-01-30T17:26:44Z",
       "inputModel": "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
+      "estate"    : "0",
       "emin"      : "-0.05",
       "emax"      : "0.05",
       "pmin"      : "-1",
@@ -47,6 +48,7 @@ class EnergyBoundariesFlexOptionsResultFactoryTest extends Specification impleme
     result.success
     result.data.get().getClass() == EnergyBoundariesFlexOptionsResult
     ((EnergyBoundariesFlexOptionsResult) result.data.get()).with {
+      eState == getQuant(parameter["estate"], StandardUnits.ENERGY_RESULT)
       eMin == getQuant(parameter["emin"], StandardUnits.ENERGY_RESULT)
       eMax == getQuant(parameter["emax"], StandardUnits.ENERGY_RESULT)
       pMin == getQuant(parameter["pmin"], StandardUnits.ACTIVE_POWER_RESULT)
@@ -67,6 +69,6 @@ class EnergyBoundariesFlexOptionsResultFactoryTest extends Specification impleme
     input.failure
     input.exception.get().message == "The provided fields [e_max, input_model, p_max, p_min, time] are invalid for instance of 'EnergyBoundariesFlexOptionsResult'. \n" +
         "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'EnergyBoundariesFlexOptionsResult' are possible (NOT case-sensitive!):\n" +
-        "0: [eMax, eMin, inputModel, pMax, pMin, time] or [e_max, e_min, input_model, p_max, p_min, time]\n"
+        "0: [eMax, eMin, eState, inputModel, pMax, pMin, time] or [e_max, e_min, e_state, input_model, p_max, p_min, time]\n"
   }
 }

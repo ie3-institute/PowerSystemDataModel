@@ -7,12 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+- Added explicit handling for cases where no weather data is received from any source [#554](https://github.com/ie3-institute/PowerSystemDataModel/issues/554)
+- Adapted `EnergyBoundariesFlexOptionsResult` to include current SOE [#1640](https://github.com/ie3-institute/PowerSystemDataModel/issues/1640)
 - Increase test coverage for TimeBasedWeatherValueData [#1609](https://github.com/ie3-institute/PowerSystemDataModel/issues/1609)
 
 ### Fixed
+- Fixed determination of unused fields [#1644](https://github.com/ie3-institute/PowerSystemDataModel/issues/1644)
 
 ### Changed
 - Updated load documentation [#1608](https://github.com/ie3-institute/PowerSystemDataModel/issues/1608)
+- Change spotless to use latest version of googleJavaFormat [#1632](https://github.com/ie3-institute/PowerSystemDataModel/issues/1632)
+- Removed `GraphicElements` from `GridContainer` [#1601](https://github.com/ie3-institute/PowerSystemDataModel/issues/1601)
 
 ## [9.0.0] - 2026-04-13
 
@@ -48,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Correctly persist EmInput entities in CsvFileSink [#1337](https://github.com/ie3-institute/PowerSystemDataModel/issues/1337)
 - Proper handle duplicated headline exceptions in CsvDataSource [#1595](https://github.com/ie3-institute/PowerSystemDataModel/issues/1595)
 - Align CSV header formatting to RFC 4180 standards in tests [1544](https://github.com/ie3-institute/PowerSystemDataModel/issues/1544)
+- Fix false positive tests in csvidcoordinatesourcecosmoit and csvidcoordinatesourceiconit [#1594](https://github.com/ie3-institute/PowerSystemDataModel/issues/1594)
 
 ### Changed
 - Updated CI-Pipeline to run task `Deploy` and `Staging` only for `Main` [#1403](https://github.com/ie3-institute/PowerSystemDataModel/issues/1403)
