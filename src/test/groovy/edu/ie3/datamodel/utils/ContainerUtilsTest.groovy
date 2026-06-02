@@ -295,7 +295,6 @@ class ContainerUtilsTest extends Specification {
     RawGridElements rawGrid = ComplexTopology.grid.rawGrid
     SystemParticipants systemParticipants = ComplexTopology.grid.systemParticipants
     EnergyManagementUnits energyManagementUnits = ComplexTopology.grid.emUnits
-    GraphicElements graphics = ComplexTopology.grid.graphics
 
     HashMap<Integer, SubGridContainer> expectedSubGrids = ComplexTopology.expectedSubGrids
 
@@ -305,8 +304,7 @@ class ContainerUtilsTest extends Specification {
         subNetNumbers,
         rawGrid,
         systemParticipants,
-        energyManagementUnits,
-        graphics)
+        energyManagementUnits)
 
     then:
     actual.size() == 6
@@ -326,7 +324,6 @@ class ContainerUtilsTest extends Specification {
     RawGridElements rawGridInput= ComplexTopology.grid.rawGrid
     SystemParticipants systemParticipantsInput = ComplexTopology.grid.systemParticipants
     EnergyManagementUnits energyManagementUnits = ComplexTopology.grid.emUnits
-    GraphicElements graphicsInput = ComplexTopology.grid.graphics
 
     HashMap<Integer, SubGridContainer> unmodifiedSubGrids = ComplexTopology.expectedSubGrids
 
@@ -335,8 +332,7 @@ class ContainerUtilsTest extends Specification {
         subNetNumbers,
         rawGridInput,
         systemParticipantsInput,
-        energyManagementUnits,
-        graphicsInput)
+        energyManagementUnits)
 
     when:
     def computableSubgrids = subgrids.collectEntries {[(it.key): ContainerUtils.withTrafoNodeAsSlack(it.value)]} as HashMap<Integer, SubGridContainer>
@@ -391,14 +387,12 @@ class ContainerUtilsTest extends Specification {
     RawGridElements rawGrid = ComplexTopology.grid.rawGrid
     SystemParticipants systemParticipants = ComplexTopology.grid.systemParticipants
     EnergyManagementUnits energyManagementUnits = ComplexTopology.grid.emUnits
-    GraphicElements graphics = ComplexTopology.grid.graphics
     Map<Integer, SubGridContainer> subgrids = ContainerUtils.buildSubGridContainers(
         gridName,
         subNetNumbers,
         rawGrid,
         systemParticipants,
-        energyManagementUnits,
-        graphics)
+        energyManagementUnits)
     SubGridTopologyGraph expectedSubGridTopology = ComplexTopology.expectedSubGridTopology
 
     when:
@@ -416,7 +410,6 @@ class ContainerUtilsTest extends Specification {
     RawGridElements rawGrid = ComplexTopology.grid.rawGrid
     SystemParticipants systemParticpants = ComplexTopology.grid.systemParticipants
     EnergyManagementUnits energyManagementUnits = ComplexTopology.grid.emUnits
-    GraphicElements graphics = ComplexTopology.grid.graphics
     SubGridTopologyGraph expectedSubGridTopology = ComplexTopology.expectedSubGridTopology
 
     when:
@@ -424,8 +417,7 @@ class ContainerUtilsTest extends Specification {
         gridName,
         rawGrid,
         systemParticpants,
-        energyManagementUnits,
-        graphics)
+        energyManagementUnits)
 
     then:
     actual == expectedSubGridTopology
@@ -558,8 +550,7 @@ class ContainerUtilsTest extends Specification {
   }
 
   /* TODO: Extend testing data so that,
-   *   - filtering of system participants can be tested
-   *   - filtering of graphic elements can be tested */
+   *   - filtering of system participants can be tested */
 
   def "Determining the surrounding sub grid containers of a two winding transformer works fine"() {
     given:
@@ -575,8 +566,6 @@ class ContainerUtilsTest extends Specification {
     transformer.getNodeA() >> nodeD
     transformer.getNodeB() >> nodeE
     transformer.allNodes() >> List.of(nodeD, nodeE)
-
-    def rawGridElements = new RawGridElements([nodeD, nodeE, transformer])
 
     def subGrid1 = Mock(SubGridContainer)
     def subGrid2 = Mock(SubGridContainer)

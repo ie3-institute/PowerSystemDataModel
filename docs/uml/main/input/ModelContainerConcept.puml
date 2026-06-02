@@ -58,12 +58,10 @@ package models.input.container {
         # gridName: String
         # rawGrid: RawGridElements
         # systemParticipants: SystemParticipants
-        # graphics: GraphicElements
     }
     GridContainer ..|> InputContainer
     GridContainer *-- RawGridElements
     GridContainer *-- SystemParticipants
-    GridContainer *-- GraphicElements
 
     class JointGridContainer {
         - subGridTopologyGraph: SubGridTopologyGraph

@@ -18,7 +18,6 @@ import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.container.*;
-import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
@@ -66,11 +65,6 @@ public class GridContainerValidationUtils extends ValidationUtils {
     exceptions.addAll(
         checkSystemParticipants(
             gridContainer.getSystemParticipants(), gridContainer.getRawGrid().getNodes()));
-    exceptions.addAll(
-        checkGraphicElements(
-            gridContainer.getGraphics(),
-            gridContainer.getRawGrid().getNodes(),
-            gridContainer.getRawGrid().getLines()));
 
     if (gridContainer instanceof SubGridContainer subGridContainer) {
       exceptions.add(ConnectorValidationUtils.checkConnectivity(subGridContainer));
@@ -96,16 +90,16 @@ public class GridContainerValidationUtils extends ValidationUtils {
     }
 
     /* sanity check to ensure uniqueness */
-    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
-    exceptions.addAll(
-        Try.ofVoids(
-            DuplicateEntitiesException.class,
-            () -> checkAssetUniqueness(rawGridElements.getNodes()),
-            () -> checkAssetUniqueness(rawGridElements.getLines()),
-            () -> checkAssetUniqueness(rawGridElements.getSwitches()),
-            () -> checkAssetUniqueness(rawGridElements.getTransformer2Ws()),
-            () -> checkAssetUniqueness(rawGridElements.getTransformer3Ws()),
-            () -> checkAssetUniqueness(rawGridElements.getMeasurementUnits())));
+    List<Try<Void, ? extends ValidationException>> exceptions =
+        new ArrayList<>(
+            Try.ofVoids(
+                DuplicateEntitiesException.class,
+                () -> checkAssetUniqueness(rawGridElements.getNodes()),
+                () -> checkAssetUniqueness(rawGridElements.getLines()),
+                () -> checkAssetUniqueness(rawGridElements.getSwitches()),
+                () -> checkAssetUniqueness(rawGridElements.getTransformer2Ws()),
+                () -> checkAssetUniqueness(rawGridElements.getTransformer3Ws()),
+                () -> checkAssetUniqueness(rawGridElements.getMeasurementUnits())));
 
     /* Checking nodes */
     Set<NodeInput> nodes = rawGridElements.getNodes();
@@ -316,60 +310,6 @@ public class GridContainerValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Checks the given graphic elements for validity
-   *
-   * @param graphicElements Elements to check
-   * @param nodes Already known and checked nodes
-   * @param lines Already known and checked lines
-   * @return a list of try objects either containing an {@link ValidationException} or an empty
-   *     Success
-   */
-  protected static List<Try<Void, ? extends ValidationException>> checkGraphicElements(
-      GraphicElements graphicElements, Set<NodeInput> nodes, Set<LineInput> lines) {
-    Try<Void, InvalidEntityException> isNull = checkNonNull(graphicElements, "graphic elements");
-
-    if (isNull.isFailure()) {
-      return List.of(isNull);
-    }
-
-    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
-
-    /* sanity check to ensure uniqueness */
-    exceptions.add(
-        Try.ofVoid(
-            () -> checkUniqueEntities(graphicElements.allEntitiesAsList()),
-            DuplicateEntitiesException.class));
-
-    graphicElements
-        .getNodeGraphics()
-        .forEach(
-            graphic -> {
-              exceptions.addAll(GraphicValidationUtils.check(graphic));
-              exceptions.add(
-                  Try.ofVoid(
-                      !nodes.contains(graphic.getNode()),
-                      () ->
-                          buildGraphicExceptionMessage(
-                              graphic, "node", graphic.getNode().getUuid())));
-            });
-
-    graphicElements
-        .getLineGraphics()
-        .forEach(
-            graphic -> {
-              exceptions.addAll(GraphicValidationUtils.check(graphic));
-              exceptions.add(
-                  Try.ofVoid(
-                      !lines.contains(graphic.getLine()),
-                      () ->
-                          buildGraphicExceptionMessage(
-                              graphic, "line", graphic.getLine().getUuid())));
-            });
-
-    return exceptions;
-  }
-
-  /**
    * Checks if the node(s) of the given {@link AssetInput} are in the collection of provided already
    * determined nodes.
    *
@@ -382,23 +322,24 @@ public class GridContainerValidationUtils extends ValidationUtils {
       AssetInput input, Collection<NodeInput> nodes) {
     boolean available;
 
-    if (input instanceof Transformer3WInput transformer) {
-      available =
-          !nodes.containsAll(
-              Arrays.asList(
-                  transformer.getNodeA(), transformer.getNodeB(), transformer.getNodeC()));
-    } else if (input instanceof ConnectorInput connector) {
-      available = !nodes.containsAll(Arrays.asList(connector.getNodeA(), connector.getNodeB()));
-    } else if (input instanceof SystemParticipantInput participant) {
-      available = !nodes.contains(participant.getNode());
-    } else if (input instanceof MeasurementUnitInput measurementUnit) {
-      available = !nodes.contains(measurementUnit.getNode());
-    } else {
-      return Failure.ofVoid(
-          new InvalidGridException(
-              "Checking the node availability of"
-                  + input.getClass().getSimpleName()
-                  + " is not implemented."));
+    switch (input) {
+      case Transformer3WInput transformer ->
+          available =
+              !nodes.containsAll(
+                  Arrays.asList(
+                      transformer.getNodeA(), transformer.getNodeB(), transformer.getNodeC()));
+      case ConnectorInput connector ->
+          available = !nodes.containsAll(Arrays.asList(connector.getNodeA(), connector.getNodeB()));
+      case SystemParticipantInput participant -> available = !nodes.contains(participant.getNode());
+      case MeasurementUnitInput measurementUnit ->
+          available = !nodes.contains(measurementUnit.getNode());
+      default -> {
+        return Failure.ofVoid(
+            new InvalidGridException(
+                "Checking the node availability of"
+                    + input.getClass().getSimpleName()
+                    + " is not implemented."));
+      }
     }
 
     return Try.ofVoid(
@@ -409,28 +350,5 @@ public class GridContainerValidationUtils extends ValidationUtils {
                     + " "
                     + input
                     + " is connected to a node that is not in the set of nodes."));
-  }
-
-  /**
-   * Creates a {@link InvalidEntityException} for graphic inputs.
-   *
-   * @param graphic input
-   * @param type of the graphic
-   * @param asset uuid of the referred asset
-   * @return a {@link Failure}
-   */
-  private static InvalidEntityException buildGraphicExceptionMessage(
-      GraphicInput graphic, String type, UUID asset) {
-    return new InvalidEntityException(
-        "The "
-            + type
-            + " graphic with uuid '"
-            + graphic.getUuid()
-            + "' refers to "
-            + type
-            + " with uuid '"
-            + asset
-            + "', that is not a,ong the provided ones.",
-        graphic);
   }
 }

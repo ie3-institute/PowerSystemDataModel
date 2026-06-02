@@ -38,7 +38,7 @@ class CsvIdCoordinateSourceIconIT extends Specification implements CsvTestDataMe
 
     then:
     actualStream.success
-    actualStream.data.get().collect(Collectors.toList()).containsAll(expectedStream.collect(Collectors.toList()))
+    actualStream.data.get().toList() == expectedStream.toList()
   }
 
   def "The CsvIdCoordinateSource is able to look up a specific point or an empty Optional otherwise" () {

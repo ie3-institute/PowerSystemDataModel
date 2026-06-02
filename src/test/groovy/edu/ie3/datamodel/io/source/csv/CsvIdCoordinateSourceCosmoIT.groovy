@@ -38,7 +38,7 @@ class CsvIdCoordinateSourceCosmoIT extends Specification implements CsvTestDataM
 
     then:
     actualStream.success
-    actualStream.data.get().collect(Collectors.toList()).containsAll(expectedStream.collect(Collectors.toList()))
+    actualStream.data.get().toList() == expectedStream.toList()
   }
 
   def "The CsvCoordinateSource is able to return the source fields from a coordinate file"() {
