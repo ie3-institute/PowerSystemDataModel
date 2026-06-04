@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+## [9.1.0] - 2026-06-04
+
 ### Added
 - Added explicit handling for cases where no weather data is received from any source [#554](https://github.com/ie3-institute/PowerSystemDataModel/issues/554)
 - Adapted `EnergyBoundariesFlexOptionsResult` to include current SOE [#1640](https://github.com/ie3-institute/PowerSystemDataModel/issues/1640)
@@ -463,7 +465,8 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/9.0.0...HEAD
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/9.1.0...HEAD
+[9.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/9.0.0...9.1.0
 [9.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/8.1.0...9.0.0
 [8.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/8.0.0...8.1.0
 [8.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/7.0.0...8.0.0
