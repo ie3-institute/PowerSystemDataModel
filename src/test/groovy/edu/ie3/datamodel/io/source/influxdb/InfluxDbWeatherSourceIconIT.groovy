@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.influxdb
 
+import edu.ie3.datamodel.exceptions.NoDataException
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector
 import edu.ie3.datamodel.io.factory.timeseries.IconTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
@@ -63,8 +64,8 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
     def optTimeBasedValue = source.getWeather(IconWeatherTestData.TIME_15H , IconWeatherTestData.COORDINATE_67775)
 
     then:
-    optTimeBasedValue.present
-    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
+    optTimeBasedValue != null
+    equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
   }
 
   def "An InfluxDbWeatherSource can read multiple time series values for multiple coordinates"() {
@@ -118,33 +119,78 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
     equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776).entries, timeseries67776.entries)
   }
 
-  def "An InfluxDbWeatherSource will return an equivalent to 'empty' when being unable to map a coordinate to its ID"() {
+  def "An InfluxDbWeatherSource will throw NoDataException when being unable to map a coordinate to its ID"() {
     given:
     def validCoordinate = IconWeatherTestData.COORDINATE_67775
     def invalidCoordinate = GeoUtils.buildPoint(7d, 48d)
     def time = IconWeatherTestData.TIME_15H
     def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H , IconWeatherTestData.TIME_17H)
-    def emptyTimeSeries = new IndividualTimeSeries(UUID.randomUUID(), Collections.emptySet())
-    def timeseries67775 = new IndividualTimeSeries(null,
-        [
-          new TimeBasedValue(IconWeatherTestData.TIME_15H, IconWeatherTestData.WEATHER_VALUE_67775_15H),
-          new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67775_16H),
-          new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)
-        ] as Set<TimeBasedValue>)
 
-    when:
-    def coordinateAtDate = source.getWeather(time, invalidCoordinate)
-    def coordinateInInterval = source.getWeather(timeInterval, invalidCoordinate)
-    def coordinatesToTimeSeries = source.getWeather(timeInterval, [
+    when: "requesting weather for an invalid coordinate at a specific date"
+    source.getWeather(time, invalidCoordinate)
+
+    then: "NoDataException is thrown"
+    def ex1 = thrown(NoDataException)
+    ex1.message.contains("No coordinate ID found for the given point")
+    ex1.message.contains(invalidCoordinate.toString())
+
+    when: "requesting weather for an invalid coordinate in a time interval"
+    source.getWeather(timeInterval, invalidCoordinate)
+
+    then: "NoDataException is thrown"
+    def ex2 = thrown(NoDataException)
+    ex2.message.contains("No coordinate ID found for the given point")
+    ex2.message.contains(invalidCoordinate.toString())
+
+    when: "requesting weather for mixed valid and invalid coordinates"
+    def result = source.getWeather(timeInterval, [
       validCoordinate,
       invalidCoordinate
     ])
 
+    then: "only the valid coordinate's data is returned"
+    result.size() == 1
+    result.containsKey(validCoordinate)
+    !result.containsKey(invalidCoordinate)
+  }
+
+  def "An InfluxDbWeatherSource falls back to the last known value when no exact weather data is found at a specific time"() {
+    given:
+    def futureTime = IconWeatherTestData.TIME_17H.plusHours(3)
+    def expectedFallback = new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)
+
+    when:
+    def result = source.getWeather(futureTime, IconWeatherTestData.COORDINATE_67775)
+
     then:
-    coordinateAtDate == Optional.empty()
-    equalsIgnoreUUID(coordinateInInterval, emptyTimeSeries)
-    coordinatesToTimeSeries.keySet() == [validCoordinate].toSet()
-    equalsIgnoreUUID(coordinatesToTimeSeries.get(validCoordinate), timeseries67775)
+    result != null
+    equalsIgnoreUUID(result, expectedFallback)
+  }
+
+  def "An InfluxDbWeatherSource throws NoDataException when no weather data is found at a specific time and no earlier data is available"() {
+    given:
+    def timeBeforeAllData = IconWeatherTestData.TIME_15H.minusHours(1)
+
+    when:
+    source.getWeather(timeBeforeAllData, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data found for coordinate")
+    ex.message.contains("no earlier data available")
+  }
+
+  def "An InfluxDbWeatherSource throws NoDataException when the fallback is beyond the maximum allowed steps"() {
+    given:
+    def farFutureTime = IconWeatherTestData.TIME_17H.plusHours(4)
+
+    when:
+    source.getWeather(farFutureTime, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data found for coordinate")
+    ex.message.contains("exceeds the maximum fallback")
   }
 
   def "The InfluxDbWeatherSource returns all time keys after a given time key correctly"() {
@@ -162,5 +208,23 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
       IconWeatherTestData.TIME_17H
     ]
     actual.get(IconWeatherTestData.COORDINATE_67776) == [IconWeatherTestData.TIME_16H]
+  }
+
+  def "A InfluxDbWeatherSource returns partial results for mixed valid and invalid coordinates"() {
+    given:
+    def validCoordinate = IconWeatherTestData.COORDINATE_67775
+    def invalidCoordinate = GeoUtils.buildPoint(999d, 999d)
+    def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H, IconWeatherTestData.TIME_17H)
+
+    when:
+    def result = source.getWeather(timeInterval, [
+      validCoordinate,
+      invalidCoordinate
+    ])
+
+    then:
+    result.size() == 1
+    result.containsKey(validCoordinate)
+    !result.containsKey(invalidCoordinate)
   }
 }

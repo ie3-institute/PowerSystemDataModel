@@ -10,8 +10,6 @@ import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.container.*;
-import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
-import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -70,15 +68,13 @@ public class ContainerNodeUpdateUtil {
       JointGridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes)
       throws InvalidGridException {
     UpdatedEntities updatedEntities =
-        updateEntities(
-            grid.getRawGrid(), grid.getSystemParticipants(), grid.getGraphics(), oldToNewNodes);
+        updateEntities(grid.getRawGrid(), grid.getSystemParticipants(), oldToNewNodes);
 
     return new JointGridContainer(
         grid.getGridName(),
         updatedEntities.rawGridElements(),
         updatedEntities.systemParticipants(),
-        grid.getEmUnits(),
-        updatedEntities.graphicElements());
+        grid.getEmUnits());
   }
 
   /**
@@ -105,16 +101,14 @@ public class ContainerNodeUpdateUtil {
       SubGridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes) throws InvalidGridException {
 
     UpdatedEntities updatedEntities =
-        updateEntities(
-            grid.getRawGrid(), grid.getSystemParticipants(), grid.getGraphics(), oldToNewNodes);
+        updateEntities(grid.getRawGrid(), grid.getSystemParticipants(), oldToNewNodes);
 
     return new SubGridContainer(
         grid.getGridName(),
         grid.getSubnet(),
         updatedEntities.rawGridElements(),
         updatedEntities.systemParticipants(),
-        grid.getEmUnits(),
-        updatedEntities.graphicElements());
+        grid.getEmUnits());
   }
 
   /**
@@ -122,7 +116,6 @@ public class ContainerNodeUpdateUtil {
    *
    * @param rawGridElements the {@link RawGridElements} instance of the grid to be updated
    * @param systemParticipants the {@link SystemParticipants} instance of the grid to be updated
-   * @param graphicElements the {@link GraphicElements} instance of the grid to be updated
    * @param oldToNewNodes a mapping of old nodes to their corresponding new or updated nodes
    * @return instance of {@link UpdatedEntities} with copies of the provided grid parts with updated
    *     nodes as provided
@@ -130,7 +123,6 @@ public class ContainerNodeUpdateUtil {
   private static UpdatedEntities updateEntities(
       RawGridElements rawGridElements,
       SystemParticipants systemParticipants,
-      GraphicElements graphicElements,
       Map<NodeInput, NodeInput> oldToNewNodes) {
     /* RawGridElements */
     RawGridElementsNodeUpdateResult rawGridUpdateResult =
@@ -143,61 +135,7 @@ public class ContainerNodeUpdateUtil {
     SystemParticipants updatedSystemParticipants =
         updateSystemParticipantsWithNodes(systemParticipants, updatedOldToNewNodes);
 
-    /* GraphicElements */
-    GraphicElements updateGraphicElements =
-        updateGraphicElementsWithNodes(
-            graphicElements, updatedOldToNewNodes, updatedRawGridElements.getLines());
-
-    return new UpdatedEntities(
-        updatedRawGridElements, updatedSystemParticipants, updateGraphicElements);
-  }
-
-  /**
-   * Update the provided {@link GraphicElements} with the provided oldToNew nodes mapping
-   *
-   * @param graphics the graphic elements that should be updated
-   * @param oldToNewNodes mapping of old nodes to their corresponding new or updated nodes
-   * @param lines the previously already updated lines
-   * @return copy of the provided graphic elements with updated nodes as provided
-   */
-  private static GraphicElements updateGraphicElementsWithNodes(
-      GraphicElements graphics, Map<NodeInput, NodeInput> oldToNewNodes, Set<LineInput> lines) {
-
-    Set<NodeGraphicInput> updatedNodeGraphics =
-        graphics.getNodeGraphics().stream()
-            .map(
-                nodeGraphic -> {
-                  if (oldToNewNodes.containsKey(nodeGraphic.getNode())) {
-                    NodeInput updatedNode = oldToNewNodes.get(nodeGraphic.getNode());
-                    return nodeGraphic.copy().node(updatedNode).build();
-                  } else {
-                    return nodeGraphic;
-                  }
-                })
-            .collect(Collectors.toSet());
-
-    Set<LineGraphicInput> updatedLineGraphics =
-        graphics.getLineGraphics().stream()
-            .map(
-                lineGraphic -> {
-                  Optional<LineInput> line =
-                      lines.stream()
-                          .filter(
-                              lineInput ->
-                                  lineInput.getUuid().equals(lineGraphic.getLine().getUuid()))
-                          .findFirst();
-                  return line.map(
-                          lineInput ->
-                              new LineGraphicInput(
-                                  lineGraphic.getUuid(),
-                                  lineGraphic.getGraphicLayer(),
-                                  lineGraphic.getPath(),
-                                  lineInput))
-                      .orElse(lineGraphic);
-                })
-            .collect(Collectors.toSet());
-
-    return new GraphicElements(updatedNodeGraphics, updatedLineGraphics);
+    return new UpdatedEntities(updatedRawGridElements, updatedSystemParticipants);
   }
 
   /**
@@ -384,7 +322,7 @@ public class ContainerNodeUpdateUtil {
       } else {
         // multiple transformer nodes got an update -> leading geoPos is node on highest level
         NodeInput oldLeadGeoPosNodeInput =
-            sortNodesByVoltageLevel(oldAffectedTrafoNodes).iterator().next();
+            sortNodesByVoltageLevel(oldAffectedTrafoNodes).getFirst();
         Point updatedLeadGeoPos =
             oldToNewNodes
                 .getOrDefault(oldLeadGeoPosNodeInput, oldLeadGeoPosNodeInput)
@@ -624,7 +562,5 @@ public class ContainerNodeUpdateUtil {
 
   /** Wrapper class for updated entities hold by an instance of {@link GridContainer} */
   private record UpdatedEntities(
-      RawGridElements rawGridElements,
-      SystemParticipants systemParticipants,
-      GraphicElements graphicElements) {}
+      RawGridElements rawGridElements, SystemParticipants systemParticipants) {}
 }

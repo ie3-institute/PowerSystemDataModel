@@ -20,20 +20,7 @@ On [Maven central](https://search.maven.org/artifact/com.github.ie3-institute/Po
 <dependency>
   <groupId>com.github.ie3-institute</groupId>
   <artifactId>PowerSystemDataModel</artifactId>
-  <version>9.0.0</version>
-</dependency>
-```
-
-### Releases
-
-Available on [OSS Sonatype](https://s01.oss.sonatype.org/).
-Add the dependency:
-
-```xml
-<dependency>
-  <groupId>com.github.ie3-institute</groupId>
-  <artifactId>PowerSystemDataModel</artifactId>
-  <version>6.0-SNAPSHOT</version>
+  <version>9.1.0</version>
 </dependency>
 ```
 

@@ -42,7 +42,7 @@ Model of (mainly) domestic loads.
 
    * - loadProfile
      -
-     - [Load profile](#load-lp) as model behaviour
+     - [Power profile key](#load-pp) as model behaviour
 
    * - eConsAnnual
      - kWh
@@ -69,22 +69,28 @@ Model of (mainly) domestic loads.
 Nothing - at least not known.
 If you found something, please contact us!
 
-(load-lp)=
+(load-pp)=
 
-## Load Profiles
+## Power Profile Keys
 
-The {code}`LoadProfile` is an interface, that forces its implementing classes to have a {code}`String` *key*
-and being able to parse a {code}`String` to a {code}`LoadProfile`.
-Its only purpose is to give note, which load profile has to be used by the simulation.
-The actual profile has to be provided by the simulation itself.
-If no matching standard load profile is known, {code}`LoadProfile#NO_LOAD_PROFILE` can be used.
+For a load input a {code}`PowerProfileKey` can be specified. This key is used to map the load input with a power profile
+during a simulation. The key is normally provided as a {code}`String`. If this key matches the {code}`PowerProfileKey` of
+one of the built-in load {code}`LoadProfile`, the corresponding load profile will be applied. If no profile should be used,
+for example when using primary data via a time series, the field needs to be left empty.
+
+
+## Power Profiles
+
+The {code}`PowerProfile` is an interface that can be used to define power profiles. Each profile needs to have a {code}`PowerProfileKey`.
+The data model uses the built-in profiles internally. The {code}`LoadProfile` is an interface that extends the {code}`PowerProfile`
+interface.
 
 To assist the user in marking the desired load profile, the enum {code}`BdewLoadProfile` provides a collection of
 commonly known German standard electricity load profiles, defined by the bdew (Bundesverband der Energie- und
 Wasserwirtschaft; engl. Federal Association of the Energy and Water Industry). For more details see
 [the corresponding website (German only)](https://www.bdew.de/energie/standardlastprofile-strom/).
 
-Furthermore there are {code}`TemperatureDependantLoadProfiles` which can be used to note usage of load profiles for night heating storages or heat pumps for example.
+Furthermore, there are {code}`TemperatureDependantLoadProfiles` which can be used to note usage of load profiles for night heating storages or heat pumps for example.
 The profiles rely on the VDN description for interruptable loads.
 For more details see [here (German only)](https://www.bdew.de/media/documents/LPuVe-Praxisleitfaden.pdf).
 {code}`NbwTemperatureDependantLoadProfiles` provides sample temperature dependant load profiles that can be used.
