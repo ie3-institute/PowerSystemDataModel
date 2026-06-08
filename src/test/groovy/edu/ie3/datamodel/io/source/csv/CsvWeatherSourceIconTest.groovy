@@ -22,7 +22,7 @@ import org.locationtech.jts.geom.Point
 import spock.lang.Shared
 import spock.lang.Specification
 
-class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta, WeatherSourceTestHelper {
+class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta {
 
   @Shared
   CsvWeatherSource source
@@ -45,7 +45,7 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 
     then:
     optTimeBasedValue != null
-    equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
+    WeatherSourceTestHelper.equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
   }
 
   def "A CsvWeatherSource can read multiple time series values for multiple coordinates"() {
@@ -71,8 +71,8 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 
     then:
     coordinateToTimeSeries.keySet().size() == 2
-    equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775), timeSeries67775)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776), timeSeries67776)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775), timeSeries67775)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776), timeSeries67776)
   }
 
 
@@ -96,8 +96,8 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 
     then:
     coordinateToTimeSeries.keySet().size() == 2
-    equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775).entries, timeSeries67775.entries)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776).entries, timeSeries67776.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775).entries, timeSeries67775.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776).entries, timeSeries67776.entries)
   }
 
   def "The CsvWeatherSource is able to extract correct coordinate from field to value mapping"() {
@@ -324,7 +324,7 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 
     then:
     result != null
-    equalsIgnoreUUID(result, expectedFallback)
+    WeatherSourceTestHelper.equalsIgnoreUUID(result, expectedFallback)
   }
 
   def "A CsvWeatherSource throws NoDataException when no weather data is found for a coordinate at a specific time and no earlier data is available"() {

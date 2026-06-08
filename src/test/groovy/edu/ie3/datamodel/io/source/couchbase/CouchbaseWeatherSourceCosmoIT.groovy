@@ -13,6 +13,7 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.test.common.CosmoWeatherTestData
+import edu.ie3.test.helper.WeatherSourceTestHelper
 import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.interval.ClosedInterval
 import org.locationtech.jts.geom.Point
@@ -44,7 +45,7 @@ class CouchbaseWeatherSourceCosmoIT extends AbstractCouchbaseWeatherSourceIT {
 
     then:
     optTimeBasedValue != null
-    equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
+    WeatherSourceTestHelper.equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
   }
 
   def "A CouchbaseWeatherSource can read multiple time series values for multiple coordinates"() {
@@ -68,8 +69,8 @@ class CouchbaseWeatherSourceCosmoIT extends AbstractCouchbaseWeatherSourceIT {
     Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval, coordinates)
     then:
     coordinateToTimeSeries.keySet().size() == 2
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeSeries193186)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeSeries193187)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeSeries193186)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeSeries193187)
   }
 
   def "A CouchbaseWeatherSource can read all weather data in a given time interval"() {
@@ -94,9 +95,9 @@ class CouchbaseWeatherSourceCosmoIT extends AbstractCouchbaseWeatherSourceIT {
     Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = source.getWeather(timeInterval)
     then:
     coordinateToTimeSeries.keySet().size() == 3
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
   }
 
   def "A CouchbaseWeatherSource falls back to the last known value when no exact weather data is found at a specific time"() {
@@ -109,7 +110,7 @@ class CouchbaseWeatherSourceCosmoIT extends AbstractCouchbaseWeatherSourceIT {
 
     then:
     result != null
-    equalsIgnoreUUID(result, expectedFallback)
+    WeatherSourceTestHelper.equalsIgnoreUUID(result, expectedFallback)
   }
 
   def "A CouchbaseWeatherSource throws NoDataException when no weather data is found at a specific time and no earlier data is available"() {
