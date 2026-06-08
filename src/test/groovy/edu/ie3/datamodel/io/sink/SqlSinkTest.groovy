@@ -137,8 +137,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
       powerLimitFlexOptionsResult,
       energyBoundariesFlexOptionsResult,
       GridTestData.transformerCtoG,
-      GridTestData.lineGraphicCtoD,
-      GridTestData.nodeGraphicC,
+      GridTestData.lineCtoD,
       ThermalUnitInputTestData.cylindricalStorageInput,
       ThermalUnitInputTestData.thermalHouseInput,
       SystemParticipantTestData.evcsInput,
@@ -158,9 +157,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "transformer_2_w_input", ps -> {}).count() == 1
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "operator_input", ps -> {}).count() == 2
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "cylindrical_storage_input", ps -> {}).count() == 1
-    sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "line_graphic_input", ps -> {}).count() == 1
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "line_input", ps -> {}).count() == 1
-    sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "node_graphic_input", ps -> {}).count() == 1
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "thermal_bus_input", ps -> {}).count() == 1
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "thermal_house_input", ps -> {}).count() == 1
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "load_input", ps -> {}).count() == 1

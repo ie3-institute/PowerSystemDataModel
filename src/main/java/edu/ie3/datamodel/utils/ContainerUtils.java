@@ -724,8 +724,6 @@ public class ContainerUtils {
    *         <li>high voltage nodes are marked as slack nodes
    *         <li>high voltage nodes in the {@link RawGridElements#getNodes()} set are replaced with
    *             the new slack marked high voltage nodes
-   *         <li>high voltage nodes as part of {@link GraphicElements#getNodeGraphics()} are
-   *             replaced with the new slack marked high voltage nodes
    *       </ul>
    *   <li>3 winding transformer handling
    *       <ul>

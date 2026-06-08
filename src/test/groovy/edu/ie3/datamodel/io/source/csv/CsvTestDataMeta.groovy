@@ -18,8 +18,6 @@ trait CsvTestDataMeta {
   @Shared
   Path timeSeriesFolderPath = getResourceAbs("_timeseries")
   @Shared
-  Path graphicsFolderPath = getResourceAbs("_graphics")
-  @Shared
   Path typeFolderPath = getResourceAbs("_types")
   @Shared
   Path participantsFolderPath =  getResourceAbs("_participants")

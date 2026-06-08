@@ -166,7 +166,7 @@ grid. It consists of the three main blocks:
 
 1. [Raw grid elements](/models/input/grid/gridcontainer)
 2. [System participants](/models/input/grid/gridcontainer)
-3. [Graphics](/models/input/grid/gridcontainer)
+3. [Energy Management](/models/input/grid/gridcontainer)
 
 Those blocks are also reflected in the structure of data source interface definitions.
 There is one source for each of the containers, respectively.
@@ -196,26 +196,22 @@ An application example to load an *exampleGrid* from csv files located in `./exa
             thermalSource,
             rawGridSource
     );
-    GraphicSource graphicsSource = new CsvGraphicSource(
-            csvSep,
-            folderPath,
-            namingStrategy,
-            typeSource,
-            rawGridSource
-    );
+    EnergyManagementSource emSource = new EnergyManagementSource(typeSource, dataSource);
     
     /* Loading models */
     RawGridElements rawGridElements = rawGridSource.getGridData().orElseThrow(
             () -> new SourceException("Error during reading of raw grid data."));
     SystemParticipants systemParticipants = systemParticipantSource.getSystemParticipants().orElseThrow(
             () -> new SourceException("Error during reading of system participant data."));
-    GraphicElements graphicElements = graphicsSource.getGraphicElements().orElseThrow(
-            () -> new SourceException("Error during reading of graphic elements."));
+    Try<EnergyManagementUnits, SourceException> emUnits =
+        Try.of(
+            () -> new EnergyManagementUnits(new HashSet<>(emSource.getEmUnits(operators).values())),
+            SourceException.class);        
     JointGridContainer fullGrid = new JointGridContainer(
             gridName,
             rawGridElements,
             systemParticipants,
-            graphicElements
+            emUnits.getOrThrow()
     );
 ```
 

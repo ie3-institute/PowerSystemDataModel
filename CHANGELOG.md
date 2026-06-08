@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+### Added
+
+### Fixed
+
+
+### Changed
+- Removed graphic related code [#1655](https://github.com/ie3-institute/PowerSystemDataModel/issues/1655)
+
+
 ## [9.1.0] - 2026-06-04
 
 ### Added
