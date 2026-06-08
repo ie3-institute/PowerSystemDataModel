@@ -140,8 +140,8 @@ public class ChargingPointTypeUtils {
               .flatMap(
                   type ->
                       Stream.concat(
-                          Stream.of(type.getId().toLowerCase()),
-                          type.getSynonymousIds().stream().map(String::toLowerCase))
+                          Stream.of(type.id().toLowerCase()),
+                          type.synonymousIds().stream().map(String::toLowerCase))
                           .collect(Collectors.toMap(Function.identity(), v -> type))
                           .entrySet()
                           .stream())
@@ -204,8 +204,8 @@ public class ChargingPointTypeUtils {
           fromIdString(id)
               .flatMap(
                   commonType -> {
-                    if (commonType.getsRated().equals(sRated)
-                        && commonType.getElectricCurrentType().equals(currentType)) {
+                    if (commonType.sRated().equals(sRated)
+                        && commonType.electricCurrentType().equals(currentType)) {
                       return Optional.of(commonType);
                     } else {
                       return Optional.empty();

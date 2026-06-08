@@ -5,23 +5,19 @@
  */
 package edu.ie3.datamodel.utils.validation
 
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.*
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.B
 import static edu.ie3.datamodel.models.StandardUnits.*
 import static edu.ie3.util.quantities.PowerSystemUnits.OHM_PER_KILOMETRE
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.exceptions.ValidationException
-import edu.ie3.datamodel.io.naming.FieldNamingStrategy
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData
 import edu.ie3.util.TimeUtil
-import edu.ie3.util.quantities.interfaces.SpecificConductance
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
-
-import javax.measure.Quantity
 
 class ValidationUtilsTest extends Specification {
 
@@ -61,8 +57,8 @@ class ValidationUtilsTest extends Specification {
         "lineType_AtoB",
         Quantities.getQuantity(0d, SUSCEPTANCE_PER_LENGTH),
         Quantities.getQuantity(0d, CONDUCTANCE_PER_LENGTH),
-        Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
-        Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
+        Quantities.getQuantity(0.437, OHM_PER_KILOMETRE),
+        Quantities.getQuantity(0.356, OHM_PER_KILOMETRE),
         Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
         Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
         )

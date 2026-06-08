@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.processor.timeseries;
 
 import edu.ie3.datamodel.io.processor.GetterMethod;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Represent a tuple of {@link FieldSource} to {@link GetterMethod} to highlight, where information
@@ -13,7 +14,7 @@ import edu.ie3.datamodel.io.processor.GetterMethod;
  */
 public record FieldSourceToMethod(FieldSource source, GetterMethod method) {
   @Override
-  public String toString() {
+  public @NonNull String toString() {
     return "FieldSourceToMethod{" + "source=" + source + ", method=" + method + '}';
   }
 

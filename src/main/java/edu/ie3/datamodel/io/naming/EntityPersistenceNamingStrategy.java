@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Provides an easy to use standard way to name files, tables or any other persistent representation
+ * Provides an easy-to-use standard way to name files, tables or any other persistent representation
  * of models. Normal use cases are e.g., I/O operations with .csv files or databases.
  *
  * @version 0.1

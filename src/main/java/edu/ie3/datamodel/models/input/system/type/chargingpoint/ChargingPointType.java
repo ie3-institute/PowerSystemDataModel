@@ -6,64 +6,29 @@
 package edu.ie3.datamodel.models.input.system.type.chargingpoint;
 
 import edu.ie3.datamodel.models.ElectricCurrentType;
+import edu.ie3.datamodel.models.input.system.EvcsInput;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /**
- * The actual implementation {@link edu.ie3.datamodel.models.input.system.EvcsInput} types. Default
- * type implementations as well as methods to parse a type from a string can be found in {@link
- * ChargingPointTypeUtils}
- *
- * @version 0.1
- * @since 25.07.20
+ * The actual implementation {@link EvcsInput} types. Default type implementations as well as
+ * methods to parse a type from a string can be found in {@link ChargingPointTypeUtils}
  */
-public class ChargingPointType implements Serializable {
-
-  private final String id;
-  private final ComparableQuantity<Power> sRated;
-  private final ElectricCurrentType electricCurrentType;
-
-  private final Set<String> synonymousIds;
+public record ChargingPointType(
+    String id,
+    ComparableQuantity<Power> sRated,
+    ElectricCurrentType electricCurrentType,
+    Set<String> synonymousIds)
+    implements Serializable {
 
   public ChargingPointType(
       String id, ComparableQuantity<Power> sRated, ElectricCurrentType electricCurrentType) {
-    this.id = id;
-    this.sRated = sRated;
-    this.electricCurrentType = electricCurrentType;
-    this.synonymousIds = new HashSet<>();
-  }
-
-  public ChargingPointType(
-      String id,
-      ComparableQuantity<Power> sRated,
-      ElectricCurrentType electricCurrentType,
-      Set<String> synonymousIds) {
-    this.id = id;
-    this.sRated = sRated;
-    this.electricCurrentType = electricCurrentType;
-    this.synonymousIds = synonymousIds;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public ComparableQuantity<Power> getsRated() {
-    return sRated;
-  }
-
-  public ElectricCurrentType getElectricCurrentType() {
-    return electricCurrentType;
-  }
-
-  public Set<String> getSynonymousIds() {
-    return synonymousIds;
+    this(id, sRated, electricCurrentType, new HashSet<>());
   }
 
   public ChargingPointTypeCopyBuilder copy() {
@@ -81,17 +46,12 @@ public class ChargingPointType implements Serializable {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(id, sRated, electricCurrentType, synonymousIds);
-  }
-
-  @Override
   public String toString() {
     return ChargingPointTypeUtils.fromIdString(id)
         .flatMap(
             commonType -> {
-              if (commonType.getsRated().equals(sRated)
-                  && commonType.getElectricCurrentType().equals(electricCurrentType)) {
+              if (commonType.sRated().equals(sRated)
+                  && commonType.electricCurrentType().equals(electricCurrentType)) {
                 return Optional.of(commonType.id);
               } else {
                 return Optional.empty();
@@ -109,7 +69,7 @@ public class ChargingPointType implements Serializable {
 
   /**
    * A builder pattern based approach to create copies of {@link ChargingPointType} entities with
-   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * altered field values. For detailed field descriptions refer to Javadocs of {@link
    * ChargingPointType}
    */
   public static class ChargingPointTypeCopyBuilder {
@@ -120,10 +80,10 @@ public class ChargingPointType implements Serializable {
     private Set<String> synonymousIds;
 
     private ChargingPointTypeCopyBuilder(ChargingPointType entity) {
-      this.id = entity.getId();
-      this.sRated = entity.getsRated();
-      this.electricCurrentType = entity.getElectricCurrentType();
-      this.synonymousIds = entity.getSynonymousIds();
+      this.id = entity.id();
+      this.sRated = entity.sRated();
+      this.electricCurrentType = entity.electricCurrentType();
+      this.synonymousIds = entity.synonymousIds();
     }
 
     public ChargingPointTypeCopyBuilder setId(String id) {
@@ -163,7 +123,7 @@ public class ChargingPointType implements Serializable {
       return synonymousIds;
     }
 
-    public ChargingPointType.ChargingPointTypeCopyBuilder scale(Double factor) {
+    public ChargingPointTypeCopyBuilder scale(Double factor) {
       setsRated(getsRated().multiply(factor));
       return this;
     }
@@ -173,7 +133,7 @@ public class ChargingPointType implements Serializable {
           getId(), getsRated(), getElectricCurrentType(), getSynonymousIds());
     }
 
-    protected ChargingPointType.ChargingPointTypeCopyBuilder thisInstance() {
+    protected ChargingPointTypeCopyBuilder thisInstance() {
       return this;
     }
   }

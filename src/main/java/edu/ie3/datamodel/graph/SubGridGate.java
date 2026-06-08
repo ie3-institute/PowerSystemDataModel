@@ -12,6 +12,7 @@ import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.connector.TransformerInput;
 import edu.ie3.datamodel.models.input.container.SubGridContainer;
 import java.io.Serializable;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Defines gates between {@link SubGridContainer}s and serves as edge definition for {@link
@@ -63,7 +64,7 @@ public record SubGridGate(TransformerInput link, NodeInput superiorNode, NodeInp
   }
 
   @Override
-  public String toString() {
+  public @NonNull String toString() {
     return "SubGridTopolgyEdge{"
         + "link="
         + link.getClass().getSimpleName()

@@ -177,7 +177,7 @@ public class SqlWeatherSource extends WeatherSource {
     if (!timeBasedValues.isEmpty()) {
       if (timeBasedValues.size() > 1)
         log.warn("Retrieved more than one result value, using the first");
-      return timeBasedValues.get(0);
+      return timeBasedValues.getFirst();
     }
 
     // Fallback: try the last known value before the requested date (within MAX_FALLBACK_STEPS)

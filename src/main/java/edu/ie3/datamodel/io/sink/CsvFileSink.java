@@ -140,9 +140,8 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
         }
       } catch (ExtractorException e) {
         log.error(
-            String.format(
-                "An error occurred during extraction of nested entity'%s': ",
-                entity.getClass().getSimpleName()),
+            "An error occurred during extraction of nested entity'{}': ",
+            entity.getClass().getSimpleName(),
             e);
       }
     } else {
