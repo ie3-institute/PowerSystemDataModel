@@ -31,6 +31,22 @@ public record ChargingPointType(
     this(id, sRated, electricCurrentType, new HashSet<>());
   }
 
+  public String getId() {
+    return id;
+  }
+
+  public ComparableQuantity<Power> getsRated() {
+    return sRated;
+  }
+
+  public ElectricCurrentType getElectricCurrentType() {
+    return electricCurrentType;
+  }
+
+  public Set<String> getSynonymousIds() {
+    return synonymousIds;
+  }
+
   public ChargingPointTypeCopyBuilder copy() {
     return new ChargingPointTypeCopyBuilder(this);
   }
