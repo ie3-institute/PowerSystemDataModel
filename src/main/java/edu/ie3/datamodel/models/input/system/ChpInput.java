@@ -196,7 +196,7 @@ public class ChpInput extends SystemParticipantInput
 
   /**
    * A builder pattern based approach to create copies of {@link ChpInput} entities with altered
-   * field values. For detailed field descriptions refer to java docs of {@link ChpInput}
+   * field values. For detailed field descriptions refer to Javadocs of {@link ChpInput}
    *
    * @version 0.1
    * @since 05.06.20

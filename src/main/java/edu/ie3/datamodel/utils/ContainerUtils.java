@@ -452,7 +452,7 @@ public class ContainerUtils {
       SystemParticipants systemParticipants,
       EnergyManagementUnits energyManagementUnits)
       throws InvalidGridException {
-    /* Collect the different sub nets. Through the validation of lines, it is ensured, that no galvanically connected
+    /* Collect the different subnets. Through the validation of lines, it is ensured, that no galvanically connected
      * grid has more than one subnet number assigned */
     SortedSet<Integer> subnetNumbers = determineSubnetNumbers(rawGrid.getNodes());
 
@@ -476,7 +476,7 @@ public class ContainerUtils {
   }
 
   /**
-   * Build a mapping from sub net number to actual {@link SubGridContainer}
+   * Build a mapping from subnet number to actual {@link SubGridContainer}
    *
    * @param gridName Name of the grid
    * @param subnetNumbers Set of available subnet numbers
@@ -512,7 +512,7 @@ public class ContainerUtils {
   /**
    * Build an immutable graph of the galvanically separated sub grid topology
    *
-   * @param subGrids Mapping from sub net number to container model
+   * @param subGrids Mapping from subnet number to container model
    * @param rawGridElements Collection of all grid elements
    * @return An immutable graph of the sub grid topology
    */
@@ -771,7 +771,7 @@ public class ContainerUtils {
                             ? oldTrafo3wNodeA.copy().slack(false).build()
                             : oldTrafo3w.getNodeA();
 
-                    // we need to take care for this node in our node sets afterwards
+                    // we need to take care for this node in our node sets afterward
                     // (needs to be replaced by the new nodeA which might have been a slack before)
                     oldToNewTrafo3WANodes.put(oldTrafo3w.getNodeA(), newNodeA);
 

@@ -13,11 +13,7 @@ import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
-import edu.ie3.datamodel.models.value.GroundTemperatureValue
-import edu.ie3.datamodel.models.value.SolarIrradianceValue
-import edu.ie3.datamodel.models.value.TemperatureValue
-import edu.ie3.datamodel.models.value.WeatherValue
-import edu.ie3.datamodel.models.value.WindValue
+import edu.ie3.datamodel.models.value.*
 import edu.ie3.test.common.CosmoWeatherTestData
 import edu.ie3.test.common.WeatherTestData
 import edu.ie3.test.helper.WeatherSourceTestHelper
@@ -30,7 +26,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
-class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta, WeatherSourceTestHelper {
+class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta {
 
   @Shared
   CsvWeatherSource source
@@ -53,7 +49,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 
     then:
     optTimeBasedValue != null
-    equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
+    WeatherSourceTestHelper.equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
   }
 
   def "A CsvWeatherSource can read multiple time series values for multiple coordinates"() {
@@ -79,8 +75,8 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 
     then:
     coordinateToTimeSeries.keySet().size() == 2
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeSeries193186)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeSeries193187)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeSeries193186)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeSeries193187)
   }
 
   def "A CsvWeatherSource can read all weather data in a given time interval"() {
@@ -107,9 +103,9 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 
     then:
     coordinateToTimeSeries.keySet().size() == 3
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
   }
 
   def "The CsvWeatherSource is able to build a single WeatherValue from field to value mapping"() {
@@ -244,7 +240,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 
     then:
     result != null
-    equalsIgnoreUUID(result, expectedFallback)
+    WeatherSourceTestHelper.equalsIgnoreUUID(result, expectedFallback)
   }
 
   def "A CsvWeatherSource throws NoDataException when no weather data is found for a coordinate at a specific time and no earlier data is available"() {

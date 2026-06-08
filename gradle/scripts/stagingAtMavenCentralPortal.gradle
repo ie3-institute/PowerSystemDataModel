@@ -5,7 +5,6 @@ tasks.register('stagingAtMavenCentralPortal') {
   doLast {
     def username = project.getProperty('mavenCentralUser')
     def password =  project.getProperty('mavenCentralPassword')
-    def deployVersion = project.findProperty('deployVersion') ?: project.version
 
     if (!username || !password) {
       throw new GradleException("Sonatype credentials not found. Set sonatypeUser and sonatypePassword properties or environment variables.")

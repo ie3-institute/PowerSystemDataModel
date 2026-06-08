@@ -8,7 +8,7 @@ package edu.ie3.datamodel.models.input;
 import java.util.Objects;
 import java.util.UUID;
 
-/** Describes the type of an {@link edu.ie3.datamodel.models.input.AssetInput} */
+/** Describes the type of {@link edu.ie3.datamodel.models.input.AssetInput} */
 public abstract class AssetTypeInput extends UniqueInputEntity {
   /** Name or ID of the asset */
   private final String id;
