@@ -25,7 +25,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 @Testcontainers
-class SqlWeatherSourceIconIT extends Specification implements TestContainerHelper, WeatherSourceTestHelper {
+class SqlWeatherSourceIconIT extends Specification implements TestContainerHelper {
 
   @Shared
   PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:18.3")
@@ -57,7 +57,7 @@ class SqlWeatherSourceIconIT extends Specification implements TestContainerHelpe
 
     then:
     optTimeBasedValue != null
-    equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue )
+    WeatherSourceTestHelper.equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue )
   }
 
   def "A NativeSqlWeatherSource can read multiple timeseries values for multiple coordinates"() {
@@ -83,8 +83,8 @@ class SqlWeatherSourceIconIT extends Specification implements TestContainerHelpe
 
     then:
     coordinateToTimeSeries.keySet().size() == 2
-    equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775), timeSeries67775)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776), timeSeries67776)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775), timeSeries67775)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776), timeSeries67776)
   }
 
   def "A NativeSqlWeatherSource can read all weather data in a given time interval"() {
@@ -107,8 +107,8 @@ class SqlWeatherSourceIconIT extends Specification implements TestContainerHelpe
 
     then:
     coordinateToTimeSeries.keySet().size() == 2
-    equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775).entries, timeSeries67775.entries)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776).entries, timeSeries67776.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775).entries, timeSeries67775.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776).entries, timeSeries67776.entries)
   }
 
   def "A NativeSqlWeatherSource falls back to the last known value when no exact weather data is found at a specific time"() {
@@ -121,7 +121,7 @@ class SqlWeatherSourceIconIT extends Specification implements TestContainerHelpe
 
     then:
     result != null
-    equalsIgnoreUUID(result, expectedFallback)
+    WeatherSourceTestHelper.equalsIgnoreUUID(result, expectedFallback)
   }
 
   def "A NativeSqlWeatherSource throws NoDataException when no weather data is found at a specific time and no earlier data is available"() {

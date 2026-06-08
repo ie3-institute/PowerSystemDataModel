@@ -104,11 +104,11 @@ dependencies {
   implementation 'org.apache.commons:commons-compress:1.28.0' // I/O functionalities
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
   options.encoding = 'UTF-8'
 }
 
-tasks.withType(Javadoc){
+tasks.withType(Javadoc).configureEach {
   options.encoding = 'UTF-8'
   failOnError = false // TODO: Temp until JavaDoc issues are resolved
 }

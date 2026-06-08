@@ -522,7 +522,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Check if voltage level of node a is higher than voltage level of node b.
+   * Check if voltage level of node A is higher than voltage level of node B.
    *
    * @param transformer Transformer2WInput to validate
    */
@@ -538,7 +538,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Checks whether the voltage level of node a exceeds the voltage level of node b
+   * Checks whether the voltage level of node A exceeds the voltage level of node B
    *
    * @param nodeA Node a
    * @param nodeB Node b
@@ -576,9 +576,9 @@ public class ConnectorValidationUtils extends ValidationUtils {
   /**
    * Checks whether the voltage level sides are correctly assigned. (nodeA > nodeB > nodeC)
    *
-   * @param nodeA NodeInput a of the transformer
-   * @param nodeB NodeInput b of the transformer
-   * @param nodeC NodeInput c of the transformer
+   * @param nodeA NodeInput A of the transformer
+   * @param nodeB NodeInput B of the transformer
+   * @param nodeC NodeInput C of the transformer
    */
   public static void connectsNodesToCorrectVoltageSides(
       NodeInput nodeA, NodeInput nodeB, NodeInput nodeC) {
