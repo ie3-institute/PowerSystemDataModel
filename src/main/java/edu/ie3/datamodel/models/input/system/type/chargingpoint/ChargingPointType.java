@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import javax.measure.quantity.Power;
+import org.jspecify.annotations.NonNull;
 import tech.units.indriya.ComparableQuantity;
 
 /**
@@ -38,15 +39,21 @@ public record ChargingPointType(
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof ChargingPointType that)) return false;
-    return id.equals(that.id)
-        && sRated.equals(that.sRated)
-        && electricCurrentType == that.electricCurrentType
-        && synonymousIds.equals(that.synonymousIds);
+    if (!(o
+        instanceof
+        ChargingPointType(
+            String id1,
+            ComparableQuantity<Power> rated,
+            ElectricCurrentType currentType,
+            Set<String> ids))) return false;
+    return id.equals(id1)
+        && sRated.equals(rated)
+        && electricCurrentType == currentType
+        && synonymousIds.equals(ids);
   }
 
   @Override
-  public String toString() {
+  public @NonNull String toString() {
     return ChargingPointTypeUtils.fromIdString(id)
         .flatMap(
             commonType -> {

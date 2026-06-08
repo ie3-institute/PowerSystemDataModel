@@ -25,9 +25,6 @@ import tech.units.indriya.quantity.Quantities;
 /**
  * Utility class to create either custom instances of {@link ChargingPointType}s or to retrieve
  * common standard {@link ChargingPointType}s based on their id
- *
- * @version 0.1
- * @since 26.07.20
  */
 public class ChargingPointTypeUtils {
 
