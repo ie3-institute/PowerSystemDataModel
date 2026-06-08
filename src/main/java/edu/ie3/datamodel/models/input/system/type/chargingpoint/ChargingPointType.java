@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import javax.measure.quantity.Power;
-import org.jspecify.annotations.NonNull;
 import tech.units.indriya.ComparableQuantity;
 
 /**
@@ -53,7 +52,7 @@ public record ChargingPointType(
   }
 
   @Override
-  public @NonNull String toString() {
+  public String toString() {
     return ChargingPointTypeUtils.fromIdString(id)
         .flatMap(
             commonType -> {

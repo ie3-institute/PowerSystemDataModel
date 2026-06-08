@@ -15,7 +15,6 @@ import edu.ie3.datamodel.utils.FileUtils;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
-import org.jspecify.annotations.NonNull;
 
 /**
  * A definition of a csv file.
@@ -129,7 +128,7 @@ public record CsvFileDefinition(Path filePath, String[] headLineElements, String
   }
 
   @Override
-  public @NonNull String toString() {
+  public String toString() {
     return "CsvFileDefinition{"
         + "fullPath='"
         + filePath

@@ -11,7 +11,6 @@ import edu.ie3.datamodel.models.input.thermal.ThermalInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput;
 import java.util.*;
 import java.util.stream.Collectors;
-import org.jspecify.annotations.NonNull;
 
 /**
  * Container object to denote a fully connected thermal "grid". As there are currently no branch
@@ -53,7 +52,7 @@ public record ThermalGrid(
   }
 
   @Override
-  public @NonNull String toString() {
+  public String toString() {
     return "ThermalGrid{"
         + "bus="
         + bus
