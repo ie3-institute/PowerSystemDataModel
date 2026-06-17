@@ -75,8 +75,8 @@ class SqlIdCoordinateSourceIT extends Specification implements TestContainerHelp
 
     when:
     int[] arr = new int[]{
-      67775, 531137
-    }
+          67775, 531137
+        }
     def receivedValues = source.getCoordinates(arr)
 
     then:
