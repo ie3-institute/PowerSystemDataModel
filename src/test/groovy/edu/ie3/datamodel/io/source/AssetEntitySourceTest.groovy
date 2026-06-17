@@ -36,7 +36,10 @@ class AssetEntitySourceTest extends Specification {
     given:
     def entityData = new EntityData(["operator": "", "node": GridTestData.nodeA.uuid.toString()], LineInput)
     def operators = map([GridTestData.profBroccoli])
-    def nodes = map([GridTestData.nodeA, GridTestData.nodeB])
+    def nodes = map([
+      GridTestData.nodeA,
+      GridTestData.nodeB
+    ])
 
     when:
     def actual = AssetEntitySource.nodeAssetEnricher.apply(new Try.Success<>(entityData), operators, nodes)
@@ -50,7 +53,10 @@ class AssetEntitySourceTest extends Specification {
     given:
     def entityData = new EntityData(["operator": "", "nodeA": GridTestData.nodeA.uuid.toString(), "nodeB": GridTestData.nodeB.uuid.toString()], LineInput)
     def operators = map([GridTestData.profBroccoli])
-    def nodes = map([GridTestData.nodeA, GridTestData.nodeB])
+    def nodes = map([
+      GridTestData.nodeA,
+      GridTestData.nodeB
+    ])
 
     when:
     def actual = AssetEntitySource.connectorEnricher.apply(new Try.Success<>(entityData), operators, nodes)
@@ -100,7 +106,9 @@ class AssetEntitySourceTest extends Specification {
   def "An AssetEntitySource can enrich ConnectorInputEntityData with AssetTypeInput correctly"() {
     given:
     def entityData = new ConnectorInputEntityData(["type": GridTestData.lineTypeInputCtoD.uuid.toString()], LineInput, GridTestData.nodeA, GridTestData.nodeB)
-    def types = map([GridTestData.lineTypeInputCtoD])
+    def types = map([
+      GridTestData.lineTypeInputCtoD
+    ])
 
     when:
     def actual = AssetEntitySource.enrichConnector(types).apply(new Try.Success<>(entityData))
