@@ -106,7 +106,11 @@ public class EnergyManagementSource extends AssetEntitySource {
                     .map(
                         entityDataTry ->
                             entityDataTry.map(
-                                entityData -> new EmAssetInputEntityData(entityData, null)))
+                                entityData -> {
+                                  // to remove the empty field from the additional data
+                                  entityData.getField(CONTROLLING_EM);
+                                  return new EmAssetInputEntityData(entityData, null);
+                                }))
                     .map(emInputFactory::get),
                 EmInput.class)
             .collect(toMap());

@@ -289,6 +289,15 @@ public final class ModelFields extends FieldNamingStrategy {
   /** Method for registering all grid asset fields. */
   private static void registerGridAssetFields() {
 
+    Stream.of(
+            NodeInput.class,
+            SwitchInput.class,
+            LineInput.class,
+            Transformer2WInput.class,
+            Transformer3WInput.class,
+            MeasurementUnitInput.class)
+        .forEach(c -> register(c, assetFields));
+
     addMandatory(NodeInput.class, V_TARGET, V_RATED, SLACK, GEO_POSITION, VOLT_LVL, SUBNET);
 
     addMandatory(SwitchInput.class, NODE_A, NODE_B, CLOSED);

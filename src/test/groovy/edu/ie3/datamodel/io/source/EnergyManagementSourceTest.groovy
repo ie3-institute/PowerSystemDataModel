@@ -92,6 +92,12 @@ class EnergyManagementSourceTest extends Specification {
     expectedEm2
     )
 
+    expectedRootEm.additionalInformation.isEmpty()
+    expectedEm1.additionalInformation.isEmpty()
+    expectedEm11.additionalInformation.isEmpty()
+    expectedEm2.additionalInformation.isEmpty()
+    expectedEm21.additionalInformation.isEmpty()
+
     emUnits == map([expectedRootEm, expectedEm1, expectedEm11, expectedEm2, expectedEm21])
   }
 
