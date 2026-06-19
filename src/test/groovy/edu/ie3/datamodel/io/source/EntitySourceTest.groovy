@@ -49,7 +49,7 @@ class EntitySourceTest extends Specification {
     then:
     SourceException ex = thrown()
     ex.message == "1 exception(s) occurred within \"OperatorInput\" data: \n" +
-    "        An error occurred when creating instance of OperatorInput.class. Caused by: Field \"id\" not found in EntityData"
+        "        An error occurred when creating instance of OperatorInput.class. Caused by: Field \"id\" not found in EntityData"
   }
 
   def "An EntitySource can build EntityData correctly"() {
@@ -119,7 +119,10 @@ class EntitySourceTest extends Specification {
 
   def "An EntitySource can enrich EntityData with two entities"() {
     given:
-    def entityMap = map([GridTestData.nodeA, GridTestData.nodeB])
+    def entityMap = map([
+      GridTestData.nodeA,
+      GridTestData.nodeB
+    ])
     def entityData = new AssetInputEntityData(["nodeA": GridTestData.nodeA.uuid.toString(), "nodeB": GridTestData.nodeB.uuid.toString()], LineInput)
     def fcn = biEnrich("nodeA", entityMap, "nodeB", entityMap, ConnectorInputEntityData::new)
 
@@ -173,8 +176,12 @@ class EntitySourceTest extends Specification {
 
     where:
     fieldsToAttributes                                      | entityMap                                 | expectedMessage
-    ["operator": "no uuid"]                                 | map([OperatorInput.NO_OPERATOR_ASSIGNED]) | "Extracting UUID for field 'operator' failed. Caused by: Exception while trying to parse UUID of field \"operator\" with value \"no uuid\""
-    ["operator": GridTestData.profBroccoli.uuid.toString()] | map([OperatorInput.NO_OPERATOR_ASSIGNED]) | "Extracting UUID for field 'operator' failed. Caused by: Entity with uuid f15105c4-a2de-4ab8-a621-4bc98e372d92 was not provided."
+    ["operator": "no uuid"]                                 | map([
+      OperatorInput.NO_OPERATOR_ASSIGNED
+    ]) | "Extracting UUID for field 'operator' failed. Caused by: Exception while trying to parse UUID of field \"operator\" with value \"no uuid\""
+    ["operator": GridTestData.profBroccoli.uuid.toString()] | map([
+      OperatorInput.NO_OPERATOR_ASSIGNED
+    ]) | "Extracting UUID for field 'operator' failed. Caused by: Entity with uuid f15105c4-a2de-4ab8-a621-4bc98e372d92 was not provided."
   }
 
   def "An EntitySource returns a failure if a given map does not contain the given uuid"() {

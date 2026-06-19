@@ -22,7 +22,9 @@ class SystemParticipantSourceTest extends Specification {
   def "An SystemParticipantSource participantEnricher should work as expected"() {
     given:
     def entityData = new ConnectorInputEntityData(["operators": "", "node": sptd.participantNode.uuid.toString(), "controllingEm": sptd.emInput.uuid.toString()], LineInput, GridTestData.nodeA, GridTestData.nodeB)
-    def operators = map([OperatorInput.NO_OPERATOR_ASSIGNED])
+    def operators = map([
+      OperatorInput.NO_OPERATOR_ASSIGNED
+    ])
     def nodes = map([sptd.participantNode])
     def emUnits = map([sptd.emInput])
 

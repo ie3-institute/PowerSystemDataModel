@@ -80,16 +80,16 @@ class WeatherSourceTestHelperTest extends Specification {
 
     def createWeatherWithIrr = { double directVal ->
       new WeatherValue(
-          coordinate,
-          new SolarIrradianceValue(
-          Quantities.getQuantity(directVal, StandardUnits.SOLAR_IRRADIANCE),
-          baseWeather.solarIrradiance.diffuseIrradiance.get()
-          ),
-          baseWeather.temperature,
-          baseWeather.wind,
-          baseWeather.groundTemperatureLevel1,
-          baseWeather.groundTemperatureLevel2
-          )
+      coordinate,
+      new SolarIrradianceValue(
+      Quantities.getQuantity(directVal, StandardUnits.SOLAR_IRRADIANCE),
+      baseWeather.solarIrradiance.diffuseIrradiance.get()
+      ),
+      baseWeather.temperature,
+      baseWeather.wind,
+      baseWeather.groundTemperatureLevel1,
+      baseWeather.groundTemperatureLevel2
+      )
     }
 
     def weatherWithinTolerance = createWeatherWithIrr(100d + 0.5E-10)
