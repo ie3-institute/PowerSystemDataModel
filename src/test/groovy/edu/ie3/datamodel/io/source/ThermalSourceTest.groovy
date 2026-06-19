@@ -21,7 +21,9 @@ class ThermalSourceTest extends Specification {
     given:
     def bus = new ThermalBusInput(UUID.fromString("0d95d7f2-49fb-4d49-8636-383a5220384e"), "test_thermal_bus")
     def entityData = new EntityData(["operators": "", "thermalbus": "0d95d7f2-49fb-4d49-8636-383a5220384e"], ThermalHouseInput)
-    def operators = map([OperatorInput.NO_OPERATOR_ASSIGNED])
+    def operators = map([
+      OperatorInput.NO_OPERATOR_ASSIGNED
+    ])
     def buses = map([bus])
 
     when:

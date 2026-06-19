@@ -45,19 +45,19 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
     given:
     def typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy))
     def rawGridSource = new RawGridSource(typeSource, new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy)) {
-      @Override
-      Map<UUID, LineInput> getLines() {
-        return Collections.emptyMap()
-      }
+          @Override
+          Map<UUID, LineInput> getLines() {
+            return Collections.emptyMap()
+          }
 
-      @Override
-      Map<UUID, LineInput> getLines(
-      Map<UUID, OperatorInput> operators,
-      Map<UUID, NodeInput> nodes,
-      Map<UUID, LineTypeInput> lineTypeInputs) {
-        return Collections.emptyMap()
-      }
-    }
+          @Override
+          Map<UUID, LineInput> getLines(
+              Map<UUID, OperatorInput> operators,
+              Map<UUID, NodeInput> nodes,
+              Map<UUID, LineTypeInput> lineTypeInputs) {
+            return Collections.emptyMap()
+          }
+        }
 
     def graphicSource = new GraphicSource(typeSource, rawGridSource, new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
 
@@ -71,31 +71,31 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
     Exception ex = graphicElements.exception.get()
     ex.class == GraphicSourceException
     ex.message == "Exception(s) occurred in 1 input file(s) while initializing graphic elements. \n" +
-    "        1 exception(s) occurred within \"LineGraphicInput\" data: \n" +
-    "               Extracting UUID for field 'line' failed. Caused by: Entity with uuid 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7 was not provided."
+        "        1 exception(s) occurred within \"LineGraphicInput\" data: \n" +
+        "               Extracting UUID for field 'line' failed. Caused by: Entity with uuid 91ec3bcf-1777-4d38-af67-0bf7c9fa73c7 was not provided."
   }
 
 
   def "A CsvGraphicSource should read and handle a valid node graphics file as expected"() {
     given:
     def graphicSource = new GraphicSource(
-    Mock(TypeSource),
-    Mock(RawGridSource),
-    new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
     def expectedNodeGraphicD = new NodeGraphicInput(
-    gtd.nodeGraphicD.uuid,
-    gtd.nodeGraphicD.graphicLayer,
-    gtd.nodeGraphicD.path,
-    gtd.nodeD,
-    gtd.geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [7.4116482, 51.4843281] }") as Point
-    )
+        gtd.nodeGraphicD.uuid,
+        gtd.nodeGraphicD.graphicLayer,
+        gtd.nodeGraphicD.path,
+        gtd.nodeD,
+        gtd.geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [7.4116482, 51.4843281] }") as Point
+        )
     def expectedNodeGraphicC = new NodeGraphicInput(
-    gtd.nodeGraphicC.uuid,
-    gtd.nodeGraphicC.graphicLayer,
-    gtd.geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.4116482, 51.4843281], [7.4116482, 51.4843281]]}") as LineString,
-    gtd.nodeC,
-    gtd.nodeGraphicC.point
-    )
+        gtd.nodeGraphicC.uuid,
+        gtd.nodeGraphicC.graphicLayer,
+        gtd.geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.4116482, 51.4843281], [7.4116482, 51.4843281]]}") as LineString,
+        gtd.nodeC,
+        gtd.nodeGraphicC.point
+        )
 
     Map<UUID, NodeInput>  nodeMap = [
       (gtd.nodeC.getUuid()) : gtd.nodeC,
@@ -116,9 +116,9 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
   def "A GraphicSource should read and handle a valid line graphics file as expected"() {
     given:
     def graphicSource = new GraphicSource(
-    Mock(TypeSource),
-    Mock(RawGridSource),
-    new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
 
     Map<UUID, LineInput> lineMap = [
       (gtd.lineCtoD.getUuid()) : gtd.lineCtoD
@@ -135,9 +135,9 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
   def "A GraphicSource when building node graphic data should fail when required node data is not provided"() {
     given:
     def graphicSource = new GraphicSource(
-    Mock(TypeSource),
-    Mock(RawGridSource),
-    new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
     Map<UUID, NodeInput> nodeMap = map(nodeCollection)
 
     when:
@@ -158,9 +158,9 @@ class CsvGraphicSourceTest extends Specification implements CsvTestDataMeta {
   def "A GraphicSource when building line graphic data should fail when required line data is not provided"() {
     given:
     def graphicSource = new GraphicSource(
-    Mock(TypeSource),
-    Mock(RawGridSource),
-    new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        Mock(RawGridSource),
+        new CsvDataSource(csvSep, graphicsFolderPath, fileNamingStrategy))
     Map<UUID, LineInput> lineMap = map(lineCollection)
 
     when:
