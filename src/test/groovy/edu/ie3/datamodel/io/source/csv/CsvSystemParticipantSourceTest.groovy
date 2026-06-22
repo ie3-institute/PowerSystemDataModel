@@ -56,7 +56,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
       new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy)
     ]) {
       // partly fake the return method of the csv raw grid source to always return empty node sets
-      // -> elements to build NodeGraphicInputs are missing
       getNodes() >> [:]
       getNodes(_) >> [:]
     } as RawGridSource

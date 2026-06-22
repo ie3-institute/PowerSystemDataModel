@@ -20,8 +20,6 @@ import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
-import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
-import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.*
 import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
@@ -294,62 +292,6 @@ class InputEntityProcessorTest extends Specification {
       "v2gSupport"      : SystemParticipantTestData.evcsInput.v2gSupport.toString(),
       "controllingEm"   : SystemParticipantTestData.evcsInput.controllingEm.map((UniqueEntity::getUuid).andThen(UUID::toString)).orElse("")
     ]
-  }
-
-  def "The InputEntityProcessor should serialize a provided NodeGraphicInput with point correctly"() {
-    given:
-    InputEntityProcessor processor = new InputEntityProcessor(NodeGraphicInput)
-    NodeGraphicInput validNode = GridTestData.nodeGraphicC
-    Map expected = [
-      "uuid"        : "09aec636-791b-45aa-b981-b14edf171c4c",
-      "graphicLayer": "main",
-      "path"        : "",
-      "point"       : "{\"type\":\"Point\",\"coordinates\":[0.0,10],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "node"        : "bd837a25-58f3-44ac-aa90-c6b6e3cd91b2"
-    ]
-
-    when:
-    Map<String, String> actual = processor.handleEntity(validNode)
-
-    then:
-    actual == expected
-  }
-
-  def "The InputEntityProcessor should serialize a provided NodeGraphicInput with path correctly"() {
-    given:
-    InputEntityProcessor processor = new InputEntityProcessor(NodeGraphicInput)
-    NodeGraphicInput validNode = GridTestData.nodeGraphicD
-    Map expected = [
-      "uuid"        : "9ecad435-bd16-4797-a732-762c09d4af25",
-      "graphicLayer": "main",
-      "path"        : "{\"type\":\"LineString\",\"coordinates\":[[-1,0.0],[1,0.0]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "point"       : "",
-      "node"        : "6e0980e0-10f2-4e18-862b-eb2b7c90509b"
-    ]
-
-    when:
-    Map<String, String> actual = processor.handleEntity(validNode)
-
-    then:
-    actual == expected
-  }
-
-  def "The InputEntityProcessor should serialize a provided LineGraphicInput correctly"() {
-    given:
-    InputEntityProcessor processor = new InputEntityProcessor(LineGraphicInput)
-    LineGraphicInput validNode = GridTestData.lineGraphicCtoD
-    Map expected = [
-      "uuid"        : "ece86139-3238-4a35-9361-457ecb4258b0",
-      "graphicLayer": "main",
-      "path"        : "{\"type\":\"LineString\",\"coordinates\":[[0.0,0.0],[0.0,10]],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "line"        : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"
-    ]
-
-    when:
-    Map<String, String> actual = processor.handleEntity(validNode)
-
-    then:
-    actual == expected
   }
 
   def "The InputEntityProcessor should serialize a provided OperatorInput correctly"() {

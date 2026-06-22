@@ -54,7 +54,6 @@ class DefaultDirectoryHierarchyTest extends Specification {
       dfh.subDirectories.get(basePath.resolve(Path.of("input", "participants", "time_series"))) == false
       dfh.subDirectories.get(basePath.resolve(Path.of("input", "global"))) == true
       dfh.subDirectories.get(basePath.resolve(Path.of("input", "thermal"))) == false
-      dfh.subDirectories.get(basePath.resolve(Path.of("input", "graphics"))) == false
       dfh.subDirectories.get(basePath.resolve(Path.of("results", "grid"))) == false
       dfh.subDirectories.get(basePath.resolve(Path.of("results", "participants"))) == false
       dfh.subDirectories.get(basePath.resolve(Path.of("results", "thermal"))) == false

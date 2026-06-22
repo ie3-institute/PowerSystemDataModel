@@ -19,25 +19,8 @@ import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
-import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
-import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
-import edu.ie3.datamodel.models.input.system.AcInput
-import edu.ie3.datamodel.models.input.system.BmInput
-import edu.ie3.datamodel.models.input.system.ChpInput
-import edu.ie3.datamodel.models.input.system.EvInput
-import edu.ie3.datamodel.models.input.system.EvcsInput
-import edu.ie3.datamodel.models.input.system.FixedFeedInInput
-import edu.ie3.datamodel.models.input.system.HpInput
-import edu.ie3.datamodel.models.input.system.LoadInput
-import edu.ie3.datamodel.models.input.system.PvInput
-import edu.ie3.datamodel.models.input.system.StorageInput
-import edu.ie3.datamodel.models.input.system.WecInput
-import edu.ie3.datamodel.models.input.system.type.BmTypeInput
-import edu.ie3.datamodel.models.input.system.type.ChpTypeInput
-import edu.ie3.datamodel.models.input.system.type.EvTypeInput
-import edu.ie3.datamodel.models.input.system.type.HpTypeInput
-import edu.ie3.datamodel.models.input.system.type.StorageTypeInput
-import edu.ie3.datamodel.models.input.system.type.WecTypeInput
+import edu.ie3.datamodel.models.input.system.*
+import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
@@ -46,20 +29,7 @@ import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.connector.SwitchResult
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult
-import edu.ie3.datamodel.models.result.system.AcResult
-import edu.ie3.datamodel.models.result.system.BmResult
-import edu.ie3.datamodel.models.result.system.ChpResult
-import edu.ie3.datamodel.models.result.system.EmResult
-import edu.ie3.datamodel.models.result.system.EnergyBoundariesFlexOptionsResult
-import edu.ie3.datamodel.models.result.system.EvResult
-import edu.ie3.datamodel.models.result.system.EvcsResult
-import edu.ie3.datamodel.models.result.system.FixedFeedInResult
-import edu.ie3.datamodel.models.result.system.HpResult
-import edu.ie3.datamodel.models.result.system.LoadResult
-import edu.ie3.datamodel.models.result.system.PowerLimitFlexOptionsResult
-import edu.ie3.datamodel.models.result.system.PvResult
-import edu.ie3.datamodel.models.result.system.StorageResult
-import edu.ie3.datamodel.models.result.system.WecResult
+import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
@@ -184,23 +154,6 @@ class FileNamingStrategyTest extends Specification {
     LineTypeInput          || Path.of("test_grid", "input", "global")
     Transformer2WTypeInput || Path.of("test_grid", "input", "global")
     Transformer3WTypeInput || Path.of("test_grid", "input", "global")
-  }
-
-  def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid directory paths for a graphic input Model"() {
-    given: "a file naming strategy without pre- or suffixes"
-    def strategy = new FileNamingStrategy(simpleEntityNaming, defaultHierarchy)
-
-    when:
-    def res = strategy.getDirectoryPath(modelClass)
-
-    then:
-    res.present
-    res.get() == expectedPath
-
-    where:
-    modelClass       || expectedPath
-    NodeGraphicInput || Path.of("test_grid", "input", "graphics")
-    LineGraphicInput || Path.of("test_grid", "input", "graphics")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffix should return valid directory path for load profile time series"() {
@@ -344,23 +297,6 @@ class FileNamingStrategyTest extends Specification {
     Transformer2WTypeInput || Path.of("test_grid", "input", "global", "transformer_2_w_type_input")
     Transformer3WTypeInput || Path.of("test_grid", "input", "global", "transformer_3_w_type_input")
     WecTypeInput           || Path.of("test_grid", "input", "global", "wec_type_input")
-  }
-
-  def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffixes should return valid file paths for a graphic input Model"() {
-    given: "a file naming strategy without pre- or suffixes"
-    def strategy = new FileNamingStrategy(simpleEntityNaming, defaultHierarchy)
-
-    when:
-    def res = strategy.getFilePath(modelClass)
-
-    then:
-    res.present
-    res.get() == expectedPath
-
-    where:
-    modelClass       || expectedPath
-    NodeGraphicInput || Path.of("test_grid", "input", "graphics", "node_graphic_input")
-    LineGraphicInput || Path.of("test_grid", "input", "graphics", "line_graphic_input")
   }
 
   def "A FileNamingStrategy with DefaultHierarchy and without pre- or suffix should return valid file path for individual time series"() {
@@ -554,22 +490,6 @@ class FileNamingStrategyTest extends Specification {
     Transformer3WTypeInput   || Optional.empty()
   }
 
-  def "A FileNamingStrategy with FlatHierarchy does return empty sub directory path for graphics model input classes"() {
-    given: "a naming strategy without pre- or suffixes"
-    def strategy = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
-
-    when:
-    def actual = strategy.getDirectoryPath(modelClass as Class<? extends UniqueEntity>)
-
-    then:
-    actual == expected
-
-    where:
-    modelClass               || expected
-    NodeGraphicInput         || Optional.empty()
-    LineGraphicInput         || Optional.empty()
-  }
-
   def "A FileNamingStrategy with FlatHierarchy does return empty sub directory path for any other model classes"() {
     given: "a naming strategy without pre- or suffixes"
     def strategy = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
@@ -701,23 +621,6 @@ class FileNamingStrategyTest extends Specification {
     LineTypeInput            || Path.of("line_type_input")
     Transformer2WTypeInput   || Path.of("transformer_2_w_type_input")
     Transformer3WTypeInput   || Path.of("transformer_3_w_type_input")
-  }
-
-  def "A FileNamingStrategy with FlatHierarchy and without pre- or suffixes should return valid file paths for all graphics input classes"() {
-    given: "a naming strategy without pre- or suffixes"
-    def strategy = new FileNamingStrategy(simpleEntityNaming, flatHierarchy)
-
-    when:
-    def res = strategy.getFilePath(modelClass as Class<? extends UniqueEntity>)
-
-    then:
-    res.present
-    res.get() == expectedPath
-
-    where:
-    modelClass               || expectedPath
-    NodeGraphicInput         || Path.of("node_graphic_input")
-    LineGraphicInput         || Path.of("line_graphic_input")
   }
 
   def "A FileNamingStrategy with FlatHierarchy does return valid file path for load profile time series"() {

@@ -26,7 +26,6 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.ConnectorInput;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
-import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
@@ -457,7 +456,6 @@ public class SqlSink {
     sortedInsert.add(ThermalUnitInput.class); // 5. ThermalUnit
     sortedInsert.add(ConnectorInput.class); // 6a. ConnectorInput
     sortedInsert.add(SystemParticipantInput.class); // 6b. SystemParticipantInput
-    sortedInsert.add(GraphicInput.class); // 7. GraphicInput
     return sortedInsert;
   }
 }

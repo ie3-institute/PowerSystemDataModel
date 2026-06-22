@@ -24,8 +24,6 @@ import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
-import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
-import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.EvcsInput
 import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
@@ -122,8 +120,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
           new InputEntityProcessor(NodeInput),
           new InputEntityProcessor(EvcsInput),
           new InputEntityProcessor(Transformer2WTypeInput),
-          new InputEntityProcessor(LineGraphicInput),
-          new InputEntityProcessor(NodeGraphicInput),
           new InputEntityProcessor(CylindricalStorageInput),
           new InputEntityProcessor(DomesticHotWaterStorageInput),
           new InputEntityProcessor(ThermalHouseInput),
@@ -163,8 +159,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
       powerLimitFlexOptionsResult,
       energyBoundariesFlexOptionsResult,
       GridTestData.transformerCtoG,
-      GridTestData.lineGraphicCtoD,
-      GridTestData.nodeGraphicC,
+      GridTestData.lineCtoD,
       ThermalUnitInputTestData.cylindricalStorageInput,
       ThermalUnitInputTestData.domesticHotWaterStorageInput,
       ThermalUnitInputTestData.thermalHouseInput,
@@ -188,10 +183,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     testBaseFolderPath.resolve("operator_input.csv").toFile().exists()
     testBaseFolderPath.resolve("cylindrical_storage_input.csv").toFile().exists()
     testBaseFolderPath.resolve("domestic_hot_water_storage_input.csv").toFile().exists()
-    testBaseFolderPath.resolve("line_graphic_input.csv").toFile().exists()
     testBaseFolderPath.resolve("line_input.csv").toFile().exists()
     testBaseFolderPath.resolve("operator_input.csv").toFile().exists()
-    testBaseFolderPath.resolve("node_graphic_input.csv").toFile().exists()
     testBaseFolderPath.resolve("thermal_bus_input.csv").toFile().exists()
     testBaseFolderPath.resolve("thermal_house_input.csv").toFile().exists()
     testBaseFolderPath.resolve("load_input.csv").toFile().exists()

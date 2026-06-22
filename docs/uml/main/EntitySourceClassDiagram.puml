@@ -7,7 +7,6 @@ abstract class EntitySource {
 }
 
 EntitySource <|-- EnergyManagementSource
-EntitySource <|-- GraphicSource
 EntitySource <|-- IdCoordinateSource
 IdCoordinateSource <|-- CsvIdCoordinateSource
 IdCoordinateSource <|-- SqlIdCoordinateSource
@@ -34,20 +33,6 @@ class EnergyManagementSource {
     + EnergyManagementSource(TypeSource, DataSource)
     + Map<UUID, EmInput> getEmUnits() throws SourceException
     + Map<UUID, EmInput> getEmUnits(Map<UUID, OperatorInput>) throws SourceException
-}
-
-class GraphicSource {
-    - TypeSource typeSource
-    - RawGridSource rawGridSource
-    - LineGraphicInputFactory lineGraphicInputFactory
-    - NodeGraphicInputFactory nodeGraphicInputFactory
-    + GraphicSource(TypeSource, RawGridSource, DataSource)
-    + GraphicElements getGraphicElements() throws SourceException
-    + GraphicElements getGraphicElements(Map<UUID, NodeInput>, Map<UUID, LineInput>) throws SourceException
-    + Set<NodeGraphicInput> getNodeGraphicInput() throws SourceException
-    + Set<NodeGraphicInput> getNodeGraphicInput(Map<UUID, NodeInput>) throws SourceException
-    + Set<LineGraphicInput> getLineGraphicInput() throws SourceException
-    + Set<LineGraphicInput> getLineGraphicInput(Map<UUID, LineInput>) throws SourceException
 }
 
 abstract class IdCoordinateSource {

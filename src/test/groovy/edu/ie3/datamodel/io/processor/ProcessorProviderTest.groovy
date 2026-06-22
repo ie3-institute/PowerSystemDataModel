@@ -19,8 +19,6 @@ import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
-import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
-import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.*
 import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
@@ -92,9 +90,6 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
       ThermalHouseInput,
       CylindricalStorageInput,
       DomesticHotWaterStorageInput,
-      /* - GraphicInput */
-      NodeGraphicInput,
-      LineGraphicInput,
       /* - AssetTypeInput */
       BmTypeInput,
       ChpTypeInput,
