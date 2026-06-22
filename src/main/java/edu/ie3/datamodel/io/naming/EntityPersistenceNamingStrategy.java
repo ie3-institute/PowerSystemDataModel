@@ -11,7 +11,6 @@ import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.*;
-import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
@@ -214,8 +213,6 @@ public class EntityPersistenceNamingStrategy {
       return getTypeEntityName(cls.asSubclass(AssetTypeInput.class));
     if (AssetInput.class.isAssignableFrom(cls))
       return getAssetInputEntityName(cls.asSubclass(AssetInput.class));
-    if (GraphicInput.class.isAssignableFrom(cls))
-      return getGraphicsInputEntityName(cls.asSubclass(GraphicInput.class));
     if (OperatorInput.class.isAssignableFrom(cls))
       return getOperatorInputEntityName(cls.asSubclass(OperatorInput.class));
     if (TimeSeriesMappingSource.MappingEntry.class.isAssignableFrom(cls))
@@ -300,17 +297,6 @@ public class EntityPersistenceNamingStrategy {
    */
   private String addPrefixAndSuffix(String s) {
     return prefix.concat(s).concat(suffix);
-  }
-
-  /**
-   * Get the entity name for all {@link GraphicInput}s
-   *
-   * @param graphicClass the graphic input class an entity name string should be generated from
-   * @return the entity name string
-   */
-  public Optional<String> getGraphicsInputEntityName(Class<? extends GraphicInput> graphicClass) {
-    String assetInputString = camelCaseToSnakeCase(graphicClass.getSimpleName());
-    return Optional.of(addPrefixAndSuffix(assetInputString));
   }
 
   /**

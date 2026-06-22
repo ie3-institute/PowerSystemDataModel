@@ -68,12 +68,6 @@ interface TypeDataSource {
 }
 TypeDataSource 	..|> DataSource
 
-interface GraphicDataSource {
-{abstract}Future<GraphicData> fetchGraphicData()
-{abstract}Future<List<...>> fetch...()
-}
-GraphicDataSource 	..|> DataSource
-
 interface WeatherDataSource {
 {abstract}Future<WeatherData> fetchWeatherData()
 {abstract}Future<WeatherModel> getWeather(Date, Coordinate)
@@ -98,7 +92,6 @@ Class InputAccumulator {
 InputAccumulator --> GridDataSource
 InputAccumulator --> AssetDataSource
 InputAccumulator --> TypeDataSource
-InputAccumulator --> GraphicDataSource
 InputAccumulator --> WeatherDataSource
 InputAccumulator --> WholesaleDataSource
 InputAccumulator --> SimulationModel

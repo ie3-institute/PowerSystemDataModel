@@ -125,16 +125,6 @@ class ExtractorTest extends Specification {
       sptd.acInput.controllingEm.get().controllingEm.get()
     ]
 
-    gtd.lineGraphicCtoD        || [
-      gtd.lineGraphicCtoD.line,
-      gtd.lineGraphicCtoD.line.nodeB,
-      gtd.lineGraphicCtoD.line.nodeA,
-      gtd.lineGraphicCtoD.line.type,
-      gtd.lineGraphicCtoD.line.operator
-    ]
-
-    gtd.nodeGraphicC           || [gtd.nodeGraphicC.node]
-
     gtd.measurementUnitInput   || [
       gtd.measurementUnitInput.node,
       gtd.measurementUnitInput.operator

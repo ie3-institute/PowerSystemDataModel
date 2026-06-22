@@ -13,8 +13,6 @@ import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
-import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
-import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
@@ -64,9 +62,6 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
           CylindricalStorageInput.class,
           DomesticHotWaterStorageInput.class,
 
-          /* - GraphicInput */
-          NodeGraphicInput.class,
-          LineGraphicInput.class,
           /* - AssetTypeInput */
           AcTypeInput.class,
           BmTypeInput.class,
