@@ -83,7 +83,6 @@ The ValidationUtils include validation checks for...
         - ThermalStorageInput
             - CylindricalStorageInput
 - GridContainerValidationUtils
-    - GraphicElements
     - GridContainer
     - RawGridElements
     - SystemParticipants

@@ -73,10 +73,6 @@ You may extend / alter the naming with pre- or suffix by calling `new EntityPers
 * - wind energy converter
   - *prefix_* wec_input *_suffix*  
     *prefix_* wec_type_input *_suffix*
-* - schematic node graphic
-  - *prefix_* node_graphic_input *_suffix*
-* - schematic line graphic
-  - *prefix_* line_graphic_input *_suffix*
 ```
 
 ### Time Series
