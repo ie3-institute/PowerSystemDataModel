@@ -38,6 +38,7 @@ public class FieldNamingStrategy {
   public static final String S_RATED_B = "sRatedB";
   public static final String S_RATED_C = "sRatedC";
   public static final String S_RATED_DC = "sRatedDC";
+  public static final String FREQUENCY = "frequency";
 
   // energy
   public static final String E_STATE = "eState";
@@ -86,6 +87,22 @@ public class FieldNamingStrategy {
   public static final String X_SC_A = "xScA";
   public static final String X_SC_B = "xScB";
   public static final String X_SC_C = "xScC";
+
+  // cable
+  public static final String CORE_NUMBER = "coreNumber";
+  public static final String CONDUCTOR_STRING = "conductor";
+  public static final String ISOLATION_STRING = "isolation";
+  public static final String SCREEN_STRING = "screen";
+  public static final String FILLER_STRING = "filler";
+  public static final String ARMOR_STRING = "armor";
+  public static final String JACK_STRING = "jack";
+  public static final String LIMIT_TEMP = "limitTemperature";
+  public static final String SKIN_EFF_COEFF = "skinEffectCoefficient";
+  public static final String PROX_EFF_COEFF = "proximityEffectCoefficient";
+  public static final String ELECTR_CAPACITANCE = "electricalCapacitance";
+  public static final String TAN_DELTA = "tanDelta";
+  public static final String CIRCULATING_LOSS_FACTOR = "circulatingLossFactor";
+  public static final String EDDY_CURRENT_LOSS_FACTOR = "eddyCurrentLossFactor";
 
   // efficiency
   public static final String ETA = "eta";

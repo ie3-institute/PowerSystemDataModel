@@ -17,6 +17,10 @@ import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
+import edu.ie3.datamodel.models.input.connector.type.CableMaterial
+import edu.ie3.datamodel.models.input.connector.type.CableTypeInput
+import edu.ie3.datamodel.models.input.connector.type.ConductorInput
+import edu.ie3.datamodel.models.input.connector.type.LayerInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
@@ -27,6 +31,7 @@ import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.geom.Point
 import org.locationtech.jts.io.geojson.GeoJsonReader
 import tech.units.indriya.quantity.Quantities
+import tech.units.indriya.unit.Units
 
 /**
  * This class contains a collection of different model instances that can be used for testing purposes.
@@ -308,9 +313,46 @@ class GridTestData {
   Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
   Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
   Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
-  Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
-
+  Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE),
+  Optional.empty(),
   )
+
+  public static final CableTypeInput cableTypeInput = new CableTypeInput(
+  UUID.fromString("994dcc32-d6ec-4d0f-9941-7c25be942aa6"),
+  "test cable type input",
+  1,
+  new ConductorInput(
+  UUID.randomUUID(),
+  "coductor",
+  CableMaterial.COPPER,
+  Quantities.getQuantity(400.0e-6, Units.SQUARE_METRE),
+  Quantities.getQuantity(0.0225, Units.METRE),
+  false,
+  Quantities.getQuantity(1.0 / 384.0, (Units.KELVIN * Units.METRE).divide(Units.WATT)),
+  Quantities.getQuantity(
+  3449600.0, Units.JOULE.divide(Units.CUBIC_METRE * Units.KELVIN)),
+  Optional.empty()),
+  List.of(new LayerInput(
+  UUID.randomUUID(),
+  "Main insulation",
+  CableMaterial.XLPE,
+  Quantities.getQuantity(0.0225, Units.METRE),
+  Quantities.getQuantity(0.027, Units.METRE),
+  Quantities.getQuantity(3.5, (Units.KELVIN * Units.METRE).divide(Units.WATT)),
+  Quantities.getQuantity(2.4, Units.JOULE.divide(Units.CUBIC_METRE * Units.KELVIN)),
+  Optional.empty())),
+  Optional.empty(),
+  new ArrayList<>(),
+  new ArrayList<>(),
+  new ArrayList<>(),
+  Quantities.getQuantity(90.0, Units.CELSIUS),
+  Quantities.getQuantity(50.0, Units.HERTZ),
+  1.0,
+  1.0,
+  Quantities.getQuantity(350e-9, Units.FARAD),
+  0.1,
+  0.0,
+  0.0)
 
   public static final LineInput lineCtoD = new LineInput(
   UUID.fromString("91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"),

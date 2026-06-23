@@ -28,14 +28,15 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
     given: "a system participant input type factory and model data"
     def typeInputFactory = new LineTypeInputFactory()
     Map<String, String> parameter = [
-      "uuid":     "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id":       "blablub",
-      "b":        "3",
-      "g":        "4",
-      "r":        "5",
-      "x":        "6",
-      "imax":     "7",
-      "vrated":   "8"
+      "uuid":          "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id":            "blablub",
+      "b":             "3",
+      "g":             "4",
+      "r":             "5",
+      "x":             "6",
+      "imax":          "7",
+      "vrated":        "8",
+      "cabletype":     "",
     ]
     def typeInputClass = LineTypeInput
 
@@ -54,6 +55,7 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
       x == getQuant(parameter["x"], StandardUnits.REACTANCE_PER_LENGTH)
       iMax == getQuant(parameter["imax"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
       vRated == getQuant(parameter["vrated"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
+      !cableType.present
     }
   }
 }

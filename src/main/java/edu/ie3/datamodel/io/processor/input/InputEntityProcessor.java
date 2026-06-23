@@ -10,6 +10,7 @@ import edu.ie3.datamodel.io.processor.EntityProcessor;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.*;
+import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
@@ -69,6 +70,7 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
           EvTypeInput.class,
           HpTypeInput.class,
           LineTypeInput.class,
+          CableTypeInput.class,
           Transformer2WTypeInput.class,
           Transformer3WTypeInput.class,
           StorageTypeInput.class,

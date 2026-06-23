@@ -13,6 +13,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
+import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
@@ -254,6 +255,19 @@ public abstract class Processor<T> {
                               EntityProcessorException.class);
                         } else if (o instanceof UniqueEntity entity) {
                           return Try.of(entity::getUuid, EntityProcessorException.class);
+                        } else if (o instanceof ScreenLayerInput screenLayer) {
+                          return Try.of(
+                              () -> {
+                                try {
+                                  return edu.ie3.datamodel.io.factory.typeinput
+                                      .CableTypeInputFactory.OBJECT_MAPPER
+                                      .writeValueAsString(screenLayer);
+                                } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+                                  throw new EntityProcessorException(
+                                      "Failed to serialize ScreenLayerInput inside Optional", e);
+                                }
+                              },
+                              EntityProcessorException.class);
                         } else {
                           return Failure.of(
                               new EntityProcessorException(
@@ -313,6 +327,28 @@ public abstract class Processor<T> {
           resultStringBuilder.append(((CongestionResult.InputModelType) methodReturnObject).type);
       case "PowerProfileKey" ->
           resultStringBuilder.append(((PowerProfileKey) methodReturnObject).getValue());
+      case "List" -> {
+        try {
+          String jsonString =
+              edu.ie3.datamodel.io.factory.typeinput.CableTypeInputFactory.OBJECT_MAPPER
+                  .writeValueAsString(methodReturnObject);
+          resultStringBuilder.append(jsonString);
+        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+          throw new EntityProcessorException(
+              "Failed to serialize List to JSON string for field: " + fieldName, e);
+        }
+      }
+      case "ConductorInput" -> {
+        try {
+          String jsonString =
+              edu.ie3.datamodel.io.factory.typeinput.CableTypeInputFactory.OBJECT_MAPPER
+                  .writeValueAsString(methodReturnObject);
+          resultStringBuilder.append(jsonString);
+        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+          throw new EntityProcessorException(
+              "Failed to serialize ConductorInput to JSON string for field: " + fieldName, e);
+        }
+      }
       default ->
           throw new EntityProcessorException(
               "Unable to process value for attribute/field '"

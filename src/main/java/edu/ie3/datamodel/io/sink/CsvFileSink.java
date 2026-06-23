@@ -20,8 +20,10 @@ import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
+import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
+import edu.ie3.datamodel.models.input.container.RawGridTypes;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.result.ResultEntity;
@@ -122,6 +124,21 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
 
   @Override
   public <C extends InputEntity> void persistIgnoreNested(C entity) {
+    if (entity instanceof CableTypeInput cable) {
+      var result = processorProvider.handleEntity(cable);
+
+      if (result.isSuccess()) {
+        try {
+          System.out.println("CableType mapping: " + result.getOrThrow());
+        } catch (ProcessorProviderException e) {
+          throw new RuntimeException(e);
+        }
+      } else {
+        System.out.println("CableType mapping FAILED:");
+        result.getException().ifPresent(Throwable::printStackTrace);
+      }
+    }
+
     write(entity);
   }
 
@@ -158,8 +175,10 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   public void persistJointGrid(JointGridContainer jointGridContainer) {
     // get raw grid entities with types or operators
     RawGridElements rawGridElements = jointGridContainer.getRawGrid();
+    RawGridTypes rawGridTypes = jointGridContainer.getRawGridTypes();
     Set<NodeInput> nodes = rawGridElements.getNodes();
     Set<LineInput> lines = rawGridElements.getLines();
+    Set<CableTypeInput> cableTypes = rawGridTypes.getCableTypes();
     Set<Transformer2WInput> transformer2Ws = rawGridElements.getTransformer2Ws();
     Set<Transformer3WInput> transformer3Ws = rawGridElements.getTransformer3Ws();
     Set<SwitchInput> switches = rawGridElements.getSwitches();
@@ -195,6 +214,9 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
             .flatMap(Collection::stream)
             .map(Extractor::extractType)
             .collect(Collectors.toSet());
+
+    // add also cableTypes
+    types.addAll(cableTypes);
 
     // extract operators
     Set<OperatorInput> operators =
