@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
-
+- Enhance data model by cable type information [#1665](https://github.com/ie3-institute/PowerSystemDataModel/issues/1665)
 
 ### Fixed
 - Fixed issues regarding determination of additional parameters [#1661](https://github.com/ie3-institute/PowerSystemDataModel/issues/1661)
