@@ -11,6 +11,7 @@ import edu.ie3.util.quantities.interfaces.SpecificConductance;
 import edu.ie3.util.quantities.interfaces.SpecificResistance;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import javax.measure.quantity.ElectricCurrent;
 import javax.measure.quantity.ElectricPotential;
@@ -36,6 +37,9 @@ public class LineTypeInput extends AssetTypeInput {
   /** Rated voltage for this type of line (typically in V) */
   private final ComparableQuantity<ElectricPotential> vRated;
 
+  /** Optional reference to a detailed cable type specification */
+  private final Optional<CableTypeInput> cableType;
+
   /**
    * @param uuid of the input entity
    * @param id of this type
@@ -55,6 +59,30 @@ public class LineTypeInput extends AssetTypeInput {
       ComparableQuantity<SpecificResistance> x,
       ComparableQuantity<ElectricCurrent> iMax,
       ComparableQuantity<ElectricPotential> vRated) {
+    this(uuid, id, b, g, r, x, iMax, vRated, Optional.empty());
+  }
+
+  /**
+   * @param uuid of the input entity
+   * @param id of this type
+   * @param b Specific phase-to-ground susceptance for this type of line
+   * @param g Specific phase-to-ground conductance for this type of line
+   * @param r Specific resistance for this type of line
+   * @param x Specific reactance for this type of line
+   * @param iMax Maximum thermal current for this type of line
+   * @param vRated Rated voltage for this type of line
+   * @param cableType Optional reference to a detailed cable type specification
+   */
+  public LineTypeInput(
+      UUID uuid,
+      String id,
+      ComparableQuantity<SpecificConductance> b,
+      ComparableQuantity<SpecificConductance> g,
+      ComparableQuantity<SpecificResistance> r,
+      ComparableQuantity<SpecificResistance> x,
+      ComparableQuantity<ElectricCurrent> iMax,
+      ComparableQuantity<ElectricPotential> vRated,
+      Optional<CableTypeInput> cableType) {
     super(uuid, id);
     this.r = r.to(StandardUnits.RESISTANCE_PER_LENGTH);
     this.x = x.to(StandardUnits.REACTANCE_PER_LENGTH);
@@ -62,6 +90,7 @@ public class LineTypeInput extends AssetTypeInput {
     this.g = g.to(StandardUnits.CONDUCTANCE_PER_LENGTH);
     this.iMax = iMax.to(StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
     this.vRated = vRated.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    this.cableType = Objects.requireNonNull(cableType, "Cable type Optional cannot be null");
   }
 
   /**
@@ -85,13 +114,34 @@ public class LineTypeInput extends AssetTypeInput {
       ComparableQuantity<ElectricCurrent> iMax,
       ComparableQuantity<ElectricPotential> vRated,
       Map<String, String> additionalInformation) {
-    super(uuid, id);
-    this.r = r.to(StandardUnits.RESISTANCE_PER_LENGTH);
-    this.x = x.to(StandardUnits.REACTANCE_PER_LENGTH);
-    this.b = b.to(StandardUnits.SUSCEPTANCE_PER_LENGTH);
-    this.g = g.to(StandardUnits.CONDUCTANCE_PER_LENGTH);
-    this.iMax = iMax.to(StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-    this.vRated = vRated.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    this(uuid, id, b, g, r, x, iMax, vRated, Optional.empty());
+    setAdditionalInformation(additionalInformation);
+  }
+
+  /**
+   * @param uuid of the input entity
+   * @param id of this type
+   * @param b Specific phase-to-ground susceptance for this type of line
+   * @param g Specific phase-to-ground conductance for this type of line
+   * @param r Specific resistance for this type of line
+   * @param x Specific reactance for this type of line
+   * @param iMax Maximum thermal current for this type of line (typically in A)
+   * @param vRated Rated voltage for this type of line
+   * @param cableType Optional reference to a detailed cable type specification
+   * @param additionalInformation That were provided by the source
+   */
+  public LineTypeInput(
+      UUID uuid,
+      String id,
+      ComparableQuantity<SpecificConductance> b,
+      ComparableQuantity<SpecificConductance> g,
+      ComparableQuantity<SpecificResistance> r,
+      ComparableQuantity<SpecificResistance> x,
+      ComparableQuantity<ElectricCurrent> iMax,
+      ComparableQuantity<ElectricPotential> vRated,
+      Optional<CableTypeInput> cableType,
+      Map<String, String> additionalInformation) {
+    this(uuid, id, b, g, r, x, iMax, vRated, cableType);
     setAdditionalInformation(additionalInformation);
   }
 
@@ -119,6 +169,10 @@ public class LineTypeInput extends AssetTypeInput {
     return vRated;
   }
 
+  public Optional<CableTypeInput> getCableType() {
+    return cableType;
+  }
+
   @Override
   public LineTypeInputCopyBuilder copy() {
     return new LineTypeInputCopyBuilder(this);
@@ -134,12 +188,13 @@ public class LineTypeInput extends AssetTypeInput {
         && r.equals(that.r)
         && x.equals(that.x)
         && iMax.equals(that.iMax)
-        && vRated.equals(that.vRated);
+        && vRated.equals(that.vRated)
+        && cableType.equals(that.cableType);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), b, g, r, x, iMax, vRated);
+    return Objects.hash(super.hashCode(), b, g, r, x, iMax, vRated, cableType);
   }
 
   @Override
@@ -161,6 +216,8 @@ public class LineTypeInput extends AssetTypeInput {
         + iMax
         + ", vRated="
         + vRated
+        + ", cableType="
+        + cableType
         + ", additionalInformation="
         + getAdditionalInformation()
         + '}';
@@ -179,6 +236,7 @@ public class LineTypeInput extends AssetTypeInput {
     private ComparableQuantity<SpecificResistance> x;
     private ComparableQuantity<ElectricCurrent> iMax;
     private ComparableQuantity<ElectricPotential> vRated;
+    private Optional<CableTypeInput> cableType;
 
     protected LineTypeInputCopyBuilder(LineTypeInput entity) {
       super(entity);
@@ -188,6 +246,12 @@ public class LineTypeInput extends AssetTypeInput {
       this.x = entity.x;
       this.iMax = entity.iMax;
       this.vRated = entity.vRated;
+      this.cableType = entity.cableType;
+    }
+
+    public LineTypeInputCopyBuilder cableType(Optional<CableTypeInput> cableType) {
+      this.cableType = cableType;
+      return thisInstance();
     }
 
     /** Setter */
@@ -223,7 +287,7 @@ public class LineTypeInput extends AssetTypeInput {
 
     @Override
     public LineTypeInput build() {
-      return new LineTypeInput(getUuid(), getId(), b, g, r, x, iMax, vRated);
+      return new LineTypeInput(getUuid(), getId(), b, g, r, x, iMax, vRated, cableType);
     }
 
     @Override

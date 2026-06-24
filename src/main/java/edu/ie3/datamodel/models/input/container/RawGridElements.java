@@ -262,7 +262,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
     /**
      * Method to alter {@link Transformer3WInput}
      *
-     * @param transformer3Ws set of altered three winding trnasformers
+     * @param transformer3Ws set of altered three winding transformers
      * @return this instance of {@link RawGridElementsCopyBuilder}
      */
     public RawGridElementsCopyBuilder transformer3Ws(Set<Transformer3WInput> transformer3Ws) {

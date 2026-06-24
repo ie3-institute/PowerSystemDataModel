@@ -54,7 +54,7 @@ repositories {
 dependencies {
 
   //	 ie³ power system utils
-  implementation 'com.github.ie3-institute:PowerSystemUtils:3.2.1'
+  implementation 'com.github.ie3-institute:PowerSystemUtils:3.2.2'
 
   implementation 'tech.units:indriya:2.2.4'
 
@@ -64,6 +64,10 @@ dependencies {
   }
 
   implementation 'org.locationtech.jts.io:jts-io-common:1.20.0'
+
+  // parsing json
+  implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.0'
+  implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.15.2'
 
   // Graphs
   implementation 'org.jgrapht:jgrapht-core:1.5.3'
