@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input.connector.type;
 
 import static edu.ie3.util.quantities.PowerSystemUnits.*;
 
+import edu.ie3.util.quantities.interfaces.ElectricalResistivity;
 import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
 import tech.units.indriya.ComparableQuantity;
@@ -131,7 +132,7 @@ public enum CableMaterial {
    * @return Electrical resistivity
    * @throws IllegalArgumentException if the material type is unknown
    */
-  public ComparableQuantity<?> getElectricalResistivity() {
+  public ComparableQuantity<ElectricalResistivity> getElectricalResistivity() {
     return switch (this) {
       case COPPER -> Quantities.getQuantity(1.7241e-8, OHM_METRE);
       case ALUMINIUM -> Quantities.getQuantity(2.8264e-8, OHM_METRE);

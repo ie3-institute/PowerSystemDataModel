@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.connector.type;
 
 import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.util.quantities.interfaces.ElectricalResistivity;
 import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
 import java.util.Map;
@@ -46,7 +47,7 @@ public record ScreenLayerInput(
     int wiresNumber,
     ComparableQuantity<Length> wireDiameter,
     Optional<ComparableQuantity<Length>> lengthOfLay,
-    ComparableQuantity<?> electricalResistivity)
+    ComparableQuantity<ElectricalResistivity> electricalResistivity)
     implements InputEntity {
   /**
    * Create a new screen layer with all required parameters.
@@ -130,13 +131,13 @@ public record ScreenLayerInput(
             CableMaterial material1,
             ComparableQuantity<Length> diameter,
             ComparableQuantity<Length> outerDiameter1,
-            ComparableQuantity<?> resistivity,
-            ComparableQuantity<?> capacitance,
+            ComparableQuantity<ThermalResistivity> resistivity,
+            ComparableQuantity<ThermalCapacitance> capacitance,
             Optional<ComparableQuantity<Area>> area1,
             int number,
             ComparableQuantity<Length> wireDiameter1,
             Optional<ComparableQuantity<Length>> ofLay,
-            ComparableQuantity<?> materialResistivity1))) return false;
+            ComparableQuantity<ElectricalResistivity> materialResistivity1))) return false;
     return uuid.equals(uuid1)
         && wiresNumber == number
         && name.equals(name1)
