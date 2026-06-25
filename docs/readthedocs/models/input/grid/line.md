@@ -48,18 +48,12 @@ Type model of a line. Please note, that there is also a cable type model that ca
    * - vRated
      - kV
      - Rated voltage
-     
-   * - cableType
-     - Optional
-     - UUID of the cable type
 
 ```
 
 A list with some standard line types can be found here: [Standard Line Types](#standard-line-types)
 
 ### Entity Model
-
-The line entity model.
 
 ```{list-table}
    :widths: auto
@@ -103,7 +97,7 @@ The line entity model.
 
    * - type
      - –
-     - UUID of the line type
+     -
 
    * - length
      - km

@@ -124,6 +124,8 @@ input/grid/transformer2w
 input/grid/transformer3w
 input/grid/measurementunit
 input/grid/gridcontainer
+input/grid/cableMaterial
+input/grid/cableType
 ```
 
 #### Thermal Grid
