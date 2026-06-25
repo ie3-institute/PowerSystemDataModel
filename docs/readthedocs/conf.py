@@ -36,7 +36,7 @@ master_doc = 'index'
 # ones.
 extensions = [
     'sphinx.ext.intersphinx',
-    'myst_parser'
+    'myst_parser',
     'sphinxcontrib.bibtex'
 ]
 
