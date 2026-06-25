@@ -25,7 +25,7 @@ Type model of a cable.
      - –
      - Human readable identifier
      
-     * - core number
+   * - core number
      - –
      - Number of conductor cores in the cable
 
