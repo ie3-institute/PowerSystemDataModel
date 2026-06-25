@@ -1,3 +1,4 @@
+(cable-material)=
 # Cable Material
 
 ## Overview
@@ -66,13 +67,13 @@ Retrieved via `getThermalProperties()`. Returns a `ThermalProperties` container 
   * - `Lead`
     - 1/35
     - 1,463,892.0
-    - Th. Res.: {cite:cts}`wiki:thermal_conductivities`; Th. Capa.: {cite:cts}`wiki:wiki:specific_heat_capacities` 
+    - Th. Res.: {cite:cts}`wiki:thermal_conductivities`; Th. Capa.: {cite:cts}`wiki:specific_heat_capacities` 
     - c = 129 J/(kg * K), rho= 11.348 g/cm³ => 1,463,892.0 J / (m³ * K)
     
   * - `Steel`
     - 1/45
     - 3,756,000.0
-    - Th. Res.:{cite:cts}`wiki:thermal_conductivity_resistivity`; Th. Capa.: {cite:cts}`wiki:wiki:specific_heat_capacities`
+    - Th. Res.:{cite:cts}`wiki:thermal_conductivity_resistivity`; Th. Capa.: {cite:cts}`wiki:specific_heat_capacities`
     - - 
     
   * - `Polypropylen`

@@ -1,4 +1,4 @@
-[cableMaterial](#cable-material)
+# Cable Type
 
 Representation of a cable type.
 
