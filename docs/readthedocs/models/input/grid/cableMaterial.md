@@ -37,26 +37,31 @@ Retrieved via `getThermalProperties()`. Returns a `ThermalProperties` container 
     - 3.5
     - 2.4
     - {cite:cts}`andersRatingElectricPower1997` p. 400
+    - -
     
   * - `PE (Polyethylene)`
     - 3.5
     - 2.4
     - {cite:cts}`andersRatingElectricPower1997` p. 400
+    - - 
     
   * - `PVC (Polyvinyl chloride)`
     - 3.5
     - 1.7
     - {cite:cts}`andersRatingElectricPower1997` p. 400
+    - -
     
   * - `Semi-Conductive Screen`
     - 2.5
     - 2.4
     - Th. Res.: {cite:cts}`CIGRE_TB880_2022` p. 28; Th. Capa.: Same as adjacent dielectric material see {cite:cts}`andersRatingElectricPower1997` p. 400
+    - -
 
   * - `SC-Tape (Screen Tape)`
     - 6.0
     - 2.4
     - Th. Res.: {cite:cts}`CIGRE_TB880_2022` p. 28; Th. Capa.: Same as adjacent dielectric material see {cite:cts}`andersRatingElectricPower1997` p. 400
+    - -
     
   * - `Lead`
     - 1/35
@@ -67,12 +72,14 @@ Retrieved via `getThermalProperties()`. Returns a `ThermalProperties` container 
   * - `Steel`
     - 1/45
     - 3,756,000.0
-    - Th. Res.:{cite:cts}`wiki:thermal_conductivity_resistivity`; Th. Capa.: {cite:cts}`wiki:wiki:specific_heat_capacities` 
+    - Th. Res.:{cite:cts}`wiki:thermal_conductivity_resistivity`; Th. Capa.: {cite:cts}`wiki:wiki:specific_heat_capacities`
+    - - 
     
   * - `Polypropylen`
     - 6.0
     - 2.0
     - Th. Res.: {cite:cts}`CIGRE_TB880_2022` p. 28; Th. Capa.: Asumed to be clos to Paper-polypropylene-paper (PPL) in {cite:cts}`andersRatingElectricPower1997` p. 400
+    - - 
 ```
 
 **Note:** Metals inherently define their thermal resistivity as the inverse of their thermal conductivity $\lambda$ (e.g., $\lambda_{Copper} = 384 \, W/(m \cdot K)$).
@@ -94,22 +101,22 @@ Electrical parameters define the conductive aspects of the materials, heavily ut
     - Temp. Coefficient [1/K]
     - source
   
-  * -`Copper`
+  * - `Copper`
     - $1.7241 \times 10^{-8}$
     - $3.93 \times 10^{-3}$
     - {cite:cts}`luecking_1981` p. 94
     
-   * -`Aluminium`
+  * - `Aluminium`
     - $2.8264 \times 10^{-8}$
     - $4.03 \times 10^[-3}$
     - {cite:cts}`luecking_1981` p. 94
     
-   * -`Lead`
+  * - `Lead`
     - $21.4 \times 10^{-8}$
     - $4.0 \times 10^[-3}$
     - {cite:cts}`luecking_1981` p. 94
     
-   * -`Steel`
+  * - `Steel`
     - $13.8 \times 10^{-8}$
     - $4.5 \times 10^[-3}$
     - {cite:cts}`luecking_1981` p. 94
