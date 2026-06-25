@@ -41,7 +41,7 @@ extensions = [
 ]
 
 bibtex_bibfiles = ["_static/bibliography/bibtex.bib"]
-bibtex_default_style = "plain"
+bibtex_default_style = 'plain'
 
 myst_enable_extensions = ["dollarmath", "amsmath"]
 myst_heading_anchors = 4

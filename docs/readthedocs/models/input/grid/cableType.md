@@ -25,7 +25,7 @@ Type model of a cable.
      - –
      - Human readable identifier
      
-     * - core number
+   * - core number
      - –
      - Number of conductor cores in the cable
 
@@ -101,37 +101,37 @@ The following table details the attributes required to define a single cable
    :class: wrapping
    :header-rows: 1
 
-    * - Layer Attribute
-      - Type
-      - Description
+* - Layer Attribute
+  - Type
+  - Description
     
-    * - name
-      - String
-      - Designation of the layer (e.g., "Main insulation")
+* - name
+  - String
+  - Designation of the layer (e.g., "Main insulation")
     
-    * - material
-      - CableMaterial
-      - Material of the layer
+* - material
+  - CableMaterial
+  - Material of the layer
       
-    * - innerDiameter
-      - Length
-      - Inner diameter of the layer
+* - innerDiameter
+  - Length
+  - Inner diameter of the layer
     
-    * - outerDiameter
-      - Length
-      - Outer diameter of the layer
+* - outerDiameter
+  - Length
+  - Outer diameter of the layer
     
-    * - thermalResistivity
-      - (K·m/W) 
-      - Thermal resistivity of the material
+* - thermalResistivity
+  - (K·m/W) 
+  - Thermal resistivity of the material
     
-    * - thermalCapacitance
-      - J/(m³·K)
-      - Thermal capacitance of the material
+* - thermalCapacitance
+  - J/(m³·K)
+  - Thermal capacitance of the material
     
-    * - area
-      - Optional Area
-      - Real cross-sectional area. If none, area will be calculated from geometry.
+* - area
+  - Optional Area
+  - Real cross-sectional area. If none, area will be calculated from geometry.
 ```
 
 Different cable materials and their thermal and electrical parameter are also given as described in [cableMaterial](#cable-material)
@@ -153,23 +153,23 @@ Some standard cables type parameter and geometries.
    
    
 * - uuid
-- id
-- core_number
-- conductor
-- isolation
-- screen
-- filler
-- armor
-- jack
-- limit_temperature
-- frequency
-- skin_effect_coefficient
-- proximity_effect_coefficient
-- electrical_capacitance
-- tan_delta
-- circulating_loss_factor
-- eddy_current_loss_factor
-- source
+  - id
+  - core_number
+  - conductor
+  - isolation
+  - screen
+  - filler
+  - armor
+  - jack
+  - limit_temperature
+  - frequency
+  - skin_effect_coefficient
+  - proximity_effect_coefficient
+  - electrical_capacitance
+  - tan_delta
+  - circulating_loss_factor
+  - eddy_current_loss_factor
+  - source
 
 * - b8152c3f-d12f-4857-9746-a30aef6aee08
 - CigreT880_33kVLandCable
@@ -189,7 +189,6 @@ Some standard cables type parameter and geometries.
 - 0.0435122656
 - 0.0
 - CIGRE TB880 B1.56 Power cable rating examples for calculation tool verification
-  
 
 ```
 
