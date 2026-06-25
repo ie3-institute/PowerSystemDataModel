@@ -37,7 +37,10 @@ master_doc = 'index'
 extensions = [
     'sphinx.ext.intersphinx',
     'myst_parser'
+    'sphinxcontrib.bibtex'
 ]
+
+bibtex_bibfiles = ["references.bib"]
 
 myst_enable_extensions = ["dollarmath", "amsmath"]
 myst_heading_anchors = 4

@@ -19,7 +19,7 @@ Type model of a cable.
 
    * - uuid
      - –
-     -
+     - Identifier
 
    * - id
      - –
@@ -62,7 +62,7 @@ Type model of a cable.
      - Rated frequency of the system     
 
    * - skin effect coefficient
-     - 
+     - -
      - Skin effect coefficient
 
    * - proximity effect coefficient
@@ -74,15 +74,15 @@ Type model of a cable.
      - Capacitance per unit length
    
    * - Dielectric loss factor tanDelta
-     - 
+     - -
      - Dielectric loss factor tan(δ)
    
    * - circulatingLossFactor
-     - 
+     - -
      - Circulating loss factor 
      
    * - eddyCurrentLossFactor
-     - 
+     - -
      - Eddy current loss factor
 ```
 
