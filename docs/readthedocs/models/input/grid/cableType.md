@@ -138,16 +138,12 @@ Different cable materials and their thermal and electrical parameter are also gi
 
 ## Standard Cable Type Parameter
 
-//FIXME
-
 Following there are some standard line types with their source. To retrieve the data call the method `TypeSource.getStandardLineTypes()`.
 A ``csv file`` containing the types listed below can be found [here](https://github.com/ie3-institute/PowerSystemDataModel/tree/dev/input/StandardAssetTypes).
 This file can be used directly for any simulation with ``simona``.
-The lines which source is ``simBench`` are from [here](https://simbench.de/en/download/datasets/).
-
 
 ### Cables
-//FIMXE
+
 Some standard cables type parameter and geometries.
 
 ```{list-table}
@@ -156,15 +152,44 @@ Some standard cables type parameter and geometries.
    :header-rows: 1
    
    
-   * - uuid
-     - b [µS / km]
-     - g [µS / km]
-     - iMax [A]
-     - id
-     - r [Ω / km]
-     - vRated [kV]
-     - x [Ω / km]
-     - source
+* - uuid
+- id
+- core_number
+- conductor
+- isolation
+- screen
+- filler
+- armor
+- jack
+- limit_temperature
+- frequency
+- skin_effect_coefficient
+- proximity_effect_coefficient
+- electrical_capacitance
+- tan_delta
+- circulating_loss_factor
+- eddy_current_loss_factor
+- source
+
+* - b8152c3f-d12f-4857-9746-a30aef6aee08
+- CigreT880_33kVLandCable
+- 1
+- "{""name"":""conductor"",""material"":""COPPER"",""crossSection"":""240.0"",""diameter"":""18.4"",""thermalResistivity"":""0.0026"",""thermalCapacitance"":""3.4e6"",""area"":""240.0"",""isCompacted"":false}"
+- "[{""name"":""conductorScreen"",""material"":""SEMI_COND_SCREEN"",""innerDiameter"":""18.4"",""outerDiameter"":""19.4"",""thermalResistivity"":""4.0"",""thermalCapacitance"":""2.0e6"",""area"":null},{""name"":""insulation"",""material"":""XLPE"",""innerDiameter"":""19.4"",""outerDiameter"":""34.8"",""thermalResistivity"":""3.5"",""thermalCapacitance"":""2.4e6"",""area"":null},{""name"":""insulationScreen"",""material"":""SEMI_COND_SCREEN"",""innerDiameter"":""34.8"",""outerDiameter"":""35.8"",""thermalResistivity"":""4.0"",""thermalCapacitance"":""2.0e6"",""area"":null},{""name"":""screenTape"",""material"":""SC_TAPE"",""innerDiameter"":""35.8"",""outerDiameter"":""36.8"",""thermalResistivity"":""0.01"",""thermalCapacitance"":""3.0e6"",""area"":null}]",
+- "{""name"":""screen"",""material"":""COPPER"",""innerDiameter"":""36.8"",""outerDiameter"":""38.6"",""thermalResistivity"":""0.0026"",""thermalCapacitance"":""3.4e6"",""area"":""35.62566"",""wiresNumber"":56,""wireDiameter"":""0.9"",""electricalResistivity"":""1.7241e-8""}"
+- -
+- -
+- "[{""name"":""jackTape"",""material"":""SC_TAPE"",""innerDiameter"":""38.6"",""outerDiameter"":""39.2"",""thermalResistivity"":""0.01"",""thermalCapacitance"":""3.0e6"",""area"":null},{""name"":""jack"",""material"":""XLPE"",""innerDiameter"":""39.2"",""outerDiameter"":""43.6"",""thermalResistivity"":""3.5"",""thermalCapacitance"":""2.4e6"",""area"":null},{""name"":""outerCover"",""material"":""SEMI_COND_SCREEN"",""innerDiameter"":""43.6"",""outerDiameter"":""44.0"",""thermalResistivity"":""4.0"",""thermalCapacitance"":""2.0e6"",""area"":null}]"
+- 90.0
+- 50.0
+- 1.0
+- 1.0
+- 0.000000000237683304
+- 0.004
+- 0.0435122656
+- 0.0
+- CIGRE TB880 B1.56 Power cable rating examples for calculation tool verification
+  
 
 ```
 
