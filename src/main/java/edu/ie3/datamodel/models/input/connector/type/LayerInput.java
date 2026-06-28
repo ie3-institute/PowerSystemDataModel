@@ -8,13 +8,13 @@ package edu.ie3.datamodel.models.input.connector.type;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
-import org.jspecify.annotations.NonNull;
 import tech.units.indriya.ComparableQuantity;
 
 /**
@@ -38,7 +38,7 @@ public record LayerInput(
     ComparableQuantity<ThermalResistivity> thermalResistivity,
     ComparableQuantity<ThermalCapacitance> thermalCapacitance,
     Optional<ComparableQuantity<Area>> area)
-    implements InputEntity {
+    implements InputEntity, Serializable {
   /**
    * Create a new layer with all required parameters.
    *
@@ -60,84 +60,46 @@ public record LayerInput(
     Objects.requireNonNull(outerDiameter, "Outer diameter cannot be null");
     Objects.requireNonNull(thermalResistivity, "Thermal resistivity cannot be null");
     Objects.requireNonNull(thermalCapacitance, "Thermal capacitance cannot be null");
-    Objects.requireNonNull(area, "Area Optional cannot be null");
+    Objects.requireNonNull(area, "Area optional must not be null");
 
     if (name.isEmpty()) {
       throw new IllegalArgumentException("Layer name cannot be empty");
     }
 
+    double inner = innerDiameter.getValue().doubleValue();
+    double outer = outerDiameter.getValue().doubleValue();
+    double rho = thermalResistivity.getValue().doubleValue();
+    double cap = thermalCapacitance.getValue().doubleValue();
+
     // Geometry consistency: outerDiameter >= innerDiameter
-    if (outerDiameter.getValue().doubleValue() < innerDiameter.getValue().doubleValue()) {
+    if (outer < inner) {
       throw new IllegalArgumentException(
-          String.format(
-              "Outer diameter (%.6f) must be >= inner diameter (%.6f)",
-              outerDiameter.getValue().doubleValue(), innerDiameter.getValue().doubleValue()));
+          String.format("Outer diameter (%.6f) must be >= inner diameter (%.6f)", outer, inner));
     }
 
     // Positive values check
-    if (innerDiameter.getValue().doubleValue() < 0) {
+    if (inner < 0) {
       throw new IllegalArgumentException("Inner diameter must be >= 0");
     }
-    if (outerDiameter.getValue().doubleValue() < 0) {
+    if (outer < 0) {
       throw new IllegalArgumentException("Outer diameter must be >= 0");
     }
-    if (thermalResistivity.getValue().doubleValue() < 0) {
+    if (rho < 0) {
       throw new IllegalArgumentException("Thermal resistivity must be >= 0");
     }
-    if (thermalCapacitance.getValue().doubleValue() < 0) {
+    if (cap < 0) {
       throw new IllegalArgumentException("Thermal capacitance must be >= 0");
     }
+    area.ifPresent(
+        a -> {
+          if (a.getValue().doubleValue() < 0) {
+            throw new IllegalArgumentException("Area must be >= 0");
+          }
+        });
   }
 
   @Override
   public Map<String, String> getAdditionalInformation() {
     return Map.of();
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o
-        instanceof
-        LayerInput(
-            UUID uuid1,
-            String name1,
-            CableMaterial material1,
-            ComparableQuantity<Length> diameter,
-            ComparableQuantity<Length> outerDiameter1,
-            ComparableQuantity<?> resistivity,
-            ComparableQuantity<?> capacitance,
-            Optional<ComparableQuantity<Area>> area1))) return false;
-    return uuid.equals(uuid1)
-        && name.equals(name1)
-        && material == material1
-        && innerDiameter.equals(diameter)
-        && outerDiameter.equals(outerDiameter1)
-        && thermalResistivity.equals(resistivity)
-        && thermalCapacitance.equals(capacitance)
-        && area.equals(area1);
-  }
-
-  @Override
-  public @NonNull String toString() {
-    return "LayerInput{"
-        + "uuid='"
-        + uuid
-        + "name='"
-        + name
-        + '\''
-        + ", material="
-        + material
-        + ", innerDiameter="
-        + innerDiameter
-        + ", outerDiameter="
-        + outerDiameter
-        + ", thermalResistivity="
-        + thermalResistivity
-        + ", thermalCapacitance="
-        + thermalCapacitance
-        + ", area="
-        + area
-        + '}';
   }
 }

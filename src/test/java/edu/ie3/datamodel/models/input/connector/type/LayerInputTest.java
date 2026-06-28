@@ -59,37 +59,60 @@ class LayerInputTest {
   }
 
   @Test
-  @DisplayName("Test LayerInput null name validation")
   void testLayerInputNullName() {
+    assertThrows(NullPointerException.class, this::createLayerWithNullName);
+  }
+
+  private void createLayerWithNullName() {
+    new LayerInput(
+        uuid,
+        null,
+        CableMaterial.XLPE,
+        innerDiameter,
+        outerDiameter,
+        thermalResistivity,
+        thermalCapacitance,
+        Optional.empty());
+  }
+
+  @Test
+  void testLayerInputEmptyName() {
+    assertThrows(IllegalArgumentException.class, this::createLayerWithEmptyName);
+  }
+
+  private void createLayerWithEmptyName() {
+    new LayerInput(
+        uuid,
+        "",
+        CableMaterial.XLPE,
+        innerDiameter,
+        outerDiameter,
+        thermalResistivity,
+        thermalCapacitance,
+        Optional.empty());
+  }
+
+  @Test
+  void testLayerInputNegativeOuterDiameter() {
+    ComparableQuantity<Length> negativeOuter = Quantities.getQuantity(-0.001, Units.METRE);
     assertThrows(
-        NullPointerException.class,
+        IllegalArgumentException.class,
         () ->
             new LayerInput(
                 uuid,
-                null,
+                "Invalid",
                 CableMaterial.XLPE,
                 innerDiameter,
-                outerDiameter,
+                negativeOuter,
                 thermalResistivity,
                 thermalCapacitance,
                 Optional.empty()));
   }
 
   @Test
-  @DisplayName("Test LayerInput empty name validation")
-  void testLayerInputEmptyName() {
-    assertThrows(
-        IllegalArgumentException.class,
-        () ->
-            new LayerInput(
-                uuid,
-                "",
-                CableMaterial.XLPE,
-                innerDiameter,
-                outerDiameter,
-                thermalResistivity,
-                thermalCapacitance,
-                Optional.empty()));
+  void testAreaOptionalEmptyByDefault() {
+    LayerInput layer = createValidLayer();
+    assertTrue(layer.area().isEmpty());
   }
 
   @Test
@@ -318,5 +341,17 @@ class LayerInputTest {
             thermalCapacitance,
             Optional.empty());
     assertNotNull(layer);
+  }
+
+  private LayerInput createValidLayer() {
+    return new LayerInput(
+        uuid,
+        "Main insulation",
+        CableMaterial.XLPE,
+        innerDiameter,
+        outerDiameter,
+        thermalResistivity,
+        thermalCapacitance,
+        Optional.empty());
   }
 }

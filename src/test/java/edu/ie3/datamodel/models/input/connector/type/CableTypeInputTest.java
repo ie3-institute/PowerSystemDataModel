@@ -146,80 +146,84 @@ class CableTypeInputTest {
   @Test
   @DisplayName("Test CableTypeInput empty ID validation")
   void testCableTypeInputEmptyId() {
-    assertThrows(
-        IllegalArgumentException.class,
-        () ->
-            new CableTypeInput(
-                testUuid,
-                "",
-                1,
-                conductor,
-                isolation,
-                Optional.empty(),
-                filler,
-                armor,
-                jack,
-                limitTemperature,
-                frequency,
-                1.0,
-                1.0,
-                electricalCapacitance,
-                0.1,
-                0.0,
-                0.0));
+    assertThrows(IllegalArgumentException.class, this::createCableTypeInputWithEmptyId);
+  }
+
+  private void createCableTypeInputWithEmptyId() {
+    new CableTypeInput(
+        testUuid,
+        "",
+        1,
+        conductor,
+        isolation,
+        Optional.empty(),
+        filler,
+        armor,
+        jack,
+        limitTemperature,
+        frequency,
+        1.0,
+        1.0,
+        electricalCapacitance,
+        0.1,
+        0.0,
+        0.0);
   }
 
   @Test
   @DisplayName("Test CableTypeInput invalid coreNumber validation")
   void testCableTypeInputInvalidCoreNumber() {
-    assertThrows(
-        IllegalArgumentException.class,
-        () ->
-            new CableTypeInput(
-                testUuid,
-                "Test cable",
-                0,
-                conductor,
-                isolation,
-                Optional.empty(),
-                filler,
-                armor,
-                jack,
-                limitTemperature,
-                frequency,
-                1.0,
-                1.0,
-                electricalCapacitance,
-                0.1,
-                0.0,
-                0.0));
+    assertThrows(IllegalArgumentException.class, this::createCableTypeInputWithInvalidCoreNumber);
+  }
+
+  private void createCableTypeInputWithInvalidCoreNumber() {
+    new CableTypeInput(
+        testUuid,
+        "Test cable",
+        0,
+        conductor,
+        isolation,
+        Optional.empty(),
+        filler,
+        armor,
+        jack,
+        limitTemperature,
+        frequency,
+        1.0,
+        1.0,
+        electricalCapacitance,
+        0.1,
+        0.0,
+        0.0);
   }
 
   @Test
   @DisplayName("Test CableTypeInput invalid frequency validation")
   void testCableTypeInputInvalidFrequency() {
+    assertThrows(IllegalArgumentException.class, this::createCableTypeInputWithInvalidFrequency);
+  }
+
+  private void createCableTypeInputWithInvalidFrequency() {
     ComparableQuantity<Frequency> negativeFrequency = Quantities.getQuantity(-50.0, Units.HERTZ);
-    assertThrows(
-        IllegalArgumentException.class,
-        () ->
-            new CableTypeInput(
-                testUuid,
-                "Test cable",
-                1,
-                conductor,
-                isolation,
-                Optional.empty(),
-                filler,
-                armor,
-                jack,
-                limitTemperature,
-                negativeFrequency,
-                1.0,
-                1.0,
-                electricalCapacitance,
-                0.1,
-                0.0,
-                0.0));
+
+    new CableTypeInput(
+        testUuid,
+        "Test cable",
+        1,
+        conductor,
+        isolation,
+        Optional.empty(),
+        filler,
+        armor,
+        jack,
+        limitTemperature,
+        negativeFrequency,
+        1.0,
+        1.0,
+        electricalCapacitance,
+        0.1,
+        0.0,
+        0.0);
   }
 
   @Test
@@ -391,52 +395,55 @@ class CableTypeInputTest {
   @DisplayName("Test CableTypeInput invalid skinEffectCoefficient validation")
   void testCableTypeInputInvalidSkinEffectCoefficient() {
     assertThrows(
-        IllegalArgumentException.class,
-        () ->
-            new CableTypeInput(
-                testUuid,
-                "Test cable",
-                1,
-                conductor,
-                isolation,
-                Optional.empty(),
-                filler,
-                armor,
-                jack,
-                limitTemperature,
-                frequency,
-                -1.0,
-                1.0,
-                electricalCapacitance,
-                0.1,
-                0.0,
-                0.0));
+        IllegalArgumentException.class, this::createCableTypeInputWithInvalidSkinEffectCoefficient);
+  }
+
+  private void createCableTypeInputWithInvalidSkinEffectCoefficient() {
+    new CableTypeInput(
+        testUuid,
+        "Test cable",
+        1,
+        conductor,
+        isolation,
+        Optional.empty(),
+        filler,
+        armor,
+        jack,
+        limitTemperature,
+        frequency,
+        -1.0,
+        1.0,
+        electricalCapacitance,
+        0.1,
+        0.0,
+        0.0);
   }
 
   @Test
   @DisplayName("Test CableTypeInput invalid tanDelta validation")
   void testCableTypeInputInvalidTanDelta() {
-    assertThrows(
-        IllegalArgumentException.class,
-        () ->
-            new CableTypeInput(
-                testUuid,
-                "Test cable",
-                1,
-                conductor,
-                isolation,
-                Optional.empty(),
-                filler,
-                armor,
-                jack,
-                limitTemperature,
-                frequency,
-                1.0,
-                1.0,
-                electricalCapacitance,
-                -0.1,
-                0.0,
-                0.0));
+    assertThrows(IllegalArgumentException.class, this::createCableTypeInputWithInvalidTanDelta);
+  }
+
+  private void createCableTypeInputWithInvalidTanDelta() {
+    new CableTypeInput(
+        testUuid,
+        "Test cable",
+        1,
+        conductor,
+        isolation,
+        Optional.empty(),
+        filler,
+        armor,
+        jack,
+        limitTemperature,
+        frequency,
+        1.0,
+        1.0,
+        electricalCapacitance,
+        -0.1,
+        0.0,
+        0.0);
   }
 
   @Test

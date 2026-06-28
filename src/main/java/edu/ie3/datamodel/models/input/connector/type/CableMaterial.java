@@ -172,32 +172,16 @@ public enum CableMaterial {
   public record ThermalProperties(
       ComparableQuantity<ThermalResistivity> resistivity,
       ComparableQuantity<ThermalCapacitance> capacitance) {
-    /**
-     * Create thermal properties.
-     *
-     * @param resistivity Thermal resistivity
-     * @param capacitance Thermal capacitance
-     */
-    public ThermalProperties {}
 
     /**
-     * Get the thermal resistivity.
+     * Compact constructor for validation of record components.
      *
-     * @return Thermal resistivity
+     * @throws IllegalArgumentException if any property is null
      */
-    @Override
-    public ComparableQuantity<ThermalResistivity> resistivity() {
-      return resistivity;
-    }
-
-    /**
-     * Get the thermal capacitance.
-     *
-     * @return Thermal capacitance
-     */
-    @Override
-    public ComparableQuantity<ThermalCapacitance> capacitance() {
-      return capacitance;
+    public ThermalProperties {
+      if (resistivity == null || capacitance == null) {
+        throw new IllegalArgumentException("Thermal properties must not be null.");
+      }
     }
   }
 }

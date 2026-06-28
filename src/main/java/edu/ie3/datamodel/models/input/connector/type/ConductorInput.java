@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.input.connector.type;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -19,7 +20,7 @@ import tech.units.indriya.ComparableQuantity;
 
 /**
  * Represents the conducting core of a cable with its specific geometric and thermal properties.
- * Unlike [[LayerInput]] layers, the conductor has no inner diameter and includes compaction
+ * Unlike {@link LayerInput} layers, the conductor has no inner diameter and includes compaction
  * information.
  *
  * @param uuid UUID of the ConductorInput
@@ -42,7 +43,7 @@ public record ConductorInput(
     ComparableQuantity<ThermalResistivity> thermalResistivity,
     ComparableQuantity<ThermalCapacitance> thermalCapacitance,
     Optional<ComparableQuantity<Area>> area)
-    implements InputEntity {
+    implements InputEntity, Serializable {
   /**
    * Create a new conductor with all required parameters.
    *
@@ -66,7 +67,11 @@ public record ConductorInput(
     Objects.requireNonNull(diameter, "Diameter cannot be null");
     Objects.requireNonNull(thermalResistivity, "Thermal resistivity cannot be null");
     Objects.requireNonNull(thermalCapacitance, "Thermal capacitance cannot be null");
-    Objects.requireNonNull(area, "Area Optional cannot be null");
+    Objects.requireNonNull(area, "Area optional must not be null");
+
+    if (name.isEmpty()) {
+      throw new IllegalArgumentException("Conductor name must not be empty");
+    }
 
     // Positive values check
     if (crossSection.getValue().doubleValue() < 0) {
@@ -81,6 +86,12 @@ public record ConductorInput(
     if (thermalCapacitance.getValue().doubleValue() < 0) {
       throw new IllegalArgumentException("Thermal capacitance must be >= 0");
     }
+    area.ifPresent(
+        a -> {
+          if (a.getValue().doubleValue() < 0) {
+            throw new IllegalArgumentException("Area must be >= 0");
+          }
+        });
   }
 
   @Override
@@ -89,39 +100,13 @@ public record ConductorInput(
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o
-        instanceof
-        ConductorInput(
-            UUID uuid1,
-            String name1,
-            CableMaterial material1,
-            ComparableQuantity<Area> section,
-            ComparableQuantity<Length> diameter1,
-            boolean compacted,
-            ComparableQuantity<?> resistivity,
-            ComparableQuantity<?> capacitance,
-            Optional<ComparableQuantity<Area>> area1))) return false;
-    return uuid.equals(uuid1)
-        && name.equals(name1)
-        && isCompacted == compacted
-        && material == material1
-        && crossSection.equals(section)
-        && diameter.equals(diameter1)
-        && thermalResistivity.equals(resistivity)
-        && thermalCapacitance.equals(capacitance)
-        && area.equals(area1);
-  }
-
-  @Override
   public @NonNull String toString() {
     return "ConductorInput{"
-        + "uuid='"
+        + "uuid="
         + uuid
-        + "name='"
+        + ", name="
         + name
-        + "material="
+        + ", material="
         + material
         + ", crossSection="
         + crossSection
