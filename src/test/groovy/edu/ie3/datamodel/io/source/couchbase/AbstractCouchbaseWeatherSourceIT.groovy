@@ -20,7 +20,7 @@ import spock.lang.Specification
 import java.time.Duration
 
 @Testcontainers
-abstract class AbstractCouchbaseWeatherSourceIT extends Specification implements TestContainerHelper, WeatherSourceTestHelper {
+abstract class AbstractCouchbaseWeatherSourceIT extends Specification implements TestContainerHelper {
 
   @Shared
   BucketDefinition bucketDefinition = new BucketDefinition("ie3_in")

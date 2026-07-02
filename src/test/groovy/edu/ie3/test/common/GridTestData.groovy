@@ -6,7 +6,7 @@
 package edu.ie3.test.common
 
 import static edu.ie3.datamodel.models.StandardUnits.*
-import static edu.ie3.util.quantities.PowerSystemUnits.*
+import static edu.ie3.util.quantities.PowerSystemUnits.OHM_PER_KILOMETRE
 
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.EmInput
@@ -20,8 +20,6 @@ import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
-import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
-import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.util.TimeUtil
@@ -172,14 +170,6 @@ class GridTestData {
   GermanVoltageLevelUtils.MV_20KV,
   3)
 
-  public static final NodeGraphicInput nodeGraphicC = new NodeGraphicInput(
-  UUID.fromString("09aec636-791b-45aa-b981-b14edf171c4c"),
-  "main",
-  null,
-  nodeC,
-  geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [0, 10] }") as Point
-  )
-
   public static final NodeInput nodeD = new NodeInput(
   UUID.fromString("6e0980e0-10f2-4e18-862b-eb2b7c90509b"), "node_d", OperatorInput.NO_OPERATOR_ASSIGNED,
   OperationTime.notLimited(),
@@ -188,13 +178,6 @@ class GridTestData {
   NodeInput.DEFAULT_GEO_POSITION,
   GermanVoltageLevelUtils.MV_20KV,
   4)
-  public static final NodeGraphicInput nodeGraphicD = new NodeGraphicInput(
-  UUID.fromString("9ecad435-bd16-4797-a732-762c09d4af25"),
-  "main",
-  geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[-1, 0], [1, 0]]}") as LineString,
-  nodeD,
-  null
-  )
 
   public static final NodeInput nodeE = new NodeInput(
   UUID.fromString("98a3e7fa-c456-455b-a5ea-bb19e7cbeb63"),
@@ -341,12 +324,6 @@ class GridTestData {
   Quantities.getQuantity(0.003d, LINE_LENGTH),
   geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}") as LineString,
   OlmCharacteristicInput.CONSTANT_CHARACTERISTIC
-  )
-  public static final LineGraphicInput lineGraphicCtoD = new LineGraphicInput(
-  UUID.fromString("ece86139-3238-4a35-9361-457ecb4258b0"),
-  "main",
-  geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[0, 0], [0, 10]]}") as LineString,
-  lineCtoD
   )
 
   public static final LineInput lineAtoB = new LineInput(

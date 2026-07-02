@@ -74,7 +74,7 @@ class SqlTimeSeriesMetaInformationSourceIT extends Specification implements Test
 
     result.every {
       it.key == it.value.uuid &&
-          expectedTimeSeries.contains(it.value)
+      expectedTimeSeries.contains(it.value)
     }
   }
 

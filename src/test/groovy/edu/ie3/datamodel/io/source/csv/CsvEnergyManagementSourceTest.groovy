@@ -20,16 +20,21 @@ class CsvEnergyManagementSourceTest extends Specification implements CsvTestData
   def "An EnergyManagementSource with csv input should return data from valid em input file as expected"() {
     given:
     def csvEnergyManagementSource = new EnergyManagementSource(
-    Mock(TypeSource),
-    new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+        Mock(TypeSource),
+        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
-    Map<UUID, OperatorInput> operatorMap = map([SystemParticipantTestData.emInput.operator])
+    Map<UUID, OperatorInput> operatorMap = map([
+      SystemParticipantTestData.emInput.operator
+    ])
 
     expect:
     def emUnits = Try.of(() -> csvEnergyManagementSource.getEmUnits(operatorMap), SourceException)
 
     emUnits.success
     emUnits.data.get().size() == 2
-    emUnits.data.get() == map([SystemParticipantTestData.emInput, SystemParticipantTestData.parentEm])
+    emUnits.data.get() == map([
+      SystemParticipantTestData.emInput,
+      SystemParticipantTestData.parentEm
+    ])
   }
 }

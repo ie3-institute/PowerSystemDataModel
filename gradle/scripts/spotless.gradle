@@ -2,15 +2,15 @@
 
 spotless {
   def ie3LicHead = '/*\n' +
-      ' * © $YEAR. TU Dortmund University,\n' +
-      ' * Institute of Energy Systems, Energy Efficiency and Energy Economics,\n' +
-      ' * Research group Distribution grid planning and operation\n' +
-      '*/'
+  ' * © $YEAR. TU Dortmund University,\n' +
+  ' * Institute of Energy Systems, Energy Efficiency and Energy Economics,\n' +
+  ' * Research group Distribution grid planning and operation\n' +
+  '*/'
 
   //sets a license header, removes unused imports and formats conforming to the google java format
   java {
     removeUnusedImports() // removes any unused imports
-    googleJavaFormat('1.28.0')
+    googleJavaFormat()
     licenseHeader ie3LicHead
   }
 

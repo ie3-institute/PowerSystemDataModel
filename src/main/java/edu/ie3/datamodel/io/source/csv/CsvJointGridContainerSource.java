@@ -17,10 +17,16 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
-import edu.ie3.datamodel.models.input.container.*;
+import edu.ie3.datamodel.models.input.container.EnergyManagementUnits;
+import edu.ie3.datamodel.models.input.container.JointGridContainer;
+import edu.ie3.datamodel.models.input.container.RawGridElements;
+import edu.ie3.datamodel.models.input.container.SystemParticipants;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /** Convenience class for cases where all used data comes from CSV sources */
 public class CsvJointGridContainerSource {
@@ -53,7 +59,6 @@ public class CsvJointGridContainerSource {
     EnergyManagementSource emSource = new EnergyManagementSource(typeSource, dataSource);
     SystemParticipantSource systemParticipantSource =
         new SystemParticipantSource(typeSource, thermalSource, rawGridSource, emSource, dataSource);
-    GraphicSource graphicSource = new GraphicSource(typeSource, rawGridSource, dataSource);
 
     /* validating sources */
     try {
@@ -62,7 +67,6 @@ public class CsvJointGridContainerSource {
       thermalSource.validate();
       emSource.validate();
       systemParticipantSource.validate();
-      graphicSource.validate();
     } catch (ValidationException ve) {
       throw new SourceException("Could not read source because validation failed", ve);
     }
@@ -86,11 +90,8 @@ public class CsvJointGridContainerSource {
         Try.of(
             () -> new EnergyManagementUnits(new HashSet<>(emSource.getEmUnits(operators).values())),
             SourceException.class);
-    Try<GraphicElements, SourceException> graphicElements =
-        Try.of(() -> graphicSource.getGraphicElements(nodes, lines), SourceException.class);
 
-    List<? extends Exception> exceptions =
-        Try.getExceptions(rawGridElements, systemParticipants, graphicElements);
+    List<? extends Exception> exceptions = Try.getExceptions(rawGridElements, systemParticipants);
 
     if (!exceptions.isEmpty()) {
       throw new SourceException("Some exception(s) occurred while reading the grid.", exceptions);
@@ -101,8 +102,7 @@ public class CsvJointGridContainerSource {
           gridName,
           rawGridElements.getOrThrow(),
           systemParticipants.getOrThrow(),
-          emUnits.getOrThrow(),
-          graphicElements.getOrThrow());
+          emUnits.getOrThrow());
     }
   }
 }

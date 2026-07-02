@@ -43,7 +43,7 @@ class FileTimeSeriesMetaInformationSourceIT extends Specification implements Csv
     actual.size() == 8
     actual.every {
       it.key == it.value.uuid &&
-          expectedTimeSeries.contains(it.value)
+      expectedTimeSeries.contains(it.value)
     }
   }
 

@@ -75,26 +75,26 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
   protected Try<String, QuantityException> handleProcessorSpecificQuantity(
       Quantity<?> quantity, String fieldName) {
     return switch (fieldName) {
-      case "energy", "eConsAnnual", "eStorage", "eMin", "eMax":
-        yield Success.of(
-            quantityValToOptionalString(
-                quantity.asType(Energy.class).to(StandardUnits.ENERGY_RESULT)));
-      case "q":
-        yield Success.of(
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_RESULT)));
-      case "p", "pMax", "pOwn", "pThermal", "pRef", "pMin":
-        yield Success.of(
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_RESULT)));
-      default:
-        yield Failure.of(
-            new QuantityException(
-                "Cannot process quantity with value '"
-                    + quantity
-                    + "' for field with name "
-                    + fieldName
-                    + " in result entity processing!"));
+      case "energy", "eConsAnnual", "eStorage", "eState", "eMin", "eMax" ->
+          Success.of(
+              quantityValToOptionalString(
+                  quantity.asType(Energy.class).to(StandardUnits.ENERGY_RESULT)));
+      case "q" ->
+          Success.of(
+              quantityValToOptionalString(
+                  quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_RESULT)));
+      case "p", "pMax", "pOwn", "pThermal", "pRef", "pMin" ->
+          Success.of(
+              quantityValToOptionalString(
+                  quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_RESULT)));
+      default ->
+          Failure.of(
+              new QuantityException(
+                  "Cannot process quantity with value '"
+                      + quantity
+                      + "' for field with name "
+                      + fieldName
+                      + " in result entity processing!"));
     };
   }
 

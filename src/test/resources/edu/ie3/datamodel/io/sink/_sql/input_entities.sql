@@ -54,29 +54,6 @@ CREATE TABLE public.evcs_input
     WITHOUT OIDS
 	TABLESPACE pg_default;
 
-CREATE TABLE public.line_graphic_input
-(
-    uuid UUID PRIMARY KEY,
-    graphic_layer TEXT NOT NULL,
-    line UUID NOT NULL,
-    path TEXT,
-    grid_uuid UUID NOT NULL REFERENCES grids(uuid)
-)
-    WITHOUT OIDS
-	TABLESPACE pg_default;
-
-CREATE TABLE public.node_graphic_input
-(
-    uuid UUID PRIMARY KEY,
-    graphic_layer TEXT NOT NULL,
-    node UUID NOT NULL,
-    path TEXT,
-    point TEXT NOT NULL,
-    grid_uuid UUID NOT NULL REFERENCES grids(uuid)
-)
-    WITHOUT OIDS
-	TABLESPACE pg_default;
-
 CREATE TABLE public.cylindrical_storage_input
 (
     uuid uuid PRIMARY KEY,

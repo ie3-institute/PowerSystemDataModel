@@ -9,10 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added support for Markov-chain-based load profiles loaded from JSON [#1472](https://github.com/ie3-institute/PowerSystemDataModel/issues/1472)
 
+
 ### Fixed
+- Fixed issues regarding determination of additional parameters [#1661](https://github.com/ie3-institute/PowerSystemDataModel/issues/1661)
+
+### Changed
+- Switched trait `WeatherSourceTestHelper` to class and more code clean up [#1657](https://github.com/ie3-institute/PowerSystemDataModel/issues/1657)
+- Removed graphic related code [#1655](https://github.com/ie3-institute/PowerSystemDataModel/issues/1655)
+
+
+## [9.1.0] - 2026-06-04
+
+### Added
+- Added explicit handling for cases where no weather data is received from any source [#554](https://github.com/ie3-institute/PowerSystemDataModel/issues/554)
+- Adapted `EnergyBoundariesFlexOptionsResult` to include current SOE [#1640](https://github.com/ie3-institute/PowerSystemDataModel/issues/1640)
+
+### Fixed
+- Fixed determination of unused fields [#1644](https://github.com/ie3-institute/PowerSystemDataModel/issues/1644)
 
 ### Changed
 - Updated load documentation [#1608](https://github.com/ie3-institute/PowerSystemDataModel/issues/1608)
+- Change spotless to use latest version of googleJavaFormat [#1632](https://github.com/ie3-institute/PowerSystemDataModel/issues/1632)
+- Removed `GraphicElements` from `GridContainer` [#1601](https://github.com/ie3-institute/PowerSystemDataModel/issues/1601)
 
 ## [9.0.0] - 2026-04-13
 
@@ -48,6 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Correctly persist EmInput entities in CsvFileSink [#1337](https://github.com/ie3-institute/PowerSystemDataModel/issues/1337)
 - Proper handle duplicated headline exceptions in CsvDataSource [#1595](https://github.com/ie3-institute/PowerSystemDataModel/issues/1595)
 - Align CSV header formatting to RFC 4180 standards in tests [1544](https://github.com/ie3-institute/PowerSystemDataModel/issues/1544)
+- Fix false positive tests in csvidcoordinatesourcecosmoit and csvidcoordinatesourceiconit [#1594](https://github.com/ie3-institute/PowerSystemDataModel/issues/1594)
 
 ### Changed
 - Updated CI-Pipeline to run task `Deploy` and `Staging` only for `Main` [#1403](https://github.com/ie3-institute/PowerSystemDataModel/issues/1403)
@@ -458,7 +477,8 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/9.0.0...HEAD
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/9.1.0...HEAD
+[9.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/9.0.0...9.1.0
 [9.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/8.1.0...9.0.0
 [8.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/8.0.0...8.1.0
 [8.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/7.0.0...8.0.0

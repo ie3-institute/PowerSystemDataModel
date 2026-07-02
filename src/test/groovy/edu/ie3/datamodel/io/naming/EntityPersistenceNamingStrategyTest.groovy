@@ -16,8 +16,6 @@ import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
-import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
-import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.*
 import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
@@ -345,23 +343,6 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     Transformer3WTypeInput || "transformer_3_w_type_input"
     WecTypeInput           || "wec_type_input"
     WecTypeInput           || "wec_type_input"
-  }
-
-  def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for a graphic input Model"() {
-    given: "a naming strategy without pre- or suffixes"
-    EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
-
-    when:
-    Optional<String> res = strategy.getEntityName(modelClass)
-
-    then:
-    res.present
-    res.get() == expectedString
-
-    where:
-    modelClass       || expectedString
-    NodeGraphicInput || "node_graphic_input"
-    LineGraphicInput || "line_graphic_input"
   }
 
   def "A EntityPersistenceNamingStrategy without pre- or suffix should return empty Optional, if the content of the time series is not covered"() {

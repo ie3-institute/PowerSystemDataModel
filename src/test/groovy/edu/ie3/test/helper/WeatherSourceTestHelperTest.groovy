@@ -21,7 +21,7 @@ import tech.units.indriya.quantity.Quantities
 
 import java.time.ZonedDateTime
 
-class WeatherSourceTestHelperTest extends Specification implements WeatherSourceTestHelper {
+class WeatherSourceTestHelperTest extends Specification {
 
   @Shared
   ZonedDateTime time = TimeUtil.withDefaults.toZonedDateTime("2020-04-28T15:00:00+00:00")
@@ -62,7 +62,7 @@ class WeatherSourceTestHelperTest extends Specification implements WeatherSource
     def tbv2 = new TimeBasedValue(time, baseWeather)
 
     expect:
-    equalsIgnoreUUID(tbv1, tbv2)
+    WeatherSourceTestHelper.equalsIgnoreUUID(tbv1, tbv2)
   }
 
   def "The WeatherSourceTestHelper fails on single values with different timestamps"() {
@@ -71,7 +71,7 @@ class WeatherSourceTestHelperTest extends Specification implements WeatherSource
     def tbv2 = new TimeBasedValue(time.plusHours(1), baseWeather)
 
     expect:
-    !equalsIgnoreUUID(tbv1, tbv2)
+    !WeatherSourceTestHelper.equalsIgnoreUUID(tbv1, tbv2)
   }
 
   def "The WeatherSourceTestHelper respects the tolerance of 1E-10 for mandatory values"() {
@@ -80,16 +80,16 @@ class WeatherSourceTestHelperTest extends Specification implements WeatherSource
 
     def createWeatherWithIrr = { double directVal ->
       new WeatherValue(
-          coordinate,
-          new SolarIrradianceValue(
-          Quantities.getQuantity(directVal, StandardUnits.SOLAR_IRRADIANCE),
-          baseWeather.solarIrradiance.diffuseIrradiance.get()
-          ),
-          baseWeather.temperature,
-          baseWeather.wind,
-          baseWeather.groundTemperatureLevel1,
-          baseWeather.groundTemperatureLevel2
-          )
+      coordinate,
+      new SolarIrradianceValue(
+      Quantities.getQuantity(directVal, StandardUnits.SOLAR_IRRADIANCE),
+      baseWeather.solarIrradiance.diffuseIrradiance.get()
+      ),
+      baseWeather.temperature,
+      baseWeather.wind,
+      baseWeather.groundTemperatureLevel1,
+      baseWeather.groundTemperatureLevel2
+      )
     }
 
     def weatherWithinTolerance = createWeatherWithIrr(100d + 0.5E-10)
@@ -99,8 +99,8 @@ class WeatherSourceTestHelperTest extends Specification implements WeatherSource
     def tbvOutside = new TimeBasedValue(time, weatherOutsideTolerance)
 
     expect:
-    equalsIgnoreUUID(tbv1, tbvWithin)
-    !equalsIgnoreUUID(tbv1, tbvOutside)
+    WeatherSourceTestHelper.equalsIgnoreUUID(tbv1, tbvWithin)
+    !WeatherSourceTestHelper.equalsIgnoreUUID(tbv1, tbvOutside)
   }
 
   def "The WeatherSourceTestHelper detects differences in optional ground temperatures"() {
@@ -130,8 +130,8 @@ class WeatherSourceTestHelperTest extends Specification implements WeatherSource
     def tbvMissing = new TimeBasedValue(time, weatherMissingGround)
 
     expect:
-    !equalsIgnoreUUID(tbv1, tbvDiff)
-    !equalsIgnoreUUID(tbv1, tbvMissing)
+    !WeatherSourceTestHelper.equalsIgnoreUUID(tbv1, tbvDiff)
+    !WeatherSourceTestHelper.equalsIgnoreUUID(tbv1, tbvMissing)
   }
 
   def "The WeatherSourceTestHelper compares Collections correctly"() {
@@ -149,17 +149,17 @@ class WeatherSourceTestHelperTest extends Specification implements WeatherSource
     ]
 
     expect:
-    equalsIgnoreUUID(listA, listB)
-    equalsIgnoreUUID(listA, listMixedOrder)
-    !equalsIgnoreUUID(listA, listShort)
-    !equalsIgnoreUUID(listA, listDiffContent)
+    WeatherSourceTestHelper.equalsIgnoreUUID(listA, listB)
+    WeatherSourceTestHelper.equalsIgnoreUUID(listA, listMixedOrder)
+    !WeatherSourceTestHelper.equalsIgnoreUUID(listA, listShort)
+    !WeatherSourceTestHelper.equalsIgnoreUUID(listA, listDiffContent)
   }
 
   def "The WeatherSourceTestHelper handles null Collections gracefully"() {
     expect:
-    equalsIgnoreUUID((Collection)null, (Collection)null)
-    !equalsIgnoreUUID([], null)
-    !equalsIgnoreUUID(null, [])
+    WeatherSourceTestHelper.equalsIgnoreUUID((Collection)null, (Collection)null)
+    !WeatherSourceTestHelper.equalsIgnoreUUID([], null)
+    !WeatherSourceTestHelper.equalsIgnoreUUID(null, [])
   }
 
   def "The WeatherSourceTestHelper compares IndividualTimeSeries correctly"() {
@@ -170,7 +170,7 @@ class WeatherSourceTestHelperTest extends Specification implements WeatherSource
     def tsEmpty = new IndividualTimeSeries(UUID.randomUUID(), [] as Set)
 
     expect:
-    equalsIgnoreUUID(ts1, ts2)
-    !equalsIgnoreUUID(ts1, tsEmpty)
+    WeatherSourceTestHelper.equalsIgnoreUUID(ts1, ts2)
+    !WeatherSourceTestHelper.equalsIgnoreUUID(ts1, tsEmpty)
   }
 }

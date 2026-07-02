@@ -40,8 +40,9 @@ public class FieldNamingStrategy {
   public static final String S_RATED_DC = "sRatedDC";
 
   // energy
-  public static final String E_MAX = "eMax";
+  public static final String E_STATE = "eState";
   public static final String E_MIN = "eMin";
+  public static final String E_MAX = "eMax";
 
   // node
   public static final String SLACK = "slack";
@@ -210,12 +211,6 @@ public class FieldNamingStrategy {
   public static final String TAPPOS = "tapPos";
   public static final String TIME = "time";
   public static final String VALUE = "value";
-
-  // graphic
-  public static final String GRAPHIC_LAYER = "graphicLayer";
-  public static final String LINE = "line";
-  public static final String PATH_LINE_STRING = "path";
-  public static final String POINT = "point";
 
   // markov - top-level
   public static final String MARKOV_SCHEMA = "schema";

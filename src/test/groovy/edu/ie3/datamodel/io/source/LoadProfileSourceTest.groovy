@@ -20,20 +20,20 @@ class LoadProfileSourceTest extends Specification {
   def "A LoadProfileSource should return the correct profile resolution for a given load profile"() {
     given:
     def allProfiles = Stream.of(BdewStandardLoadProfile.values(), NbwTemperatureDependantLoadProfile.values(), new LoadProfile[] {
-      RANDOM_LOAD_PROFILE
-    }).flatMap {
-      Arrays.stream(it)
-    }
+          RANDOM_LOAD_PROFILE
+        }).flatMap {
+          Arrays.stream(it)
+        }
 
     when:
-    def resolutions = allProfiles.map {
-      it -> LoadProfileSource.getResolution(it.key)
+    def resolutions = allProfiles.map { it ->
+      LoadProfileSource.getResolution(it.key)
     }.toList()
     def resolutionForNoKeyAssigned = LoadProfileSource.getResolution(PowerProfileKey.NO_KEY_ASSIGNED)
 
     then:
-    resolutions.every {
-      resolution -> resolution == 900
+    resolutions.every { resolution ->
+      resolution == 900
     }
     resolutionForNoKeyAssigned == Long.MAX_VALUE
   }

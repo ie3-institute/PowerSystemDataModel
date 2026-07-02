@@ -159,18 +159,20 @@ class ResultEntityProcessorTest extends Specification {
     def sysPartResProcessor = new ResultEntityProcessor(EnergyBoundariesFlexOptionsResult)
 
     // take wrong unit for eMin on purpose, should get converted
+    Quantity<Energy> eState = Quantities.getQuantity(0, PowerSystemUnits.KILOWATTHOUR)
     Quantity<Energy> eMin = Quantities.getQuantity(-50, PowerSystemUnits.KILOWATTHOUR)
     Quantity<Energy> eMax = Quantities.getQuantity(0.05, StandardUnits.ENERGY_RESULT)
     Quantity<Power> pMin = Quantities.getQuantity(-6, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMax = Quantities.getQuantity(6, StandardUnits.ACTIVE_POWER_RESULT)
 
-    def validResult = new EnergyBoundariesFlexOptionsResult(ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, eMin, eMax, pMin, pMax)
+    def validResult = new EnergyBoundariesFlexOptionsResult(ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, eState, eMin, eMax, pMin, pMax)
 
     def expectedResults = [
       inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
       time      : '2020-01-30T17:26:44Z',
       pMax      : '6.0',
       pMin      : '-6.0',
+      eState    : '0.0',
       eMax      : '0.05',
       eMin      : '-0.05',
     ]

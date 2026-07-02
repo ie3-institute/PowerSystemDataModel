@@ -118,9 +118,7 @@ input/operator
 maxdepth: 1
 ---
 input/grid/node
-input/grid/nodegraphic
 input/grid/line
-input/grid/linegraphic
 input/grid/switch
 input/grid/transformer2w
 input/grid/transformer3w

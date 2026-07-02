@@ -409,9 +409,9 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
 
     when:
     def actual = dummyCsvSource.getCsvIndividualTimeSeriesMetaInformation(
-    ColumnScheme.ENERGY_PRICE,
-    ColumnScheme.ACTIVE_POWER
-    )
+        ColumnScheme.ENERGY_PRICE,
+        ColumnScheme.ACTIVE_POWER
+        )
 
     then:
     actual == expected

@@ -20,7 +20,6 @@ import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
-import edu.ie3.datamodel.models.input.container.GraphicElements;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
@@ -110,15 +109,14 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   @Override
   public <T extends Entity> void persist(T entity) {
     /* Distinguish between "regular" input / result models and time series */
-    if (entity instanceof InputEntity inputEntity) {
-      persistIncludeNested(inputEntity);
-    } else if (entity instanceof ResultEntity) {
-      write(entity);
-    } else if (entity instanceof TimeSeries<?, ?, ?> timeSeries) {
-      persistTimeSeries(timeSeries);
-    } else {
-      log.error(
-          "I don't know how to handle an entity of class {}", entity.getClass().getSimpleName());
+    switch (entity) {
+      case InputEntity inputEntity -> persistIncludeNested(inputEntity);
+      case ResultEntity resultEntity -> write(resultEntity);
+      case TimeSeries<?, ?, ?> timeSeries -> persistTimeSeries(timeSeries);
+      default ->
+          log.error(
+              "I don't know how to handle an entity of class {}",
+              entity.getClass().getSimpleName());
     }
   }
 
@@ -142,9 +140,8 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
         }
       } catch (ExtractorException e) {
         log.error(
-            String.format(
-                "An error occurred during extraction of nested entity'%s': ",
-                entity.getClass().getSimpleName()),
+            "An error occurred during extraction of nested entity'{}': ",
+            entity.getClass().getSimpleName(),
             e);
       }
     } else {
@@ -181,10 +178,6 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     Set<PvInput> pvPlants = systemParticipants.getPvPlants();
     Set<StorageInput> storages = systemParticipants.getStorages();
     Set<WecInput> wecPlants = systemParticipants.getWecPlants();
-
-    // get graphic elements (just for better readability, we could also just get them directly
-    // below)
-    GraphicElements graphicElements = jointGridContainer.getGraphics();
 
     // extract types
     Set<AssetTypeInput> types =
@@ -232,7 +225,6 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     Stream.of(
             rawGridElements.allEntitiesAsList(),
             systemParticipants.allEntitiesAsList(),
-            graphicElements.allEntitiesAsList(),
             jointGridContainer.getEmUnits().getEmUnits().stream().toList(),
             types,
             operators)
