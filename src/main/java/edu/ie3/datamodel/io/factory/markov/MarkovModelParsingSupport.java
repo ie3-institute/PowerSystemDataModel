@@ -73,21 +73,22 @@ interface MarkovModelParsingSupport {
 
   /** Parses optional parameter blocks (transitions and GMM). */
   default Parameters parseParameters(JsonNode parametersNode) {
-    Parameters.TransitionParameters transitions =
-        new Parameters.TransitionParameters(
-            parametersNode.path("transitions").path("empty_row_strategy").asString(""));
-    if (transitions.emptyRowStrategy().isEmpty()) {
-      transitions = null;
-    }
+    String emptyRowStrategy =
+        parametersNode.path("transitions").path("empty_row_strategy").asString("");
+    Optional<Parameters.TransitionParameters> transitions =
+        emptyRowStrategy.isEmpty()
+            ? Optional.empty()
+            : Optional.of(new Parameters.TransitionParameters(emptyRowStrategy));
 
     JsonNode gmmNode = parametersNode.path("gmm");
-    Parameters.GmmParameters gmm =
+    Optional<Parameters.GmmParameters> gmm =
         gmmNode.isMissingNode() || gmmNode.isNull() || gmmNode.isEmpty()
-            ? null
-            : new Parameters.GmmParameters(
-                gmmNode.path("value_col").asString(""),
-                optionalInt(gmmNode, "verbose"),
-                optionalInt(gmmNode, "heartbeat_seconds"));
+            ? Optional.empty()
+            : Optional.of(
+                new Parameters.GmmParameters(
+                    gmmNode.path("value_col").asString(""),
+                    optionalInt(gmmNode, "verbose"),
+                    optionalInt(gmmNode, "heartbeat_seconds")));
 
     return new Parameters(transitions, gmm);
   }

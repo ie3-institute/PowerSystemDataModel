@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.factory.markov
 import edu.ie3.datamodel.exceptions.FactoryException
 import spock.lang.Specification
 import tools.jackson.databind.ObjectMapper
+import tools.jackson.databind.node.ObjectNode
 
 class MarkovLoadModelFactoryTest extends Specification {
   private final ObjectMapper objectMapper = new ObjectMapper()
@@ -116,6 +117,55 @@ class MarkovLoadModelFactoryTest extends Specification {
     thrown(FactoryException)
   }
 
+  def "buildModel tolerates a missing parameters block"() {
+    given:
+    def root = objectMapper.readTree(validModelJson())
+    ((ObjectNode) root).remove("parameters")
+
+    when:
+    def model = factory.get(new MarkovModelData(root)).getOrThrow()
+
+    then:
+    model.parameters().transitions().isEmpty()
+    model.parameters().gmm().isEmpty()
+  }
+
+  def "buildModel throws FactoryException when max_power is missing"() {
+    given:
+    def invalidJson = objectMapper.readTree(validModelJson()
+        .replace('"max_power": { "value": 1.5, "unit": "kW" },', ''))
+
+    when:
+    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+
+    then:
+    thrown(FactoryException)
+  }
+
+  def "buildModel throws FactoryException when normalization range is non-positive"() {
+    given: "max_power below min_power"
+    def invalidJson = objectMapper.readTree(validModelJson()
+        .replace('"max_power": { "value": 1.5, "unit": "kW" }', '"max_power": { "value": 0.05, "unit": "kW" }'))
+
+    when:
+    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+
+    then:
+    thrown(FactoryException)
+  }
+
+  def "buildModel throws FactoryException on unsupported power unit"() {
+    given:
+    def invalidJson = objectMapper.readTree(validModelJson()
+        .replace('"max_power": { "value": 1.5, "unit": "kW" }', '"max_power": { "value": 1500.0, "unit": "W" }'))
+
+    when:
+    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+
+    then:
+    thrown(FactoryException)
+  }
+
   private static String validModelJson() {
     return """
       {
@@ -133,7 +183,7 @@ class MarkovLoadModelFactoryTest extends Specification {
           "timezone": "UTC"
         },
         "value_model": {
-          "value_unit": "W",
+          "value_unit": "normalized",
           "normalization": {
             "method": "none",
             "max_power": { "value": 1.5, "unit": "kW" },
@@ -154,8 +204,8 @@ class MarkovLoadModelFactoryTest extends Specification {
         },
         "data": {
           "transitions": {
-            "dtype": "float64",
-            "encoding": "dense",
+            "dtype": "float32",
+            "encoding": "nested_lists",
             "shape": [1,2,2],
             "values": [
               [

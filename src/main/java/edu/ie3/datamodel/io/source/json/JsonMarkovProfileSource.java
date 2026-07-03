@@ -40,6 +40,7 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
   private final FileLoadProfileMetaInformation metaInformation;
   private final MarkovLoadModelFactory factory;
   private MarkovLoadModel cachedModel;
+  private JsonNode cachedRoot;
 
   public JsonMarkovProfileSource(
       JsonDataSource dataSource, FileLoadProfileMetaInformation metaInformation) {
@@ -65,9 +66,8 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
    */
   public synchronized MarkovLoadModel getModel() throws SourceException {
     if (cachedModel == null) {
-      JsonNode root = dataSource.readTree(metaInformation.getFullFilePath());
       try {
-        cachedModel = factory.get(new MarkovModelData(root)).getOrThrow();
+        cachedModel = factory.get(new MarkovModelData(readRoot())).getOrThrow();
       } catch (FactoryException e) {
         throw new SourceException(
             "Unable to build Markov load model from '"
@@ -75,15 +75,24 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
                 + "'.",
             e);
       }
+      // the parsed model supersedes the raw tree, release it for garbage collection
+      cachedRoot = null;
     }
     return cachedModel;
+  }
+
+  /** Returns the parsed JSON tree, reading the underlying file only once. */
+  private synchronized JsonNode readRoot() throws SourceException {
+    if (cachedRoot == null) {
+      cachedRoot = dataSource.readTree(metaInformation.getFullFilePath());
+    }
+    return cachedRoot;
   }
 
   @Override
   public void validate() throws ValidationException {
     try {
-      Set<String> fields =
-          dataSource.getSourceFields(metaInformation.getFullFilePath()).orElse(Set.of());
+      Set<String> fields = JsonDataSource.fieldNames(readRoot());
       DataSource.validate(fields, MarkovLoadModel.class).getOrThrow();
     } catch (SourceException e) {
       throw new FailedValidationException(

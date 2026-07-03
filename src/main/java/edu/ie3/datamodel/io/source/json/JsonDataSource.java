@@ -89,7 +89,18 @@ public class JsonDataSource extends FileDataSource {
   @Override
   public Optional<Set<String>> getSourceFields(Path filePath) throws SourceException {
     JsonNode root = readTree(filePath);
-    return Optional.of(collectFieldNames(root));
+    return Optional.of(fieldNames(root));
+  }
+
+  /**
+   * Returns the set of (nested, dot-separated) field names present in the given JSON tree. Allows
+   * callers that already hold a parsed tree to collect field names without re-reading the file.
+   *
+   * @param root the parsed JSON tree
+   * @return the field names
+   */
+  public static Set<String> fieldNames(JsonNode root) {
+    return collectFieldNames(root);
   }
 
   @Override

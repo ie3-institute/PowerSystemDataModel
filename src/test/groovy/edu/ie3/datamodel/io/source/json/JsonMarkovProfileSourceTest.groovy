@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.json
 
 import edu.ie3.datamodel.exceptions.SourceException
+import edu.ie3.datamodel.io.connectors.JsonFileConnector
 import edu.ie3.datamodel.io.file.FileType
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.naming.timeseries.FileLoadProfileMetaInformation
@@ -17,6 +18,8 @@ import spock.lang.Specification
 import java.nio.file.Files
 import java.nio.file.Path
 import java.time.ZonedDateTime
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.function.Function
 
 class JsonMarkovProfileSourceTest extends Specification {
 
@@ -58,6 +61,28 @@ class JsonMarkovProfileSourceTest extends Specification {
 
     then:
     noExceptionThrown()
+  }
+
+  def "validate and getModel read the underlying file only once"() {
+    given: "a connector that counts how often the file is opened"
+    Files.writeString(jsonFile, validModelJson())
+    def openCount = new AtomicInteger()
+    def countingStream = { String path ->
+      openCount.incrementAndGet()
+      new FileInputStream(path)
+    } as Function<String, InputStream>
+    def source = new JsonMarkovProfileSource(
+        new JsonDataSource(new JsonFileConnector(tempDir, countingStream), new FileNamingStrategy()),
+        new FileLoadProfileMetaInformation("profile1", jsonFile, FileType.JSON)
+        )
+
+    when:
+    source.validate()
+    source.getModel()
+    source.getModel()
+
+    then:
+    openCount.get() == 1
   }
 
   def "getModel throws SourceException on invalid JSON file"() {
@@ -118,7 +143,7 @@ class JsonMarkovProfileSourceTest extends Specification {
           "timezone": "UTC"
         },
         "value_model": {
-          "value_unit": "W",
+          "value_unit": "normalized",
           "normalization": {
             "method": "none",
             "max_power": { "value": 10.0, "unit": "kW" },
@@ -139,8 +164,8 @@ class JsonMarkovProfileSourceTest extends Specification {
         },
         "data": {
           "transitions": {
-            "dtype": "float64",
-            "encoding": "dense",
+            "dtype": "float32",
+            "encoding": "nested_lists",
             "shape": [1,2,2],
             "values": [
               [

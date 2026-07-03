@@ -113,7 +113,7 @@ Defines the value space and normalization.
      - Description
    * - value_unit
      - String
-     - Physical unit of the original training data (e.g. {code}`W`)
+     - Unit of the stored values; the trainer exports {code}`normalized` ([0, 1] scale)
    * - normalization
      - Object
      - See below
@@ -133,7 +133,7 @@ Defines the value space and normalization.
      - Description
    * - method
      - String
-     - Normalization strategy used during training (e.g. {code}`minmax_per_series`)
+     - Normalization strategy used during training (e.g. {code}`minmax_global`)
    * - max_power
      - Object
      - Upper bound: {code}`{"value": <number>, "unit": "kW"}`
@@ -164,7 +164,8 @@ Negative {code}`min_power` values are valid and represent net feed-in (e.g. PV h
      - Number of discrete Markov states
    * - thresholds_right
      - Array of Double
-     - Right-edge thresholds for mapping normalized values to states (length = states - 1)
+     - Right-edge thresholds for mapping normalized values to states (length = states - 1). Bins are
+       left-closed and right-open: a value exactly on a threshold maps to the higher state
 ```
 
 ### parameters
@@ -202,10 +203,10 @@ Contains the actual model data: transition probabilities and GMM parameters.
      - Description
    * - dtype
      - String
-     - Data type (e.g. {code}`float64`)
+     - Data type (e.g. {code}`float32`)
    * - encoding
      - String
-     - Encoding format (e.g. {code}`dense`)
+     - Encoding format (e.g. {code}`nested_lists`)
    * - shape
      - Array of Integer
      - Dimensions: {code}`[bucket_count, states, states]`

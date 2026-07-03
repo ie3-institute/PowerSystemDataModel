@@ -155,7 +155,7 @@ public class MarkovLoadModel {
   /**
    * Converts the JSON-shaped {@link GmmBuckets} (lists of doubles) into a runtime {@code
    * GmmStateData[][]} backed by primitive arrays for fast sampling. States with no GMM data are
-   * preserved as {@code null} entries; {@link #sanitizeDistribution} routes around them.
+   * preserved as {@code null} entries; {@link #sampleNormalizedValue} returns {@code 0} for them.
    */
   private GmmStateData[][] buildGmmStates(GmmBuckets buckets) {
     List<GmmBuckets.GmmBucket> bucketList = buckets.buckets();
@@ -265,7 +265,7 @@ public class MarkovLoadModel {
   //     1. bucketId        => isWeekend
   //     2. resolveState    => discretize
   //     3. deriveSeed
-  //     4. simulateStep    => sanitizeDistribution => drawState => sampleNormalizedValue
+  //     4. simulateStep    => drawWeighted => sampleNormalizedValue
   //     5. scale
   // =====================================================================================
 
@@ -324,13 +324,15 @@ public class MarkovLoadModel {
 
   /**
    * Returns the state-bin index for a normalized value, using the right-edges in {@code
-   * discretizationThresholds}. The input is clamped to {@code [0, 1]} to absorb minor
-   * floating-point drift on caller-supplied values.
+   * discretizationThresholds}. Bins are left-closed and right-open, so a value exactly on a
+   * threshold belongs to the upper state - matching the trainer's {@code
+   * searchsorted(side="right")} assignment used when the model was fitted. The input is clamped to
+   * {@code [0, 1]} to absorb minor floating-point drift on caller-supplied values.
    */
   private int discretize(double normalized) {
     double value = Math.clamp(normalized, 0d, 1d);
     for (int i = 0; i < discretizationThresholds.length; i++) {
-      if (value <= discretizationThresholds[i]) {
+      if (value < discretizationThresholds[i]) {
         return i;
       }
     }
@@ -348,9 +350,7 @@ public class MarkovLoadModel {
     long seed = input.randomSeed();
     seed = 31 * seed + bucket;
     seed = 31 * seed + state;
-    long slot =
-        input.time().withZoneSameInstant(zoneId).toInstant().toEpochMilli()
-            / (samplingIntervalMinutes * 60_000L);
+    long slot = input.time().toInstant().toEpochMilli() / (samplingIntervalMinutes * 60_000L);
     return 31 * seed + slot;
   }
 
@@ -492,7 +492,8 @@ public class MarkovLoadModel {
   }
 
   /** Optional metadata describing how the trainer produced the transitions and GMMs. */
-  public record Parameters(TransitionParameters transitions, GmmParameters gmm) {
+  public record Parameters(
+      Optional<TransitionParameters> transitions, Optional<GmmParameters> gmm) {
 
     /**
      * Strategy used by the trainer when a transition row had no observations (e.g. {@code

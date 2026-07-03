@@ -82,6 +82,41 @@ class MarkovLoadModelTest extends Specification {
     output.value().get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 2.6d
   }
 
+  def "initial normalized value exactly on a threshold maps to the upper state"() {
+    given: "trainer semantics: searchsorted(side='right') puts boundary values into the upper bin"
+    def model = loadModel(selfLoopTransitions(), deterministicStates())
+    def input = new PowerValueSource.MarkovIdentifier(
+        ZonedDateTime.parse("2025-01-01T00:00:00Z"),
+        OptionalInt.empty(),
+        OptionalDouble.of(0.5d),
+        13L
+        )
+
+    when:
+    def output = model.getValueSupplier(input).get()
+
+    then:
+    output.nextState() == 1
+    output.value().get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 4.2d
+  }
+
+  def "supplier rejects an out-of-bounds previous state"() {
+    given:
+    def model = loadModel(deterministicTransitions(), deterministicStates())
+    def input = new PowerValueSource.MarkovIdentifier(
+        ZonedDateTime.parse("2025-01-01T00:00:00Z"),
+        OptionalInt.of(5),
+        OptionalDouble.empty(),
+        1L
+        )
+
+    when:
+    model.getValueSupplier(input).get()
+
+    then:
+    thrown(IllegalArgumentException)
+  }
+
   private loadModel(String transitions, String states) {
     def json = modelJson(transitions, states)
     def root = objectMapper.readTree(json)
@@ -151,7 +186,7 @@ class MarkovLoadModelTest extends Specification {
           "timezone": "UTC"
         },
         "value_model": {
-          "value_unit": "W",
+          "value_unit": "normalized",
           "normalization": $normalization,
           "discretization": {
             "states": 2,
@@ -168,8 +203,8 @@ class MarkovLoadModelTest extends Specification {
         },
         "data": {
           "transitions": {
-            "dtype": "float64",
-            "encoding": "dense",
+            "dtype": "float32",
+            "encoding": "nested_lists",
             "shape": [1,2,2],
             "values": $transitions
           },
