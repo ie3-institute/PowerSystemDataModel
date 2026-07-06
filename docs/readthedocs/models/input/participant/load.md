@@ -98,4 +98,4 @@ The `NbwTemperatureDependantLoadProfiles` consists of load profiles "ep1" for he
 
 Markov-chain-based load profiles can be used for stochastic load simulation. These profiles are produced
 by an external Python trainer and loaded from JSON files. For details on the JSON schema and the simulation pipeline,
-see the [Markov-based Load Profiles](markov-load-model) documentation.
+see the [Markov-based Load Profiles](#markov-load-model) documentation.

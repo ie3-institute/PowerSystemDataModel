@@ -25,12 +25,14 @@ During simulation, one step works as follows:
 ## File Naming
 
 Markov model files follow the naming convention {code}`markov_<profileKey>.json`, e.g. {code}`markov_h0.json`.
+A profile key consists of 1 to 11 letters, optionally followed by up to 3 digits.
 The profile key must be unique across all load-profile sources. Do not use the same key for both a CSV profile
 ({code}`lpts_<key>.csv`) and a Markov profile ({code}`markov_<key>.json`).
 
 ## JSON Schema
 
-The JSON file uses the schema identifier {code}`simonaMarkovLoad:psdm:1.0` and has the following top-level structure:
+The JSON file uses the schema identifier {code}`simonaMarkovLoad:psdm:1.0` and has the following top-level structure.
+Note that PSDM only requires the {code}`schema` field to be present; its value is currently not verified.
 
 ```text
 {
@@ -97,8 +99,9 @@ The bucket index is computed as:
 bucket = month * 192 + isWeekend * 96 + quarterHour
 ```
 
-where {code}`isWeekend` is 1 for Saturday/Sunday and 0 otherwise, and {code}`quarterHour` is the 0-based quarter-hour
-of the day (0..95).
+where {code}`month` is the 0-based month (January = 0), {code}`isWeekend` is 1 for Saturday/Sunday and 0 otherwise,
+and {code}`quarterHour` is the 0-based quarter-hour of the day (0..95). Timestamps are converted to the model's
+timezone before the bucket index is computed.
 
 ### value_model
 
@@ -150,6 +153,9 @@ power = minPower + normalizedValue * (maxPower - minPower)
 
 Negative {code}`min_power` values are valid and represent net feed-in (e.g. PV households).
 
+Only {code}`kW` is supported as unit for both bounds, other units are rejected when the model is loaded.
+Furthermore, {code}`max_power` must be strictly greater than {code}`min_power`.
+
 #### discretization
 
 ```{list-table}
@@ -170,7 +176,8 @@ Negative {code}`min_power` values are valid and represent net feed-in (e.g. PV h
 
 ### parameters
 
-Optional metadata about how the trainer produced transitions and GMMs.
+Metadata about how the trainer produced transitions and GMMs. The block itself has to be present to pass
+source validation, but it may be empty; all fields within it are optional.
 
 ```{list-table}
    :widths: auto
@@ -255,11 +262,37 @@ Each bucket contains a {code}`states` array with one entry per Markov state. Eac
 During sampling, a GMM component is drawn according to {code}`weights`, then a value is sampled from the corresponding
 Gaussian and clamped to [0, 1] before denormalization.
 
+If the drawn state has no GMM data ({code}`null`), the sampled normalized value is 0, which denormalizes to
+{code}`min_power`. The trainer guarantees that states without GMM data are never reachable with non-zero
+transition probability, so this case does not occur.
+
 ## Loading and Validation
 
 Markov models are loaded via {code}`JsonMarkovProfileSource`, which:
 
 - Reads the JSON file lazily on first access (not at construction time)
 - Caches the parsed {code}`MarkovLoadModel` for subsequent calls
-- Validates all 20 mandatory fields via {code}`DataSource.validate()` before use
+- Offers validation of all 20 mandatory fields via {code}`validate()`. Note that this is a separate call:
+  it is not triggered automatically when the model is loaded
 - Is thread-safe ({code}`synchronized` lazy loading)
+
+Markov models do not support energy scaling: {code}`getProfileEnergyScaling()` always returns
+{code}`Optional.empty()`.
+
+## Simulation Input and Output
+
+Power values are requested via {code}`PowerValueSource.MarkovIdentifier`, which carries:
+
+- {code}`time` - the timestamp of the requested step
+- {code}`previousState` - the state returned by the previous step (used for all subsequent steps)
+- {code}`initialNormalizedValue` - a normalized start value that is discretized into the initial state
+  (used for the first step only)
+- {code}`randomSeed` - the base seed for reproducible sampling
+
+Either {code}`previousState` or {code}`initialNormalizedValue` has to be provided. Each step returns a
+{code}`MarkovOutputValue` containing the sampled power value and the {code}`nextState`, which callers pass
+into the identifier of the following step. The model itself is stateless, so a single instance can serve
+multiple independent chains.
+
+Sampling is deterministic: the RNG seed of a step is derived from the request seed, the time bucket, the
+current state and the time slot, so identical inputs always produce identical results.

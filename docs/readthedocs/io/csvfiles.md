@@ -138,7 +138,7 @@ The following keys are supported until now:
      - Active, reactive and heat power.
        Permissible head line: ``time,p,q,h``
    * - v
-     - Voltage mangnitude in pu and angle in °.
+     - Voltage magnitude in pu and angle in °.
        Permissible head line: ``time,vMag,vAng``
    * - weather
      - Weather information.
@@ -174,11 +174,11 @@ Markov-based load models (`markov_*`) do not support energy scaling. Calls to
      - BDEW standard load profiles 2025 ([source](https://www.bdew.de/energie/standardlastprofile-strom/))
      - Permissible head line: ``janSa,janSu,janWd,febSa,febSu,febWd,marSa,marSu,marWd,aprSa,aprSu,aprWd,maySa,maySu,mayWd,junSa,junSu,junWd,julSa,julSu,julWd,augSa,augSu,augWd,sepSa,sepSu,sepWd,octSa,octSu,octWd,novSa,novSu,novWd,decSa,decSu,decWd,quarterHour``
    * - random
-     - A random load proile based on: ``Kays - Agent-based simulation environment for improving the planning of distribution grids``
+     - A random load profile based on: ``Kays - Agent-based simulation environment for improving the planning of distribution grids``
      - Permissible head line: ``kSa,kSu,kWd,mySa,mySu,myWd,sigmaSa,sigmaSu,sigmaWd,quarterHour``
    * - markov
      - Markov-chain-based stochastic load profiles from JSON files (``markov_<key>.json``).
-       See [Markov-based Load Profiles](markov-load-model) for the full JSON schema documentation.
+       See [Markov-based Load Profiles](#markov-load-model) for the full JSON schema documentation.
      - Not a CSV format. Uses JSON with schema ``simonaMarkovLoad:psdm:1.0``.
 
 ```
