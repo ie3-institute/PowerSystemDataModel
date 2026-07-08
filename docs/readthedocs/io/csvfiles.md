@@ -178,7 +178,7 @@ Markov-based load models (`markov_*`) do not support energy scaling. Calls to
      - Permissible head line: ``kSa,kSu,kWd,mySa,mySu,myWd,sigmaSa,sigmaSu,sigmaWd,quarterHour``
    * - markov
      - Markov-chain-based stochastic load profiles from JSON files (``markov_<key>.json``).
-       See [Markov-based Load Profiles](#markov-load-model) for the full JSON schema documentation.
+       See {ref}`Markov-based Load Profiles <markov-load-model>` for the full JSON schema documentation.
      - Not a CSV format. Uses JSON with schema ``simonaMarkovLoad:psdm:1.0``.
 
 ```

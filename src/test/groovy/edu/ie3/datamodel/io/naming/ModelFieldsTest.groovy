@@ -23,7 +23,6 @@ class ModelFieldsTest extends Specification {
       FieldNamingStrategy.MARKOV_GENERATOR,
       FieldNamingStrategy.MARKOV_TIME_MODEL,
       FieldNamingStrategy.MARKOV_VALUE_MODEL,
-      FieldNamingStrategy.MARKOV_PARAMETERS,
       FieldNamingStrategy.MARKOV_DATA,
       // nested - required for simulation
       FieldNamingStrategy.MARKOV_GENERATOR_NAME,

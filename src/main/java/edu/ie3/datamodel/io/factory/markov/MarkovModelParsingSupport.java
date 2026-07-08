@@ -12,10 +12,7 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import tools.jackson.databind.JsonNode;
 
-/**
- * Shared parsing helpers for Markov model JSON documents. This is intentionally package-private as
- * it is only meant to be reused across factory implementations in this package.
- */
+/** Shared parsing helpers for Markov model JSON documents. */
 interface MarkovModelParsingSupport {
 
   default Generator parseGenerator(JsonNode generatorNode) {
@@ -31,19 +28,25 @@ interface MarkovModelParsingSupport {
     return new Generator(name, version, config);
   }
 
-  /** Extracts the time model block, including bucket count and sampling interval. */
+  /** Extracts the time model block. */
   default TimeModel extractTimeModel(JsonNode timeNode) {
     int bucketCount = extractInt(timeNode, "bucket_count");
+    if (bucketCount <= 0) {
+      throw new FactoryException("time_model.bucket_count must be positive");
+    }
     String formula = extractNode(timeNode, "bucket_encoding").path("formula").asString("");
     if (formula.isEmpty()) {
       throw new FactoryException("Missing bucket encoding formula");
     }
     int samplingInterval = extractInt(timeNode, "sampling_interval_minutes");
+    if (samplingInterval <= 0) {
+      throw new FactoryException("time_model.sampling_interval_minutes must be positive");
+    }
     String timezone = extractText(timeNode, "timezone");
     return new TimeModel(bucketCount, formula, samplingInterval, timezone);
   }
 
-  /** Parses value model settings (unit, normalization, discretization thresholds). */
+  /** Parses value model settings. */
   default ValueModel parseValueModel(JsonNode valueNode) {
     String valueUnit = extractText(valueNode, "value_unit");
     JsonNode normalizationNode = extractNode(valueNode, "normalization");
@@ -56,6 +59,9 @@ interface MarkovModelParsingSupport {
 
     JsonNode discretizationNode = extractNode(valueNode, "discretization");
     int states = extractInt(discretizationNode, "states");
+    if (states <= 0) {
+      throw new FactoryException("value_model.discretization.states must be positive");
+    }
     List<Double> thresholds = readDoubleArray(discretizationNode, "thresholds_right");
     if (thresholds.size() != Math.max(0, states - 1)) {
       throw new FactoryException(
@@ -71,7 +77,7 @@ interface MarkovModelParsingSupport {
     return new ValueModel(valueUnit, normalization, discretization);
   }
 
-  /** Parses optional parameter blocks (transitions and GMM). */
+  /** Parses optional parameter metadata. */
   default Parameters parseParameters(JsonNode parametersNode) {
     String emptyRowStrategy =
         parametersNode.path("transitions").path("empty_row_strategy").asString("");
@@ -93,11 +99,7 @@ interface MarkovModelParsingSupport {
     return new Parameters(transitions, gmm);
   }
 
-  /**
-   * Parses the transition matrix section.
-   *
-   * <p>The expected shape is [bucket, state, state].
-   */
+  /** Parses the transition tensor. */
   default TransitionData parseTransitions(
       JsonNode dataNode, int expectedBucketCount, int stateCount) {
     JsonNode transitionsNode = extractNode(dataNode, "transitions");
@@ -116,7 +118,7 @@ interface MarkovModelParsingSupport {
     return new TransitionData(dtype, encoding, values);
   }
 
-  /** Parses GMM buckets. Individual states may be null, which disables sampling for that state. */
+  /** Parses GMM buckets. Individual states may be null. */
   default GmmBuckets parseGmmBuckets(JsonNode gmmsNode) {
     if (gmmsNode == null || gmmsNode.isMissingNode() || gmmsNode.isNull()) {
       throw new FactoryException("Missing field 'gmms'");
@@ -168,13 +170,7 @@ interface MarkovModelParsingSupport {
 
   default double extractDouble(JsonNode node, String field) {
     JsonNode value = node.get(field);
-    if (value == null || value.isMissingNode() || value.isNull()) {
-      throw new FactoryException("Missing field '" + field + "'");
-    }
-    if (!value.isNumber()) {
-      throw new FactoryException("Field '" + field + "' must be a double");
-    }
-    return value.asDouble();
+    return extractDoubleValue(value, field);
   }
 
   default int extractInt(JsonNode node, String field) {
@@ -199,6 +195,9 @@ interface MarkovModelParsingSupport {
   default OptionalInt optionalInt(JsonNode node, String field) {
     JsonNode value = node.get(field);
     if (value == null || value.isNull()) return OptionalInt.empty();
+    if (!value.canConvertToInt()) {
+      throw new FactoryException("Field '" + field + "' must be an integer");
+    }
     return OptionalInt.of(value.asInt());
   }
 
@@ -207,7 +206,11 @@ interface MarkovModelParsingSupport {
     if (!shapeNode.isArray() || shapeNode.size() != 3) {
       throw new FactoryException("Transition shape must contain three dimensions");
     }
-    return new int[] {shapeNode.get(0).asInt(), shapeNode.get(1).asInt(), shapeNode.get(2).asInt()};
+    return new int[] {
+      extractInt(shapeNode, 0, "Transition shape"),
+      extractInt(shapeNode, 1, "Transition shape"),
+      extractInt(shapeNode, 2, "Transition shape")
+    };
   }
 
   default void validateTransitionShape(
@@ -238,12 +241,19 @@ interface MarkovModelParsingSupport {
     double[][][] values = new double[buckets][stateCount][stateCount];
     for (int b = 0; b < buckets; b++) {
       JsonNode bucketNode = valuesNode.get(b);
+      if (!bucketNode.isArray()) {
+        throw new FactoryException("Bucket " + b + " in transition values must be an array");
+      }
       if (bucketNode.size() != stateCount) {
         throw new FactoryException(
             "Bucket " + b + " contained " + bucketNode.size() + " rows. Expected " + stateCount);
       }
       for (int r = 0; r < stateCount; r++) {
         JsonNode rowNode = bucketNode.get(r);
+        if (!rowNode.isArray()) {
+          throw new FactoryException(
+              "Row " + r + " in bucket " + b + " of transition values must be an array");
+        }
         if (rowNode.size() != stateCount) {
           throw new FactoryException(
               "Row "
@@ -256,7 +266,9 @@ interface MarkovModelParsingSupport {
                   + stateCount);
         }
         for (int c = 0; c < stateCount; c++) {
-          values[b][r][c] = rowNode.get(c).asDouble();
+          values[b][r][c] =
+              extractDoubleValue(
+                  rowNode.get(c), "data.transitions.values[" + b + "][" + r + "][" + c + "]");
         }
       }
     }
@@ -269,8 +281,35 @@ interface MarkovModelParsingSupport {
       throw new FactoryException("Field '" + field + "' must be an array");
     }
     List<Double> values = new ArrayList<>();
-    arrayNode.forEach(element -> values.add(element.asDouble()));
+    for (int i = 0; i < arrayNode.size(); i++) {
+      values.add(extractDoubleValue(arrayNode.get(i), field + "[" + i + "]"));
+    }
     return List.copyOf(values);
+  }
+
+  default int extractInt(JsonNode node, int index, String field) {
+    JsonNode value = node.get(index);
+    if (value == null || value.isMissingNode() || value.isNull()) {
+      throw new FactoryException("Missing field '" + field + "[" + index + "]'");
+    }
+    if (!value.canConvertToInt()) {
+      throw new FactoryException("Field '" + field + "[" + index + "]' must be an integer");
+    }
+    return value.asInt();
+  }
+
+  default double extractDoubleValue(JsonNode node, String field) {
+    if (node == null || node.isMissingNode() || node.isNull()) {
+      throw new FactoryException("Missing field '" + field + "'");
+    }
+    if (!node.isNumber()) {
+      throw new FactoryException("Field '" + field + "' must be a double");
+    }
+    double value = node.asDouble();
+    if (!Double.isFinite(value)) {
+      throw new FactoryException("Field '" + field + "' must be finite");
+    }
+    return value;
   }
 
   default Optional<ValueModel.Normalization.PowerReference> parsePowerReference(

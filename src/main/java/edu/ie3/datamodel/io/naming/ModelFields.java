@@ -231,7 +231,6 @@ public final class ModelFields extends FieldNamingStrategy {
             MARKOV_GENERATOR,
             MARKOV_TIME_MODEL,
             MARKOV_VALUE_MODEL,
-            MARKOV_PARAMETERS,
             MARKOV_DATA,
             MARKOV_GENERATOR_NAME,
             MARKOV_GENERATOR_VERSION,

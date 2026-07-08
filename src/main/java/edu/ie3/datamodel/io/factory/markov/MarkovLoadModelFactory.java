@@ -12,12 +12,7 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 import tools.jackson.databind.JsonNode;
 
-/**
- * Factory turning Markov JSON data into {@link MarkovLoadModel}s.
- *
- * <p>The JSON fields follow the simonaMarkovLoad schema (snake_case), which is mapped to the model
- * records used within PSDM.
- */
+/** Factory turning Markov JSON data into {@link MarkovLoadModel}s. */
 public class MarkovLoadModelFactory
     extends Factory<MarkovLoadModel, MarkovModelData, MarkovLoadModel>
     implements MarkovModelParsingSupport {
@@ -26,11 +21,7 @@ public class MarkovLoadModelFactory
     super(MarkovLoadModel.class);
   }
 
-  /**
-   * Build a {@link MarkovLoadModel} from a parsed JSON tree.
-   *
-   * <p>This method validates the transition shape and requires GMM buckets to be present.
-   */
+  /** Builds a {@link MarkovLoadModel} from a parsed JSON tree. */
   @Override
   protected MarkovLoadModel buildModel(MarkovModelData data) {
     JsonNode root = data.getRoot();

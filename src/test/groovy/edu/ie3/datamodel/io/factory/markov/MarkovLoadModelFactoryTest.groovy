@@ -31,7 +31,7 @@ class MarkovLoadModelFactoryTest extends Specification {
     model.transitionData().values()[0][0][1] == 0.9d
     model.gmmBuckets().isPresent()
     def gmmState = model.gmmBuckets().get().buckets().first().states().first()
-    gmmState.weights() == [0.6d]
+    gmmState.weights() == [1.0d]
     gmmState.means() == [1.0d]
     gmmState.variances() == [0.2d]
     model.valueModel().normalization().maxPower().isPresent()
@@ -49,6 +49,18 @@ class MarkovLoadModelFactoryTest extends Specification {
   def "buildModel throws FactoryException on transition dimension mismatch"() {
     given:
     def invalidJson = objectMapper.readTree(validModelJson().replace("\"shape\": [1,2,2]", "\"shape\": [2,2,2]"))
+
+    when:
+    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+
+    then:
+    thrown(FactoryException)
+  }
+
+  def "buildModel throws FactoryException when transition row does not sum to one"() {
+    given:
+    def invalidJson = objectMapper.readTree(validModelJson()
+        .replace('[0.1, 0.9]', '[0.1, 0.8]'))
 
     when:
     factory.get(new MarkovModelData(invalidJson)).getOrThrow()
@@ -109,6 +121,18 @@ class MarkovLoadModelFactoryTest extends Specification {
     given:
     def invalidJson = objectMapper.readTree(validModelJson()
         .replace('"buckets":', '"not_buckets":'))
+
+    when:
+    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+
+    then:
+    thrown(FactoryException)
+  }
+
+  def "buildModel throws FactoryException when GMM component arrays differ in size"() {
+    given:
+    def invalidJson = objectMapper.readTree(validModelJson()
+        .replace('"variances": [0.2]', '"variances": [0.2, 0.3]'))
 
     when:
     factory.get(new MarkovModelData(invalidJson)).getOrThrow()
@@ -219,7 +243,7 @@ class MarkovLoadModelFactoryTest extends Specification {
               {
                 "states": [
                   {
-                    "weights": [0.6],
+                    "weights": [1.0],
                     "means": [1.0],
                     "variances": [0.2]
                   },

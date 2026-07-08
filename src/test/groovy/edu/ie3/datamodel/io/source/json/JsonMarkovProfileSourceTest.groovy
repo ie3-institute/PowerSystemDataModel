@@ -14,6 +14,8 @@ import edu.ie3.datamodel.io.source.PowerValueSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel
 import spock.lang.Specification
+import tools.jackson.databind.ObjectMapper
+import tools.jackson.databind.node.ObjectNode
 
 import java.nio.file.Files
 import java.nio.file.Path
@@ -83,6 +85,26 @@ class JsonMarkovProfileSourceTest extends Specification {
 
     then:
     openCount.get() == 1
+  }
+
+  def "validate tolerates a missing optional parameters block"() {
+    given:
+    def root = new ObjectMapper().readTree(validModelJson())
+    ((ObjectNode) root).remove("parameters")
+    Files.writeString(jsonFile, root.toString())
+    def source = new JsonMarkovProfileSource(
+        new JsonDataSource(tempDir, new FileNamingStrategy()),
+        new FileLoadProfileMetaInformation("profile1", jsonFile, FileType.JSON)
+        )
+
+    when:
+    source.validate()
+    def model = source.getModel()
+
+    then:
+    noExceptionThrown()
+    model.parameters().transitions().isEmpty()
+    model.parameters().gmm().isEmpty()
   }
 
   def "getModel throws SourceException on invalid JSON file"() {

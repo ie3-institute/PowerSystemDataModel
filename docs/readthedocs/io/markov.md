@@ -176,8 +176,8 @@ Furthermore, {code}`max_power` must be strictly greater than {code}`min_power`.
 
 ### parameters
 
-Metadata about how the trainer produced transitions and GMMs. The block itself has to be present to pass
-source validation, but it may be empty; all fields within it are optional.
+Optional metadata about how the trainer produced transitions and GMMs. The block itself may be missing or empty;
+all fields within it are optional.
 
 ```{list-table}
    :widths: auto
