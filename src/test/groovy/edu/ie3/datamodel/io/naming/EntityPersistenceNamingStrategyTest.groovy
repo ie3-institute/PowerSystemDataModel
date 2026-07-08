@@ -21,6 +21,7 @@ import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
+import edu.ie3.datamodel.models.profile.PowerProfileKey
 import edu.ie3.datamodel.models.result.NodeResult
 import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.connector.SwitchResult
@@ -87,8 +88,10 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     matcher.matches()
 
     then: "it also has correct capturing groups"
-    matcher.groupCount() == 1
-    matcher.group(1) == "g3"
+    matcher.groupCount() == 2
+    matcher.group(1) == "lpts"
+    matcher.group("type") == "lpts"
+    matcher.group(2) == "g3"
     matcher.group("profile") == "g3"
   }
 
@@ -102,6 +105,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 
     then:
     matcher.matches()
+    matcher.group("type") == "markov"
     matcher.group("profile") == "demo1"
   }
 
@@ -141,6 +145,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
 
     then:
     meta.profileKey.getValue() == "demo2"
+    meta.profileKey.type == PowerProfileKey.Type.MARKOV
   }
 
   def "The EntityPersistenceNamingStrategy is able to prepare the prefix properly"() {

@@ -14,8 +14,16 @@ public class LoadProfileMetaInformation extends TimeSeriesMetaInformation {
   private final PowerProfileKey profileKey;
 
   public LoadProfileMetaInformation(String profileKey) {
+    this(profileKey, PowerProfileKey.Type.TS);
+  }
+
+  public LoadProfileMetaInformation(String profileKey, String type) {
+    this(profileKey, parseType(type));
+  }
+
+  public LoadProfileMetaInformation(String profileKey, PowerProfileKey.Type type) {
     super(UUID.randomUUID());
-    this.profileKey = new PowerProfileKey(profileKey);
+    this.profileKey = new PowerProfileKey(profileKey, type);
   }
 
   public LoadProfileMetaInformation(PowerProfileKey powerProfileKey) {
@@ -25,6 +33,18 @@ public class LoadProfileMetaInformation extends TimeSeriesMetaInformation {
 
   public PowerProfileKey getProfileKey() {
     return profileKey;
+  }
+
+  private static PowerProfileKey.Type parseType(String type) {
+    return switch (type) {
+      case "lpts" -> PowerProfileKey.Type.TS;
+      case "markov" -> PowerProfileKey.Type.MARKOV;
+      default ->
+          throw new IllegalArgumentException(
+              "The given type '"
+                  + type
+                  + "' is not supported for load profile time series meta information.");
+    };
   }
 
   @Override

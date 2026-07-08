@@ -24,6 +24,7 @@ import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
+import edu.ie3.datamodel.models.profile.PowerProfileKey
 import edu.ie3.datamodel.models.result.NodeResult
 import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.connector.SwitchResult
@@ -684,7 +685,7 @@ class FileNamingStrategyTest extends Specification {
     def actual = strategy.loadProfileTimeSeriesPattern.pattern()
 
     then:
-    actual == "test_grid" + escapedFileSeparator + "input" + escapedFileSeparator + "participants" + escapedFileSeparator + "time_series" + escapedFileSeparator + "(?:lpts|markov)_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})"
+    actual == "test_grid" + escapedFileSeparator + "input" + escapedFileSeparator + "participants" + escapedFileSeparator + "time_series" + escapedFileSeparator + "(?<type>lpts|markov)_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})"
   }
 
   def "A FileNamingStrategy with FlatHierarchy returns correct individual time series file name pattern"() {
@@ -706,7 +707,7 @@ class FileNamingStrategyTest extends Specification {
     def actual = strategy.loadProfileTimeSeriesPattern.pattern()
 
     then:
-    actual == "(?:lpts|markov)_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})"
+    actual == "(?<type>lpts|markov)_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})"
   }
 
   def "Trying to extract time series meta information throws an Exception, if it is provided a malformed string"() {
@@ -837,6 +838,7 @@ class FileNamingStrategyTest extends Specification {
     LoadProfileMetaInformation.isAssignableFrom(metaInformation.getClass())
     (metaInformation as LoadProfileMetaInformation).with {
       profileKey.value == "g3"
+      profileKey.type == PowerProfileKey.Type.TS
     }
   }
 
@@ -852,6 +854,7 @@ class FileNamingStrategyTest extends Specification {
     LoadProfileMetaInformation.isAssignableFrom(metaInformation.getClass())
     (metaInformation as LoadProfileMetaInformation).with {
       profileKey.value == "g3"
+      profileKey.type == PowerProfileKey.Type.TS
     }
   }
 }

@@ -121,4 +121,14 @@ class PowerProfileKeyTest extends Specification {
     ""       || PowerProfileKey.NO_KEY_ASSIGNED
     null     || PowerProfileKey.NO_KEY_ASSIGNED
   }
+
+  def "Power profile keys with same value but different type are distinct"() {
+    given:
+    def timeSeriesKey = new PowerProfileKey("demo", PowerProfileKey.Type.TS)
+    def markovKey = new PowerProfileKey("demo", PowerProfileKey.Type.MARKOV)
+
+    expect:
+    timeSeriesKey != markovKey
+    timeSeriesKey.hashCode() != markovKey.hashCode()
+  }
 }

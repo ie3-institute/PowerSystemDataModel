@@ -272,7 +272,7 @@ Markov models are loaded via {code}`JsonMarkovProfileSource`, which:
 
 - Reads the JSON file lazily on first access (not at construction time)
 - Caches the parsed {code}`MarkovLoadModel` for subsequent calls
-- Offers validation of all 20 mandatory fields via {code}`validate()`. Note that this is a separate call:
+- Offers validation of all mandatory fields via {code}`validate()`. Note that this is a separate call:
   it is not triggered automatically when the model is loaded
 - Is thread-safe ({code}`synchronized` lazy loading)
 
