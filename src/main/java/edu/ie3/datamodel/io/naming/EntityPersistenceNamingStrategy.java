@@ -56,9 +56,8 @@ public class EntityPersistenceNamingStrategy {
   protected final Pattern individualTimeSeriesPattern;
 
   /**
-   * Regex to match the naming convention of a file for a repetitive load profile time series. The
-   * profile type is accessible via the named capturing group "type", the profile by the group
-   * "profile"
+   * Regex to match the naming convention of a load profile source file. The profile type is
+   * accessible via the named capturing group "type", the profile by the group "profile"
    */
   private static final String LOAD_PROFILE_TIME_SERIES =
       "(?<type>lpts|markov)_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})";
