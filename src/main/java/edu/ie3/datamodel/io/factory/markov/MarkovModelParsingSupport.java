@@ -260,38 +260,9 @@ interface MarkovModelParsingSupport {
     }
     double[][][] values = new double[buckets][stateCount][stateCount];
     for (int b = 0; b < buckets; b++) {
-      JsonNode bucketNode = valuesNode.get(b);
-      if (!bucketNode.isArray()) {
-        throw new FactoryException("Bucket " + b + " in transition values must be an array.");
-      }
-      if (bucketNode.size() != stateCount) {
-        throw new FactoryException(
-            "Bucket "
-                + b
-                + " contained "
-                + bucketNode.size()
-                + " rows. Expected "
-                + stateCount
-                + ".");
-      }
+      JsonNode bucketNode = extractTransitionBucket(valuesNode, b, stateCount);
       for (int r = 0; r < stateCount; r++) {
-        JsonNode rowNode = bucketNode.get(r);
-        if (!rowNode.isArray()) {
-          throw new FactoryException(
-              "Row " + r + " in bucket " + b + " of transition values must be an array.");
-        }
-        if (rowNode.size() != stateCount) {
-          throw new FactoryException(
-              "Row "
-                  + r
-                  + " in bucket "
-                  + b
-                  + " had "
-                  + rowNode.size()
-                  + " columns. Expected "
-                  + stateCount
-                  + ".");
-        }
+        JsonNode rowNode = extractTransitionRow(bucketNode, b, r, stateCount);
         for (int c = 0; c < stateCount; c++) {
           values[b][r][c] =
               extractDoubleValue(
@@ -301,6 +272,45 @@ interface MarkovModelParsingSupport {
       }
     }
     return values;
+  }
+
+  default JsonNode extractTransitionBucket(JsonNode valuesNode, int bucket, int stateCount) {
+    JsonNode bucketNode = valuesNode.get(bucket);
+    if (!bucketNode.isArray()) {
+      throw new FactoryException("Bucket " + bucket + " in transition values must be an array.");
+    }
+    if (bucketNode.size() != stateCount) {
+      throw new FactoryException(
+          "Bucket "
+              + bucket
+              + " contained "
+              + bucketNode.size()
+              + " rows. Expected "
+              + stateCount
+              + ".");
+    }
+    return bucketNode;
+  }
+
+  default JsonNode extractTransitionRow(JsonNode bucketNode, int bucket, int row, int stateCount) {
+    JsonNode rowNode = bucketNode.get(row);
+    if (!rowNode.isArray()) {
+      throw new FactoryException(
+          "Row " + row + " in bucket " + bucket + " of transition values must be an array.");
+    }
+    if (rowNode.size() != stateCount) {
+      throw new FactoryException(
+          "Row "
+              + row
+              + " in bucket "
+              + bucket
+              + " had "
+              + rowNode.size()
+              + " columns. Expected "
+              + stateCount
+              + ".");
+    }
+    return rowNode;
   }
 
   default List<Double> readDoubleArray(JsonNode node, String field) {
