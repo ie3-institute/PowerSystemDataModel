@@ -13,8 +13,7 @@ import edu.ie3.datamodel.io.naming.timeseries.FileLoadProfileMetaInformation
 import edu.ie3.datamodel.io.source.PowerValueSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel
-import spock.lang.Specification
-import tools.jackson.databind.ObjectMapper
+import edu.ie3.datamodel.models.profile.markov.MarkovModelJsonTestSupport
 import tools.jackson.databind.node.ObjectNode
 
 import java.nio.file.Files
@@ -23,7 +22,7 @@ import java.time.ZonedDateTime
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Function
 
-class JsonMarkovProfileSourceTest extends Specification {
+class JsonMarkovProfileSourceTest extends MarkovModelJsonTestSupport {
 
   Path tempDir
   Path jsonFile
@@ -41,7 +40,7 @@ class JsonMarkovProfileSourceTest extends Specification {
     }
   }
 
-  def "getModel reads and caches Markov model from JSON file"() {
+  def "validate and getModel read Markov model from JSON file"() {
     given:
     Files.writeString(jsonFile, validModelJson())
     def source = new JsonMarkovProfileSource(
@@ -50,18 +49,18 @@ class JsonMarkovProfileSourceTest extends Specification {
         )
 
     when:
+    source.validate()
+
+    then:
+    noExceptionThrown()
+
+    when:
     MarkovLoadModel modelFirst = source.getModel()
     MarkovLoadModel modelSecond = source.getModel()
 
     then:
     modelFirst.is(modelSecond) // cached instance reused
     modelFirst.schema() == "markov.load.v1"
-    noExceptionThrown()
-
-    when: "validation is executed on the same file"
-    source.validate()
-
-    then:
     noExceptionThrown()
   }
 
@@ -89,7 +88,7 @@ class JsonMarkovProfileSourceTest extends Specification {
 
   def "validate tolerates a missing optional parameters block"() {
     given:
-    def root = new ObjectMapper().readTree(validModelJson())
+    def root = objectMapper.readTree(validModelJson())
     ((ObjectNode) root).remove("parameters")
     Files.writeString(jsonFile, root.toString())
     def source = new JsonMarkovProfileSource(
@@ -148,74 +147,24 @@ class JsonMarkovProfileSourceTest extends Specification {
     output.value().get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 5.25d
   }
 
-  private static String validModelJson() {
+  protected static String validModelJson() {
+    return markovModelJson(defaultTransitionValues(), sourceGmmStates(), "10.0", "0.5")
+  }
+
+  private static String sourceGmmStates() {
     return """
-      {
-        "schema": "markov.load.v1",
-        "generated_at": "2025-01-01T00:00:00Z",
-        "generator": {
-          "name": "simonaMarkovLoad",
-          "version": "1.0.0",
-          "config": { "foo": "bar" }
+      [
+        {
+          "weights": [1.0],
+          "means": [1.0],
+          "variances": [0.0]
         },
-        "time_model": {
-          "bucket_count": 1,
-          "bucket_encoding": { "formula": "hour_of_day" },
-          "sampling_interval_minutes": 60,
-          "timezone": "UTC"
-        },
-        "value_model": {
-          "value_unit": "normalized",
-          "normalization": {
-            "method": "none",
-            "max_power": { "value": 10.0, "unit": "kW" },
-            "min_power": { "value": 0.5, "unit": "kW" }
-          },
-          "discretization": {
-            "states": 2,
-            "thresholds_right": [0.5]
-          }
-        },
-        "parameters": {
-          "transitions": { "empty_row_strategy": "fill" },
-          "gmm": {
-            "value_col": "p",
-            "verbose": 1,
-            "heartbeat_seconds": 5
-          }
-        },
-        "data": {
-          "transitions": {
-            "dtype": "float32",
-            "encoding": "nested_lists",
-            "shape": [1,2,2],
-            "values": [
-              [
-                [0.1, 0.9],
-                [0.3, 0.7]
-              ]
-            ]
-          },
-          "gmms": {
-            "buckets": [
-              {
-                "states": [
-                    {
-                      "weights": [1.0],
-                      "means": [1.0],
-                      "variances": [0.0]
-                    },
-                    {
-                      "weights": [1.0],
-                      "means": [0.5],
-                      "variances": [0.0]
-                    }
-                ]
-              }
-            ]
-          }
+        {
+          "weights": [1.0],
+          "means": [0.5],
+          "variances": [0.0]
         }
-      }
+      ]
     """.stripIndent()
   }
 }

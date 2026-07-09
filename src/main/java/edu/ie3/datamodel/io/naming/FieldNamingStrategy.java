@@ -224,16 +224,40 @@ public class FieldNamingStrategy {
   // markov - nested fields required for simulation
   public static final String MARKOV_GENERATOR_NAME = "generator.name";
   public static final String MARKOV_GENERATOR_VERSION = "generator.version";
+  public static final String MARKOV_GENERATOR_CONFIG = "generator.config";
   public static final String MARKOV_BUCKET_COUNT = "timeModel.bucketCount";
+  public static final String MARKOV_BUCKET_ENCODING = "timeModel.bucketEncoding";
+  public static final String MARKOV_BUCKET_ENCODING_FORMULA = "timeModel.bucketEncoding.formula";
   public static final String MARKOV_SAMPLING_INTERVAL = "timeModel.samplingIntervalMinutes";
   public static final String MARKOV_TIMEZONE = "timeModel.timezone";
+  public static final String MARKOV_VALUE_UNIT = "valueModel.valueUnit";
+  public static final String MARKOV_NORMALIZATION = "valueModel.normalization";
+  public static final String MARKOV_NORMALIZATION_METHOD = "valueModel.normalization.method";
+  public static final String MARKOV_MAX_POWER = "valueModel.normalization.maxPower";
+  public static final String MARKOV_DISCRETIZATION = "valueModel.discretization";
   public static final String MARKOV_DISCRETIZATION_STATES = "valueModel.discretization.states";
   public static final String MARKOV_DISCRETIZATION_THRESHOLDS =
       "valueModel.discretization.thresholdsRight";
   public static final String MARKOV_MAX_POWER_VALUE = "valueModel.normalization.maxPower.value";
   public static final String MARKOV_MAX_POWER_UNIT = "valueModel.normalization.maxPower.unit";
+  public static final String MARKOV_MIN_POWER = "valueModel.normalization.minPower";
   public static final String MARKOV_MIN_POWER_VALUE = "valueModel.normalization.minPower.value";
   public static final String MARKOV_MIN_POWER_UNIT = "valueModel.normalization.minPower.unit";
+  public static final String MARKOV_PARAMETERS_TRANSITIONS = "parameters.transitions";
+  public static final String MARKOV_EMPTY_ROW_STRATEGY = "parameters.transitions.emptyRowStrategy";
+  public static final String MARKOV_PARAMETERS_GMM = "parameters.gmm";
+  public static final String MARKOV_GMM_VALUE_COLUMN = "parameters.gmm.valueCol";
+  public static final String MARKOV_GMM_VERBOSE = "parameters.gmm.verbose";
+  public static final String MARKOV_GMM_HEARTBEAT_SECONDS = "parameters.gmm.heartbeatSeconds";
+  public static final String MARKOV_TRANSITIONS = "data.transitions";
+  public static final String MARKOV_TRANSITION_DTYPE = "data.transitions.dtype";
+  public static final String MARKOV_TRANSITION_ENCODING = "data.transitions.encoding";
+  public static final String MARKOV_TRANSITION_SHAPE = "data.transitions.shape";
   public static final String MARKOV_TRANSITION_VALUES = "data.transitions.values";
+  public static final String MARKOV_GMMS = "data.gmms";
   public static final String MARKOV_GMM_BUCKETS = "data.gmms.buckets";
+  public static final String MARKOV_GMM_STATES = "data.gmms.buckets.states";
+  public static final String MARKOV_GMM_WEIGHTS = "data.gmms.buckets.states.weights";
+  public static final String MARKOV_GMM_MEANS = "data.gmms.buckets.states.means";
+  public static final String MARKOV_GMM_VARIANCES = "data.gmms.buckets.states.variances";
 }

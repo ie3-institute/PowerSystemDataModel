@@ -131,4 +131,22 @@ class PowerProfileKeyTest extends Specification {
     timeSeriesKey != markovKey
     timeSeriesKey.hashCode() != markovKey.hashCode()
   }
+
+  def "Power profile key type is parsed correctly from file prefix"() {
+    expect:
+    PowerProfileKey.Type.parse(type) == expected
+
+    where:
+    type     || expected
+    "lpts"   || PowerProfileKey.Type.TS
+    "markov" || PowerProfileKey.Type.MARKOV
+  }
+
+  def "Power profile key type parsing rejects unsupported file prefix"() {
+    when:
+    PowerProfileKey.Type.parse("unsupported")
+
+    then:
+    thrown(IllegalArgumentException)
+  }
 }

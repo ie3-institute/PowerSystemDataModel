@@ -84,6 +84,18 @@ public final class PowerProfileKey implements Serializable {
 
   public enum Type {
     TS,
-    MARKOV
+    MARKOV;
+
+    public static Type parse(String type) {
+      return switch (type) {
+        case "lpts" -> TS;
+        case "markov" -> MARKOV;
+        default ->
+            throw new IllegalArgumentException(
+                "The given type '"
+                    + type
+                    + "' is not supported for load profile time series meta information.");
+      };
+    }
   }
 }

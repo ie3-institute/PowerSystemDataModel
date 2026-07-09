@@ -19,7 +19,6 @@ import edu.ie3.datamodel.io.source.PowerValueSource;
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel;
 import java.time.ZonedDateTime;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -51,9 +50,9 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
       JsonDataSource dataSource,
       FileLoadProfileMetaInformation metaInformation,
       MarkovLoadModelFactory factory) {
-    this.dataSource = Objects.requireNonNull(dataSource, "dataSource");
-    this.metaInformation = Objects.requireNonNull(metaInformation, "metaInformation");
-    this.factory = Objects.requireNonNull(factory, "factory");
+    this.dataSource = dataSource;
+    this.metaInformation = metaInformation;
+    this.factory = factory;
     if (metaInformation.getFileType() != FileType.JSON) {
       throw new IllegalArgumentException("Markov profile source requires JSON meta information.");
     }

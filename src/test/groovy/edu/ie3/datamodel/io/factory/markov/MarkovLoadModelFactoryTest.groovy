@@ -6,12 +6,10 @@
 package edu.ie3.datamodel.io.factory.markov
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import spock.lang.Specification
-import tools.jackson.databind.ObjectMapper
+import edu.ie3.datamodel.models.profile.markov.MarkovModelJsonTestSupport
 import tools.jackson.databind.node.ObjectNode
 
-class MarkovLoadModelFactoryTest extends Specification {
-  private final ObjectMapper objectMapper = new ObjectMapper()
+class MarkovLoadModelFactoryTest extends MarkovModelJsonTestSupport {
   private final MarkovLoadModelFactory factory = new MarkovLoadModelFactory()
 
   def "buildModel returns parsed Markov load model from valid JSON"() {
@@ -188,72 +186,5 @@ class MarkovLoadModelFactoryTest extends Specification {
 
     then:
     thrown(FactoryException)
-  }
-
-  private static String validModelJson() {
-    return """
-      {
-        "schema": "markov.load.v1",
-        "generated_at": "2025-01-01T00:00:00Z",
-        "generator": {
-          "name": "simonaMarkovLoad",
-          "version": "1.0.0",
-          "config": { "foo": "bar" }
-        },
-        "time_model": {
-          "bucket_count": 1,
-          "bucket_encoding": { "formula": "hour_of_day" },
-          "sampling_interval_minutes": 60,
-          "timezone": "UTC"
-        },
-        "value_model": {
-          "value_unit": "normalized",
-          "normalization": {
-            "method": "none",
-            "max_power": { "value": 1.5, "unit": "kW" },
-            "min_power": { "value": 0.1, "unit": "kW" }
-          },
-          "discretization": {
-            "states": 2,
-            "thresholds_right": [0.5]
-          }
-        },
-        "parameters": {
-          "transitions": { "empty_row_strategy": "fill" },
-          "gmm": {
-            "value_col": "p",
-            "verbose": 1,
-            "heartbeat_seconds": 5
-          }
-        },
-        "data": {
-          "transitions": {
-            "dtype": "float32",
-            "encoding": "nested_lists",
-            "shape": [1,2,2],
-            "values": [
-              [
-                [0.1, 0.9],
-                [0.3, 0.7]
-              ]
-            ]
-          },
-          "gmms": {
-            "buckets": [
-              {
-                "states": [
-                  {
-                    "weights": [1.0],
-                    "means": [1.0],
-                    "variances": [0.2]
-                  },
-                  null
-                ]
-              }
-            ]
-          }
-        }
-      }
-    """.stripIndent()
   }
 }

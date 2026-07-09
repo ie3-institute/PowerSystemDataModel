@@ -9,14 +9,11 @@ import edu.ie3.datamodel.io.factory.markov.MarkovLoadModelFactory
 import edu.ie3.datamodel.io.factory.markov.MarkovModelData
 import edu.ie3.datamodel.io.source.PowerValueSource
 import edu.ie3.datamodel.models.StandardUnits
-import spock.lang.Specification
-import tools.jackson.databind.ObjectMapper
 
 import java.time.ZonedDateTime
 
-class MarkovLoadModelTest extends Specification {
+class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
 
-  private final ObjectMapper objectMapper = new ObjectMapper()
   private final MarkovLoadModelFactory factory = new MarkovLoadModelFactory()
 
   def "supplier scales deterministic normalized values and exposes next state"() {
@@ -118,7 +115,7 @@ class MarkovLoadModelTest extends Specification {
   }
 
   private loadModel(String transitions, String states) {
-    def json = modelJson(transitions, states)
+    def json = markovModelJson(transitions, states, "5.0", "1.0")
     def root = objectMapper.readTree(json)
     factory.get(new MarkovModelData(root)).getOrThrow()
   }
@@ -159,64 +156,6 @@ class MarkovLoadModelTest extends Specification {
           [0.0, 1.0]
         ]
       ]
-    """.stripIndent()
-  }
-
-  private static String modelJson(String transitions, String states) {
-    def normalization = """
-        {
-          "method": "none",
-          "max_power": { "value": 5.0, "unit": "kW" },
-          "min_power": { "value": 1.0, "unit": "kW" }
-        }
-        """
-    return """
-      {
-        "schema": "markov.load.v1",
-        "generated_at": "2025-01-01T00:00:00Z",
-        "generator": {
-          "name": "simonaMarkovLoad",
-          "version": "1.0.0",
-          "config": { "foo": "bar" }
-        },
-        "time_model": {
-          "bucket_count": 1,
-          "bucket_encoding": { "formula": "hour_of_day" },
-          "sampling_interval_minutes": 60,
-          "timezone": "UTC"
-        },
-        "value_model": {
-          "value_unit": "normalized",
-          "normalization": $normalization,
-          "discretization": {
-            "states": 2,
-            "thresholds_right": [0.5]
-          }
-        },
-        "parameters": {
-          "transitions": { "empty_row_strategy": "fill" },
-          "gmm": {
-            "value_col": "p",
-            "verbose": 1,
-            "heartbeat_seconds": 5
-          }
-        },
-        "data": {
-          "transitions": {
-            "dtype": "float32",
-            "encoding": "nested_lists",
-            "shape": [1,2,2],
-            "values": $transitions
-          },
-          "gmms": {
-            "buckets": [
-              {
-                "states": $states
-              }
-            ]
-          }
-        }
-      }
     """.stripIndent()
   }
 }

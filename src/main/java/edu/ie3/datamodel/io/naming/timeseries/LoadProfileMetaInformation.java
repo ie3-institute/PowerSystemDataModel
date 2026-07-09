@@ -18,7 +18,7 @@ public class LoadProfileMetaInformation extends TimeSeriesMetaInformation {
   }
 
   public LoadProfileMetaInformation(String profileKey, String type) {
-    this(profileKey, parseType(type));
+    this(profileKey, PowerProfileKey.Type.parse(type));
   }
 
   public LoadProfileMetaInformation(String profileKey, PowerProfileKey.Type type) {
@@ -33,18 +33,6 @@ public class LoadProfileMetaInformation extends TimeSeriesMetaInformation {
 
   public PowerProfileKey getProfileKey() {
     return profileKey;
-  }
-
-  private static PowerProfileKey.Type parseType(String type) {
-    return switch (type) {
-      case "lpts" -> PowerProfileKey.Type.TS;
-      case "markov" -> PowerProfileKey.Type.MARKOV;
-      default ->
-          throw new IllegalArgumentException(
-              "The given type '"
-                  + type
-                  + "' is not supported for load profile time series meta information.");
-    };
   }
 
   @Override

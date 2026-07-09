@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.source;
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.value.PValue;
 import java.time.ZonedDateTime;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
@@ -95,9 +94,6 @@ public sealed interface PowerValueSource<
       implements PowerValueIdentifier {
 
     public MarkovIdentifier {
-      Objects.requireNonNull(time, "time");
-      Objects.requireNonNull(previousState, "previousState");
-      Objects.requireNonNull(initialNormalizedValue, "initialNormalizedValue");
       if (previousState.isEmpty() && initialNormalizedValue.isEmpty()) {
         throw new IllegalArgumentException(
             "Need either previous state or an initial normalized value to start the Markov chain.");
