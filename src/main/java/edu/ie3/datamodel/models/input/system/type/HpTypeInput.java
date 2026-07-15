@@ -144,7 +144,14 @@ public class HpTypeInput extends SystemParticipantTypeInput {
     @Override
     public HpTypeInput build() {
       return new HpTypeInput(
-          getUuid(), getId(), getCapex(), getOpex(), getsRated(), getCosPhiRated(), pThermal);
+          getUuid(),
+          getId(),
+          getCapex(),
+          getOpex(),
+          getsRated(),
+          getCosPhiRated(),
+          pThermal,
+          getAdditionalInformation());
     }
 
     @Override

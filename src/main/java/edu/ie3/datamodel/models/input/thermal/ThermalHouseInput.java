@@ -331,7 +331,8 @@ public class ThermalHouseInput extends ThermalSinkInput {
           upperTemperatureLimit,
           lowerTemperatureLimit,
           housingType,
-          numberInhabitants);
+          numberInhabitants,
+          getAdditionalInformation());
     }
 
     @Override

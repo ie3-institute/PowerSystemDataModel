@@ -352,7 +352,8 @@ public class EvcsInput extends SystemParticipantInput {
           chargingPoints,
           cosPhiRated,
           locationType,
-          v2gSupport);
+          v2gSupport,
+          getAdditionalInformation());
     }
 
     @Override

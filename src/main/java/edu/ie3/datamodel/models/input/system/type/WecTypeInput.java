@@ -236,7 +236,8 @@ public class WecTypeInput extends SystemParticipantTypeInput {
           cpCharacteristic,
           etaConv,
           rotorArea,
-          hubHeight);
+          hubHeight,
+          getAdditionalInformation());
     }
 
     @Override

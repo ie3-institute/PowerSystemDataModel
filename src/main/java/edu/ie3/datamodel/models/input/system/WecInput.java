@@ -182,7 +182,8 @@ public class WecInput extends SystemParticipantInput implements HasType {
           getNode(),
           getqCharacteristics(),
           getEm(),
-          type);
+          type,
+          getAdditionalInformation());
     }
 
     public WecInputCopyBuilder type(WecTypeInput type) {

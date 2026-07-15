@@ -98,7 +98,7 @@ public abstract class AssetInput extends UniqueInputEntity implements Operable {
    * @since 05.06.20
    */
   public abstract static class AssetInputCopyBuilder<B extends AssetInputCopyBuilder<B>>
-      extends UniqueEntityCopyBuilder<B> {
+      extends UniqueInputEntityCopyBuilder<B> {
 
     private String id;
     private OperatorInput operator;

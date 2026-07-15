@@ -377,7 +377,8 @@ public class PvInput extends SystemParticipantInput {
           kG,
           kT,
           sRated,
-          cosPhiRated);
+          cosPhiRated,
+          getAdditionalInformation());
     }
 
     @Override

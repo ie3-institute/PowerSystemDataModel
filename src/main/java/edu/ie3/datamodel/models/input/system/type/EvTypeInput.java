@@ -208,7 +208,8 @@ public class EvTypeInput extends SystemParticipantTypeInput {
           eCons,
           getsRated(),
           getCosPhiRated(),
-          getsRatedDC());
+          getsRatedDC(),
+          getAdditionalInformation());
     }
 
     @Override

@@ -178,7 +178,8 @@ public class BmTypeInput extends SystemParticipantTypeInput {
           activePowerGradient,
           getsRated(),
           getCosPhiRated(),
-          etaConv);
+          etaConv,
+          getAdditionalInformation());
     }
 
     @Override

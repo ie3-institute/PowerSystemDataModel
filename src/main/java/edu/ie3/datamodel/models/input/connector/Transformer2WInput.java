@@ -193,7 +193,8 @@ public class Transformer2WInput extends TransformerInput implements HasType {
           getParallelDevices(),
           type,
           getTapPos(),
-          isAutoTap());
+          isAutoTap(),
+          getAdditionalInformation());
     }
 
     public Transformer2WInputCopyBuilder type(Transformer2WTypeInput type) {

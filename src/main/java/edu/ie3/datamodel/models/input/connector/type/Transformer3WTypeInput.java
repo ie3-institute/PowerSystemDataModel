@@ -543,8 +543,28 @@ public class Transformer3WTypeInput extends AssetTypeInput {
     @Override
     public Transformer3WTypeInput build() {
       return new Transformer3WTypeInput(
-          getUuid(), getId(), sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB,
-          rScC, xScA, xScB, xScC, gM, bM, dV, dPhi, tapNeutr, tapMin, tapMax);
+          getUuid(),
+          getId(),
+          sRatedA,
+          sRatedB,
+          sRatedC,
+          vRatedA,
+          vRatedB,
+          vRatedC,
+          rScA,
+          rScB,
+          rScC,
+          xScA,
+          xScB,
+          xScC,
+          gM,
+          bM,
+          dV,
+          dPhi,
+          tapNeutr,
+          tapMin,
+          tapMax,
+          getAdditionalInformation());
     }
 
     @Override

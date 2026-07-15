@@ -52,7 +52,7 @@ public abstract class AssetTypeInput extends UniqueInputEntity {
    */
   public abstract static class AssetTypeInputCopyBuilder<
           B extends AssetTypeInput.AssetTypeInputCopyBuilder<B>>
-      extends UniqueEntityCopyBuilder<B> {
+      extends UniqueInputEntityCopyBuilder<B> {
 
     private String id;
 

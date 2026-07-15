@@ -178,7 +178,8 @@ public class Transformer3WInput extends TransformerInput implements HasType {
             internalNodeAsSlack,
             null,
             nodeA.getVoltLvl(),
-            nodeA.getSubnet()));
+            nodeA.getSubnet()),
+        Map.of());
     connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC);
   }
 
@@ -238,6 +239,8 @@ public class Transformer3WInput extends TransformerInput implements HasType {
    * @param type of 3W transformer
    * @param tapPos Tap Position of this transformer
    * @param autoTap true, if there is an automated regulation activated for this transformer
+   * @param internalNode The transformer's internal node
+   * @param additionalInformation Of the input
    */
   private Transformer3WInput(
       UUID uuid,
@@ -251,12 +254,14 @@ public class Transformer3WInput extends TransformerInput implements HasType {
       Transformer3WTypeInput type,
       int tapPos,
       boolean autoTap,
-      NodeInput internalNode) {
+      NodeInput internalNode,
+      Map<String, String> additionalInformation) {
     super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC);
     this.type = type;
     this.nodeC = nodeC;
     this.nodeInternal = internalNode;
+    setAdditionalInformation(additionalInformation);
   }
 
   @Override
@@ -382,7 +387,8 @@ public class Transformer3WInput extends TransformerInput implements HasType {
           type,
           getTapPos(),
           isAutoTap(),
-          internalNode.copy().slack(internSlack).build());
+          internalNode.copy().slack(internSlack).build(),
+          getAdditionalInformation());
     }
 
     public Transformer3WInputCopyBuilder type(Transformer3WTypeInput type) {

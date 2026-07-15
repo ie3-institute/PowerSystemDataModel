@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ### Fixed
+- Preserved additional parameters in copy builders [#1685](https://github.com/ie3-institute/PowerSystemDataModel/issues/1685)
 - Fixed issues regarding determination of additional parameters [#1661](https://github.com/ie3-institute/PowerSystemDataModel/issues/1661)
 
 ### Changed

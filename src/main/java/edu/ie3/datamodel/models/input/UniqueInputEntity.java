@@ -33,4 +33,36 @@ public abstract class UniqueInputEntity extends UniqueEntity implements InputEnt
   public Map<String, String> getAdditionalInformation() {
     return Collections.unmodifiableMap(additionalInformation);
   }
+
+  /**
+   * Abstract class for all copy builders that build child input entities.
+   *
+   * @param <B> concrete copy builder type
+   */
+  public abstract static class UniqueInputEntityCopyBuilder<
+          B extends UniqueInputEntityCopyBuilder<B>>
+      extends UniqueEntityCopyBuilder<B> {
+
+    private Map<String, String> additionalInformation;
+
+    protected UniqueInputEntityCopyBuilder(UniqueInputEntity entity) {
+      super(entity);
+      this.additionalInformation = new HashMap<>(entity.getAdditionalInformation());
+    }
+
+    /**
+     * Replace the additional information of the copied entity.
+     *
+     * @param additionalInformation additional information for the copied entity
+     * @return this copy builder
+     */
+    public B additionalInformation(Map<String, String> additionalInformation) {
+      this.additionalInformation = new HashMap<>(additionalInformation);
+      return thisInstance();
+    }
+
+    protected Map<String, String> getAdditionalInformation() {
+      return Collections.unmodifiableMap(additionalInformation);
+    }
+  }
 }

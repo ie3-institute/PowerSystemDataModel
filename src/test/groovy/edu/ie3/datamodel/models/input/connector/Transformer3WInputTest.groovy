@@ -11,6 +11,27 @@ import spock.lang.Specification
 
 class Transformer3WInputTest extends Specification {
 
+  def "A Transformer3WInput copy should preserve metadata and internal node semantics"() {
+    given:
+    def original = GridTestData.transformerAtoBtoC.copy()
+        .additionalInformation([source: "original"])
+        .build()
+    def originalSlack = original.nodeInternal.slack
+
+    when:
+    def copied = original.copy().build()
+    def changed = original.copy().internalSlack(!originalSlack).build()
+
+    then:
+    copied.additionalInformation == [source: "original"]
+    copied.nodeInternal.uuid == original.nodeInternal.uuid
+    copied.nodeInternal.slack == originalSlack
+    changed.additionalInformation == [source: "original"]
+    changed.nodeInternal.uuid == original.nodeInternal.uuid
+    changed.nodeInternal.slack == !originalSlack
+    original.nodeInternal.slack == originalSlack
+  }
+
   def "A Transformer3WInput copy method should work as expected"() {
     given:
     def trafo3w = GridTestData.transformerAtoBtoC

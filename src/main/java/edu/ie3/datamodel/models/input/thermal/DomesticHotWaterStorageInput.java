@@ -172,7 +172,8 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
           getInletTemp(),
           getReturnTemp(),
           getC(),
-          getpThermalMax());
+          getpThermalMax(),
+          getAdditionalInformation());
     }
 
     @Override
