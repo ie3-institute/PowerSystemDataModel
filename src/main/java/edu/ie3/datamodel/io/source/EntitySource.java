@@ -189,6 +189,26 @@ public abstract class EntitySource {
    *
    * @param entityClass class of the entity
    * @param dataSource source for the entity
+   * @param converter function to convert the read data
+   * @return a set of {@link Entity}s
+   * @param <E> type of entity
+   * @throws SourceException - if an error happen during reading
+   */
+  protected static <E extends Entity> Stream<E> getEntities(
+      Class<E> entityClass, DataSource dataSource, Function<Map<String, String>, E> converter)
+      throws SourceException {
+    return unpack(
+        dataSource
+            .getSourceData(entityClass)
+            .map(d -> Try.of(() -> converter.apply(d), FactoryException.class)),
+        entityClass);
+  }
+
+  /**
+   * Universal method to get a {@link Entity} stream.
+   *
+   * @param entityClass class of the entity
+   * @param dataSource source for the entity
    * @param factory to build the entity
    * @param enrichFunction function to enrich the given entity data
    * @return a set of {@link Entity}s

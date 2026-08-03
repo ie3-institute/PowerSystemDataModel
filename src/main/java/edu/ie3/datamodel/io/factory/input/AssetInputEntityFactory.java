@@ -9,7 +9,7 @@ import edu.ie3.datamodel.io.factory.UniqueEntityFactory;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import java.time.ZonedDateTime;
+import edu.ie3.datamodel.utils.ModelConversionUtils;
 import java.util.UUID;
 
 /**
@@ -59,13 +59,6 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
    * @return Operation time object
    */
   private static OperationTime buildOperationTime(AssetInputEntityData data) {
-    final String from = data.getFieldOptional(OPERATES_FROM).orElse(null);
-    final String until = data.getFieldOptional(OPERATES_UNTIL).orElse(null);
-
-    OperationTime.OperationTimeBuilder builder = new OperationTime.OperationTimeBuilder();
-    if (from != null && !from.trim().isEmpty()) builder.withStart(ZonedDateTime.parse(from));
-    if (until != null && !until.trim().isEmpty()) builder.withEnd(ZonedDateTime.parse(until));
-
-    return builder.build();
+    return ModelConversionUtils.buildOperationTime(data.getFieldsToValues());
   }
 }

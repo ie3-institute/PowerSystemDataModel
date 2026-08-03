@@ -23,6 +23,7 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.utils.Try;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * Implementation that provides the capability to build entities held by {@link RawGridElements} as
@@ -38,7 +39,6 @@ public class RawGridSource extends AssetEntitySource {
   private final TypeSource typeSource;
 
   // factories
-  private final NodeInputFactory nodeInputFactory;
   private final LineInputFactory lineInputFactory;
   private final Transformer2WInputFactory transformer2WInputFactory;
   private final Transformer3WInputFactory transformer3WInputFactory;
@@ -50,7 +50,6 @@ public class RawGridSource extends AssetEntitySource {
     this.typeSource = typeSource;
 
     // init factories
-    this.nodeInputFactory = new NodeInputFactory();
     this.lineInputFactory = new LineInputFactory();
     this.transformer2WInputFactory = new Transformer2WInputFactory();
     this.transformer3WInputFactory = new Transformer3WInputFactory();
@@ -203,12 +202,9 @@ public class RawGridSource extends AssetEntitySource {
    * @return a map of UUID to object- and uuid-unique {@link NodeInput} entities
    */
   public Map<UUID, NodeInput> getNodes(Map<UUID, OperatorInput> operators) throws SourceException {
-    return getEntities(
-            NodeInput.class,
-            dataSource,
-            nodeInputFactory,
-            data -> assetEnricher.apply(data, operators))
-        .collect(toMap());
+    Function<UUID, OperatorInput> getter =
+        uuid -> operators.getOrDefault(uuid, OperatorInput.NO_OPERATOR_ASSIGNED);
+    return getEntities(NodeInput.class, dataSource, d -> new NodeInput(d, getter)).collect(toMap());
   }
 
   /**

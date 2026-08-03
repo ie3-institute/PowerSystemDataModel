@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input;
 
 import edu.ie3.datamodel.models.UniqueEntity;
+import edu.ie3.datamodel.utils.ModelConversionUtils;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +16,11 @@ import java.util.UUID;
 public abstract class UniqueInputEntity extends UniqueEntity implements InputEntity {
 
   private final Map<String, String> additionalInformation = new HashMap<>();
+
+  protected UniqueInputEntity(Map<String, String> data) {
+    super(ModelConversionUtils.getUUID(data, UUID_FIELD_NAME));
+    setAdditionalInformation(data);
+  }
 
   protected UniqueInputEntity(UUID uuid) {
     super(uuid);

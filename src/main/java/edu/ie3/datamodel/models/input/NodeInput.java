@@ -5,6 +5,14 @@
 */
 package edu.ie3.datamodel.models.input;
 
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.GEO_POSITION;
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.SLACK;
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.SUBNET;
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.VOLT_LVL;
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.V_RATED;
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.V_TARGET;
+import static edu.ie3.datamodel.utils.ModelConversionUtils.*;
+
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
@@ -12,6 +20,7 @@ import edu.ie3.util.geo.GeoUtils;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Function;
 import javax.measure.quantity.Dimensionless;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
@@ -38,6 +47,21 @@ public class NodeInput extends AssetInput {
 
   /** Subnet of this node */
   private final int subnet;
+
+  /**
+   * Basic constructor.
+   *
+   * @param data map: fields to attributes
+   * @param getter for operator inputs.
+   */
+  public NodeInput(Map<String, String> data, Function<UUID, OperatorInput> getter) {
+    super(data, getter);
+    this.vTarget = getQuantity(data, V_TARGET, StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
+    this.slack = getBoolean(data, SLACK);
+    this.geoPosition = getPoint(data, GEO_POSITION).orElse(NodeInput.DEFAULT_GEO_POSITION);
+    this.voltLvl = getVoltageLvl(data, VOLT_LVL.toLowerCase(), V_RATED.toLowerCase());
+    this.subnet = getInt(data, SUBNET);
+  }
 
   /**
    * Constructor for an operated node
