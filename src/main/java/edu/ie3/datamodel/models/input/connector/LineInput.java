@@ -19,7 +19,6 @@ import edu.ie3.util.geo.GeoUtils;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.function.Function;
 import javax.measure.quantity.Length;
 import org.locationtech.jts.geom.LineString;
 import tech.units.indriya.ComparableQuantity;
@@ -45,12 +44,12 @@ public class LineInput extends ParallelConnectorInput implements HasType {
   public LineInput(
       Map<String, String> data,
       Map<UUID, OperatorInput> operators,
-      Map<UUID, NodeInput> nodeGetter,
-      Function<Map<String, String>, LineTypeInput> typeGetter) {
-    super(data, operators, nodeGetter);
-    this.type = typeGetter.apply(data);
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, LineTypeInput> types) {
+    super(data, operators, nodes);
+    this.type = ModelConversionUtils.getEntity(data, TYPE, types);
     this.length = ModelConversionUtils.getQuantity(data, LENGTH, StandardUnits.LINE_LENGTH);
-    this.geoPosition = ModelConversionUtils.getLineString(data, GEO_POSITION);
+    this.geoPosition = ModelConversionUtils.getLineString(data, GEO_POSITION).orElse(null);
     this.olmCharacteristic = ModelConversionUtils.parseOlmCharacteristic(data);
   }
 
@@ -168,6 +167,10 @@ public class LineInput extends ParallelConnectorInput implements HasType {
   }
 
   public LineString getGeoPosition() {
+    if (geoPosition == null) {
+      return GeoUtils.buildSafeLineStringBetweenPoints(getNodeA().getGeoPosition(), getNodeB().getGeoPosition());
+    }
+
     return geoPosition;
   }
 

@@ -288,16 +288,16 @@ public final class ModelConversionUtils {
    * @param field field name
    * @return LineString if field value is not empty, empty Optional otherwise
    */
-  public static LineString getLineString(Map<String, String> fieldsToAttributes, String field) {
+  public static Optional<LineString> getLineString(Map<String, String> fieldsToAttributes, String field) {
     Optional<Geometry> geom = getGeometry(fieldsToAttributes, field);
     if (geom.isPresent()) {
-      if (geom.get() instanceof LineString lineString) return lineString;
+      if (geom.get() instanceof LineString lineString) return Optional.of(lineString);
       else
         throw new FactoryException(
             "Geometry is of type "
                 + geom.getClass().getSimpleName()
                 + ", but type LineString is required");
-    } else return null;
+    } else return Optional.empty();
   }
 
   /**
