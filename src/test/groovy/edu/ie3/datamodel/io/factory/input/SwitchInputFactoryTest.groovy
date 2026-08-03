@@ -89,7 +89,6 @@ class SwitchInputFactoryTest extends Specification implements FactoryTestHelper 
       nodeA == nodeInputA
       nodeB == nodeInputB
       closed
-      parallelDevices == 1
     }
   }
 }

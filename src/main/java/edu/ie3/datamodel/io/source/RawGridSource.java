@@ -23,7 +23,6 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.utils.Try;
 import java.util.*;
-import java.util.function.Function;
 
 /**
  * Implementation that provides the capability to build entities held by {@link RawGridElements} as
@@ -202,9 +201,8 @@ public class RawGridSource extends AssetEntitySource {
    * @return a map of UUID to object- and uuid-unique {@link NodeInput} entities
    */
   public Map<UUID, NodeInput> getNodes(Map<UUID, OperatorInput> operators) throws SourceException {
-    Function<UUID, OperatorInput> getter =
-        uuid -> operators.getOrDefault(uuid, OperatorInput.NO_OPERATOR_ASSIGNED);
-    return getEntities(NodeInput.class, dataSource, d -> new NodeInput(d, getter)).collect(toMap());
+    return getEntities(NodeInput.class, dataSource, d -> new NodeInput(d, operators))
+        .collect(toMap());
   }
 
   /**

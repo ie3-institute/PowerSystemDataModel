@@ -66,7 +66,10 @@ public class ConnectorValidationUtils extends ValidationUtils {
 
     List<Try<Void, InvalidEntityException>> exceptions = new ArrayList<>();
     exceptions.add(connectsDifferentNodes(connector));
-    exceptions.add(lessThanOneParallelDevice(connector));
+
+    if (connector instanceof ParallelConnectorInput pc) {
+      exceptions.add(lessThanOneParallelDevice(pc));
+    }
 
     // Further checks for subclasses
     if (LineInput.class.isAssignableFrom(connector.getClass())) {
@@ -463,7 +466,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
    * @return a try
    */
   private static Try<Void, InvalidEntityException> lessThanOneParallelDevice(
-      ConnectorInput connectorInput) {
+      ParallelConnectorInput connectorInput) {
     return Try.ofVoid(
         connectorInput.getParallelDevices() < 1,
         () ->

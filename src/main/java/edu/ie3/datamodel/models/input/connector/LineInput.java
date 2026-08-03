@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.*;
+
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
@@ -12,10 +14,12 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput;
+import edu.ie3.datamodel.utils.ModelConversionUtils;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Function;
 import javax.measure.quantity.Length;
 import org.locationtech.jts.geom.LineString;
 import tech.units.indriya.ComparableQuantity;
@@ -24,7 +28,7 @@ import tech.units.indriya.ComparableQuantity;
  * Describes an electrical grid line that connects two {@link
  * edu.ie3.datamodel.models.input.NodeInput}s
  */
-public class LineInput extends ConnectorInput implements HasType {
+public class LineInput extends ParallelConnectorInput implements HasType {
 
   /** Type of this line, containing default values for lines of this kind */
   private final LineTypeInput type;
@@ -37,6 +41,18 @@ public class LineInput extends ConnectorInput implements HasType {
 
   /** Description of an optional weather dependent operation curve */
   private final OlmCharacteristicInput olmCharacteristic;
+
+  public LineInput(
+      Map<String, String> data,
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodeGetter,
+      Function<Map<String, String>, LineTypeInput> typeGetter) {
+    super(data, operators, nodeGetter);
+    this.type = typeGetter.apply(data);
+    this.length = ModelConversionUtils.getQuantity(data, LENGTH, StandardUnits.LINE_LENGTH);
+    this.geoPosition = ModelConversionUtils.getLineString(data, GEO_POSITION);
+    this.olmCharacteristic = ModelConversionUtils.parseOlmCharacteristic(data);
+  }
 
   /**
    * Constructor for an operated line
@@ -217,7 +233,8 @@ public class LineInput extends ConnectorInput implements HasType {
    * @version 0.1
    * @since 05.06.20
    */
-  public static class LineInputCopyBuilder extends ConnectorInputCopyBuilder<LineInputCopyBuilder> {
+  public static class LineInputCopyBuilder
+      extends ParallelConnectorInputCopyBuilder<LineInputCopyBuilder> {
     private LineTypeInput type;
     private ComparableQuantity<Length> length;
     private LineString geoPosition;

@@ -194,7 +194,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implemented a `CongestionResult` [#1097](https://github.com/ie3-institute/PowerSystemDataModel/issues/1097)
 
 ### Fixed
-- Fixed `MappingEntryies` not getting processed by adding `Getter` methods for record fields [#1084](https://github.com/ie3-institute/PowerSystemDataModel/issues/1084) 
+- Fixed `MappingEntryies` not getting processed by adding `BiGetter` methods for record fields [#1084](https://github.com/ie3-institute/PowerSystemDataModel/issues/1084) 
 - Fixed "depth of discharge" in documentation [#872](https://github.com/ie3-institute/PowerSystemDataModel/issues/872)
 - Fixed project being build twice in CI [#994](https://github.com/ie3-institute/PowerSystemDataModel/issues/994)
 - Fix figure of SubGridContainer in rtd and clarify definitions [#1458](https://github.com/ie3-institute/PowerSystemDataModel/issues/1458) 

@@ -15,6 +15,7 @@ import javax.measure.quantity.Dimensionless;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
 
+@Deprecated(since = "9.2")
 public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetInputEntityData> {
 
   public NodeInputFactory() {

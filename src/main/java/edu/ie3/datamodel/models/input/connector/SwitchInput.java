@@ -36,7 +36,7 @@ public class SwitchInput extends ConnectorInput {
       NodeInput nodeA,
       NodeInput nodeB,
       boolean closed) {
-    super(uuid, id, operator, operationTime, nodeA, nodeB, 1);
+    super(uuid, id, operator, operationTime, nodeA, nodeB);
     this.closed = closed;
   }
 
@@ -61,7 +61,7 @@ public class SwitchInput extends ConnectorInput {
       NodeInput nodeB,
       boolean closed,
       Map<String, String> additionalInformation) {
-    super(uuid, id, operator, operationTime, nodeA, nodeB, 1);
+    super(uuid, id, operator, operationTime, nodeA, nodeB);
     this.closed = closed;
     setAdditionalInformation(additionalInformation);
   }
@@ -76,7 +76,7 @@ public class SwitchInput extends ConnectorInput {
    * @param closed Is the switching state 'closed'?
    */
   public SwitchInput(UUID uuid, String id, NodeInput nodeA, NodeInput nodeB, boolean closed) {
-    super(uuid, id, nodeA, nodeB, 1);
+    super(uuid, id, nodeA, nodeB);
     this.closed = closed;
   }
 
@@ -118,8 +118,6 @@ public class SwitchInput extends ConnectorInput {
         + getNodeA().getUuid()
         + ", nodeB="
         + getNodeB().getUuid()
-        + ", noOfParallelDevices="
-        + getParallelDevices()
         + ", closed="
         + closed
         + ", additionalInformation="

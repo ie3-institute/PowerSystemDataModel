@@ -5,19 +5,24 @@
 */
 package edu.ie3.datamodel.utils;
 
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.OPERATES_FROM;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.OPERATES_UNTIL;
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.*;
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLT;
+import static java.util.UUID.fromString;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.exceptions.VoltageLevelException;
+import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.OperationTime;
+import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput;
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.ElectricPotential;
@@ -184,6 +189,34 @@ public final class ModelConversionUtils {
     }
   }
 
+  public static <E extends Entity> Function<Map<String, String>, E> getEntity(
+      String field, Map<UUID, E> entities) {
+    return data -> entities.get(getUUID(data, field));
+  }
+
+  public static <E extends Entity> Function<Map<String, String>, E> getEntity(
+      String field, Map<UUID, E> entities, E defaultEntity) {
+    return data -> entities.getOrDefault(getUUID(data, field), defaultEntity);
+  }
+
+  public static <E extends Entity> E getEntity(
+      Map<String, String> fieldsToAttributes, String field, Map<UUID, E> entities) {
+    return entities.get(getUUID(fieldsToAttributes, field));
+  }
+
+  public static <E extends Entity> E getEntity(
+      Map<String, String> fieldsToAttributes,
+      String field,
+      Map<UUID, E> entities,
+      E defaultEntity) {
+
+    try {
+      return getEntity(fieldsToAttributes, field, entities);
+    } catch (Exception e) {
+      return defaultEntity;
+    }
+  }
+
   /**
    * Parses and returns a UUID from field value of given field name. Throws {@link FactoryException}
    * if field does not exist or parsing fails.
@@ -196,7 +229,7 @@ public final class ModelConversionUtils {
     String fieldValue = getField(fieldsToAttributes, field);
 
     try {
-      return UUID.fromString(fieldValue);
+      return fromString(fieldValue);
     } catch (IllegalArgumentException iae) {
       throw new FactoryException(
           String.format(
@@ -255,17 +288,16 @@ public final class ModelConversionUtils {
    * @param field field name
    * @return LineString if field value is not empty, empty Optional otherwise
    */
-  public static Optional<LineString> getLineString(
-      Map<String, String> fieldsToAttributes, String field) {
+  public static LineString getLineString(Map<String, String> fieldsToAttributes, String field) {
     Optional<Geometry> geom = getGeometry(fieldsToAttributes, field);
     if (geom.isPresent()) {
-      if (geom.get() instanceof LineString lineString) return Optional.of(lineString);
+      if (geom.get() instanceof LineString lineString) return lineString;
       else
         throw new FactoryException(
             "Geometry is of type "
                 + geom.getClass().getSimpleName()
                 + ", but type LineString is required");
-    } else return Optional.empty();
+    } else return null;
   }
 
   /**
@@ -286,6 +318,17 @@ public final class ModelConversionUtils {
                 + geom.getClass().getSimpleName()
                 + ", but type Point is required");
     } else return Optional.empty();
+  }
+
+  /**
+   * Parses and returns a voltage level from field value of given field name. Throws {@link
+   * FactoryException} if field does not exist or parsing fails.
+   *
+   * @param fieldsToAttributes map field key to attribute
+   * @return Voltage level
+   */
+  public static VoltageLevel getVoltageLvl(Map<String, String> fieldsToAttributes) {
+    return getVoltageLvl(fieldsToAttributes, VOLT_LVL.toLowerCase(), V_RATED.toLowerCase());
   }
 
   /**
@@ -332,6 +375,11 @@ public final class ModelConversionUtils {
     }
   }
 
+  public static OperatorInput getOperator(
+      Map<String, String> data, Map<UUID, OperatorInput> operators) {
+    return getEntity(data, OPERATOR, operators, OperatorInput.NO_OPERATOR_ASSIGNED);
+  }
+
   /**
    * Creates an {@link OperationTime} from the entity data from attributes OPERATES_FROM and
    * OPERATES_UNTIL. Both or one of these can be empty or non-existing.
@@ -348,5 +396,22 @@ public final class ModelConversionUtils {
     if (until != null && !until.trim().isEmpty()) builder.withEnd(ZonedDateTime.parse(until));
 
     return builder.build();
+  }
+
+  public static OlmCharacteristicInput parseOlmCharacteristic(Map<String, String> data) {
+    if (!isFieldEmpty(data, OLM_CHARACTERISTIC)) {
+      String value = getField(data, OLM_CHARACTERISTIC);
+
+      try {
+        return new OlmCharacteristicInput(value);
+      } catch (ParsingException e) {
+        throw new FactoryException(
+            "Cannot parse the following overhead line monitoring characteristic: '" + value + "'",
+            e);
+      }
+
+    } else {
+      return OlmCharacteristicInput.CONSTANT_CHARACTERISTIC;
+    }
   }
 }

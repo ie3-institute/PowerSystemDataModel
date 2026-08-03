@@ -20,6 +20,7 @@ import javax.measure.quantity.Length;
 import org.locationtech.jts.geom.LineString;
 import tech.units.indriya.ComparableQuantity;
 
+@Deprecated(since = "9.2")
 public class LineInputFactory
     extends ConnectorInputEntityFactory<LineInput, TypedConnectorInputEntityData<LineTypeInput>> {
 

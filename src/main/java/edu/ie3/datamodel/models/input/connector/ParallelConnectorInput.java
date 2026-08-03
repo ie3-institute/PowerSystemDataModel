@@ -5,12 +5,10 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.NODE_A;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.NODE_B;
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.*;
 
 import edu.ie3.datamodel.io.extractor.HasNodes;
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.utils.ModelConversionUtils;
@@ -20,18 +18,15 @@ import java.util.Objects;
 import java.util.UUID;
 
 /** Describes an asset that connects two {@link NodeInput}s */
-public abstract class ConnectorInput extends AssetInput implements HasNodes {
-  /** Grid node at one side of the connector */
-  private final NodeInput nodeA;
+public abstract class ParallelConnectorInput extends ConnectorInput implements HasNodes {
 
-  /** Grid node at the other side of the connector */
-  private final NodeInput nodeB;
+  /** Amount of parallelDevices */
+  private final int parallelDevices;
 
-  protected ConnectorInput(
+  protected ParallelConnectorInput(
       Map<String, String> data, Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) {
-    super(data, operators);
-    this.nodeA = ModelConversionUtils.getEntity(data, NODE_A, nodes);
-    this.nodeB = ModelConversionUtils.getEntity(data, NODE_B, nodes);
+    super(data, operators, nodes);
+    this.parallelDevices = ModelConversionUtils.getInt(data, PARALLEL_DEVICES);
   }
 
   /**
@@ -43,17 +38,19 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
    * @param operationTime Time for which the entity is operated
    * @param nodeA Grid node at one side of the connector
    * @param nodeB Grid node at the other side of the connector
+   * @param parallelDevices overall amount of parallel devices to automatically construct (e.g.
+   *     parallelDevices = 2 will build a total of two entities using the specified parameters)
    */
-  protected ConnectorInput(
+  protected ParallelConnectorInput(
       UUID uuid,
       String id,
       OperatorInput operator,
       OperationTime operationTime,
       NodeInput nodeA,
-      NodeInput nodeB) {
-    super(uuid, id, operator, operationTime);
-    this.nodeA = nodeA;
-    this.nodeB = nodeB;
+      NodeInput nodeB,
+      int parallelDevices) {
+    super(uuid, id, operator, operationTime, nodeA, nodeB);
+    this.parallelDevices = parallelDevices;
   }
 
   /**
@@ -63,19 +60,13 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
    * @param id of the asset
    * @param nodeA Grid node at one side of the connector
    * @param nodeB Grid node at the other side of the connector
+   * @param parallelDevices overall amount of parallel devices to automatically construct (e.g.
+   *     parallelDevices = 2 will build a total of two entities using the specified parameters)
    */
-  protected ConnectorInput(UUID uuid, String id, NodeInput nodeA, NodeInput nodeB) {
-    super(uuid, id);
-    this.nodeA = nodeA;
-    this.nodeB = nodeB;
-  }
-
-  public NodeInput getNodeA() {
-    return nodeA;
-  }
-
-  public NodeInput getNodeB() {
-    return nodeB;
+  protected ParallelConnectorInput(
+      UUID uuid, String id, NodeInput nodeA, NodeInput nodeB, int parallelDevices) {
+    super(uuid, id, nodeA, nodeB);
+    this.parallelDevices = parallelDevices;
   }
 
   @Override
@@ -86,17 +77,21 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
     return List.of(getNodeA(), getNodeB());
   }
 
+  public int getParallelDevices() {
+    return parallelDevices;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof ConnectorInput that)) return false;
+    if (!(o instanceof ParallelConnectorInput that)) return false;
     if (!super.equals(o)) return false;
-    return nodeA.equals(that.nodeA) && nodeB.equals(that.nodeB);
+    return parallelDevices == that.parallelDevices;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), nodeA, nodeB);
+    return Objects.hash(super.hashCode(), parallelDevices);
   }
 
   @Override
@@ -111,51 +106,43 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
         + ", operationTime="
         + getOperationTime()
         + ", nodeA="
-        + nodeA.getUuid()
+        + getNodeA().getUuid()
         + ", nodeB="
-        + nodeB.getUuid()
+        + getNodeB().getUuid()
+        + ", noOfParallelDevices="
+        + parallelDevices
         + '}';
   }
 
   /**
    * Abstract class for all builder that build child entities of abstract class {@link
-   * ConnectorInput}
+   * ParallelConnectorInput}
    *
    * @version 0.1
    * @since 05.06.20
    */
-  public abstract static class ConnectorInputCopyBuilder<B extends ConnectorInputCopyBuilder<B>>
-      extends AssetInputCopyBuilder<B> {
+  public abstract static class ParallelConnectorInputCopyBuilder<
+          B extends ParallelConnectorInputCopyBuilder<B>>
+      extends ConnectorInputCopyBuilder<B> {
 
-    private NodeInput nodeA;
-    private NodeInput nodeB;
+    private int parallelDevices;
 
-    protected ConnectorInputCopyBuilder(ConnectorInput entity) {
+    protected ParallelConnectorInputCopyBuilder(ParallelConnectorInput entity) {
       super(entity);
-      this.nodeA = entity.getNodeA();
-      this.nodeB = entity.getNodeB();
+      this.parallelDevices = entity.getParallelDevices();
     }
 
-    public B nodeA(NodeInput nodeA) {
-      this.nodeA = nodeA;
+    public B parallelDevices(int parallelDevices) {
+      this.parallelDevices = parallelDevices;
       return thisInstance();
     }
 
-    public B nodeB(NodeInput nodeB) {
-      this.nodeB = nodeB;
-      return thisInstance();
-    }
-
-    protected NodeInput getNodeA() {
-      return nodeA;
-    }
-
-    protected NodeInput getNodeB() {
-      return nodeB;
+    protected int getParallelDevices() {
+      return parallelDevices;
     }
 
     @Override
-    public abstract ConnectorInput build();
+    public abstract ParallelConnectorInput build();
 
     @Override
     protected abstract B thisInstance();

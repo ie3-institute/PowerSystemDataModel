@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 /** Describes an electrical grid transformer, is "located" in the inferior subnet */
-public abstract class TransformerInput extends ConnectorInput {
+public abstract class TransformerInput extends ParallelConnectorInput {
   /** Tap position of this transformer */
   private final int tapPos;
 
@@ -129,7 +129,7 @@ public abstract class TransformerInput extends ConnectorInput {
    * @since 05.06.20
    */
   public abstract static class TransformerInputCopyBuilder<B extends TransformerInputCopyBuilder<B>>
-      extends ConnectorInputCopyBuilder<B> {
+      extends ParallelConnectorInputCopyBuilder<B> {
 
     private int tapPos;
     private boolean autoTap;

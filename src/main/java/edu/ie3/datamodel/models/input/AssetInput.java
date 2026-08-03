@@ -7,14 +7,12 @@ package edu.ie3.datamodel.models.input;
 
 import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.ID;
 
-import edu.ie3.datamodel.io.naming.ModelFields;
 import edu.ie3.datamodel.models.Operable;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.utils.ModelConversionUtils;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.function.Function;
 
 /** Describes a grid asset under the assumption that every asset could be operable */
 public abstract class AssetInput extends UniqueInputEntity implements Operable {
@@ -27,10 +25,10 @@ public abstract class AssetInput extends UniqueInputEntity implements Operable {
   /** Name or ID of the asset */
   private final String id;
 
-  protected AssetInput(Map<String, String> data, Function<UUID, OperatorInput> getter) {
+  protected AssetInput(Map<String, String> data, Map<UUID, OperatorInput> operators) {
     super(data);
     this.id = ModelConversionUtils.getField(data, ID);
-    this.operator = getter.apply(ModelConversionUtils.getUUID(data, ModelFields.OPERATOR));
+    this.operator = ModelConversionUtils.getOperator(data, operators);
     this.operationTime = ModelConversionUtils.buildOperationTime(data);
   }
 
