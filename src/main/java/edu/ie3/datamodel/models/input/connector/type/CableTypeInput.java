@@ -28,7 +28,7 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
   private final int coreNumber;
   private final ConductorInput conductor;
   private final List<LayerInput> isolation;
-  private final Optional<ScreenLayerInput> screen;
+  private final ScreenLayerInput screen;
   private final List<LayerInput> filler;
   private final List<LayerInput> armor;
   private final List<LayerInput> jack;
@@ -133,7 +133,7 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
     this.coreNumber = coreNumber;
     this.conductor = conductor;
     this.isolation = Collections.unmodifiableList(isolation);
-    this.screen = screen;
+    this.screen = screen.orElse(null);
     this.filler = Collections.unmodifiableList(filler);
     this.armor = Collections.unmodifiableList(armor);
     this.jack = Collections.unmodifiableList(jack);
@@ -161,7 +161,7 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
   }
 
   public Optional<ScreenLayerInput> getScreen() {
-    return screen;
+    return Optional.ofNullable(screen);
   }
 
   public List<LayerInput> getFiller() {
@@ -227,7 +227,7 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
         && Double.compare(that.eddyCurrentLossFactor, eddyCurrentLossFactor) == 0
         && conductor.equals(that.conductor)
         && isolation.equals(that.isolation)
-        && screen.equals(that.screen)
+        && Objects.equals(screen, that.screen)
         && filler.equals(that.filler)
         && armor.equals(that.armor)
         && jack.equals(that.jack)
@@ -325,7 +325,7 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
       this.coreNumber = entity.coreNumber;
       this.conductor = entity.conductor;
       this.isolation = entity.isolation;
-      this.screen = entity.screen;
+      this.screen = Optional.ofNullable(entity.screen);
       this.filler = entity.filler;
       this.armor = entity.armor;
       this.jack = entity.jack;

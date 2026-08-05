@@ -42,8 +42,9 @@ public record ConductorInput(
     boolean isCompacted,
     ComparableQuantity<ThermalResistivity> thermalResistivity,
     ComparableQuantity<ThermalCapacitance> thermalCapacitance,
-    Optional<ComparableQuantity<Area>> area)
+    @Nullable ComparableQuantity<Area> areaValue)
     implements InputEntity, Serializable {
+
   /**
    * Create a new conductor with all required parameters.
    *
@@ -55,7 +56,44 @@ public record ConductorInput(
    * @param isCompacted Whether the conductor is compacted
    * @param thermalResistivity Thermal resistivity
    * @param thermalCapacitance Thermal capacitance
-   * @param area Optional real cross-sectional area
+   * @param Optional area real cross-sectional area
+   * @throws IllegalArgumentException if validation constraints are violated
+   */
+  public ConductorInput(
+      UUID uuid,
+      String name,
+      CableMaterial material,
+      ComparableQuantity<Area> crossSection,
+      ComparableQuantity<Length> diameter,
+      boolean isCompacted,
+      ComparableQuantity<ThermalResistivity> thermalResistivity,
+      ComparableQuantity<ThermalCapacitance> thermalCapacitance,
+      Optional<ComparableQuantity<Area>> area) {
+
+    this(
+        uuid,
+        name,
+        material,
+        crossSection,
+        diameter,
+        isCompacted,
+        thermalResistivity,
+        thermalCapacitance,
+        Objects.requireNonNull(area, "Area optional must not be null").orElse(null));
+  }
+
+  /**
+   * Create a new conductor with all required parameters.
+   *
+   * @param uuid UUID of the ConductorInput
+   * @param name Human-readable id
+   * @param material Material of the conductor
+   * @param crossSection Real nominal cross-sectional area (electrically effective)
+   * @param diameter Geometric outer diameter
+   * @param isCompacted Whether the conductor is compacted
+   * @param thermalResistivity Thermal resistivity
+   * @param thermalCapacitance Thermal capacitance
+   * @param area real cross-sectional area
    * @throws IllegalArgumentException if validation constraints are violated
    */
   public ConductorInput {
@@ -67,7 +105,6 @@ public record ConductorInput(
     Objects.requireNonNull(diameter, "Diameter cannot be null");
     Objects.requireNonNull(thermalResistivity, "Thermal resistivity cannot be null");
     Objects.requireNonNull(thermalCapacitance, "Thermal capacitance cannot be null");
-    Objects.requireNonNull(area, "Area optional must not be null");
 
     if (name.isEmpty()) {
       throw new IllegalArgumentException("Conductor name must not be empty");
@@ -86,12 +123,9 @@ public record ConductorInput(
     if (thermalCapacitance.getValue().doubleValue() < 0) {
       throw new IllegalArgumentException("Thermal capacitance must be >= 0");
     }
-    area.ifPresent(
-        a -> {
-          if (a.getValue().doubleValue() < 0) {
-            throw new IllegalArgumentException("Area must be >= 0");
-          }
-        });
+    if (areaValue != null && areaValue.getValue().doubleValue() < 0) {
+      throw new IllegalArgumentException("Area must be >= 0");
+    }
   }
 
   @Override
