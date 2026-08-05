@@ -1,0 +1,39 @@
+models:
+  UniqueInputEntity:
+    name: UniqueInputEntity
+    components:
+      - name: uuid
+        type: UUID
+        keys: [uuid]
+        required: true
+
+  AssetInput:
+    name: AssetInput
+    package: edu.ie3.datamodel.models2.input
+    kind: abstractClass
+    extends: UniqueInputEntity
+    inherits: []
+
+    components:
+      - name: id
+        type: String
+        keys: [id]
+        required: true
+      - name: operator
+        type: OperatorInput
+        keys: [operator]
+        required: false
+      - name: operationTime
+        type: OperationTime
+        keys: [operationStart, operationEnd]
+
+  NodeInput:
+    name: NodeInput
+    package: edu.ie3.datamodel.models2.input
+    kind: class
+    extends: AssetInput
+
+    components:
+      - name: vTarget
+        type: Dimensionless
+

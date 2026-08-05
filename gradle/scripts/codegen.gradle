@@ -1,0 +1,36 @@
+def sourceSets = extensions.getByType(SourceSetContainer)
+
+def codegen = sourceSets.create('codegen') {
+    java.srcDir('src/codegen/java')
+    resources.srcDir('src/codegen/resources')
+}
+
+def generatedModelDir =
+        layout.buildDirectory.dir('generated/sources/modelGenerator/java/main')
+
+def generateModelSources = tasks.register('generateModelSources', JavaExec) {
+    group = 'code generation'
+    description = 'Generiert Java-Datenmodellklassen aus YAML-Modellspezifikationen.'
+
+    dependsOn tasks.named(codegen.classesTaskName)
+
+    classpath = codegen.runtimeClasspath
+    mainClass = 'edu.ie3.codegen.ModelGenerator'
+
+    args(generatedModelDir.get().asFile.absolutePath)
+
+    outputs.dir(generatedModelDir)
+
+
+    doFirst {
+        delete(generatedModelDir)
+    }
+}
+
+sourceSets.named('main') {
+    java.srcDir(generatedModelDir)
+}
+
+tasks.named('processCodegenResources', ProcessResources) {
+    duplicatesStrategy = DuplicatesStrategy.WARN
+}

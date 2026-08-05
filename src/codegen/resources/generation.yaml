@@ -1,0 +1,9 @@
+models:
+  AssetInput:
+    constructors:
+      - name: minimal
+        components: [uuid, id, operationTime]
+        superArgs: [uuid]
+      - name: full
+        components: [uuid, id, operator, operationTime]
+        superArgs: [uuid]
