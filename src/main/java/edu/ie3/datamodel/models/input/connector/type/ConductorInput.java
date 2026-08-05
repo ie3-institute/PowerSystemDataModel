@@ -16,6 +16,7 @@ import java.util.UUID;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import tech.units.indriya.ComparableQuantity;
 
 /**
@@ -128,6 +129,10 @@ public record ConductorInput(
     }
   }
 
+  public Optional<ComparableQuantity<Area>> area() {
+    return Optional.ofNullable(areaValue);
+  }
+
   @Override
   public Map<String, String> getAdditionalInformation() {
     return Map.of();
@@ -153,7 +158,7 @@ public record ConductorInput(
         + ", thermalCapacitance="
         + thermalCapacitance
         + ", area="
-        + area
+        + area()
         + '}';
   }
 }

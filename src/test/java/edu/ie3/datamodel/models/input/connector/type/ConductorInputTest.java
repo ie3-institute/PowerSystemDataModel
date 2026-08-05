@@ -195,6 +195,8 @@ class ConductorInputTest {
 
   @Test
   void testConductorInputNullOptionalArea() {
+    Optional<ComparableQuantity<Area>> nullArea = null;
+
     assertThrows(
         NullPointerException.class,
         () ->
@@ -207,7 +209,7 @@ class ConductorInputTest {
                 false,
                 thermalResistivity,
                 thermalCapacitance,
-                null));
+                nullArea));
   }
 
   @Test
