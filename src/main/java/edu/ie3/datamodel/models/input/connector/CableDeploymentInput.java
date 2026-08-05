@@ -53,15 +53,10 @@ public record CableDeploymentInput(
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o
-        instanceof
-        CableDeploymentInput(
-            String formation,
-            ComparableQuantity<Length> cables,
-            ComparableQuantity<Length> distanceCables1))) return false;
-    return layoutFormation.equals(formation)
-        && depthCables.equals(cables)
-        && distanceCables.equals(distanceCables1);
+    if (!(o instanceof CableDeploymentInput that)) return false;
+    return layoutFormation.equals(that.layoutFormation())
+        && depthCables.equals(that.depthCables())
+        && distanceCables.equals(that.distanceCables());
   }
 
   @Override
