@@ -132,11 +132,11 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
 
     this.coreNumber = coreNumber;
     this.conductor = conductor;
-    this.isolation = Collections.unmodifiableList(isolation);
+    this.isolation = List.copyOf(isolation);
     this.screen = screen.orElse(null);
-    this.filler = Collections.unmodifiableList(filler);
-    this.armor = Collections.unmodifiableList(armor);
-    this.jack = Collections.unmodifiableList(jack);
+    this.filler = List.copyOf(filler);
+    this.armor = List.copyOf(armor);
+    this.jack = List.copyOf(jack);
     this.limitTemperature = limitTemperature;
     this.frequency = frequency;
     this.skinEffectCoefficient = skinEffectCoefficient;
