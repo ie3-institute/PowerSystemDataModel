@@ -56,9 +56,7 @@ public record ConductorInput(
    * @param diameter Geometric outer diameter
    * @param isCompacted Whether the conductor is compacted
    * @param thermalResistivity Thermal resistivity
-   * @param thermalCapacitance Thermal capacitance
-   * @param Optional area real cross-sectional area
-   * @throws IllegalArgumentException if validation constraints are violated
+   * @param area Optional real cross-sectional area
    */
   public ConductorInput(
       UUID uuid,
