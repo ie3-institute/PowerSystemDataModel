@@ -16,6 +16,7 @@ public final class TypeRegistry {
         registry.put("Integer", new TypeDefinition("java.lang.Integer", "toInt"));
         registry.put("StringMap", new TypeDefinition("java.util.Map", List.of("java.lang.String", "java.lang.String"), null, "Map.of()"));
         registry.put("OperatorInput", TypeDefinition.withDefault("edu.ie3.datamodel.models.input.OperatorInput", "OperatorInput.NO_OPERATOR_ASSIGNED"));
+        registry.put("OperationTime", new TypeDefinition("edu.ie3.datamodel.models.OperationTime", List.of(), "buildOperationTime", "OperationTime.notLimited()"));
         registry.put("Point", new TypeDefinition("org.locationtech.jts.geom.Point", "toPointOrDefault"));
     }
 

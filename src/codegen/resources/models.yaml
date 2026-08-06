@@ -1,6 +1,7 @@
 models:
   UniqueInputEntity:
     name: UniqueInputEntity
+    package: edu.ie3.datamodel.models2.input
     components:
       - name: uuid
         type: UUID

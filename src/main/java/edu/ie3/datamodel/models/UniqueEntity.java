@@ -29,6 +29,8 @@ public abstract class UniqueEntity implements Entity, Uniqueness, Serializable {
     return uuid;
   }
 
+  public abstract UniqueEntityCopyBuilder<?> copy();
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

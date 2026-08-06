@@ -40,7 +40,7 @@ public interface HelperMethods {
         }
     }
 
-    private static String capitalize(String value) {
+    static String capitalize(String value) {
         return Character.toUpperCase(value.charAt(0)) + value.substring(1);
     }
 
@@ -114,7 +114,7 @@ public interface HelperMethods {
             if (current.extendsName == null || current.extendsName.isBlank()) {
                 current = null;
             } else {
-                current = getModel(current.extendsName, models);
+                current = getParent(current.extendsName, models);
             }
         }
 
@@ -123,7 +123,7 @@ public interface HelperMethods {
         return hierarchy;
     }
 
-    private static ModelDefinition getModel(String name,  Map<String, ModelDefinition> models) {
+    static ModelDefinition getParent(String name, Map<String, ModelDefinition> models) {
         ModelDefinition result = models.get(name);
 
         if (result == null) {

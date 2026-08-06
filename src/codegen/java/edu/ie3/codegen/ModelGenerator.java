@@ -71,13 +71,11 @@ final class ModelGenerator implements HelperMethods {
         typeBuilder.addFields(model.getPrivateFields());
 
         ConstructorGenerator constructorGenerator = new ConstructorGenerator(model, genConfig, models);
-
+        CopyBuilderGenerator copyBuilderGenerator = new CopyBuilderGenerator(model, genConfig, models);
 
         typeBuilder.addMethods(constructorGenerator.getConstructors());
-
-
         typeBuilder.addMethods(model.getAllMethods(genConfig));
-
+        typeBuilder.addMethod(copyBuilderGenerator.generateCopyMethod());
 
         if (genConfig.fromMap && "class".equals(model.kind)) {
             typeBuilder.addMethod(constructorGenerator.getFromMapConstructor());
@@ -94,6 +92,9 @@ final class ModelGenerator implements HelperMethods {
         if (genConfig.toString) {
             typeBuilder.addMethod(generateToString(model, models));
         }
+
+
+        typeBuilder.addType(copyBuilderGenerator.generateCopyBuilder());
 
         JavaFile.builder(model.packageName, typeBuilder.build())
                 .skipJavaLangImports(true)

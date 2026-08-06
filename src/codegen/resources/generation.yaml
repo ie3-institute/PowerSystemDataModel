@@ -2,7 +2,7 @@ models:
   AssetInput:
     constructors:
       - name: minimal
-        components: [uuid, id, operationTime]
+        components: [uuid, id]
         superArgs: [uuid]
       - name: full
         components: [uuid, id, operator, operationTime]

@@ -30,7 +30,17 @@ public abstract class UniqueInputEntity extends UniqueEntity implements InputEnt
   }
 
   @Override
+  public abstract UniqueInputEntityCopyBuilder<?> copy();
+
+  @Override
   public Map<String, String> getAdditionalInformation() {
     return Collections.unmodifiableMap(additionalInformation);
   }
+
+  public abstract static class UniqueInputEntityCopyBuilder<B extends UniqueInputEntityCopyBuilder<B>> extends UniqueEntityCopyBuilder<B> {
+    protected UniqueInputEntityCopyBuilder(UniqueEntity entity) {
+      super(entity);
+    }
+  }
+
 }
