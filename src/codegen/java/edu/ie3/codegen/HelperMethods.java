@@ -25,12 +25,12 @@ public interface HelperMethods {
     }
 
     static boolean isPrimitive(String type) {
-        return "Boolean".equals(type) || "Integer".equals(type);
+        return "bool".equals(type) || "int".equals(type);
     }
 
     static String defaultGetterName(ModelDefinition.ComponentDefinition component) {
-        if (component.getter == null || component.getter.isBlank()) {
-            if ("Boolean".equals(component.type)) {
+        if (isPrimitive(component.type) || component.getter == null || component.getter.isBlank()) {
+            if ("bool".equals(component.type)) {
                 return "is" + capitalize(component.name);
             }
 

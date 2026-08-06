@@ -35,6 +35,8 @@ models:
     extends: AssetInput
 
     components:
-      - name: vTarget
-        type: Dimensionless
+      - name: slack
+        type: bool
+      - name: subgrid
+        type: int
 

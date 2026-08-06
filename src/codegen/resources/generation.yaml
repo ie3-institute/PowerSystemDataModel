@@ -7,3 +7,14 @@ models:
       - name: full
         components: [uuid, id, operator, operationTime]
         superArgs: [uuid]
+  NodeInput:
+    constructors:
+      - name: minimal
+        components: [uuid, id, slack, subgrid]
+        superArgs: [uuid, id]
+      - name: full
+        components: [uuid, id, operator, operationTime, slack, subgrid]
+        superArgs: [uuid, id, operator, operationTime]
+
+
+

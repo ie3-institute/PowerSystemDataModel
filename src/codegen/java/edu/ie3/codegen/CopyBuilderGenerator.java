@@ -356,17 +356,8 @@ public final class CopyBuilderGenerator implements HelperMethods {
                 modelClass,
                 CodeBlock.join(constructorArguments, ", "));
 
-        boolean additionalInformationVisible =
-                visible.containsKey("additionalInformation");
 
-        boolean constructorHandlesAdditionalInformation =
-                constructor.components.contains("additionalInformation");
-
-        if (additionalInformationVisible && !constructorHandlesAdditionalInformation) {
-            builder.addStatement(
-                    "result.setAdditionalInformation(getAdditionalInformation())");
-        }
-
+        builder.addStatement("result.setAdditionalInformation(getAdditionalInformation())");
         builder.addStatement("return result");
 
         return builder.build();

@@ -38,8 +38,26 @@ public abstract class UniqueInputEntity extends UniqueEntity implements InputEnt
   }
 
   public abstract static class UniqueInputEntityCopyBuilder<B extends UniqueInputEntityCopyBuilder<B>> extends UniqueEntityCopyBuilder<B> {
-    protected UniqueInputEntityCopyBuilder(UniqueEntity entity) {
+    private final Map<String, String> additionalInformation;
+
+    protected UniqueInputEntityCopyBuilder(UniqueInputEntity entity) {
       super(entity);
+      this.additionalInformation = new HashMap<>(entity.getAdditionalInformation());
+    }
+
+
+    public B setAdditionalInformation(Map<String, String> additionalInformation) {
+      this.additionalInformation.putAll(additionalInformation);
+      return thisInstance();
+    }
+
+    public B setAdditionalInformation(String key, String value) {
+      this.additionalInformation.put(key, value);
+      return thisInstance();
+    }
+
+    protected Map<String, String> getAdditionalInformation() {
+      return additionalInformation;
     }
   }
 
