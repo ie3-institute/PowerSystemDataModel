@@ -78,15 +78,15 @@ public interface HelperMethods {
 
         TypeName[] genericArguments =
                 type.genericArguments.stream()
-                        .map(argument -> className(argument, currentPackage))
+                        .map(argument -> resolveClassName(argument, currentPackage))
                         .toArray(TypeName[]::new);
 
         return ParameterizedTypeName.get(rawType, genericArguments);
     }
 
     static ClassName resolveClassName(String name, String currentPackage) {
-        if (TypeRegistry.containsKey(name)) {
-            return className(TypeRegistry.get(name).javaName, currentPackage);
+        if (ClassRegistry.containsKey(name)) {
+            return ClassRegistry.get(name);
         }
 
         return className(name, currentPackage);
@@ -146,13 +146,7 @@ public interface HelperMethods {
     }
 
     static ModelDefinition getParent(String name, Map<String, ModelDefinition> models) {
-        ModelDefinition result = models.get(name);
-
-        if (result == null) {
-            throw new IllegalArgumentException("Unknown model: " + name);
-        }
-
-        return result;
+        return models.get(name);
     }
 
 }

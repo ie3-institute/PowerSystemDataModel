@@ -1,4 +1,12 @@
 models:
+  UniqueEntity:
+    constructors:
+      - name: minimal
+        components: []
+      - name: full
+        components: [uuid]
+    optionalGetters: []
+
   UniqueInputEntity:
     constructors:
       - name: minimal
@@ -19,10 +27,10 @@ models:
   NodeInput:
     constructors:
       - name: minimal
-        components: [uuid, id, slack, subgrid]
+        components: [uuid, id, vTarget, slack, geoPosition, subnet]
         superArgs: [uuid, id]
       - name: full
-        components: [uuid, id, operator, operationTime, slack, subgrid]
+        components: [uuid, id, operator, operationTime, vTarget, slack, geoPosition, subnet]
         superArgs: [uuid, id, operator, operationTime]
     staticFields:
       - name: DEFAULT_GEO_POSITION

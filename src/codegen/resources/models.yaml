@@ -1,7 +1,9 @@
 models:
   UniqueEntity:
     name: UniqueEntity
-    package: edu.ie3.datamodel.models2.input
+    package: edu.ie3.datamodel.models2
+    inherits: [Entity, Uniqueness, Serializable]
+
     components:
       - name: uuid
         type: UUID
@@ -44,8 +46,12 @@ models:
     extends: AssetInput
 
     components:
+      - name: vTarget
+        type: Dimensionless
       - name: slack
         type: bool
-      - name: subgrid
+      - name: geoPosition
+        type: Point
+      - name: subnet
         type: int
 

@@ -77,8 +77,7 @@ final class ModelGenerator implements HelperMethods {
         typeBuilder.addMethods(model.getAllMethods(genConfig));
         typeBuilder.addMethod(copyBuilderGenerator.generateCopyMethod());
 
-        if (genConfig.fromMap && !model.isClass) {
-
+        if (genConfig.fromMap && model.isClass) {
             typeBuilder.addMethod(constructorGenerator.getFromMapConstructor());
         }
 

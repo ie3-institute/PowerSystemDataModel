@@ -4,8 +4,10 @@ import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.VoltageLevelException;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.OperationTime;
+import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
+import edu.ie3.util.quantities.PowerSystemUnits;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
@@ -18,6 +20,7 @@ import tech.units.indriya.quantity.Quantities;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
+import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.ElectricPotential;
 import java.time.ZonedDateTime;
 import java.util.Map;
@@ -92,6 +95,10 @@ public final class ConversionUtils {
      */
     public static Optional<String> getFieldOptional(Map<String, String> fieldsToAttributes, String field) {
         return Optional.ofNullable(fieldsToAttributes.remove(field));
+    }
+
+    public static  ComparableQuantity<Dimensionless> getDimensionless(Map<String, String> fieldsToAttributes, String field) {
+        return Quantities.getQuantity(getDouble(fieldsToAttributes, field), PowerSystemUnits.PU);
     }
 
     /**
@@ -247,6 +254,10 @@ public final class ConversionUtils {
                                 + geom.getClass().getSimpleName()
                                 + ", but type LineString is required");
         } else return Optional.empty();
+    }
+
+    public static Point getNodePoint(Map<String, String> fieldsToAttributes, String field) {
+        return getPoint(fieldsToAttributes, field).orElse(NodeInput.DEFAULT_GEO_POSITION);
     }
 
     /**

@@ -10,14 +10,15 @@ public final class TypeRegistry {
     private static final Map<String, TypeDefinition> registry = new LinkedHashMap<>();
 
     static {
-        registry.put("UUID", new TypeDefinition("java.util.UUID", "getUUID"));
+        registry.put("UUID", new TypeDefinition("java.util.UUID", "getUUID", "UUID.randomUUID()"));
         registry.put("String", new TypeDefinition("java.lang.String", "getField"));
         registry.put("bool", new TypeDefinition("boolean", "getBoolean"));
         registry.put("int", new TypeDefinition("int", "getInt"));
         registry.put("StringMap", new TypeDefinition("java.util.Map", List.of("java.lang.String", "java.lang.String"), null, "new HashMap<>()"));
         registry.put("OperatorInput", new TypeDefinition("edu.ie3.datamodel.models.input.OperatorInput", "getEntity", "OperatorInput.NO_OPERATOR_ASSIGNED"));
         registry.put("OperationTime", new TypeDefinition("edu.ie3.datamodel.models.OperationTime", List.of(), "buildOperationTime", "OperationTime.notLimited()"));
-        registry.put("Point", new TypeDefinition("org.locationtech.jts.geom.Point", "getPoint"));
+        registry.put("Point", new TypeDefinition("org.locationtech.jts.geom.Point", "getNodePoint"));
+        registry.put("Dimensionless", new TypeDefinition("tech.units.indriya.ComparableQuantity", List.of("Dimensionless"), "getDimensionless"));
     }
 
     public static boolean containsKey(String name) {
@@ -38,8 +39,12 @@ public final class TypeRegistry {
         public final String converter; // name of method on ConversionUtils, nullable
         public final String defaultExpression; // optional for default mapping
 
+        public TypeDefinition(String javaName) {
+            this(javaName, List.of(), null);
+        }
+
         public TypeDefinition(String javaName, String converter) {
-            this(javaName, List.of(), converter, null);
+            this(javaName, List.of(), converter);
         }
 
         public TypeDefinition(String javaName, String converter, String defaultExpression) {
@@ -47,6 +52,13 @@ public final class TypeRegistry {
             this.genericArguments = List.of();
             this.converter = converter;
             this.defaultExpression = defaultExpression;
+        }
+
+        public TypeDefinition(String javaName, List<String> genericArguments, String converter) {
+            this.javaName = javaName;
+            this.genericArguments = List.copyOf(genericArguments);
+            this.converter = converter;
+            this.defaultExpression = null;
         }
 
         public TypeDefinition(String javaName, List<String> genericArguments, String converter, String defaultExpression) {

@@ -103,16 +103,6 @@ public final class CopyBuilderGenerator implements HelperMethods {
 
         ModelDefinition parent = getParent(model.extendsName, models);
 
-        ClassName parentBuilderClass = copyBuilderClassName(parent);
-
-        TypeName parentBuilderType =
-                    ParameterizedTypeName.get(
-                            parentBuilderClass,
-                            builderTypeVariable);
-
-        builder.superclass(parentBuilderType);
-
-
         for (ModelDefinition.ComponentDefinition component : model.components) {
             builder.addField(generateCopyBuilderField(component, model));
         }
@@ -124,19 +114,43 @@ public final class CopyBuilderGenerator implements HelperMethods {
             builder.addMethod(generateCopyBuilderGetter(component, model));
         }
 
-        builder.addMethod(
-                MethodSpec.methodBuilder("build")
-                        .addAnnotation(Override.class)
-                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                        .returns(modelClass)
-                        .build());
+        if (parent == null) {
+            builder.addMethod(
+                    MethodSpec.methodBuilder("thisInstance")
+                            .addModifiers(Modifier.PROTECTED, Modifier.ABSTRACT)
+                            .returns(builderTypeVariable)
+                            .build());
 
-        builder.addMethod(
-                MethodSpec.methodBuilder("thisInstance")
-                        .addAnnotation(Override.class)
-                        .addModifiers(Modifier.PROTECTED, Modifier.ABSTRACT)
-                        .returns(builderTypeVariable)
-                        .build());
+            builder.addMethod(
+                    MethodSpec.methodBuilder("build")
+                            .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                            .returns(modelClass)
+                            .build());
+
+        } else {
+            ClassName parentBuilderClass = copyBuilderClassName(parent);
+
+            TypeName parentBuilderType =
+                    ParameterizedTypeName.get(
+                            parentBuilderClass,
+                            builderTypeVariable);
+
+            builder.superclass(parentBuilderType);
+
+            builder.addMethod(
+                    MethodSpec.methodBuilder("build")
+                            .addAnnotation(Override.class)
+                            .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                            .returns(modelClass)
+                            .build());
+
+            builder.addMethod(
+                    MethodSpec.methodBuilder("thisInstance")
+                            .addAnnotation(Override.class)
+                            .addModifiers(Modifier.PROTECTED, Modifier.ABSTRACT)
+                            .returns(builderTypeVariable)
+                            .build());
+        }
 
         return builder.build();
     }
