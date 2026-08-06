@@ -6,8 +6,7 @@ import com.squareup.javapoet.*;
 import javax.lang.model.element.Modifier;
 import java.util.*;
 
-import static edu.ie3.codegen.HelperMethods.defaultGetterName;
-import static edu.ie3.codegen.HelperMethods.resolveType;
+import static edu.ie3.codegen.HelperMethods.*;
 
 public final class ModelDefinition implements HelperMethods {
     public String name;
@@ -15,35 +14,15 @@ public final class ModelDefinition implements HelperMethods {
     @JsonProperty("package")
     public String packageName;
 
-    public String kind = "class"; // or abstractClass
+    @JsonProperty("class")
+    public boolean isClass = false;
 
     @JsonProperty("extends")
     public String extendsName;
 
     public List<String> inherits = new ArrayList<>();
 
-    public List<StaticFieldDefinition> staticFields = new ArrayList<>();
-
     public List<ComponentDefinition> components = new ArrayList<>();
-
-    public List<FieldSpec> getStaticFields() {
-        return staticFields.stream().map(staticField -> {
-            if ("additionalInformation".equals(staticField.name)) {
-                return FieldSpec.builder(resolveType(staticField.type, packageName), staticField.name, Modifier.PRIVATE, Modifier.FINAL)
-                        .initializer("new $T<>()", hashMap)
-                        .build();
-            } else {
-                return FieldSpec.builder(
-                                resolveType(staticField.type, packageName),
-                                staticField.name,
-                                Modifier.PUBLIC,
-                                Modifier.STATIC,
-                                Modifier.FINAL)
-                        .initializer("$L", staticField.expression)
-                        .build();
-            }
-        }).toList();
-    }
 
     public List<FieldSpec> getPrivateFields() {
         return components.stream().map(component ->
@@ -110,12 +89,6 @@ public final class ModelDefinition implements HelperMethods {
         }
 
         return methodSpecs;
-    }
-
-    public static final class StaticFieldDefinition {
-        public String name;
-        public String type;
-        public String expression;
     }
 
     public static final class ComponentDefinition {

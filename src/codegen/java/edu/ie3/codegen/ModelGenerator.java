@@ -55,7 +55,7 @@ final class ModelGenerator implements HelperMethods {
                 TypeSpec.classBuilder(model.name)
                         .addModifiers(Modifier.PUBLIC);
 
-        if ("abstractClass".equals(model.kind)) {
+        if (!model.isClass) {
             typeBuilder.addModifiers(Modifier.ABSTRACT);
         }
 
@@ -67,7 +67,7 @@ final class ModelGenerator implements HelperMethods {
             typeBuilder.addSuperinterface(resolveClassName(interfaceName, model.packageName));
         }
 
-        typeBuilder.addFields(model.getStaticFields());
+        typeBuilder.addFields(getStaticFields(model, genConfig));
         typeBuilder.addFields(model.getPrivateFields());
 
         ConstructorGenerator constructorGenerator = new ConstructorGenerator(model, genConfig, models);
@@ -77,7 +77,7 @@ final class ModelGenerator implements HelperMethods {
         typeBuilder.addMethods(model.getAllMethods(genConfig));
         typeBuilder.addMethod(copyBuilderGenerator.generateCopyMethod());
 
-        if (genConfig.fromMap && "class".equals(model.kind)) {
+        if (genConfig.fromMap && !model.isClass) {
 
             typeBuilder.addMethod(constructorGenerator.getFromMapConstructor());
         }
@@ -101,6 +101,25 @@ final class ModelGenerator implements HelperMethods {
                 .skipJavaLangImports(true)
                 .build()
                 .writeTo(outputDirectory);
+    }
+
+    private static List<FieldSpec> getStaticFields(ModelDefinition model, GenerationConfig genConfig) {
+        return genConfig.staticFields.stream().map(staticField -> {
+            FieldSpec.Builder builder = FieldSpec.builder(
+                    resolveType(staticField.type, model.packageName),
+                    staticField.name,
+                    Modifier.PUBLIC,
+                    Modifier.STATIC,
+                    Modifier.FINAL);
+
+            if (staticField.className != null) {
+                builder.initializer("$T.$L", getClassName(staticField.className), staticField.expression);
+            } else {
+                builder.initializer("$L", staticField.expression);
+            }
+
+            return builder.build();
+        }).toList();
     }
 
     private static MethodSpec generateEquals(ModelDefinition model) {

@@ -20,6 +20,8 @@ public final class GenerationConfig implements HelperMethods {
 
     public boolean fromMap = false;
 
+    public List<StaticFieldDefinition> staticFields = new ArrayList<>();
+
     public List<String> optionalGetters = new ArrayList<>();
 
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -33,5 +35,10 @@ public final class GenerationConfig implements HelperMethods {
         public List<String> components = new ArrayList<>();
     }
 
-
+    public static final class StaticFieldDefinition {
+        public String name;
+        public String type;
+        public String expression;
+        public String className;
+    }
 }

@@ -24,6 +24,12 @@ models:
       - name: full
         components: [uuid, id, operator, operationTime, slack, subgrid]
         superArgs: [uuid, id, operator, operationTime]
+    staticFields:
+      - name: DEFAULT_GEO_POSITION
+        type: Point
+        expression: buildPoint(51.4843281, 7.4116482)
+        className: GeoUtils
+
     optionalGetters: []
     fromMap: true
     fromMapConstructor: full

@@ -11,7 +11,6 @@ models:
   UniqueInputEntity:
     name: UniqueInputEntity
     package: edu.ie3.datamodel.models2.input
-    kind: abstractClass
     extends: UniqueEntity
 
     components:
@@ -23,7 +22,6 @@ models:
   AssetInput:
     name: AssetInput
     package: edu.ie3.datamodel.models2.input
-    kind: abstractClass
     extends: UniqueInputEntity
     inherits: []
 
@@ -42,7 +40,7 @@ models:
   NodeInput:
     name: NodeInput
     package: edu.ie3.datamodel.models2.input
-    kind: class
+    class: true
     extends: AssetInput
 
     components:

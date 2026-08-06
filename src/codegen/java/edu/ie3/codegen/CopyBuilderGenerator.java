@@ -24,9 +24,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
     }
 
     public TypeSpec generateCopyBuilder() {
-        boolean abstractModel = "abstractClass".equals(model.kind);
-
-        if (abstractModel) {
+        if (!model.isClass) {
             return generateAbstractCopyBuilder();
         }
 
@@ -37,7 +35,6 @@ public final class CopyBuilderGenerator implements HelperMethods {
     public MethodSpec generateCopyMethod() {
         ClassName builderClass = copyBuilderClassName(model);
 
-        boolean abstractModel = "abstractClass".equals(model.kind);
         boolean hasParent = model.extendsName != null && !model.extendsName.isBlank();
 
         MethodSpec.Builder builder =
@@ -48,7 +45,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
             builder.addAnnotation(Override.class);
         }
 
-        if (abstractModel) {
+        if (!model.isClass) {
             TypeName wildcardBuilder =
                     ParameterizedTypeName.get(
                             builderClass,
