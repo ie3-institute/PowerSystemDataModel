@@ -10,7 +10,7 @@ def generatedModelDir =
 
 def generateModelSources = tasks.register('generateModelSources', JavaExec) {
     group = 'code generation'
-    description = 'Generiert Java-Datenmodellklassen aus YAML-Modellspezifikationen.'
+    description = 'Generates some model classes from YAML definition.'
 
     dependsOn tasks.named(codegen.classesTaskName)
 
@@ -20,11 +20,6 @@ def generateModelSources = tasks.register('generateModelSources', JavaExec) {
     args(generatedModelDir.get().asFile.absolutePath)
 
     outputs.dir(generatedModelDir)
-
-
-    doFirst {
-        delete(generatedModelDir)
-    }
 }
 
 sourceSets.named('main') {
