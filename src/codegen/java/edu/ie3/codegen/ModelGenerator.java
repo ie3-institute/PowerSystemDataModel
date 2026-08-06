@@ -78,6 +78,7 @@ final class ModelGenerator implements HelperMethods {
         typeBuilder.addMethod(copyBuilderGenerator.generateCopyMethod());
 
         if (genConfig.fromMap && "class".equals(model.kind)) {
+
             typeBuilder.addMethod(constructorGenerator.getFromMapConstructor());
         }
 
@@ -118,38 +119,52 @@ final class ModelGenerator implements HelperMethods {
                 .addStatement("return false")
                 .endControlFlow();
 
-        if (model.extendsName != null && !model.extendsName.isBlank()) {
+        List<ModelDefinition.ComponentDefinition> filteredComponents = new ArrayList<>();
+        for (ModelDefinition.ComponentDefinition component: model.components) {
+            if (excludeFromMethods(component)) {
+                continue;
+            }
+            filteredComponents.add(component);
+        }
+
+        boolean superStatement = model.extendsName != null && !model.extendsName.isBlank();
+
+        if (filteredComponents.isEmpty()) {
+            if (superStatement) {
+                builder.addStatement("return super.equals(o)");
+            } else {
+                builder.beginControlFlow("if (!super.equals(o))")
+                        .addStatement("return false")
+                        .endControlFlow();
+                builder.addStatement("return true");
+            }
+        } else {
             builder.beginControlFlow("if (!super.equals(o))")
                     .addStatement("return false")
                     .endControlFlow();
-        }
 
-        if (model.components.isEmpty()) {
-            builder.addStatement("return true");
-            return builder.build();
-        }
+            CodeBlock.Builder expression = CodeBlock.builder();
 
-        CodeBlock.Builder expression = CodeBlock.builder();
+            for (int index = 0; index < filteredComponents.size(); index++) {
+                ModelDefinition.ComponentDefinition component = filteredComponents.get(index);
 
-        for (int index = 0; index < model.components.size(); index++) {
-            ModelDefinition.ComponentDefinition component = model.components.get(index);
+                if (index > 0) {
+                    expression.add("\n&& ");
+                }
 
-            if (index > 0) {
-                expression.add("\n&& ");
+                if (isPrimitive(component.type)) {
+                    expression.add("$L == that.$L", component.name, component.name);
+                } else {
+                    expression.add(
+                            "$T.equals($L, that.$L)",
+                            OBJECTS,
+                            component.name,
+                            component.name);
+                }
             }
 
-            if (isPrimitive(component.type)) {
-                expression.add("$L == that.$L", component.name, component.name);
-            } else {
-                expression.add(
-                        "$T.equals($L, that.$L)",
-                        OBJECTS,
-                        component.name,
-                        component.name);
-            }
+            builder.addStatement("return $L", expression.build());
         }
-
-        builder.addStatement("return $L", expression.build());
 
         return builder.build();
     }
@@ -168,6 +183,10 @@ final class ModelGenerator implements HelperMethods {
         }
 
         for (ModelDefinition.ComponentDefinition component : model.components) {
+            if (excludeFromMethods(component)) {
+                continue;
+            }
+
             arguments.add(CodeBlock.of("$L", component.name));
         }
 
@@ -194,6 +213,10 @@ final class ModelGenerator implements HelperMethods {
 
         int index = 0;
         for (ModelDefinition.ComponentDefinition component: visibleComponents(model, models).values()) {
+            if (excludeFromMethods(component)) {
+                continue;
+            }
+
             String prefix = (index == 0) ? component.name + "=" : ", " + component.name + "=";
 
             String getter;

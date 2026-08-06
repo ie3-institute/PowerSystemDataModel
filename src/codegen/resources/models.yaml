@@ -1,12 +1,24 @@
 models:
-  UniqueInputEntity:
-    name: UniqueInputEntity
+  UniqueEntity:
+    name: UniqueEntity
     package: edu.ie3.datamodel.models2.input
     components:
       - name: uuid
         type: UUID
         keys: [uuid]
         required: true
+
+  UniqueInputEntity:
+    name: UniqueInputEntity
+    package: edu.ie3.datamodel.models2.input
+    kind: abstractClass
+    extends: UniqueEntity
+
+    components:
+      - name: additionalInformation
+        type: StringMap
+        keys: [additionalInformation]
+        required: false
 
   AssetInput:
     name: AssetInput
@@ -18,15 +30,14 @@ models:
     components:
       - name: id
         type: String
-        keys: [id]
         required: true
       - name: operator
         type: OperatorInput
-        keys: [operator]
         required: false
       - name: operationTime
         type: OperationTime
         keys: [operationStart, operationEnd]
+        required: false
 
   NodeInput:
     name: NodeInput

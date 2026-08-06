@@ -6,7 +6,6 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 
 import java.util.*;
-import java.util.function.Function;
 
 public interface HelperMethods {
     ClassName OBJECTS = ClassName.get(Objects.class);
@@ -14,7 +13,7 @@ public interface HelperMethods {
     ClassName hashMap = ClassName.get(HashMap.class);
     ClassName STRING = ClassName.get(String.class);
     ClassName UUID_CLASS = ClassName.get(UUID.class);
-    ClassName FUNCTION = ClassName.get(Function.class);
+    ClassName CONVERSION_UTILS = ClassName.get("edu.ie3.datamodel.utils", "ConversionUtils");
 
     static CodeBlock indent(CodeBlock codeBlock) {
         return CodeBlock.builder()
@@ -44,6 +43,20 @@ public interface HelperMethods {
         return Character.toUpperCase(value.charAt(0)) + value.substring(1);
     }
 
+
+    static boolean excludeFromMethods(ModelDefinition.ComponentDefinition component) {
+        return "additionalInformation".equals(component.name);
+    }
+
+    default boolean isMap(ModelDefinition.ComponentDefinition component) {
+        return component.type.equals("StringMap");
+    }
+
+    default boolean isOptional(ModelDefinition.ComponentDefinition component, GenerationConfig config) {
+        //return !component.required; // will break the current code -> TODO: Adapt PSDM to use optional parameters
+
+        return config.optionalGetters.contains(component.name);
+    }
 
     static TypeName resolveType(String name, String currentPackage) {
         TypeRegistry.TypeDefinition type = TypeRegistry.get(name);

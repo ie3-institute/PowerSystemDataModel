@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.squareup.javapoet.*;
 
 import javax.lang.model.element.Modifier;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static edu.ie3.codegen.HelperMethods.defaultGetterName;
 import static edu.ie3.codegen.HelperMethods.resolveType;
@@ -23,8 +21,6 @@ public final class ModelDefinition implements HelperMethods {
     public String extendsName;
 
     public List<String> inherits = new ArrayList<>();
-
-    public String conversionUtils;
 
     public List<StaticFieldDefinition> staticFields = new ArrayList<>();
 
@@ -66,12 +62,26 @@ public final class ModelDefinition implements HelperMethods {
         if (genConfig.getters) {
             for (ComponentDefinition component : components) {
                 String getter = defaultGetterName(component);
+                TypeName returnType = resolveType(component.type, packageName);
 
-                methodSpecs.add(MethodSpec.methodBuilder(getter)
-                        .addModifiers(Modifier.PUBLIC)
-                        .returns(resolveType(component.type, packageName))
-                        .addStatement("return $L", component.name)
-                        .build());
+                boolean optionalParameter = isOptional(component, genConfig);
+
+                var builder = MethodSpec.methodBuilder(getter).addModifiers(Modifier.PUBLIC);
+
+                if (isMap(component)) {
+                    builder.addStatement("return $T.unmodifiableMap($L)", Collections.class, component.name);
+                } else if (optionalParameter) {
+                    returnType = ParameterizedTypeName.get(
+                            ClassName.get(Optional.class),
+                            returnType.box()
+                    );
+
+                    builder.addStatement("return $T.ofNullable($L)", Optional.class, component.name);
+                } else {
+                    builder.addStatement("return $L", component.name);
+                }
+
+                methodSpecs.add(builder.returns(returnType).build());
             }
         }
 
@@ -111,18 +121,8 @@ public final class ModelDefinition implements HelperMethods {
     public static final class ComponentDefinition {
         public String name;
         public String type;
-
         public List<String> keys = new ArrayList<>();
-
-        public String keyMode = "ALL";
-
-        public boolean resolve;
-
         public boolean required = true;
-
-        @JsonProperty("default")
-        public String defaultValue;
-
         public String getter;
     }
 }

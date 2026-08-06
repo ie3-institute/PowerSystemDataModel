@@ -1,4 +1,11 @@
 models:
+  UniqueInputEntity:
+    constructors:
+      - name: minimal
+        components: [uuid]
+        superArgs: [uuid]
+    optionalGetters: []
+
   AssetInput:
     constructors:
       - name: minimal
@@ -7,6 +14,8 @@ models:
       - name: full
         components: [uuid, id, operator, operationTime]
         superArgs: [uuid]
+    optionalGetters: []
+
   NodeInput:
     constructors:
       - name: minimal
@@ -15,6 +24,9 @@ models:
       - name: full
         components: [uuid, id, operator, operationTime, slack, subgrid]
         superArgs: [uuid, id, operator, operationTime]
-
+    optionalGetters: []
+    fromMap: true
+    fromMapConstructor: full
+    resolverOrder: [operator]
 
 

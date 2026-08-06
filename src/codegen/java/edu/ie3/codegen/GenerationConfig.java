@@ -20,6 +20,8 @@ public final class GenerationConfig implements HelperMethods {
 
     public boolean fromMap = false;
 
+    public List<String> optionalGetters = new ArrayList<>();
+
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     // helper definition
 

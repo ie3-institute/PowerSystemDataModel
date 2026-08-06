@@ -4,7 +4,9 @@ import com.squareup.javapoet.*;
 import edu.ie3.codegen.ModelDefinition.ComponentDefinition;
 
 import javax.lang.model.element.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static edu.ie3.codegen.HelperMethods.*;
 
@@ -47,27 +49,17 @@ public final class ConstructorGenerator implements HelperMethods {
                 MethodSpec.methodBuilder("fromMap")
                         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                         .returns(ClassName.get(model.packageName, model.name))
-                        .addParameter(mapType, "values");
+                        .addParameter(mapType, "data");
 
         for (ComponentDefinition resolverComponent : resolverComponents) {
             TypeName resolverType =
                     ParameterizedTypeName.get(
-                            FUNCTION,
+                            MAP,
                             UUID_CLASS,
                             resolveType(resolverComponent.type, model.packageName));
 
             builder.addParameter(
                     resolverType,
-                    resolverName(resolverComponent));
-        }
-
-        builder.addStatement("$T.requireNonNull(values, $S)", OBJECTS, "values");
-
-        for (ComponentDefinition resolverComponent : resolverComponents) {
-            builder.addStatement(
-                    "$T.requireNonNull($L, $S)",
-                    OBJECTS,
-                    resolverName(resolverComponent),
                     resolverName(resolverComponent));
         }
 
@@ -80,7 +72,7 @@ public final class ConstructorGenerator implements HelperMethods {
                         model.name + ".fromMap");
 
         for (ComponentDefinition component : constructorParameters) {
-            generateFromMapLocalVariable(builder, component);
+            generateFromMapLocalVariable(builder, model, component, resolverComponents.contains(component));
         }
 
         builder.addCode("\n");
@@ -100,23 +92,38 @@ public final class ConstructorGenerator implements HelperMethods {
 
     private void generateFromMapLocalVariable(
             MethodSpec.Builder builder,
-            ComponentDefinition component) {
+            ModelDefinition model,
+            ModelDefinition.ComponentDefinition component,
+            boolean useMap
+    ) {
+        TypeRegistry.TypeDefinition typeDefinition = TypeRegistry.get(component.type);
 
-        if (component.resolve) {
-            generateResolvedLocalVariable(builder, model, component);
-            return;
+        TypeName targetType = resolveType(component.type, model.packageName);
+
+        CodeBlock arguments;
+
+        if (!useMap) {
+            arguments = switch (component.keys.size()) {
+                case 0 -> CodeBlock.of("$T.$L(data, $S)", CONVERSION_UTILS, typeDefinition.converter, component.name);
+                case 1 -> CodeBlock.of("$T.$L(data, $S)", CONVERSION_UTILS, typeDefinition.converter, component.keys.getFirst());
+                default -> {
+                    CodeBlock keyArguments =
+                            component.keys.stream()
+                                    .map(key -> CodeBlock.of("$S", key))
+                                    .collect(CodeBlock.joining(", "));
+
+                    yield CodeBlock.of("$T.$L(data, $L)", CONVERSION_UTILS, typeDefinition.converter, keyArguments);
+                }
+            };
+        } else {
+            arguments = CodeBlock.of("$T.$L(data, $S, $L)", CONVERSION_UTILS, typeDefinition.converter, component.name, resolverName(component));
         }
-
-        List<CodeBlock> rawArguments = rawArguments(component);
-
-        CodeBlock valueExpression =
-                conversionExpression(model, component, rawArguments);
 
         builder.addStatement(
                 "$T $L = $L",
-                resolveType(component.type, model.packageName),
+                targetType,
                 component.name,
-                valueExpression);
+                arguments);
     }
 
     public List<MethodSpec> getConstructors() {
@@ -126,42 +133,6 @@ public final class ConstructorGenerator implements HelperMethods {
 
     // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
     // helper methods
-
-    private CodeBlock conversionExpression(
-            ModelDefinition model,
-            ComponentDefinition component,
-            List<CodeBlock> rawArguments) {
-
-        if ("String".equals(component.type)) {
-            return rawArguments.getFirst();
-        }
-
-        TypeRegistry.TypeDefinition type = TypeRegistry.get(component.type);
-
-        if (type.converter == null || type.converter.isBlank()) {
-            throw new IllegalArgumentException(
-                    "No converter configured for type: " + component.type);
-        }
-
-        CodeBlock arguments = CodeBlock.join(rawArguments, ", ");
-
-        CodeBlock converted =
-                CodeBlock.of(
-                        "$T.$L($L)",
-                        conversionUtils(model),
-                        type.converter,
-                        arguments);
-
-        if (!component.required && component.defaultValue != null) {
-            return CodeBlock.of(
-                    "$L == null ? $L : $L",
-                    rawArguments.getFirst(),
-                    defaultExpression(component),
-                    converted);
-        }
-
-        return converted;
-    }
 
     private String resolverName(ComponentDefinition component) {
         return component.name + "s";
@@ -191,106 +162,15 @@ public final class ConstructorGenerator implements HelperMethods {
         return result;
     }
 
-    private void generateResolvedLocalVariable(
-            MethodSpec.Builder builder,
-            ModelDefinition model,
-            ComponentDefinition component) {
-
-        List<CodeBlock> rawArguments = rawArguments(component);
-
-        String resolverIdName = component.name + "Id";
-
-        CodeBlock idExpression =
-                conversionUtils(model) == null
-                        ? CodeBlock.of("null")
-                        : CodeBlock.of(
-                        "$T.toUUID($L)",
-                        conversionUtils(model),
-                        rawArguments.getFirst());
-
-        builder.addStatement(
-                "$T $L = $L",
-                UUID_CLASS,
-                resolverIdName,
-                idExpression);
-
-        if (!component.required && component.defaultValue != null) {
-            builder.addStatement(
-                    "$T $L = $L == null ? $L : $L.apply($L)",
-                    resolveType(component.type, model.packageName),
-                    component.name,
-                    resolverIdName,
-                    defaultExpression(component),
-                    resolverName(component),
-                    resolverIdName);
-        } else {
-            builder.addStatement(
-                    "$T $L = $L.apply($L)",
-                    resolveType(component.type, model.packageName),
-                    component.name,
-                    resolverName(component),
-                    resolverIdName);
-        }
-    }
-
-    private CodeBlock defaultExpression(ModelDefinition.ComponentDefinition component) {
-
-        if (component.defaultValue == null || component.defaultValue.isBlank()) {
-            return CodeBlock.of("null");
-        }
-
-        String expression = component.defaultValue;
-        return CodeBlock.of("$L", expression);
-    }
-
-    private List<CodeBlock> rawArguments(ComponentDefinition component) {
-        if (component.keys.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Component '" + component.name + "' has no input keys.");
-        }
-
-        if ("FIRST_PRESENT".equals(component.keyMode)) {
-            CodeBlock keys =
-                    component.keys.stream()
-                            .map(key -> CodeBlock.of("$S", key))
-                            .collect(CodeBlock.joining(", "));
-
-            return List.of(
-                    component.required
-                            ? CodeBlock.of("requiredFirstPresent(values, $L)", keys)
-                            : CodeBlock.of("firstPresent(values, $L)", keys));
-        }
-
-        List<CodeBlock> result = new ArrayList<>();
-
-        for (String key : component.keys) {
-            result.add(
-                    component.required
-                            ? CodeBlock.of("required(values, $S)", key)
-                            : CodeBlock.of("optional(values, $S)", key));
-        }
-
-        return result;
-    }
-
-    private ClassName conversionUtils(ModelDefinition model) {
-        if (model.conversionUtils == null || model.conversionUtils.isBlank()) {
-            throw new IllegalArgumentException(
-                    "Model "
-                            + model.name
-                            + " uses fromMap but has no conversionUtils.");
-        }
-
-        return className(model.conversionUtils, model.packageName);
-    }
-
     private List<ComponentDefinition> orderedResolverComponents(
             ModelDefinition model,
             Map<String, ComponentDefinition> allComponents) {
 
+        List<String> resolveList = genConfig.resolverOrder;
+
         List<ComponentDefinition> resolvers =
                 allComponents.values().stream()
-                        .filter(component -> component.resolve)
+                        .filter(component -> resolveList.contains(component.name))
                         .toList();
 
         if (genConfig.resolverOrder.isEmpty()) {
@@ -302,7 +182,7 @@ public final class ConstructorGenerator implements HelperMethods {
         for (String resolverName : genConfig.resolverOrder) {
             ComponentDefinition component = allComponents.get(resolverName);
 
-            if (component == null || !component.resolve) {
+            if (component == null) {
                 throw new IllegalArgumentException(
                         "Unknown resolver component '"
                                 + resolverName

@@ -225,10 +225,10 @@ public final class CopyBuilderGenerator implements HelperMethods {
                             ? component.getter
                             : defaultGetterName(component);
 
-            if ("additionalInformation".equals(component.name)) {
+            if (isMap(component)) {
                 builder.addStatement(
-                        "this.additionalInformation = entity.$L() == null ? null : new $T<>(entity.$L())",
-                        entityGetter,
+                        "this.$L = new $T<>(entity.$L())",
+                        component.name,
                         HashMap.class,
                         entityGetter);
             } else {
@@ -256,11 +256,10 @@ public final class CopyBuilderGenerator implements HelperMethods {
                         .returns(builderReturnType)
                         .addParameter(componentType, component.name);
 
-        if ("additionalInformation".equals(component.name)) {
+        if (isMap(component)) {
             builder.addStatement(
-                    "this.additionalInformation = $L == null ? null : new $T<>($L)",
+                    "this.$L.putAll($L)",
                     component.name,
-                    HashMap.class,
                     component.name);
         } else {
             builder.addStatement(
