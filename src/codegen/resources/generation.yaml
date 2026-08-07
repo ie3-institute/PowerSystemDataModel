@@ -22,16 +22,16 @@ models:
         superArgs: [uuid]
         javaDoc: "Constructor for an asset with timely limited operation and specific operator.\n
                  \n
-                 @param uuid Unique identifier
-                 @param id Human-readable identifier
-                 @param operator Operator of the asset
+                 @param uuid Unique identifier\n
+                 @param id Human-readable identifier\n
+                 @param operator Operator of the asset\n
                  @param operationTime Operation time limitation"
       - name: minimal
         components: [uuid, id]
         superArgs: [uuid]
         javaDoc: "Constructor for an asset with timely unlimited operation and unassigned operator.\n
                  \n
-                 @param uuid Unique identifier
+                 @param uuid Unique identifier\n
                  @param id Human-readable identifier"
 
   NodeInput:

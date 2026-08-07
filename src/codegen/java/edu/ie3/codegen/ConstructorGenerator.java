@@ -207,7 +207,15 @@ public final class ConstructorGenerator implements HelperMethods {
         resolveParameters(
             constructor.components, visibleComponents, model.name + "." + constructor.name);
 
-    MethodSpec.Builder builder = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC);
+    Modifier modifier;
+
+    if (model.isClass) {
+      modifier = Modifier.PUBLIC;
+    } else {
+      modifier = Modifier.PROTECTED;
+    }
+
+    MethodSpec.Builder builder = MethodSpec.constructorBuilder().addModifiers(modifier);
 
     if (!constructor.javaDoc.isBlank()) {
       builder.addJavadoc(constructor.javaDoc);
