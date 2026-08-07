@@ -209,6 +209,10 @@ public final class ConstructorGenerator implements HelperMethods {
 
     MethodSpec.Builder builder = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC);
 
+    if (!constructor.javaDoc.isBlank()) {
+      builder.addJavadoc(constructor.javaDoc);
+    }
+
     for (ModelDefinition.ComponentDefinition parameter : parameters) {
       builder.addParameter(resolveType(parameter.type, model.packageName), parameter.name);
     }
@@ -267,7 +271,7 @@ public final class ConstructorGenerator implements HelperMethods {
     }
 
     boolean hasAdditionalInfoParam =
-            parameters.stream().anyMatch(p -> "additionalInformation".equals(p.name));
+        parameters.stream().anyMatch(p -> "additionalInformation".equals(p.name));
 
     if (hasAdditionalInfoParam) {
       builder.addStatement("setAdditionalInformation(additionalInformation)");

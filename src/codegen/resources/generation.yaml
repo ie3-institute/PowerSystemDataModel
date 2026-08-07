@@ -1,5 +1,6 @@
 models:
   UniqueEntity:
+    classJavaDoc: "Supplies every subclass with a generated UUID, making it unique."
     constructors:
       - name: minimal
         components: []
@@ -7,6 +8,7 @@ models:
         components: [uuid]
 
   UniqueInputEntity:
+    classJavaDoc: "Functionless class to describe that all subclasses are unique input classes."
     constructors:
       - name: minimal
         components: [uuid]
@@ -15,24 +17,70 @@ models:
   AssetInput:
     classJavaDoc: "Describes a grid asset under the assumption that every asset could be operable."
     constructors:
-      - name: minimal
-        components: [uuid, id]
-        superArgs: [uuid]
       - name: full
         components: [uuid, id, operator, operationTime]
         superArgs: [uuid]
+        javaDoc: "Constructor for an asset with timely limited operation and specific operator.\n
+                 \n
+                 @param uuid Unique identifier
+                 @param id Human-readable identifier
+                 @param operator Operator of the asset
+                 @param operationTime Operation time limitation"
+      - name: minimal
+        components: [uuid, id]
+        superArgs: [uuid]
+        javaDoc: "Constructor for an asset with timely unlimited operation and unassigned operator.\n
+                 \n
+                 @param uuid Unique identifier
+                 @param id Human-readable identifier"
 
   NodeInput:
+    classJavaDoc: "Describes an electrical grid node, that other assets can connect to."
     constructors:
-      - name: minimal
-        components: [uuid, id, vTarget, slack, geoPosition, voltLvl, subnet]
-        superArgs: [uuid, id]
       - name: full
         components: [uuid, id, operator, operationTime, vTarget, slack, geoPosition, voltLvl, subnet]
         superArgs: [uuid, id, operator, operationTime]
-      - name: full
+        javaDoc: "Constructor for an operated node.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param vTarget Target voltage magnitude of the node with regard to its rated voltage\n
+                 @param slack Is this node a slack node?\n
+                 @param geoPosition Coordinates of this node, especially relevant for geo-dependant systems,
+                     that are connected to this node\n
+                 @param voltLvl Voltage level of this node\n
+                 @param subnet of this node"
+      - name: fullWithAdditionalInformation
         components: [ uuid, id, operator, operationTime, vTarget, slack, geoPosition, voltLvl, subnet, additionalInformation ]
         superArgs: [ uuid, id, operator, operationTime ]
+        javaDoc: "Constructor for an operated node.\n
+                \n
+                @param uuid of the input entity\n
+                @param id of the asset\n
+                @param operator of the asset\n
+                @param operationTime Time for which the entity is operated\n
+                @param vTarget Target voltage magnitude of the node with regard to its rated voltage\n
+                @param slack Is this node a slack node?\n
+                @param geoPosition Coordinates of this node, especially relevant for geo-dependant systems,
+                    that are connected to this node\n
+                @param voltLvl Voltage level of this node\n
+                @param subnet of this node\n
+                @param additionalInformation That were provided by the source"
+      - name: minimal
+        components: [ uuid, id, vTarget, slack, geoPosition, voltLvl, subnet ]
+        superArgs: [ uuid, id ]
+        javaDoc: "Constructor for an operated node.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param vTarget Target voltage magnitude of the node with regard to its rated voltage\n
+                 @param slack Is this node a slack node?\n
+                 @param geoPosition Coordinates of this node, especially relevant for geo-dependant systems,
+                     that are connected to this node\n
+                 @param voltLvl Voltage level of this node\n
+                 @param subnet of this node"
     staticFields:
       - name: DEFAULT_GEO_POSITION
         type: Point

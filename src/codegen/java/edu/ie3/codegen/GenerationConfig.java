@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public final class GenerationConfig implements HelperMethods {
   public String classJavaDoc = "";
@@ -43,6 +42,8 @@ public final class GenerationConfig implements HelperMethods {
     public List<String> superArgs;
 
     public List<String> components = new ArrayList<>();
+
+    public String javaDoc = "";
   }
 
   public static final class StaticFieldDefinition {

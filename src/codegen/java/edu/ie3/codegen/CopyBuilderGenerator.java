@@ -65,8 +65,10 @@ public final class CopyBuilderGenerator implements HelperMethods {
     return ClassName.get(model.packageName, model.name, copyBuilderName(model));
   }
 
-  private static String builderGetterName(ModelDefinition.ComponentDefinition component, GenerationConfig genConfig) {
-    return defaultGetterName(component.name, component.type, genConfig.getterOptions.get(component.name));
+  private static String builderGetterName(
+      ModelDefinition.ComponentDefinition component, GenerationConfig genConfig) {
+    return defaultGetterName(
+        component.name, component.type, genConfig.getterOptions.get(component.name));
   }
 
   private TypeSpec generateAbstractCopyBuilder() {
@@ -200,7 +202,9 @@ public final class CopyBuilderGenerator implements HelperMethods {
     }
 
     for (ModelDefinition.ComponentDefinition component : model.components) {
-      String entityGetter = defaultGetterName(component.name, component.type, genConfig.getterOptions.get(component.name));
+      String entityGetter =
+          defaultGetterName(
+              component.name, component.type, genConfig.getterOptions.get(component.name));
 
       if (isMap(component)) {
         builder.addStatement(

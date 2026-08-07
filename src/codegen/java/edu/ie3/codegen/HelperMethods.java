@@ -35,7 +35,8 @@ public interface HelperMethods {
     return "bool".equals(type) || "int".equals(type);
   }
 
-  static String defaultGetterName(String name, String type, GenerationConfig.GetterOptions getterOptions) {
+  static String defaultGetterName(
+      String name, String type, GenerationConfig.GetterOptions getterOptions) {
     if (isPrimitive(type) || getterOptions == null) {
       if ("bool".equals(type)) {
         return "is" + capitalize(name);

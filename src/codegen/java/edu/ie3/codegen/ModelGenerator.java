@@ -152,12 +152,8 @@ final class ModelGenerator implements HelperMethods {
             .returns(TypeName.BOOLEAN)
             .addParameter(Object.class, "o");
 
-    builder.beginControlFlow("if (this == o)").addStatement("return true").endControlFlow();
-
-    builder
-        .beginControlFlow("if (!(o instanceof $L that))", model.name)
-        .addStatement("return false")
-        .endControlFlow();
+    builder.addStatement("if (this == o return true");
+    builder.addStatement("if (!(o instanceof $L that)) return false", model.name);
 
     List<ModelDefinition.ComponentDefinition> filteredComponents = new ArrayList<>();
     for (ModelDefinition.ComponentDefinition component : model.components) {
@@ -173,17 +169,11 @@ final class ModelGenerator implements HelperMethods {
       if (superStatement) {
         builder.addStatement("return super.equals(o)");
       } else {
-        builder
-            .beginControlFlow("if (!super.equals(o))")
-            .addStatement("return false")
-            .endControlFlow();
+        builder.addStatement("if (!super.equals(o)) return false");
         builder.addStatement("return true");
       }
     } else {
-      builder
-          .beginControlFlow("if (!super.equals(o))")
-          .addStatement("return false")
-          .endControlFlow();
+      builder.addStatement("if (!super.equals(o)) return false");
 
       CodeBlock.Builder expression = CodeBlock.builder();
 
@@ -238,7 +228,7 @@ final class ModelGenerator implements HelperMethods {
   }
 
   private static MethodSpec generateToString(
-          ModelDefinition model, Map<String, ModelDefinition> models, GenerationConfig genConfig) {
+      ModelDefinition model, Map<String, ModelDefinition> models, GenerationConfig genConfig) {
     MethodSpec.Builder builder =
         MethodSpec.methodBuilder("toString")
             .addAnnotation(Override.class)
@@ -256,7 +246,9 @@ final class ModelGenerator implements HelperMethods {
 
       String prefix = (index == 0) ? component.name + "=" : ", " + component.name + "=";
 
-      String getter = defaultGetterName(component.name, component.type, genConfig.getterOptions.get(component.name));
+      String getter =
+          defaultGetterName(
+              component.name, component.type, genConfig.getterOptions.get(component.name));
 
       builder.addCode("    + $S + $L()\n", prefix, getter);
 
