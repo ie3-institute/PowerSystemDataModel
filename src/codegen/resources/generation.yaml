@@ -124,7 +124,7 @@ models:
 
   MeasurementUnitInput:
     classJavaDoc: "Model of a measuring unit attached to a certain {@link NodeInput}."
-    inherits: [HasNode]
+    inherits: [HasNodes]
     constructors:
       - name: full
         components: [uuid, id, operator, operationTime, node, vMag, vAng, p, q]
@@ -169,9 +169,10 @@ models:
                  @param q True, if the reactive power is measured"
     fromMap: true
     fromMapConstructor: full
-    resolverOrder: [operator]
+    resolverOrder: [operator, node]
     methodOverrides:
       - name: allNodes
+        type: NodeList
         expression: singletonList(node)
         className: Collections
 

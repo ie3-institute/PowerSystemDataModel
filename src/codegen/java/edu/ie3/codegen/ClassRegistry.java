@@ -24,8 +24,10 @@ public final class ClassRegistry {
   }
 
   static {
-    Stream.of(Serializable.class, String.class, Collections.class, UUID.class).forEach(ClassRegistry::add);
+    Stream.of(Serializable.class, String.class, Collections.class, UUID.class)
+        .forEach(ClassRegistry::add);
     registry.put("InputEntity", ClassName.get("edu.ie3.datamodel.models.input", "InputEntity"));
+    registry.put("HasNodes", ClassName.get("edu.ie3.datamodel.io.extractor", "HasNodes"));
     registry.put("UniqueEntity", ClassName.get("edu.ie3.datamodel.models", "UniqueEntity"));
     registry.put("Entity", ClassName.get("edu.ie3.datamodel.models", "Entity"));
     registry.put("Uniqueness", ClassName.get("edu.ie3.datamodel.models", "Uniqueness"));

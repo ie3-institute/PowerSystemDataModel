@@ -66,6 +66,7 @@ public final class GenerationConfig implements HelperMethods {
 
   public static final class MethodOverride {
     public String name;
+    public String type;
     public String expression;
     public String className;
     public String javaDoc = "";

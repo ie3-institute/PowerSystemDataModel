@@ -27,11 +27,16 @@ public final class TypeRegistry {
             null,
             "new HashMap<>()"));
     registry.put(
+        "NodeList",
+        new TypeDefinition("java.util.List", List.of("NodeInput"), null, "new ArrayList<>()"));
+    registry.put(
         "OperatorInput",
         new TypeDefinition(
             "edu.ie3.datamodel.models.input.OperatorInput",
             "getEntity",
             "OperatorInput.NO_OPERATOR_ASSIGNED"));
+    registry.put(
+        "NodeInput", new TypeDefinition("edu.ie3.datamodel.models.input.NodeInput", "getEntity"));
     registry.put(
         "OperationTime",
         new TypeDefinition(

@@ -79,16 +79,21 @@ final class ModelGenerator implements HelperMethods {
     }
 
     for (GenerationConfig.MethodOverride override : genConfig.methodOverrides) {
-      var methodBuilder = MethodSpec.methodBuilder(override.name);
+      var methodBuilder =
+          MethodSpec.methodBuilder(override.name)
+              .returns(resolveType(override.type, model.packageName))
+              .addAnnotation(Override.class)
+              .addModifiers(Modifier.PUBLIC);
 
       if (override.className != null && !override.className.isBlank()) {
         methodBuilder.addStatement(
-                "return $T." + override.expression, getClassName(override.className));
+            "return $T." + override.expression, getClassName(override.className));
       } else {
         methodBuilder.addStatement("return " + override.expression);
       }
-    }
 
+      typeBuilder.addMethod(methodBuilder.build());
+    }
 
     typeBuilder.addFields(getStaticFields(model, genConfig));
     typeBuilder.addFields(model.getPrivateFields());
