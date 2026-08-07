@@ -74,14 +74,18 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "its_c_b88dee50-5484-4136-901d-050d8c1c97d1.csv",
       "its_c_c7b0d9d6-5044-4f51-80b4-f221d8b1f14b.csv"
     ].stream().map { file -> Path.of(file) }.collect(Collectors.toSet())
-    timeSeriesPaths.forEach { path -> Files.createFile(testBaseFolderPath.resolve(path)) }
+    timeSeriesPaths.forEach { path ->
+      Files.createFile(testBaseFolderPath.resolve(path))
+    }
 
     loadProfileTimeSeriesPaths = [
       "lpts_r1.csv",
       "lpts_r2.csv",
       "lpts_g0.csv"
     ].stream().map { file -> Path.of(file) }.collect(Collectors.toSet())
-    loadProfileTimeSeriesPaths.forEach { path -> Files.createFile(testBaseFolderPath.resolve(path)) }
+    loadProfileTimeSeriesPaths.forEach { path ->
+      Files.createFile(testBaseFolderPath.resolve(path))
+    }
   }
 
   def "A DataSource should contain a valid connector after initialization"() {
@@ -167,15 +171,15 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     expect:
     dummyCsvSource.buildFieldsToAttributes(validCsvRow, validHeadline) == [
       activePowerGradient: "25.0",
-      capex              : "100.0",
-      cosPhiRated        : "0.95",
-      etaConv            : "98.0",
-      id                 : "test_bmTypeInput",
-      opex               : "50.0",
-      sRated             : "25.0",
-      uuid               : "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8",
-      olmCharacteristic  : "olm:{(0.0,1.0)}",
-      cosPhiFixed        : "cosPhiFixed:{(0.0,1.0)}"
+      capex : "100.0",
+      cosPhiRated : "0.95",
+      etaConv : "98.0",
+      id : "test_bmTypeInput",
+      opex : "50.0",
+      sRated : "25.0",
+      uuid : "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8",
+      olmCharacteristic : "olm:{(0.0,1.0)}",
+      cosPhiFixed : "cosPhiFixed:{(0.0,1.0)}"
     ]
   }
 
@@ -184,8 +188,8 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     dummyCsvSource.parseCsvRow(csvRow, csvSep) as List == resultingArray
 
     where:
-    csvSep | csvRow                                                                                                                                                                                                                                                                                                                                                                                                              || resultingArray
-    ","    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\",\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\",\"node_a\",\"2020-03-25T15:11:31Z\",\"2020-03-24T15:11:31Z\",\"8f9682df-0744-4b58-a122-f0dc730f6510\",\"true\",\"1\",\"1.0\",\"Höchstspannung\",\"380.0\",\"olm:{(0.00,1.00)}\",\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
+    csvSep | csvRow || resultingArray
+    "," | "\"4ca90220-74c2-4369-9afa-a18bf068840d\",\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\",\"node_a\",\"2020-03-25T15:11:31Z\",\"2020-03-24T15:11:31Z\",\"8f9682df-0744-4b58-a122-f0dc730f6510\",\"true\",\"1\",\"1.0\",\"Höchstspannung\",\"380.0\",\"olm:{(0.00,1.00)}\",\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
       "4ca90220-74c2-4369-9afa-a18bf068840d",
       "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
       "node_a",
@@ -200,7 +204,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "olm:{(0.00,1.00)}",
       "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
     ]
-    ";"    | "\"4ca90220-74c2-4369-9afa-a18bf068840d\";\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\";\"node_a\";\"2020-03-25T15:11:31Z\";\"2020-03-24T15:11:31Z\";\"8f9682df-0744-4b58-a122-f0dc730f6510\";\"true\";\"1\";\"1.0\";\"Höchstspannung\";\"380.0\";\"olm:{(0.00,1.00)}\";\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
+    ";" | "\"4ca90220-74c2-4369-9afa-a18bf068840d\";\"{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}\";\"node_a\";\"2020-03-25T15:11:31Z\";\"2020-03-24T15:11:31Z\";\"8f9682df-0744-4b58-a122-f0dc730f6510\";\"true\";\"1\";\"1.0\";\"Höchstspannung\";\"380.0\";\"olm:{(0.00,1.00)}\";\"cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}\"" || [
       "4ca90220-74c2-4369-9afa-a18bf068840d",
       "{\"type\":\"Point\",\"coordinates\":[7.411111,51.492528],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
       "node_a",
@@ -215,7 +219,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "olm:{(0.00,1.00)}",
       "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
     ]
-    ","    | "1,abc,def,\"He said \"\"run, run\"\"\", 6.0, \"thats \"\"good\"\"\""                                                                                                                                                                                                                                                                                                                                               || [
+    "," | "1,abc,def,\"He said \"\"run, run\"\"\", 6.0, \"thats \"\"good\"\"\"" || [
       "1",
       "abc",
       "def",
@@ -223,7 +227,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "6.0",
       "thats \"good\""
     ]
-    ";"    | "1;abc;def;\"He said \"\"run, run\"\"\"; 6.0; \"thats \"\"good\"\"\""                                                                                                                                                                                                                                                                                                                                               || [
+    ";" | "1;abc;def;\"He said \"\"run, run\"\"\"; 6.0; \"thats \"\"good\"\"\"" || [
       "1",
       "abc",
       "def",
@@ -231,7 +235,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "6.0",
       "thats \"good\""
     ]
-    ";"    | "1;abc;def;\"He said \"\"run; run\"\"\"; 6.0; \"thats \"\"good\"\"\""                                                                                                                                                                                                                                                                                                                                               || [
+    ";" | "1;abc;def;\"He said \"\"run; run\"\"\"; 6.0; \"thats \"\"good\"\"\"" || [
       "1",
       "abc",
       "def",
@@ -239,14 +243,14 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "6.0",
       "thats \"good\""
     ]
-    ","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0"                                                                                                                                                                                                                                                                                                                                                       || [
+    "," | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0" || [
       "1",
       "abc",
       "def",
       "He said \"test, test\" and was happy",
       "5.0"
     ]
-    ","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\",\"obviously, yet.\", 5.0"                                                                                                                                                                                                                                                                                                                                   || [
+    "," | "1,abc,def,\"He said \"\"test, test\"\" and was happy\",\"obviously, yet.\", 5.0" || [
       "1",
       "abc",
       "def",
@@ -254,20 +258,20 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "obviously, yet.",
       "5.0"
     ]
-    ","    | "1,abc,def,\"He said \"\"test, test\"\"\", 5.0"                                                                                                                                                                                                                                                                                                                                                                     || [
+    "," | "1,abc,def,\"He said \"\"test, test\"\"\", 5.0" || [
       "1",
       "abc",
       "def",
       "He said \"test, test\"",
       "5.0"
     ]
-    ","    | "1,abc,def,\"He said \"\"test, test\"\"\""                                                                                                                                                                                                                                                                                                                                                                          || [
+    "," | "1,abc,def,\"He said \"\"test, test\"\"\"" || [
       "1",
       "abc",
       "def",
       "He said \"test, test\""
     ]
-    ","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0, \"... and felt like a \"\"genius\"\" with this.\""                                                                                                                                                                                                                                                                                                    || [
+    "," | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0, \"... and felt like a \"\"genius\"\" with this.\"" || [
       "1",
       "abc",
       "def",
@@ -275,7 +279,7 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
       "5.0",
       "... and felt like a \"genius\" with this."
     ]
-    ","    | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0, \"... and felt like a \"\"genius\"\" with this.\","                                                                                                                                                                                                                                                                                                   || [
+    "," | "1,abc,def,\"He said \"\"test, test\"\" and was happy\", 5.0, \"... and felt like a \"\"genius\"\" with this.\"," || [
       "1",
       "abc",
       "def",
@@ -305,15 +309,15 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     expect:
     dummyCsvSource.buildFieldsToAttributes(validCsvRow, validHeadline) == [
       activePowerGradient: "25.0",
-      capex              : "100.0",
-      cosPhiRated        : "0.95",
-      etaConv            : "98.0",
-      id                 : "test_bmTypeInput",
-      opex               : "50.0",
-      sRated             : "25.0",
-      uuid               : "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8",
-      olmCharacteristic  : "olm:{(0.0,1.0)}",
-      cosPhiFixed        : ""
+      capex : "100.0",
+      cosPhiRated : "0.95",
+      etaConv : "98.0",
+      id : "test_bmTypeInput",
+      opex : "50.0",
+      sRated : "25.0",
+      uuid : "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8",
+      olmCharacteristic : "olm:{(0.0,1.0)}",
+      cosPhiFixed : ""
     ]
   }
 
@@ -338,10 +342,10 @@ class CsvDataSourceTest extends Specification implements CsvTestDataMeta {
     exception.getMessage() == expectedMessage
 
     where:
-    invalidCsvRow                                                                          || explaination         || expectedMessage
-    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8;25.0;100.0;0.95;98.0;test_bmTypeInput;50.0;25.0" || "wrong separator"    || "The size of the headline (8) does not fit to the size of the attribute fields (1).\n     Headline fields: ['uuid', 'active_power_gradient', 'capex', 'cos_phi_rated', 'eta_conv', 'id', 'opex', 's_rated']\n     Row values: ['5ebd8f7e-dedb-4017-bb86-6373c4b68eb8;25.0;100.0;0.95;98.0;test_bmTypeInput;50.0;25.0'].\n     Please check:\n      - is the csv separator in the row matching the provided separator ','\n      - does the number of columns match the number of headline fields \n      - are you using a valid RFC 4180 formatted csv row?"
-    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput"           || "too little columns" || "The size of the headline (8) does not fit to the size of the attribute fields (6).\n     Headline fields: ['uuid', 'active_power_gradient', 'capex', 'cos_phi_rated', 'eta_conv', 'id', 'opex', 's_rated']\n     Row values: ['5ebd8f7e-dedb-4017-bb86-6373c4b68eb8', '25.0', '100.0', '0.95', '98.0', 'test_bmTypeInput'].\n     Please check:\n      - is the csv separator in the row matching the provided separator ','\n      - does the number of columns match the number of headline fields \n      - are you using a valid RFC 4180 formatted csv row?"
-    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,,,,"       || "too many columns"   || "The size of the headline (8) does not fit to the size of the attribute fields (10).\n     Headline fields: ['uuid', 'active_power_gradient', 'capex', 'cos_phi_rated', 'eta_conv', 'id', 'opex', 's_rated']\n     Row values: ['5ebd8f7e-dedb-4017-bb86-6373c4b68eb8', '25.0', '100.0', '0.95', '98.0', 'test_bmTypeInput', '', '', '', ''].\n     Please check:\n      - is the csv separator in the row matching the provided separator ','\n      - does the number of columns match the number of headline fields \n      - are you using a valid RFC 4180 formatted csv row?"
+    invalidCsvRow || explaination || expectedMessage
+    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8;25.0;100.0;0.95;98.0;test_bmTypeInput;50.0;25.0" || "wrong separator" || "The size of the headline (8) does not fit to the size of the attribute fields (1).\n     Headline fields: ['uuid', 'active_power_gradient', 'capex', 'cos_phi_rated', 'eta_conv', 'id', 'opex', 's_rated']\n     Row values: ['5ebd8f7e-dedb-4017-bb86-6373c4b68eb8;25.0;100.0;0.95;98.0;test_bmTypeInput;50.0;25.0'].\n     Please check:\n      - is the csv separator in the row matching the provided separator ','\n      - does the number of columns match the number of headline fields \n      - are you using a valid RFC 4180 formatted csv row?"
+    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput" || "too little columns" || "The size of the headline (8) does not fit to the size of the attribute fields (6).\n     Headline fields: ['uuid', 'active_power_gradient', 'capex', 'cos_phi_rated', 'eta_conv', 'id', 'opex', 's_rated']\n     Row values: ['5ebd8f7e-dedb-4017-bb86-6373c4b68eb8', '25.0', '100.0', '0.95', '98.0', 'test_bmTypeInput'].\n     Please check:\n      - is the csv separator in the row matching the provided separator ','\n      - does the number of columns match the number of headline fields \n      - are you using a valid RFC 4180 formatted csv row?"
+    "5ebd8f7e-dedb-4017-bb86-6373c4b68eb8,25.0,100.0,0.95,98.0,test_bmTypeInput,,,," || "too many columns" || "The size of the headline (8) does not fit to the size of the attribute fields (10).\n     Headline fields: ['uuid', 'active_power_gradient', 'capex', 'cos_phi_rated', 'eta_conv', 'id', 'opex', 's_rated']\n     Row values: ['5ebd8f7e-dedb-4017-bb86-6373c4b68eb8', '25.0', '100.0', '0.95', '98.0', 'test_bmTypeInput', '', '', '', ''].\n     Please check:\n      - is the csv separator in the row matching the provided separator ','\n      - does the number of columns match the number of headline fields \n      - are you using a valid RFC 4180 formatted csv row?"
   }
 
   def "A CsvDataSource should throw an exception if there are duplicate headlines"() {

@@ -49,7 +49,7 @@ class EntitySourceTest extends Specification {
     then:
     SourceException ex = thrown()
     ex.message == "1 exception(s) occurred within \"OperatorInput\" data: \n" +
-        "        An error occurred when creating instance of OperatorInput.class. Caused by: Field \"id\" not found in EntityData"
+    "        An error occurred when creating instance of OperatorInput.class. Caused by: Field \"id\" not found in EntityData"
   }
 
   def "An EntitySource can build EntityData correctly"() {
@@ -70,7 +70,7 @@ class EntitySourceTest extends Specification {
     Map<String, String> parameter = ["operator": GridTestData.profBroccoli.uuid.toString()]
     def entityMap = map([GridTestData.profBroccoli])
     def source = DummyDataSource.of(parameter)
-    def fcn = enrich("operator", entityMap, AssetInputEntityData::new)
+    def fcn = enrich("operator", entityMap, AssetInputEntityData: : new)
 
     when:
     def actual = buildEntityData(DummyAssetInput, source, fcn).toList()
@@ -89,7 +89,7 @@ class EntitySourceTest extends Specification {
     def entityMap = map([GridTestData.profBroccoli])
     def entityData1 = new EntityData(["operator": GridTestData.profBroccoli.uuid.toString()], NodeInput)
     def entityData2 = new EntityData(["operator": ""], NodeInput)
-    def fcn = enrichWithDefault("operator", entityMap, OperatorInput.NO_OPERATOR_ASSIGNED, AssetInputEntityData::new)
+    def fcn = enrichWithDefault("operator", entityMap, OperatorInput.NO_OPERATOR_ASSIGNED, AssetInputEntityData: : new)
 
     when:
     def enrichedWithEntity = fcn.apply(new Try.Success<>(entityData1))
@@ -107,7 +107,7 @@ class EntitySourceTest extends Specification {
     given:
     def entityMap = map([GridTestData.profBroccoli])
     def entityData = new EntityData(["operator": GridTestData.profBroccoli.uuid.toString()], NodeInput)
-    def fcn = enrich("operator", entityMap, AssetInputEntityData::new)
+    def fcn = enrich("operator", entityMap, AssetInputEntityData: : new)
 
     when:
     def enrichedData = fcn.apply(new Try.Success<>(entityData))
@@ -124,7 +124,7 @@ class EntitySourceTest extends Specification {
       GridTestData.nodeB
     ])
     def entityData = new AssetInputEntityData(["nodeA": GridTestData.nodeA.uuid.toString(), "nodeB": GridTestData.nodeB.uuid.toString()], LineInput)
-    def fcn = biEnrich("nodeA", entityMap, "nodeB", entityMap, ConnectorInputEntityData::new)
+    def fcn = biEnrich("nodeA", entityMap, "nodeB", entityMap, ConnectorInputEntityData: : new)
 
     when:
     def enrichedData = fcn.apply(new Try.Success<>(entityData))
@@ -139,7 +139,7 @@ class EntitySourceTest extends Specification {
     given:
     def entityData = new EntityData(["operator": ""], NodeInput)
     def pair = Pair.of(entityData, GridTestData.profBroccoli)
-    def fcn = enrichFunction(["operator"], AssetInputEntityData::new)
+    def fcn = enrichFunction(["operator"], AssetInputEntityData: : new)
 
     when:
     def result = fcn.apply(pair)
@@ -175,8 +175,8 @@ class EntitySourceTest extends Specification {
     actual.exception.get().message == expectedMessage
 
     where:
-    fieldsToAttributes                                      | entityMap                                 | expectedMessage
-    ["operator": "no uuid"]                                 | map([
+    fieldsToAttributes | entityMap | expectedMessage
+    ["operator": "no uuid"] | map([
       OperatorInput.NO_OPERATOR_ASSIGNED
     ]) | "Extracting UUID for field 'operator' failed. Caused by: Exception while trying to parse UUID of field \"operator\" with value \"no uuid\""
     ["operator": GridTestData.profBroccoli.uuid.toString()] | map([

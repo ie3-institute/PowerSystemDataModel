@@ -247,13 +247,29 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       lines.size() == expected.lines.size()
       lines.each {entry -> expected.lines.contains({it.uuid == entry.uuid})}
       transformer2Ws.size() == expected.transformer2Ws.size()
-      transformer2Ws.each {entry -> expected.transformer2Ws.contains({it.uuid == entry.uuid})}
+      transformer2Ws.each {entry ->
+        expected.transformer2Ws.contains({
+          it.uuid == entry.uuid
+        })
+      }
       transformer3Ws.size() == expected.transformer3Ws.size()
-      transformer3Ws.each {entry -> expected.transformer3Ws.contains({it.uuid == entry.uuid})}
+      transformer3Ws.each {entry ->
+        expected.transformer3Ws.contains({
+          it.uuid == entry.uuid
+        })
+      }
       switches.size() == expected.switches.size()
-      switches.each {entry -> expected.switches.contains({it.uuid == entry.uuid})}
+      switches.each {entry ->
+        expected.switches.contains({
+          it.uuid == entry.uuid
+        })
+      }
       measurementUnits.size() == expected.measurementUnits.size()
-      measurementUnits.each {entry -> expected.measurementUnits.contains({it.uuid == entry.uuid})}
+      measurementUnits.each {entry ->
+        expected.measurementUnits.contains({
+          it.uuid == entry.uuid
+        })
+      }
     }
   }
 

@@ -23,12 +23,12 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     def coordinate = CosmoWeatherTestData.COORDINATE_193186
 
     Map<String, String> parameter = [
-      "time"                    : "2019-01-01T00:00:00Z",
-      "diffuseIrradiance"       : "282.671997070312",
-      "directIrradiance"        : "286.872985839844",
-      "temperature"             : "",
-      "windDirection"           : "0",
-      "windVelocity"            : "1.66103506088257",
+      "time" : "2019-01-01T00:00:00Z",
+      "diffuseIrradiance" : "282.671997070312",
+      "directIrradiance" : "286.872985839844",
+      "temperature" : "",
+      "windDirection" : "0",
+      "windVelocity" : "1.66103506088257",
       "groundTemperatureLevel1" : "",
       "groundTemperatureLevel2" : ""
     ]
@@ -51,12 +51,12 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
 
     Map<String, String> parameter = [
-      "time"                   : TimeUtil.withDefaults.toString(time),
-      "diffuseIrradiance"      : "282.671997070312",
-      "directIrradiance"       : "286.872985839844",
-      "temperature"            : "278.019012451172",
-      "windDirection"          : "0",
-      "windVelocity"           : "1.66103506088257",
+      "time" : TimeUtil.withDefaults.toString(time),
+      "diffuseIrradiance" : "282.671997070312",
+      "directIrradiance" : "286.872985839844",
+      "temperature" : "278.019012451172",
+      "windDirection" : "0",
+      "windVelocity" : "1.66103506088257",
       "groundTemperatureLevel1": "278.019012451172",
       "groundTemperatureLevel2": ""
     ]
@@ -77,7 +77,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     def model = factory.buildModel(data)
 
     then:
-    Objects.equals(model,expectedResults)
+    Objects.equals(model, expectedResults)
   }
 
   def "A PsdmTimeBasedWeatherValueFactory should throw FactoryException if required field is missing"() {
@@ -87,11 +87,11 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
 
     // Missing 'directIrradiance' field
     Map<String, String> parameter = [
-      "time"             : "2019-01-01T00:00:00Z",
+      "time" : "2019-01-01T00:00:00Z",
       "diffuseIrradiance": "182.671997070312",
-      "temperature"      : "278.019012451172",
-      "windDirection"    : "50",
-      "windVelocity"     : "1.66103506088257"
+      "temperature" : "278.019012451172",
+      "windDirection" : "50",
+      "windVelocity" : "1.66103506088257"
     ]
 
     def data = new TimeBasedWeatherValueData(parameter, coordinate)
@@ -110,12 +110,12 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
 
     Map<String, String> parameter = [
-      "time"             : TimeUtil.withDefaults.toString(time),
+      "time" : TimeUtil.withDefaults.toString(time),
       "diffuseIrradiance": "1.0",
       "directIrradiance" : "2.0",
-      "temperature"      : "3.0",
-      "windDirection"    : "4",
-      "windVelocity"     : "5.0"
+      "temperature" : "3.0",
+      "windDirection" : "4",
+      "windVelocity" : "5.0"
     ]
 
     def data = new TimeBasedWeatherValueData(parameter, coordinate)
@@ -134,6 +134,6 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     def model = factory.buildModel(data)
 
     then:
-    !Objects.equals(model,expectedResults)
+    !Objects.equals(model, expectedResults)
   }
 }

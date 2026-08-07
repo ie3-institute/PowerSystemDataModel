@@ -32,13 +32,13 @@ class EnergyBoundariesFlexOptionsResultFactoryTest extends Specification impleme
     given: "the relevant factory and model data"
     def resultFactory = new EnergyBoundariesFlexOptionsResultFactory()
     Map<String, String> parameter = [
-      "time"      : "2020-01-30T17:26:44Z",
+      "time" : "2020-01-30T17:26:44Z",
       "inputModel": "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
-      "estate"    : "0",
-      "emin"      : "-0.05",
-      "emax"      : "0.05",
-      "pmin"      : "-1",
-      "pmax"      : "10",
+      "estate" : "0",
+      "emin" : "-0.05",
+      "emax" : "0.05",
+      "pmin" : "-1",
+      "pmax" : "10",
     ]
 
     when:

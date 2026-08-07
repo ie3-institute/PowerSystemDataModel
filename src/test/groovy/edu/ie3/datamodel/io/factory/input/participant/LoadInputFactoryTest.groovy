@@ -43,13 +43,13 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
     when:
     def inputFactory = new LoadInputFactory()
     Map<String, String> parameter = [
-      "uuid"               : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id"                 : "TestID",
-      "qcharacteristics"   : "cosPhiFixed:{(0.0,1.0)}",
-      "loadprofile"	     : profileKey,
-      "econsannual"        : "3",
-      "srated"             : "4",
-      "cosphirated"        : "5"
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id" : "TestID",
+      "qcharacteristics" : "cosPhiFixed:{(0.0,1.0)}",
+      "loadprofile" : profileKey,
+      "econsannual" : "3",
+      "srated" : "4",
+      "cosphirated" : "5"
     ]
     Try<LoadInput, FactoryException> input = inputFactory.get(
         new SystemParticipantEntityData(parameter, inputClass, nodeInput, emUnit))
@@ -78,7 +78,7 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
 
     where:
     profileKey || profile
-    "G-4"      || BdewStandardLoadProfile.G4.key
-    "ep1"      || NbwTemperatureDependantLoadProfile.EP1.key
+    "G-4" || BdewStandardLoadProfile.G4.key
+    "ep1" || NbwTemperatureDependantLoadProfile.EP1.key
   }
 }
