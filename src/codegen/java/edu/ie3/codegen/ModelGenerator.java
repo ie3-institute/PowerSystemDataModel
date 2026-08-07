@@ -12,10 +12,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.squareup.javapoet.*;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.lang.model.element.Modifier;
 
 final class ModelGenerator implements HelperMethods {
@@ -77,9 +74,21 @@ final class ModelGenerator implements HelperMethods {
       typeBuilder.superclass(resolveClassName(model.extendsName, model.packageName));
     }
 
-    for (String interfaceName : model.inherits) {
+    for (String interfaceName : genConfig.inherits) {
       typeBuilder.addSuperinterface(resolveClassName(interfaceName, model.packageName));
     }
+
+    for (GenerationConfig.MethodOverride override : genConfig.methodOverrides) {
+      var methodBuilder = MethodSpec.methodBuilder(override.name);
+
+      if (override.className != null && !override.className.isBlank()) {
+        methodBuilder.addStatement(
+                "return $T." + override.expression, getClassName(override.className));
+      } else {
+        methodBuilder.addStatement("return " + override.expression);
+      }
+    }
+
 
     typeBuilder.addFields(getStaticFields(model, genConfig));
     typeBuilder.addFields(model.getPrivateFields());

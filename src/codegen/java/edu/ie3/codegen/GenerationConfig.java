@@ -19,6 +19,8 @@ public final class GenerationConfig implements HelperMethods {
 
   public String fromMapConstructor;
 
+  public List<String> inherits = new ArrayList<>();
+
   public boolean getters = true;
 
   public boolean equals = true;
@@ -32,6 +34,8 @@ public final class GenerationConfig implements HelperMethods {
   public List<StaticFieldDefinition> staticFields = new ArrayList<>();
 
   public Map<String, GetterOptions> getterOptions = new HashMap<>();
+
+  public List<MethodOverride> methodOverrides = new ArrayList<>();
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // helper definition
@@ -57,6 +61,13 @@ public final class GenerationConfig implements HelperMethods {
   public static final class GetterOptions {
     public boolean optional = false;
     public boolean capitalize = true;
+    public String javaDoc = "";
+  }
+
+  public static final class MethodOverride {
+    public String name;
+    public String expression;
+    public String className;
     public String javaDoc = "";
   }
 }

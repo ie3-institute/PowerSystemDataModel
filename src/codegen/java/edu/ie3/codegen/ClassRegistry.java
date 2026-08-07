@@ -7,8 +7,10 @@ package edu.ie3.codegen;
 
 import com.squareup.javapoet.ClassName;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 public final class ClassRegistry {
@@ -22,13 +24,14 @@ public final class ClassRegistry {
   }
 
   static {
-    Stream.of(Serializable.class, String.class).forEach(ClassRegistry::add);
+    Stream.of(Serializable.class, String.class, Collections.class, UUID.class).forEach(ClassRegistry::add);
     registry.put("InputEntity", ClassName.get("edu.ie3.datamodel.models.input", "InputEntity"));
     registry.put("UniqueEntity", ClassName.get("edu.ie3.datamodel.models", "UniqueEntity"));
     registry.put("Entity", ClassName.get("edu.ie3.datamodel.models", "Entity"));
     registry.put("Uniqueness", ClassName.get("edu.ie3.datamodel.models", "Uniqueness"));
     registry.put("Operable", ClassName.get("edu.ie3.datamodel.models", "Operable"));
     registry.put("Dimensionless", ClassName.get("javax.measure.quantity", "Dimensionless"));
+    registry.put("GeoUtils", ClassName.get("edu.ie3.util.geo", "GeoUtils"));
   }
 
   public static boolean containsKey(String name) {

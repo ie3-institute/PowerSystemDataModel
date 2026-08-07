@@ -24,8 +24,6 @@ public final class ModelDefinition implements HelperMethods {
   @JsonProperty("extends")
   public String extendsName;
 
-  public List<String> inherits = new ArrayList<>();
-
   public List<ComponentDefinition> components = new ArrayList<>();
 
   public List<FieldSpec> getPrivateFields() {

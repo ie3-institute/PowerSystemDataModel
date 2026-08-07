@@ -1,6 +1,7 @@
 models:
   UniqueEntity:
     classJavaDoc: "Supplies every subclass with a generated UUID, making it unique."
+    inherits: [Entity, Uniqueness, Serializable]
     constructors:
       - name: minimal
         components: []
@@ -9,6 +10,7 @@ models:
 
   UniqueInputEntity:
     classJavaDoc: "Functionless class to describe that all subclasses are unique input classes."
+    inherits: [InputEntity]
     constructors:
       - name: minimal
         components: [uuid]
@@ -16,6 +18,7 @@ models:
 
   AssetInput:
     classJavaDoc: "Describes a grid asset under the assumption that every asset could be operable."
+    inherits: [Operable]
     constructors:
       - name: full
         components: [uuid, id, operator, operationTime]
@@ -90,9 +93,91 @@ models:
     getterOptions:
       vTarget:
         capitalize: false
-
     fromMap: true
     fromMapConstructor: full
     resolverOrder: [operator]
+
+  OperatorInput:
+    classJavaDoc: "Describes an operator, that operates assets."
+    constructors:
+      - name: minimal
+        components: [uuid, id]
+        superArgs: [uuid]
+        javaDoc: "Constructor for an Operator.\n
+                 \n
+                 @param uuid Unique identifier\n
+                 @param id Human readable identifier"
+      - name: withAdditionalInformation
+        components: [uuid, id, additionalInformation]
+        superArgs: [uuid]
+        javaDoc: "Constructor for an Operator.\n
+                 \n
+                 @param uuid Unique identifier\n
+                 @param id Human readable identifier\n
+                 @param additionalInformation That were provided by the source"
+    staticFields:
+      - name: NO_OPERATOR_ASSIGNED
+        type: OperatorInput
+        expression: new OperatorInput(UUID.randomUUID(), "NO_OPERATOR_ASSIGNED")
+    fromMap: true
+    fromMapConstructor: minimal
+
+  MeasurementUnitInput:
+    classJavaDoc: "Model of a measuring unit attached to a certain {@link NodeInput}."
+    inherits: [HasNode]
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, node, vMag, vAng, p, q]
+        superArgs: [uuid, id, operator, operationTime]
+        javaDoc: "Constructor for an operated measurement unit.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node Grid node, the asset is attached to\n
+                 @param vMag True, if the voltage magnitude is measured\n
+                 @param vAng True, if the voltage angle is measured\n
+                 @param p True, if the nodal residual active power is measured\n
+                 @param q True, if the reactive power is measured"
+      - name: fullWithAdditionalInformation
+        components: [ uuid, id, operator, operationTime, node, vMag, vAng, p, q, additionalInformation ]
+        superArgs: [ uuid, id, operator, operationTime ]
+        javaDoc: "Constructor for an operated measurement unit.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node Grid node, the asset is attached to\n
+                 @param vMag True, if the voltage magnitude is measured\n
+                 @param vAng True, if the voltage angle is measured\n
+                 @param p True, if the nodal residual active power is measured\n
+                 @param q True, if the reactive power is measured\n
+                 @param additionalInformation That were provided by the source"
+      - name: minimal
+        components: [uuid, id, node, vMag, vAng, p, q]
+        superArgs: [uuid, id]
+        javaDoc: "Constructor for an operated measurement unit.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param node Grid node, the asset is attached to\n
+                 @param vMag True, if the voltage magnitude is measured\n
+                 @param vAng True, if the voltage angle is measured\n
+                 @param p True, if the nodal residual active power is measured\n
+                 @param q True, if the reactive power is measured"
+    fromMap: true
+    fromMapConstructor: full
+    resolverOrder: [operator]
+    methodOverrides:
+      - name: allNodes
+        expression: singletonList(node)
+        className: Collections
+
+
+
+
+
 
 

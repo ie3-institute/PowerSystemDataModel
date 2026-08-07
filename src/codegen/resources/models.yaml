@@ -2,8 +2,6 @@ models:
   UniqueEntity:
     name: UniqueEntity
     package: edu.ie3.datamodel.models
-    inherits: [Entity, Uniqueness, Serializable]
-
     components:
       - name: uuid
         type: UUID
@@ -14,8 +12,6 @@ models:
     name: UniqueInputEntity
     package: edu.ie3.datamodel.models.input
     extends: UniqueEntity
-    inherits: [InputEntity]
-
     components:
       - name: additionalInformation
         type: StringMap
@@ -26,8 +22,6 @@ models:
     name: AssetInput
     package: edu.ie3.datamodel.models.input
     extends: UniqueInputEntity
-    inherits: [Operable]
-
     components:
       - name: id
         type: String
@@ -48,7 +42,6 @@ models:
     package: edu.ie3.datamodel.models.input
     class: true
     extends: AssetInput
-
     components:
       - name: vTarget
         type: Dimensionless
@@ -66,4 +59,45 @@ models:
       - name: subnet
         type: int
         javaDoc: "Subgrid of this node."
+
+  OperatorInput:
+    name: OperatorInput
+    package: edu.ie3.datamodel.models.input
+    class: true
+    extends: UniqueInputEntity
+    components:
+      - name: id
+        type: String
+        javaDoc: "The id (=name) of this operator."
+
+  MeasurementUnitInput:
+    name: MeasurementUnitInput
+    package: edu.ie3.datamodel.models.input
+    class: true
+    extends: AssetInput
+    components:
+      - name: node
+        type: NodeInput
+        javaDoc: "Grid node, the asset is attached to."
+      - name: vMag
+        type: bool
+        javaDoc: "True, if the voltage magnitude is measured."
+      - name: vAng
+        type: bool
+        javaDoc: "True, if the voltage angle is measured."
+      - name: p
+        type: bool
+        javaDoc: "True, if the nodal residual active power is measured."
+      - name: q
+        type: bool
+        javaDoc: "True, if the reactive power is measured."
+
+
+
+
+
+
+
+
+
 

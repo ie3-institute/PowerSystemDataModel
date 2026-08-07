@@ -17,14 +17,9 @@ public interface HelperMethods {
   ClassName STRING = ClassName.get(String.class);
   ClassName UUID_CLASS = ClassName.get(UUID.class);
   ClassName CONVERSION_UTILS = ClassName.get("edu.ie3.datamodel.utils", "ConversionUtils");
-  ClassName GEO_UTILS = ClassName.get("edu.ie3.util.geo", "GeoUtils");
 
   static ClassName getClassName(String name) {
-    return switch (name) {
-      case "GeoUtils" -> GEO_UTILS;
-      case "UUID" -> UUID_CLASS;
-      default -> throw new IllegalArgumentException("Could not resolve class: " + name);
-    };
+    return ClassRegistry.get(name);
   }
 
   static CodeBlock indent(CodeBlock codeBlock) {
