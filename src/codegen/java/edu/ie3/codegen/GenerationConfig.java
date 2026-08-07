@@ -1,44 +1,61 @@
+/*
+ * © 2026. TU Dortmund University,
+ * Institute of Energy Systems, Energy Efficiency and Energy Economics,
+ * Research group Distribution grid planning and operation
+*/
 package edu.ie3.codegen;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public final class GenerationConfig implements HelperMethods {
-    public List<ConstructorDefinition> constructors = new ArrayList<>();
+  public String classJavaDoc = "";
 
-    public List<String> resolverOrder = new ArrayList<>();
+  public List<ConstructorDefinition> constructors = new ArrayList<>();
 
-    public String fromMapConstructor;
+  public List<String> resolverOrder = new ArrayList<>();
 
-    public boolean getters = true;
+  public String fromMapConstructor;
 
-    public boolean equals = true;
+  public boolean getters = true;
 
-    public boolean hashCode = true;
+  public boolean equals = true;
 
-    public boolean toString = true;
+  public boolean hashCode = true;
 
-    public boolean fromMap = false;
+  public boolean toString = true;
 
-    public List<StaticFieldDefinition> staticFields = new ArrayList<>();
+  public boolean fromMap = false;
 
-    public List<String> optionalGetters = new ArrayList<>();
+  public List<StaticFieldDefinition> staticFields = new ArrayList<>();
 
-    // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-    // helper definition
+  public Map<String, GetterOptions> getterOptions = new HashMap<>();
 
-    public static final class ConstructorDefinition {
-        public String name;
+  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  // helper definition
 
-        public List<String> superArgs;
+  public static final class ConstructorDefinition {
+    public String name;
 
-        public List<String> components = new ArrayList<>();
-    }
+    public List<String> superArgs;
 
-    public static final class StaticFieldDefinition {
-        public String name;
-        public String type;
-        public String expression;
-        public String className;
-    }
+    public List<String> components = new ArrayList<>();
+  }
+
+  public static final class StaticFieldDefinition {
+    public String name;
+    public String type;
+    public String expression;
+    public String className;
+    public String javaDoc = "";
+  }
+
+  public static final class GetterOptions {
+    public boolean optional = false;
+    public boolean capitalize = true;
+    public String javaDoc = "";
+  }
 }

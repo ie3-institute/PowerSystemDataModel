@@ -111,7 +111,6 @@ dependencies {
 
 tasks.withType(JavaCompile).configureEach {
   if (!it.name.startsWith("compileCodegen")) {
-      dependsOn generateModelSources
   }
   options.encoding = 'UTF-8'
 }

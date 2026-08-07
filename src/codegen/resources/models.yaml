@@ -1,7 +1,7 @@
 models:
   UniqueEntity:
     name: UniqueEntity
-    package: edu.ie3.datamodel.models2
+    package: edu.ie3.datamodel.models
     inherits: [Entity, Uniqueness, Serializable]
 
     components:
@@ -12,8 +12,9 @@ models:
 
   UniqueInputEntity:
     name: UniqueInputEntity
-    package: edu.ie3.datamodel.models2.input
+    package: edu.ie3.datamodel.models.input
     extends: UniqueEntity
+    inherits: [InputEntity]
 
     components:
       - name: additionalInformation
@@ -23,35 +24,46 @@ models:
 
   AssetInput:
     name: AssetInput
-    package: edu.ie3.datamodel.models2.input
+    package: edu.ie3.datamodel.models.input
     extends: UniqueInputEntity
-    inherits: []
+    inherits: [Operable]
 
     components:
       - name: id
         type: String
         required: true
+        javaDoc: "Name or ID of the asset."
       - name: operator
         type: OperatorInput
         required: false
+        javaDoc: "The operator of this asset."
       - name: operationTime
         type: OperationTime
         keys: [operationStart, operationEnd]
         required: false
+        javaDoc: "Time for which the entity is operated."
 
   NodeInput:
     name: NodeInput
-    package: edu.ie3.datamodel.models2.input
+    package: edu.ie3.datamodel.models.input
     class: true
     extends: AssetInput
 
     components:
       - name: vTarget
         type: Dimensionless
+        javaDoc: "Target voltage magnitude of the node with regard to its rated voltage (typically in p.u.)."
       - name: slack
         type: bool
+        javaDoc: "Is this node a slack node?"
       - name: geoPosition
         type: Point
+        javaDoc: "The coordinates of this node, especially relevant for geo-dependant systems, that are connected to this node."
+      - name: voltLvl
+        type: VoltageLevel
+        keys: [voltLvl, vRated]
+        javaDoc: "Voltage level of this node."
       - name: subnet
         type: int
+        javaDoc: "Subgrid of this node."
 

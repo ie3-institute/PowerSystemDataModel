@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.naming;
 
-import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.connector.ConnectorInput;
 
 /** Class that contains all known field names. */
@@ -16,7 +15,7 @@ public class FieldNamingStrategy {
   public static final String OPERATOR = "operator";
   public static final String OPERATES_FROM = "operatesFrom";
   public static final String OPERATES_UNTIL = "operatesUntil";
-  public static final String UUID = UniqueEntity.UUID_FIELD_NAME;
+  public static final String UUID_FIELD_NAME = "uuid";
   public static final String GEO_POSITION = "geoPosition";
   public static final String NODE = "node";
 

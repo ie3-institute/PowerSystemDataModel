@@ -21,7 +21,7 @@ public class Transformer3WTypeInputFactory
 
   @Override
   protected Transformer3WTypeInput buildModel(EntityData data) {
-    UUID uuid = data.getUUID(UUID);
+    UUID uuid = data.getUUID(UUID_FIELD_NAME);
     String id = data.getField(ID);
     ComparableQuantity<Power> sRatedA = data.getQuantity(S_RATED_A, StandardUnits.S_RATED);
     ComparableQuantity<Power> sRatedB = data.getQuantity(S_RATED_B, StandardUnits.S_RATED);

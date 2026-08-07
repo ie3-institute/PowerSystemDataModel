@@ -1,108 +1,94 @@
-/*
- * © 2021. TU Dortmund University,
- * Institute of Energy Systems, Energy Efficiency and Energy Economics,
- * Research group Distribution grid planning and operation
-*/
 package edu.ie3.datamodel.models.input;
 
 import edu.ie3.datamodel.models.Operable;
 import edu.ie3.datamodel.models.OperationTime;
-
 import java.util.Objects;
 import java.util.UUID;
 
-/** Describes a grid asset under the assumption that every asset could be operable */
+/**
+ * Describes a grid asset under the assumption that every asset could be operable.
+ */
 public abstract class AssetInput extends UniqueInputEntity implements Operable {
-  /** Time for which the entity is operated */
-  private final OperationTime operationTime;
-
-  /** The operator of this asset */
-  private final OperatorInput operator;
-
-  /** Name or ID of the asset */
+  /**
+   * Name or ID of the asset.
+   */
   private final String id;
 
   /**
-   * Constructor for an asset with timely limited operation and specific operator
-   *
-   * @param uuid Unique identifier
-   * @param id Human-readable identifier
-   * @param operator Operator of the asset
-   * @param operationTime Operation time limitation
+   * The operator of this asset.
    */
-  protected AssetInput(UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
-    super(uuid);
-    this.operationTime = operationTime;
-    this.operator = operator;
-    this.id = id;
-  }
+  private final OperatorInput operator;
 
   /**
-   * Constructor for an asset with timely unlimited operation and unassigned operator
-   *
-   * @param uuid Unique identifier
-   * @param id Human-readable identifier
+   * Time for which the entity is operated.
    */
-  protected AssetInput(UUID uuid, String id) {
-    this(uuid, id, OperatorInput.NO_OPERATOR_ASSIGNED, OperationTime.notLimited());
+  private final OperationTime operationTime;
+
+  public AssetInput(UUID uuid, String id) {
+    super(uuid);
+    this.id = id;
+    this.operator = OperatorInput.NO_OPERATOR_ASSIGNED;
+    this.operationTime = OperationTime.notLimited();
   }
 
-  @Override
-  public OperationTime getOperationTime() {
-    return operationTime;
-  }
-
-  @Override
-  public OperatorInput getOperator() {
-    return operator;
+  public AssetInput(UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
+    super(uuid);
+    this.id = id;
+    this.operator = operator;
+    this.operationTime = operationTime;
   }
 
   public String getId() {
     return id;
   }
 
+  public OperatorInput getOperator() {
+    return operator;
+  }
+
+  public OperationTime getOperationTime() {
+    return operationTime;
+  }
+
+  @Override
   public abstract AssetInputCopyBuilder<?> copy();
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof AssetInput that)) return false;
-    if (!super.equals(o)) return false;
-    return Objects.equals(operationTime, that.operationTime)
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof AssetInput that)) {
+      return false;
+    }
+    if (!super.equals(o)) {
+      return false;
+    }
+    return Objects.equals(id, that.id)
         && Objects.equals(operator, that.operator)
-        && Objects.equals(id, that.id);
+        && Objects.equals(operationTime, that.operationTime);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), operationTime, operator, id);
+    return Objects.hash(super.hashCode(), id, operator, operationTime);
   }
 
   @Override
   public String toString() {
     return "AssetInput{"
-        + "uuid="
-        + getUuid()
-        + ", id="
-        + id
-        + ", operator="
-        + operator.getUuid()
-        + ", operationTime="
-        + operationTime
+        + "uuid=" + getUuid()
+        + ", id=" + getId()
+        + ", operator=" + getOperator()
+        + ", operationTime=" + getOperationTime()
         + '}';
   }
 
-  /**
-   * Abstract class for all builder that build child entities of abstract class {@link AssetInput}
-   *
-   * @version 0.1
-   * @since 05.06.20
-   */
-  public abstract static class AssetInputCopyBuilder<B extends AssetInputCopyBuilder<B>>
-      extends UniqueInputEntityCopyBuilder<B> {
-
+  public abstract static class AssetInputCopyBuilder<B extends AssetInputCopyBuilder<B>> extends UniqueInputEntity.UniqueInputEntityCopyBuilder<B> {
     private String id;
+
     private OperatorInput operator;
+
     private OperationTime operationTime;
 
     protected AssetInputCopyBuilder(AssetInput entity) {
@@ -117,22 +103,22 @@ public abstract class AssetInput extends UniqueInputEntity implements Operable {
       return thisInstance();
     }
 
+    protected String getId() {
+      return id;
+    }
+
     public B operator(OperatorInput operator) {
       this.operator = operator;
       return thisInstance();
     }
 
+    protected OperatorInput getOperator() {
+      return operator;
+    }
+
     public B operationTime(OperationTime operationTime) {
       this.operationTime = operationTime;
       return thisInstance();
-    }
-
-    protected String getId() {
-      return id;
-    }
-
-    protected OperatorInput getOperator() {
-      return operator;
     }
 
     protected OperationTime getOperationTime() {

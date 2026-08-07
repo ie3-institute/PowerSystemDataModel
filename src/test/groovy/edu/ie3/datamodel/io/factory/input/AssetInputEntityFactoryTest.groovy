@@ -29,7 +29,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
   def setupSpec() {
     // registering fields for the asset
-    ModelFields.register(TestAssetInput, newSet(FieldNamingStrategy.UUID, ID), newSet(OPERATOR, OPERATES_FROM, OPERATES_UNTIL))
+    ModelFields.register(TestAssetInput, newSet(FieldNamingStrategy.UUID_FIELD_NAME, ID), newSet(OPERATOR, OPERATES_FROM, OPERATES_UNTIL))
   }
 
   def "An AssetInputFactory should contain exactly the expected class for parsing"() {

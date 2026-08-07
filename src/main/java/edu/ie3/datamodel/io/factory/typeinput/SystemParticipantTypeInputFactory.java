@@ -35,7 +35,7 @@ public class SystemParticipantTypeInputFactory
 
   @Override
   protected SystemParticipantTypeInput buildModel(EntityData data) {
-    UUID uuid = data.getUUID(UUID);
+    UUID uuid = data.getUUID(UUID_FIELD_NAME);
     String id = data.getField(ID);
     ComparableQuantity<Currency> capEx = data.getQuantity(CAP_EX, StandardUnits.CAPEX);
     ComparableQuantity<EnergyPrice> opEx = data.getQuantity(OP_EX, StandardUnits.ENERGY_PRICE);

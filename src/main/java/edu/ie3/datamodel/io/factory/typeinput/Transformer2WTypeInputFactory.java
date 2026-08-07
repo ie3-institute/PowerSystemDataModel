@@ -21,7 +21,7 @@ public class Transformer2WTypeInputFactory
 
   @Override
   protected Transformer2WTypeInput buildModel(EntityData data) {
-    UUID uuid = data.getUUID(UUID);
+    UUID uuid = data.getUUID(UUID_FIELD_NAME);
     String id = data.getField(ID);
     ComparableQuantity<ElectricResistance> rSc = data.getQuantity(R_SC, StandardUnits.RESISTANCE);
     ComparableQuantity<ElectricResistance> xSc = data.getQuantity(X_SC, StandardUnits.REACTANCE);

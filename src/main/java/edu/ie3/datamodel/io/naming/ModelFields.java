@@ -187,7 +187,7 @@ public final class ModelFields extends FieldNamingStrategy {
   // code for registering the fields for known assets
 
   // basic asset fields
-  private static final Set<String> assetFields = newSet(UUID, ID);
+  private static final Set<String> assetFields = newSet(UUID_FIELD_NAME, ID);
   private static final Set<String> assetOptionalFields =
       newSet(OPERATOR, OPERATES_FROM, OPERATES_UNTIL);
 

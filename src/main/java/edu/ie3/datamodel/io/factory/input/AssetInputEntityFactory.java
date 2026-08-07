@@ -30,7 +30,7 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
 
   @Override
   protected T buildModel(D data) {
-    UUID uuid = data.getUUID(UUID);
+    UUID uuid = data.getUUID(UUID_FIELD_NAME);
     String id = data.getField(ID);
     OperatorInput operator = data.getOperatorInput();
     OperationTime operationTime = buildOperationTime(data);

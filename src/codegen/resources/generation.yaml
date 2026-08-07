@@ -5,16 +5,15 @@ models:
         components: []
       - name: full
         components: [uuid]
-    optionalGetters: []
 
   UniqueInputEntity:
     constructors:
       - name: minimal
         components: [uuid]
         superArgs: [uuid]
-    optionalGetters: []
 
   AssetInput:
+    classJavaDoc: "Describes a grid asset under the assumption that every asset could be operable."
     constructors:
       - name: minimal
         components: [uuid, id]
@@ -22,23 +21,28 @@ models:
       - name: full
         components: [uuid, id, operator, operationTime]
         superArgs: [uuid]
-    optionalGetters: []
 
   NodeInput:
     constructors:
       - name: minimal
-        components: [uuid, id, vTarget, slack, geoPosition, subnet]
+        components: [uuid, id, vTarget, slack, geoPosition, voltLvl, subnet]
         superArgs: [uuid, id]
       - name: full
-        components: [uuid, id, operator, operationTime, vTarget, slack, geoPosition, subnet]
+        components: [uuid, id, operator, operationTime, vTarget, slack, geoPosition, voltLvl, subnet]
         superArgs: [uuid, id, operator, operationTime]
+      - name: full
+        components: [ uuid, id, operator, operationTime, vTarget, slack, geoPosition, voltLvl, subnet, additionalInformation ]
+        superArgs: [ uuid, id, operator, operationTime ]
     staticFields:
       - name: DEFAULT_GEO_POSITION
         type: Point
         expression: buildPoint(51.4843281, 7.4116482)
         className: GeoUtils
+        javaDoc: "Use this default value if geoPosition is unknown."
+    getterOptions:
+      vTarget:
+        capitalize: false
 
-    optionalGetters: []
     fromMap: true
     fromMapConstructor: full
     resolverOrder: [operator]

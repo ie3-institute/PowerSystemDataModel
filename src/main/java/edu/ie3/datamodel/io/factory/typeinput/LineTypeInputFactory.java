@@ -23,7 +23,7 @@ public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeIn
 
   @Override
   protected LineTypeInput buildModel(EntityData data) {
-    UUID uuid = data.getUUID(UUID);
+    UUID uuid = data.getUUID(UUID_FIELD_NAME);
     String id = data.getField(ID);
     ComparableQuantity<SpecificConductance> b =
         data.getQuantity(B, StandardUnits.SUSCEPTANCE_PER_LENGTH);

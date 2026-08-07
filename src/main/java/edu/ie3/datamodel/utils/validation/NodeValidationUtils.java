@@ -58,14 +58,14 @@ public class NodeValidationUtils extends ValidationUtils {
 
     exceptions.add(
         Try.ofVoid(
-            node.getvTarget()
+            node.getVTarget()
                 .isLessThanOrEqualTo(
                     Quantities.getQuantity(0, StandardUnits.TARGET_VOLTAGE_MAGNITUDE)),
             () ->
                 new InvalidEntityException("Target voltage (p.u.) is not a positive value", node)));
     exceptions.add(
         Try.ofVoid(
-            node.getvTarget()
+            node.getVTarget()
                 .isGreaterThan(Quantities.getQuantity(2, StandardUnits.TARGET_VOLTAGE_MAGNITUDE)),
             () -> new UnsafeEntityException("Target voltage (p.u.) might be too high", node)));
     exceptions.add(
