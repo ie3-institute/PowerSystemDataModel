@@ -232,31 +232,39 @@ class TryTest extends Specification {
   def "A scan for exceptions should work as expected when failures are included"() {
     given:
     Set<Try<String, Exception>> set = Set.of(
-    new Try.Success<>("one"),
-    new Try.Failure<>(new Exception("exception", new SourceException("source exception"))),
-    new Try.Success<>("two"),
-    new Try.Success<>("three")
-    )
+        new Try.Success<>("one"),
+        new Try.Failure<>(new Exception("exception", new SourceException("source exception"))),
+        new Try.Success<>("two"),
+        new Try.Success<>("three")
+        )
 
     when:
-    Try<Set<String>, Exception> scan = Try.scanCollection(set, String, Exception: : new)
+    Try<Set<String>, Exception> scan = Try.scanCollection(
+        set,
+        String,
+        { message -> new Exception(message) }
+        )
 
     then:
     scan.failure
     scan.exception.get().message == "1 exception(s) occurred within \"String\" data: \n" +
-    "        exception Caused by: source exception"
+        "        exception Caused by: source exception"
   }
 
   def "A scan for exceptions should work as expected when no failures are included"() {
     given:
     Set<Try<String, Exception>> set = Set.of(
-    new Try.Success<>("one"),
-    new Try.Success<>("two"),
-    new Try.Success<>("three")
-    )
+        new Try.Success<>("one"),
+        new Try.Success<>("two"),
+        new Try.Success<>("three")
+        )
 
     when:
-    Try<Set<String>, Exception> scan = Try.scanCollection(set, String, Exception: : new)
+    Try<Set<String>, Exception> scan = Try.scanCollection(
+        set,
+        String,
+        { -> new Exception() }
+        )
 
     then:
     scan.success
@@ -531,12 +539,12 @@ class TryTest extends Specification {
   def "All exceptions of a collection of try objects should be returned"() {
     given:
     List<Try<String, Exception>> tries = List.of(
-    new Try.Success<>("one"),
-    new Try.Failure<>(new SourceException("source exception")),
-    new Try.Failure<>(new UnsupportedOperationException("unsupported operation exception")),
-    new Try.Success<>("two"),
-    new Try.Failure<>(new SourceException("source exception 2"))
-    )
+        new Try.Success<>("one"),
+        new Try.Failure<>(new SourceException("source exception")),
+        new Try.Failure<>(new UnsupportedOperationException("unsupported operation exception")),
+        new Try.Success<>("two"),
+        new Try.Failure<>(new SourceException("source exception 2"))
+        )
 
     when:
     List<Exception> exceptions = Try.getExceptions(tries)

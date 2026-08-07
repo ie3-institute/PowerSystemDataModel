@@ -12,6 +12,11 @@ import java.util.stream.Collectors
 
 class EntityMap {
   static <E extends UniqueEntity> Map<UUID, E> map(Collection<E> entities) {
-    entities.stream().collect(Collectors.toMap(UniqueEntity: : getUuid, Function.identity()))
+    entities.stream().collect(
+        Collectors.toMap(
+            { entity -> entity.uuid },
+            Function.identity()
+            )
+        )
   }
 }
