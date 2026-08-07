@@ -152,7 +152,7 @@ final class ModelGenerator implements HelperMethods {
             .returns(TypeName.BOOLEAN)
             .addParameter(Object.class, "o");
 
-    builder.addStatement("if (this == o return true");
+    builder.addStatement("if (this == o) return true");
     builder.addStatement("if (!(o instanceof $L that)) return false", model.name);
 
     List<ModelDefinition.ComponentDefinition> filteredComponents = new ArrayList<>();
