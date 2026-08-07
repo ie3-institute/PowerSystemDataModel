@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
@@ -54,37 +55,29 @@ public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableType
             Unit<?> unit;
 
             switch (currentField) {
-              case "diameter":
-              case "innerDiameter":
-              case "inner_diameter":
-              case "outerDiameter":
-              case "outer_diameter":
-              case "wireDiameter":
-              case "wire_diameter":
-                unit = PowerSystemUnits.MILLIMETRE;
-                break;
-              case "electricalResistivity":
-              case "electrical_resistivity":
-                unit = OHM_METRE;
-                break;
-              case "thermalResistivity":
-              case "thermal_resistivity":
-                unit = KELVIN_METRE_PER_WATT;
-                break;
-              case "thermalCapacitance":
-              case "thermal_capacitance":
-                unit = JOULE_PER_CUBIC_METRE_KELVIN;
-                break;
-              case "area":
-              case "crossSection":
-              case "cross_section":
-                unit = SQUARE_MILLIMETRE;
-                break;
-              default:
-                throw new IOException(
-                    "Strict unit enforcement failed: Unknown target unit context for property field '"
-                        + currentField
-                        + "'");
+              case "diameter",
+                  "innerDiameter",
+                  "inner_diameter",
+                  "outerDiameter",
+                  "outer_diameter",
+                  "wireDiameter",
+                  "wire_diameter" ->
+                  unit = PowerSystemUnits.MILLIMETRE;
+
+              case "electricalResistivity", "electrical_resistivity" -> unit = OHM_METRE;
+
+              case "thermalResistivity", "thermal_resistivity" -> unit = KELVIN_METRE_PER_WATT;
+
+              case "thermalCapacitance", "thermal_capacitance" ->
+                  unit = JOULE_PER_CUBIC_METRE_KELVIN;
+
+              case "area", "crossSection", "cross_section" -> unit = SQUARE_MILLIMETRE;
+
+              default ->
+                  throw new IOException(
+                      "Strict unit enforcement failed: Unknown target unit context for property field '"
+                          + currentField
+                          + "'");
             }
 
             return Quantities.getQuantity(value, unit);
@@ -93,7 +86,7 @@ public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableType
 
     strictModule.addSerializer(
         ComparableQuantity.class,
-        new JsonSerializer<ComparableQuantity>() {
+        new JsonSerializer<>() {
           @Override
           public void serialize(
               ComparableQuantity value, JsonGenerator gen, SerializerProvider serializers)
@@ -108,11 +101,12 @@ public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableType
     OBJECT_MAPPER.registerModule(strictModule);
   }
 
-  private List<LayerInput> parseLayerList(String json) {
+  private List<LayerInput> parseLayerList(String json) throws ParsingException {
+    if (json == null || json.isBlank()) {
+      return Collections.emptyList();
+    }
+
     try {
-      if (json == null || json.isBlank()) {
-        return Collections.emptyList();
-      }
       JsonNode node = OBJECT_MAPPER.readTree(json);
 
       if (node.isArray()) {
@@ -125,33 +119,35 @@ public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableType
 
       return OBJECT_MAPPER.readValue(
           OBJECT_MAPPER.treeAsTokens(node), new TypeReference<List<LayerInput>>() {});
-    } catch (Exception e) {
-      throw new RuntimeException("Cannot parse LayerInput list: " + json, e);
+    } catch (IOException e) {
+      throw new ParsingException("Cannot parse LayerInput list: " + json, e);
     }
   }
 
-  private ScreenLayerInput parseScreenLayer(String json) {
+  private ScreenLayerInput parseScreenLayer(String json) throws ParsingException {
+    if (json == null || json.isBlank()) {
+      return null;
+    }
+
     try {
-      if (json == null || json.isBlank()) {
-        return null;
-      }
       JsonNode node = OBJECT_MAPPER.readTree(json);
+
       if (node.isObject() && (!node.has("uuid") || node.get("uuid").isNull())) {
         ((ObjectNode) node).put("uuid", java.util.UUID.randomUUID().toString());
       }
 
       return OBJECT_MAPPER.treeToValue(node, ScreenLayerInput.class);
-    } catch (Exception e) {
-      throw new RuntimeException("Cannot parse ScreenLayerInput: " + json, e);
+    } catch (IOException e) {
+      throw new ParsingException("Cannot parse ScreenLayerInput: " + json, e);
     }
   }
 
-  private ConductorInput parseConductor(String json) {
-    try {
-      if (json == null || json.isBlank()) {
-        return null;
-      }
+  private ConductorInput parseConductor(String json) throws ParsingException {
+    if (json == null || json.isBlank()) {
+      return null;
+    }
 
+    try {
       JsonNode node = OBJECT_MAPPER.readTree(json);
 
       if (node.isObject() && (!node.has("uuid") || node.get("uuid").isNull())) {
@@ -159,8 +155,8 @@ public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableType
       }
 
       return OBJECT_MAPPER.treeToValue(node, ConductorInput.class);
-    } catch (Exception e) {
-      throw new RuntimeException("Cannot parse ConductorInput: " + json, e);
+    } catch (IOException e) {
+      throw new ParsingException("Cannot parse ConductorInput: " + json, e);
     }
   }
 
@@ -173,16 +169,25 @@ public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableType
     UUID uuid = data.getUUID(UUID);
     String id = data.getField(ID);
     int cores = data.getInt(CORE_NUMBER);
-    ConductorInput conductor = parseConductor(data.getField(CONDUCTOR_STRING));
 
-    List<LayerInput> isolation = parseLayerList(data.getField(ISOLATION_STRING));
+    final ConductorInput conductor;
+    final List<LayerInput> isolation;
+    final Optional<ScreenLayerInput> screen;
+    final List<LayerInput> filler;
+    final List<LayerInput> armor;
+    final List<LayerInput> jack;
 
-    Optional<ScreenLayerInput> screen =
-        Optional.of(Objects.requireNonNull(parseScreenLayer(data.getField(SCREEN_STRING))));
-
-    List<LayerInput> filler = parseLayerList(data.getField(FILLER_STRING));
-    List<LayerInput> armor = parseLayerList(data.getField(ARMOR_STRING));
-    List<LayerInput> jack = parseLayerList(data.getField(JACK_STRING));
+    try {
+      conductor = parseConductor(data.getField(CONDUCTOR_STRING));
+      isolation = parseLayerList(data.getField(ISOLATION_STRING));
+      screen = Optional.ofNullable(parseScreenLayer(data.getField(SCREEN_STRING)));
+      filler = parseLayerList(data.getField(FILLER_STRING));
+      armor = parseLayerList(data.getField(ARMOR_STRING));
+      jack = parseLayerList(data.getField(JACK_STRING));
+    } catch (ParsingException e) {
+      throw new IllegalArgumentException(
+          "Cannot build CableTypeInput '" + id + "': invalid cable component JSON.", e);
+    }
 
     ComparableQuantity<Temperature> limitTemp =
         data.getQuantity(LIMIT_TEMP, StandardUnits.TEMPERATURE);

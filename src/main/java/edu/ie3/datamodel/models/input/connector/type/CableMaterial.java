@@ -159,13 +159,6 @@ public enum CableMaterial {
   public record ThermalProperties(
       ComparableQuantity<ThermalResistivity> resistivity,
       ComparableQuantity<ThermalCapacitance> capacitance) {
-    /**
-     * Create thermal properties.
-     *
-     * @param resistivity Thermal resistivity
-     * @param capacitance Thermal capacitance
-     */
-    public ThermalProperties {}
 
     /**
      * Compact constructor for validation of record components.

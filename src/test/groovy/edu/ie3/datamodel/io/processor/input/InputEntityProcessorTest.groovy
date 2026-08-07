@@ -445,7 +445,7 @@ class InputEntityProcessorTest extends Specification {
       "filler"                   : "[]",
       "jack"                     : "[]",
       "screen"                   : "",
-      "conductor"                : '{"uuid":"' + type.getConductor().uuid() + '","name":"coductor","material":"COPPER","crossSection":"4.0E-4","diameter":"0.0225","isCompacted":false,"thermalResistivity":"0.0026041667","thermalCapacitance":"3449600.0","area":null,"additionalInformation":{}}',
+      "conductor"                : '{"uuid":"' + type.getConductor().uuid() + '","name":"conductor","material":"COPPER","crossSection":"4.0E-4","diameter":"0.0225","isCompacted":false,"thermalResistivity":"0.0026041667","thermalCapacitance":"3449600.0","area":null,"additionalInformation":{}}',
       "isolation"                : '[{"uuid":"' + type.getIsolation().get(0).uuid() + '","name":"Main insulation","material":"XLPE","innerDiameter":"0.0225","outerDiameter":"0.027","thermalResistivity":"3.5","thermalCapacitance":"2.4","area":null,"additionalInformation":{}}]'
     ]
 

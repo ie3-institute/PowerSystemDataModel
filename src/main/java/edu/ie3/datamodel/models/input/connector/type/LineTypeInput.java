@@ -37,8 +37,8 @@ public class LineTypeInput extends AssetTypeInput {
   /** Rated voltage for this type of line (typically in V) */
   private final ComparableQuantity<ElectricPotential> vRated;
 
-  /** Optional reference to a detailed cable type specification */
-  private final Optional<CableTypeInput> cableType;
+  /** Reference to a detailed cable type specification */
+  private final CableTypeInput cableType;
 
   /**
    * @param uuid of the input entity
@@ -90,7 +90,8 @@ public class LineTypeInput extends AssetTypeInput {
     this.g = g.to(StandardUnits.CONDUCTANCE_PER_LENGTH);
     this.iMax = iMax.to(StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
     this.vRated = vRated.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-    this.cableType = Objects.requireNonNull(cableType, "Cable type Optional cannot be null");
+    this.cableType =
+        Objects.requireNonNull(cableType, "Cable type Optional cannot be null").orElse(null);
   }
 
   /**
@@ -170,7 +171,7 @@ public class LineTypeInput extends AssetTypeInput {
   }
 
   public Optional<CableTypeInput> getCableType() {
-    return cableType;
+    return Optional.ofNullable(cableType);
   }
 
   @Override
@@ -189,7 +190,7 @@ public class LineTypeInput extends AssetTypeInput {
         && x.equals(that.x)
         && iMax.equals(that.iMax)
         && vRated.equals(that.vRated)
-        && cableType.equals(that.cableType);
+        && Objects.equals(cableType, that.cableType);
   }
 
   @Override
@@ -236,7 +237,7 @@ public class LineTypeInput extends AssetTypeInput {
     private ComparableQuantity<SpecificResistance> x;
     private ComparableQuantity<ElectricCurrent> iMax;
     private ComparableQuantity<ElectricPotential> vRated;
-    private Optional<CableTypeInput> cableType;
+    private CableTypeInput cableType;
 
     protected LineTypeInputCopyBuilder(LineTypeInput entity) {
       super(entity);
@@ -250,7 +251,8 @@ public class LineTypeInput extends AssetTypeInput {
     }
 
     public LineTypeInputCopyBuilder cableType(Optional<CableTypeInput> cableType) {
-      this.cableType = cableType;
+      this.cableType =
+          Objects.requireNonNull(cableType, "Cable type Optional cannot be null").orElse(null);
       return thisInstance();
     }
 
@@ -287,7 +289,8 @@ public class LineTypeInput extends AssetTypeInput {
 
     @Override
     public LineTypeInput build() {
-      return new LineTypeInput(getUuid(), getId(), b, g, r, x, iMax, vRated, cableType);
+      return new LineTypeInput(
+          getUuid(), getId(), b, g, r, x, iMax, vRated, Optional.ofNullable(cableType));
     }
 
     @Override

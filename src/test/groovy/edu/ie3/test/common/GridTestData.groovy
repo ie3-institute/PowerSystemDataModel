@@ -313,9 +313,8 @@ class GridTestData {
   Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
   Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
   Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
-  Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE),
-  Optional.empty(),
-  )
+  Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE))
+
 
   public static final CableTypeInput cableTypeInput = new CableTypeInput(
   UUID.fromString("994dcc32-d6ec-4d0f-9941-7c25be942aa6"),
@@ -323,7 +322,7 @@ class GridTestData {
   1,
   new ConductorInput(
   UUID.randomUUID(),
-  "coductor",
+  "conductor",
   CableMaterial.COPPER,
   Quantities.getQuantity(400.0e-6, Units.SQUARE_METRE),
   Quantities.getQuantity(0.0225, Units.METRE),

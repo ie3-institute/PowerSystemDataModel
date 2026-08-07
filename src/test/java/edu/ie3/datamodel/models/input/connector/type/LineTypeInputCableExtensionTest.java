@@ -15,7 +15,6 @@ import static tech.units.indriya.unit.Units.HERTZ;
 import static tech.units.indriya.unit.Units.METRE;
 
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.test.common.GridTestData;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.SpecificConductance;
 import edu.ie3.util.quantities.interfaces.SpecificResistance;
@@ -33,8 +32,8 @@ import tech.units.indriya.unit.Units;
 
 /** Unit tests for LineTypeInput cable-related extensions. */
 @DisplayName("LineTypeInput Cable Extensions Tests")
-class LineTypeInputCableExtensionTest extends GridTestData {
-  UUID uuid = UUID.randomUUID();
+class LineTypeInputCableExtensionTest {
+  UUID lineUuid = UUID.randomUUID();
 
   ComparableQuantity<SpecificConductance> b =
       Quantities.getQuantity(1.0, StandardUnits.SUSCEPTANCE_PER_LENGTH);
@@ -52,10 +51,46 @@ class LineTypeInputCableExtensionTest extends GridTestData {
   ComparableQuantity<ElectricPotential> vRated =
       Quantities.getQuantity(30.0, PowerSystemUnits.KILOVOLT);
 
-  CableTypeInput cableType = GridTestData.cableTypeInput;
-  CableTypeInput cableType2 =
+  CableTypeInput cableType =
       new CableTypeInput(
           UUID.fromString("289ad5c9-90f8-4640-afee-ecbf84a5d4c7"),
+          "test cable type input",
+          1,
+          new ConductorInput(
+              UUID.randomUUID(),
+              "conductor",
+              CableMaterial.COPPER,
+              Quantities.getQuantity(400.0e-6, SQUARE_METRE),
+              Quantities.getQuantity(0.0225, METRE),
+              false,
+              Quantities.getQuantity(1.0 / 384.0, KELVIN_METRE_PER_WATT),
+              Quantities.getQuantity(3449600.0, JOULE_PER_CUBIC_METRE_KELVIN),
+              Optional.empty()),
+          List.of(
+              new LayerInput(
+                  UUID.randomUUID(),
+                  "Main insulation",
+                  CableMaterial.XLPE,
+                  Quantities.getQuantity(0.0225, METRE),
+                  Quantities.getQuantity(0.027, METRE),
+                  Quantities.getQuantity(3.5, KELVIN_METRE_PER_WATT),
+                  Quantities.getQuantity(2.4, JOULE_PER_CUBIC_METRE_KELVIN),
+                  Optional.empty())),
+          Optional.empty(),
+          new ArrayList<>(),
+          new ArrayList<>(),
+          new ArrayList<>(),
+          Quantities.getQuantity(90.0, CELSIUS),
+          Quantities.getQuantity(50.0, HERTZ),
+          1.0,
+          1.0,
+          Quantities.getQuantity(350e-9, FARAD),
+          0.1,
+          0.0,
+          0.0);
+  CableTypeInput cableType2 =
+      new CableTypeInput(
+          UUID.fromString("541d0389-74a3-4fb8-802b-d62ecfe57e0b"),
           "test cable type input",
           1,
           new ConductorInput(
@@ -95,7 +130,7 @@ class LineTypeInputCableExtensionTest extends GridTestData {
   @DisplayName("Test LineTypeInput creation with cable parameters")
   void testLineTypeInputWithCableParameters() {
     LineTypeInput line =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
     assertNotNull(line);
     assertEquals(Optional.of(cableType), line.getCableType());
   }
@@ -104,28 +139,36 @@ class LineTypeInputCableExtensionTest extends GridTestData {
   @DisplayName("Test LineTypeInput with cableType")
   void testLineTypeInputWithOnlyCableTypeUuid() {
     LineTypeInput line =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
-    assertSame("test cable type input", line.getCableType().get().getId());
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
+    assertEquals("test cable type input", line.getCableType().get().getId());
   }
 
   @Test
   @DisplayName("Test LineTypeInput equals with same cable parameters")
   void testLineTypeInputEqualsWithCableParameters() {
     LineTypeInput line1 =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
     LineTypeInput line2 =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
     assertEquals(line1, line2);
   }
 
   @Test
   @DisplayName("Test LineTypeInput not equals with different cable UUIDs")
   void testLineTypeInputNotEqualsDifferentCableUuid() {
+    assertNotSame(cableType, cableType2);
+
+    assertNotEquals(
+        cableType.getUuid(),
+        cableType2.getUuid(),
+        "Test setup requires different CableTypeInput UUIDs.");
+
+    assertNotEquals(cableType, cableType2);
 
     LineTypeInput line1 =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
     LineTypeInput line2 =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType2));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType2));
     assertNotEquals(line1, line2);
   }
 
@@ -133,7 +176,7 @@ class LineTypeInputCableExtensionTest extends GridTestData {
   @DisplayName("Test LineTypeInput copy builder with cable parameters")
   void testLineTypeInputCopyBuilderWithCableParameters() {
     LineTypeInput original =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
 
     LineTypeInput copied = original.copy().build();
 
@@ -144,7 +187,7 @@ class LineTypeInputCableExtensionTest extends GridTestData {
   @DisplayName("Test LineTypeInput toString includes cable parameters")
   void testLineTypeInputToStringWithCableParameters() {
     LineTypeInput line =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
     String str = line.toString();
     assertNotNull(str);
     assertTrue(str.contains("cableType"));
@@ -154,19 +197,17 @@ class LineTypeInputCableExtensionTest extends GridTestData {
   @DisplayName("Test LineTypeInput hashCode with cable parameters")
   void testLineTypeInputHashCodeWithCableParameters() {
     LineTypeInput line1 =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
     LineTypeInput line2 =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
     assertEquals(line1.hashCode(), line2.hashCode());
   }
 
   @Test
   @DisplayName("Test LineTypeInput getters for cable parameters")
   void testLineTypeInputGettersCableParameters() {
-    UUID uuid = UUID.randomUUID();
-
     LineTypeInput line =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
 
     assertEquals(Optional.of(cableType), line.getCableType());
   }
