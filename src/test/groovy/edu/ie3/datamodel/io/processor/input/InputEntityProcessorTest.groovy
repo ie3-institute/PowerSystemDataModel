@@ -142,10 +142,9 @@ class InputEntityProcessorTest extends Specification {
     def processingResult = processor.handleEntity(validInput)
 
     then: "make sure that the result is as expected "
-    processingResult.forEach {
-      k, v ->
+    processingResult.forEach { k, v ->
       if (k != "nodeInternal") // the internal 3w node is always randomly generated, hence we can skip to test on this
-      assert (v == expectedResult.get(k))
+        assert (v == expectedResult.get(k))
     }
 
     where:
@@ -578,14 +577,14 @@ class InputEntityProcessorTest extends Specification {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(NodeInput)
     def nodeWithOutOperator = new NodeInput(
-    UUID.fromString("6e0980e0-10f2-4e18-862b-eb2b7c90509b"), "node_d", OperatorInput.NO_OPERATOR_ASSIGNED,
-    OperationTime.notLimited()
-    ,
-    Quantities.getQuantity(1d, PU),
-    false,
-    null,
-    GermanVoltageLevelUtils.MV_20KV,
-    4)
+        UUID.fromString("6e0980e0-10f2-4e18-862b-eb2b7c90509b"), "node_d", OperatorInput.NO_OPERATOR_ASSIGNED,
+        OperationTime.notLimited()
+        ,
+        Quantities.getQuantity(1d, PU),
+        false,
+        null,
+        GermanVoltageLevelUtils.MV_20KV,
+        4)
 
     Map expected = [
       "geoPosition" : "",
