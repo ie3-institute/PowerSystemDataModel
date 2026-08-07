@@ -1,38 +1,40 @@
+/*
+ * © 2021. TU Dortmund University,
+ * Institute of Energy Systems, Energy Efficiency and Energy Economics,
+ * Research group Distribution grid planning and operation
+*/
 package edu.ie3.datamodel.models;
 
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
+/** Supplies every subclass with a generated UUID, making it unique */
 public abstract class UniqueEntity implements Entity, Uniqueness, Serializable {
+  /** Field name of {@link UniqueEntity} uuid */
+  public static final String UUID_FIELD_NAME = "uuid";
+
   private final UUID uuid;
 
-  public UniqueEntity() {
-    this.uuid = UUID.randomUUID();
+  protected UniqueEntity() {
+    uuid = UUID.randomUUID();
   }
 
-  public UniqueEntity(UUID uuid) {
-    this.uuid = uuid;
+  protected UniqueEntity(UUID uuid) {
+    this.uuid = uuid == null ? UUID.randomUUID() : uuid;
   }
 
+  @Override
   public UUID getUuid() {
     return uuid;
   }
 
-  public abstract UniqueEntityCopyBuilder<?> copy();
-
   @Override
   public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof UniqueEntity that)) {
-      return false;
-    }
-    if (!super.equals(o)) {
-      return false;
-    }
-    return Objects.equals(uuid, that.uuid);
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    UniqueEntity that = (UniqueEntity) o;
+    return uuid.equals(that.uuid);
   }
 
   @Override
@@ -42,12 +44,18 @@ public abstract class UniqueEntity implements Entity, Uniqueness, Serializable {
 
   @Override
   public String toString() {
-    return "UniqueEntity{"
-        + "uuid=" + getUuid()
-        + '}';
+    return "UniqueEntity{" + "uuid=" + uuid + '}';
   }
 
-  public abstract static class UniqueEntityCopyBuilder<B extends UniqueEntityCopyBuilder<B>> {
+  /**
+   * Abstract class for all builder that build child entities of abstract class {@link UniqueEntity}
+   *
+   * @version 0.1
+   * @since 05.06.20
+   */
+  public abstract static class UniqueEntityCopyBuilder<B extends UniqueEntityBuilder>
+      implements UniqueEntityBuilder {
+
     private UUID uuid;
 
     protected UniqueEntityCopyBuilder(UniqueEntity entity) {
@@ -64,7 +72,10 @@ public abstract class UniqueEntity implements Entity, Uniqueness, Serializable {
     }
 
     protected abstract B thisInstance();
+  }
 
-    public abstract UniqueEntity build();
+  protected interface UniqueEntityBuilder {
+
+    UniqueEntity build();
   }
 }
