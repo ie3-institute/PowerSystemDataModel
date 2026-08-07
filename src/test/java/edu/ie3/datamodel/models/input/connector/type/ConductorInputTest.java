@@ -31,6 +31,7 @@ class ConductorInputTest {
   private ComparableQuantity<Length> diameter;
   private ComparableQuantity<ThermalResistivity> thermalResistivity;
   private ComparableQuantity<ThermalCapacitance> thermalCapacitance;
+  private Optional<ComparableQuantity<Area>> emptyArea;
 
   @BeforeEach
   void setUp() {
@@ -39,6 +40,7 @@ class ConductorInputTest {
     diameter = Quantities.getQuantity(0.0225, Units.METRE);
     thermalResistivity = Quantities.getQuantity(1.0 / 384.0, KELVIN_METRE_PER_WATT);
     thermalCapacitance = Quantities.getQuantity(3449600.0, JOULE_PER_CUBIC_METRE_KELVIN);
+    emptyArea = Optional.empty();
   }
 
   @Test
@@ -93,7 +95,7 @@ class ConductorInputTest {
                 false,
                 thermalResistivity,
                 thermalCapacitance,
-                Optional.empty()));
+                emptyArea));
   }
 
   @Test
@@ -113,7 +115,7 @@ class ConductorInputTest {
                 false,
                 thermalResistivity,
                 thermalCapacitance,
-                Optional.empty()));
+                emptyArea));
   }
 
   @Test
@@ -132,13 +134,15 @@ class ConductorInputTest {
                 false,
                 thermalResistivity,
                 thermalCapacitance,
-                Optional.empty()));
+                emptyArea));
   }
 
   @Test
   @DisplayName("Test ConductorInput with optional area")
   void testConductorInputWithArea() {
     ComparableQuantity<Area> area = Quantities.getQuantity(380e-6, Units.SQUARE_METRE);
+    Optional<ComparableQuantity<Area>> optionalArea = Optional.of(area);
+
     ConductorInput conductor =
         new ConductorInput(
             uuid,
@@ -149,7 +153,8 @@ class ConductorInputTest {
             false,
             thermalResistivity,
             thermalCapacitance,
-            Optional.of(area));
+            optionalArea);
+
     assertTrue(conductor.area().isPresent());
     assertEquals(area, conductor.area().get());
   }
@@ -157,76 +162,122 @@ class ConductorInputTest {
   @Test
   @DisplayName("Test ConductorInput equals method")
   void testConductorInputEquals() {
-    ConductorInput conductor1 =
-        new ConductorInput(
-            uuid,
-            "conductor",
-            CableMaterial.COPPER,
-            crossSection,
-            diameter,
-            false,
-            thermalResistivity,
-            thermalCapacitance,
-            Optional.empty());
-    ConductorInput conductor2 =
-        new ConductorInput(
-            uuid,
-            "conductor",
-            CableMaterial.COPPER,
-            crossSection,
-            diameter,
-            false,
-            thermalResistivity,
-            thermalCapacitance,
-            Optional.empty());
+    ConductorInput conductor1 = createValidConductor();
+    ConductorInput conductor2 = createValidConductor();
+
     assertEquals(conductor1, conductor2);
   }
 
   @Test
   @DisplayName("Test ConductorInput hashCode consistency")
   void testConductorInputHashCode() {
-    ConductorInput conductor1 =
-        new ConductorInput(
-            uuid,
-            "conductor",
-            CableMaterial.COPPER,
-            crossSection,
-            diameter,
-            false,
-            thermalResistivity,
-            thermalCapacitance,
-            Optional.empty());
-    ConductorInput conductor2 =
-        new ConductorInput(
-            uuid,
-            "conductor",
-            CableMaterial.COPPER,
-            crossSection,
-            diameter,
-            false,
-            thermalResistivity,
-            thermalCapacitance,
-            Optional.empty());
+    ConductorInput conductor1 = createValidConductor();
+    ConductorInput conductor2 = createValidConductor();
+
     assertEquals(conductor1.hashCode(), conductor2.hashCode());
   }
 
   @Test
   @DisplayName("Test ConductorInput toString")
   void testConductorInputToString() {
-    ConductorInput conductor =
-        new ConductorInput(
-            uuid,
-            "conductor",
-            CableMaterial.COPPER,
-            crossSection,
-            diameter,
-            false,
-            thermalResistivity,
-            thermalCapacitance,
-            Optional.empty());
+    ConductorInput conductor = createValidConductor();
+
     String str = conductor.toString();
     assertNotNull(str);
     assertTrue(str.contains("COPPER"));
+  }
+
+  @Test
+  void testAreaOptionalEmptyByDefault() {
+    ConductorInput conductor = createValidConductor();
+    assertTrue(conductor.area().isEmpty());
+  }
+
+  @Test
+  void testConductorInputNullOptionalArea() {
+    Optional<ComparableQuantity<Area>> nullArea = null;
+
+    assertThrows(
+        NullPointerException.class,
+        () ->
+            new ConductorInput(
+                uuid,
+                "conductor",
+                CableMaterial.COPPER,
+                crossSection,
+                diameter,
+                false,
+                thermalResistivity,
+                thermalCapacitance,
+                nullArea));
+  }
+
+  @Test
+  void testConductorInputNullThermalResistivity() {
+    assertThrows(
+        NullPointerException.class,
+        () ->
+            new ConductorInput(
+                uuid,
+                "conductor",
+                CableMaterial.COPPER,
+                crossSection,
+                diameter,
+                false,
+                null,
+                thermalCapacitance,
+                emptyArea));
+  }
+
+  @Test
+  void testConductorInputNullThermalCapacitance() {
+    assertThrows(
+        NullPointerException.class,
+        () ->
+            new ConductorInput(
+                uuid,
+                "conductor",
+                CableMaterial.COPPER,
+                crossSection,
+                diameter,
+                false,
+                thermalResistivity,
+                null,
+                emptyArea));
+  }
+
+  @Test
+  void testConductorInputNullName() {
+    assertThrows(
+        NullPointerException.class,
+        () ->
+            new ConductorInput(
+                uuid,
+                null,
+                CableMaterial.COPPER,
+                crossSection,
+                diameter,
+                false,
+                thermalResistivity,
+                thermalCapacitance,
+                emptyArea));
+  }
+
+  @Test
+  void testConductorInputEmptyName() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            new ConductorInput(
+                uuid,
+                "",
+                CableMaterial.COPPER,
+                crossSection,
+                diameter,
+                false,
+                thermalResistivity,
+                thermalCapacitance,
+                emptyArea));
   }
 
   @Test
@@ -242,7 +293,7 @@ class ConductorInputTest {
             false,
             thermalResistivity,
             thermalCapacitance,
-            Optional.empty());
+            emptyArea);
     assertEquals(CableMaterial.ALUMINIUM, conductor.material());
   }
 
@@ -261,7 +312,7 @@ class ConductorInputTest {
                 false,
                 thermalResistivity,
                 thermalCapacitance,
-                Optional.empty()));
+                emptyArea));
   }
 
   @Test
@@ -279,7 +330,7 @@ class ConductorInputTest {
                 false,
                 thermalResistivity,
                 thermalCapacitance,
-                Optional.empty()));
+                emptyArea));
   }
 
   @Test
@@ -299,7 +350,7 @@ class ConductorInputTest {
                 false,
                 thermalResistivity,
                 negativeThermalCap,
-                Optional.empty()));
+                emptyArea));
   }
 
   @Test
@@ -315,7 +366,7 @@ class ConductorInputTest {
             false,
             thermalResistivity,
             thermalCapacitance,
-            Optional.empty());
+            emptyArea);
     ConductorInput conductor2 =
         new ConductorInput(
             uuid,
@@ -326,7 +377,7 @@ class ConductorInputTest {
             false,
             thermalResistivity,
             thermalCapacitance,
-            Optional.empty());
+            emptyArea);
     assertNotEquals(conductor1, conductor2);
   }
 
@@ -343,7 +394,7 @@ class ConductorInputTest {
             false,
             thermalResistivity,
             thermalCapacitance,
-            Optional.empty());
+            emptyArea);
     ConductorInput conductor2 =
         new ConductorInput(
             uuid,
@@ -354,7 +405,20 @@ class ConductorInputTest {
             true,
             thermalResistivity,
             thermalCapacitance,
-            Optional.empty());
+            emptyArea);
     assertNotEquals(conductor1, conductor2);
+  }
+
+  private ConductorInput createValidConductor() {
+    return new ConductorInput(
+        uuid,
+        "conductor",
+        CableMaterial.COPPER,
+        crossSection,
+        diameter,
+        false,
+        thermalResistivity,
+        thermalCapacitance,
+        emptyArea);
   }
 }

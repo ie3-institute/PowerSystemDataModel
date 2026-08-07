@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.input.connector.type;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -15,11 +16,12 @@ import java.util.UUID;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import tech.units.indriya.ComparableQuantity;
 
 /**
  * Represents the conducting core of a cable with its specific geometric and thermal properties.
- * Unlike [[LayerInput]] layers, the conductor has no inner diameter and includes compaction
+ * Unlike {@link LayerInput} layers, the conductor has no inner diameter and includes compaction
  * information.
  *
  * @param uuid UUID of the ConductorInput
@@ -41,8 +43,44 @@ public record ConductorInput(
     boolean isCompacted,
     ComparableQuantity<ThermalResistivity> thermalResistivity,
     ComparableQuantity<ThermalCapacitance> thermalCapacitance,
-    Optional<ComparableQuantity<Area>> area)
-    implements InputEntity {
+    @Nullable ComparableQuantity<Area> areaValue)
+    implements InputEntity, Serializable {
+
+  /**
+   * Create a new conductor with all required parameters.
+   *
+   * @param uuid UUID of the ConductorInput
+   * @param name Human-readable id
+   * @param material Material of the conductor
+   * @param crossSection Real nominal cross-sectional area (electrically effective)
+   * @param diameter Geometric outer diameter
+   * @param isCompacted Whether the conductor is compacted
+   * @param thermalResistivity Thermal resistivity
+   * @param area Optional real cross-sectional area
+   */
+  public ConductorInput(
+      UUID uuid,
+      String name,
+      CableMaterial material,
+      ComparableQuantity<Area> crossSection,
+      ComparableQuantity<Length> diameter,
+      boolean isCompacted,
+      ComparableQuantity<ThermalResistivity> thermalResistivity,
+      ComparableQuantity<ThermalCapacitance> thermalCapacitance,
+      Optional<ComparableQuantity<Area>> area) {
+
+    this(
+        uuid,
+        name,
+        material,
+        crossSection,
+        diameter,
+        isCompacted,
+        thermalResistivity,
+        thermalCapacitance,
+        Objects.requireNonNull(area, "Area optional must not be null").orElse(null));
+  }
+
   /**
    * Create a new conductor with all required parameters.
    *
@@ -54,7 +92,7 @@ public record ConductorInput(
    * @param isCompacted Whether the conductor is compacted
    * @param thermalResistivity Thermal resistivity
    * @param thermalCapacitance Thermal capacitance
-   * @param area Optional real cross-sectional area
+   * @param area real cross-sectional area
    * @throws IllegalArgumentException if validation constraints are violated
    */
   public ConductorInput {
@@ -67,6 +105,10 @@ public record ConductorInput(
     Objects.requireNonNull(thermalResistivity, "Thermal resistivity cannot be null");
     Objects.requireNonNull(thermalCapacitance, "Thermal capacitance cannot be null");
     Objects.requireNonNull(area, "Area Optional cannot be null");
+
+    if (name.isEmpty()) {
+      throw new IllegalArgumentException("Conductor name must not be empty");
+    }
 
     // Positive values check
     if (crossSection.getValue().doubleValue() < 0) {
@@ -81,6 +123,13 @@ public record ConductorInput(
     if (thermalCapacitance.getValue().doubleValue() < 0) {
       throw new IllegalArgumentException("Thermal capacitance must be >= 0");
     }
+    if (areaValue != null && areaValue.getValue().doubleValue() < 0) {
+      throw new IllegalArgumentException("Area must be >= 0");
+    }
+  }
+
+  public Optional<ComparableQuantity<Area>> area() {
+    return Optional.ofNullable(areaValue);
   }
 
   @Override
@@ -117,11 +166,11 @@ public record ConductorInput(
   @Override
   public @NonNull String toString() {
     return "ConductorInput{"
-        + "uuid='"
+        + "uuid="
         + uuid
-        + "name='"
+        + ", name="
         + name
-        + "material="
+        + ", material="
         + material
         + ", crossSection="
         + crossSection
@@ -134,7 +183,7 @@ public record ConductorInput(
         + ", thermalCapacitance="
         + thermalCapacitance
         + ", area="
-        + area
+        + area()
         + '}';
   }
 }

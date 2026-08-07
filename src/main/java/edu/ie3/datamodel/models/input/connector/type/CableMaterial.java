@@ -48,32 +48,19 @@ public enum CableMaterial {
    */
   public static CableMaterial fromString(String s) {
     if (s == null) return UNKNOWN;
-    switch (s.trim().toLowerCase()) {
-      case "copper":
-      case "copperwoventape":
-      case "sc_tape":
-        return COPPER;
-      case "aluminium":
-        return ALUMINIUM;
-      case "xlpe":
-        return XLPE;
-      case "pe":
-        return PE;
-      case "pvc":
-        return PVC;
-      case "semicondscreen":
-      case "semi_cond_screen":
-        return SEMI_COND_SCREEN;
-      case "lead":
-        return LEAD;
-      case "steel":
-        return STEEL;
-      case "polypropylen":
-      case "pp":
-        return POLYPROPYLEN;
-      default:
-        return UNKNOWN;
-    }
+    return switch (s.trim().toLowerCase()) {
+      case "copper" -> COPPER;
+      case "copperwoventape", "sc_tape" -> SC_TAPE;
+      case "aluminium" -> ALUMINIUM;
+      case "xlpe" -> XLPE;
+      case "pe" -> PE;
+      case "pvc" -> PVC;
+      case "semicondscreen", "semi_cond_screen" -> SEMI_COND_SCREEN;
+      case "lead" -> LEAD;
+      case "steel" -> STEEL;
+      case "polypropylen", "pp" -> POLYPROPYLEN;
+      default -> UNKNOWN;
+    };
   }
 
   /**
@@ -181,23 +168,14 @@ public enum CableMaterial {
     public ThermalProperties {}
 
     /**
-     * Get the thermal resistivity.
+     * Compact constructor for validation of record components.
      *
-     * @return Thermal resistivity
+     * @throws IllegalArgumentException if any property is null
      */
-    @Override
-    public ComparableQuantity<ThermalResistivity> resistivity() {
-      return resistivity;
-    }
-
-    /**
-     * Get the thermal capacitance.
-     *
-     * @return Thermal capacitance
-     */
-    @Override
-    public ComparableQuantity<ThermalCapacitance> capacitance() {
-      return capacitance;
+    public ThermalProperties {
+      if (resistivity == null || capacitance == null) {
+        throw new IllegalArgumentException("Thermal properties must not be null.");
+      }
     }
   }
 }

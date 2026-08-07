@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.input.connector.type;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -38,7 +39,7 @@ public record LayerInput(
     ComparableQuantity<ThermalResistivity> thermalResistivity,
     ComparableQuantity<ThermalCapacitance> thermalCapacitance,
     Optional<ComparableQuantity<Area>> area)
-    implements InputEntity {
+    implements InputEntity, Serializable {
   /**
    * Create a new layer with all required parameters.
    *
@@ -60,33 +61,42 @@ public record LayerInput(
     Objects.requireNonNull(outerDiameter, "Outer diameter cannot be null");
     Objects.requireNonNull(thermalResistivity, "Thermal resistivity cannot be null");
     Objects.requireNonNull(thermalCapacitance, "Thermal capacitance cannot be null");
-    Objects.requireNonNull(area, "Area Optional cannot be null");
+    Objects.requireNonNull(area, "Area optional must not be null");
 
     if (name.isEmpty()) {
       throw new IllegalArgumentException("Layer name cannot be empty");
     }
 
+    double inner = innerDiameter.getValue().doubleValue();
+    double outer = outerDiameter.getValue().doubleValue();
+    double rho = thermalResistivity.getValue().doubleValue();
+    double cap = thermalCapacitance.getValue().doubleValue();
+
     // Geometry consistency: outerDiameter >= innerDiameter
-    if (outerDiameter.getValue().doubleValue() < innerDiameter.getValue().doubleValue()) {
+    if (outer < inner) {
       throw new IllegalArgumentException(
-          String.format(
-              "Outer diameter (%.6f) must be >= inner diameter (%.6f)",
-              outerDiameter.getValue().doubleValue(), innerDiameter.getValue().doubleValue()));
+          String.format("Outer diameter (%.6f) must be >= inner diameter (%.6f)", outer, inner));
     }
 
     // Positive values check
-    if (innerDiameter.getValue().doubleValue() < 0) {
+    if (inner < 0) {
       throw new IllegalArgumentException("Inner diameter must be >= 0");
     }
-    if (outerDiameter.getValue().doubleValue() < 0) {
+    if (outer < 0) {
       throw new IllegalArgumentException("Outer diameter must be >= 0");
     }
-    if (thermalResistivity.getValue().doubleValue() < 0) {
+    if (rho < 0) {
       throw new IllegalArgumentException("Thermal resistivity must be >= 0");
     }
-    if (thermalCapacitance.getValue().doubleValue() < 0) {
+    if (cap < 0) {
       throw new IllegalArgumentException("Thermal capacitance must be >= 0");
     }
+    area.ifPresent(
+        a -> {
+          if (a.getValue().doubleValue() < 0) {
+            throw new IllegalArgumentException("Area must be >= 0");
+          }
+        });
   }
 
   @Override

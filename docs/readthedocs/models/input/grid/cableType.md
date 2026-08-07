@@ -37,8 +37,8 @@ Type model of a cable.
      - List of LayerInput
      - List of insulation layers (from inner to outer)
 
-   * - screenLayer
-     - Optional ScreenLayer
+   * - screen
+     - Optional ScreenLayerInput
      - Optional cable screen layer
 
    * - filler
@@ -82,11 +82,11 @@ Type model of a cable.
      - Circulating loss factor 
      
    * - eddyCurrentLossFactor
-     - 
+     - -
      - Eddy current loss factor
 ```
 
-A list with some standard line types can be found here: [Standard Cable Type Parameter](#standard-cable-type-parameter)
+A list with some standard cable types can be found here: [Standard Cable Type Parameter](#standard-cable-type-parameter)
 
 ### Cable Layers
 
@@ -138,7 +138,7 @@ Different cable materials and their thermal and electrical parameter are also gi
 
 ## Standard Cable Type Parameter
 
-Following there are some standard line types with their source. To retrieve the data call the method `TypeSource.getStandardLineTypes()`.
+Following there are some standard cable types with their source.
 A ``csv file`` containing the types listed below can be found [here](https://github.com/ie3-institute/PowerSystemDataModel/tree/dev/input/StandardAssetTypes).
 This file can be used directly for any simulation with ``simona``.
 

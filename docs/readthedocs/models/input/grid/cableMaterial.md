@@ -47,7 +47,7 @@ Retrieved via `getThermalProperties()`. Returns a `ThermalProperties` container 
     - - 
     
   * - `PVC (Polyvinyl chloride)`
-    - 3.5
+    - 5.0
     - 1.7
     - {cite:cts}`andersRatingElectricPower1997` p. 400
     - -
@@ -109,7 +109,7 @@ Electrical parameters define the conductive aspects of the materials, heavily ut
     
   * - `Aluminium`
     - $2.8264 \times 10^{-8}$
-    - $4.03 \times 10^[-3}$
+    - $4.03 \times 10^{-3}$
     - {cite:cts}`luecking_1981` p. 94
     
   * - `Lead`

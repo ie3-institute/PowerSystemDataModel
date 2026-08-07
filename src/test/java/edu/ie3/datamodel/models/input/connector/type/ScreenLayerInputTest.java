@@ -47,20 +47,8 @@ class ScreenLayerInputTest {
   @Test
   @DisplayName("Test ScreenLayerInput creation with valid parameters")
   void testScreenLayerInputCreation() {
-    ScreenLayerInput screen =
-        new ScreenLayerInput(
-            uuid,
-            "Copper screen",
-            CableMaterial.COPPER,
-            innerDiameter,
-            outerDiameter,
-            thermalResistivity,
-            thermalCapacitance,
-            Optional.empty(),
-            20,
-            wireDiameter,
-            Optional.empty(),
-            materialResistivity);
+    ScreenLayerInput screen = createValidScreenLayer();
+
     assertNotNull(screen);
     assertEquals("Copper screen", screen.name());
     assertEquals(CableMaterial.COPPER, screen.material());
@@ -70,108 +58,118 @@ class ScreenLayerInputTest {
   @Test
   @DisplayName("Test ScreenLayerInput null name validation")
   void testScreenLayerInputNullName() {
-    assertThrows(
-        NullPointerException.class,
-        () ->
-            new ScreenLayerInput(
-                uuid,
-                null,
-                CableMaterial.COPPER,
-                innerDiameter,
-                outerDiameter,
-                thermalResistivity,
-                thermalCapacitance,
-                Optional.empty(),
-                20,
-                wireDiameter,
-                Optional.empty(),
-                materialResistivity));
+    assertThrows(NullPointerException.class, this::createScreenLayerInputWithNullName);
+  }
+
+  private void createScreenLayerInputWithNullName() {
+    new ScreenLayerInput(
+        uuid,
+        null,
+        CableMaterial.COPPER,
+        innerDiameter,
+        outerDiameter,
+        thermalResistivity,
+        thermalCapacitance,
+        Optional.empty(),
+        20,
+        wireDiameter,
+        Optional.empty(),
+        materialResistivity);
   }
 
   @Test
   @DisplayName("Test ScreenLayerInput empty name validation")
   void testScreenLayerInputEmptyName() {
-    assertThrows(
-        IllegalArgumentException.class,
-        () ->
-            new ScreenLayerInput(
-                uuid,
-                "",
-                CableMaterial.COPPER,
-                innerDiameter,
-                outerDiameter,
-                thermalResistivity,
-                thermalCapacitance,
-                Optional.empty(),
-                20,
-                wireDiameter,
-                Optional.empty(),
-                materialResistivity));
+    assertThrows(IllegalArgumentException.class, this::createScreenLayerInputWithEmptyName);
+  }
+
+  private void createScreenLayerInputWithEmptyName() {
+    new ScreenLayerInput(
+        uuid,
+        "",
+        CableMaterial.COPPER,
+        innerDiameter,
+        outerDiameter,
+        thermalResistivity,
+        thermalCapacitance,
+        Optional.empty(),
+        20,
+        wireDiameter,
+        Optional.empty(),
+        materialResistivity);
   }
 
   @Test
   @DisplayName("Test ScreenLayerInput outerDiameter < innerDiameter validation")
   void testScreenLayerInputOuterDiameterLessThanInner() {
-    ComparableQuantity<Length> invalidOuter = Quantities.getQuantity(0.02, Units.METRE);
     assertThrows(
-        IllegalArgumentException.class,
-        () ->
-            new ScreenLayerInput(
-                uuid,
-                "Invalid screen",
-                CableMaterial.COPPER,
-                innerDiameter,
-                invalidOuter,
-                thermalResistivity,
-                thermalCapacitance,
-                Optional.empty(),
-                20,
-                wireDiameter,
-                Optional.empty(),
-                materialResistivity));
+        IllegalArgumentException.class, this::createScreenLayerInputWithInvalidOuterDiameter);
+  }
+
+  private void createScreenLayerInputWithInvalidOuterDiameter() {
+    ComparableQuantity<Length> invalidOuter = Quantities.getQuantity(0.02, Units.METRE);
+
+    new ScreenLayerInput(
+        uuid,
+        "Invalid screen",
+        CableMaterial.COPPER,
+        innerDiameter,
+        invalidOuter,
+        thermalResistivity,
+        thermalCapacitance,
+        Optional.empty(),
+        20,
+        wireDiameter,
+        Optional.empty(),
+        materialResistivity);
   }
 
   @Test
   @DisplayName("Test ScreenLayerInput zero or negative wiresNumber validation")
   void testScreenLayerInputNegativeWiresNumber() {
     assertThrows(
-        IllegalArgumentException.class,
-        () ->
-            new ScreenLayerInput(
-                uuid,
-                "Invalid screen",
-                CableMaterial.COPPER,
-                innerDiameter,
-                outerDiameter,
-                thermalResistivity,
-                thermalCapacitance,
-                Optional.empty(),
-                0,
-                wireDiameter,
-                Optional.empty(),
-                materialResistivity));
+        IllegalArgumentException.class, this::createScreenLayerInputWithInvalidWiresNumber);
+  }
+
+  private void createScreenLayerInputWithInvalidWiresNumber() {
+    new ScreenLayerInput(
+        uuid,
+        "Invalid screen",
+        CableMaterial.COPPER,
+        innerDiameter,
+        outerDiameter,
+        thermalResistivity,
+        thermalCapacitance,
+        Optional.empty(),
+        0,
+        wireDiameter,
+        Optional.empty(),
+        materialResistivity);
   }
 
   @Test
   @DisplayName("Test ScreenLayerInput negative wireDiameter validation")
   void testScreenLayerInputNegativeWireDiameter() {
-    ComparableQuantity<Length> negativeWireDiameter = Quantities.getQuantity(-0.001, Units.METRE);
     assertThrows(
-        IllegalArgumentException.class,
-        () ->
-            new ScreenLayerInput(
-                uuid,
-                "Invalid screen",
-                CableMaterial.COPPER,
-                innerDiameter,
-                outerDiameter,
-                thermalResistivity,
-                thermalCapacitance,
-                Optional.empty(),
-                20,
-                negativeWireDiameter,
-                Optional.empty(),
-                materialResistivity));
+        IllegalArgumentException.class, this::createScreenLayerInputWithNegativeWireDiameter);
+  }
+
+  private void createScreenLayerInputWithNegativeWireDiameter() {
+    ComparableQuantity<Length> negativeWireDiameter = Quantities.getQuantity(-0.001, Units.METRE);
+
+    new ScreenLayerInput(
+        uuid,
+        "Invalid screen",
+        CableMaterial.COPPER,
+        innerDiameter,
+        outerDiameter,
+        thermalResistivity,
+        thermalCapacitance,
+        Optional.empty(),
+        20,
+        negativeWireDiameter,
+        Optional.empty(),
+        materialResistivity);
   }
 
   @Test
@@ -221,88 +219,26 @@ class ScreenLayerInputTest {
   @Test
   @DisplayName("Test ScreenLayerInput equals method")
   void testScreenLayerInputEquals() {
-    ScreenLayerInput screen1 =
-        new ScreenLayerInput(
-            uuid,
-            "Copper screen",
-            CableMaterial.COPPER,
-            innerDiameter,
-            outerDiameter,
-            thermalResistivity,
-            thermalCapacitance,
-            Optional.empty(),
-            20,
-            wireDiameter,
-            Optional.empty(),
-            materialResistivity);
-    ScreenLayerInput screen2 =
-        new ScreenLayerInput(
-            uuid,
-            "Copper screen",
-            CableMaterial.COPPER,
-            innerDiameter,
-            outerDiameter,
-            thermalResistivity,
-            thermalCapacitance,
-            Optional.empty(),
-            20,
-            wireDiameter,
-            Optional.empty(),
-            materialResistivity);
+    ScreenLayerInput screen1 = createValidScreenLayer();
+    ScreenLayerInput screen2 = createValidScreenLayer();
+
     assertEquals(screen1, screen2);
   }
 
   @Test
   @DisplayName("Test ScreenLayerInput hashCode consistency")
   void testScreenLayerInputHashCode() {
-    ScreenLayerInput screen1 =
-        new ScreenLayerInput(
-            uuid,
-            "Copper screen",
-            CableMaterial.COPPER,
-            innerDiameter,
-            outerDiameter,
-            thermalResistivity,
-            thermalCapacitance,
-            Optional.empty(),
-            20,
-            wireDiameter,
-            Optional.empty(),
-            materialResistivity);
-    ScreenLayerInput screen2 =
-        new ScreenLayerInput(
-            uuid,
-            "Copper screen",
-            CableMaterial.COPPER,
-            innerDiameter,
-            outerDiameter,
-            thermalResistivity,
-            thermalCapacitance,
-            Optional.empty(),
-            20,
-            wireDiameter,
-            Optional.empty(),
-            materialResistivity);
+    ScreenLayerInput screen1 = createValidScreenLayer();
+    ScreenLayerInput screen2 = createValidScreenLayer();
+
     assertEquals(screen1.hashCode(), screen2.hashCode());
   }
 
   @Test
   @DisplayName("Test ScreenLayerInput toString")
   void testScreenLayerInputToString() {
-    ScreenLayerInput screen =
-        new ScreenLayerInput(
-            uuid,
-            "Copper screen",
-            CableMaterial.COPPER,
-            innerDiameter,
-            outerDiameter,
-            thermalResistivity,
-            thermalCapacitance,
-            Optional.empty(),
-            20,
-            wireDiameter,
-            Optional.empty(),
-            materialResistivity);
+    ScreenLayerInput screen = createValidScreenLayer();
+
     String str = screen.toString();
     assertNotNull(str);
     assertTrue(str.contains("Copper screen"));
@@ -332,43 +268,46 @@ class ScreenLayerInputTest {
   @Test
   @DisplayName("Test ScreenLayerInput null material validation")
   void testScreenLayerInputNullMaterial() {
-    assertThrows(
-        NullPointerException.class,
-        () ->
-            new ScreenLayerInput(
-                uuid,
-                "Screen",
-                null,
-                innerDiameter,
-                outerDiameter,
-                thermalResistivity,
-                thermalCapacitance,
-                Optional.empty(),
-                20,
-                wireDiameter,
-                Optional.empty(),
-                materialResistivity));
+    assertThrows(NullPointerException.class, this::createScreenLayerInputWithNullMaterial);
+  }
+
+  private void createScreenLayerInputWithNullMaterial() {
+    new ScreenLayerInput(
+        uuid,
+        "Screen",
+        null,
+        innerDiameter,
+        outerDiameter,
+        thermalResistivity,
+        thermalCapacitance,
+        Optional.empty(),
+        20,
+        wireDiameter,
+        Optional.empty(),
+        materialResistivity);
   }
 
   @Test
   @DisplayName("Test ScreenLayerInput null materialResistivity validation")
   void testScreenLayerInputNullMaterialResistivity() {
     assertThrows(
-        NullPointerException.class,
-        () ->
-            new ScreenLayerInput(
-                uuid,
-                "Screen",
-                CableMaterial.COPPER,
-                innerDiameter,
-                outerDiameter,
-                thermalResistivity,
-                thermalCapacitance,
-                Optional.empty(),
-                20,
-                wireDiameter,
-                Optional.empty(),
-                null));
+        NullPointerException.class, this::createScreenLayerInputWithNullMaterialResistivity);
+  }
+
+  private void createScreenLayerInputWithNullMaterialResistivity() {
+    new ScreenLayerInput(
+        uuid,
+        "Screen",
+        CableMaterial.COPPER,
+        innerDiameter,
+        outerDiameter,
+        thermalResistivity,
+        thermalCapacitance,
+        Optional.empty(),
+        20,
+        wireDiameter,
+        Optional.empty(),
+        null);
   }
 
   @Test
@@ -378,39 +317,33 @@ class ScreenLayerInputTest {
         Quantities.getQuantity(-1.0, OHM_METRE);
     assertThrows(
         IllegalArgumentException.class,
-        () ->
-            new ScreenLayerInput(
-                uuid,
-                "Screen",
-                CableMaterial.COPPER,
-                innerDiameter,
-                outerDiameter,
-                thermalResistivity,
-                thermalCapacitance,
-                Optional.empty(),
-                20,
-                wireDiameter,
-                Optional.empty(),
-                negativeResistivity));
+        this::createScreenLayerInputWithNegativeMaterialResistivity);
+  }
+
+  private void createScreenLayerInputWithNegativeMaterialResistivity() {
+    ComparableQuantity<ElectricalResistivity> negativeResistivity =
+        Quantities.getQuantity(-1.0, OHM_METRE);
+
+    new ScreenLayerInput(
+        uuid,
+        "Screen",
+        CableMaterial.COPPER,
+        innerDiameter,
+        outerDiameter,
+        thermalResistivity,
+        thermalCapacitance,
+        Optional.empty(),
+        20,
+        wireDiameter,
+        Optional.empty(),
+        negativeResistivity);
   }
 
   @Test
   @DisplayName("Test ScreenLayerInput not equals for different wires number")
   void testScreenLayerInputNotEqualsWires() {
-    ScreenLayerInput screen1 =
-        new ScreenLayerInput(
-            uuid,
-            "Copper screen",
-            CableMaterial.COPPER,
-            innerDiameter,
-            outerDiameter,
-            thermalResistivity,
-            thermalCapacitance,
-            Optional.empty(),
-            20,
-            wireDiameter,
-            Optional.empty(),
-            materialResistivity);
+    ScreenLayerInput screen1 = createValidScreenLayer();
+
     ScreenLayerInput screen2 =
         new ScreenLayerInput(
             uuid,
@@ -421,10 +354,27 @@ class ScreenLayerInputTest {
             thermalResistivity,
             thermalCapacitance,
             Optional.empty(),
-            30,
+            30, // changed
             wireDiameter,
             Optional.empty(),
             materialResistivity);
+
     assertNotEquals(screen1, screen2);
+  }
+
+  private ScreenLayerInput createValidScreenLayer() {
+    return new ScreenLayerInput(
+        uuid,
+        "Copper screen",
+        CableMaterial.COPPER,
+        innerDiameter,
+        outerDiameter,
+        thermalResistivity,
+        thermalCapacitance,
+        Optional.empty(),
+        20,
+        wireDiameter,
+        Optional.empty(),
+        materialResistivity);
   }
 }
