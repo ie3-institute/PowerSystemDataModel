@@ -85,7 +85,7 @@ public class OperatorInput extends UniqueInputEntity {
    * @since 05.06.20
    */
   public static class OperatorInputCopyBuilder
-      extends UniqueInputEntityCopyBuilder<OperatorInputCopyBuilder> {
+      extends UniqueEntityCopyBuilder<OperatorInputCopyBuilder> {
 
     private String id;
 
