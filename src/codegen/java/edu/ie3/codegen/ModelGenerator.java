@@ -237,6 +237,8 @@ final class ModelGenerator implements HelperMethods {
 
     builder.addCode("return $S\n", model.name + "{");
 
+    List<String> components = model.components.stream().map(c -> c.name).toList();
+
     int index = 0;
     for (ModelDefinition.ComponentDefinition component :
         visibleComponents(model, models).values()) {
@@ -246,11 +248,15 @@ final class ModelGenerator implements HelperMethods {
 
       String prefix = (index == 0) ? component.name + "=" : ", " + component.name + "=";
 
-      String getter =
-          defaultGetterName(
-              component.name, component.type, genConfig.getterOptions.get(component.name));
+      if (components.contains(component.name)) {
+        builder.addCode("    + $S + $L\n", prefix, component.name);
+      } else {
+        String getter =
+            defaultGetterName(
+                component.name, component.type, genConfig.getterOptions.get(component.name));
 
-      builder.addCode("    + $S + $L()\n", prefix, getter);
+        builder.addCode("    + $S + $L()\n", prefix, getter);
+      }
 
       index++;
     }

@@ -277,6 +277,8 @@ public final class CopyBuilderGenerator implements HelperMethods {
 
     ClassName modelClass = modelClassName(model);
 
+    List<String> components = model.components.stream().map(c -> c.name).toList();
+
     GenerationConfig.ConstructorDefinition constructor = selectCopyConstructor(model);
 
     Map<String, ModelDefinition.ComponentDefinition> visible = visibleComponents(model);
@@ -301,7 +303,11 @@ public final class CopyBuilderGenerator implements HelperMethods {
                 + " does not reference a known component.");
       }
 
-      constructorArguments.add(CodeBlock.of("$L()", builderGetterName(component, genConfig)));
+      if (components.contains(component.name)) {
+        constructorArguments.add(CodeBlock.of("$L", component.name));
+      } else {
+        constructorArguments.add(CodeBlock.of("$L()", builderGetterName(component, genConfig)));
+      }
     }
 
     builder.addStatement(
