@@ -7,7 +7,6 @@ package edu.ie3.datamodel.models.input.connector.type;
 
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.InputEntity;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;

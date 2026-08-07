@@ -15,7 +15,6 @@ import static tech.units.indriya.unit.Units.HERTZ;
 import static tech.units.indriya.unit.Units.METRE;
 
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.test.common.GridTestData;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.SpecificConductance;
 import edu.ie3.util.quantities.interfaces.SpecificResistance;
@@ -33,7 +32,7 @@ import tech.units.indriya.unit.Units;
 
 /** Unit tests for LineTypeInput cable-related extensions. */
 @DisplayName("LineTypeInput Cable Extensions Tests")
-class LineTypeInputCableExtensionTest extends GridTestData {
+class LineTypeInputCableExtensionTest {
   UUID uuid = UUID.randomUUID();
 
   ComparableQuantity<SpecificConductance> b =
@@ -52,7 +51,43 @@ class LineTypeInputCableExtensionTest extends GridTestData {
   ComparableQuantity<ElectricPotential> vRated =
       Quantities.getQuantity(30.0, PowerSystemUnits.KILOVOLT);
 
-  CableTypeInput cableType = GridTestData.cableTypeInput;
+  CableTypeInput cableType =
+      new CableTypeInput(
+          UUID.fromString("289ad5c9-90f8-4640-afee-ecbf84a5d4c7"),
+          "test cable type input",
+          1,
+          new ConductorInput(
+              UUID.randomUUID(),
+              "conductor",
+              CableMaterial.COPPER,
+              Quantities.getQuantity(400.0e-6, SQUARE_METRE),
+              Quantities.getQuantity(0.0225, METRE),
+              false,
+              Quantities.getQuantity(1.0 / 384.0, KELVIN_METRE_PER_WATT),
+              Quantities.getQuantity(3449600.0, JOULE_PER_CUBIC_METRE_KELVIN),
+              Optional.empty()),
+          List.of(
+              new LayerInput(
+                  UUID.randomUUID(),
+                  "Main insulation",
+                  CableMaterial.XLPE,
+                  Quantities.getQuantity(0.0225, METRE),
+                  Quantities.getQuantity(0.027, METRE),
+                  Quantities.getQuantity(3.5, KELVIN_METRE_PER_WATT),
+                  Quantities.getQuantity(2.4, JOULE_PER_CUBIC_METRE_KELVIN),
+                  Optional.empty())),
+          Optional.empty(),
+          new ArrayList<>(),
+          new ArrayList<>(),
+          new ArrayList<>(),
+          Quantities.getQuantity(90.0, CELSIUS),
+          Quantities.getQuantity(50.0, HERTZ),
+          1.0,
+          1.0,
+          Quantities.getQuantity(350e-9, FARAD),
+          0.1,
+          0.0,
+          0.0);
   CableTypeInput cableType2 =
       new CableTypeInput(
           UUID.fromString("289ad5c9-90f8-4640-afee-ecbf84a5d4c7"),
@@ -105,7 +140,7 @@ class LineTypeInputCableExtensionTest extends GridTestData {
   void testLineTypeInputWithOnlyCableTypeUuid() {
     LineTypeInput line =
         new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
-    assertSame("test cable type input", line.getCableType().get().getId());
+    assertEquals("test cable type input", line.getCableType().get().getId());
   }
 
   @Test

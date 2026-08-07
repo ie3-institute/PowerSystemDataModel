@@ -155,8 +155,7 @@ class ConductorInputTest {
             thermalCapacitance,
             optionalArea);
 
-    assertTrue(conductor.area().isPresent());
-    assertEquals(area, conductor.area().get());
+    assertEquals(area, conductor.area());
   }
 
   @Test
@@ -190,7 +189,8 @@ class ConductorInputTest {
   @Test
   void testAreaOptionalEmptyByDefault() {
     ConductorInput conductor = createValidConductor();
-    assertTrue(conductor.area().isEmpty());
+
+    assertNull(conductor.area());
   }
 
   @Test

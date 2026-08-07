@@ -7,11 +7,9 @@ package edu.ie3.datamodel.io.factory.typeinput;
 
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
-import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.util.quantities.interfaces.SpecificConductance;
 import edu.ie3.util.quantities.interfaces.SpecificResistance;
-import java.util.Optional;
 import java.util.UUID;
 import javax.measure.quantity.ElectricCurrent;
 import javax.measure.quantity.ElectricPotential;
@@ -40,9 +38,6 @@ public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeIn
     ComparableQuantity<ElectricPotential> vRated =
         data.getQuantity(V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
 
-    Optional<CableTypeInput> cableType = Optional.empty();
-
-    return new LineTypeInput(
-        uuid, id, b, g, r, x, iMax, vRated, cableType, data.getFieldsToValues());
+    return new LineTypeInput(uuid, id, b, g, r, x, iMax, vRated, data.getFieldsToValues());
   }
 }
