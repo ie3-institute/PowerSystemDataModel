@@ -6,7 +6,9 @@
 package edu.ie3.datamodel.io.factory.markov
 
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.profile.markov.MarkovModelJsonTestSupport
+import tech.units.indriya.quantity.Quantities
 import tools.jackson.databind.node.ObjectNode
 
 class MarkovLoadModelFactoryTest extends MarkovModelJsonTestSupport {
@@ -33,15 +35,9 @@ class MarkovLoadModelFactoryTest extends MarkovModelJsonTestSupport {
     gmmState.means() == [1.0d]
     gmmState.variances() == [0.2d]
     model.valueModel().normalization().maxPower().isPresent()
-    with(model.valueModel().normalization().maxPower().get()) {
-      value() == 1.5d
-      unit() == "kW"
-    }
+    model.valueModel().normalization().maxPower().get() == Quantities.getQuantity(1.5d, StandardUnits.ACTIVE_POWER_IN)
     model.valueModel().normalization().minPower().isPresent()
-    with(model.valueModel().normalization().minPower().get()) {
-      value() == 0.1d
-      unit() == "kW"
-    }
+    model.valueModel().normalization().minPower().get() == Quantities.getQuantity(0.1d, StandardUnits.ACTIVE_POWER_IN)
   }
 
   def "buildModel throws FactoryException on transition dimension mismatch"() {

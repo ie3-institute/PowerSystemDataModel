@@ -8,11 +8,15 @@ package edu.ie3.datamodel.io.factory.markov;
 import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.*;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel.*;
 import edu.ie3.util.StringUtils;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
 import tools.jackson.databind.JsonNode;
 
 /** Shared parsing helpers for Markov model JSON documents. */
@@ -121,14 +125,10 @@ interface MarkovModelParsingSupport {
     String dtype = extractText(transitionsNode, jsonLeafField(MARKOV_TRANSITION_DTYPE));
     String encoding = extractText(transitionsNode, jsonLeafField(MARKOV_TRANSITION_ENCODING));
 
-    int[] shape = parseTransitionShape(transitionsNode);
-    int buckets = shape[0];
-    int rows = shape[1];
-    int columns = shape[2];
-    validateTransitionShape(expectedBucketCount, stateCount, buckets, rows, columns);
+    validateTransitionShape(transitionsNode, expectedBucketCount, stateCount);
 
     JsonNode valuesNode = extractNode(transitionsNode, jsonLeafField(MARKOV_TRANSITION_VALUES));
-    double[][][] values = parseTransitionValues(valuesNode, buckets, stateCount);
+    double[][][] values = parseTransitionValues(valuesNode, expectedBucketCount, stateCount);
 
     return new TransitionData(dtype, encoding, values);
   }
@@ -184,11 +184,6 @@ interface MarkovModelParsingSupport {
     return value.asString();
   }
 
-  default double extractDouble(JsonNode node, String field) {
-    JsonNode value = node.get(field);
-    return extractDoubleValue(value, field);
-  }
-
   default int extractInt(JsonNode node, String field) {
     JsonNode value = node.get(field);
     if (value == null || value.isMissingNode() || value.isNull()) {
@@ -219,20 +214,25 @@ interface MarkovModelParsingSupport {
     return OptionalInt.of(value.asInt());
   }
 
-  default int[] parseTransitionShape(JsonNode transitionsNode) {
+  /**
+   * Reads the declared shape of the transition tensor and checks it against the dimensions the rest
+   * of the model is built on. Since the shape carries no additional information once it matches,
+   * nothing is returned.
+   *
+   * @param transitionsNode node containing the transition block
+   * @param expectedBucketCount bucket count taken from the time model
+   * @param expectedStateCount state count taken from the discretization
+   */
+  default void validateTransitionShape(
+      JsonNode transitionsNode, int expectedBucketCount, int expectedStateCount) {
     JsonNode shapeNode = extractNode(transitionsNode, jsonLeafField(MARKOV_TRANSITION_SHAPE));
     if (!shapeNode.isArray() || shapeNode.size() != 3) {
       throw new FactoryException("Transition shape must contain three dimensions.");
     }
-    return new int[] {
-      extractInt(shapeNode, 0, "Transition shape"),
-      extractInt(shapeNode, 1, "Transition shape"),
-      extractInt(shapeNode, 2, "Transition shape")
-    };
-  }
+    int buckets = extractInt(shapeNode, 0, "Transition shape");
+    int rows = extractInt(shapeNode, 1, "Transition shape");
+    int columns = extractInt(shapeNode, 2, "Transition shape");
 
-  default void validateTransitionShape(
-      int expectedBucketCount, int stateCount, int buckets, int rows, int columns) {
     if (buckets != expectedBucketCount) {
       throw new FactoryException(
           "Transition bucket count mismatch. Expected "
@@ -241,10 +241,10 @@ interface MarkovModelParsingSupport {
               + buckets
               + ".");
     }
-    if (rows != stateCount || columns != stateCount) {
+    if (rows != expectedStateCount || columns != expectedStateCount) {
       throw new FactoryException(
           "Transition state dimension mismatch. Expected "
-              + stateCount
+              + expectedStateCount
               + " but was rows="
               + rows
               + ", columns="
@@ -274,31 +274,33 @@ interface MarkovModelParsingSupport {
     return values;
   }
 
-  default JsonNode extractTransitionBucket(JsonNode valuesNode, int bucket, int stateCount) {
+  default JsonNode extractTransitionBucket(
+      JsonNode valuesNode, int bucket, int expectedStateCount) {
     JsonNode bucketNode = valuesNode.get(bucket);
     if (!bucketNode.isArray()) {
       throw new FactoryException("Bucket " + bucket + " in transition values must be an array.");
     }
-    if (bucketNode.size() != stateCount) {
+    if (bucketNode.size() != expectedStateCount) {
       throw new FactoryException(
           "Bucket "
               + bucket
               + " contained "
               + bucketNode.size()
               + " rows. Expected "
-              + stateCount
+              + expectedStateCount
               + ".");
     }
     return bucketNode;
   }
 
-  default JsonNode extractTransitionRow(JsonNode bucketNode, int bucket, int row, int stateCount) {
+  default JsonNode extractTransitionRow(
+      JsonNode bucketNode, int bucket, int row, int expectedStateCount) {
     JsonNode rowNode = bucketNode.get(row);
     if (!rowNode.isArray()) {
       throw new FactoryException(
           "Row " + row + " in bucket " + bucket + " of transition values must be an array.");
     }
-    if (rowNode.size() != stateCount) {
+    if (rowNode.size() != expectedStateCount) {
       throw new FactoryException(
           "Row "
               + row
@@ -307,7 +309,7 @@ interface MarkovModelParsingSupport {
               + " had "
               + rowNode.size()
               + " columns. Expected "
-              + stateCount
+              + expectedStateCount
               + ".");
     }
     return rowNode;
@@ -350,8 +352,14 @@ interface MarkovModelParsingSupport {
     return value;
   }
 
-  default Optional<ValueModel.Normalization.PowerReference> parsePowerReference(
-      JsonNode parent, String field) {
+  /**
+   * Parses a reference power of the normalization block. Only {@code "kW"} is supported as unit.
+   *
+   * @param parent node containing the reference
+   * @param field name of the reference field
+   * @return the reference power, empty if the field is not given
+   */
+  default Optional<ComparableQuantity<Power>> parsePowerReference(JsonNode parent, String field) {
     JsonNode referenceNode = parent.get(field);
     if (referenceNode == null || referenceNode.isMissingNode() || referenceNode.isNull()) {
       return Optional.empty();
@@ -359,9 +367,14 @@ interface MarkovModelParsingSupport {
     if (!referenceNode.isObject()) {
       throw new FactoryException("Field '" + field + "' must be an object.");
     }
-    double value = extractDouble(referenceNode, jsonLeafField(MARKOV_MAX_POWER_VALUE));
+    String valueField = jsonLeafField(MARKOV_MAX_POWER_VALUE);
+    double value = extractDoubleValue(referenceNode.get(valueField), valueField);
     String unit = extractText(referenceNode, jsonLeafField(MARKOV_MAX_POWER_UNIT));
-    return Optional.of(new ValueModel.Normalization.PowerReference(value, unit));
+    if (!"kW".equalsIgnoreCase(unit)) {
+      throw new FactoryException(
+          "Unsupported reference power unit '" + unit + "'. Only kW is supported.");
+    }
+    return Optional.of(Quantities.getQuantity(value, StandardUnits.ACTIVE_POWER_IN));
   }
 
   default String jsonField(String field) {

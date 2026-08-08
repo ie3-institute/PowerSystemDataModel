@@ -18,11 +18,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.SplittableRandom;
+import java.util.function.IntToDoubleFunction;
 import java.util.function.Supplier;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.quantity.Quantities;
 
 /**
  * Container for Markov-chain-based load models produced by simonaMarkovLoad.
@@ -35,7 +35,6 @@ public class MarkovLoadModel {
   private static final int QUARTER_HOURS_PER_DAY = 96;
   private static final int WEEKEND_FACTOR = QUARTER_HOURS_PER_DAY;
   private static final int MONTH_FACTOR = QUARTER_HOURS_PER_DAY * 2;
-  private static final double PROBABILITY_TOLERANCE = 1e-5;
 
   private final String schema;
   private final ZonedDateTime generatedAt;
@@ -52,15 +51,23 @@ public class MarkovLoadModel {
   private final int stateCount;
   private final int samplingIntervalMinutes;
   private final double[] discretizationThresholds;
-  private final GmmStateData[][] gmmStates;
+
+  /**
+   * Flat lookup of the states held by {@link GmmBuckets}, indexed by {@code [bucket][state]}. The
+   * nesting of {@link GmmBuckets} mirrors the JSON document, while a simulation step addresses its
+   * state by index. Entries are {@code null} where the trainer did not fit a GMM.
+   */
+  private final GmmBuckets.GmmState[][] gmmStates;
+
   private final ComparableQuantity<Power> maxPowerFromModel;
   private final ComparableQuantity<Power> minPowerFromModel;
 
   /**
    * Builds a model from the parsed JSON sections and prepares the runtime lookup arrays.
    *
-   * <p>Semantic invariants such as transition row sums and GMM component consistency are checked
-   * here as well, so directly constructed models are protected just like JSON-parsed models.
+   * <p>Semantic invariants such as transition row sums and GMM component consistency are checked by
+   * {@link MarkovModelValidation}, so directly constructed models are protected just like
+   * JSON-parsed models.
    *
    * @throws IllegalArgumentException if GMM data is missing, the normalization range is
    *     non-positive, or the transition tensor does not match {@code bucketCount * stateCount *
@@ -101,108 +108,34 @@ public class MarkovLoadModel {
         valueModel
             .normalization()
             .maxPower()
-            .map(this::convertPowerReference)
+            .map(power -> power.to(StandardUnits.ACTIVE_POWER_IN))
             .orElseThrow(
                 () -> new IllegalArgumentException("Markov model lacks normalization.max_power"));
     this.minPowerFromModel =
         valueModel
             .normalization()
             .minPower()
-            .map(this::convertPowerReference)
+            .map(power -> power.to(StandardUnits.ACTIVE_POWER_IN))
             .orElseThrow(
                 () -> new IllegalArgumentException("Markov model lacks normalization.min_power"));
 
-    if (!this.maxPowerFromModel.isGreaterThan(this.minPowerFromModel)) {
-      throw new IllegalArgumentException(
-          "Markov model normalization has non-positive range (max <= min).");
-    }
-
-    validateTransitionDimensions();
+    MarkovModelValidation.validateNormalizationRange(minPowerFromModel, maxPowerFromModel);
+    MarkovModelValidation.validateTransitionDimensions(transitions, bucketCount, stateCount);
   }
 
-  private void validateTransitionDimensions() {
-    if (transitions.length != bucketCount) {
-      throw new IllegalArgumentException(
-          "Transition bucket count mismatch. Expected "
-              + bucketCount
-              + " but was "
-              + transitions.length);
-    }
-    for (int bucket = 0; bucket < transitions.length; bucket++) {
-      if (transitions[bucket].length != stateCount) {
-        throw new IllegalArgumentException(
-            "Transition state count mismatch in bucket "
-                + bucket
-                + ". Expected "
-                + stateCount
-                + " but was "
-                + transitions[bucket].length);
-      }
-      for (int state = 0; state < transitions[bucket].length; state++) {
-        double[] row = transitions[bucket][state];
-        if (row.length != stateCount) {
-          throw new IllegalArgumentException(
-              "Transition next-state count mismatch in bucket "
-                  + bucket
-                  + ", state "
-                  + state
-                  + ". Expected "
-                  + stateCount
-                  + " but was "
-                  + row.length);
-        }
-        validateProbabilityVector(row, "Transition row in bucket " + bucket + ", state " + state);
-      }
-    }
-  }
-
-  private static void validateProbabilityVector(double[] weights, String context) {
-    if (weights.length == 0) {
-      throw new IllegalArgumentException(context + " must not be empty.");
-    }
-    double sum = 0d;
-    for (double weight : weights) {
-      if (!Double.isFinite(weight)) {
-        throw new IllegalArgumentException(context + " contains a non-finite probability.");
-      }
-      if (weight < 0d) {
-        throw new IllegalArgumentException(context + " contains a negative probability.");
-      }
-      sum += weight;
-    }
-    if (Math.abs(sum - 1d) > PROBABILITY_TOLERANCE) {
-      throw new IllegalArgumentException(context + " must sum to 1.0, but summed to " + sum + ".");
-    }
-  }
-
-  private GmmStateData[][] buildGmmStates(GmmBuckets buckets) {
+  /**
+   * Flattens the nested lists of {@link GmmBuckets}, which mirror the structure of the JSON
+   * document, into the {@code [bucket][state]} lookup used at simulation time.
+   */
+  private GmmBuckets.GmmState[][] buildGmmStates(GmmBuckets buckets) {
     List<GmmBuckets.GmmBucket> bucketList = buckets.buckets();
-    if (bucketList.size() != bucketCount) {
-      throw new IllegalArgumentException(
-          "GMM bucket count mismatch. Expected " + bucketCount + " but was " + bucketList.size());
-    }
-    GmmStateData[][] lookup = new GmmStateData[bucketCount][stateCount];
+    MarkovModelValidation.validateGmmDimensions(bucketList, bucketCount, stateCount);
+
+    GmmBuckets.GmmState[][] lookup = new GmmBuckets.GmmState[bucketCount][];
     for (int bucket = 0; bucket < bucketCount; bucket++) {
-      List<GmmBuckets.GmmState> states = bucketList.get(bucket).states();
-      if (states.size() != stateCount) {
-        throw new IllegalArgumentException(
-            "State count mismatch in bucket " + bucket + ". Expected " + stateCount);
-      }
-      for (int state = 0; state < stateCount; state++) {
-        GmmBuckets.GmmState s = states.get(state);
-        lookup[bucket][state] = s != null ? s.toStateData() : null;
-      }
+      lookup[bucket] = bucketList.get(bucket).states().toArray(new GmmBuckets.GmmState[0]);
     }
     return lookup;
-  }
-
-  private ComparableQuantity<Power> convertPowerReference(
-      ValueModel.Normalization.PowerReference reference) {
-    if (!"kW".equalsIgnoreCase(reference.unit())) {
-      throw new IllegalArgumentException(
-          "Unsupported reference power unit '" + reference.unit() + "'. Only kW is supported.");
-    }
-    return Quantities.getQuantity(reference.value(), StandardUnits.ACTIVE_POWER_IN);
   }
 
   public String schema() {
@@ -263,7 +196,10 @@ public class MarkovLoadModel {
     return Optional.of(maxPowerFromModel);
   }
 
-  /** Not implemented yet. Future feature */
+  /**
+   * Not implemented yet. Energy scaling is not supported by the Markov based load model, see <a
+   * href="https://github.com/ie3-institute/PowerSystemDataModel/issues/1696">#1696</a>.
+   */
   public Optional<ComparableQuantity<Energy>> getProfileEnergyScaling() {
     return Optional.empty();
   }
@@ -335,30 +271,35 @@ public class MarkovLoadModel {
 
   /** Draws the next state from the transition row and samples the corresponding GMM. */
   private StepResult simulateStep(int bucket, int currentState, SplittableRandom rng) {
-    int nextStateIndex = drawWeighted(transitions[bucket][currentState], rng);
+    double[] row = transitions[bucket][currentState];
+    int nextStateIndex = drawWeighted(row.length, i -> row[i], rng);
     double normalized = sampleNormalizedValue(bucket, nextStateIndex, rng);
     return new StepResult(nextStateIndex, normalized);
   }
 
-  /** Picks an index by weighted random sampling. */
-  private static int drawWeighted(double[] weights, SplittableRandom rng) {
+  /**
+   * Picks an index by weighted random sampling. The weights are read through {@code weightAt}, so
+   * that both the transition rows and the GMM component weights can be drawn from without copying
+   * them into a common representation.
+   */
+  private static int drawWeighted(int count, IntToDoubleFunction weightAt, SplittableRandom rng) {
     double sample = rng.nextDouble();
     double cumulative = 0d;
-    for (int i = 0; i < weights.length; i++) {
-      cumulative += weights[i];
+    for (int i = 0; i < count; i++) {
+      cumulative += weightAt.applyAsDouble(i);
       if (sample <= cumulative) {
         return i;
       }
     }
-    return weights.length - 1;
+    return count - 1;
   }
 
   /**
-   * Draws a normalized power value from the GMM at {@code (bucket, state)} and clamps Gaussian
-   * tails to the model range.
+   * Draws a normalized power value from the GMM at {@code (bucket, state)}. Since the input data is
+   * normalized to {@code [0, 1]} over the whole model, Gaussian tails are clamped to that range.
    */
   private double sampleNormalizedValue(int bucket, int state, SplittableRandom rng) {
-    GmmStateData gmm = gmmStates[bucket][state];
+    GmmBuckets.GmmState gmm = gmmStates[bucket][state];
     if (gmm == null) {
       return 0d;
     }
@@ -372,29 +313,6 @@ public class MarkovLoadModel {
   }
 
   private record StepResult(int nextState, double normalizedValue) {}
-
-  /** Runtime representation of a single GMM state. */
-  private static final class GmmStateData {
-    private final double[] weights;
-    private final double[] means;
-    private final double[] variances;
-
-    private GmmStateData(double[] weights, double[] means, double[] variances) {
-      this.weights = weights;
-      this.means = means;
-      this.variances = variances;
-    }
-
-    private double sample(SplittableRandom rng) {
-      int component = drawWeighted(weights, rng);
-      double mean = means[component];
-      double variance = Math.max(0d, variances[component]);
-      if (variance == 0d) {
-        return mean;
-      }
-      return mean + Math.sqrt(variance) * rng.nextGaussian();
-    }
-  }
 
   /** Provenance metadata for the trained model. */
   public record Generator(String name, String version, Map<String, String> config) {}
@@ -415,11 +333,9 @@ public class MarkovLoadModel {
      * wrapping reflects the JSON shape, both bounds are required at construction time.
      */
     public record Normalization(
-        String method, Optional<PowerReference> maxPower, Optional<PowerReference> minPower) {
-
-      /** A value/unit pair from the JSON normalization block. Only {@code "kW"} is supported. */
-      public record PowerReference(double value, String unit) {}
-    }
+        String method,
+        Optional<ComparableQuantity<Power>> maxPower,
+        Optional<ComparableQuantity<Power>> minPower) {}
 
     /** State-bin layout and right-edge thresholds. */
     public record Discretization(int states, List<Double> thresholdsRight) {}
@@ -485,58 +401,28 @@ public class MarkovLoadModel {
     }
   }
 
-  /** Per-bucket Gaussian Mixture Models. State entries may be {@code null}. */
+  /**
+   * Per-bucket Gaussian Mixture Models, nested the way the JSON document is structured. State
+   * entries may be {@code null} where the trainer did not fit a GMM.
+   */
   public record GmmBuckets(List<GmmBucket> buckets) {
     public record GmmBucket(List<GmmState> states) {}
 
     /** Parameters of one Gaussian Mixture Model. */
     public record GmmState(List<Double> weights, List<Double> means, List<Double> variances) {
       public GmmState {
-        validateGmmComponents(weights, means, variances);
+        MarkovModelValidation.validateGmmComponents(weights, means, variances);
       }
 
-      private GmmStateData toStateData() {
-        return new GmmStateData(toArray(weights), toArray(means), toArray(variances));
-      }
-
-      private static void validateGmmComponents(
-          List<Double> weights, List<Double> means, List<Double> variances) {
-        Objects.requireNonNull(weights, "weights");
-        Objects.requireNonNull(means, "means");
-        Objects.requireNonNull(variances, "variances");
-
-        if (weights.isEmpty()) {
-          throw new IllegalArgumentException("GMM state must contain at least one component.");
+      /** Draws a normalized value from this mixture. */
+      private double sample(SplittableRandom rng) {
+        int component = drawWeighted(weights.size(), weights::get, rng);
+        double mean = means.get(component);
+        double variance = Math.max(0d, variances.get(component));
+        if (variance == 0d) {
+          return mean;
         }
-        if (weights.size() != means.size() || weights.size() != variances.size()) {
-          throw new IllegalArgumentException(
-              "GMM weights, means and variances must have the same number of entries.");
-        }
-
-        double[] weightArray = toArray(weights);
-        validateProbabilityVector(weightArray, "GMM component weights");
-
-        for (int i = 0; i < means.size(); i++) {
-          Double mean = means.get(i);
-          Double variance = variances.get(i);
-          if (mean == null || !Double.isFinite(mean)) {
-            throw new IllegalArgumentException("GMM means must be finite.");
-          }
-          if (variance == null || !Double.isFinite(variance)) {
-            throw new IllegalArgumentException("GMM variances must be finite.");
-          }
-          if (variance < 0d) {
-            throw new IllegalArgumentException("GMM variances must be non-negative.");
-          }
-        }
-      }
-
-      private static double[] toArray(List<Double> values) {
-        double[] array = new double[values.size()];
-        for (int i = 0; i < values.size(); i++) {
-          array[i] = values.get(i);
-        }
-        return array;
+        return mean + Math.sqrt(variance) * rng.nextGaussian();
       }
     }
   }
