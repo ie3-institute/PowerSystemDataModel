@@ -52,11 +52,22 @@ public record CableDeploymentInput(
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof CableDeploymentInput that)) return false;
-    return layoutFormation.equals(that.layoutFormation())
-        && depthCables.equals(that.depthCables())
-        && distanceCables.equals(that.distanceCables());
+    if (this == o) {
+      return true;
+    }
+
+    if (!(o
+        instanceof
+        CableDeploymentInput(
+            String thatLayoutFormation,
+            ComparableQuantity<Length> thatDepthCables,
+            ComparableQuantity<Length> thatDistanceCables))) {
+      return false;
+    }
+
+    return layoutFormation.equals(thatLayoutFormation)
+        && depthCables.equals(thatDepthCables)
+        && distanceCables.equals(thatDistanceCables);
   }
 
   @Override

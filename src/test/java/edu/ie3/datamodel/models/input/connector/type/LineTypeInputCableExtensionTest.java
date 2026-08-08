@@ -90,7 +90,7 @@ class LineTypeInputCableExtensionTest {
           0.0);
   CableTypeInput cableType2 =
       new CableTypeInput(
-          UUID.fromString("289ad5c9-90f8-4640-afee-ecbf84a5d4c7"),
+          UUID.fromString("541d0389-74a3-4fb8-802b-d62ecfe57e0b"),
           "test cable type input",
           1,
           new ConductorInput(
@@ -156,6 +156,14 @@ class LineTypeInputCableExtensionTest {
   @Test
   @DisplayName("Test LineTypeInput not equals with different cable UUIDs")
   void testLineTypeInputNotEqualsDifferentCableUuid() {
+    assertNotSame(cableType, cableType2);
+
+    assertNotEquals(
+        cableType.getUuid(),
+        cableType2.getUuid(),
+        "Test setup requires different CableTypeInput UUIDs.");
+
+    assertNotEquals(cableType, cableType2);
 
     LineTypeInput line1 =
         new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
@@ -198,8 +206,6 @@ class LineTypeInputCableExtensionTest {
   @Test
   @DisplayName("Test LineTypeInput getters for cable parameters")
   void testLineTypeInputGettersCableParameters() {
-    UUID uuid = UUID.randomUUID();
-
     LineTypeInput line =
         new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
 

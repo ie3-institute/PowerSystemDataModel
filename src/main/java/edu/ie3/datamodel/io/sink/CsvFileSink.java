@@ -124,21 +124,6 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
 
   @Override
   public <C extends InputEntity> void persistIgnoreNested(C entity) {
-    if (entity instanceof CableTypeInput cable) {
-      var result = processorProvider.handleEntity(cable);
-
-      if (result.isSuccess()) {
-        try {
-          log.debug("CableType mapping: " + result.getOrThrow());
-        } catch (ProcessorProviderException e) {
-          throw new RuntimeException(e);
-        }
-      } else {
-        log.debug("CableType mapping FAILED:");
-        result.getException().ifPresent(Throwable::printStackTrace);
-      }
-    }
-
     write(entity);
   }
 
