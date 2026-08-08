@@ -32,7 +32,7 @@ import tech.units.indriya.ComparableQuantity;
  * @param isCompacted Whether the conductor is compacted
  * @param thermalResistivity Thermal resistivity of the conductor material
  * @param thermalCapacitance Thermal capacitance of the conductor material
- * @param area Optional real cross-sectional area (if different from geometric calculation)
+ * @param areaValue Optional real cross-sectional area (if different from geometric calculation)
  */
 public record ConductorInput(
     UUID uuid,
