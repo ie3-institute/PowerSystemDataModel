@@ -313,8 +313,6 @@ class ScreenLayerInputTest {
   @Test
   @DisplayName("Test ScreenLayerInput negative materialResistivity validation")
   void testScreenLayerInputNegativeMaterialResistivity() {
-    ComparableQuantity<ElectricalResistivity> negativeResistivity =
-        Quantities.getQuantity(-1.0, OHM_METRE);
     assertThrows(
         IllegalArgumentException.class,
         this::createScreenLayerInputWithNegativeMaterialResistivity);

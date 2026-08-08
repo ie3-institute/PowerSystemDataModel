@@ -129,12 +129,12 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
 
       if (result.isSuccess()) {
         try {
-          System.out.println("CableType mapping: " + result.getOrThrow());
+          log.debug("CableType mapping: " + result.getOrThrow());
         } catch (ProcessorProviderException e) {
           throw new RuntimeException(e);
         }
       } else {
-        System.out.println("CableType mapping FAILED:");
+        log.debug("CableType mapping FAILED:");
         result.getException().ifPresent(Throwable::printStackTrace);
       }
     }

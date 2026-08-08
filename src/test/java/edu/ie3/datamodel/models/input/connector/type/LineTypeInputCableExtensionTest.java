@@ -33,7 +33,7 @@ import tech.units.indriya.unit.Units;
 /** Unit tests for LineTypeInput cable-related extensions. */
 @DisplayName("LineTypeInput Cable Extensions Tests")
 class LineTypeInputCableExtensionTest {
-  UUID uuid = UUID.randomUUID();
+  UUID lineUuid = UUID.randomUUID();
 
   ComparableQuantity<SpecificConductance> b =
       Quantities.getQuantity(1.0, StandardUnits.SUSCEPTANCE_PER_LENGTH);
@@ -130,7 +130,7 @@ class LineTypeInputCableExtensionTest {
   @DisplayName("Test LineTypeInput creation with cable parameters")
   void testLineTypeInputWithCableParameters() {
     LineTypeInput line =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
     assertNotNull(line);
     assertEquals(Optional.of(cableType), line.getCableType());
   }
@@ -139,7 +139,7 @@ class LineTypeInputCableExtensionTest {
   @DisplayName("Test LineTypeInput with cableType")
   void testLineTypeInputWithOnlyCableTypeUuid() {
     LineTypeInput line =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
     assertEquals("test cable type input", line.getCableType().get().getId());
   }
 
@@ -147,9 +147,9 @@ class LineTypeInputCableExtensionTest {
   @DisplayName("Test LineTypeInput equals with same cable parameters")
   void testLineTypeInputEqualsWithCableParameters() {
     LineTypeInput line1 =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
     LineTypeInput line2 =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
     assertEquals(line1, line2);
   }
 
@@ -158,9 +158,9 @@ class LineTypeInputCableExtensionTest {
   void testLineTypeInputNotEqualsDifferentCableUuid() {
 
     LineTypeInput line1 =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
     LineTypeInput line2 =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType2));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType2));
     assertNotEquals(line1, line2);
   }
 
@@ -168,7 +168,7 @@ class LineTypeInputCableExtensionTest {
   @DisplayName("Test LineTypeInput copy builder with cable parameters")
   void testLineTypeInputCopyBuilderWithCableParameters() {
     LineTypeInput original =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
 
     LineTypeInput copied = original.copy().build();
 
@@ -179,7 +179,7 @@ class LineTypeInputCableExtensionTest {
   @DisplayName("Test LineTypeInput toString includes cable parameters")
   void testLineTypeInputToStringWithCableParameters() {
     LineTypeInput line =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
     String str = line.toString();
     assertNotNull(str);
     assertTrue(str.contains("cableType"));
@@ -189,9 +189,9 @@ class LineTypeInputCableExtensionTest {
   @DisplayName("Test LineTypeInput hashCode with cable parameters")
   void testLineTypeInputHashCodeWithCableParameters() {
     LineTypeInput line1 =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
     LineTypeInput line2 =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
     assertEquals(line1.hashCode(), line2.hashCode());
   }
 
@@ -201,7 +201,7 @@ class LineTypeInputCableExtensionTest {
     UUID uuid = UUID.randomUUID();
 
     LineTypeInput line =
-        new LineTypeInput(uuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
+        new LineTypeInput(lineUuid, "Test Line", b, g, r, x, iMax, vRated, Optional.of(cableType));
 
     assertEquals(Optional.of(cableType), line.getCableType());
   }
