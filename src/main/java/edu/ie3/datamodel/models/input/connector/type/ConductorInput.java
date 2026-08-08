@@ -92,7 +92,7 @@ public record ConductorInput(
    * @param isCompacted Whether the conductor is compacted
    * @param thermalResistivity Thermal resistivity
    * @param thermalCapacitance Thermal capacitance
-   * @param area real cross-sectional area
+   * @param areaValue real cross-sectional area
    * @throws IllegalArgumentException if validation constraints are violated
    */
   public ConductorInput {
