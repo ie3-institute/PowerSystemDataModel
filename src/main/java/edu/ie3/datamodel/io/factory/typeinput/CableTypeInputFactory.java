@@ -9,7 +9,6 @@ import static edu.ie3.util.quantities.PowerSystemUnits.*;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -132,12 +131,13 @@ public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableType
 
     try {
       JsonNode node = OBJECT_MAPPER.readTree(json);
+
       if (node.isObject() && (!node.has("uuid") || node.get("uuid").isNull())) {
         ((ObjectNode) node).put("uuid", java.util.UUID.randomUUID().toString());
       }
 
       return OBJECT_MAPPER.treeToValue(node, ScreenLayerInput.class);
-    } catch (JsonProcessingException e) {
+    } catch (IOException e) {
       throw new ParsingException("Cannot parse ScreenLayerInput: " + json, e);
     }
   }
@@ -147,6 +147,7 @@ public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableType
       return null;
     }
 
+    try {
       JsonNode node = OBJECT_MAPPER.readTree(json);
 
       if (node.isObject() && (!node.has("uuid") || node.get("uuid").isNull())) {
@@ -154,7 +155,7 @@ public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableType
       }
 
       return OBJECT_MAPPER.treeToValue(node, ConductorInput.class);
-    } catch (JsonProcessingException e) {
+    } catch (IOException e) {
       throw new ParsingException("Cannot parse ConductorInput: " + json, e);
     }
   }
