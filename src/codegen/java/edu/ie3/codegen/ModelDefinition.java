@@ -65,6 +65,7 @@ public final class ModelDefinition implements HelperMethods {
         if (isMap(component)) {
           builder.addStatement("return $T.unmodifiableMap($L)", Collections.class, component.name);
         } else if (options != null && options.optional) {
+          // TODO: options != null && options.optional -> component.required
           returnType = ParameterizedTypeName.get(ClassName.get(Optional.class), returnType.box());
 
           builder.addStatement("return $T.ofNullable($L)", Optional.class, component.name);
