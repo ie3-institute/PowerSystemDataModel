@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.connector.type;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.InputEntity;
 import java.util.List;
@@ -22,6 +24,7 @@ import tech.units.indriya.ComparableQuantity;
  * complete specification of a cable type including conductors, insulation layers, screens, armor,
  * and jacket elements, as well as electrical and thermal parameters.
  */
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class CableTypeInput extends AssetTypeInput implements InputEntity {
 
   private final int coreNumber;
@@ -146,7 +149,6 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
     this.eddyCurrentLossFactor = eddyCurrentLossFactor;
   }
 
-  @com.fasterxml.jackson.annotation.JsonProperty("core_number")
   public int getCoreNumber() {
     return coreNumber;
   }
