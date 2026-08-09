@@ -210,7 +210,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
         builder.addStatement(
             "this.$L = new $T<>(entity.$L())", component.name, HashMap.class, entityGetter);
       } else {
-        builder.addStatement("this.$L = entity.$L()", component.name, entityGetter);
+        builder.addStatement("this.$L = entity.$L", component.name, component.name);
       }
     }
 

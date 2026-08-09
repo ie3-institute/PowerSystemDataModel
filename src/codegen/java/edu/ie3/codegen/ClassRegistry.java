@@ -28,6 +28,7 @@ public final class ClassRegistry {
         .forEach(ClassRegistry::add);
     registry.put("InputEntity", ClassName.get("edu.ie3.datamodel.models.input", "InputEntity"));
     registry.put("HasNodes", ClassName.get("edu.ie3.datamodel.io.extractor", "HasNodes"));
+    registry.put("HasEm", ClassName.get("edu.ie3.datamodel.io.extractor", "HasEm"));
     registry.put("UniqueEntity", ClassName.get("edu.ie3.datamodel.models", "UniqueEntity"));
     registry.put("Entity", ClassName.get("edu.ie3.datamodel.models", "Entity"));
     registry.put("Uniqueness", ClassName.get("edu.ie3.datamodel.models", "Uniqueness"));

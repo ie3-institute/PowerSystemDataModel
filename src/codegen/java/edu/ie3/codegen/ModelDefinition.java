@@ -108,6 +108,8 @@ public final class ModelDefinition implements HelperMethods {
     public String type;
     public List<String> keys = new ArrayList<>();
     public boolean required = true;
+    public boolean nested = false;
+    public boolean nullable = false;
     public String javaDoc = "";
   }
 }

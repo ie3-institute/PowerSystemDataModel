@@ -5,8 +5,6 @@ models:
     components:
       - name: uuid
         type: UUID
-        keys: [uuid]
-        required: true
 
   UniqueInputEntity:
     name: UniqueInputEntity
@@ -25,17 +23,27 @@ models:
     components:
       - name: id
         type: String
-        required: true
         javaDoc: "Name or ID of the asset."
       - name: operator
         type: OperatorInput
         required: false
+        nested: true
         javaDoc: "The operator of this asset."
       - name: operationTime
         type: OperationTime
         keys: [operationStart, operationEnd]
         required: false
         javaDoc: "Time for which the entity is operated."
+
+  AssetTypeInput:
+    name: AssetTypeInput
+    package: edu.ie3.datamodel.models.input
+    extends: UniqueInputEntity
+    components:
+      - name: id
+        type: String
+        required: true
+        javaDoc: "Name or ID of the asset."
 
   NodeInput:
     name: NodeInput
@@ -92,7 +100,20 @@ models:
         type: bool
         javaDoc: "True, if the reactive power is measured."
 
-
+  EmInput:
+    name: EmInput
+    package: edu.ie3.datamodel.models.input
+    extends: AssetInput
+    class: true
+    components:
+      - name: controlStrategy
+        type: String
+        javaDoc: "Reference to the control strategy to be used for this model."
+      - name: controllingEm
+        type: EmInput
+        nullable: true
+        javaDoc: "Optional UUID of the parent {@link EmInput} that is controlling this em unit. If null, this em
+                unit is not em-controlled."
 
 
 

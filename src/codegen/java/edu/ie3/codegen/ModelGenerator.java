@@ -262,14 +262,34 @@ final class ModelGenerator implements HelperMethods {
 
       String prefix = (index == 0) ? component.name + "=" : ", " + component.name + "=";
 
-      if (components.contains(component.name)) {
-        builder.addCode("    + $S + $L\n", prefix, component.name);
+      String componentName = component.name;
+
+      if (component.nullable) {
+        // we need some special calls here
+        builder.addCode(
+            "    + $S + $T.ofNullable($L).map($L::getUuid).map(UUID::toString).orElse(\"\")\n",
+            prefix,
+            Optional.class,
+            componentName,
+            model.name);
+
+      } else if (components.contains(component.name)) {
+        if (component.nested) {
+          builder.addCode("    + $S + $L.getUuid()\n", prefix, component.name);
+        } else {
+          builder.addCode("    + $S + $L\n", prefix, component.name);
+        }
+
       } else {
         String getter =
             defaultGetterName(
                 component.name, component.type, genConfig.getterOptions.get(component.name));
 
-        builder.addCode("    + $S + $L()\n", prefix, getter);
+        if (component.nested) {
+          builder.addCode("    + $S + $L().getUuid()\n", prefix, getter);
+        } else {
+          builder.addCode("    + $S + $L()\n", prefix, getter);
+        }
       }
 
       index++;

@@ -53,6 +53,7 @@ public final class TypeRegistry {
         "VoltageLevel",
         new TypeDefinition(
             "edu.ie3.datamodel.models.voltagelevels.VoltageLevel", List.of(), "getVoltageLvl"));
+    registry.put("EmInput", new TypeDefinition("edu.ie3.datamodel.models.input.EmInput"));
   }
 
   public static boolean containsKey(String name) {

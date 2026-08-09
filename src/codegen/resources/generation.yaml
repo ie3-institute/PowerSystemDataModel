@@ -37,6 +37,15 @@ models:
                  @param uuid Unique identifier\n
                  @param id Human-readable identifier"
 
+  AssetTypeInput:
+    classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.AssetInput}."
+    constructors:
+      - name: full
+        components: [uuid, id]
+        superArgs: [uuid]
+        javaDoc: "@param uuid of the input entity\n
+                @param id of the asset"
+
   NodeInput:
     classJavaDoc: "Describes an electrical grid node, that other assets can connect to."
     constructors:
@@ -175,6 +184,51 @@ models:
         type: NodeList
         expression: singletonList(node)
         className: Collections
+
+  EmInput:
+    classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.AssetInput}."
+    inherits: [HasEm]
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, controlStrategy, controllingEm]
+        superArgs: [uuid, id, operator, operationTime]
+        javaDoc: "Constructor for an operated energy management system.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime time for which the entity is operated\n
+                 @param controlStrategy the control strategy\n
+                 @param controllingEm The {@link EmInput} controlling this em unit. Null, if not applicable."
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, operator, operationTime, controlStrategy, controllingEm, additionalInformation]
+        superArgs: [uuid, id, operator, operationTime]
+        javaDoc: "Constructor for an operated energy management system.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime time for which the entity is operated\n
+                 @param controlStrategy the control strategy\n
+                 @param controllingEm The {@link EmInput} controlling this em unit. Null, if not applicable.\n
+                 @param additionalInformation That were provided by the source"
+      - name: minimal
+        components: [uuid, id, controlStrategy, controllingEm]
+        superArgs: [uuid, id]
+        javaDoc: "Constructor for an operated energy management system.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param controlStrategy the control strategy\n
+                 @param controllingEm The {@link EmInput} controlling this em unit. Null, if not applicable."
+    getterOptions:
+      controllingEm:
+        optional: true
+
+
+
+
+
 
 
 
