@@ -37,6 +37,8 @@ public final class GenerationConfig implements HelperMethods {
 
   public List<MethodOverride> methodOverrides = new ArrayList<>();
 
+  public Map<String, ConstructorModification> constructorModifications = new HashMap<>();
+
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // helper definition
 
@@ -70,5 +72,11 @@ public final class GenerationConfig implements HelperMethods {
     public String expression;
     public String className;
     public String javaDoc = "";
+  }
+
+  public static final class ConstructorModification {
+    public String expression;
+    public String className;
+    public boolean insert;
   }
 }

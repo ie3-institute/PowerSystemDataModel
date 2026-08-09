@@ -78,6 +78,20 @@ final class ModelGenerator implements HelperMethods {
       typeBuilder.addSuperinterface(resolveClassName(interfaceName, model.packageName));
     }
 
+    typeBuilder.addFields(getStaticFields(model, genConfig));
+    typeBuilder.addFields(model.getPrivateFields());
+
+    ConstructorGenerator constructorGenerator = new ConstructorGenerator(model, genConfig, models);
+    CopyBuilderGenerator copyBuilderGenerator = new CopyBuilderGenerator(model, genConfig, models);
+
+    typeBuilder.addMethods(constructorGenerator.getConstructors());
+    typeBuilder.addMethods(model.getAllMethods(genConfig));
+    typeBuilder.addMethod(copyBuilderGenerator.generateCopyMethod());
+
+    if (genConfig.fromMap && model.isClass) {
+      typeBuilder.addMethod(constructorGenerator.getFromMapConstructor());
+    }
+
     for (GenerationConfig.MethodOverride override : genConfig.methodOverrides) {
       var methodBuilder =
           MethodSpec.methodBuilder(override.name)
@@ -93,20 +107,6 @@ final class ModelGenerator implements HelperMethods {
       }
 
       typeBuilder.addMethod(methodBuilder.build());
-    }
-
-    typeBuilder.addFields(getStaticFields(model, genConfig));
-    typeBuilder.addFields(model.getPrivateFields());
-
-    ConstructorGenerator constructorGenerator = new ConstructorGenerator(model, genConfig, models);
-    CopyBuilderGenerator copyBuilderGenerator = new CopyBuilderGenerator(model, genConfig, models);
-
-    typeBuilder.addMethods(constructorGenerator.getConstructors());
-    typeBuilder.addMethods(model.getAllMethods(genConfig));
-    typeBuilder.addMethod(copyBuilderGenerator.generateCopyMethod());
-
-    if (genConfig.fromMap && model.isClass) {
-      typeBuilder.addMethod(constructorGenerator.getFromMapConstructor());
     }
 
     if (genConfig.equals) {

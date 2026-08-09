@@ -251,30 +251,55 @@ public final class ConstructorGenerator implements HelperMethods {
     }
 
     for (ModelDefinition.ComponentDefinition localField : model.components) {
+      String componentName = localField.name;
+
       boolean isConstructorParameter =
-          parameters.stream().anyMatch(parameter -> parameter.name.equals(localField.name));
+          parameters.stream().anyMatch(parameter -> parameter.name.equals(componentName));
 
       TypeRegistry.TypeDefinition type = TypeRegistry.get(localField.type);
 
       if (!isConstructorParameter) {
         if (type.defaultExpression != null && !type.defaultExpression.isBlank()) {
-          CodeBlock expression = CodeBlock.of("$L", type.defaultExpression);
-          builder.addStatement("this.$L = $L", localField.name, expression);
+          builder.addStatement("this.$L = $L", componentName, type.defaultExpression);
 
-        } else if (!localField.name.equals("additionalInformation")) {
+        } else if (!componentName.equals("additionalInformation")) {
           throw new IllegalArgumentException(
               "Constructor '"
                   + constructor.name
                   + "' of "
                   + model.name
                   + " does not initialize local field '"
-                  + localField.name
+                  + componentName
                   + "'.");
         }
 
       } else {
-        CodeBlock expression = CodeBlock.of("$L", localField.name);
-        builder.addStatement("this.$L = $L", localField.name, expression);
+        if (genConfig.constructorModifications.containsKey(componentName)) {
+          GenerationConfig.ConstructorModification modification =
+              genConfig.constructorModifications.get(componentName);
+
+          if (modification.className != null && !modification.className.isBlank()) {
+
+            if (modification.insert) {
+              builder.addStatement(
+                  "this.$L =" + modification.expression,
+                  componentName,
+                  getClassName(modification.className));
+
+            } else {
+              builder.addStatement(
+                  "this.$L = $T." + modification.expression,
+                  componentName,
+                  getClassName(modification.className));
+            }
+
+          } else {
+            builder.addStatement("this.$L = " + modification.expression, componentName);
+          }
+
+        } else {
+          builder.addStatement("this.$L = $L", componentName, componentName);
+        }
       }
     }
 

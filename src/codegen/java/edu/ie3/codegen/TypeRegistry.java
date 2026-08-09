@@ -37,6 +37,10 @@ public final class TypeRegistry {
             "OperatorInput.NO_OPERATOR_ASSIGNED"));
     registry.put(
         "NodeInput", new TypeDefinition("edu.ie3.datamodel.models.input.NodeInput", "getEntity"));
+    registry.put("AssetInput", new TypeDefinition("edu.ie3.datamodel.models.input.AssetInput"));
+    registry.put(
+        "LineTypeInput",
+        new TypeDefinition("edu.ie3.datamodel.models.input.connector.type.LineTypeInput"));
     registry.put(
         "OperationTime",
         new TypeDefinition(
@@ -50,10 +54,18 @@ public final class TypeRegistry {
         new TypeDefinition(
             "tech.units.indriya.ComparableQuantity", List.of("Dimensionless"), "getDimensionless"));
     registry.put(
+        "Length", new TypeDefinition("tech.units.indriya.ComparableQuantity", List.of("Length")));
+
+    registry.put(
         "VoltageLevel",
         new TypeDefinition(
             "edu.ie3.datamodel.models.voltagelevels.VoltageLevel", List.of(), "getVoltageLvl"));
     registry.put("EmInput", new TypeDefinition("edu.ie3.datamodel.models.input.EmInput"));
+    registry.put("LineString", new TypeDefinition("org.locationtech.jts.geom.LineString"));
+    registry.put(
+        "OlmCharacteristicInput",
+        new TypeDefinition(
+            "edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput"));
   }
 
   public static boolean containsKey(String name) {
@@ -87,6 +99,13 @@ public final class TypeRegistry {
       this.genericArguments = List.of();
       this.converter = converter;
       this.defaultExpression = defaultExpression;
+    }
+
+    public TypeDefinition(String javaName, List<String> genericArguments) {
+      this.javaName = javaName;
+      this.genericArguments = List.copyOf(genericArguments);
+      this.converter = null;
+      this.defaultExpression = null;
     }
 
     public TypeDefinition(String javaName, List<String> genericArguments, String converter) {

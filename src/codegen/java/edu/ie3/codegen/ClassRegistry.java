@@ -7,10 +7,7 @@ package edu.ie3.codegen;
 
 import com.squareup.javapoet.ClassName;
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Stream;
 
 public final class ClassRegistry {
@@ -24,16 +21,10 @@ public final class ClassRegistry {
   }
 
   static {
-    Stream.of(Serializable.class, String.class, Collections.class, UUID.class)
-        .forEach(ClassRegistry::add);
-    registry.put("InputEntity", ClassName.get("edu.ie3.datamodel.models.input", "InputEntity"));
-    registry.put("HasNodes", ClassName.get("edu.ie3.datamodel.io.extractor", "HasNodes"));
-    registry.put("HasEm", ClassName.get("edu.ie3.datamodel.io.extractor", "HasEm"));
-    registry.put("UniqueEntity", ClassName.get("edu.ie3.datamodel.models", "UniqueEntity"));
-    registry.put("Entity", ClassName.get("edu.ie3.datamodel.models", "Entity"));
-    registry.put("Uniqueness", ClassName.get("edu.ie3.datamodel.models", "Uniqueness"));
-    registry.put("Operable", ClassName.get("edu.ie3.datamodel.models", "Operable"));
-    registry.put("Dimensionless", ClassName.get("javax.measure.quantity", "Dimensionless"));
+    registerJavaClasses();
+    registerOwnClasses();
+    registerQuantities();
+
     registry.put("GeoUtils", ClassName.get("edu.ie3.util.geo", "GeoUtils"));
   }
 
@@ -47,5 +38,44 @@ public final class ClassRegistry {
     }
 
     throw new IllegalArgumentException("Couldn't find class path definition for name: " + name);
+  }
+
+  static void registerJavaClasses() {
+    Stream.of(Serializable.class, String.class, Collections.class, UUID.class, List.class)
+        .forEach(ClassRegistry::add);
+  }
+
+  static void registerOwnClasses() {
+    // extractor interfaces
+    Stream.of("HasEm", "HasLine", "HasNodes", "HasThermalBus", "HasThermalStorage", "HasType")
+        .forEach(name -> registry.put(name, ClassName.get("edu.ie3.datamodel.io.extractor", name)));
+
+    // model package
+    Stream.of("Entity", "Operable", "OperationTime", "StandardUnits", "UniqueEntity", "Uniqueness")
+        .forEach(name -> registry.put(name, ClassName.get("edu.ie3.datamodel.models", name)));
+
+    // model.input package
+    Stream.of(
+            "AssetInput",
+            "AssetTypeInput",
+            "EmInput",
+            "NodeInput",
+            "OperatorInput",
+            "UniqueInputEntity")
+        .forEach(name -> registry.put(name, ClassName.get("edu.ie3.datamodel.models.input", name)));
+
+    // model.input.conector package
+
+    // model.input.conector.type package
+    Stream.of("LineTypeInput", "Transformer2WTypeInput", "Transformer3WTypeInput")
+        .forEach(
+            name ->
+                registry.put(
+                    name, ClassName.get("edu.ie3.datamodel.models.input.conector.type", name)));
+  }
+
+  static void registerQuantities() {
+    Stream.of("Dimensionless", "Length")
+        .forEach(name -> registry.put(name, ClassName.get("javax.measure.quantity", name)));
   }
 }

@@ -115,6 +115,42 @@ models:
         javaDoc: "Optional UUID of the parent {@link EmInput} that is controlling this em unit. If null, this em
                 unit is not em-controlled."
 
+  ConnectorInput:
+    name: ConnectorInput
+    package: edu.ie3.datamodel.models.input.connector
+    extends: AssetInput
+    components:
+      - name: nodeA
+        type: NodeInput
+        javaDoc: "Grid node at one side of the connector."
+      - name: nodeB
+        type: NodeInput
+        javaDoc: "Grid node at the other side of the connector."
+      - name: parallelDevices
+        type: int
+        javaDoc: "Amount of parallel devices."
+
+  LineInput:
+    name: LineInput
+    package: edu.ie3.datamodel.models.input.connector
+    extends: ConnectorInput
+    class: true
+    components:
+      - name: type
+        type: LineTypeInput
+        javaDoc: "Type of this line, containing default values for lines of this kind."
+      - name: length
+        type: Length
+        javaDoc: "Length of this line."
+      - name: geoPosition
+        type: LineString
+        javaDoc: "Coordinates of this line."
+      - name: olmCharacteristic
+        type: OlmCharacteristicInput
+        javaDoc: "Description of an optional weather dependent operation curve."
+
+
+
 
 
 

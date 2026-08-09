@@ -102,7 +102,7 @@ models:
     getterOptions:
       vTarget:
         capitalize: false
-    fromMap: true
+    fromMap: false
     fromMapConstructor: full
     resolverOrder: [operator]
 
@@ -224,6 +224,105 @@ models:
     getterOptions:
       controllingEm:
         optional: true
+
+  ConnectorInput:
+    classJavaDoc: "Describes an asset that connects two {@link NodeInput}s."
+    inherits: [HasNodes]
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices]
+        superArgs: [uuid, id, operator, operationTime]
+        javaDoc: "Constructor for an operated connector.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param nodeA Grid node at one side of the connector\n
+               @param nodeB Grid node at the other side of the connector\n
+               @param parallelDevices overall amount of parallel devices to automatically construct (e.g.\n
+                   parallelDevices = 2 will build a total of two entities using the specified parameters)"
+      - name: minimal
+        components: [uuid, id, nodeA, nodeB, parallelDevices]
+        superArgs: [uuid, id]
+        javaDoc: "Constructor for an operated connector.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param nodeA Grid node at one side of the connector\n
+               @param nodeB Grid node at the other side of the connector\n
+               @param parallelDevices overall amount of parallel devices to automatically construct (e.g.\n
+                   parallelDevices = 2 will build a total of two entities using the specified parameters)"
+    methodOverrides:
+      - name: allNodes
+        type: NodeList
+        expression: of(getNodeA(), getNodeB())
+        className: List
+
+  LineInput:
+    classJavaDoc: "Describes an electrical grid line that connects two {@link NodeInput}s."
+    inherits: [HasType]
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, type, length, geoPosition, olmCharacteristic]
+        superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices]
+        javaDoc: "Constructor for an operated line.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param nodeA Grid node at one side of the line\n
+               @param nodeB Grid node at the other side of the line\n
+               @param parallelDevices overall amount of parallel lines to automatically construct (e.g.\n
+                   parallelDevices = 2 will build a total of two lines using the specified parameters)\n
+               @param type of line\n
+               @param length of this line\n
+               @param geoPosition Coordinates of this line\n
+               @param olmCharacteristic Description of an optional weather dependent operation curve"
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, type, length, geoPosition, olmCharacteristic, additionalInformation]
+        superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices]
+        javaDoc: "Constructor for an operated line.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param nodeA Grid node at one side of the line\n
+               @param nodeB Grid node at the other side of the line\n
+               @param parallelDevices overall amount of parallel lines to automatically construct (e.g.\n
+                   parallelDevices = 2 will build a total of two lines using the specified parameters)\n
+               @param type of line\n
+               @param length of this line\n
+               @param geoPosition Coordinates of this line\n
+               @param olmCharacteristic Description of an optional weather dependent operation curve\n
+               @param additionalInformation That were provided by the source"
+      - name: minimal
+        components: [uuid, id, nodeA, nodeB, parallelDevices, type, length, geoPosition, olmCharacteristic]
+        superArgs: [uuid, id, nodeA, nodeB, parallelDevices]
+        javaDoc: "Constructor for an operated line.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param nodeA Grid node at one side of the line\n
+               @param nodeB Grid node at the other side of the line\n
+               @param parallelDevices overall amount of parallel lines to automatically construct (e.g.\n
+                   parallelDevices = 2 will build a total of two lines using the specified parameters)\n
+               @param type of line\n
+               @param length of this line\n
+               @param geoPosition Coordinates of this line\n
+               @param olmCharacteristic Description of an optional weather dependent operation curve"
+    constructorModifications:
+      geoPosition:
+        expression: buildSafeLineString(geoPosition)
+        className: GeoUtils
+      length:
+        expression: length.to($T.LINE_LENGTH)
+        className: StandardUnits
+        insert: true
+
+
 
 
 
