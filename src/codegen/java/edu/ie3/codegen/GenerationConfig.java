@@ -73,7 +73,6 @@ public final class GenerationConfig implements HelperMethods {
     public String type;
     public String expression;
     public String className;
-    public String javaDoc = "";
   }
 
   public static final class ConstructorModification {
