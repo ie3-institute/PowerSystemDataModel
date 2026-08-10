@@ -95,37 +95,7 @@ public record ConductorInput(
    * @param areaValue real cross-sectional area
    * @throws IllegalArgumentException if validation constraints are violated
    */
-  public ConductorInput {
-    // Validation
-    Objects.requireNonNull(uuid, "Conductor UUID cannot be null");
-    Objects.requireNonNull(name, "Conductor name cannot be null");
-    Objects.requireNonNull(material, "Conductor material cannot be null");
-    Objects.requireNonNull(crossSection, "Cross section cannot be null");
-    Objects.requireNonNull(diameter, "Diameter cannot be null");
-    Objects.requireNonNull(thermalResistivity, "Thermal resistivity cannot be null");
-    Objects.requireNonNull(thermalCapacitance, "Thermal capacitance cannot be null");
-
-    if (name.isEmpty()) {
-      throw new IllegalArgumentException("Conductor name must not be empty");
-    }
-
-    // Positive values check
-    if (crossSection.getValue().doubleValue() < 0) {
-      throw new IllegalArgumentException("Cross section must be >= 0");
-    }
-    if (diameter.getValue().doubleValue() < 0) {
-      throw new IllegalArgumentException("Diameter must be >= 0");
-    }
-    if (thermalResistivity.getValue().doubleValue() < 0) {
-      throw new IllegalArgumentException("Thermal resistivity must be >= 0");
-    }
-    if (thermalCapacitance.getValue().doubleValue() < 0) {
-      throw new IllegalArgumentException("Thermal capacitance must be >= 0");
-    }
-    if (areaValue != null && areaValue.getValue().doubleValue() < 0) {
-      throw new IllegalArgumentException("Area must be >= 0");
-    }
-  }
+  public ConductorInput {}
 
   public Optional<ComparableQuantity<Area>> area() {
     return Optional.ofNullable(areaValue);

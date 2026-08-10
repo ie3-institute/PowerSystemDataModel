@@ -12,7 +12,12 @@ import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
+import edu.ie3.datamodel.models.input.connector.CableDeploymentInput;
+import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
+import edu.ie3.datamodel.models.input.connector.type.ConductorInput;
+import edu.ie3.datamodel.models.input.connector.type.LayerInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
+import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.SubGridContainer;
@@ -21,11 +26,15 @@ import edu.ie3.util.geo.GeoUtils;
 import edu.ie3.util.quantities.QuantityUtil;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import javax.measure.quantity.Area;
+import javax.measure.quantity.Length;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
+import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
@@ -153,6 +162,296 @@ public class ConnectorValidationUtils extends ValidationUtils {
                 quantities(
                     V_RATED, lineType.getvRated(), I_MAX, lineType.getiMax(), R, lineType.getR()),
                 lineType));
+  }
+
+  /**
+   * Validates a cable type if:
+   *
+   * <ul>
+   *   <li>it is not null
+   *   <li>its id is not empty
+   *   <li>it has at least one core
+   *   <li>its limit temperature is greater than or equal to 0
+   *   <li>its frequency is greater than 0
+   *   <li>its electrical capacitance is greater than or equal to 0
+   *   <li>its coefficients are greater than or equal to 0
+   *   <li>has a valid conductor input
+   * </ul>
+   *
+   * @param cableType Cable type to validate
+   * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
+   *     Success
+   */
+  protected static List<Try<Void, InvalidEntityException>> checkCableType(
+      CableTypeInput cableType) {
+    Try<Void, InvalidEntityException> isNull = checkNonNull(cableType, "a cable type");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
+    }
+
+    List<Try<Void, InvalidEntityException>> exceptions =
+        new ArrayList<>(
+            Try.ofVoid(
+                InvalidEntityException.class,
+                () -> checkCableTypeId(cableType),
+                () -> checkCoreNumber(cableType),
+                () ->
+                    detectNegativeQuantities(
+                        quantities(
+                            LIMIT_TEMPERATURE,
+                            cableType.getLimitTemperature(),
+                            ELECTRICAL_CAPACITANCE,
+                            cableType.getElectricalCapacitance()),
+                        cableType),
+                () ->
+                    detectZeroOrNegativeQuantities(
+                        quantities(FREQUENCY, cableType.getFrequency()), cableType),
+                () -> checkCableCoefficients(cableType)));
+
+    exceptions.addAll(checkConductor(cableType.getConductor(), cableType));
+    exceptions.addAll(checkLayers(cableType.getIsolation(), cableType));
+    exceptions.addAll(checkLayers(cableType.getFiller(), cableType));
+    exceptions.addAll(checkLayers(cableType.getArmor(), cableType));
+    exceptions.addAll(checkLayers(cableType.getJack(), cableType));
+    cableType
+        .getScreen()
+        .ifPresent(screen -> exceptions.addAll(checkScreenLayer(screen, cableType)));
+
+    return exceptions;
+  }
+
+  private static List<Try<Void, InvalidEntityException>> checkCableDeployment(
+      CableDeploymentInput deployment, LineInput line) {
+    Try<Void, InvalidEntityException> isNull = checkNonNull(deployment, "a cable deployment");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
+    }
+
+    return Try.ofVoid(
+        InvalidEntityException.class,
+        () -> checkCableDeploymentLayoutFormation(deployment, line),
+        () -> checkCableDepth(deployment, line),
+        () ->
+            detectZeroOrNegativeQuantities(
+                quantities("distanceCables", deployment.distanceCables()), line));
+  }
+
+  private static void checkCableDepth(CableDeploymentInput deployment, LineInput line)
+      throws InvalidEntityException {
+    if (deployment.depthCables().getValue().doubleValue() > 0d) {
+      throw new InvalidEntityException("Cable depth must be less than or equal to 0", line);
+    }
+  }
+
+  private static void checkCableDeploymentLayoutFormation(
+      CableDeploymentInput deployment, LineInput line) throws InvalidEntityException {
+    if (deployment.layoutFormation().isEmpty()) {
+      throw new InvalidEntityException("Layout formation cannot be empty", line);
+    }
+  }
+
+  /**
+   * Validates a cable conductor.
+   *
+   * @param conductor Conductor to validate
+   * @return validation results
+   */
+  private static List<Try<Void, InvalidEntityException>> checkConductor(
+      ConductorInput conductor, CableTypeInput cableType) {
+    Try<Void, InvalidEntityException> isNull = checkNonNull(conductor, "a conductor");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
+    }
+
+    return Try.ofVoid(
+        InvalidEntityException.class,
+        () -> checkConductorName(conductor, cableType),
+        () ->
+            detectNegativeQuantities(
+                quantities(
+                    "crossSection",
+                    conductor.crossSection(),
+                    "diameter",
+                    conductor.diameter(),
+                    "thermalResistivity",
+                    conductor.thermalResistivity(),
+                    "thermalCapacitance",
+                    conductor.thermalCapacitance()),
+                cableType),
+        () -> checkConductorArea(conductor, cableType));
+  }
+
+  private static void checkConductorName(ConductorInput conductor, CableTypeInput cableType)
+      throws InvalidEntityException {
+    if (conductor.name().isEmpty()) {
+      throw new InvalidEntityException("Conductor name must not be empty", cableType);
+    }
+  }
+
+  private static void checkConductorArea(ConductorInput conductor, CableTypeInput cableType)
+      throws InvalidEntityException {
+    var area = conductor.area();
+
+    if (area.isPresent()) {
+      detectNegativeQuantities(quantities("area", area.get()), cableType);
+    }
+  }
+
+  /**
+   * Validates all layers of a cable component.
+   *
+   * @param layers Layers to validate
+   * @param cableType Owning cable type
+   * @return validation results
+   */
+  private static List<Try<Void, InvalidEntityException>> checkLayers(
+      List<LayerInput> layers, CableTypeInput cableType) {
+    List<Try<Void, InvalidEntityException>> exceptions = new ArrayList<>();
+
+    for (LayerInput layer : layers) {
+      exceptions.addAll(checkLayer(layer, cableType));
+    }
+
+    return exceptions;
+  }
+
+  /**
+   * Validates one cable layer.
+   *
+   * @param layer Layer to validate
+   * @param cableType Owning cable type
+   * @return validation results
+   */
+  private static List<Try<Void, InvalidEntityException>> checkLayer(
+      LayerInput layer, CableTypeInput cableType) {
+    Try<Void, InvalidEntityException> isNull = checkNonNull(layer, "a cable layer");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
+    }
+
+    return Try.ofVoid(
+        InvalidEntityException.class,
+        () -> checkLayerName(layer, cableType),
+        () ->
+            detectNegativeQuantities(
+                quantities(
+                    "innerDiameter",
+                    layer.innerDiameter(),
+                    "outerDiameter",
+                    layer.outerDiameter(),
+                    "thermalResistivity",
+                    layer.thermalResistivity(),
+                    "thermalCapacitance",
+                    layer.thermalCapacitance()),
+                cableType),
+        () -> checkLayerArea(layer, cableType),
+        () -> checkLayerDiameters(layer, cableType));
+  }
+
+  private static void checkLayerName(LayerInput layer, CableTypeInput cableType)
+      throws InvalidEntityException {
+    if (layer.name().isEmpty()) {
+      throw new InvalidEntityException("Layer name cannot be empty", cableType);
+    }
+  }
+
+  private static void checkLayerArea(LayerInput layer, CableTypeInput cableType)
+      throws InvalidEntityException {
+    if (layer.area().isPresent()) {
+      detectNegativeQuantities(quantities("area", layer.area().get()), cableType);
+    }
+  }
+
+  private static void checkLayerDiameters(LayerInput layer, CableTypeInput cableType)
+      throws InvalidEntityException {
+    if (layer.outerDiameter().isLessThan(layer.innerDiameter())) {
+      throw new InvalidEntityException(
+          "Outer diameter must be greater than or equal to inner diameter", cableType);
+    }
+  }
+
+  /**
+   * Validates a cable screen layer.
+   *
+   * @param screenLayer Screen layer to validate
+   * @param cableType Owning cable type
+   * @return validation results
+   */
+  private static List<Try<Void, InvalidEntityException>> checkScreenLayer(
+      ScreenLayerInput screenLayer, CableTypeInput cableType) {
+    Try<Void, InvalidEntityException> isNull = checkNonNull(screenLayer, "a cable screen layer");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
+    }
+
+    return Try.ofVoid(
+        InvalidEntityException.class,
+        () -> checkScreenLayerName(screenLayer, cableType),
+        () ->
+            detectNegativeQuantities(
+                quantities(
+                    "innerDiameter",
+                    screenLayer.innerDiameter(),
+                    "outerDiameter",
+                    screenLayer.outerDiameter(),
+                    "thermalResistivity",
+                    screenLayer.thermalResistivity(),
+                    "thermalCapacitance",
+                    screenLayer.thermalCapacitance(),
+                    "wireDiameter",
+                    screenLayer.wireDiameter(),
+                    "electricalResistivity",
+                    screenLayer.electricalResistivity()),
+                cableType),
+        () -> checkScreenLayerArea(screenLayer, cableType),
+        () -> checkScreenLayerLengthOfLay(screenLayer, cableType),
+        () -> checkScreenLayerDiameters(screenLayer, cableType),
+        () -> checkScreenLayerWireNumber(screenLayer, cableType));
+  }
+
+  private static void checkScreenLayerName(ScreenLayerInput screenLayer, CableTypeInput cableType)
+      throws InvalidEntityException {
+    if (screenLayer.name().isEmpty()) {
+      throw new InvalidEntityException("Screen layer name cannot be empty", cableType);
+    }
+  }
+
+  private static void checkScreenLayerDiameters(
+      ScreenLayerInput screenLayer, CableTypeInput cableType) throws InvalidEntityException {
+    if (screenLayer.outerDiameter().isLessThan(screenLayer.innerDiameter())) {
+      throw new InvalidEntityException(
+          "Outer diameter must be greater than or equal to inner diameter", cableType);
+    }
+  }
+
+  private static void checkScreenLayerWireNumber(
+      ScreenLayerInput screenLayer, CableTypeInput cableType) throws InvalidEntityException {
+    if (screenLayer.wiresNumber() < 1) {
+      throw new InvalidEntityException("Number of wires must be >= 1", cableType);
+    }
+  }
+
+  private static void checkScreenLayerArea(ScreenLayerInput screenLayer, CableTypeInput cableType)
+      throws InvalidEntityException {
+    Optional<ComparableQuantity<Area>> area = screenLayer.area();
+
+    if (area.isPresent()) {
+      detectNegativeQuantities(quantities("area", area.get()), cableType);
+    }
+  }
+
+  private static void checkScreenLayerLengthOfLay(
+      ScreenLayerInput screenLayer, CableTypeInput cableType) throws InvalidEntityException {
+    Optional<ComparableQuantity<Length>> lengthOfLay = screenLayer.lengthOfLay();
+
+    if (lengthOfLay.isPresent()) {
+      detectNegativeQuantities(quantities("lengthOfLay", lengthOfLay.get()), cableType);
+    }
   }
 
   /**
@@ -518,6 +817,51 @@ public class ConnectorValidationUtils extends ValidationUtils {
           connectorInput.getClass().getSimpleName()
               + " connects different voltage levels, but shouldn't",
           connectorInput);
+    }
+  }
+
+  private static void checkCableTypeId(CableTypeInput cableType) throws InvalidEntityException {
+    if (cableType.getId().isEmpty()) {
+      throw new InvalidEntityException("ID cannot be empty", cableType);
+    }
+  }
+
+  private static void checkCoreNumber(CableTypeInput cableType) throws InvalidEntityException {
+    if (cableType.getCoreNumber() < 1) {
+      throw new InvalidEntityException("Core number must be >= 1", cableType);
+    }
+  }
+
+  private static void checkCableCoefficients(CableTypeInput cableType)
+      throws InvalidEntityException {
+    List<String> malformedCoefficients = new ArrayList<>();
+
+    if (cableType.getSkinEffectCoefficient() < 0d) {
+      malformedCoefficients.add("skinEffectCoefficient=" + cableType.getSkinEffectCoefficient());
+    }
+
+    if (cableType.getProximityEffectCoefficient() < 0d) {
+      malformedCoefficients.add(
+          "proximityEffectCoefficient=" + cableType.getProximityEffectCoefficient());
+    }
+
+    if (cableType.getTanDelta() < 0d) {
+      malformedCoefficients.add("tanDelta=" + cableType.getTanDelta());
+    }
+
+    if (cableType.getCirculatingLossFactor() < 0d) {
+      malformedCoefficients.add("circulatingLossFactor=" + cableType.getCirculatingLossFactor());
+    }
+
+    if (cableType.getEddyCurrentLossFactor() < 0d) {
+      malformedCoefficients.add("eddyCurrentLossFactor=" + cableType.getEddyCurrentLossFactor());
+    }
+
+    if (!malformedCoefficients.isEmpty()) {
+      throw new InvalidEntityException(
+          "The following coefficients have to be zero or positive: "
+              + String.join(", ", malformedCoefficients),
+          cableType);
     }
   }
 

@@ -87,6 +87,11 @@ public class FieldNamingStrategy {
   public static final String X_SC_B = "xScB";
   public static final String X_SC_C = "xScC";
 
+  // cable types
+  public static final String LIMIT_TEMPERATURE = "limitTemperature";
+  public static final String FREQUENCY = "frequency";
+  public static final String ELECTRICAL_CAPACITANCE = "electricalCapacitance";
+
   // efficiency
   public static final String ETA = "eta";
   public static final String ETA_CONV = "etaConv";

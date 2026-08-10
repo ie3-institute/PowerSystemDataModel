@@ -6,10 +6,16 @@
 package edu.ie3.datamodel.utils.validation
 
 import static edu.ie3.datamodel.models.StandardUnits.*
-import static tech.units.indriya.unit.Units.METRE
+import static edu.ie3.util.quantities.PowerSystemUnits.*
 
+import edu.ie3.datamodel.exceptions.FailedValidationException
 import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.models.input.connector.LineInput
+import edu.ie3.datamodel.models.input.connector.type.CableMaterial
+import edu.ie3.datamodel.models.input.connector.type.CableTypeInput
+import edu.ie3.datamodel.models.input.connector.type.ConductorInput
+import edu.ie3.datamodel.models.input.connector.type.LayerInput
+import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
@@ -17,6 +23,9 @@ import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData
 import edu.ie3.util.geo.GeoUtils
+import edu.ie3.util.quantities.interfaces.ElectricalResistivity
+import edu.ie3.util.quantities.interfaces.ThermalCapacitance
+import edu.ie3.util.quantities.interfaces.ThermalResistivity
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.LineString
 import spock.lang.Specification
@@ -61,6 +70,7 @@ class ConnectorValidationUtilsTest extends Specification {
   GridTestData.geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.4116482, 51.4843281], [3.4116482, 10.4843281], [7.4116482, 51.4843281]]}") as LineString,
   OlmCharacteristicInput.CONSTANT_CHARACTERISTIC
   )
+
 
   def "A ConnectorInput needs at least one parallel device"() {
     when:
@@ -109,6 +119,116 @@ class ConnectorValidationUtilsTest extends Specification {
   }
 
   // No tests for "ConnectorValidationUtils.checkLineType recognizes all potential errors for a line type", as nothing needs to be tested there
+
+
+  def "Smoke Test: Correct cable type throws no exception"() {
+    given:
+    def cableType = validCableType()
+
+    when:
+    ValidationUtils.check(cableType)
+
+    then:
+    noExceptionThrown()
+  }
+
+  def "ConnectorValidationUtils.checkCableType recognizes invalid cable type values"() {
+    when:
+    List<Try<Void, InvalidEntityException>> exceptions =
+        ConnectorValidationUtils.checkCableType(invalidCableType)
+        .findAll { it.failure }
+
+    then:
+    exceptions.size() == 1
+    exceptions[0].exception.get().message.contains(expectedMessage)
+
+    where:
+    invalidCableType                                      || expectedMessage
+    validCableType(id: "")                                || "ID cannot be empty"
+    validCableType(coreNumber: 0)                         || "Core number must be >= 1"
+    validCableType(limitTemperature: temperature(-1d))    || "limitTemperature"
+    validCableType(frequency: frequency(0d))              || "frequency"
+    validCableType(frequency: frequency(-50d))            || "frequency"
+    validCableType(electricalCapacitance: capacitance(-1d)) || "electricalCapacitance"
+    validCableType(skinEffectCoefficient: -1d)            || "skinEffectCoefficient"
+    validCableType(proximityEffectCoefficient: -1d)       || "proximityEffectCoefficient"
+    validCableType(tanDelta: -0.1d)                       || "tanDelta"
+    validCableType(circulatingLossFactor: -0.1d)          || "circulatingLossFactor"
+    validCableType(eddyCurrentLossFactor: -0.1d)          || "eddyCurrentLossFactor"
+    validCableType(conductor: validConductor(name: "")) || "Conductor name must not be empty"
+    validCableType(conductor: validConductor(crossSection: area(-1d))) || "crossSection"
+    validCableType(conductor: validConductor(diameter: length(-1d))) || "diameter"
+    validCableType(conductor: validConductor(thermalResistivity: thermalResistivity(-1d))) || "thermalResistivity"
+    validCableType(conductor: validConductor(thermalCapacitance: thermalCapacitance(-1d))) || "thermalCapacitance"
+    validCableType(conductor: validConductor(area: Optional.of(area(-1d)))) || "area"
+    validCableType(isolation: [validLayer(name: "")]) ||            "Layer name cannot be empty"
+    validCableType(isolation: [
+      validLayer(innerDiameter: length(-1d))
+    ]) ||            "innerDiameter"
+    validCableType(isolation: [
+      validLayer(outerDiameter: length(-1d))
+    ]) ||            "outerDiameter"
+    validCableType(isolation: [
+      validLayer(thermalResistivity: thermalResistivity(-1d))
+    ]) ||            "thermalResistivity"
+    validCableType(            isolation: [
+      validLayer(thermalCapacitance: thermalCapacitance(-1d))
+    ]) ||            "thermalCapacitance"
+    validCableType(isolation: [
+      validLayer(area: Optional.of(area(-1d)))
+    ]) ||            "area"
+    validCableType(isolation: [
+      validLayer(innerDiameter: length(0.03d),outerDiameter: length(0.02d))
+    ]) ||"Outer diameter must be greater than or equal to inner diameter"
+    validCableType(filler: [validLayer(name: "")]) || "Layer name cannot be empty"
+    validCableType(armor: [validLayer(name: "")]) ||            "Layer name cannot be empty"
+    validCableType(jack: [validLayer(name: "")]) ||            "Layer name cannot be empty"
+    validCableType(screen: Optional.of(validScreenLayer(name: ""))) ||            "Screen layer name cannot be empty"
+    validCableType(screen: Optional.of(validScreenLayer(innerDiameter: length(-1d)))) ||            "innerDiameter"
+    validCableType(screen: Optional.of(validScreenLayer(outerDiameter: length(-1d)))) ||            "outerDiameter"
+    validCableType(            screen: Optional.of(validScreenLayer(                    innerDiameter: length(0.03d),                    outerDiameter: length(0.02d)))) ||            "Outer diameter must be greater than or equal to inner diameter"
+    validCableType(screen: Optional.of(validScreenLayer(wiresNumber: 0))) ||            "Number of wires must be >= 1"
+    validCableType(screen: Optional.of(validScreenLayer(wireDiameter: length(-1d)))) ||            "wireDiameter"
+    validCableType(            screen: Optional.of(validScreenLayer(                    electricalResistivity: electricalResistivity(-1d)))) ||            "electricalResistivity"
+    validCableType(            screen: Optional.of(validScreenLayer(                    thermalResistivity: thermalResistivity(-1d)))) ||            "thermalResistivity"
+    validCableType(            screen: Optional.of(validScreenLayer(                    thermalCapacitance: thermalCapacitance(-1d)))) ||            "thermalCapacitance"
+    validCableType(            screen: Optional.of(validScreenLayer(                    area: Optional.of(area(-1d))))) ||            "area"
+    validCableType(            screen: Optional.of(validScreenLayer(                    lengthOfLay: Optional.of(length(-1d))))) ||            "lengthOfLay"
+  }
+
+  def "ConnectorValidationUtils.checkCableType reports all invalid quantities together"() {
+    given:
+    def cableType =
+        validCableType(
+        limitTemperature: temperature(-1d),
+        electricalCapacitance: capacitance(-1d))
+
+    when:
+    def failures =
+        ConnectorValidationUtils.checkCableType(cableType)
+        .findAll { it.failure }
+
+    then:
+    failures.size() == 1
+
+    and:
+    def message = failures[0].exception.get().message
+    message.contains("limitTemperature")
+    message.contains("electricalCapacitance")
+  }
+
+
+  def "ValidationUtils.check rejects invalid cable types"() {
+    given:
+    def cableType = validCableType(coreNumber: 0)
+
+    when:
+    ValidationUtils.check(cableType)
+
+    then:
+    def exception = thrown(FailedValidationException)
+    exception.message.contains("Core number must be >= 1")
+  }
 
   def "Smoke Test: Correct transformer2W throws no exception"() {
     given:
@@ -271,5 +391,105 @@ class ConnectorValidationUtilsTest extends Specification {
     where:
     invalidSwitch           || expectedSize || expectedException
     GridTestData.switchAtoB || 1            || new InvalidEntityException("Switch connects two different voltage levels", invalidSwitch)
+  }
+
+
+  private static ConductorInput validConductor(Map overrides = [:]) {
+    new ConductorInput(
+        overrides.get("uuid", UUID.fromString("793da55e-6021-4468-af1c-5ec61576bb20")),
+        overrides.get("name", "conductor"),
+        overrides.get("material", CableMaterial.COPPER),
+        overrides.get("crossSection", area(400.0e-6d)),
+        overrides.get("diameter", length(0.0225d)),
+        overrides.get("isCompacted", false),
+        overrides.get("thermalResistivity", thermalResistivity(1.0d / 384.0d)),
+        overrides.get("thermalCapacitance", thermalCapacitance(3449600.0d)),
+        overrides.get("area", Optional.empty()))
+  }
+
+
+  private CableTypeInput validCableType(Map overrides = [:]) {
+    new CableTypeInput(
+        overrides.get("uuid", UUID.randomUUID()),
+        overrides.get("id", "NA2XS2Y 1x120 RM/25 12/20 kV"),
+        overrides.get("coreNumber", 1),
+        overrides.get("conductor", validConductor()),
+        overrides.get("isolation", validIsolation()),
+        overrides.get("screen", Optional.empty()),
+        overrides.get("filler", []),
+        overrides.get("armor", []),
+        overrides.get("jack", []),
+        overrides.get("limitTemperature", temperature(90d)),
+        overrides.get("frequency", frequency(50d)),
+        overrides.get("skinEffectCoefficient", 1d),
+        overrides.get("proximityEffectCoefficient", 1d),
+        overrides.get("electricalCapacitance", capacitance(350e-9d)),
+        overrides.get("tanDelta", 0.1d),
+        overrides.get("circulatingLossFactor", 0d),
+        overrides.get("eddyCurrentLossFactor", 0d))
+  }
+
+  private static List<LayerInput> validIsolation() {
+    [validLayer()]
+  }
+
+  private static LayerInput validLayer(Map overrides = [:]) {
+    new LayerInput(
+        overrides.get("uuid", UUID.randomUUID()),
+        overrides.get("name", "Main insulation"),
+        overrides.get("material", CableMaterial.XLPE),
+        overrides.get("innerDiameter", length(0.0225d)),
+        overrides.get("outerDiameter", length(0.027d)),
+        overrides.get("thermalResistivity", thermalResistivity(3.5d)),
+        overrides.get("thermalCapacitance", thermalCapacitance(2.4d)),
+        overrides.get("area", Optional.empty()))
+  }
+
+  private static ScreenLayerInput validScreenLayer(Map overrides = [:]) {
+    new ScreenLayerInput(
+        overrides.get("uuid", UUID.randomUUID()),
+        overrides.get("name", "Copper screen"),
+        overrides.get("material", CableMaterial.COPPER),
+        overrides.get("innerDiameter", length(0.027d)),
+        overrides.get("outerDiameter", length(0.028d)),
+        overrides.get("thermalResistivity", thermalResistivity(2.5d)),
+        overrides.get("thermalCapacitance", thermalCapacitance(2.4d)),
+        overrides.get("area", Optional.empty()),
+        overrides.get("wiresNumber", 20),
+        overrides.get("wireDiameter", length(0.0005d)),
+        overrides.get("lengthOfLay", Optional.empty()),
+        overrides.get("electricalResistivity", electricalResistivity(1.7e-7d)))
+  }
+
+  private static ComparableQuantity<Temperature> temperature(double value) {
+    Quantities.getQuantity(value, CELSIUS)
+  }
+
+  private static ComparableQuantity<Frequency> frequency(double value) {
+    Quantities.getQuantity(value, HERTZ)
+  }
+
+  private static ComparableQuantity<ElectricCapacitance> capacitance(double value) {
+    Quantities.getQuantity(value, FARAD)
+  }
+
+  private static ComparableQuantity<Area> area(double value) {
+    Quantities.getQuantity(value, SQUARE_METRE)
+  }
+
+  private static ComparableQuantity<Length> length(double value) {
+    Quantities.getQuantity(value, METRE)
+  }
+
+  private static ComparableQuantity<ThermalResistivity> thermalResistivity(double value) {
+    Quantities.getQuantity(value, KELVIN_METRE_PER_WATT)
+  }
+
+  private static ComparableQuantity<ThermalCapacitance> thermalCapacitance(double value) {
+    Quantities.getQuantity(value, JOULE_PER_CUBIC_METRE_KELVIN)
+  }
+
+  private static ComparableQuantity<ElectricalResistivity> electricalResistivity(double value) {
+    Quantities.getQuantity(value, OHM_METRE)
   }
 }

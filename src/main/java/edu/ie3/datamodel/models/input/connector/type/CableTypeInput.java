@@ -89,49 +89,6 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
 
     super(uuid, id);
 
-    Objects.requireNonNull(conductor, "Conductor cannot be null");
-    Objects.requireNonNull(isolation, "Isolation elements list cannot be null");
-    Objects.requireNonNull(screen, "Screen layer Optional cannot be null");
-    Objects.requireNonNull(filler, "Filler elements list cannot be null");
-    Objects.requireNonNull(armor, "Armor elements list cannot be null");
-    Objects.requireNonNull(jack, "Jack elements list cannot be null");
-    Objects.requireNonNull(limitTemperature, "Limit temperature cannot be null");
-    Objects.requireNonNull(frequency, "Frequency cannot be null");
-    Objects.requireNonNull(electricalCapacitance, "Electric capacitance cannot be null");
-
-    if (id.isEmpty()) {
-      throw new IllegalArgumentException("ID cannot be empty");
-    }
-
-    if (coreNumber < 1) {
-      throw new IllegalArgumentException("Core number must be >= 1");
-    }
-
-    if (limitTemperature.getValue().doubleValue() < 0) {
-      throw new IllegalArgumentException("Limit temperature must be >= 0");
-    }
-    if (frequency.getValue().doubleValue() <= 0) {
-      throw new IllegalArgumentException("Frequency must be > 0");
-    }
-    if (electricalCapacitance.getValue().doubleValue() < 0) {
-      throw new IllegalArgumentException("Electric capacitance must be >= 0");
-    }
-    if (skinEffectCoefficient < 0) {
-      throw new IllegalArgumentException("Skin effect coefficient must be >= 0");
-    }
-    if (proximityEffectCoefficient < 0) {
-      throw new IllegalArgumentException("Proximity effect coefficient must be >= 0");
-    }
-    if (tanDelta < 0) {
-      throw new IllegalArgumentException("Tan delta must be >= 0");
-    }
-    if (circulatingLossFactor < 0) {
-      throw new IllegalArgumentException("Circulating loss factor must be >= 0");
-    }
-    if (eddyCurrentLossFactor < 0) {
-      throw new IllegalArgumentException("Eddy current loss factor must be >= 0");
-    }
-
     this.coreNumber = coreNumber;
     this.conductor = conductor;
     this.isolation = List.copyOf(isolation);
