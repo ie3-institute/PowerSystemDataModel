@@ -280,6 +280,14 @@ models:
                @param length of this line\n
                @param geoPosition Coordinates of this line\n
                @param olmCharacteristic Description of an optional weather dependent operation curve"
+        constructorModifications:
+          geoPosition:
+            expression: buildSafeLineString(geoPosition)
+            className: GeoUtils
+          length:
+            expression: length.to($T.LINE_LENGTH)
+            className: StandardUnits
+            insert: true
       - name: fullWithAdditionalInformation
         components: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, type, length, geoPosition, olmCharacteristic, additionalInformation]
         superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices]
@@ -298,6 +306,14 @@ models:
                @param geoPosition Coordinates of this line\n
                @param olmCharacteristic Description of an optional weather dependent operation curve\n
                @param additionalInformation That were provided by the source"
+        constructorModifications:
+          geoPosition:
+            expression: buildSafeLineString(geoPosition)
+            className: GeoUtils
+          length:
+            expression: length.to($T.LINE_LENGTH)
+            className: StandardUnits
+            insert: true
       - name: minimal
         components: [uuid, id, nodeA, nodeB, parallelDevices, type, length, geoPosition, olmCharacteristic]
         superArgs: [uuid, id, nodeA, nodeB, parallelDevices]
@@ -313,21 +329,209 @@ models:
                @param length of this line\n
                @param geoPosition Coordinates of this line\n
                @param olmCharacteristic Description of an optional weather dependent operation curve"
-    constructorModifications:
-      geoPosition:
-        expression: buildSafeLineString(geoPosition)
-        className: GeoUtils
-      length:
-        expression: length.to($T.LINE_LENGTH)
-        className: StandardUnits
-        insert: true
+        constructorModifications:
+          geoPosition:
+            expression: buildSafeLineString(geoPosition)
+            className: GeoUtils
+          length:
+            expression: length.to($T.LINE_LENGTH)
+            className: StandardUnits
+            insert: true
 
+  TransformerInput:
+    classJavaDoc: "Describes an electrical grid transformer, is \"located\" in the inferior subnet."
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap]
+        superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices]
+        javaDoc: "Constructor for an operated transformer.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param nodeA Grid node at the high voltage winding\n
+               @param nodeB Grid node at the low voltage winding\n
+               @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.\n
+                   parallelDevices = 2 will build a total of two transformers using the specified parameters)\n
+               @param tapPos Tap Position of this transformer\n
+               @param autoTap True, if the tap position of the transformer is adapted automatically"
+      - name: minimal
+        components: [uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap]
+        superArgs: [uuid, id, nodeA, nodeB, parallelDevices]
+        javaDoc: "Constructor for an operated transformer.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param nodeA Grid node at the high voltage winding\n
+               @param nodeB Grid node at the low voltage winding\n
+               @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.\n
+                   parallelDevices = 2 will build a total of two transformers using the specified parameters)\n
+               @param tapPos Tap Position of this transformer\n
+               @param autoTap True, if the tap position of the transformer is adapted automatically"
 
+  Transformer2WInput:
+    classJavaDoc: "Describes a two winding transformer, that is connected to two {@link NodeInput}s."
+    inherits: [HasType]
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap, type]
+        superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap]
+        javaDoc: "Constructor for an operated two winding transformer.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param nodeA higher voltage node\n
+                 @param nodeB lower voltage node\n
+                 @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.\n
+                     parallelDevices = 2 will build a total of two transformers using the specified parameters)\n
+                 @param type of 2W transformer\n
+                 @param tapPos Tap position of this transformer\n
+                 @param autoTap True, if the tap position of the transformer is adapted automatically"
+        constructorChecks:
+          - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB)
+            className: ConnectorValidationUtils
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap, type, additionalInformation]
+        superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap]
+        javaDoc: "Constructor for an operated two winding transformer.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param nodeA higher voltage node\n
+                 @param nodeB lower voltage node\n
+                 @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.\n
+                     parallelDevices = 2 will build a total of two transformers using the specified parameters)\n
+                 @param type of 2W transformer\n
+                 @param tapPos Tap position of this transformer\n
+                 @param autoTap True, if the tap position of the transformer is adapted automatically\n
+                 @param additionalInformation Of the input"
+        constructorChecks:
+          - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB)
+            className: ConnectorValidationUtils
+      - name: minimal
+        components: [uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap, type]
+        superArgs: [uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap]
+        javaDoc: "Constructor for an operated two winding transformer.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param nodeA higher voltage node\n
+                 @param nodeB lower voltage node\n
+                 @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.\n
+                     parallelDevices = 2 will build a total of two transformers using the specified parameters)\n
+                 @param type of 2W transformer\n
+                 @param tapPos Tap position of this transformer\n
+                 @param autoTap True, if the tap position of the transformer is adapted automatically"
+        constructorChecks:
+          - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB)
+            className: ConnectorValidationUtils
 
-
-
-
-
+  Transformer3WInput:
+    classJavaDoc: "Describes a three winding transformer, that is connected to three {@link NodeInput}s."
+    inherits: [HasType]
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, nodeA, nodeB, nodeC, parallelDevices, tapPos, autoTap, type]
+        superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap]
+        javaDoc: "Constructor for an operated two winding transformer.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param nodeA The higher voltage node\n
+                 @param nodeB The middle voltage node\n
+                 @param nodeC The lower voltage node\n
+                 @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.\n
+                     parallelDevices = 2 will build a total of two transformers using the specified parameters)\n
+                 @param type of 2W transformer\n
+                 @param tapPos Tap position of this transformer\n
+                 @param autoTap True, if the tap position of the transformer is adapted automatically"
+        constructorModifications:
+          nodeInternal:
+            expression: new NodeInput(UUID.randomUUID(), "internal_node_" + id, operator, operationTime, $T.getQuantity(1d, $T.PU), false, null, nodeA.getVoltLvl(), nodeA.getSubnet())
+            className: Quantities
+            unitClass: PowerSystemUnits
+            insert: true
+        constructorChecks:
+          - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC)
+            className: ConnectorValidationUtils
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, operator, operationTime, nodeA, nodeB, nodeC, parallelDevices, tapPos, autoTap, type, additionalInformation]
+        superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap]
+        javaDoc: "Constructor for an operated two winding transformer.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param nodeA The higher voltage node\n
+                 @param nodeB The middle voltage node\n
+                 @param nodeC The lower voltage node\n
+                 @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.\n
+                     parallelDevices = 2 will build a total of two transformers using the specified parameters)\n
+                 @param type of 2W transformer\n
+                 @param tapPos Tap position of this transformer\n
+                 @param autoTap True, if the tap position of the transformer is adapted automatically\n
+                 @param additionalInformation Of the input"
+        constructorModifications:
+          nodeInternal:
+            expression: new NodeInput(UUID.randomUUID(), "internal_node_" + id, operator, operationTime, $T.getQuantity(1d, $T.PU), false, null, nodeA.getVoltLvl(), nodeA.getSubnet())
+            className: Quantities
+            unitClass: PowerSystemUnits
+            insert: true
+        constructorChecks:
+          - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC)
+            className: ConnectorValidationUtils
+      - name: minimal
+        components: [uuid, id, nodeA, nodeB, nodeC, parallelDevices, tapPos, autoTap, type]
+        superArgs: [uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap]
+        javaDoc: "Constructor for an operated two winding transformer.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param nodeA The higher voltage node\n
+                 @param nodeB The middle voltage node\n
+                 @param nodeC The lower voltage node\n
+                 @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.\n
+                     parallelDevices = 2 will build a total of two transformers using the specified parameters)\n
+                 @param type of 2W transformer\n
+                 @param tapPos Tap position of this transformer\n
+                 @param autoTap True, if the tap position of the transformer is adapted automatically"
+        constructorModifications:
+          nodeInternal:
+            expression: new NodeInput(UUID.randomUUID(), "internal_node_" + id, nodeA.getOperator(), nodeA.getOperationTime(), $T.getQuantity(1d, $T.PU), false, null, nodeA.getVoltLvl(), nodeA.getSubnet())
+            className: Quantities
+            unitClass: PowerSystemUnits
+            insert: true
+        constructorChecks:
+          - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC)
+            className: ConnectorValidationUtils
+      - name: fullWithInternalNode
+        components: [uuid, id, operator, operationTime, nodeA, nodeB, nodeC, parallelDevices, tapPos, autoTap, type, nodeInternal]
+        superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap]
+        javaDoc: "Constructor for an operated two winding transformer.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param nodeA The higher voltage node\n
+                 @param nodeB The middle voltage node\n
+                 @param nodeC The lower voltage node\n
+                 @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.\n
+                     parallelDevices = 2 will build a total of two transformers using the specified parameters)\n
+                 @param type of 2W transformer\n
+                 @param tapPos Tap position of this transformer\n
+                 @param autoTap True, if the tap position of the transformer is adapted automatically"
+        constructorChecks:
+          - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC)
+            className: ConnectorValidationUtils
 
 
 

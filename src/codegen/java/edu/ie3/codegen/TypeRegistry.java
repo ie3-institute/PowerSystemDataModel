@@ -66,6 +66,12 @@ public final class TypeRegistry {
         "OlmCharacteristicInput",
         new TypeDefinition(
             "edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput"));
+    registry.put(
+        "Transformer2WTypeInput",
+        new TypeDefinition("edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput"));
+    registry.put(
+        "Transformer3WTypeInput",
+        new TypeDefinition("edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput"));
   }
 
   public static boolean containsKey(String name) {

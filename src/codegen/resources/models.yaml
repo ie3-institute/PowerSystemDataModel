@@ -149,6 +149,55 @@ models:
         type: OlmCharacteristicInput
         javaDoc: "Description of an optional weather dependent operation curve."
 
+  TransformerInput:
+    name: TransformerInput
+    package: edu.ie3.datamodel.models.input.connector
+    extends: ConnectorInput
+    components:
+      - name: tapPos
+        type: int
+        javaDoc: "Tap position of this transformer."
+      - name: autoTap
+        type: bool
+        javaDoc: "True, if the tap position of the transformer is adapted automatically."
+
+  Transformer2WInput:
+    name: Transformer2WInput
+    package: edu.ie3.datamodel.models.input.connector
+    extends: TransformerInput
+    class: true
+    components:
+      - name: type
+        type: Transformer2WTypeInput
+        javaDoc: "Type of this 2W transformer, containing default values for transformers of this kind."
+
+  Transformer3WInput:
+    name: Transformer3WInput
+    package: edu.ie3.datamodel.models.input.connector
+    extends: TransformerInput
+    class: true
+    components:
+      - name: type
+        type: Transformer3WTypeInput
+        javaDoc: "Type of this 3W transformer, containing default values for transformers of this kind."
+      - name: nodeC
+        type: NodeInput
+        javaDoc: "The lower voltage node."
+      - name: nodeInternal
+        type: NodeInput
+        javaDoc: "Internal node of the transformers T equivalent circuit."
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

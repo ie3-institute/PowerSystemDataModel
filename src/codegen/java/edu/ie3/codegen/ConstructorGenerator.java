@@ -262,7 +262,8 @@ public final class ConstructorGenerator implements HelperMethods {
         if (type.defaultExpression != null && !type.defaultExpression.isBlank()) {
           builder.addStatement("this.$L = $L", componentName, type.defaultExpression);
 
-        } else if (!componentName.equals("additionalInformation")) {
+        } else if (!componentName.equals("additionalInformation")
+            && !constructor.constructorModifications.containsKey(componentName)) {
           throw new IllegalArgumentException(
               "Constructor '"
                   + constructor.name
@@ -271,20 +272,62 @@ public final class ConstructorGenerator implements HelperMethods {
                   + " does not initialize local field '"
                   + componentName
                   + "'.");
-        }
-
-      } else {
-        if (genConfig.constructorModifications.containsKey(componentName)) {
+        } else {
           GenerationConfig.ConstructorModification modification =
-              genConfig.constructorModifications.get(componentName);
+              constructor.constructorModifications.get(componentName);
 
           if (modification.className != null && !modification.className.isBlank()) {
 
             if (modification.insert) {
+
+              if (modification.unitClass != null && !modification.unitClass.isBlank()) {
+                builder.addStatement(
+                    "this.$L = " + modification.expression,
+                    componentName,
+                    getClassName(modification.className),
+                    getClassName(modification.unitClass));
+
+              } else {
+                builder.addStatement(
+                    "this.$L = " + modification.expression,
+                    componentName,
+                    getClassName(modification.className));
+              }
+
+            } else {
               builder.addStatement(
-                  "this.$L =" + modification.expression,
+                  "this.$L = $T." + modification.expression,
                   componentName,
                   getClassName(modification.className));
+            }
+
+          } else {
+            builder.addStatement("this.$L = " + modification.expression, componentName);
+          }
+        }
+
+      } else {
+        if (constructor.constructorModifications.containsKey(componentName)) {
+          GenerationConfig.ConstructorModification modification =
+              constructor.constructorModifications.get(componentName);
+
+          if (modification.className != null && !modification.className.isBlank()) {
+
+            if (modification.insert) {
+
+              if (modification.unitClass != null && !modification.unitClass.isBlank()) {
+                builder.addStatement(
+                    "this.$L = " + modification.expression,
+                    componentName,
+                    getClassName(modification.className),
+                    getClassName(modification.unitClass));
+
+              } else {
+                builder.addStatement(
+                    "this.$L = " + modification.expression,
+                    componentName,
+                    getClassName(modification.className));
+              }
 
             } else {
               builder.addStatement(
@@ -300,6 +343,15 @@ public final class ConstructorGenerator implements HelperMethods {
         } else {
           builder.addStatement("this.$L = $L", componentName, componentName);
         }
+      }
+    }
+
+    for (GenerationConfig.ConstructorCheck check : constructor.constructorChecks) {
+
+      if (check.className != null && !check.className.isBlank()) {
+        builder.addStatement("$T." + check.expression, getClassName(check.className));
+      } else {
+        builder.addStatement(check.expression);
       }
     }
 

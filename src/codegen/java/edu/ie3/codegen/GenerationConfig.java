@@ -37,8 +37,6 @@ public final class GenerationConfig implements HelperMethods {
 
   public List<MethodOverride> methodOverrides = new ArrayList<>();
 
-  public Map<String, ConstructorModification> constructorModifications = new HashMap<>();
-
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // helper definition
 
@@ -50,6 +48,10 @@ public final class GenerationConfig implements HelperMethods {
     public List<String> components = new ArrayList<>();
 
     public String javaDoc = "";
+
+    public Map<String, ConstructorModification> constructorModifications = new HashMap<>();
+
+    public List<ConstructorCheck> constructorChecks = new ArrayList<>();
   }
 
   public static final class StaticFieldDefinition {
@@ -78,5 +80,11 @@ public final class GenerationConfig implements HelperMethods {
     public String expression;
     public String className;
     public boolean insert;
+    public String unitClass;
+  }
+
+  public static final class ConstructorCheck {
+    public String expression;
+    public String className;
   }
 }

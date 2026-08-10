@@ -26,6 +26,8 @@ public final class ClassRegistry {
     registerQuantities();
 
     registry.put("GeoUtils", ClassName.get("edu.ie3.util.geo", "GeoUtils"));
+    registry.put("Quantities", ClassName.get("tech.units.indriya.quantity", "Quantities"));
+    registry.put("PowerSystemUnits", ClassName.get("edu.ie3.util.quantities", "PowerSystemUnits"));
   }
 
   public static boolean containsKey(String name) {
@@ -46,6 +48,11 @@ public final class ClassRegistry {
   }
 
   static void registerOwnClasses() {
+    // validations
+    registry.put(
+        "ConnectorValidationUtils",
+        ClassName.get("edu.ie3.datamodel.utils.validation", "ConnectorValidationUtils"));
+
     // extractor interfaces
     Stream.of("HasEm", "HasLine", "HasNodes", "HasThermalBus", "HasThermalStorage", "HasType")
         .forEach(name -> registry.put(name, ClassName.get("edu.ie3.datamodel.io.extractor", name)));
