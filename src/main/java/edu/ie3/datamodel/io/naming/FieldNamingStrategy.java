@@ -103,6 +103,11 @@ public class FieldNamingStrategy {
   public static final String TAN_DELTA = "tanDelta";
   public static final String CIRCULATING_LOSS_FACTOR = "circulatingLossFactor";
   public static final String EDDY_CURRENT_LOSS_FACTOR = "eddyCurrentLossFactor";
+  public static final String FREQUENCY = "frequency";
+  public static final String ELECTRICAL_CAPACITANCE = "electricalCapacitance";
+  public static final String LAYOUT_FORMATION = "layoutFormation";
+  public static final String DEPTH_CABLES = "depthCables";
+  public static final String DISTANCE_CABLES = "distanceCables";
 
   // efficiency
   public static final String ETA = "eta";
