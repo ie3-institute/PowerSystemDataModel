@@ -295,7 +295,7 @@ final class ModelGenerator implements HelperMethods {
       index++;
     }
 
-    builder.addStatement("    + '}'");
+    builder.addStatement("    + \", additionalInformation=\" + getAdditionalInformation()\n+ '}'");
 
     return builder.build();
   }

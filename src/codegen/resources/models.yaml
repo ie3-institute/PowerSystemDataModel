@@ -122,9 +122,11 @@ models:
     components:
       - name: nodeA
         type: NodeInput
+        nested: true
         javaDoc: "Grid node at one side of the connector."
       - name: nodeB
         type: NodeInput
+        nested: true
         javaDoc: "Grid node at the other side of the connector."
       - name: parallelDevices
         type: int
@@ -149,6 +151,31 @@ models:
         type: OlmCharacteristicInput
         javaDoc: "Description of an optional weather dependent operation curve."
 
+  LineTypeInput:
+    name: LineTypeInput
+    package: edu.ie3.datamodel.models.input.connector.type
+    extends: AssetTypeInput
+    class: true
+    components:
+      - name: b
+        type: SpecificConductance
+        javaDoc: "Specific phase-to-ground susceptance for this type of line (typically in µS/km)."
+      - name: g
+        type: SpecificConductance
+        javaDoc: "Specific phase-to-ground conductance for this type of line (typically in µS/km)."
+      - name: r
+        type: SpecificResistance
+        javaDoc: "Specific resistance for this type of line (typically in Ohm/km)."
+      - name: x
+        type: SpecificResistance
+        javaDoc: "Specific reactance for this type of line (typically in Ohm/km)."
+      - name: iMax
+        type: ElectricCurrent
+        javaDoc: "Maximum thermal current for this type of line (typically in A)."
+      - name: vRated
+        type: ElectricPotential
+        javaDoc: "Rated voltage for this type of line (typically in V)."
+
   TransformerInput:
     name: TransformerInput
     package: edu.ie3.datamodel.models.input.connector
@@ -169,7 +196,54 @@ models:
     components:
       - name: type
         type: Transformer2WTypeInput
+        nested: true
         javaDoc: "Type of this 2W transformer, containing default values for transformers of this kind."
+
+  Transformer2WTypeInput:
+    name: Transformer2WTypeInput
+    package: edu.ie3.datamodel.models.input.connector.type
+    extends: AssetTypeInput
+    class: true
+    components:
+      - name: rSc
+        type: ElectricResistance
+        javaDoc: "Short circuit resistance (typically in Ohm)."
+      - name: xSc
+        type: ElectricResistance
+        javaDoc: "Short circuit reactance (typically in Ohm)."
+      - name: sRated
+        type: Power
+        javaDoc: "Rated apparent power (typically in kVA)."
+      - name: vRatedA
+        type: ElectricPotential
+        javaDoc: "Rated voltage of the high voltage winding (typically in kV)."
+      - name: vRatedB
+        type: ElectricPotential
+        javaDoc: "Rated voltage of the low voltage winding (typically in kV)."
+      - name: gM
+        type: ElectricConductance
+        javaDoc: "Phase-to-ground conductance (typically in nS)."
+      - name: bM
+        type: ElectricConductance
+        javaDoc: "Phase-to-ground susceptance (typically in nS)."
+      - name: dV
+        type: Percent
+        javaDoc: "Voltage magnitude deviation per tap position (typically in %)."
+      - name: dPhi
+        type: DegreeGeom
+        javaDoc: "Voltage angle deviation per tap position (typically in °)."
+      - name: tapSide
+        type: bool
+        javaDoc: "Selection of winding, where the tap changer is installed. Low voltage, if true."
+      - name: tapNeutr
+        type: int
+        javaDoc: "Neutral tap position."
+      - name: tapMin
+        type: int
+        javaDoc: "Minimum available tap position."
+      - name: tapMax
+        type: int
+        javaDoc: "Maximum available tap position."
 
   Transformer3WInput:
     name: Transformer3WInput
@@ -179,16 +253,91 @@ models:
     components:
       - name: type
         type: Transformer3WTypeInput
+        nested: true
         javaDoc: "Type of this 3W transformer, containing default values for transformers of this kind."
       - name: nodeC
         type: NodeInput
+        nested: true
         javaDoc: "The lower voltage node."
       - name: nodeInternal
         type: NodeInput
+        nested: true
         javaDoc: "Internal node of the transformers T equivalent circuit."
 
+  SwitchInput:
+    name: SwitchInput
+    package: edu.ie3.datamodel.models.input.connector
+    extends: ConnectorInput
+    class: true
+    unsupported: [parallelDevices]
+    components:
+      - name: closed
+        type: bool
+        javaDoc: "Is the switching state 'closed'?"
 
-
+  Transformer3WTypeInput:
+    name: Transformer3WTypeInput
+    package: edu.ie3.datamodel.models.input.connector.type
+    extends: AssetTypeInput
+    class: true
+    components:
+      - name: sRatedA
+        type: Power
+        javaDoc: "Rated apparent power of the high voltage winding (typically in kVA)."
+      - name: sRatedB
+        type: Power
+        javaDoc: "Rated apparent power of the medium voltage winding (typically in kVA)."
+      - name: sRatedC
+        type: Power
+        javaDoc: "Rated apparent power of the low voltage windings (typically in kVA)."
+      - name: vRatedA
+        type: ElectricPotential
+        javaDoc: "Rated voltage of the high voltage winding (typically in kV)."
+      - name: vRatedB
+        type: ElectricPotential
+        javaDoc: "Rated voltage of the medium voltage winding (typically in kV)."
+      - name: vRatedC
+        type: ElectricPotential
+        javaDoc: "Rated voltage of the low voltage winding (typically in kV)."
+      - name: rScA
+        type: ElectricResistance
+        javaDoc: "Short-circuit resistance of the high voltage winding (typically in Ohm)."
+      - name: rScB
+        type: ElectricResistance
+        javaDoc: "Short-circuit resistance of the medium voltage winding (typically in Ohm)."
+      - name: rScC
+        type: ElectricResistance
+        javaDoc: "Short-circuit resistance of the low voltage winding (typically in Ohm)."
+      - name: xScA
+        type: ElectricResistance
+        javaDoc: "Short-circuit reactance of the high voltage winding (typically in Ohm)."
+      - name: xScB
+        type: ElectricResistance
+        javaDoc: "Short-circuit reactance of the medium voltage winding (typically in Ohm)."
+      - name: xScC
+        type: ElectricResistance
+        javaDoc: "Short-circuit reactance of the low voltage winding (typically in Ohm)."
+      - name: gM
+        type: ElectricConductance
+        javaDoc: "Phase-to-ground conductance (typically in nS)."
+      - name: bM
+        type: ElectricConductance
+        javaDoc: "Phase-to-ground susceptance (typically in nS)."
+      - name: dV
+        type: Percent
+        javaDoc: "Voltage magnitude deviation per tap position (typically in %)."
+      - name: dPhi
+        type: DegreeGeom
+        javaDoc: "Voltage angle deviation per tap position (typically in °)."
+      - name: tapNeutr
+        type: int
+        javaDoc: "Neutral tap position."
+      - name: tapMin
+        type: int
+        javaDoc: "Minimum available tap position."
+      - name: tapMax
+        type: int
+        javaDoc: "Maximum available tap position."
 
 
 

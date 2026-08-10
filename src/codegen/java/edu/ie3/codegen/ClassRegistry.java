@@ -82,7 +82,44 @@ public final class ClassRegistry {
   }
 
   static void registerQuantities() {
-    Stream.of("Dimensionless", "Length")
+    Stream.of("Dimensionless", "Percent")
+        .forEach(
+            name -> registry.put(name, ClassName.get("javax.measure.quantity", "Dimensionless")));
+
+    Stream.of("DegreeGeom")
+        .forEach(name -> registry.put(name, ClassName.get("javax.measure.quantity", "Angle")));
+
+    Stream.of(
+            "Length",
+            "ElectricCurrent",
+            "ElectricPotential",
+            "ElectricResistance",
+            "ElectricConductance",
+            "Power")
         .forEach(name -> registry.put(name, ClassName.get("javax.measure.quantity", name)));
+
+    Stream.of(
+            "Currency",
+            "Density",
+            "DimensionlessRate",
+            "ElectricalResistivity",
+            "EnergyDensity",
+            "EnergyPrice",
+            "HeatCapacity",
+            "Irradiance",
+            "Irradiation",
+            "PowerDensity",
+            "PricePerLength",
+            "SpecificCapacitance",
+            "SpecificConductance",
+            "SpecificEnergy",
+            "SpecificHeatCapacity",
+            "SpecificResistance",
+            "ThermalCapacitance",
+            "ThermalConductance",
+            "ThermalResistivity",
+            "VolumetricFlowRate")
+        .forEach(
+            name -> registry.put(name, ClassName.get("edu.ie3.util.quantities.interfaces", name)));
   }
 }

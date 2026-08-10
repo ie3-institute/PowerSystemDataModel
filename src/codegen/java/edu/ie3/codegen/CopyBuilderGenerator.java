@@ -258,7 +258,10 @@ public final class CopyBuilderGenerator implements HelperMethods {
     Map<String, ModelDefinition.ComponentDefinition> visible = visibleComponents(model);
 
     List<String> requiredComponentNames =
-        visible.keySet().stream().filter(name -> !"additionalInformation".equals(name)).toList();
+        visible.keySet().stream()
+            .filter(name -> !"additionalInformation".equals(name))
+            .filter(name -> !model.unsupported.contains(name))
+            .toList();
 
     return genConfig.constructors.stream()
         .filter(constructor -> constructor.components.containsAll(requiredComponentNames))

@@ -8,6 +8,7 @@ package edu.ie3.codegen;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public final class TypeRegistry {
   private TypeRegistry() {}
@@ -15,6 +16,8 @@ public final class TypeRegistry {
   private static final Map<String, TypeDefinition> registry = new LinkedHashMap<>();
 
   static {
+    registerQuantities();
+
     registry.put("UUID", new TypeDefinition("java.util.UUID", "getUUID", "UUID.randomUUID()"));
     registry.put("String", new TypeDefinition("java.lang.String", "getField"));
     registry.put("bool", new TypeDefinition("boolean", "getBoolean"));
@@ -49,13 +52,6 @@ public final class TypeRegistry {
             "buildOperationTime",
             "OperationTime.notLimited()"));
     registry.put("Point", new TypeDefinition("org.locationtech.jts.geom.Point", "getNodePoint"));
-    registry.put(
-        "Dimensionless",
-        new TypeDefinition(
-            "tech.units.indriya.ComparableQuantity", List.of("Dimensionless"), "getDimensionless"));
-    registry.put(
-        "Length", new TypeDefinition("tech.units.indriya.ComparableQuantity", List.of("Length")));
-
     registry.put(
         "VoltageLevel",
         new TypeDefinition(
@@ -131,5 +127,29 @@ public final class TypeRegistry {
       this.converter = converter;
       this.defaultExpression = defaultExpression;
     }
+  }
+
+  static void registerQuantities() {
+    Stream.of(
+            "SpecificConductance",
+            "SpecificResistance",
+            "Length",
+            "ElectricCurrent",
+            "ElectricPotential",
+            "ElectricResistance",
+            "ElectricConductance",
+            "Power",
+            "Percent",
+            "DegreeGeom")
+        .forEach(
+            name ->
+                registry.put(
+                    name,
+                    new TypeDefinition("tech.units.indriya.ComparableQuantity", List.of(name))));
+
+    registry.put(
+        "Dimensionless",
+        new TypeDefinition(
+            "tech.units.indriya.ComparableQuantity", List.of("Dimensionless"), "getDimensionless"));
   }
 }

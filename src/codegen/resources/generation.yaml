@@ -102,7 +102,7 @@ models:
     getterOptions:
       vTarget:
         capitalize: false
-    fromMap: false
+    fromMap: true
     fromMapConstructor: full
     resolverOrder: [operator]
 
@@ -242,6 +242,20 @@ models:
                @param nodeB Grid node at the other side of the connector\n
                @param parallelDevices overall amount of parallel devices to automatically construct (e.g.\n
                    parallelDevices = 2 will build a total of two entities using the specified parameters)"
+      - name: fullOneConnector
+        components: [uuid, id, operator, operationTime, nodeA, nodeB]
+        superArgs: [uuid, id, operator, operationTime]
+        javaDoc: "Constructor for an operated connector with no parallel devices (parallelDevices=1).\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param nodeA Grid node at one side of the connector\n
+               @param nodeB Grid node at the other side of the connector\n"
+        constructorModifications:
+          parallelDevices:
+            expression: 1
       - name: minimal
         components: [uuid, id, nodeA, nodeB, parallelDevices]
         superArgs: [uuid, id]
@@ -253,6 +267,18 @@ models:
                @param nodeB Grid node at the other side of the connector\n
                @param parallelDevices overall amount of parallel devices to automatically construct (e.g.\n
                    parallelDevices = 2 will build a total of two entities using the specified parameters)"
+      - name: minimalOneConnector
+        components: [uuid, id, nodeA, nodeB]
+        superArgs: [uuid, id]
+        javaDoc: "Constructor for an operated connector with no parallel devices (parallelDevices=1).\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param nodeA Grid node at one side of the connector\n
+               @param nodeB Grid node at the other side of the connector\n"
+        constructorModifications:
+          parallelDevices:
+            expression: 1
     methodOverrides:
       - name: allNodes
         type: NodeList
@@ -337,6 +363,127 @@ models:
             expression: length.to($T.LINE_LENGTH)
             className: StandardUnits
             insert: true
+
+  LineTypeInput:
+    classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.connector.LineInput}."
+    constructors:
+      - name: full
+        components: [uuid, id, b, g, r, x, iMax, vRated]
+        superArgs: [uuid, id]
+        javaDoc: "@param uuid of the input entity\n
+               @param id of this type\n
+               @param b Specific phase-to-ground susceptance for this type of line (typically in µS/km)\n
+               @param g Specific phase-to-ground conductance for this type of line (typically in µS/km)\n
+               @param r Specific resistance for this type of line (typically in Ohm/km)\n
+               @param x Specific reactance for this type of line (typically in Ohm/km)\n
+               @param iMax Maximum thermal current for this type of line (typically in A)\n
+               @param vRated Rated voltage for this type of line"
+        constructorModifications:
+          r:
+            expression: r.to($T.RESISTANCE_PER_LENGTH)
+            className: StandardUnits
+            insert: true
+          x:
+            expression: x.to($T.REACTANCE_PER_LENGTH)
+            className: StandardUnits
+            insert: true
+          b:
+            expression: b.to($T.SUSCEPTANCE_PER_LENGTH)
+            className: StandardUnits
+            insert: true
+          g:
+            expression: g.to($T.CONDUCTANCE_PER_LENGTH)
+            className: StandardUnits
+            insert: true
+          iMax:
+            expression: iMax.to($T.ELECTRIC_CURRENT_MAGNITUDE)
+            className: StandardUnits
+            insert: true
+          vRated:
+            expression: vRated.to($T.RATED_VOLTAGE_MAGNITUDE)
+            className: StandardUnits
+            insert: true
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, b, g, r, x, iMax, vRated, additionalInformation]
+        superArgs: [uuid, id]
+        javaDoc: "@param uuid of the input entity\n
+               @param id of this type\n
+               @param b Specific phase-to-ground susceptance for this type of line (typically in µS/km)\n
+               @param g Specific phase-to-ground conductance for this type of line (typically in µS/km)\n
+               @param r Specific resistance for this type of line (typically in Ohm/km)\n
+               @param x Specific reactance for this type of line (typically in Ohm/km)\n
+               @param iMax Maximum thermal current for this type of line (typically in A)\n
+               @param vRated Rated voltage for this type of line"
+        constructorModifications:
+          r:
+            expression: r.to($T.RESISTANCE_PER_LENGTH)
+            className: StandardUnits
+            insert: true
+          x:
+            expression: x.to($T.REACTANCE_PER_LENGTH)
+            className: StandardUnits
+            insert: true
+          b:
+            expression: b.to($T.SUSCEPTANCE_PER_LENGTH)
+            className: StandardUnits
+            insert: true
+          g:
+            expression: g.to($T.CONDUCTANCE_PER_LENGTH)
+            className: StandardUnits
+            insert: true
+
+          iMax:
+            expression: iMax.to($T.ELECTRIC_CURRENT_MAGNITUDE)
+            className: StandardUnits
+            insert: true
+          vRated:
+            expression: vRated.to($T.RATED_VOLTAGE_MAGNITUDE)
+            className: StandardUnits
+            insert: true
+    getterOptions:
+      iMax:
+        capitalize: false
+      vRated:
+        capitalize: false
+
+  SwitchInput:
+    classJavaDoc: "Describes an electrical grid switch between two {@link NodeInput}s."
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, nodeA, nodeB, closed]
+        superArgs: [uuid, id, operator, operationTime, nodeA, nodeB]
+        javaDoc: "Constructor for an operated switch.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param nodeA Grid node at one side of the switch\n
+                 @param nodeB Grid node at the other side of the switch\n
+                 @param closed Is the switching state 'closed'?"
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, operator, operationTime, nodeA, nodeB, closed, additionalInformation]
+        superArgs: [uuid, id, operator, operationTime, nodeA, nodeB]
+        javaDoc: "Constructor for an operated switch.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param nodeA Grid node at one side of the switch\n
+                 @param nodeB Grid node at the other side of the switch\n
+                 @param closed Is the switching state 'closed'?\n
+                 @param additionalInformation Of the model"
+      - name: minimal
+        components: [uuid, id, nodeA, nodeB, closed]
+        superArgs: [uuid, id, nodeA, nodeB]
+        javaDoc: "Constructor for an operated switch.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param nodeA Grid node at one side of the switch\n
+                 @param nodeB Grid node at the other side of the switch\n
+                 @param closed Is the switching state 'closed'?"
 
   TransformerInput:
     classJavaDoc: "Describes an electrical grid transformer, is \"located\" in the inferior subnet."
@@ -430,6 +577,140 @@ models:
         constructorChecks:
           - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB)
             className: ConnectorValidationUtils
+
+  Transformer2WTypeInput:
+    classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput}."
+    constructors:
+      - name: full
+        components: [uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide, tapNeutr, tapMin, tapMax]
+        superArgs: [uuid, id]
+        javaDoc: "@param uuid of the input entity\n
+               @param id of the type\n
+               @param rSc Short circuit resistance\n
+               @param xSc Short circuit reactance\n
+               @param sRated Rated apparent power (typically in kVA)\n
+               @param vRatedA Rated voltage of the high voltage winding\n
+               @param vRatedB Rated voltage of the low voltage winding\n
+               @param gM Phase-to-ground conductance\n
+               @param bM Phase-to-ground susceptance\n
+               @param dV Voltage magnitude deviation per tap position\n
+               @param dPhi Voltage angle deviation per tap position\n
+               @param tapSide Selection of winding, where the tap changer is installed. Low voltage, if true\n
+               @param tapNeutr Neutral tap position\n
+               @param tapMin Minimum available tap position\n
+               @param tapMax Maximum available tap position"
+        constructorModifications:
+          rSc:
+            expression: rSc.to($T.RESISTANCE)
+            className: StandardUnits
+            insert: true
+          xSc:
+            expression: xSc.to($T.REACTANCE)
+            className: StandardUnits
+            insert: true
+          sRated:
+            expression: sRated.to($T.S_RATED)
+            className: StandardUnits
+            insert: true
+          vRatedA:
+            expression: vRatedA.to($T.RATED_VOLTAGE_MAGNITUDE)
+            className: StandardUnits
+            insert: true
+          vRatedB:
+            expression: vRatedB.to($T.RATED_VOLTAGE_MAGNITUDE)
+            className: StandardUnits
+            insert: true
+          gM:
+            expression: gM.to($T.CONDUCTANCE)
+            className: StandardUnits
+            insert: true
+          bM:
+            expression: bM.to($T.SUSCEPTANCE)
+            className: StandardUnits
+            insert: true
+          dV:
+            expression: dV.to($T.DV_TAP)
+            className: StandardUnits
+            insert: true
+          dPhi:
+            expression: dPhi.to($T.DPHI_TAP)
+            className: StandardUnits
+            insert: true
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide, tapNeutr, tapMin, tapMax, additionalInformation]
+        superArgs: [uuid, id]
+        javaDoc: "@param uuid of the input entity\n
+               @param id of the type\n
+               @param rSc Short circuit resistance\n
+               @param xSc Short circuit reactance\n
+               @param sRated Rated apparent power (typically in kVA)\n
+               @param vRatedA Rated voltage of the high voltage winding\n
+               @param vRatedB Rated voltage of the low voltage winding\n
+               @param gM Phase-to-ground conductance\n
+               @param bM Phase-to-ground susceptance\n
+               @param dV Voltage magnitude deviation per tap position\n
+               @param dPhi Voltage angle deviation per tap position\n
+               @param tapSide Selection of winding, where the tap changer is installed. Low voltage, if true\n
+               @param tapNeutr Neutral tap position\n
+               @param tapMin Minimum available tap position\n
+               @param tapMax Maximum available tap position\n
+               @param additionalInformation Of the input"
+        constructorModifications:
+          rSc:
+            expression: rSc.to($T.RESISTANCE)
+            className: StandardUnits
+            insert: true
+          xSc:
+            expression: xSc.to($T.REACTANCE)
+            className: StandardUnits
+            insert: true
+          sRated:
+            expression: sRated.to($T.S_RATED)
+            className: StandardUnits
+            insert: true
+          vRatedA:
+            expression: vRatedA.to($T.RATED_VOLTAGE_MAGNITUDE)
+            className: StandardUnits
+            insert: true
+          vRatedB:
+            expression: vRatedB.to($T.RATED_VOLTAGE_MAGNITUDE)
+            className: StandardUnits
+            insert: true
+          gM:
+            expression: gM.to($T.CONDUCTANCE)
+            className: StandardUnits
+            insert: true
+          bM:
+            expression: bM.to($T.SUSCEPTANCE)
+            className: StandardUnits
+            insert: true
+          dV:
+            expression: dV.to($T.DV_TAP)
+            className: StandardUnits
+            insert: true
+          dPhi:
+            expression: dPhi.to($T.DPHI_TAP)
+            className: StandardUnits
+            insert: true
+    getterOptions:
+      rSc:
+        capitalize: false
+      xSc:
+        capitalize: false
+      sRated:
+        capitalize: false
+      vRatedA:
+        capitalize: false
+      vRatedB:
+        capitalize: false
+      gM:
+        capitalize: false
+      bM:
+        capitalize: false
+      dV:
+        capitalize: false
+      dPhi:
+        capitalize: false
 
   Transformer3WInput:
     classJavaDoc: "Describes a three winding transformer, that is connected to three {@link NodeInput}s."
@@ -532,6 +813,232 @@ models:
         constructorChecks:
           - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC)
             className: ConnectorValidationUtils
+
+  Transformer3WTypeInput:
+    classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer3WInput}."
+    constructors:
+      - name: full
+        components: [uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi, tapNeutr, tapMin, tapMax]
+        superArgs: [uuid, id]
+        javaDoc: "@param uuid of the input entity\n
+               @param id of this type\n
+               @param sRatedA Rated apparent power of the high voltage winding\n
+               @param sRatedB Rated apparent power of the medium voltage winding\n
+               @param sRatedC Rated apparent power of the low voltage winding\n
+               @param vRatedA Rated voltage magnitude of the high voltage winding\n
+               @param vRatedB Rated voltage magnitude of the medium voltage winding\n
+               @param vRatedC Rated voltage magnitude of the low voltage winding\n
+               @param rScA Short-circuit resistance of the high voltage winding\n
+               @param rScB Short-circuit resistance of the medium voltage winding\n
+               @param rScC Short-circuit resistance of the low voltage winding\n
+               @param xScA Short-circuit reactance of the high voltage winding\n
+               @param xScB Short-circuit reactance of the medium voltage winding\n
+               @param xScC Short-circuit reactance of the low voltage winding\n
+               @param gM Phase-to-ground conductance\n
+               @param bM Phase-to-ground susceptance\n
+               @param dV Voltage magnitude deviation per tap position\n
+               @param dPhi Voltage angle deviation per tap position\n
+               @param tapNeutr Neutral tap position\n
+               @param tapMin Minimum available tap position\n
+               @param tapMax Maximum available tap position"
+        constructorModifications:
+          sRatedA:
+            expression: sRatedA.to($T.S_RATED)
+            className: StandardUnits
+            insert: true
+          sRatedB:
+            expression: sRatedB.to($T.S_RATED)
+            className: StandardUnits
+            insert: true
+          sRatedC:
+            expression: sRatedC.to($T.S_RATED)
+            className: StandardUnits
+            insert: true
+          vRatedA:
+            expression: vRatedA.to($T.RATED_VOLTAGE_MAGNITUDE)
+            className: StandardUnits
+            insert: true
+          vRatedB:
+            expression: vRatedB.to($T.RATED_VOLTAGE_MAGNITUDE)
+            className: StandardUnits
+            insert: true
+          vRatedC:
+            expression: vRatedC.to($T.RATED_VOLTAGE_MAGNITUDE)
+            className: StandardUnits
+            insert: true
+          rScA:
+            expression: rScA.to($T.RESISTANCE)
+            className: StandardUnits
+            insert: true
+          rScB:
+            expression: rScB.to($T.RESISTANCE)
+            className: StandardUnits
+            insert: true
+          rScC:
+            expression: rScC.to($T.RESISTANCE)
+            className: StandardUnits
+            insert: true
+          xScA:
+            expression: xScA.to($T.REACTANCE)
+            className: StandardUnits
+            insert: true
+          xScB:
+            expression: xScB.to($T.REACTANCE)
+            className: StandardUnits
+            insert: true
+          xScC:
+            expression: xScC.to($T.REACTANCE)
+            className: StandardUnits
+            insert: true
+          gM:
+            expression: gM.to($T.CONDUCTANCE)
+            className: StandardUnits
+            insert: true
+          bM:
+            expression: bM.to($T.SUSCEPTANCE)
+            className: StandardUnits
+            insert: true
+          dV:
+            expression: dV.to($T.DV_TAP)
+            className: StandardUnits
+            insert: true
+          dPhi:
+            expression: dPhi.to($T.DPHI_TAP)
+            className: StandardUnits
+            insert: true
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi, tapNeutr, tapMin, tapMax, additionalInformation]
+        superArgs: [uuid, id]
+        javaDoc: "@param uuid of the input entity\n
+               @param id of this type\n
+               @param sRatedA Rated apparent power of the high voltage winding\n
+               @param sRatedB Rated apparent power of the medium voltage winding\n
+               @param sRatedC Rated apparent power of the low voltage winding\n
+               @param vRatedA Rated voltage magnitude of the high voltage winding\n
+               @param vRatedB Rated voltage magnitude of the medium voltage winding\n
+               @param vRatedC Rated voltage magnitude of the low voltage winding\n
+               @param rScA Short-circuit resistance of the high voltage winding\n
+               @param rScB Short-circuit resistance of the medium voltage winding\n
+               @param rScC Short-circuit resistance of the low voltage winding\n
+               @param xScA Short-circuit reactance of the high voltage winding\n
+               @param xScB Short-circuit reactance of the medium voltage winding\n
+               @param xScC Short-circuit reactance of the low voltage winding\n
+               @param gM Phase-to-ground conductance\n
+               @param bM Phase-to-ground susceptance\n
+               @param dV Voltage magnitude deviation per tap position\n
+               @param dPhi Voltage angle deviation per tap position\n
+               @param tapNeutr Neutral tap position\n
+               @param tapMin Minimum available tap position\n
+               @param tapMax Maximum available tap position\n
+               @param additionalInformation Of the input"
+        constructorModifications:
+          sRatedA:
+            expression: sRatedA.to($T.S_RATED)
+            className: StandardUnits
+            insert: true
+          sRatedB:
+            expression: sRatedB.to($T.S_RATED)
+            className: StandardUnits
+            insert: true
+          sRatedC:
+            expression: sRatedC.to($T.S_RATED)
+            className: StandardUnits
+            insert: true
+          vRatedA:
+            expression: vRatedA.to($T.RATED_VOLTAGE_MAGNITUDE)
+            className: StandardUnits
+            insert: true
+          vRatedB:
+            expression: vRatedB.to($T.RATED_VOLTAGE_MAGNITUDE)
+            className: StandardUnits
+            insert: true
+          vRatedC:
+            expression: vRatedC.to($T.RATED_VOLTAGE_MAGNITUDE)
+            className: StandardUnits
+            insert: true
+          rScA:
+            expression: rScA.to($T.RESISTANCE)
+            className: StandardUnits
+            insert: true
+          rScB:
+            expression: rScB.to($T.RESISTANCE)
+            className: StandardUnits
+            insert: true
+          rScC:
+            expression: rScC.to($T.RESISTANCE)
+            className: StandardUnits
+            insert: true
+          xScA:
+            expression: xScA.to($T.REACTANCE)
+            className: StandardUnits
+            insert: true
+          xScB:
+            expression: xScB.to($T.REACTANCE)
+            className: StandardUnits
+            insert: true
+          xScC:
+            expression: xScC.to($T.REACTANCE)
+            className: StandardUnits
+            insert: true
+          gM:
+            expression: gM.to($T.CONDUCTANCE)
+            className: StandardUnits
+            insert: true
+          bM:
+            expression: bM.to($T.SUSCEPTANCE)
+            className: StandardUnits
+            insert: true
+          dV:
+            expression: dV.to($T.DV_TAP)
+            className: StandardUnits
+            insert: true
+          dPhi:
+            expression: dPhi.to($T.DPHI_TAP)
+            className: StandardUnits
+            insert: true
+    getterOptions:
+      sRatedA:
+        capitalize: false
+      sRatedB:
+        capitalize: false
+      sRatedC:
+        capitalize: false
+      vRatedA:
+        capitalize: false
+      vRatedB:
+        capitalize: false
+      vRatedC:
+        capitalize: false
+      rScA:
+        capitalize: false
+      rScB:
+        capitalize: false
+      rScC:
+        capitalize: false
+      xScA:
+        capitalize: false
+      xScB:
+        capitalize: false
+      xScC:
+        capitalize: false
+      gM:
+        capitalize: false
+      bM:
+        capitalize: false
+      dV:
+        capitalize: false
+      dPhi:
+        capitalize: false
+
+
+
+
+
+
+
+
+
+
 
 
 
