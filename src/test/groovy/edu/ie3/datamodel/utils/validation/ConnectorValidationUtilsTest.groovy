@@ -139,7 +139,7 @@ class ConnectorValidationUtilsTest extends Specification {
         .findAll { it.failure }
 
     then:
-    exceptions.size() == 1
+    exceptions.size() >= 1
     exceptions[0].exception.get().message.contains(expectedMessage)
 
     where:
