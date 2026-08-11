@@ -10,7 +10,6 @@ import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
 import java.io.Serializable;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import javax.measure.quantity.Area;
@@ -40,64 +39,6 @@ public record LayerInput(
     ComparableQuantity<ThermalCapacitance> thermalCapacitance,
     Optional<ComparableQuantity<Area>> area)
     implements InputEntity, Serializable {
-  /**
-   * Create a new layer with all required parameters.
-   *
-   * @param name Designation of this layer
-   * @param material Material of this layer
-   * @param innerDiameter Inner diameter
-   * @param outerDiameter Outer diameter
-   * @param thermalResistivity Thermal resistivity
-   * @param thermalCapacitance Thermal capacitance
-   * @param area Optional real cross-sectional area
-   * @throws IllegalArgumentException if validation constraints are violated
-   */
-  public LayerInput {
-    // Validation
-    Objects.requireNonNull(uuid, "Layer UUID cannot be null");
-    Objects.requireNonNull(name, "Layer name cannot be null");
-    Objects.requireNonNull(material, "Layer material cannot be null");
-    Objects.requireNonNull(innerDiameter, "Inner diameter cannot be null");
-    Objects.requireNonNull(outerDiameter, "Outer diameter cannot be null");
-    Objects.requireNonNull(thermalResistivity, "Thermal resistivity cannot be null");
-    Objects.requireNonNull(thermalCapacitance, "Thermal capacitance cannot be null");
-    Objects.requireNonNull(area, "Area optional must not be null");
-
-    if (name.isEmpty()) {
-      throw new IllegalArgumentException("Layer name cannot be empty");
-    }
-
-    double inner = innerDiameter.getValue().doubleValue();
-    double outer = outerDiameter.getValue().doubleValue();
-    double rho = thermalResistivity.getValue().doubleValue();
-    double cap = thermalCapacitance.getValue().doubleValue();
-
-    // Geometry consistency: outerDiameter >= innerDiameter
-    if (outer < inner) {
-      throw new IllegalArgumentException(
-          String.format("Outer diameter (%.6f) must be >= inner diameter (%.6f)", outer, inner));
-    }
-
-    // Positive values check
-    if (inner < 0) {
-      throw new IllegalArgumentException("Inner diameter must be >= 0");
-    }
-    if (outer < 0) {
-      throw new IllegalArgumentException("Outer diameter must be >= 0");
-    }
-    if (rho < 0) {
-      throw new IllegalArgumentException("Thermal resistivity must be >= 0");
-    }
-    if (cap < 0) {
-      throw new IllegalArgumentException("Thermal capacitance must be >= 0");
-    }
-    area.ifPresent(
-        a -> {
-          if (a.getValue().doubleValue() < 0) {
-            throw new IllegalArgumentException("Area must be >= 0");
-          }
-        });
-  }
 
   @Override
   public Map<String, String> getAdditionalInformation() {

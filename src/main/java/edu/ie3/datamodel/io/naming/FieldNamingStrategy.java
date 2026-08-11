@@ -38,7 +38,6 @@ public class FieldNamingStrategy {
   public static final String S_RATED_B = "sRatedB";
   public static final String S_RATED_C = "sRatedC";
   public static final String S_RATED_DC = "sRatedDC";
-  public static final String FREQUENCY = "frequency";
 
   // energy
   public static final String E_STATE = "eState";
@@ -88,7 +87,12 @@ public class FieldNamingStrategy {
   public static final String X_SC_B = "xScB";
   public static final String X_SC_C = "xScC";
 
-  // cable
+  // cable types
+  public static final String LIMIT_TEMPERATURE = "limitTemperature";
+  public static final String FREQUENCY = "frequency";
+  public static final String ELECTRICAL_CAPACITANCE = "electricalCapacitance";
+  public static final String THERMAL_RESISTIVITY = "thermalResistivity";
+  public static final String THERMAL_CAPACITANCE = "thermalCapacitance";
   public static final String CORE_NUMBER = "coreNumber";
   public static final String CONDUCTOR_STRING = "conductor";
   public static final String ISOLATION_STRING = "isolation";
@@ -103,8 +107,6 @@ public class FieldNamingStrategy {
   public static final String TAN_DELTA = "tanDelta";
   public static final String CIRCULATING_LOSS_FACTOR = "circulatingLossFactor";
   public static final String EDDY_CURRENT_LOSS_FACTOR = "eddyCurrentLossFactor";
-  public static final String FREQUENCY = "frequency";
-  public static final String ELECTRICAL_CAPACITANCE = "electricalCapacitance";
   public static final String LAYOUT_FORMATION = "layoutFormation";
   public static final String DEPTH_CABLES = "depthCables";
   public static final String DISTANCE_CABLES = "distanceCables";

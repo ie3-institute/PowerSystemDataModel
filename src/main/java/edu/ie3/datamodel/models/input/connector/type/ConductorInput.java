@@ -32,7 +32,7 @@ import tech.units.indriya.ComparableQuantity;
  * @param isCompacted Whether the conductor is compacted
  * @param thermalResistivity Thermal resistivity of the conductor material
  * @param thermalCapacitance Thermal capacitance of the conductor material
- * @param area Optional real cross-sectional area (if different from geometric calculation)
+ * @param areaValue Optional real cross-sectional area (if different from geometric calculation)
  */
 public record ConductorInput(
     UUID uuid,
@@ -81,50 +81,8 @@ public record ConductorInput(
         Objects.requireNonNull(area, "Area optional must not be null").orElse(null));
   }
 
-  /**
-   * Create a new conductor with all required parameters.
-   *
-   * @param uuid UUID of the ConductorInput
-   * @param name Human-readable id
-   * @param material Material of the conductor
-   * @param crossSection Real nominal cross-sectional area (electrically effective)
-   * @param diameter Geometric outer diameter
-   * @param isCompacted Whether the conductor is compacted
-   * @param thermalResistivity Thermal resistivity
-   * @param thermalCapacitance Thermal capacitance
-   * @param area real cross-sectional area
-   * @throws IllegalArgumentException if validation constraints are violated
-   */
-  public ConductorInput {
-    // Validation
-    Objects.requireNonNull(uuid, "Conductor UUID cannot be null");
-    Objects.requireNonNull(name, "Conductor name cannot be null");
-    Objects.requireNonNull(material, "Conductor material cannot be null");
-    Objects.requireNonNull(crossSection, "Cross section cannot be null");
-    Objects.requireNonNull(diameter, "Diameter cannot be null");
-    Objects.requireNonNull(thermalResistivity, "Thermal resistivity cannot be null");
-    Objects.requireNonNull(thermalCapacitance, "Thermal capacitance cannot be null");
-
-    if (name.isEmpty()) {
-      throw new IllegalArgumentException("Conductor name must not be empty");
-    }
-
-    // Positive values check
-    if (crossSection.getValue().doubleValue() < 0) {
-      throw new IllegalArgumentException("Cross section must be >= 0");
-    }
-    if (diameter.getValue().doubleValue() < 0) {
-      throw new IllegalArgumentException("Diameter must be >= 0");
-    }
-    if (thermalResistivity.getValue().doubleValue() < 0) {
-      throw new IllegalArgumentException("Thermal resistivity must be >= 0");
-    }
-    if (thermalCapacitance.getValue().doubleValue() < 0) {
-      throw new IllegalArgumentException("Thermal capacitance must be >= 0");
-    }
-    if (area != null && area.getValue().doubleValue() < 0) {
-      throw new IllegalArgumentException("Area must be >= 0");
-    }
+  public Optional<ComparableQuantity<Area>> area() {
+    return Optional.ofNullable(areaValue);
   }
 
   @Override

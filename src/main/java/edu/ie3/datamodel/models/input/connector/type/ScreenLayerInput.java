@@ -11,7 +11,6 @@ import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
 import java.io.Serializable;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import javax.measure.quantity.Area;
@@ -50,88 +49,6 @@ public record ScreenLayerInput(
     Optional<ComparableQuantity<Length>> lengthOfLay,
     ComparableQuantity<ElectricalResistivity> electricalResistivity)
     implements InputEntity, Serializable {
-  /**
-   * Create a new screen layer with all required parameters.
-   *
-   * @param uuid UUID of the screen layer
-   * @param name Designation of this screen layer
-   * @param material Material of the screen
-   * @param innerDiameter Inner diameter
-   * @param outerDiameter Outer diameter
-   * @param thermalResistivity Thermal resistivity
-   * @param thermalCapacitance Thermal capacitance
-   * @param area Optional real cross-sectional area
-   * @param wiresNumber Number of individual wires
-   * @param wireDiameter Diameter of individual wire
-   * @param lengthOfLay Optional length of lay (pitch)
-   * @param electricalResistivity Electrical resistivity of the screen material
-   */
-  public ScreenLayerInput {
-    // Validation
-    Objects.requireNonNull(uuid, "Screen layer UUID cannot be null");
-    Objects.requireNonNull(name, "Screen layer name cannot be null");
-    Objects.requireNonNull(material, "Screen material cannot be null");
-    Objects.requireNonNull(innerDiameter, "Inner diameter cannot be null");
-    Objects.requireNonNull(outerDiameter, "Outer diameter cannot be null");
-    Objects.requireNonNull(thermalResistivity, "Thermal resistivity cannot be null");
-    Objects.requireNonNull(thermalCapacitance, "Thermal capacitance cannot be null");
-    Objects.requireNonNull(area, "Area Optional cannot be null");
-    Objects.requireNonNull(wireDiameter, "Wire diameter cannot be null");
-    Objects.requireNonNull(area, "Area optional must not be null");
-    Objects.requireNonNull(lengthOfLay, "Length of lay optional must not be null");
-    Objects.requireNonNull(electricalResistivity, "Material resistivity cannot be null");
-
-    if (name.isEmpty()) {
-      throw new IllegalArgumentException("Screen layer name cannot be empty");
-    }
-
-    double inner = innerDiameter.getValue().doubleValue();
-    double outer = outerDiameter.getValue().doubleValue();
-    double rhoT = thermalResistivity.getValue().doubleValue();
-    double capT = thermalCapacitance.getValue().doubleValue();
-    double wireD = wireDiameter.getValue().doubleValue();
-    double rhoE = electricalResistivity.getValue().doubleValue();
-
-    // Geometry consistency: outerDiameter >= innerDiameter
-    if (outer < inner) {
-      throw new IllegalArgumentException(
-          String.format("Outer diameter (%.6f) must be >= inner diameter (%.6f)", outer, inner));
-    }
-
-    // Positive values check
-    if (inner < 0) {
-      throw new IllegalArgumentException("Inner diameter must be >= 0");
-    }
-    if (outer < 0) {
-      throw new IllegalArgumentException("Outer diameter must be >= 0");
-    }
-    if (rhoT < 0) {
-      throw new IllegalArgumentException("Thermal resistivity must be >= 0");
-    }
-    if (capT < 0) {
-      throw new IllegalArgumentException("Thermal capacitance must be >= 0");
-    }
-    if (wiresNumber < 1) {
-      throw new IllegalArgumentException("Number of wires must be >= 1");
-    }
-    if (wireD < 0) {
-      throw new IllegalArgumentException("Wire diameter must be >= 0");
-    }
-    if (rhoE < 0) {
-      throw new IllegalArgumentException("Material resistivity must be >= 0");
-    }
-    area.ifPresent(
-        a -> {
-          double val = a.getValue().doubleValue();
-          if (val < 0) throw new IllegalArgumentException("Area must be >= 0");
-        });
-
-    lengthOfLay.ifPresent(
-        l -> {
-          double val = l.getValue().doubleValue();
-          if (val < 0) throw new IllegalArgumentException("Length of lay must be >= 0");
-        });
-  }
 
   @Override
   public Map<String, String> getAdditionalInformation() {
