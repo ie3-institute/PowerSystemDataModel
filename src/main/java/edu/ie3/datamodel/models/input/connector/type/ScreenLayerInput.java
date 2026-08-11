@@ -49,23 +49,6 @@ public record ScreenLayerInput(
     Optional<ComparableQuantity<Length>> lengthOfLay,
     ComparableQuantity<ElectricalResistivity> electricalResistivity)
     implements InputEntity, Serializable {
-  /**
-   * Create a new screen layer with all required parameters.
-   *
-   * @param uuid UUID of the screen layer
-   * @param name Designation of this screen layer
-   * @param material Material of the screen
-   * @param innerDiameter Inner diameter
-   * @param outerDiameter Outer diameter
-   * @param thermalResistivity Thermal resistivity
-   * @param thermalCapacitance Thermal capacitance
-   * @param area Optional real cross-sectional area
-   * @param wiresNumber Number of individual wires
-   * @param wireDiameter Diameter of individual wire
-   * @param lengthOfLay Optional length of lay (pitch)
-   * @param electricalResistivity Electrical resistivity of the screen material
-   */
-  public ScreenLayerInput {}
 
   @Override
   public Map<String, String> getAdditionalInformation() {

@@ -81,22 +81,6 @@ public record ConductorInput(
         Objects.requireNonNull(area, "Area optional must not be null").orElse(null));
   }
 
-  /**
-   * Create a new conductor with all required parameters.
-   *
-   * @param uuid UUID of the ConductorInput
-   * @param name Human-readable id
-   * @param material Material of the conductor
-   * @param crossSection Real nominal cross-sectional area (electrically effective)
-   * @param diameter Geometric outer diameter
-   * @param isCompacted Whether the conductor is compacted
-   * @param thermalResistivity Thermal resistivity
-   * @param thermalCapacitance Thermal capacitance
-   * @param areaValue real cross-sectional area
-   * @throws IllegalArgumentException if validation constraints are violated
-   */
-  public ConductorInput {}
-
   public Optional<ComparableQuantity<Area>> area() {
     return Optional.ofNullable(areaValue);
   }

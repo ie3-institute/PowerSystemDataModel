@@ -23,8 +23,6 @@ public record CableDeploymentInput(
     String layoutFormation,
     ComparableQuantity<Length> depthCables,
     ComparableQuantity<Length> distanceCables) {
-  /** Create a new CableDeploymentInput with all required parameters. */
-  public CableDeploymentInput {}
 
   @Override
   public boolean equals(Object o) {
