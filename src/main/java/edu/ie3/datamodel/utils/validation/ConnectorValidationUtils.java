@@ -329,8 +329,11 @@ public class ConnectorValidationUtils extends ValidationUtils {
 
   private static void checkLayerArea(LayerInput layer, CableTypeInput cableType)
       throws InvalidEntityException {
-    if (layer.area().isPresent()) {
-      detectNegativeQuantities(quantities("area", layer.area().get()), cableType);
+
+    Optional<ComparableQuantity<Area>> maybeArea = layer.area();
+    if (maybeArea.isPresent()) {
+      // pass the Quantity directly, like your original code did
+      detectNegativeQuantities(quantities("area", maybeArea.get()), cableType);
     }
   }
 
