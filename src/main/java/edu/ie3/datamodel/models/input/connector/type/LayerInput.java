@@ -38,19 +38,6 @@ public record LayerInput(
     ComparableQuantity<ThermalCapacitance> thermalCapacitance,
     Optional<ComparableQuantity<Area>> area)
     implements InputEntity, Serializable {
-  /**
-   * Create a new layer with all required parameters.
-   *
-   * @param name Designation of this layer
-   * @param material Material of this layer
-   * @param innerDiameter Inner diameter
-   * @param outerDiameter Outer diameter
-   * @param thermalResistivity Thermal resistivity
-   * @param thermalCapacitance Thermal capacitance
-   * @param area Optional real cross-sectional area
-   * @throws IllegalArgumentException if validation constraints are violated
-   */
-  public LayerInput {}
 
   @Override
   public Map<String, String> getAdditionalInformation() {

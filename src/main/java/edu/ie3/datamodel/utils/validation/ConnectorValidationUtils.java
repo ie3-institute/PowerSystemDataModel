@@ -12,7 +12,6 @@ import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
-import edu.ie3.datamodel.models.input.connector.CableDeploymentInput;
 import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.ConductorInput;
 import edu.ie3.datamodel.models.input.connector.type.LayerInput;
@@ -219,37 +218,6 @@ public class ConnectorValidationUtils extends ValidationUtils {
         .ifPresent(screen -> exceptions.addAll(checkScreenLayer(screen, cableType)));
 
     return exceptions;
-  }
-
-  private static List<Try<Void, InvalidEntityException>> checkCableDeployment(
-      CableDeploymentInput deployment, LineInput line) {
-    Try<Void, InvalidEntityException> isNull = checkNonNull(deployment, "a cable deployment");
-
-    if (isNull.isFailure()) {
-      return List.of(isNull);
-    }
-
-    return Try.ofVoid(
-        InvalidEntityException.class,
-        () -> checkCableDeploymentLayoutFormation(deployment, line),
-        () -> checkCableDepth(deployment, line),
-        () ->
-            detectZeroOrNegativeQuantities(
-                quantities("distanceCables", deployment.distanceCables()), line));
-  }
-
-  private static void checkCableDepth(CableDeploymentInput deployment, LineInput line)
-      throws InvalidEntityException {
-    if (deployment.depthCables().getValue().doubleValue() > 0d) {
-      throw new InvalidEntityException("Cable depth must be less than or equal to 0", line);
-    }
-  }
-
-  private static void checkCableDeploymentLayoutFormation(
-      CableDeploymentInput deployment, LineInput line) throws InvalidEntityException {
-    if (deployment.layoutFormation().isEmpty()) {
-      throw new InvalidEntityException("Layout formation cannot be empty", line);
-    }
   }
 
   /**
