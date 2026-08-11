@@ -220,36 +220,36 @@ public class ConnectorValidationUtils extends ValidationUtils {
     return exceptions;
   }
 
-    private static List<Try<Void, InvalidEntityException>> checkCableDeployment(
-            CableDeploymentInput deployment, LineInput line) {
-        Try<Void, InvalidEntityException> isNull = checkNonNull(deployment, "a cable deployment");
+  private static List<Try<Void, InvalidEntityException>> checkCableDeployment(
+      CableDeploymentInput deployment, LineInput line) {
+    Try<Void, InvalidEntityException> isNull = checkNonNull(deployment, "a cable deployment");
 
-        if (isNull.isFailure()) {
-            return List.of(isNull);
-        }
-
-        return Try.ofVoid(
-                InvalidEntityException.class,
-                () -> checkCableDeploymentLayoutFormation(deployment, line),
-                () -> checkCableDepth(deployment, line),
-                () ->
-                        detectZeroOrNegativeQuantities(
-                                quantities("distanceCables", deployment.distanceCables()), line));
+    if (isNull.isFailure()) {
+      return List.of(isNull);
     }
 
-    private static void checkCableDepth(CableDeploymentInput deployment, LineInput line)
-            throws InvalidEntityException {
-        if (deployment.depthCables().getValue().doubleValue() > 0d) {
-            throw new InvalidEntityException("Cable depth must be less than or equal to 0", line);
-        }
-    }
+    return Try.ofVoid(
+        InvalidEntityException.class,
+        () -> checkCableDeploymentLayoutFormation(deployment, line),
+        () -> checkCableDepth(deployment, line),
+        () ->
+            detectZeroOrNegativeQuantities(
+                quantities("distanceCables", deployment.distanceCables()), line));
+  }
 
-    private static void checkCableDeploymentLayoutFormation(
-            CableDeploymentInput deployment, LineInput line) throws InvalidEntityException {
-        if (deployment.layoutFormation().isEmpty()) {
-            throw new InvalidEntityException("Layout formation cannot be empty", line);
-        }
+  private static void checkCableDepth(CableDeploymentInput deployment, LineInput line)
+      throws InvalidEntityException {
+    if (deployment.depthCables().getValue().doubleValue() > 0d) {
+      throw new InvalidEntityException("Cable depth must be less than or equal to 0", line);
     }
+  }
+
+  private static void checkCableDeploymentLayoutFormation(
+      CableDeploymentInput deployment, LineInput line) throws InvalidEntityException {
+    if (deployment.layoutFormation().isEmpty()) {
+      throw new InvalidEntityException("Layout formation cannot be empty", line);
+    }
+  }
 
   /**
    * Validates a cable conductor.

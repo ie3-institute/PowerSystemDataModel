@@ -43,7 +43,7 @@ public record ConductorInput(
     boolean isCompacted,
     ComparableQuantity<ThermalResistivity> thermalResistivity,
     ComparableQuantity<ThermalCapacitance> thermalCapacitance,
-    @Nullable ComparableQuantity<Area> area)
+    @Nullable ComparableQuantity<Area> areaValue)
     implements InputEntity, Serializable {
 
   /**
