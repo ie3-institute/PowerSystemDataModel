@@ -198,11 +198,8 @@ public class RawGridElements implements InputContainer<AssetInput> {
 
   /**
    * A builder pattern based approach to create copies of {@link RawGridElements} containers with
-   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * altered field values. For detailed field descriptions refer to Javadocs of {@link
    * RawGridElements}
-   *
-   * @version 3.1
-   * @since 14.02.23
    */
   public static class RawGridElementsCopyBuilder extends InputContainerCopyBuilder<AssetInput> {
     private Set<NodeInput> nodes;
