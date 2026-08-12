@@ -236,13 +236,13 @@ class InfluxDbSinkIT extends Specification {
     def iAAngStr = fieldMap.get("iAAng")
     def iBMagStr = fieldMap.get("iBMag")
     def iBAngStr = fieldMap.get("iBAng")
-    if(iAMagStr== null || iAMagStr.empty) lineResult.getiAMag() == null
+    if(iAMagStr == null || iAMagStr.empty) lineResult.getiAMag() == null
     else Double.parseDouble(iAMagStr) == lineResult.getiAMag().getValue()
-    if(iAAngStr== null || iAAngStr.empty) lineResult.getiAAng() == null
+    if(iAAngStr == null || iAAngStr.empty) lineResult.getiAAng() == null
     else Double.parseDouble(iAAngStr) == lineResult.getiAAng().getValue()
-    if(iBMagStr== null || iBMagStr.empty) lineResult.getiBMag() == null
+    if(iBMagStr == null || iBMagStr.empty) lineResult.getiBMag() == null
     else Double.parseDouble(iBMagStr) == lineResult.getiBMag().getValue()
-    if(iBAngStr== null || iBAngStr.empty) lineResult.getiBAng() == null
+    if(iBAngStr == null || iBAngStr.empty) lineResult.getiBAng() == null
     else Double.parseDouble(iBAngStr) == lineResult.getiBAng().getValue()
   }
 
@@ -252,9 +252,9 @@ class InfluxDbSinkIT extends Specification {
     fieldMap.get("input_model") == chpResult.getInputModel().toString()
     def pStr = fieldMap.get("p")
     def qStr = fieldMap.get("q")
-    if(pStr== null || pStr.empty) chpResult.getP() == null
+    if(pStr == null || pStr.empty) chpResult.getP() == null
     else Double.parseDouble(pStr) == chpResult.getP().getValue()
-    if(qStr== null || qStr.empty) chpResult.getQ() == null
+    if(qStr == null || qStr.empty) chpResult.getQ() == null
     else Double.parseDouble(qStr) == chpResult.getQ().getValue()
   }
 

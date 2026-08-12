@@ -20,7 +20,7 @@ trait CsvTestDataMeta {
   @Shared
   Path typeFolderPath = getResourceAbs("_types")
   @Shared
-  Path participantsFolderPath =  getResourceAbs("_participants")
+  Path participantsFolderPath = getResourceAbs("_participants")
   @Shared
   Path resultEntitiesFolderPath = getResourceAbs("_results")
   @Shared

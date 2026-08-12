@@ -58,7 +58,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
 
     then:
     optTimeBasedValue != null
-    WeatherSourceTestHelper.equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue )
+    WeatherSourceTestHelper.equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
   }
 
   def "A SqlWeatherSource throws NoDataException for an invalid coordinate"() {

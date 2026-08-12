@@ -60,7 +60,7 @@ abstract class AbstractCouchbaseWeatherSourceIT extends Specification implements
     println "Waiting for Couchbase bucket to be ready..."
     int maxTries = 10
     boolean ready = false
-    for (int i = 0; i < maxTries; i++) {
+    for (int i = 0; i <maxTries; i++) {
       try {
         connector.getSourceFields()
         ready = true
