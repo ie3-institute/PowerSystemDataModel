@@ -65,9 +65,10 @@ dependencies {
 
   implementation 'org.locationtech.jts.io:jts-io-common:1.20.0'
 
-  // parsing json
-  implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.0'
-  implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.15.2'
+  // JSON parsing
+  implementation platform('com.fasterxml.jackson:jackson-bom:2.21.2') // aligned with Pekko 1.6 / Jackson Scala module
+  implementation 'com.fasterxml.jackson.core:jackson-databind'
+  implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
 
   // Graphs
   implementation 'org.jgrapht:jgrapht-core:1.5.3'

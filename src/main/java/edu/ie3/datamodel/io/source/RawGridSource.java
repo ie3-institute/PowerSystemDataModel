@@ -13,6 +13,7 @@ import edu.ie3.datamodel.io.factory.input.*;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.connector.CableDeploymentInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
@@ -44,6 +45,7 @@ public class RawGridSource extends AssetEntitySource {
   private final Transformer3WInputFactory transformer3WInputFactory;
   private final SwitchInputFactory switchInputFactory;
   private final MeasurementUnitInputFactory measurementUnitInputFactory;
+  private final CableDeploymentInputFactory cableDeploymentInputFactory;
 
   public RawGridSource(TypeSource typeSource, DataSource dataSource) {
     super(dataSource);
@@ -56,6 +58,7 @@ public class RawGridSource extends AssetEntitySource {
     this.transformer3WInputFactory = new Transformer3WInputFactory();
     this.switchInputFactory = new SwitchInputFactory();
     this.measurementUnitInputFactory = new MeasurementUnitInputFactory();
+    this.cableDeploymentInputFactory = new CableDeploymentInputFactory();
   }
 
   @Override
@@ -147,9 +150,23 @@ public class RawGridSource extends AssetEntitySource {
         Try.of(() -> getSwitches(operators, nodes), SourceException.class);
     Try<Set<MeasurementUnitInput>, SourceException> measurementUnits =
         Try.of(() -> getMeasurementUnits(operators, nodes), SourceException.class);
+    Try<java.util.Map<UUID, CableDeploymentInput>, SourceException> deploymentMap =
+        Try.of(
+            () -> getEntities(CableDeploymentInput.class, dataSource, cableDeploymentInputFactory),
+            SourceException.class);
+    Try<java.util.Map<UUID, List<CableDeploymentInput>>, SourceException> deploymentsByLine =
+        deploymentMap.flatMap(
+            map ->
+                Try.of(
+                    () -> joinCableDeploymentsByLine(lines, map.values()), SourceException.class));
 
     List<SourceException> exceptions =
-        Try.getExceptions(transformer2WInputs, transformer3WInputs, switches, measurementUnits);
+        Try.getExceptions(
+            transformer2WInputs,
+            transformer3WInputs,
+            switches,
+            measurementUnits,
+            deploymentsByLine);
 
     if (!exceptions.isEmpty()) {
       throw new RawGridException(
@@ -167,7 +184,8 @@ public class RawGridSource extends AssetEntitySource {
           transformer2WInputs.getOrThrow(),
           transformer3WInputs.getOrThrow(),
           switches.getOrThrow(),
-          measurementUnits.getOrThrow());
+          measurementUnits.getOrThrow(),
+          deploymentsByLine.getOrThrow());
     }
   }
 
@@ -253,6 +271,32 @@ public class RawGridSource extends AssetEntitySource {
     return getTypedConnectorEntities(
             LineInput.class, dataSource, lineInputFactory, operators, nodes, lineTypeInputs)
         .collect(toMap());
+  }
+
+  /**
+   * Joins provided cable deployments to the given lines by line UUID.
+   *
+   * @param lines map of line UUID to any line object (only keys are used)
+   * @param deployments collection of cable deployments to join
+   * @return map keyed by line UUID containing lists of deployments for that line
+   * @throws SourceException if a deployment references an unknown line UUID
+   */
+  public static Map<UUID, List<CableDeploymentInput>> joinCableDeploymentsByLine(
+      Map<UUID, ?> lines, Collection<CableDeploymentInput> deployments) throws SourceException {
+    Map<UUID, List<CableDeploymentInput>> result = new java.util.HashMap<>();
+
+    for (CableDeploymentInput deployment : deployments) {
+      UUID lineUuid = deployment.getLineUuid();
+
+      if (!lines.containsKey(lineUuid)) {
+        throw new SourceException(
+            "Cable deployment references unknown line with uuid " + lineUuid.toString());
+      }
+
+      result.computeIfAbsent(lineUuid, k -> new ArrayList<>()).add(deployment);
+    }
+
+    return result;
   }
 
   /**

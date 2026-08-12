@@ -13,6 +13,7 @@ import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.connector.CableDeploymentInput
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
@@ -444,8 +445,6 @@ class InputEntityProcessorTest extends Specification {
     actual == expected
   }
 
-
-
   def "The InputEntityProcessor should serialize a provided CableType correctly"() {
     given:
     InputEntityProcessor processor = new InputEntityProcessor(CableTypeInput)
@@ -638,6 +637,32 @@ class InputEntityProcessorTest extends Specification {
 
     when:
     Map<String, String> actual = processor.handleEntity(nodeWithOutOperator)
+
+    then:
+    actual == expected
+  }
+
+  def "The InputEntityProcessor should serialize a provided CableDeploymentInput correctly"() {
+    given:
+    InputEntityProcessor processor = new InputEntityProcessor(CableDeploymentInput)
+    CableDeploymentInput cd = new CableDeploymentInput(
+        UUID.fromString("11111111-1111-1111-1111-111111111111"),
+        UUID.fromString("22222222-2222-2222-2222-222222222222"),
+        "formationX",
+        Quantities.getQuantity(0.1, StandardUnits.LINE_LENGTH),
+        Quantities.getQuantity(0.2, StandardUnits.LINE_LENGTH)
+        )
+
+    Map expected = [
+      "uuid" : "11111111-1111-1111-1111-111111111111",
+      "lineUuid" : "22222222-2222-2222-2222-222222222222",
+      "layoutFormation" : "formationX",
+      "depthCables" : "0.1",
+      "distanceCables" : "0.2"
+    ]
+
+    when:
+    Map<String, String> actual = processor.handleEntity(cd)
 
     then:
     actual == expected

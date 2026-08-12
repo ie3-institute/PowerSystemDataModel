@@ -234,19 +234,19 @@ public class ConnectorValidationUtils extends ValidationUtils {
         () -> checkCableDepth(deployment, line),
         () ->
             detectZeroOrNegativeQuantities(
-                quantities("distanceCables", deployment.distanceCables()), line));
+                quantities("distanceCables", deployment.getDistanceCables()), line));
   }
 
   private static void checkCableDepth(CableDeploymentInput deployment, LineInput line)
       throws InvalidEntityException {
-    if (deployment.depthCables().getValue().doubleValue() > 0d) {
+    if (deployment.getDepthCables().getValue().doubleValue() > 0d) {
       throw new InvalidEntityException("Cable depth must be less than or equal to 0", line);
     }
   }
 
   private static void checkCableDeploymentLayoutFormation(
       CableDeploymentInput deployment, LineInput line) throws InvalidEntityException {
-    if (deployment.layoutFormation().isEmpty()) {
+    if (deployment.getLayoutFormation().isEmpty()) {
       throw new InvalidEntityException("Layout formation cannot be empty", line);
     }
   }

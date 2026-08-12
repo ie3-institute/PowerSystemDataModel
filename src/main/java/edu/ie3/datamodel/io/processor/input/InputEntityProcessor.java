@@ -40,6 +40,7 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
           /* - AssetInput */
           NodeInput.class,
           LineInput.class,
+          CableDeploymentInput.class,
           Transformer2WInput.class,
           Transformer3WInput.class,
           SwitchInput.class,
