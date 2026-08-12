@@ -5,11 +5,11 @@ plugins {
   id 'signing'
   id 'pmd' // code check, working on source code
   id 'com.diffplug.spotless' version '8.9.0' //code format
-  id 'com.github.spotbugs' version '6.5.9' // code check, working on byte code
+  id 'com.github.spotbugs' version '6.5.10' // code check, working on byte code
   id 'de.undercouch.download' version '5.7.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
-  id "org.sonarqube" version "7.3.1.8318" // sonarqube
+  id "org.sonarqube" version "7.4.0.8496" // sonarqube
   id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
   id 'com.gradleup.shadow' version '9.6.1' // fat jar
 }
@@ -19,7 +19,7 @@ ext {
   javaVersion = JavaVersion.VERSION_21
   groovyBinaryVersion = "5.0.8"
 
-  junitVersion = '6.1.2'
+  junitVersion = '6.1.3'
   testcontainersVersion = '2.0.5'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
