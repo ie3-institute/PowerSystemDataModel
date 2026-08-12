@@ -247,8 +247,8 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     def sink = new SqlSink(
         schemaName,
         new ProcessorProvider(
-        ProcessorProvider.allEntityProcessors(),
-        new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value, Value>, TimeSeriesEntry<Value>, Value, Value>>()),
+            ProcessorProvider.allEntityProcessors(),
+            new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value, Value>, TimeSeriesEntry<Value>, Value, Value>>()),
         namingStrategy,
         connector)
 

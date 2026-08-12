@@ -30,10 +30,10 @@ class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
     given: "a system participant factory and model data"
     def resultFactory = new NodeResultFactory()
     Map<String, String> parameter = [
-      "time"      : "2020-01-30T17:26:44Z",
+      "time" : "2020-01-30T17:26:44Z",
       "inputModel": "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
-      "vmag"      : "2",
-      "vang"      : "2"
+      "vmag" : "2",
+      "vang" : "2"
     ]
 
     when:

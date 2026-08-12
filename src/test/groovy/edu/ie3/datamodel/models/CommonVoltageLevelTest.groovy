@@ -24,11 +24,11 @@ class CommonVoltageLevelTest extends Specification {
   Quantities.getQuantity(0.4, KILOVOLT),
   new HashSet<>(Arrays.asList("lv", "ns")),
   new RightOpenInterval<>(
-  Quantities.getQuantity(0d, KILOVOLT), Quantities.getQuantity(10d, KILOVOLT)))
+      Quantities.getQuantity(0d, KILOVOLT), Quantities.getQuantity(10d, KILOVOLT)))
 
   def "A common voltage level should correctly check, if a valid rated voltage is covered"() {
     expect:
-    dut.covers(Quantities.getQuantity(500d, VOLT))   // May be true
+    dut.covers(Quantities.getQuantity(500d, VOLT)) // May be true
   }
 
   def "A common voltage level should correctly check, if a outlying rated voltage is covered"() {
@@ -43,17 +43,17 @@ class CommonVoltageLevelTest extends Specification {
 
   def "A common voltage level should correctly check, if a valid id / rated voltage combination is covered"() {
     expect:
-    dut.covers("Niederspannung", Quantities.getQuantity(500d, VOLT))   // May be true
+    dut.covers("Niederspannung", Quantities.getQuantity(500d, VOLT)) // May be true
   }
 
   def "A common voltage level should correctly check, if an invalid id / rated voltage combination is covered"() {
     expect:
-    !dut.covers("HS", Quantities.getQuantity(110d, KILOVOLT))   // May be false
+    !dut.covers("HS", Quantities.getQuantity(110d, KILOVOLT)) // May be false
   }
 
   def "A common voltage level should thrown an exception, if an inconsistent id / rated voltage combination is checked"() {
     when:
-    dut.covers("HS", Quantities.getQuantity(500d, VOLT))   // May be true
+    dut.covers("HS", Quantities.getQuantity(500d, VOLT)) // May be true
 
     then:
     VoltageLevelException ex = thrown()

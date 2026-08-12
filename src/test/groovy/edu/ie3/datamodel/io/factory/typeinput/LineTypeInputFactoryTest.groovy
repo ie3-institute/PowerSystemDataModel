@@ -28,14 +28,14 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
     given: "a system participant input type factory and model data"
     def typeInputFactory = new LineTypeInputFactory()
     Map<String, String> parameter = [
-      "uuid":     "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id":       "blablub",
-      "b":        "3",
-      "g":        "4",
-      "r":        "5",
-      "x":        "6",
-      "imax":     "7",
-      "vrated":   "8"
+      "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id": "blablub",
+      "b": "3",
+      "g": "4",
+      "r": "5",
+      "x": "6",
+      "imax": "7",
+      "vrated": "8"
     ]
     def typeInputClass = LineTypeInput
 

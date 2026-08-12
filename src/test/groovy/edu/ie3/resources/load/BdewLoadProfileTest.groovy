@@ -227,10 +227,10 @@ class BdewLoadProfileTest extends Specification {
     dynamizedValue == expectedValue
 
     where:
-    dayOfTheYear | value  | expectedValue
-    153          | 89.8d  | 76.3d // suSa, time: 00:15
-    262          | 47.9d  | 42.1d // trWd, time: 01:45
-    343          | 146.8d | 174.5d // wiSu, time: 18:15
+    dayOfTheYear | value | expectedValue
+    153 | 89.8d | 76.3d // suSa, time: 00:15
+    262 | 47.9d | 42.1d // trWd, time: 01:45
+    343 | 146.8d | 174.5d // wiSu, time: 18:15
   }
 
   def "The BDEW profile L0 should be correct"() {
@@ -347,12 +347,12 @@ class BdewLoadProfileTest extends Specification {
     results["augSu"] == 1440.782
     results["augWd"] == 2880.367
 
-    results["sepSa"] ==1844.127
-    results["sepSu"] ==1434.353
-    results["sepWd"] ==2989.369
+    results["sepSa"] == 1844.127
+    results["sepSu"] == 1434.353
+    results["sepWd"] == 2989.369
 
-    results["octSa"] ==	1945.162
-    results["octSu"] ==	1481.594
+    results["octSa"] == 1945.162
+    results["octSu"] == 1481.594
     results["octWd"] == 3086.210
 
     results["novSa"] == 2087.148
@@ -361,7 +361,7 @@ class BdewLoadProfileTest extends Specification {
 
     results["decSa"] == 2187.194
     results["decSu"] == 1652.092
-    results["decWd"] ==	3479.094
+    results["decWd"] == 3479.094
   }
 
   def "The BDEW profile H25 should be correct"() {
@@ -411,8 +411,8 @@ class BdewLoadProfileTest extends Specification {
     results["sepSu"] == 3190.438
     results["sepWd"] == 2656.074
 
-    results["octSa"] ==	2972.852
-    results["octSu"] ==	3127.245
+    results["octSa"] == 2972.852
+    results["octSu"] == 3127.245
     results["octWd"] == 2633.577
 
     results["novSa"] == 2944.428
@@ -420,8 +420,8 @@ class BdewLoadProfileTest extends Specification {
     results["novWd"] == 2541.863
 
     results["decSa"] == 2816.414
-    results["decSu"] ==	2936.746
-    results["decWd"] ==	2536.519
+    results["decSu"] == 2936.746
+    results["decWd"] == 2536.519
   }
 
   def "The BDEW profile L25 should be correct"() {
@@ -453,14 +453,14 @@ class BdewLoadProfileTest extends Specification {
 
     results["maySa"] == 2524.8
     results["maySu"] == 2656.983
-    results["mayWd"] ==	2614.388
+    results["mayWd"] == 2614.388
 
     results["junSa"] == 2384.025
-    results["junSu"] ==	2560.750
+    results["junSu"] == 2560.750
     results["junWd"] == 2496.300
 
     results["julSa"] == 2384.025
-    results["julSu"] ==	2560.750
+    results["julSu"] == 2560.750
     results["julWd"] == 2496.300
 
     results["augSa"] == 2384.025
@@ -471,17 +471,17 @@ class BdewLoadProfileTest extends Specification {
     results["sepSu"] == 2656.983
     results["sepWd"] == 2614.388
 
-    results["octSa"] ==	2665.525
-    results["octSu"] ==	2753.175
-    results["octWd"] ==	2732.425
+    results["octSa"] == 2665.525
+    results["octSu"] == 2753.175
+    results["octWd"] == 2732.425
 
     results["novSa"] == 2863.175
-    results["novSu"] ==	3001.700
-    results["novWd"] ==	2983.575
+    results["novSu"] == 3001.700
+    results["novWd"] == 2983.575
 
     results["decSa"] == 2863.175
-    results["decSu"] ==	3001.700
-    results["decWd"] ==	2983.575
+    results["decSu"] == 3001.700
+    results["decWd"] == 2983.575
   }
 
   def "The BDEW profile P25 should be correct"() {
@@ -495,28 +495,28 @@ class BdewLoadProfileTest extends Specification {
     }
     then:
     results["janSa"] == 3937.182
-    results["janSu"] ==	3826.787
+    results["janSu"] == 3826.787
     results["janWd"] == 3676.576
 
     results["febSa"] == 3221.188
-    results["febSu"] ==	3352.444
+    results["febSu"] == 3352.444
     results["febWd"] == 3022.281
 
     results["marSa"] == 2776.773
-    results["marSu"] ==	2837.057
-    results["marWd"] ==	2680.670
+    results["marSu"] == 2837.057
+    results["marWd"] == 2680.670
 
     results["aprSa"] == 2521.392
-    results["aprSu"] ==	2465.958
-    results["aprWd"] ==	2316.198
+    results["aprSu"] == 2465.958
+    results["aprWd"] == 2316.198
 
     results["maySa"] == 1593.953
     results["maySu"] == 1640.973
     results["mayWd"] == 1612.535
 
     results["junSa"] == 1562.425
-    results["junSu"] ==	1632.361
-    results["junWd"] ==	1653.580
+    results["junSu"] == 1632.361
+    results["junWd"] == 1653.580
 
     results["julSa"] == 1858.290
     results["julSu"] == 1755.261
@@ -524,23 +524,23 @@ class BdewLoadProfileTest extends Specification {
 
     results["augSa"] == 1934.920
     results["augSu"] == 1961.067
-    results["augWd"] ==	1842.870
+    results["augWd"] == 1842.870
 
     results["sepSa"] == 1960.462
-    results["sepSu"] ==	2120.285
-    results["sepWd"] ==	2042.071
+    results["sepSu"] == 2120.285
+    results["sepWd"] == 2042.071
 
-    results["octSa"] ==	2762.563
-    results["octSu"] ==	2610.414
-    results["octWd"] ==	2570.650
+    results["octSa"] == 2762.563
+    results["octSu"] == 2610.414
+    results["octWd"] == 2570.650
 
     results["novSa"] == 3595.329
-    results["novSu"] ==	3570.977
+    results["novSu"] == 3570.977
     results["novWd"] == 3463.9900000000002
 
     results["decSa"] == 4358.588
-    results["decSu"] ==	4474.190
-    results["decWd"] ==	4233.233
+    results["decSu"] == 4474.190
+    results["decWd"] == 4233.233
   }
 
   def "The BDEW profile S25 should be correct"() {
@@ -563,53 +563,59 @@ class BdewLoadProfileTest extends Specification {
     results["febWd"] == 3526.293
 
     results["marSa"] == 2320.319
-    results["marSu"] ==	2281.753
+    results["marSu"] == 2281.753
     results["marWd"] == 2231.144
 
     results["aprSa"] == 1925.482
-    results["aprSu"] ==	1602.650
+    results["aprSu"] == 1602.650
     results["aprWd"] == 1242.171
 
     results["maySa"] == 521.384
-    results["maySu"] ==	517.552
-    results["mayWd"] ==	528.821
+    results["maySu"] == 517.552
+    results["mayWd"] == 528.821
 
     results["junSa"] == 469.686
-    results["junSu"] ==	402.993
+    results["junSu"] == 402.993
     results["junWd"] == 437.111
 
     results["julSa"] == 660.072
     results["julSu"] == 567.734
-    results["julWd"] ==	549.828
+    results["julWd"] == 549.828
 
     results["augSa"] == 789.160
     results["augSu"] == 784.639
-    results["augWd"] ==	729.175
+    results["augWd"] == 729.175
 
     results["sepSa"] == 846.852
-    results["sepSu"] ==	810.538
+    results["sepSu"] == 810.538
     results["sepWd"] == 841.354
 
     results["octSa"] == 2532.381
-    results["octSu"] ==	2158.282
+    results["octSu"] == 2158.282
     results["octWd"] == 2322.616
 
     results["novSa"] == 4641.930
-    results["novSu"] ==	4351.746
-    results["novWd"] ==	4624.885
+    results["novSu"] == 4351.746
+    results["novWd"] == 4624.885
 
     results["decSa"] == 6788.41
     results["decSu"] == 6777.526
-    results["decWd"] ==	6455.487
+    results["decWd"] == 6455.487
   }
 
   // helper methods
 
   private List<BdewLoadValues> read(BdewStandardLoadProfile profile) {
-    source.getSourceData(Path.of("lpts_"+profile.key.value)).map { it -> factory.buildModel(new LoadProfileData<>(it, BdewLoadValues)).value }.toList()
+    source.getSourceData(Path.of("lpts_"+profile.key.value)).map { it ->
+      factory.buildModel(new LoadProfileData<>(it, BdewLoadValues)).value
+    }.toList()
   }
 
   private static double sumValues(List<BdewLoadValues> values, Function<BdewLoadValues, Double> extractor) {
-    values.stream().map { extractor.apply(it) }.mapToDouble { it.doubleValue() }.sum()
+    values.stream().map {
+      extractor.apply(it)
+    }.mapToDouble {
+      it.doubleValue()
+    }.sum()
   }
 }

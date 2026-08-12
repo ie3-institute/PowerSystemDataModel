@@ -88,7 +88,7 @@ class SqlTimeSeriesMetaInformationSourceIT extends Specification implements Test
     result.get().columnScheme.scheme == columnScheme
 
     where:
-    uuid                                   || columnScheme
+    uuid || columnScheme
     "2fcb3e53-b94a-4b96-bea4-c469e499f1a1" || "c"
     "76c9d846-797c-4f07-b7ec-2245f679f5c7" || "ph"
     "c8fe6547-fd85-4fdf-a169-e4da6ce5c3d0" || "h"
