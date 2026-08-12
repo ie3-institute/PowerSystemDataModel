@@ -56,45 +56,12 @@ public record ScreenLayerInput(
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o
-        instanceof
-        ScreenLayerInput(
-            UUID uuid1,
-            String name1,
-            CableMaterial material1,
-            ComparableQuantity<Length> diameter,
-            ComparableQuantity<Length> outerDiameter1,
-            ComparableQuantity<ThermalResistivity> resistivity,
-            ComparableQuantity<ThermalCapacitance> capacitance,
-            Optional<ComparableQuantity<Area>> area1,
-            int number,
-            ComparableQuantity<Length> wireDiameter1,
-            Optional<ComparableQuantity<Length>> ofLay,
-            ComparableQuantity<ElectricalResistivity> materialResistivity1))) return false;
-    return uuid.equals(uuid1)
-        && wiresNumber == number
-        && name.equals(name1)
-        && material == material1
-        && innerDiameter.equals(diameter)
-        && outerDiameter.equals(outerDiameter1)
-        && thermalResistivity.equals(resistivity)
-        && thermalCapacitance.equals(capacitance)
-        && area.equals(area1)
-        && wireDiameter.equals(wireDiameter1)
-        && lengthOfLay.equals(ofLay)
-        && electricalResistivity.equals(materialResistivity1);
-  }
-
-  @Override
   public @NonNull String toString() {
     return "ScreenLayerInput{"
         + "uuid="
         + uuid
         + ", name="
         + name
-        + '\''
         + ", material="
         + material
         + ", innerDiameter="

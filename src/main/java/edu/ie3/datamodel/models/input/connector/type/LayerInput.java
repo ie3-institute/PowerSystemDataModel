@@ -14,7 +14,6 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
-import org.jspecify.annotations.NonNull;
 import tech.units.indriya.ComparableQuantity;
 
 /**
@@ -43,52 +42,5 @@ public record LayerInput(
   @Override
   public Map<String, String> getAdditionalInformation() {
     return Map.of();
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o
-        instanceof
-        LayerInput(
-            UUID uuid1,
-            String name1,
-            CableMaterial material1,
-            ComparableQuantity<Length> diameter,
-            ComparableQuantity<Length> outerDiameter1,
-            ComparableQuantity<?> resistivity,
-            ComparableQuantity<?> capacitance,
-            Optional<ComparableQuantity<Area>> area1))) return false;
-    return uuid.equals(uuid1)
-        && name.equals(name1)
-        && material == material1
-        && innerDiameter.equals(diameter)
-        && outerDiameter.equals(outerDiameter1)
-        && thermalResistivity.equals(resistivity)
-        && thermalCapacitance.equals(capacitance)
-        && area.equals(area1);
-  }
-
-  @Override
-  public @NonNull String toString() {
-    return "LayerInput{"
-        + "uuid='"
-        + uuid
-        + "name='"
-        + name
-        + '\''
-        + ", material="
-        + material
-        + ", innerDiameter="
-        + innerDiameter
-        + ", outerDiameter="
-        + outerDiameter
-        + ", thermalResistivity="
-        + thermalResistivity
-        + ", thermalCapacitance="
-        + thermalCapacitance
-        + ", area="
-        + area
-        + '}';
   }
 }
