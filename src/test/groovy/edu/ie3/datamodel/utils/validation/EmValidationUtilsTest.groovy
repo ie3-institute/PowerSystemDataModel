@@ -26,7 +26,9 @@ class EmValidationUtilsTest extends Specification {
 
   def "The check method recognizes all potential errors for an energy management input"() {
     when:
-    List<Try<Void, ? extends ValidationException>> exceptions = EnergyManagementValidationUtils.check(invalidEm).stream().filter { it -> it.failure }.toList()
+    List<Try<Void, ? extends ValidationException>> exceptions = EnergyManagementValidationUtils.check(invalidEm).stream().filter { it ->
+      it.failure
+    }.toList()
 
     then:
     exceptions.size() == expectedSize
@@ -35,7 +37,7 @@ class EmValidationUtilsTest extends Specification {
     ex.message == expectedException.message
 
     where:
-    invalidEm                                                            	      || expectedSize || expectedException
-    GridTestData.energyManagementInput.copy().controlStrategy(null).build()       || 1            || new InvalidEntityException("No control strategy of energy management defined for", invalidEm)
+    invalidEm || expectedSize || expectedException
+    GridTestData.energyManagementInput.copy().controlStrategy(null).build() || 1 || new InvalidEntityException("No control strategy of energy management defined for", invalidEm)
   }
 }

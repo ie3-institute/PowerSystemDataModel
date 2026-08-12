@@ -55,106 +55,108 @@ class ComplexTopology extends GridTestData {
 
   static {
     expectedSubGrids.put(1, new SubGridContainer(
-        gridName,
-        1,
-        new RawGridElements(
-        [nodeA, nodeB, nodeC] as Set,
-        [] as Set,
-        [] as Set,
-        [transformerAtoBtoC] as Set,
-        [] as Set,
-        [] as Set),
-        emptySystemParticipants,
-        emptyEnergyManagementUnits,
-        emptyRawGridTypes,
+            gridName,
+            1,
+            new RawGridElements(
+                [nodeA, nodeB, nodeC] as Set,
+                [] as Set,
+                [] as Set,
+                [transformerAtoBtoC] as Set,
+                [] as Set,
+                [] as Set),
+            emptySystemParticipants,
+            emptyEnergyManagementUnits,
+            emptyRawGridTypes,
         )
         )
     expectedSubGrids.put(2, new SubGridContainer(
-        gridName,
-        2,
-        new RawGridElements(
-        [nodeA, nodeB, nodeC] as Set,
-        [] as Set,
-        [] as Set,
-        [transformerAtoBtoC] as Set,
-        [] as Set,
-        [] as Set),
-        emptySystemParticipants,
-        emptyEnergyManagementUnits,
-        emptyRawGridTypes,
+            gridName,
+            2,
+            new RawGridElements(
+                [nodeA, nodeB, nodeC] as Set,
+                [] as Set,
+                [] as Set,
+                [transformerAtoBtoC] as Set,
+                [] as Set,
+                [] as Set),
+            emptySystemParticipants,
+            emptyEnergyManagementUnits,
+            emptyRawGridTypes,
         )
         )
     expectedSubGrids.put(3, new SubGridContainer(
-        gridName,
-        3,
-        new RawGridElements(
-        [nodeA, nodeB, nodeC] as Set,
-        [] as Set,
-        [] as Set,
-        [transformerAtoBtoC] as Set,
-        [] as Set,
-        [] as Set),
-        emptySystemParticipants,
-        emptyEnergyManagementUnits,
-        emptyRawGridTypes,
+            gridName,
+            3,
+            new RawGridElements(
+                [nodeA, nodeB, nodeC] as Set,
+                [] as Set,
+                [] as Set,
+                [transformerAtoBtoC] as Set,
+                [] as Set,
+                [] as Set),
+            emptySystemParticipants,
+            emptyEnergyManagementUnits,
+            emptyRawGridTypes,
         )
         )
     expectedSubGrids.put(4, new SubGridContainer(
-        gridName,
-        4,
-        new RawGridElements(
-        [nodeB, nodeD] as Set,
-        [] as Set,
-        [transformerBtoD] as Set,
-        [] as Set,
-        [] as Set,
-        [] as Set),
-        emptySystemParticipants,
-        emptyEnergyManagementUnits,
-        emptyRawGridTypes,
+            gridName,
+            4,
+            new RawGridElements(
+                [nodeB, nodeD] as Set,
+                [] as Set,
+                [transformerBtoD] as Set,
+                [] as Set,
+                [] as Set,
+                [] as Set),
+            emptySystemParticipants,
+            emptyEnergyManagementUnits,
+            emptyRawGridTypes,
         )
         )
     expectedSubGrids.put(5, new SubGridContainer(
-        gridName,
-        5,
-        new RawGridElements(
-        [nodeB, nodeC, nodeE] as Set,
-        [] as Set,
-        [
-          transformerBtoE,
-          transformerCtoE
-        ] as Set,
-        [] as Set,
-        [] as Set,
-        [] as Set),
-        emptySystemParticipants,
-        emptyEnergyManagementUnits,
-        emptyRawGridTypes,
+            gridName,
+            5,
+            new RawGridElements(
+                [nodeB, nodeC, nodeE] as Set,
+                [] as Set,
+                [
+                  transformerBtoE,
+                  transformerCtoE
+                ] as Set,
+                [] as Set,
+                [] as Set,
+                [] as Set),
+            emptySystemParticipants,
+            emptyEnergyManagementUnits,
+            emptyRawGridTypes,
         )
         )
     expectedSubGrids.put(6, new SubGridContainer(
-        gridName,
-        6,
-        new RawGridElements(
-        [nodeC, nodeF, nodeG] as Set,
-        [] as Set,
-        [
-          transformerCtoF,
-          transformerCtoG
-        ] as Set,
-        [] as Set,
-        [] as Set,
-        [] as Set),
-        emptySystemParticipants,
-        emptyEnergyManagementUnits,
-        emptyRawGridTypes,
+            gridName,
+            6,
+            new RawGridElements(
+                [nodeC, nodeF, nodeG] as Set,
+                [] as Set,
+                [
+                  transformerCtoF,
+                  transformerCtoG
+                ] as Set,
+                [] as Set,
+                [] as Set,
+                [] as Set),
+            emptySystemParticipants,
+            emptyEnergyManagementUnits,
+            emptyRawGridTypes,
         )
         )
 
     DirectedMultigraph<SubGridContainer, SubGridGate> mutableGraph =
         new DirectedMultigraph<>(SubGridGate)
     /* Add all edges */
-    expectedSubGrids.values().forEach({ subGrid -> mutableGraph.addVertex(subGrid) })
+    expectedSubGrids.values().forEach({ subGrid ->
+      mutableGraph.addVertex(subGrid)
+    })
 
     mutableGraph.addEdge(expectedSubGrids.get(1), expectedSubGrids.get(2), SubGridGate.fromTransformer3W(transformerAtoBtoC, ConnectorPort.B))
     mutableGraph.addEdge(expectedSubGrids.get(1), expectedSubGrids.get(3), SubGridGate.fromTransformer3W(transformerAtoBtoC, ConnectorPort.C))

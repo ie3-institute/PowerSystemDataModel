@@ -41,10 +41,10 @@ class ValidationUtilsTest extends Specification {
     ex.message.contains(expectedException.message)
 
     where:
-    invalidAsset                                                            	    || expectedException
-    null 																			|| new InvalidEntityException("Expected an object, but got nothing. :-(", new NullPointerException())
-    GridTestData.nodeA.copy().id(null).build()										|| new InvalidEntityException("No ID assigned", invalidAsset)
-    GridTestData.nodeA.copy().operationTime(null).build()							|| new InvalidEntityException("Operation time of the asset is not defined", invalidAsset)
+    invalidAsset || expectedException
+    null || new InvalidEntityException("Expected an object, but got nothing. :-(", new NullPointerException())
+    GridTestData.nodeA.copy().id(null).build() || new InvalidEntityException("No ID assigned", invalidAsset)
+    GridTestData.nodeA.copy().operationTime(null).build() || new InvalidEntityException("Operation time of the asset is not defined", invalidAsset)
     GridTestData.nodeA.copy().operationTime(OperationTime.builder().
         withStart(TimeUtil.withDefaults.toZonedDateTime("2020-03-26T15:11:31Z")).
         withEnd(TimeUtil.withDefaults.toZonedDateTime("2020-03-25T15:11:31Z")).build()).build() || new InvalidEntityException("Operation start time of the asset has to be before end time", invalidAsset)
@@ -129,7 +129,9 @@ class ValidationUtilsTest extends Specification {
     def invalidAssetType = new InvalidAssetTypeInput(UUID.randomUUID(), null)
 
     when:
-    List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAssetType(invalidAssetType).stream().filter { it -> it.failure }.toList()
+    List<Try<Void, ? extends ValidationException>> exceptions = ValidationUtils.checkAssetType(invalidAssetType).stream().filter { it ->
+      it.failure
+    }.toList()
 
     then:
     exceptions.size() == 1

@@ -112,41 +112,43 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     given:
     def defaultCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
     def coordinateSource = Mock(IdCoordinateSource)
-    coordinateSource.getCoordinate(_) >> { args -> args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty() }
+    coordinateSource.getCoordinate(_) >> { args ->
+      args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty()
+    }
     def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
     def fieldToValues = [
-      "uuid"                   : "71a79f59-eebf-40c1-8358-ba7414077d57",
-      "time"                   : "2020-10-16T12:40:42Z",
-      "coordinateId"           : "5",
-      "directIrradiance"       : "1.234",
-      "diffuseIrradiance"      : "5.678",
-      "temperature"            : "9.1011",
-      "windVelocity"           : "12.1314",
-      "windDirection"          : "15.1617",
+      "uuid" : "71a79f59-eebf-40c1-8358-ba7414077d57",
+      "time" : "2020-10-16T12:40:42Z",
+      "coordinateId" : "5",
+      "directIrradiance" : "1.234",
+      "diffuseIrradiance" : "5.678",
+      "temperature" : "9.1011",
+      "windVelocity" : "12.1314",
+      "windDirection" : "15.1617",
       "groundTemperatureLevel1": "8.0",
       "groundTemperatureLevel2": "9.5"
     ]
     def expectedValue = new TimeBasedValue(
         TimeUtil.withDefaults.toZonedDateTime("2020-10-16T12:40:42Z"),
         new WeatherValue(
-        defaultCoordinate,
-        new SolarIrradianceValue(
-        Quantities.getQuantity(1.234, SOLAR_IRRADIANCE),
-        Quantities.getQuantity(5.678, SOLAR_IRRADIANCE)
-        ),
-        new TemperatureValue(
-        Quantities.getQuantity(9.1011, TEMPERATURE)
-        ),
-        new WindValue(
-        Quantities.getQuantity(12.1314, WIND_DIRECTION),
-        Quantities.getQuantity(15.1617, WIND_VELOCITY)),
-        Optional.of(new GroundTemperatureValue(
-        Quantities.getQuantity(8.0, TEMPERATURE)
-        )),
-        Optional.of(new GroundTemperatureValue(
-        Quantities.getQuantity(9.5, TEMPERATURE)
-        )))
+            defaultCoordinate,
+            new SolarIrradianceValue(
+                Quantities.getQuantity(1.234, SOLAR_IRRADIANCE),
+                Quantities.getQuantity(5.678, SOLAR_IRRADIANCE)
+                ),
+            new TemperatureValue(
+                Quantities.getQuantity(9.1011, TEMPERATURE)
+                ),
+            new WindValue(
+                Quantities.getQuantity(12.1314, WIND_DIRECTION),
+                Quantities.getQuantity(15.1617, WIND_VELOCITY)),
+            Optional.of(new GroundTemperatureValue(
+                Quantities.getQuantity(8.0, TEMPERATURE)
+                )),
+            Optional.of(new GroundTemperatureValue(
+                Quantities.getQuantity(9.5, TEMPERATURE)
+                )))
         )
 
     when:
@@ -161,18 +163,20 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     given:
     def defaultCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
     def coordinateSource = Mock(IdCoordinateSource)
-    coordinateSource.getCoordinate(_) >> { args -> args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty() }
+    coordinateSource.getCoordinate(_) >> { args ->
+      args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty()
+    }
     def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
     def fieldToValues = [
-      "uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
-      "time"             : "2020-10-16T12:40:42Z",
-      "coordinate_id"     : "",
+      "uuid" : "71a79f59-eebf-40c1-8358-ba7414077d57",
+      "time" : "2020-10-16T12:40:42Z",
+      "coordinate_id" : "",
       "direct_irradiance" : "1.234",
       "diffuse_irradiance": "5.678",
-      "temperature"      : "9.1011",
-      "wind_velocity"     : "12.1314",
-      "wind_direction"    : "15.1617"
+      "temperature" : "9.1011",
+      "wind_velocity" : "12.1314",
+      "wind_direction" : "15.1617"
     ]
 
     when:
@@ -186,17 +190,19 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     given:
     def defaultCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
     def coordinateSource = Mock(IdCoordinateSource)
-    coordinateSource.getCoordinate(_) >> { args -> args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty() }
+    coordinateSource.getCoordinate(_) >> { args ->
+      args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty()
+    }
     def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
     def fieldToValues = [
-      "uuid"                   : "71a79f59-eebf-40c1-8358-ba7414077d57",
-      "time"                   : "2020-10-16T12:40:42Z",
-      "direct_irradiance"       : "1.234",
-      "diffuse_irradiance"      : "5.678",
-      "temperature"            : "9.1011",
-      "wind_velocity"           : "12.1314",
-      "wind_direction"          : "15.1617",
+      "uuid" : "71a79f59-eebf-40c1-8358-ba7414077d57",
+      "time" : "2020-10-16T12:40:42Z",
+      "direct_irradiance" : "1.234",
+      "diffuse_irradiance" : "5.678",
+      "temperature" : "9.1011",
+      "wind_velocity" : "12.1314",
+      "wind_direction" : "15.1617",
     ]
 
     when:
@@ -213,14 +219,14 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
     def fieldToValues = [
-      "uuid"             : "71a79f59-eebf-40c1-8358-ba7414077d57",
-      "time"             : "2020-10-16T12:40:42Z",
-      "coordinate_id"     : "6",
+      "uuid" : "71a79f59-eebf-40c1-8358-ba7414077d57",
+      "time" : "2020-10-16T12:40:42Z",
+      "coordinate_id" : "6",
       "direct_irradiance" : "1.234",
       "diffuse_irradiance": "5.678",
-      "temperature"      : "9.1011",
-      "wind_velocity"     : "12.1314",
-      "wind_direction"    : "15.1617"
+      "temperature" : "9.1011",
+      "wind_velocity" : "12.1314",
+      "wind_direction" : "15.1617"
     ]
 
     when:

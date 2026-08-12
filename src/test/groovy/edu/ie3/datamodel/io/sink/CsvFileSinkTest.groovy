@@ -71,7 +71,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     def csvFileSink = new CsvFileSink(testBaseFolderPath)
     def input = [
       "hello, whats up?": "nothing",
-      "okay"            : "that's fine"
+      "okay" : "that's fine"
     ]
 
     when:
@@ -80,7 +80,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     then:
     actual == [
       "\"hello, whats up?\"": "nothing",
-      "okay"                : "that's fine"
+      "okay" : "that's fine"
     ]
 
     cleanup:
@@ -91,7 +91,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     given:
     def csvFileSink = new CsvFileSink(testBaseFolderPath)
     def input = [
-      "what is \"this\"?"    : "nothing",
+      "what is \"this\"?" : "nothing",
       "\"what is \"this\"?\"": "something"
     ]
 
@@ -311,8 +311,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     def csvFileSink = new CsvFileSink(
         testBaseFolderPath,
         new ProcessorProvider(
-        ProcessorProvider.allEntityProcessors(),
-        new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value, Value>, TimeSeriesEntry<Value>, Value, Value>>()),
+            ProcessorProvider.allEntityProcessors(),
+            new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value, Value>, TimeSeriesEntry<Value>, Value, Value>>()),
         new FileNamingStrategy(),
         ",")
 

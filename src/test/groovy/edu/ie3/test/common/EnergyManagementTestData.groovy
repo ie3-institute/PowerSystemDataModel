@@ -18,7 +18,7 @@ class EnergyManagementTestData {
   SystemParticipantTestData.operator,
   SystemParticipantTestData.operationTime,
   emControlStrategy,
-  null ,
+  null,
   )
 
   public static EnergyManagementUnits emptyEnergyManagementUnits =

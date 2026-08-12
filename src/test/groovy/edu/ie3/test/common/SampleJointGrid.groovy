@@ -211,7 +211,7 @@ class SampleJointGrid extends SystemParticipantTestData {
   Quantities.getQuantity(1, PU),
   false,
   (Point) geoJsonReader.read(
-  "{ \"type\": \"Point\", \"coordinates\": [6.592276813887139, 49.37770599548332] }"),
+      "{ \"type\": \"Point\", \"coordinates\": [6.592276813887139, 49.37770599548332] }"),
   GermanVoltageLevelUtils.LV,
   1)
 
@@ -224,7 +224,7 @@ class SampleJointGrid extends SystemParticipantTestData {
   Quantities.getQuantity(1, PU),
   false,
   (Point) geoJsonReader.read(
-  "{ \"type\": \"Point\", \"coordinates\": [6.593358228545043, 49.377139554965595] }"),
+      "{ \"type\": \"Point\", \"coordinates\": [6.593358228545043, 49.377139554965595] }"),
   GermanVoltageLevelUtils.LV,
   1)
 
@@ -237,7 +237,7 @@ class SampleJointGrid extends SystemParticipantTestData {
   Quantities.getQuantity(1, PU),
   false,
   (Point) geoJsonReader.read(
-  "{ \"type\": \"Point\", \"coordinates\": [6.592850044965246, 49.37684839141148] }"),
+      "{ \"type\": \"Point\", \"coordinates\": [6.592850044965246, 49.37684839141148] }"),
   GermanVoltageLevelUtils.LV,
   1)
 
@@ -304,7 +304,7 @@ class SampleJointGrid extends SystemParticipantTestData {
   Quantities.getQuantity(1, PU),
   false,
   (Point) geoJsonReader.read(
-  "{ \"type\": \"Point\", \"coordinates\": [6.592276813887139, 49.37770599548332] }"),
+      "{ \"type\": \"Point\", \"coordinates\": [6.592276813887139, 49.37770599548332] }"),
   GermanVoltageLevelUtils.MV_10KV,
   2)
 
@@ -317,7 +317,7 @@ class SampleJointGrid extends SystemParticipantTestData {
   Quantities.getQuantity(1, PU),
   false,
   (Point) geoJsonReader.read(
-  "{ \"type\": \"Point\", \"coordinates\": [6.572286813887139, 49.39770699548332] }"),
+      "{ \"type\": \"Point\", \"coordinates\": [6.572286813887139, 49.39770699548332] }"),
   GermanVoltageLevelUtils.MV_10KV,
   2)
 
@@ -330,7 +330,7 @@ class SampleJointGrid extends SystemParticipantTestData {
   Quantities.getQuantity(1, PU),
   false,
   (Point) geoJsonReader.read(
-  "{ \"type\": \"Point\", \"coordinates\": [6.572286813887139, 49.38770799548332] }"),
+      "{ \"type\": \"Point\", \"coordinates\": [6.572286813887139, 49.38770799548332] }"),
   GermanVoltageLevelUtils.MV_10KV,
   2)
 
@@ -344,7 +344,7 @@ class SampleJointGrid extends SystemParticipantTestData {
   Quantities.getQuantity(1, PU),
   false,
   (Point) geoJsonReader.read(
-  "{ \"type\": \"Point\", \"coordinates\": [6.592276813887139, 49.37770599548332] }"),
+      "{ \"type\": \"Point\", \"coordinates\": [6.592276813887139, 49.37770599548332] }"),
   GermanVoltageLevelUtils.HV,
   4)
 
