@@ -32,7 +32,7 @@ import tech.units.indriya.ComparableQuantity;
  * @param isCompacted Whether the conductor is compacted
  * @param thermalResistivity Thermal resistivity of the conductor material
  * @param thermalCapacitance Thermal capacitance of the conductor material
- * @param areaValue Optional real cross-sectional area (if different from geometric calculation)
+ * @param area Optional real cross-sectional area (if different from geometric calculation)
  */
 public record ConductorInput(
     UUID uuid,
@@ -43,7 +43,7 @@ public record ConductorInput(
     boolean isCompacted,
     ComparableQuantity<ThermalResistivity> thermalResistivity,
     ComparableQuantity<ThermalCapacitance> thermalCapacitance,
-    @Nullable ComparableQuantity<Area> areaValue)
+    @Nullable ComparableQuantity<Area> area)
     implements InputEntity, Serializable {
 
   /**
@@ -81,8 +81,8 @@ public record ConductorInput(
         Objects.requireNonNull(area, "Area optional must not be null").orElse(null));
   }
 
-  public Optional<ComparableQuantity<Area>> area() {
-    return Optional.ofNullable(areaValue);
+  public Optional<ComparableQuantity<Area>> areaOptional() {
+    return Optional.ofNullable(area);
   }
 
   @Override
@@ -110,7 +110,7 @@ public record ConductorInput(
         + ", thermalCapacitance="
         + thermalCapacitance
         + ", area="
-        + area()
+        + areaOptional()
         + '}';
   }
 }
