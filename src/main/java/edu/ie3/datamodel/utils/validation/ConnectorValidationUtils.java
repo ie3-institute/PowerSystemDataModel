@@ -261,7 +261,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
 
   private static void checkConductorArea(ConductorInput conductor, CableTypeInput cableType)
       throws InvalidEntityException {
-    var area = conductor.area();
+    var area = conductor.areaOptional();
 
     if (area.isPresent()) {
       detectNegativeQuantities(quantities("area", area.get()), cableType);
