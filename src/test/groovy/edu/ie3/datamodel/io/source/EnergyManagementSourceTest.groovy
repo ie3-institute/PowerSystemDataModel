@@ -22,40 +22,40 @@ class EnergyManagementSourceTest extends Specification {
     given:
     def assetEntityDataStream = Stream.of(
         new AssetInputEntityData(
-        ["uuid": "0-0-0-0-0",
-          "id": "root",
-          "controllingem" : "",
-          "controlstrategy" : ""],
-        EmInput
-        ),
+            ["uuid": "0-0-0-0-0",
+              "id": "root",
+              "controllingem" : "",
+              "controlstrategy" : ""],
+            EmInput
+            ),
         new AssetInputEntityData(
-        ["uuid": "0-0-0-0-1",
-          "id": "child 1",
-          "controllingem" : "0-0-0-0-0",
-          "controlstrategy" : ""],
-        EmInput
-        ),
+            ["uuid": "0-0-0-0-1",
+              "id": "child 1",
+              "controllingem" : "0-0-0-0-0",
+              "controlstrategy" : ""],
+            EmInput
+            ),
         new AssetInputEntityData(
-        ["uuid": "0-0-0-0-11",
-          "id": "child 1-1",
-          "controllingem" : "0-0-0-0-1",
-          "controlstrategy" : ""],
-        EmInput
-        ),
+            ["uuid": "0-0-0-0-11",
+              "id": "child 1-1",
+              "controllingem" : "0-0-0-0-1",
+              "controlstrategy" : ""],
+            EmInput
+            ),
         new AssetInputEntityData(
-        ["uuid": "0-0-0-0-2",
-          "id": "child 2",
-          "controllingem" : "0-0-0-0-0",
-          "controlstrategy" : ""],
-        EmInput
-        ),
+            ["uuid": "0-0-0-0-2",
+              "id": "child 2",
+              "controllingem" : "0-0-0-0-0",
+              "controlstrategy" : ""],
+            EmInput
+            ),
         new AssetInputEntityData(
-        ["uuid": "0-0-0-0-21",
-          "id": "child 2-1",
-          "controllingem" : "0-0-0-0-2",
-          "controlstrategy" : ""],
-        EmInput
-        ),
+            ["uuid": "0-0-0-0-21",
+              "id": "child 2-1",
+              "controllingem" : "0-0-0-0-2",
+              "controlstrategy" : ""],
+            EmInput
+            ),
         ).map(data -> Try.of(() -> data, SourceException))
 
     expect:
@@ -111,26 +111,26 @@ class EnergyManagementSourceTest extends Specification {
     given:
     def assetEntityDataStream = Stream.of(
         new AssetInputEntityData(
-        ["uuid": "0-0-0-0-1",
-          "id": "em 1",
-          "controllingem" : "",
-          "controlstrategy" : ""],
-        EmInput
-        ),
+            ["uuid": "0-0-0-0-1",
+              "id": "em 1",
+              "controllingem" : "",
+              "controlstrategy" : ""],
+            EmInput
+            ),
         new AssetInputEntityData(
-        ["uuid": "0-0-0-0-2",
-          "id": "em 2",
-          "controllingem" : "",
-          "controlstrategy" : "strat_b"],
-        EmInput
-        ),
+            ["uuid": "0-0-0-0-2",
+              "id": "em 2",
+              "controllingem" : "",
+              "controlstrategy" : "strat_b"],
+            EmInput
+            ),
         new AssetInputEntityData(
-        ["uuid": "0-0-0-0-3",
-          "id": "em 3",
-          "controllingem" : "",
-          "controlstrategy" : "other"],
-        EmInput
-        ),
+            ["uuid": "0-0-0-0-3",
+              "id": "em 3",
+              "controllingem" : "",
+              "controlstrategy" : "other"],
+            EmInput
+            ),
         ).map(data -> Try.of(() -> data, SourceException))
 
     expect:
@@ -166,19 +166,19 @@ class EnergyManagementSourceTest extends Specification {
     given:
     def assetEntityDataStream = Stream.of(
         new Try.Success<AssetInputEntityData, SourceException>(new AssetInputEntityData(
-        ["uuid": "0-0-0-0-1",
-          "id": "em 1",
-          "controllingem" : "",
-          "controlstrategy" : ""],
-        EmInput
-        )),
+            ["uuid": "0-0-0-0-1",
+              "id": "em 1",
+              "controllingem" : "",
+              "controlstrategy" : ""],
+            EmInput
+            )),
         new Try.Success<AssetInputEntityData, SourceException>(new AssetInputEntityData(
-        ["uuid": "0-0-0-0-2",
-          "id": "em 2",
-          "controllingem" : "",
-          "controlstrategy" : ""],
-        EmInput
-        )),
+            ["uuid": "0-0-0-0-2",
+              "id": "em 2",
+              "controllingem" : "",
+              "controlstrategy" : ""],
+            EmInput
+            )),
         new Try.Failure<AssetInputEntityData, SourceException>(new SourceException("test failure abc"))
         )
 
@@ -194,19 +194,19 @@ class EnergyManagementSourceTest extends Specification {
     given:
     def assetEntityDataStream = Stream.of(
         new AssetInputEntityData(
-        ["uuid": "0-0-0-0-1",
-          "id": "em 1",
-          "controllingem" : "",
-          "controlstrategy" : ""],
-        EmInput
-        ),
+            ["uuid": "0-0-0-0-1",
+              "id": "em 1",
+              "controllingem" : "",
+              "controlstrategy" : ""],
+            EmInput
+            ),
         new AssetInputEntityData(
-        ["uuid": "0-0-0-0-2",
-          "id": "em 2",
-          "controllingem" : "not-a-uuid",
-          "controlstrategy" : ""],
-        EmInput
-        ),
+            ["uuid": "0-0-0-0-2",
+              "id": "em 2",
+              "controllingem" : "not-a-uuid",
+              "controlstrategy" : ""],
+            EmInput
+            ),
         ).map(data -> Try.of(() -> data, SourceException))
 
     when:
@@ -221,18 +221,18 @@ class EnergyManagementSourceTest extends Specification {
     given:
     def assetEntityDataStream = Stream.of(
         new AssetInputEntityData(
-        ["uuid": "0-0-0-0-1",
-          "id": "em 1",
-          "controllingem" : "",
-          "controlstrategy" : ""],
-        EmInput
-        ),
+            ["uuid": "0-0-0-0-1",
+              "id": "em 1",
+              "controllingem" : "",
+              "controlstrategy" : ""],
+            EmInput
+            ),
         new AssetInputEntityData(
-        ["uuid": "0-0-0-0-2", // id is missing
-          "controllingem" : "",
-          "controlstrategy" : ""],
-        EmInput
-        ),
+            ["uuid": "0-0-0-0-2", // id is missing
+              "controllingem" : "",
+              "controlstrategy" : ""],
+            EmInput
+            ),
         ).map(data -> Try.of(() -> data, SourceException))
 
     when:
@@ -248,19 +248,19 @@ class EnergyManagementSourceTest extends Specification {
     given:
     def assetEntityDataStream = Stream.of(
         new AssetInputEntityData(
-        ["uuid": "0-0-0-0-1",
-          "id": "em 1",
-          "controllingem" : "",
-          "controlstrategy" : ""],
-        EmInput
-        ),
+            ["uuid": "0-0-0-0-1",
+              "id": "em 1",
+              "controllingem" : "",
+              "controlstrategy" : ""],
+            EmInput
+            ),
         new AssetInputEntityData(
-        ["uuid": "0-0-0-0-2",
-          "id": "em 2",
-          "controllingem" : "1-2-3-4-5", // does not exist
-          "controlstrategy" : ""],
-        EmInput
-        ),
+            ["uuid": "0-0-0-0-2",
+              "id": "em 2",
+              "controllingem" : "1-2-3-4-5", // does not exist
+              "controlstrategy" : ""],
+            EmInput
+            ),
         ).map(data -> Try.of(() -> data, SourceException))
 
     when:
@@ -275,19 +275,19 @@ class EnergyManagementSourceTest extends Specification {
     given:
     def assetEntityDataStream = Stream.of(
         new AssetInputEntityData(
-        ["uuid": "0-0-0-0-1",
-          "id": "em 1",
-          "controllingem" : "1-2-3-4-5", // does not exist
-          "controlstrategy" : ""],
-        EmInput
-        ),
+            ["uuid": "0-0-0-0-1",
+              "id": "em 1",
+              "controllingem" : "1-2-3-4-5", // does not exist
+              "controlstrategy" : ""],
+            EmInput
+            ),
         new AssetInputEntityData(
-        ["uuid": "0-0-0-0-2",
-          "id": "em 2",
-          "controllingem" : "1-2-3-4-5", // does not exist
-          "controlstrategy" : ""],
-        EmInput
-        ),
+            ["uuid": "0-0-0-0-2",
+              "id": "em 2",
+              "controllingem" : "1-2-3-4-5", // does not exist
+              "controlstrategy" : ""],
+            EmInput
+            ),
         ).map(data -> Try.of(() -> data, SourceException))
 
     when:

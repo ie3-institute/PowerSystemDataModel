@@ -24,15 +24,15 @@ class ExtractorTest extends Specification {
     result == expectedExtractedEntities as Set
 
     where:
-    nestedEntity               || expectedExtractedEntities
+    nestedEntity || expectedExtractedEntities
 
-    gtd.lineCtoD               || [
+    gtd.lineCtoD || [
       gtd.lineCtoD.nodeA,
       gtd.lineCtoD.nodeB,
       gtd.lineCtoD.type,
       gtd.lineCtoD.operator
     ]
-    gtd.transformerAtoBtoC     || [
+    gtd.transformerAtoBtoC || [
       gtd.transformerAtoBtoC.nodeA,
       gtd.transformerAtoBtoC.nodeB,
       gtd.transformerAtoBtoC.nodeC,
@@ -40,20 +40,20 @@ class ExtractorTest extends Specification {
       gtd.transformerAtoBtoC.operator,
       gtd.transformerAtoBtoC.nodeA.operator
     ]
-    gtd.transformerCtoG        || [
+    gtd.transformerCtoG || [
       gtd.transformerCtoG.nodeA,
       gtd.transformerCtoG.nodeB,
       gtd.transformerCtoG.type,
       gtd.transformerCtoG.operator
     ]
-    gtd.switchAtoB             || [
+    gtd.switchAtoB || [
       gtd.switchAtoB.nodeA,
       gtd.switchAtoB.nodeB,
       gtd.switchAtoB.nodeA.operator,
       gtd.switchAtoB.operator
     ]
 
-    sptd.fixedFeedInInput      || [
+    sptd.fixedFeedInInput || [
       sptd.fixedFeedInInput.node,
       sptd.fixedFeedInInput.operator,
       sptd.fixedFeedInInput.node.operator,
@@ -61,7 +61,7 @@ class ExtractorTest extends Specification {
       sptd.fixedFeedInInput.controllingEm.get().controllingEm.get()
     ]
 
-    sptd.wecInput              || [
+    sptd.wecInput || [
       sptd.wecInput.node,
       sptd.wecInput.type,
       sptd.wecInput.operator,
@@ -69,7 +69,7 @@ class ExtractorTest extends Specification {
       sptd.wecInput.controllingEm.get(),
       sptd.wecInput.controllingEm.get().controllingEm.get()
     ]
-    sptd.chpInput              || [
+    sptd.chpInput || [
       sptd.chpInput.node,
       sptd.chpInput.node.operator,
       sptd.chpInput.type,
@@ -80,7 +80,7 @@ class ExtractorTest extends Specification {
       sptd.chpInput.controllingEm.get(),
       sptd.chpInput.controllingEm.get().controllingEm.get()
     ]
-    sptd.bmInput               || [
+    sptd.bmInput || [
       sptd.bmInput.node,
       sptd.bmInput.type,
       sptd.bmInput.operator,
@@ -88,7 +88,7 @@ class ExtractorTest extends Specification {
       sptd.bmInput.controllingEm.get(),
       sptd.bmInput.controllingEm.get().controllingEm.get()
     ]
-    sptd.evInput               || [
+    sptd.evInput || [
       sptd.evInput.node,
       sptd.evInput.type,
       sptd.evInput.operator,
@@ -96,7 +96,7 @@ class ExtractorTest extends Specification {
       sptd.evInput.controllingEm.get(),
       sptd.evInput.controllingEm.get().controllingEm.get()
     ]
-    sptd.storageInput          || [
+    sptd.storageInput || [
       sptd.storageInput.node,
       sptd.storageInput.type,
       sptd.storageInput.operator,
@@ -104,7 +104,7 @@ class ExtractorTest extends Specification {
       sptd.storageInput.controllingEm.get(),
       sptd.storageInput.controllingEm.get().controllingEm.get()
     ]
-    sptd.hpInput               || [
+    sptd.hpInput || [
       sptd.hpInput.node,
       sptd.hpInput.type,
       sptd.hpInput.operator,
@@ -114,7 +114,7 @@ class ExtractorTest extends Specification {
       sptd.hpInput.controllingEm.get(),
       sptd.hpInput.controllingEm.get().controllingEm.get()
     ]
-    sptd.acInput               || [
+    sptd.acInput || [
       sptd.acInput.node,
       sptd.acInput.type,
       sptd.acInput.operator,
@@ -125,12 +125,12 @@ class ExtractorTest extends Specification {
       sptd.acInput.controllingEm.get().controllingEm.get()
     ]
 
-    gtd.measurementUnitInput   || [
+    gtd.measurementUnitInput || [
       gtd.measurementUnitInput.node,
       gtd.measurementUnitInput.operator
     ]
 
-    tutd.thermalBus       || [
+    tutd.thermalBus || [
       tutd.thermalBus.operator
     ]
 
@@ -146,7 +146,7 @@ class ExtractorTest extends Specification {
       tutd.domesticHotWaterStorageInput.thermalBus.operator
     ]
 
-    tutd.thermalHouseInput     || [
+    tutd.thermalHouseInput || [
       tutd.thermalHouseInput.operator,
       tutd.thermalHouseInput.thermalBus,
       tutd.thermalHouseInput.thermalBus.operator
@@ -168,7 +168,7 @@ class ExtractorTest extends Specification {
     def sampleFixedFeedInput = new FixedFeedInInput(UUID.fromString("717af017-cc69-406f-b452-e022d7fb516a"), "test_fixedFeedInInput",
         OperatorInput.NO_OPERATOR_ASSIGNED,
         sptd.fixedFeedInInput.operationTime, sptd.fixedFeedInInput.node, sptd.fixedFeedInInput.qCharacteristics, sptd.fixedFeedInInput.controllingEm.orElse(null),
-        sptd.fixedFeedInInput.sRated,sptd.fixedFeedInInput.cosPhiRated)
+        sptd.fixedFeedInInput.sRated, sptd.fixedFeedInInput.cosPhiRated)
     expect:
     Extractor.extractElements(sampleFixedFeedInput) as Set == [
       sptd.fixedFeedInInput.node,

@@ -98,7 +98,7 @@ class SqlIdCoordinateSourceIT extends Specification implements TestContainerHelp
 
   def "A SqlIdCoordinateSource will return nothing if a coordinate is not present"(){
     given:
-    def coordinate = GeoUtils.buildPoint(0.0 ,0.0 )
+    def coordinate = GeoUtils.buildPoint(0.0,0.0)
 
     when:
     def receivedValue = source.getId(coordinate)

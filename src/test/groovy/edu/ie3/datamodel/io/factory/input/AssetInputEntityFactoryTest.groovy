@@ -46,7 +46,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def inputFactory = new TestAssetInputFactory()
     Map<String, String> parameter = [
       "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id"  : "TestID"
+      "id" : "TestID"
     ]
     def inputClass = TestAssetInput
     def operatorInput = Mock(OperatorInput)
@@ -69,8 +69,8 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     given:
     def inputFactory = new TestAssetInputFactory()
     Map<String, String> parameter = [
-      "uuid"       : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id"         : "TestID",
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id" : "TestID",
       "additional" : "information"
     ]
     def inputClass = TestAssetInput
@@ -98,7 +98,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
       "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "operatesfrom" : operatesfrom,
       "operatesuntil": operatesuntil,
-      "id"  : "TestID"
+      "id" : "TestID"
     ]
     def inputClass = TestAssetInput
     def operatorInput = Mock(OperatorInput)
@@ -117,21 +117,21 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     }
 
     where:
-    operatesfrom	|  operatesuntil
-    null		    |  null
-    "" 				|  null
-    null			|  ""
-    "" 				|  ""
+    operatesfrom | operatesuntil
+    null | null
+    "" | null
+    null | ""
+    "" | ""
   }
 
   def "An AssetInputFactory should parse a valid operated AssetInput correctly (operation start time provided)"() {
     given: "a system participant input type factory and model data"
     def inputFactory = new TestAssetInputFactory()
     Map<String, String> parameter = [
-      "uuid"         : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
       "operatesuntil": "",
-      "id"           : "TestID"
+      "id" : "TestID"
     ]
     def inputClass = TestAssetInput
     def operatorInput = Mock(OperatorInput)
@@ -156,9 +156,9 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     given: "a system participant input type factory and model data"
     def inputFactory = new TestAssetInputFactory()
     Map<String, String> parameter = [
-      "uuid"         : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "operatesuntil": "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "id"           : "TestID"
+      "id" : "TestID"
     ]
     def inputClass = TestAssetInput
     def operatorInput = Mock(OperatorInput)
@@ -183,10 +183,10 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     given: "a system participant input type factory and model data"
     def inputFactory = new TestAssetInputFactory()
     Map<String, String> parameter = [
-      "uuid"         : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
       "operatesuntil": "2019-12-31T00:00:00+01:00[Europe/Berlin]",
-      "id"           : "TestID"
+      "id" : "TestID"
     ]
     def inputClass = TestAssetInput
     def operatorInput = Mock(OperatorInput)
@@ -213,7 +213,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     def inputFactory = new TestAssetInputFactory()
     Map<String, String> parameter = [
       "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id"  : "TestID"
+      "id" : "TestID"
     ]
     def inputClass = TestAssetInput
 
@@ -235,9 +235,9 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     given: "a system participant input type factory and model data"
     def inputFactory = new TestAssetInputFactory()
     Map<String, String> parameter = [
-      "uuid"        : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "operatesfrom": "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "id"          : "TestID"
+      "id" : "TestID"
     ]
     def inputClass = TestAssetInput
 
@@ -261,9 +261,9 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     given: "a system participant input type factory and model data"
     def inputFactory = new TestAssetInputFactory()
     Map<String, String> parameter = [
-      "uuid"         : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "operatesuntil": "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "id"           : "TestID"
+      "id" : "TestID"
     ]
     def inputClass = TestAssetInput
 
@@ -287,10 +287,10 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     given: "a system participant input type factory and model data"
     def inputFactory = new TestAssetInputFactory()
     Map<String, String> parameter = [
-      "uuid"         : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
       "operatesuntil": "2019-12-31T00:00:00+01:00[Europe/Berlin]",
-      "id"           : "TestID"
+      "id" : "TestID"
     ]
     def inputClass = TestAssetInput
 

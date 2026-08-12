@@ -43,50 +43,50 @@ class ContainerUtilsTest extends Specification {
     /* TODO: Add lines, switches etc. to testing data */
 
     where:
-    subnet || expectedNodes               || expectedTransformers2W || expectedTransformers3W
-    1      || [
+    subnet || expectedNodes || expectedTransformers2W || expectedTransformers3W
+    1 || [
       ComplexTopology.nodeA,
       ComplexTopology.nodeB,
       ComplexTopology.nodeC
-    ] as Set || [] as Set              || [
+    ] as Set || [] as Set || [
       ComplexTopology.transformerAtoBtoC
     ] as Set
-    2      || [
+    2 || [
       ComplexTopology.nodeA,
       ComplexTopology.nodeB,
       ComplexTopology.nodeC
-    ] as Set || [] as Set              || [
+    ] as Set || [] as Set || [
       ComplexTopology.transformerAtoBtoC
     ] as Set
-    3      || [
+    3 || [
       ComplexTopology.nodeA,
       ComplexTopology.nodeB,
       ComplexTopology.nodeC
-    ] as Set || [] as Set              || [
+    ] as Set || [] as Set || [
       ComplexTopology.transformerAtoBtoC
     ] as Set
-    4      || [
+    4 || [
       ComplexTopology.nodeB,
       ComplexTopology.nodeD
     ] as Set || [
       ComplexTopology.transformerBtoD
-    ] as Set                 || [] as Set
-    5      || [
+    ] as Set || [] as Set
+    5 || [
       ComplexTopology.nodeB,
       ComplexTopology.nodeC,
       ComplexTopology.nodeE
     ] as Set || [
       ComplexTopology.transformerBtoE,
       ComplexTopology.transformerCtoE
-    ] as Set                 || [] as Set
-    6      || [
+    ] as Set || [] as Set
+    6 || [
       ComplexTopology.nodeC,
       ComplexTopology.nodeF,
       ComplexTopology.nodeG
     ] as Set || [
       ComplexTopology.transformerCtoF,
       ComplexTopology.transformerCtoG
-    ] as Set                 || [] as Set
+    ] as Set || [] as Set
   }
 
   def "The container utils are able to derive the predominant voltage level in a setup w/o switchgear"() {
@@ -101,12 +101,12 @@ class ContainerUtilsTest extends Specification {
 
     where:
     subnet || expected
-    1      || EHV_380KV
-    2      || HV
-    3      || MV_20KV
-    4      || MV_20KV
-    5      || MV_10KV
-    6      || LV
+    1 || EHV_380KV
+    2 || HV
+    3 || MV_20KV
+    4 || MV_20KV
+    5 || MV_10KV
+    6 || LV
   }
 
   def "The container utils are able to derive the predominant voltage level in a simple setup w/ switchgear"() {
@@ -321,7 +321,7 @@ class ContainerUtilsTest extends Specification {
     given:
     String gridName = ComplexTopology.grid.gridName
     Set<Integer> subNetNumbers = ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.rawGrid.nodes)
-    RawGridElements rawGridInput= ComplexTopology.grid.rawGrid
+    RawGridElements rawGridInput = ComplexTopology.grid.rawGrid
     SystemParticipants systemParticipantsInput = ComplexTopology.grid.systemParticipants
     EnergyManagementUnits energyManagementUnits = ComplexTopology.grid.emUnits
 
@@ -335,7 +335,9 @@ class ContainerUtilsTest extends Specification {
         energyManagementUnits)
 
     when:
-    def computableSubgrids = subgrids.collectEntries {[(it.key): ContainerUtils.withTrafoNodeAsSlack(it.value)]} as HashMap<Integer, SubGridContainer>
+    def computableSubgrids = subgrids.collectEntries {
+      [(it.key): ContainerUtils.withTrafoNodeAsSlack(it.value)]
+    } as HashMap<Integer, SubGridContainer>
 
     then:
     computableSubgrids.size() == 6

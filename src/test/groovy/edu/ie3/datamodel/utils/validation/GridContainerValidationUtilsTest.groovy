@@ -79,8 +79,8 @@ class GridContainerValidationUtilsTest extends Specification {
     actual == expectedResult
 
     where:
-    time                            || expectedResult
-    Optional.empty()                || Try.Success.empty()
+    time || expectedResult
+    Optional.empty() || Try.Success.empty()
     Optional.of(start.plusHours(1)) || Try.Success.empty()
   }
 
@@ -92,8 +92,8 @@ class GridContainerValidationUtilsTest extends Specification {
     actual.exception.get().message == expectedException.message
 
     where:
-    time                            || expectedException
-    Optional.of(start)              || new InvalidGridException("The grid contains unconnected elements for time " + start + ": " + [
+    time || expectedException
+    Optional.of(start) || new InvalidGridException("The grid contains unconnected elements for time " + start + ": " + [
       GTD.nodeE.uuid,
       GTD.nodeG.uuid
     ])

@@ -18,13 +18,13 @@ class SValueTest extends Specification {
     (sVal1 == sVal2) == res
 
     where:
-    sVal1                                                                           | sVal2                                                                          || res
-    new SValue(null, null)                                                          | new SValue(null, null)                                                         || true
-    new SValue(Quantities.getQuantity(10d, StandardUnits.ACTIVE_POWER_IN), null)    | new SValue(Quantities.getQuantity(10d, StandardUnits.ACTIVE_POWER_IN), null)   || true
-    new SValue(Quantities.getQuantity(10d, StandardUnits.ACTIVE_POWER_IN), null)    | new SValue(null, null)                                                         || false
-    null                                                                            | new SValue(null, null)                                                         || false
-    null                                                                            | null                                                                           || true
+    sVal1 | sVal2 || res
+    new SValue(null, null) | new SValue(null, null) || true
+    new SValue(Quantities.getQuantity(10d, StandardUnits.ACTIVE_POWER_IN), null) | new SValue(Quantities.getQuantity(10d, StandardUnits.ACTIVE_POWER_IN), null) || true
+    new SValue(Quantities.getQuantity(10d, StandardUnits.ACTIVE_POWER_IN), null) | new SValue(null, null) || false
+    null | new SValue(null, null) || false
+    null | null || true
     new SValue(Quantities.getQuantity(10.23d, StandardUnits.ACTIVE_POWER_IN), null) | new SValue(Quantities.getQuantity(10.23, StandardUnits.ACTIVE_POWER_IN), null) || false
-    new SValue(Quantities.getQuantity(10230, Units.WATT), null)                     | new SValue(Quantities.getQuantity(10.23, StandardUnits.ACTIVE_POWER_IN), null) || false
+    new SValue(Quantities.getQuantity(10230, Units.WATT), null) | new SValue(Quantities.getQuantity(10.23, StandardUnits.ACTIVE_POWER_IN), null) || false
   }
 }
