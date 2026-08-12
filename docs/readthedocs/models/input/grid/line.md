@@ -97,7 +97,7 @@ A list with some standard line types can be found here: [Standard Line Types](#s
 
    * - type
      - –
-     -
+     - UUID of the line type
 
    * - length
      - km
