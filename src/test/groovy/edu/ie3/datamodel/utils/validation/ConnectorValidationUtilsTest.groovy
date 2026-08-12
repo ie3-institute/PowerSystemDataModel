@@ -145,57 +145,57 @@ class ConnectorValidationUtilsTest extends Specification {
     exceptions[0].exception.get().message.contains(expectedMessage)
 
     where:
-    invalidCableType                                      || expectedMessage
-    validCableType(id: "")                                || "ID cannot be empty"
-    validCableType(coreNumber: 0)                         || "Core number must be >= 1"
-    validCableType(limitTemperature: temperature(-1d))    || "limitTemperature"
-    validCableType(frequency: frequency(0d))              || "frequency"
-    validCableType(frequency: frequency(-50d))            || "frequency"
+    invalidCableType || expectedMessage
+    validCableType(id: "") || "ID cannot be empty"
+    validCableType(coreNumber: 0) || "Core number must be >= 1"
+    validCableType(limitTemperature: temperature(-1d)) || "limitTemperature"
+    validCableType(frequency: frequency(0d)) || "frequency"
+    validCableType(frequency: frequency(-50d)) || "frequency"
     validCableType(electricalCapacitance: capacitance(-1d)) || "electricalCapacitance"
-    validCableType(skinEffectCoefficient: -1d)            || "skinEffectCoefficient"
-    validCableType(proximityEffectCoefficient: -1d)       || "proximityEffectCoefficient"
-    validCableType(tanDelta: -0.1d)                       || "tanDelta"
-    validCableType(circulatingLossFactor: -0.1d)          || "circulatingLossFactor"
-    validCableType(eddyCurrentLossFactor: -0.1d)          || "eddyCurrentLossFactor"
+    validCableType(skinEffectCoefficient: -1d) || "skinEffectCoefficient"
+    validCableType(proximityEffectCoefficient: -1d) || "proximityEffectCoefficient"
+    validCableType(tanDelta: -0.1d) || "tanDelta"
+    validCableType(circulatingLossFactor: -0.1d) || "circulatingLossFactor"
+    validCableType(eddyCurrentLossFactor: -0.1d) || "eddyCurrentLossFactor"
     validCableType(conductor: validConductor(name: "")) || "Conductor name must not be empty"
     validCableType(conductor: validConductor(crossSection: area(-1d))) || "crossSection"
     validCableType(conductor: validConductor(diameter: length(-1d))) || "diameter"
     validCableType(conductor: validConductor(thermalResistivity: thermalResistivity(-1d))) || "thermalResistivity"
     validCableType(conductor: validConductor(thermalCapacitance: thermalCapacitance(-1d))) || "thermalCapacitance"
     validCableType(conductor: validConductor(area: Optional.of(area(-1d)))) || "area"
-    validCableType(isolation: [validLayer(name: "")]) ||            "Layer name cannot be empty"
+    validCableType(isolation: [validLayer(name: "")]) || "Layer name cannot be empty"
     validCableType(isolation: [
       validLayer(innerDiameter: length(-1d))
-    ]) ||            "innerDiameter"
+    ]) || "innerDiameter"
     validCableType(isolation: [
       validLayer(outerDiameter: length(-1d))
-    ]) ||            "outerDiameter"
+    ]) || "outerDiameter"
     validCableType(isolation: [
       validLayer(thermalResistivity: thermalResistivity(-1d))
-    ]) ||            "thermalResistivity"
-    validCableType(            isolation: [
+    ]) || "thermalResistivity"
+    validCableType(isolation: [
       validLayer(thermalCapacitance: thermalCapacitance(-1d))
-    ]) ||            "thermalCapacitance"
+    ]) || "thermalCapacitance"
     validCableType(isolation: [
       validLayer(area: Optional.of(area(-1d)))
-    ]) ||            "area"
+    ]) || "area"
     validCableType(isolation: [
-      validLayer(innerDiameter: length(0.03d),outerDiameter: length(0.02d))
+      validLayer(innerDiameter: length(0.03d), outerDiameter: length(0.02d))
     ]) ||"Outer diameter must be greater than or equal to inner diameter"
     validCableType(filler: [validLayer(name: "")]) || "Layer name cannot be empty"
-    validCableType(armor: [validLayer(name: "")]) ||            "Layer name cannot be empty"
-    validCableType(jack: [validLayer(name: "")]) ||            "Layer name cannot be empty"
-    validCableType(screen: Optional.of(validScreenLayer(name: ""))) ||            "Screen layer name cannot be empty"
-    validCableType(screen: Optional.of(validScreenLayer(innerDiameter: length(-1d)))) ||            "innerDiameter"
-    validCableType(screen: Optional.of(validScreenLayer(outerDiameter: length(-1d)))) ||            "outerDiameter"
-    validCableType(            screen: Optional.of(validScreenLayer(                    innerDiameter: length(0.03d),                    outerDiameter: length(0.02d)))) ||            "Outer diameter must be greater than or equal to inner diameter"
-    validCableType(screen: Optional.of(validScreenLayer(wiresNumber: 0))) ||            "Number of wires must be >= 1"
-    validCableType(screen: Optional.of(validScreenLayer(wireDiameter: length(-1d)))) ||            "wireDiameter"
-    validCableType(            screen: Optional.of(validScreenLayer(                    electricalResistivity: electricalResistivity(-1d)))) ||            "electricalResistivity"
-    validCableType(            screen: Optional.of(validScreenLayer(                    thermalResistivity: thermalResistivity(-1d)))) ||            "thermalResistivity"
-    validCableType(            screen: Optional.of(validScreenLayer(                    thermalCapacitance: thermalCapacitance(-1d)))) ||            "thermalCapacitance"
-    validCableType(            screen: Optional.of(validScreenLayer(                    area: Optional.of(area(-1d))))) ||            "area"
-    validCableType(            screen: Optional.of(validScreenLayer(                    lengthOfLay: Optional.of(length(-1d))))) ||            "lengthOfLay"
+    validCableType(armor: [validLayer(name: "")]) || "Layer name cannot be empty"
+    validCableType(jack: [validLayer(name: "")]) || "Layer name cannot be empty"
+    validCableType(screen: Optional.of(validScreenLayer(name: ""))) || "Screen layer name cannot be empty"
+    validCableType(screen: Optional.of(validScreenLayer(innerDiameter: length(-1d)))) || "innerDiameter"
+    validCableType(screen: Optional.of(validScreenLayer(outerDiameter: length(-1d)))) || "outerDiameter"
+    validCableType(screen: Optional.of(validScreenLayer(innerDiameter: length(0.03d), outerDiameter: length(0.02d)))) || "Outer diameter must be greater than or equal to inner diameter"
+    validCableType(screen: Optional.of(validScreenLayer(wiresNumber: 0))) || "Number of wires must be >= 1"
+    validCableType(screen: Optional.of(validScreenLayer(wireDiameter: length(-1d)))) || "wireDiameter"
+    validCableType(screen: Optional.of(validScreenLayer(electricalResistivity: electricalResistivity(-1d)))) || "electricalResistivity"
+    validCableType(screen: Optional.of(validScreenLayer(thermalResistivity: thermalResistivity(-1d)))) || "thermalResistivity"
+    validCableType(screen: Optional.of(validScreenLayer(thermalCapacitance: thermalCapacitance(-1d)))) || "thermalCapacitance"
+    validCableType(screen: Optional.of(validScreenLayer(area: Optional.of(area(-1d))))) || "area"
+    validCableType(screen: Optional.of(validScreenLayer(lengthOfLay: Optional.of(length(-1d))))) || "lengthOfLay"
   }
 
   def "ConnectorValidationUtils.checkCableType reports all invalid quantities together"() {
