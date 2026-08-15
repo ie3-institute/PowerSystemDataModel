@@ -258,7 +258,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
     private Set<Transformer3WInput> transformer3Ws;
     private Set<SwitchInput> switches;
     private Set<MeasurementUnitInput> measurementUnits;
-    private Map<UUID, List<edu.ie3.datamodel.models.input.connector.CableDeploymentInput>>
+    private Map<UUID, List<CableDeploymentInput>>
         cableDeploymentsByLine;
 
     /**

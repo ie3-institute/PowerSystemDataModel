@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 /**
  * Interface that provides the capability to build entities of type {@link
- * SystemParticipantTypeInput} and {@link OperatorInput} from different data sources e.g. .csv files
+ * SystemParticipantTypeInput} and {@link OperatorInput} from different data sources e.g. '.csv' files
  * or databases
  */
 public class TypeSource extends EntitySource {
@@ -87,6 +87,14 @@ public class TypeSource extends EntitySource {
    */
   public static Map<UUID, Transformer2WTypeInput> getStandardTransformer2WTypes()
       throws SourceException {
+    String resourcePath = SUB_DIRECTORY + "/transformer_2_w_type_input.csv";
+
+    if (Transformer2WTypeInput.class.getResource(resourcePath) == null) {
+      log.error("Built-in 2W transformer type resource '{}' is missing.", resourcePath);
+      throw new SourceException(
+          "Built-in 2W transformer type resource '" + resourcePath + "' is missing.");
+    }
+
     return new TypeSource(getBuildInSource(Transformer2WTypeInput.class, SUB_DIRECTORY))
         .getTransformer2WTypes(false);
   }
@@ -149,6 +157,13 @@ public class TypeSource extends EntitySource {
    * @return a map of UUID to object- and uuid-unique {@link LineTypeInput} entities
    */
   public static Map<UUID, LineTypeInput> getStandardLineTypes() throws SourceException {
+    String resourcePath = SUB_DIRECTORY + "/line_type_input.csv";
+
+    if (LineTypeInput.class.getResource(resourcePath) == null) {
+      log.error("Built-in line type resource '{}' is missing.", resourcePath);
+      throw new SourceException("Built-in line type resource '" + resourcePath + "' is missing.");
+    }
+
     return new TypeSource(getBuildInSource(LineTypeInput.class, SUB_DIRECTORY)).getLineTypes(false);
   }
 
@@ -206,6 +221,13 @@ public class TypeSource extends EntitySource {
    * @return a map of UUID to object- and uuid-unique {@link CableTypeInput} entities
    */
   public static Map<UUID, CableTypeInput> getStandardCableTypes() throws SourceException {
+    String resourcePath = SUB_DIRECTORY + "/cable_type_input.csv";
+
+    if (CableTypeInput.class.getResource(resourcePath) == null) {
+      log.error("Built-in cable type resource '{}' is missing.", resourcePath);
+      throw new SourceException("Built-in cable type resource '" + resourcePath + "' is missing.");
+    }
+
     return new TypeSource(getBuildInSource(CableTypeInput.class, SUB_DIRECTORY))
         .getCableTypes(false);
   }
@@ -255,6 +277,14 @@ public class TypeSource extends EntitySource {
    */
   public static Map<UUID, Transformer3WTypeInput> getStandardTransformer3WTypes()
       throws SourceException {
+    String resourcePath = SUB_DIRECTORY + "/transformer_3_w_type_input.csv";
+
+    if (Transformer3WTypeInput.class.getResource(resourcePath) == null) {
+      log.error("Built-in 3W transformer type resource '{}' is missing.", resourcePath);
+      throw new SourceException(
+          "Built-in 3W transformer type resource '" + resourcePath + "' is missing.");
+    }
+
     return new TypeSource(getBuildInSource(Transformer3WTypeInput.class, SUB_DIRECTORY))
         .getTransformer3WTypes(false);
   }
