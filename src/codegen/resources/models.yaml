@@ -354,6 +354,24 @@ models:
         type: EmInput
         javaDoc: "Optional {@link EmInput} that is controlling this system participant. If null, this system participant is not em-controlled."
 
+  SystemParticipantTypeInput:
+    name: SystemParticipantTypeInput
+    package: edu.ie3.datamodel.models.input.system.type
+    extends: AssetTypeInput
+    components:
+      - name: capex
+        type: Currency
+        javaDoc: "Capital expense for this type of system participant (typically in €)."
+      - name: opex
+        type: EnergyPrice
+        javaDoc: "Operating expense for this type of system participant (typically in €/MWh)."
+      - name: sRated
+        type: Power
+        javaDoc: "Rated apparent power of the type (in kVA)."
+      - name: cosPhiRated
+        type: double
+        javaDoc: "Power factor for this type of system participant."
+
   AcInput:
     name: AcInput
     package: edu.ie3.datamodel.models.input.system
@@ -366,6 +384,16 @@ models:
       - name: thermalBus
         type: ThermalBusInput
         javaDoc: "The thermal bus, this model is connected to."
+
+  AcTypeInput:
+    name: AcTypeInput
+    package: edu.ie3.datamodel.models.input.system.type
+    extends: SystemParticipantTypeInput
+    class: true
+    components:
+      - name: pThermal
+        type: Power
+        javaDoc: "Thermal output of the air condition (typically in kW), when sRated * cosPhiRated is consumed."
 
   BmInput:
     name: BmInput
@@ -383,6 +411,19 @@ models:
         type: EnergyPrice
         javaDoc: "Granted feed in tariff (typically in €/MWh)."
 
+  BmTypeInput:
+    name: BmTypeInput
+    package: edu.ie3.datamodel.models.input.system.type
+    extends: SystemParticipantTypeInput
+    class: true
+    components:
+      - name: activePowerGradient
+        type: DimensionlessRate
+        javaDoc: "Permissible load gradient (typically in %/h)."
+      - name: etaConv
+        type: Dimensionless
+        javaDoc: "Efficiency of converter for this type of BM (typically in %)."
+
   ChpInput:
     name: ChpInput
     package: edu.ie3.datamodel.models.input.system
@@ -398,6 +439,25 @@ models:
       - name: thermalStorage
         type: ThermalStorageInput
         javaDoc: "Thermal storage model."
+
+  ChpTypeInput:
+    name: ChpTypeInput
+    package: edu.ie3.datamodel.models.input.system.type
+    extends: SystemParticipantTypeInput
+    class: true
+    components:
+      - name: etaEl
+        type: Dimensionless
+        javaDoc: "Electrical efficiency (typically in %)."
+      - name: etaThermal
+        type: Dimensionless
+        javaDoc: "Thermal efficiency (typically in %)."
+      - name: pThermal
+        type: Power
+        javaDoc: "Rated thermal power (typically in kW)."
+      - name: pOwn
+        type: Power
+        javaDoc: "Internal consumption (typically in kW)."
 
   EvcsInput:
     name: EvcsInput
@@ -431,6 +491,22 @@ models:
         type: EvTypeInput
         javaDoc: "Type of this EV, containing default values for EVs of this kind."
 
+  EvTypeInput:
+    name: EvTypeInput
+    package: edu.ie3.datamodel.models.input.system.type
+    extends: SystemParticipantTypeInput
+    class: true
+    components:
+      - name: eStorage
+        type: Energy
+        javaDoc: "Energy capacity of the storage (typically in kWh)."
+      - name: eCons
+        type: SpecificEnergy
+        javaDoc: "Consumed electric energy per driven distance (typically in kWh/km)."
+      - name: sRatedDC
+        type: Power
+        javaDoc: "Power for DC (typically in kW)."
+
   FixedFeedInInput:
     name: FixedFeedInInput
     package: edu.ie3.datamodel.models.input.system
@@ -456,6 +532,16 @@ models:
       - name: thermalBus
         type: ThermalBusInput
         javaDoc: "The thermal bus, this model is connected to."
+
+  HpTypeInput:
+    name: HpTypeInput
+    package: edu.ie3.datamodel.models.input.system.type
+    extends: SystemParticipantTypeInput
+    class: true
+    components:
+      - name: pThermal
+        type: Power
+        javaDoc: "Thermal output of the heat pump (typically in kW), when sRated * cosPhiRated is consumed."
 
   LoadInput:
     name: LoadInput
@@ -519,6 +605,25 @@ models:
         type: StorageTypeInput
         javaDoc: "Type of this storage, containing default values for storages of this kind."
 
+  StorageTypeInput:
+    name: StorageTypeInput
+    package: edu.ie3.datamodel.models.input.system.type
+    extends: SystemParticipantTypeInput
+    class: true
+    components:
+      - name: eStorage
+        type: Energy
+        javaDoc: "."
+      - name: pMax
+        type: Power
+        javaDoc: "."
+      - name: activePowerGradient
+        type: DimensionlessRate
+        javaDoc: "."
+      - name: eta
+        type: Dimensionless
+        javaDoc: "."
+
   WecInput:
     name: WecInput
     package: edu.ie3.datamodel.models.input.system
@@ -529,7 +634,24 @@ models:
         type: WecTypeInput
         javaDoc: "Type of this WEC, containing default values for WEC assets of this kind."
 
-
+  WecTypeInput:
+    name: WecTypeInput
+    package: edu.ie3.datamodel.models.input.system.type
+    extends: SystemParticipantTypeInput
+    class: true
+    components:
+      - name: cpCharacteristic
+        type: WecCharacteristicInput
+        javaDoc: "."
+      - name: etaConv
+        type: Dimensionless
+        javaDoc: "."
+      - name: rotorArea
+        type: Area
+        javaDoc: "."
+      - name: hubHeight
+        type: Length
+        javaDoc: "."
 
 
 

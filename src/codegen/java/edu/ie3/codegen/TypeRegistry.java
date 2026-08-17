@@ -137,7 +137,11 @@ public final class TypeRegistry {
             "ElectricConductance",
             "Power",
             "EnergyPrice",
-            "Energy")
+            "Energy",
+            "Currency",
+            "DimensionlessRate",
+            "SpecificEnergy",
+            "Area")
         .forEach(
             name ->
                 registry.put(
@@ -193,6 +197,10 @@ public final class TypeRegistry {
         "EvcsLocationType",
         new TypeDefinition(
             "edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType"));
+    registry.put(
+        "WecCharacteristicInput",
+        new TypeDefinition(
+            "edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput"));
     registry.put(
         "PowerProfileKey", new TypeDefinition("edu.ie3.datamodel.models.profile.PowerProfileKey"));
 

@@ -1014,6 +1014,32 @@ models:
     nonCapitalizedGetters: [qCharacteristics]
     optionalGetters: [controllingEm]
 
+  SystemParticipantTypeInput:
+    classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput}."
+    constructors:
+      - name: full
+        components: [uuid, id, capex, opex, sRated, cosPhiRated]
+        superArgs: [uuid, id]
+        javaDoc: "@param uuid of the input entity\n
+             @param id of this type of system participant\n
+             @param capex Captial expense for this type of system participant (typically in €)\n
+             @param opex Operating expense for this type of system participant (typically in €/MWh)\n
+             @param sRated Rated apparent power\n
+             @param cosPhiRated Power factor for this type of system participant"
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: true
+        javaDoc: "Scales the input entity in a way that tries to preserve proportions that are related to\n
+               power. This means that capacity, consumption etc. are scaled with the same factor. Related\n
+               properties associated with the input type (if applicable) are scaled as well.\n
+               \n
+               @param factor The factor to scale with\n
+               @return A copy builder with scaled relevant properties"
+        parameters:
+          - name: factor
+            type: double
+    nonCapitalizedGetters: [sRated]
+
   AcInput:
     classJavaDoc: "Describes an air condition."
     inherits: [HasType, HasThermalBus]
@@ -1071,6 +1097,41 @@ models:
             type: double
         expression: type(type.copy().scale(factor).build())
     nonCapitalizedGetters: [qCharacteristics]
+
+  AcTypeInput:
+    classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.system.AcInput}."
+    constructors:
+      - name: full
+        components: [uuid, id, capex, opex, sRated, cosPhiRated, pThermal]
+        superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+        javaDoc: "@param uuid of the input entity\n
+               @param id of this type of AC\n
+               @param capex Capital expense for this type of AC (typically in €)\n
+               @param opex Operating expense for this type of AC (typically in €)\n
+               @param cosPhiRated Power factor for this type of AC\n
+               @param sRated Rated apparent power\n
+               @param pThermal Thermal output of the air condition, when sRated * cosPhiRated is consumed\n
+                   electrically"
+      - name: full
+        components: [uuid, id, capex, opex, sRated, cosPhiRated, pThermal, additionalInformation]
+        superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+        javaDoc: "@param uuid of the input entity\n
+               @param id of this type of AC\n
+               @param capex Capital expense for this type of AC (typically in €)\n
+               @param opex Operating expense for this type of AC (typically in €)\n
+               @param cosPhiRated Power factor for this type of AC\n
+               @param sRated Rated apparent power\n
+               @param pThermal Thermal output of the air condition, when sRated * cosPhiRated is consumed\n
+                   electrically\n
+               @param additionalInformation Of the input"
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: false
+        parameters:
+          - name: factor
+            type: double
+        expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); pThermal(getpThermal().multiply(factor))
+    nonCapitalizedGetters: [pThermal, sRated]
 
   BmInput:
     classJavaDoc: "Describes a biomass plant."
@@ -1136,6 +1197,41 @@ models:
         expression: this.type = this.type.copy().scale(factor).build()
     nonCapitalizedGetters: [qCharacteristics]
 
+  BmTypeInput:
+    classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.system.BmInput}."
+    constructors:
+      - name: full
+        components: [uuid, id, capex, opex, activePowerGradient, sRated, cosPhiRated, etaConv]
+        superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+        javaDoc: "@param uuid of the input entity\n
+               @param id of this type of BM\n
+               @param capex Capital expense for this type of BM (typically in €)\n
+               @param opex Operating expense for this type of BM (typically in €)\n
+               @param cosPhiRated Power factor for this type of BM\n
+               @param activePowerGradient Maximum permissible gradient of active power change\n
+               @param sRated Rated apparent power for this type of BM (typically in kVA)\n
+               @param etaConv Efficiency of converter for this type of BM (typically in %)"
+      - name: full
+        components: [uuid, id, capex, opex, activePowerGradient, sRated, cosPhiRated, etaConv, additionalInformation]
+        superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+        javaDoc: "@param uuid of the input entity\n
+               @param id of this type of BM\n
+               @param capex Capital expense for this type of BM (typically in €)\n
+               @param opex Operating expense for this type of BM (typically in €)\n
+               @param cosPhiRated Power factor for this type of BM\n
+               @param activePowerGradient Maximum permissible gradient of active power change\n
+               @param sRated Rated apparent power for this type of BM (typically in kVA)\n
+               @param etaConv Efficiency of converter for this type of BM (typically in %)\n
+               @param additionalInformation Of the input"
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: false
+        parameters:
+          - name: factor
+            type: double
+        expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor))
+    nonCapitalizedGetters: [sRated]
+
   ChpInput:
     classJavaDoc: "Describes a combined heat and power plant."
     inherits: [HasType, HasThermalBus, HasThermalStorage]
@@ -1199,6 +1295,45 @@ models:
             type: double
         expression: this.type = this.type.copy().scale(factor).build()
     nonCapitalizedGetters: [qCharacteristics]
+
+  ChpTypeInput:
+    classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.ChpInput}."
+    constructors:
+      - name: full
+        components: [uuid, id, capex, opex, etaEl, etaThermal, sRated, cosPhiRated, pThermal, pOwn]
+        superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+        javaDoc: "@param uuid of the input entity\n
+               @param id of this type of CHP\n
+               @param capex Capital expense for this type of CHP (typically in €)\n
+               @param opex Operating expense for this type of CHP (typically in €)\n
+               @param etaEl Electrical efficiency\n
+               @param etaThermal Thermal efficiency\n
+               @param sRated Rated electrical apparent power\n
+               @param cosPhiRated Power factor for this type of CHP\n
+               @param pThermal Rated thermal power\n
+               @param pOwn Internal consumption"
+      - name: full
+        components: [uuid, id, capex, opex, etaEl, etaThermal, sRated, cosPhiRated, pThermal, pOwn, additionalInformation]
+        superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+        javaDoc: "@param uuid of the input entity\n
+               @param id of this type of CHP\n
+               @param capex Capital expense for this type of CHP (typically in €)\n
+               @param opex Operating expense for this type of CHP (typically in €)\n
+               @param etaEl Electrical efficiency\n
+               @param etaThermal Thermal efficiency\n
+               @param sRated Rated electrical apparent power\n
+               @param cosPhiRated Power factor for this type of CHP\n
+               @param pThermal Rated thermal power\n
+               @param pOwn Internal consumption\n
+               @param additionalInformation Of the input"
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: false
+        parameters:
+          - name: factor
+            type: double
+        expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); pThermal(getpThermal().multiply(factor)); pOwn(getpOwn().multiply(factor))
+    nonCapitalizedGetters: [pOwn, pThermal, sRated]
 
   EvcsInput:
     classJavaDoc: "Describes an electric vehicle charging station."
@@ -1315,6 +1450,43 @@ models:
         expression: type(type.copy().scale(factor).build())
     nonCapitalizedGetters: [qCharacteristics]
 
+  EvTypeInput:
+    classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.EvInput}."
+    constructors:
+      - name: full
+        components: [uuid, id, capex, opex, eStorage, eCons, sRated, cosPhiRated, sRatedDC]
+        superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+        javaDoc: "@param uuid of the input entity\n
+               @param id of this type of EV\n
+               @param capex Capital expense for this type of EV (typically in €)\n
+               @param opex Operating expense for this type of EV (typically in €)\n
+               @param eStorage Energy capacity of the storage\n
+               @param eCons Consumed electric energy per driven distance\n
+               @param sRated Rated apparent power for this type of EV (typically in kVA)\n
+               @param cosPhiRated Power factor for this type of EV\n
+               @param sRatedDC power for DC (typically in kW)"
+      - name: full
+        components: [uuid, id, capex, opex, eStorage, eCons, sRated, cosPhiRated, sRatedDC, additionalInformation]
+        superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+        javaDoc: "@param uuid of the input entity\n
+               @param id of this type of EV\n
+               @param capex Capital expense for this type of EV (typically in €)\n
+               @param opex Operating expense for this type of EV (typically in €)\n
+               @param eStorage Energy capacity of the storage\n
+               @param eCons Consumed electric energy per driven distance\n
+               @param sRated Rated apparent power for this type of EV (typically in kVA)\n
+               @param cosPhiRated Power factor for this type of EV\n
+               @param sRatedDC power for DC (typically in kW)\n
+               @param additionalInformation Of the input"
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: false
+        parameters:
+          - name: factor
+            type: double
+        expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); eStorage(geteStorage().multiply(factor)); eCons(geteCons().multiply(factor)); sRatedDC(getsRatedDC().multiply(factor))
+    nonCapitalizedGetters: [eStorage, eCons, sRated, sRatedDC]
+
   FixedFeedInInput:
     classJavaDoc: "Dummy class to represent a constant feed in regardless of its type."
     constructors:
@@ -1428,6 +1600,41 @@ models:
             type: double
         expression: type(type.copy().scale(factor).build())
     nonCapitalizedGetters: [qCharacteristics]
+
+  HpTypeInput:
+    classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.system.HpInput}."
+    constructors:
+      - name: full
+        components: [uuid, id, capex, opex, sRated, cosPhiRated, pThermal]
+        superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+        javaDoc: "@param uuid of the input entity\n
+               @param id of this type of HP\n
+               @param capex Capital expense for this type of HP (typically in €)\n
+               @param opex Operating expense for this type of HP (typically in €)\n
+               @param cosPhiRated Power factor for this type of HP\n
+               @param sRated Rated apparent power\n
+               @param pThermal Thermal output of the heat pump, when sRated * cosPhiRated is consumed\n
+                   electrically"
+      - name: full
+        components: [uuid, id, capex, opex, sRated, cosPhiRated, pThermal, additionalInformation]
+        superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+        javaDoc: "@param uuid of the input entity\n
+               @param id of this type of HP\n
+               @param capex Capital expense for this type of HP (typically in €)\n
+               @param opex Operating expense for this type of HP (typically in €)\n
+               @param cosPhiRated Power factor for this type of HP\n
+               @param sRated Rated apparent power\n
+               @param pThermal Thermal output of the heat pump, when sRated * cosPhiRated is consumed\n
+                   electrically\n
+               @param additionalInformation Of the input"
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: false
+        parameters:
+          - name: factor
+            type: double
+        expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); pThermal(getpThermal().multiply(factor))
+    nonCapitalizedGetters: [pThermal, sRated]
 
   LoadInput:
     classJavaDoc: "Describes a load."
@@ -1621,6 +1828,45 @@ models:
         expression: type(type.copy().scale(factor).build())
     nonCapitalizedGetters: [qCharacteristics]
 
+  StorageTypeInput:
+    classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.StorageInput}."
+    constructors:
+      - name: full
+        components: [uuid, id, capex, opex, eStorage, sRated, cosPhiRated, pMax, activePowerGradient, eta]
+        superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+        javaDoc: "@param uuid of the input entity\n
+               @param id of this type of Storage\n
+               @param capex capital expense for this type of Storage (typically in €)\n
+               @param opex operating expense for this type of Storage (typically in €/MWh)\n
+               @param eStorage stored energy capacity\n
+               @param sRated Rated apparent power of integrated inverter\n
+               @param cosPhiRated power factor for integrated inverter\n
+               @param pMax maximum permissible active power of the integrated inverter\n
+               @param activePowerGradient maximum permissible gradient of active power change\n
+               @param eta efficiency of the charging and discharging process"
+      - name: full
+        components: [uuid, id, capex, opex, eStorage, sRated, cosPhiRated, pMax, activePowerGradient, eta, additionalInformation]
+        superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+        javaDoc: "@param uuid of the input entity\n
+               @param id of this type of Storage\n
+               @param capex capital expense for this type of Storage (typically in €)\n
+               @param opex operating expense for this type of Storage (typically in €/MWh)\n
+               @param eStorage stored energy capacity\n
+               @param sRated Rated apparent power of integrated inverter\n
+               @param cosPhiRated power factor for integrated inverter\n
+               @param pMax maximum permissible active power of the integrated inverter\n
+               @param activePowerGradient maximum permissible gradient of active power change\n
+               @param eta efficiency of the charging and discharging process\n
+               @param additionalInformation Of the input"
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: false
+        parameters:
+          - name: factor
+            type: double
+        expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); eStorage(geteStorage().multiply(factor)); pMax(getpMax().multiply(factor))
+    nonCapitalizedGetters: [eStorage, pMax, sRated]
+
   WecInput:
     classJavaDoc: "Describes a Wind Energy Converter."
     constructors:
@@ -1675,6 +1921,44 @@ models:
         expression: type(type.copy().scale(factor).build())
     nonCapitalizedGetters: [qCharacteristics]
 
+  WecTypeInput:
+    classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.WecInput}."
+    constructors:
+      - name: full
+        components: [uuid, id, capex, opex, sRated, cosPhiRated, cpCharacteristic, etaConv, rotorArea, hubHeight]
+        superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+        javaDoc: "@param uuid of the input entity\n
+               @param id of this type of WEC\n
+               @param capex Captial expense for this type of WEC (typically in €)\n
+               @param opex Operating expense for this type of WEC (typically in €)\n
+               @param cosPhiRated Power factor for this type of WEC\n
+               @param cpCharacteristic Betz curve of this type\n
+               @param etaConv Efficiency of converter for this type of WEC (typically in %)\n
+               @param sRated Rated apparent power for this type of WEC (typically in kVA)\n
+               @param rotorArea Swept Area of blades for this type of WEC (typically in m²)\n
+               @param hubHeight Height from ground to center of rotor for this type of WEC (typically in m)"
+      - name: full
+        components: [uuid, id, capex, opex, cosPhiRated, cpCharacteristic, etaConv, sRated, rotorArea, hubHeight, additionalInformation]
+        superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+        javaDoc: "@param uuid of the input entity\n
+               @param id of this type of WEC\n
+               @param capex Captial expense for this type of WEC (typically in €)\n
+               @param opex Operating expense for this type of WEC (typically in €)\n
+               @param cosPhiRated Power factor for this type of WEC\n
+               @param cpCharacteristic Betz curve of this type\n
+               @param etaConv Efficiency of converter for this type of WEC (typically in %)\n
+               @param sRated Rated apparent power for this type of WEC (typically in kVA)\n
+               @param rotorArea Swept Area of blades for this type of WEC (typically in m²)\n
+               @param hubHeight Height from ground to center of rotor for this type of WEC (typically in m)\n
+               @param additionalInformation Of the input"
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: false
+        parameters:
+          - name: factor
+            type: double
+        expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); rotorArea(getRotorArea().multiply(factor));
+    nonCapitalizedGetters: [sRated]
 
 
 

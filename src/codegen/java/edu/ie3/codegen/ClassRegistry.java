@@ -97,7 +97,8 @@ public final class ClassRegistry {
             "ElectricConductance",
             "Power",
             "Energy",
-            "Angle")
+            "Angle",
+            "Area")
         .forEach(name -> registry.put(name, ClassName.get("javax.measure.quantity", name)));
 
     Stream.of(
