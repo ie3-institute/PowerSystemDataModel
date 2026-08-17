@@ -390,7 +390,12 @@ final class ModelGenerator implements HelperMethods {
       index++;
     }
 
-    builder.addStatement("    + \", additionalInformation=\" + getAdditionalInformation()\n+ '}'");
+    if (components.contains("additionalInformation")) {
+      builder.addStatement(
+          "    + \", additionalInformation=\" + getAdditionalInformation()\n+ '}'");
+    } else {
+      builder.addStatement("    + '}'");
+    }
 
     return builder.build();
   }

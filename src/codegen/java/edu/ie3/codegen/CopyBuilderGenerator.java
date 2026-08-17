@@ -35,7 +35,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
   }
 
   public MethodSpec generateCopyMethod() {
-    ClassName builderClass = copyBuilderClassName(model, genConfig);
+    ClassName builderClass = copyBuilderClassName(model);
 
     boolean hasParent = model.extendsName != null && !model.extendsName.isBlank();
 
@@ -63,8 +63,8 @@ public final class CopyBuilderGenerator implements HelperMethods {
     return ClassName.get(genConfig.packageName, model.name);
   }
 
-  private static ClassName copyBuilderClassName(ModelDefinition model, GenerationConfig genConfig) {
-    return ClassName.get(genConfig.packageName, model.name, copyBuilderName(model));
+  private static ClassName copyBuilderClassName(ModelDefinition model) {
+    return ClassName.get("", copyBuilderName(model));
   }
 
   private static String builderGetterName(
@@ -74,7 +74,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
 
   private TypeSpec generateAbstractCopyBuilder() {
     ClassName modelClass = modelClassName(model, genConfig);
-    ClassName builderClass = copyBuilderClassName(model, genConfig);
+    ClassName builderClass = copyBuilderClassName(model);
 
     TypeVariableName builderTypeVariable = TypeVariableName.get("B");
 
@@ -137,7 +137,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
               .build());
 
     } else {
-      ClassName parentBuilderClass = copyBuilderClassName(parent, genConfig);
+      ClassName parentBuilderClass = copyBuilderClassName(parent);
 
       TypeName parentBuilderType =
           ParameterizedTypeName.get(parentBuilderClass, builderTypeVariable);
@@ -163,7 +163,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
   }
 
   private TypeSpec generateConcreteCopyBuilder() {
-    ClassName builderClass = copyBuilderClassName(model, genConfig);
+    ClassName builderClass = copyBuilderClassName(model);
 
     TypeSpec.Builder builder =
         TypeSpec.classBuilder(copyBuilderName(model))
@@ -172,7 +172,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
     ModelDefinition parent = findParentModel(model);
 
     if (parent != null) {
-      ClassName parentBuilderClass = copyBuilderClassName(parent, genConfig);
+      ClassName parentBuilderClass = copyBuilderClassName(parent);
 
       TypeName parentBuilderType = ParameterizedTypeName.get(parentBuilderClass, builderClass);
 

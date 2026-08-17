@@ -20,12 +20,30 @@ public class ResolverUtils {
   private static final Map<String, String> defaultExpressions = new HashMap<>();
   private static final Map<String, CustomType> customTypes = new HashMap<>();
 
+  public static boolean containsClass(String name) {
+    return classes.containsKey(name);
+  }
+
   public static ClassName resolveClassName(String name) {
     if (classes.containsKey(name)) {
       return classes.get(name);
     }
 
     throw new IllegalArgumentException("Couldn't find class path definition for name: " + name);
+  }
+
+  public static ClassName resolveClassName(String name, String currentPackage) {
+    if (classes.containsKey(name)) {
+      return classes.get(name);
+    }
+
+    if (!name.contains(".")) {
+      return ClassName.get(currentPackage, name);
+    }
+
+    int lastDot = name.lastIndexOf('.');
+
+    return ClassName.get(name.substring(0, lastDot), name.substring(lastDot + 1));
   }
 
   public static Optional<String> getDefaultExpression(String type) {
@@ -46,6 +64,22 @@ public class ResolverUtils {
     }
 
     return resolveClassName(name);
+  }
+
+  public static TypeName resolveType(String name, String currentPackage) {
+    if (customTypes.containsKey(name)) {
+      CustomType type = customTypes.get(name);
+
+      if (type.genericArguments.isEmpty()) {
+        return type.name;
+      }
+
+      TypeName[] genericArguments = type.genericArguments.toArray(TypeName[]::new);
+
+      return ParameterizedTypeName.get(type.name, genericArguments);
+    }
+
+    return resolveClassName(name, currentPackage);
   }
 
   private static void add(Class<?> clazz) {
@@ -271,6 +305,7 @@ public class ResolverUtils {
   static void addDefaultExpressions() {
     defaultExpressions.put("UUID", "UUID.randomUUID()");
     defaultExpressions.put("Map", "new HashMap<>()");
+    defaultExpressions.put("StringMap", "new HashMap<>()");
     defaultExpressions.put("List", "new ArrayList<>()");
     defaultExpressions.put("OperatorInput", "OperatorInput.NO_OPERATOR_ASSIGNED");
     defaultExpressions.put("OperationTime", "OperationTime.notLimited()");
