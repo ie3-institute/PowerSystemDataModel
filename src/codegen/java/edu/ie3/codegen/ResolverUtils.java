@@ -56,6 +56,7 @@ public class ResolverUtils {
   static {
     registerJavaClasses();
     registerOwnClasses();
+    registerOtherClasses();
     registerQuantities();
     registerCustomTypes();
     addDefaultExpressions();
@@ -63,16 +64,12 @@ public class ResolverUtils {
 
   static void registerJavaClasses() {
     Stream.of(
-            Serializable.class,
-            String.class,
-            Collections.class,
-            UUID.class,
-            List.class,
-            double.class,
-            int.class,
-            boolean.class)
+            Serializable.class, String.class, Collections.class, UUID.class, List.class, Map.class)
         .forEach(ResolverUtils::add);
-    classes.put("bool", ClassName.get(boolean.class));
+
+    classes.put("bool", ClassName.get("", "boolean"));
+    classes.put("int", ClassName.get("", "int"));
+    classes.put("double", ClassName.get("", "double"));
   }
 
   static void registerOwnClasses() {
@@ -93,15 +90,34 @@ public class ResolverUtils {
     Stream.of("Entity", "Operable", "OperationTime", "StandardUnits", "UniqueEntity", "Uniqueness")
         .forEach(name -> classes.put(name, ClassName.get("edu.ie3.datamodel.models", name)));
 
+    classes.put(
+        "VoltageLevel", ClassName.get("edu.ie3.datamodel.models.voltagelevels", "VoltageLevel"));
+
     // model.input package
     Stream.of(
             "AssetInput",
             "AssetTypeInput",
             "EmInput",
+            "InputEntity",
             "NodeInput",
             "OperatorInput",
             "UniqueInputEntity")
         .forEach(name -> classes.put(name, ClassName.get("edu.ie3.datamodel.models.input", name)));
+
+    classes.put(
+        "OlmCharacteristicInput",
+        ClassName.get(
+            "edu.ie3.datamodel.models.input.system.characteristic", "OlmCharacteristicInput"));
+    classes.put(
+        "ReactivePowerCharacteristic",
+        ClassName.get(
+            "edu.ie3.datamodel.models.input.system.characteristic", "ReactivePowerCharacteristic"));
+
+    // model.input.conector package
+    Stream.of("ConnectorInput", "TransformerInput")
+        .forEach(
+            name ->
+                classes.put(name, ClassName.get("edu.ie3.datamodel.models.input.conector", name)));
 
     // model.input.conector.type package
     Stream.of("LineTypeInput", "Transformer2WTypeInput", "Transformer3WTypeInput")
@@ -109,6 +125,12 @@ public class ResolverUtils {
             name ->
                 classes.put(
                     name, ClassName.get("edu.ie3.datamodel.models.input.conector.type", name)));
+
+    // participant
+    Stream.of("SystemParticipantInput")
+        .forEach(
+            name ->
+                classes.put(name, ClassName.get("edu.ie3.datamodel.models.input.system", name)));
 
     // participant types
     Stream.of(
@@ -141,13 +163,21 @@ public class ResolverUtils {
         "PowerProfileKey", ClassName.get("edu.ie3.datamodel.models.profile", "PowerProfileKey"));
 
     // thermal
-    Stream.of("ThermalBusInput", "ThermalStorageInput")
+    Stream.of(
+            "ThermalBusInput",
+            "ThermalStorageInput",
+            "ThermalInput",
+            "ThermalUnitInput",
+            "AbstractStorageInput",
+            "ThermalSinkInput")
         .forEach(
             name ->
                 classes.put(name, ClassName.get("edu.ie3.datamodel.models.input.thermal", name)));
   }
 
   static void registerQuantities() {
+    classes.put("ComparableQuantity", ClassName.get("tech.units.indriya", "ComparableQuantity"));
+
     Stream.of("Dimensionless", "Percent")
         .forEach(
             name -> classes.put(name, ClassName.get("javax.measure.quantity", "Dimensionless")));
@@ -195,8 +225,13 @@ public class ResolverUtils {
             name -> classes.put(name, ClassName.get("edu.ie3.util.quantities.interfaces", name)));
   }
 
+  static void registerOtherClasses() {
+    Stream.of("Point", "LineString")
+        .forEach(name -> classes.put(name, ClassName.get("org.locationtech.jts.geom", name)));
+  }
+
   static void registerCustomTypes() {
-    customTypes.put("StringMap", new CustomType("Map", List.of("String, String")));
+    customTypes.put("StringMap", new CustomType("Map", List.of("String", "String")));
     customTypes.put("NodeList", new CustomType("List", List.of("NodeInput")));
 
     Stream.of(
@@ -220,27 +255,21 @@ public class ResolverUtils {
             "ThermalConductance",
             "HeatCapacity")
         .forEach(
-            name ->
-                customTypes.put(
-                    name, new CustomType("tech.units.indriya.ComparableQuantity", List.of(name))));
+            name -> customTypes.put(name, new CustomType("ComparableQuantity", List.of(name))));
 
     Stream.of("DegreeGeom")
         .forEach(
-            name ->
-                customTypes.put(
-                    name,
-                    new CustomType("tech.units.indriya.ComparableQuantity", List.of("Angle"))));
+            name -> customTypes.put(name, new CustomType("ComparableQuantity", List.of("Angle"))));
 
     Stream.of("Dimensionless", "Percent")
         .forEach(
             name ->
                 customTypes.put(
-                    name,
-                    new CustomType(
-                        "tech.units.indriya.ComparableQuantity", List.of("Dimensionless"))));
+                    name, new CustomType("ComparableQuantity", List.of("Dimensionless"))));
   }
 
   static void addDefaultExpressions() {
+    defaultExpressions.put("UUID", "UUID.randomUUID()");
     defaultExpressions.put("Map", "new HashMap<>()");
     defaultExpressions.put("List", "new ArrayList<>()");
     defaultExpressions.put("OperatorInput", "OperatorInput.NO_OPERATOR_ASSIGNED");
