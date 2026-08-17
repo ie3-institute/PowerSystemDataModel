@@ -653,18 +653,96 @@ models:
         type: Length
         javaDoc: "."
 
+  ThermalInput:
+    name: ThermalInput
+    package: edu.ie3.datamodel.models.input.thermal
+    extends: AssetInput
 
+  ThermalUnitInput:
+    name: ThermalUnitInput
+    package: edu.ie3.datamodel.models.input.thermal
+    extends: ThermalInput
+    components:
+      - name: thermalBus
+        type: ThermalBusInput
+        javaDoc: "The thermal bus, a thermal unit is connected to."
 
+  ThermalStorageInput:
+    name: ThermalStorageInput
+    package: edu.ie3.datamodel.models.input.thermal
+    extends: ThermalUnitInput
 
+  AbstractStorageInput:
+    name: AbstractStorageInput
+    package: edu.ie3.datamodel.models.input.thermal
+    extends: ThermalStorageInput
+    components:
+      - name: storageVolumeLvl
+        type: Volume
+        javaDoc: "Available storage volume (typically in m³)."
+      - name: inletTemp
+        type: Temperature
+        javaDoc: "Temperature of the inlet (typically in C)."
+      - name: returnTemp
+        type: Temperature
+        javaDoc: "Temperature of the outlet (typically in C)."
+      - name: c
+        type: SpecificHeatCapacity
+        javaDoc: "Specific heat capacity of the storage medium (typically in kWh/K*m³)."
+      - name: pThermalMax
+        type: Power
+        javaDoc: "Maximum permissible thermal power (typically in kW)."
 
+  CylindricalStorageInput:
+    name: CylindricalStorageInput
+    package: edu.ie3.datamodel.models.input.thermal
+    extends: AbstractStorageInput
+    class: true
 
+  DomesticHotWaterStorageInput:
+    name: DomesticHotWaterStorageInput
+    package: edu.ie3.datamodel.models.input.thermal
+    extends: AbstractStorageInput
+    class: true
 
+  ThermalBusInput:
+    name: ThermalBusInput
+    package: edu.ie3.datamodel.models.input.thermal
+    extends: ThermalInput
+    class: true
 
+  ThermalSinkInput:
+    name: ThermalSinkInput
+    package: edu.ie3.datamodel.models.input.thermal
+    extends: ThermalUnitInput
 
-
-
-
-
+  ThermalHouseInput:
+    name: ThermalHouseInput
+    package: edu.ie3.datamodel.models.input.thermal
+    extends: ThermalSinkInput
+    class: true
+    components:
+      - name: ethLosses
+        type: ThermalConductance
+        javaDoc: "Thermal, transitional losses of the included thermal house model (typically in kW/K)."
+      - name: ethCapa
+        type: HeatCapacity
+        javaDoc: "Thermal capacity of the included thermal house model (typically in kWh/K)."
+      - name: targetTemperature
+        type: Temperature
+        javaDoc: "Desired target temperature of the thermal house model (typically in °C)."
+      - name: upperTemperatureLimit
+        type: Temperature
+        javaDoc: "Upper boundary temperature of the thermal house model (typically in °C)."
+      - name: lowerTemperatureLimit
+        type: Temperature
+        javaDoc: "Lower boundary temperature of the thermal house model (typically in °C)."
+      - name: housingType
+        type: String
+        javaDoc: "Type of the building, e.g. house or flat."
+      - name: numberInhabitants
+        type: double
+        javaDoc: "Number of people living in the building, double to allow proper scaling."
 
 
 

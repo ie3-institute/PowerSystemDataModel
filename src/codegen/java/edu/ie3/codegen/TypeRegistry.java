@@ -141,7 +141,12 @@ public final class TypeRegistry {
             "Currency",
             "DimensionlessRate",
             "SpecificEnergy",
-            "Area")
+            "Area",
+            "Volume",
+            "Temperature",
+            "SpecificHeatCapacity",
+            "ThermalConductance",
+            "HeatCapacity")
         .forEach(
             name ->
                 registry.put(

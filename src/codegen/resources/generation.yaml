@@ -1960,7 +1960,300 @@ models:
         expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); rotorArea(getRotorArea().multiply(factor));
     nonCapitalizedGetters: [sRated]
 
+  ThermalInput:
+    classJavaDoc: "Abstract class as a common super class of all thermal input models."
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime]
+        superArgs: [uuid, id, operator, operationTime]
+        javaDoc: "Constructor for a thermal input model.\n
+               \n
+               @param uuid Unique identifier\n
+               @param id Human readable identifier\n
+               @param operator Reference to the operator\n
+               @param operationTime Time frame, within the asset is in operation"
+      - name: minimal
+        components: [uuid, id]
+        superArgs: [uuid, id]
+        javaDoc: "Constructor for a thermal input model.\n
+               \n
+               @param uuid Unique identifier\n
+               @param id Human readable identifier"
 
+  ThermalUnitInput:
+    classJavaDoc: "Abstract class for grouping all common properties to thermal models."
+    inherits: [HasThermalBus]
+    constructors:
+      - name: minimal
+        components: [uuid, id, thermalBus]
+        superArgs: [uuid, id]
+        javaDoc: "@param uuid Unique identifier of a certain thermal input\n
+               @param id Identifier of the thermal unit\n
+               @param thermalBus thermal bus, a thermal unit is connected to"
+      - name: full
+        components: [uuid, id, operator, operationTime, thermalBus]
+        superArgs: [uuid, id, operator, operationTime]
+        javaDoc: "@param uuid Unique identifier of a certain thermal input\n
+               @param id Identifier of the thermal unit\n
+               @param operator operator of the asset\n
+               @param operationTime operation time of the asset\n
+               @param thermalBus thermal bus, a thermal unit is connected to"
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: true
+        parameters:
+          - name: factor
+            type: double
 
+  ThermalStorageInput:
+    classJavaDoc: "Common properties to all thermal storage devices."
+    constructors:
+      - name: minimal
+        components: [uuid, id, thermalBus]
+        superArgs: [uuid, id, thermalBus]
+        javaDoc: "@param uuid Unique identifier of a certain thermal storage input model\n
+               @param id Identifier of the thermal unit\n
+               @param thermalBus Thermal bus, a thermal unit is connected to"
+      - name: full
+        components: [uuid, id, operator, operationTime, thermalBus]
+        superArgs: [uuid, id, operator, operationTime, thermalBus]
+        javaDoc: "@param uuid Unique identifier of a certain thermal storage input model\n
+               @param id Identifier of the thermal unit\n
+               @param operator operator of the asset\n
+               @param operationTime operation time of the asset\n
+               @param thermalBus Thermal bus, a thermal unit is connected to"
+
+  AbstractStorageInput:
+    classJavaDoc: "Thermal storage with cylindrical shape."
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+        superArgs: [uuid, id, operator, operationTime, thermalBus]
+        javaDoc: "@param uuid Unique identifier of a cylindrical storage\n
+               @param id Identifier of the thermal unit\n
+               @param operator operator of the asset\n
+               @param operationTime operation time of the asset\n
+               @param thermalBus Thermal bus, a thermal unit is connected to\n
+               @param storageVolumeLvl Available storage volume\n
+               @param inletTemp Temperature of the inlet\n
+               @param returnTemp Temperature of the outlet\n
+               @param c Specific heat capacity of the storage medium\n
+               @param pThermalMax Maximum thermal power of the storage"
+      - name: minimal
+        components: [uuid, id, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+        superArgs: [uuid, id, thermalBus]
+        javaDoc: "@param uuid Unique identifier of a cylindrical storage\n
+               @param id Identifier of the thermal unit\n
+               @param thermalBus Thermal bus, a thermal unit is connected to\n
+               @param storageVolumeLvl Available storage volume\n
+               @param inletTemp Temperature of the inlet\n
+               @param returnTemp Temperature of the outlet\n
+               @param c Specific heat capacity of the storage medium\n
+               @param pThermalMax Maximum thermal power of the storage"
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: false
+        parameters:
+          - name: factor
+            type: double
+        expression: storageVolumeLvl(storageVolumeLvl.multiply(factor)); pThermalMax(pThermalMax.multiply(factor))
+    nonCapitalizedGetters: [pThermalMax]
+
+  CylindricalStorageInput:
+    classJavaDoc: "Thermal storage with cylindrical shape."
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+        superArgs: [uuid, id, operator, operationTime, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+        javaDoc: "@param uuid Unique identifier of a cylindrical storage\n
+               @param id Identifier of the thermal unit\n
+               @param operator operator of the asset\n
+               @param operationTime operation time of the asset\n
+               @param thermalBus Thermal bus, a thermal unit is connected to\n
+               @param storageVolumeLvl Available storage volume\n
+               @param inletTemp Temperature of the inlet\n
+               @param returnTemp Temperature of the outlet\n
+               @param c Specific heat capacity of the storage medium\n
+               @param pThermalMax Maximum thermal power of the storage"
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, operator, operationTime, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax, additionalInformation]
+        superArgs: [uuid, id, operator, operationTime, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+        javaDoc: "@param uuid Unique identifier of a cylindrical storage\n
+               @param id Identifier of the thermal unit\n
+               @param operator operator of the asset\n
+               @param operationTime operation time of the asset\n
+               @param thermalBus Thermal bus, a thermal unit is connected to\n
+               @param storageVolumeLvl Available storage volume\n
+               @param inletTemp Temperature of the inlet\n
+               @param returnTemp Temperature of the outlet\n
+               @param c Specific heat capacity of the storage medium\n
+               @param pThermalMax Maximum thermal power of the storage\n
+               @param additionalInformation That were provided by the source"
+      - name: minimal
+        components: [uuid, id, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+        superArgs: [uuid, id, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+        javaDoc: "@param uuid Unique identifier of a cylindrical storage\n
+               @param id Identifier of the thermal unit\n
+               @param thermalBus Thermal bus, a thermal unit is connected to\n
+               @param storageVolumeLvl Available storage volume\n
+               @param inletTemp Temperature of the inlet\n
+               @param returnTemp Temperature of the outlet\n
+               @param c Specific heat capacity of the storage medium\n
+               @param pThermalMax Maximum thermal power of the storage"
+    nonCapitalizedGetters: [pThermalMax]
+
+  DomesticHotWaterStorageInput:
+    classJavaDoc: "Thermal storage with cylindrical shape for domestic hot water."
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+        superArgs: [uuid, id, operator, operationTime, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+        javaDoc: "Constructor for DomesticHotWaterStorageInput.\n
+               \n
+               @param uuid Unique identifier of a certain domestic hot water storage\n
+               @param id Identifier of the thermal unit\n
+               @param operator operator of the asset\n
+               @param operationTime operation time of the asset\n
+               @param thermalBus Thermal bus, a thermal unit is connected to\n
+               @param storageVolumeLvl Available storage volume\n
+               @param inletTemp Temperature of the inlet\n
+               @param returnTemp Temperature of the outlet\n
+               @param c Specific heat capacity of the storage medium\n
+               @param pThermalMax Maximum thermal power of the storage"
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, operator, operationTime, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax, additionalInformation]
+        superArgs: [uuid, id, operator, operationTime, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+        javaDoc: "Constructor for DomesticHotWaterStorageInput.\n
+               \n
+               @param uuid Unique identifier of a certain domestic hot water storage\n
+               @param id Identifier of the thermal unit\n
+               @param operator operator of the asset\n
+               @param operationTime operation time of the asset\n
+               @param thermalBus Thermal bus, a thermal unit is connected to\n
+               @param storageVolumeLvl Available storage volume\n
+               @param inletTemp Temperature of the inlet\n
+               @param returnTemp Temperature of the outlet\n
+               @param c Specific heat capacity of the storage medium\n
+               @param pThermalMax Maximum thermal power of the storage\n
+               @param additionalInformation That were provided by the source"
+      - name: minimal
+        components: [uuid, id, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+        superArgs: [uuid, id, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+        javaDoc: "Constructor for DomesticHotWaterStorageInput.\n
+               \n
+               @param uuid Unique identifier of a certain domestic hot water storage\n
+               @param id Identifier of the thermal unit\n
+               @param thermalBus Thermal bus, a thermal unit is connected to\n
+               @param storageVolumeLvl Available storage volume\n
+               @param inletTemp Temperature of the inlet\n
+               @param returnTemp Temperature of the outlet\n
+               @param c Specific heat capacity of the storage medium\n
+               @param pThermalMax Maximum thermal power of the storage"
+    nonCapitalizedGetters: [pThermalMax]
+
+  ThermalBusInput:
+    classJavaDoc: "A thermal bus, to which different {@link ThermalUnitInput} units may be connected."
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime]
+        superArgs: [uuid, id, operator, operationTime]
+        javaDoc: "Constructor for an operated thermal bus.\n
+               \n
+               @param uuid Unique identifier of a certain thermal bus\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated"
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, operator, operationTime, additionalInformation]
+        superArgs: [uuid, id, operator, operationTime]
+        javaDoc: "Constructor for an operated thermal bus.\n
+               \n
+               @param uuid Unique identifier of a certain thermal bus\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param additionalInformation Of the input"
+      - name: minimal
+        components: [uuid, id]
+        superArgs: [uuid, id]
+        javaDoc: "Constructor for an operated, always on thermal bus.\n
+               \n
+               @param uuid Unique identifier of a certain thermal bus\n
+               @param id of the asset"
+
+  ThermalSinkInput:
+    classJavaDoc: "Common properties to all thermal sinks."
+    constructors:
+      - name: minimal
+        components: [ uuid, id, thermalBus ]
+        superArgs: [ uuid, id, thermalBus ]
+        javaDoc: "@param uuid Unique identifier of a thermal sink input model\n
+               @param id Identifier of the thermal unit\n
+               @param thermalBus Thermal bus, a thermal unit is connected to"
+      - name: full
+        components: [ uuid, id, operator, operationTime, thermalBus ]
+        superArgs: [ uuid, id, operator, operationTime, thermalBus ]
+        javaDoc: "@param uuid Unique identifier of a thermal sink input model\n
+               @param id Identifier of the thermal unit\n
+               @param operator operator of the asset\n
+               @param operationTime operation time of the asset\n
+               @param thermalBus Thermal bus, a thermal unit is connected to"
+
+  ThermalHouseInput:
+    classJavaDoc: "Quite simple thermal model of a house to serve as a heat sink."
+    constructors:
+      - name: minimal
+        components: [uuid, id, thermalBus, ethLosses, ethCapa, targetTemperature, upperTemperatureLimit, lowerTemperatureLimit, housingType, numberInhabitants]
+        superArgs: [uuid, id, thermalBus]
+        javaDoc: "@param uuid Unique identifier of a thermal house model\n
+               @param id Identifier of the model\n
+               @param thermalBus Thermal bus, the model is connected to\n
+               @param ethLosses Thermal, transitional losses of the included thermal house model\n
+               @param ethCapa Thermal capacity of the included thermal house model\n
+               @param targetTemperature Desired target temperature of the thermal house model\n
+               @param upperTemperatureLimit Upper boundary temperature of the thermal house model\n
+               @param lowerTemperatureLimit Lower boundary temperature of the thermal house model\n
+               @param housingType Type of the building: either house or flat\n
+               @param numberInhabitants Number of inhabitants living in this house"
+      - name: full
+        components: [uuid, id, operator, operationTime, thermalBus, ethLosses, ethCapa, targetTemperature, upperTemperatureLimit, lowerTemperatureLimit, housingType, numberInhabitants]
+        superArgs: [uuid, id, operator, operationTime, thermalBus]
+        javaDoc: "@param uuid Unique identifier of a thermal house model\n
+               @param id Identifier of the model\n
+               @param operator operator of the asset\n
+               @param operationTime operation time of the asset\n
+               @param thermalBus Thermal bus, the model is connected to\n
+               @param ethLosses Thermal, transitional losses of the included thermal house model\n
+               @param ethCapa Thermal capacity of the included thermal house model\n
+               @param targetTemperature Desired target temperature of the thermal house model\n
+               @param upperTemperatureLimit Upper boundary temperature of the thermal house model\n
+               @param lowerTemperatureLimit Lower boundary temperature of the thermal house model\n
+               @param housingType Type of the building: either house or flat\n
+               @param numberInhabitants Number of inhabitants living in this house"
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, operator, operationTime, thermalBus, ethLosses, ethCapa, targetTemperature, upperTemperatureLimit, lowerTemperatureLimit, housingType, numberInhabitants, additionalInformation]
+        superArgs: [uuid, id, operator, operationTime, thermalBus]
+        javaDoc: "@param uuid Unique identifier of a thermal house model\n
+               @param id Identifier of the model\n
+               @param operator operator of the asset\n
+               @param operationTime operation time of the asset\n
+               @param thermalBus Thermal bus, the model is connected to\n
+               @param ethLosses Thermal, transitional losses of the included thermal house model\n
+               @param ethCapa Thermal capacity of the included thermal house model\n
+               @param targetTemperature Desired target temperature of the thermal house model\n
+               @param upperTemperatureLimit Upper boundary temperature of the thermal house model\n
+               @param lowerTemperatureLimit Lower boundary temperature of the thermal house model\n
+               @param housingType Type of the building: either house or flat\n
+               @param numberInhabitants Number of inhabitants living in this house\n
+               @param additionalInformation Of the input"
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: false
+        parameters:
+          - name: factor
+            type: double
+        expression: ethLosses(ethLosses.multiply(factor)); ethCapa(ethCapa.multiply(factor)); numberInhabitants(numberInhabitants * factor)
+        comment: "scale losses as well as capacity and number of inhabitants to keep equal\n
+                // the time needed to heat a scaled house"
 
 

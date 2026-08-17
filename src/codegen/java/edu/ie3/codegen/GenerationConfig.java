@@ -86,6 +86,7 @@ public final class GenerationConfig implements HelperMethods {
     public String expression;
     public String className;
     public String javaDoc = "";
+    public String comment = "";
     public List<Parameter> parameters = new ArrayList<>();
 
     public static final class Parameter {
