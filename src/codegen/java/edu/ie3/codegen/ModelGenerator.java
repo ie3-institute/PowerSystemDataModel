@@ -6,6 +6,8 @@
 package edu.ie3.codegen;
 
 import static edu.ie3.codegen.HelperMethods.*;
+import static edu.ie3.codegen.ResolverUtils.resolveClassName;
+import static edu.ie3.codegen.ResolverUtils.resolveType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -71,15 +73,15 @@ final class ModelGenerator implements HelperMethods {
     }
 
     if (model.extendsName != null && !model.extendsName.isBlank()) {
-      typeBuilder.superclass(resolveClassName(model.extendsName, genConfig.packageName));
+      typeBuilder.superclass(resolveClassName(model.extendsName));
     }
 
     for (String interfaceName : genConfig.inherits) {
-      typeBuilder.addSuperinterface(resolveClassName(interfaceName, genConfig.packageName));
+      typeBuilder.addSuperinterface(resolveClassName(interfaceName));
     }
 
-    typeBuilder.addFields(getStaticFields(model, genConfig));
-    typeBuilder.addFields(getPrivateFields(model, genConfig));
+    typeBuilder.addFields(getStaticFields(genConfig));
+    typeBuilder.addFields(getPrivateFields(model));
 
     ConstructorGenerator constructorGenerator = new ConstructorGenerator(model, genConfig, models);
     CopyBuilderGenerator copyBuilderGenerator = new CopyBuilderGenerator(model, genConfig, models);
@@ -91,13 +93,13 @@ final class ModelGenerator implements HelperMethods {
     for (GenerationConfig.MethodOverride override : genConfig.methodOverrides) {
       var methodBuilder =
           MethodSpec.methodBuilder(override.name)
-              .returns(resolveType(override.type, genConfig.packageName))
+              .returns(resolveType(override.type))
               .addAnnotation(Override.class)
               .addModifiers(Modifier.PUBLIC);
 
       if (override.className != null && !override.className.isBlank()) {
         methodBuilder.addStatement(
-            "return $T." + override.expression, getClassName(override.className));
+            "return $T." + override.expression, resolveClassName(override.className));
       } else {
         methodBuilder.addStatement("return " + override.expression);
       }
@@ -108,7 +110,7 @@ final class ModelGenerator implements HelperMethods {
     for (GenerationConfig.MethodInsert insert : genConfig.methodInserts) {
       var methodBuilder =
           MethodSpec.methodBuilder(insert.name)
-              .returns(resolveType(insert.type, genConfig.packageName))
+              .returns(resolveType(insert.type))
               .addModifiers(Modifier.PUBLIC);
 
       if (insert.isAbstract) {
@@ -117,7 +119,7 @@ final class ModelGenerator implements HelperMethods {
       } else {
         if (insert.className != null && !insert.className.isBlank()) {
           methodBuilder.addStatement(
-              "return $T." + insert.expression, getClassName(insert.className));
+              "return $T." + insert.expression, resolveClassName(insert.className));
         } else {
           methodBuilder.addStatement("return " + insert.expression);
         }
@@ -146,14 +148,13 @@ final class ModelGenerator implements HelperMethods {
         .writeTo(outputDirectory);
   }
 
-  private static List<FieldSpec> getStaticFields(
-      ModelDefinition model, GenerationConfig genConfig) {
+  private static List<FieldSpec> getStaticFields(GenerationConfig genConfig) {
     return genConfig.staticFields.stream()
         .map(
             staticField -> {
               FieldSpec.Builder builder =
                   FieldSpec.builder(
-                      resolveType(staticField.type, genConfig.packageName),
+                      resolveType(staticField.type),
                       staticField.name,
                       Modifier.PUBLIC,
                       Modifier.STATIC,
@@ -165,7 +166,7 @@ final class ModelGenerator implements HelperMethods {
 
               if (staticField.className != null) {
                 builder.initializer(
-                    "$T.$L", getClassName(staticField.className), staticField.expression);
+                    "$T.$L", resolveClassName(staticField.className), staticField.expression);
               } else {
                 builder.initializer("$L", staticField.expression);
               }
@@ -175,14 +176,13 @@ final class ModelGenerator implements HelperMethods {
         .toList();
   }
 
-  private static List<FieldSpec> getPrivateFields(
-      ModelDefinition model, GenerationConfig genConfig) {
+  private static List<FieldSpec> getPrivateFields(ModelDefinition model) {
     return model.components.stream()
         .map(
             component -> {
               var builder =
                   FieldSpec.builder(
-                      resolveType(component.type, genConfig.packageName),
+                      resolveType(component.type),
                       component.name,
                       Modifier.PRIVATE,
                       Modifier.FINAL);
@@ -206,7 +206,7 @@ final class ModelGenerator implements HelperMethods {
 
           String getter =
               defaultGetterName(component.name, component.type, genConfig.nonCapitalizedGetters);
-          TypeName returnType = resolveType(component.type, genConfig.packageName);
+          TypeName returnType = resolveType(component.type);
 
           var builder = MethodSpec.methodBuilder(getter).addModifiers(Modifier.PUBLIC);
 

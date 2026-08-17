@@ -6,6 +6,8 @@
 package edu.ie3.codegen;
 
 import static edu.ie3.codegen.HelperMethods.*;
+import static edu.ie3.codegen.ResolverUtils.resolveClassName;
+import static edu.ie3.codegen.ResolverUtils.resolveType;
 
 import com.squareup.javapoet.*;
 import java.util.*;
@@ -103,8 +105,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
               .addModifiers(Modifier.PUBLIC);
 
       for (GenerationConfig.CopyBuilderMethods.Parameter parameter : insert.parameters) {
-        methodBuilder.addParameter(
-            resolveType(parameter.type, genConfig.packageName), parameter.name);
+        methodBuilder.addParameter(resolveType(parameter.type), parameter.name);
       }
 
       if (insert.isAbstract) {
@@ -113,7 +114,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
       } else {
         if (insert.className != null && !insert.className.isBlank()) {
           methodBuilder.addStatement(
-              "return $T." + insert.expression, getClassName(insert.className));
+              "return $T." + insert.expression, resolveClassName(insert.className));
         } else {
           methodBuilder.addStatement("return " + insert.expression);
         }
@@ -197,8 +198,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
               .addAnnotation(Override.class);
 
       for (GenerationConfig.CopyBuilderMethods.Parameter parameter : insert.parameters) {
-        methodBuilder.addParameter(
-            resolveType(parameter.type, genConfig.packageName), parameter.name);
+        methodBuilder.addParameter(resolveType(parameter.type), parameter.name);
       }
 
       if (!insert.javaDoc.isBlank()) {
@@ -210,7 +210,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
       }
 
       if (insert.className != null && !insert.className.isBlank()) {
-        methodBuilder.addStatement("$T." + insert.expression, getClassName(insert.className));
+        methodBuilder.addStatement("$T." + insert.expression, resolveClassName(insert.className));
       } else {
         methodBuilder.addStatement(insert.expression);
       }
@@ -235,7 +235,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
 
   private FieldSpec generateCopyBuilderField(ModelDefinition.ComponentDefinition component) {
 
-    TypeName type = resolveType(component.type, genConfig.packageName);
+    TypeName type = resolveType(component.type);
 
     return FieldSpec.builder(type, component.name, Modifier.PRIVATE).build();
   }
@@ -274,7 +274,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
   private MethodSpec generateCopyBuilderSetter(
       ModelDefinition.ComponentDefinition component, TypeName builderReturnType) {
 
-    TypeName componentType = resolveType(component.type, genConfig.packageName);
+    TypeName componentType = resolveType(component.type);
 
     MethodSpec.Builder builder =
         MethodSpec.methodBuilder(component.name)
@@ -294,7 +294,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
   }
 
   private MethodSpec generateCopyBuilderGetter(ModelDefinition.ComponentDefinition component) {
-    TypeName componentType = resolveType(component.type, genConfig.packageName);
+    TypeName componentType = resolveType(component.type);
 
     return MethodSpec.methodBuilder(builderGetterName(component, genConfig))
         .addModifiers(Modifier.PROTECTED)

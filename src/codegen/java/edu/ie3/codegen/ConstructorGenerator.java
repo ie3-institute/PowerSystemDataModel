@@ -5,13 +5,17 @@
 */
 package edu.ie3.codegen;
 
-import static edu.ie3.codegen.HelperMethods.*;
+import static edu.ie3.codegen.HelperMethods.visibleComponents;
+import static edu.ie3.codegen.ResolverUtils.resolveClassName;
+import static edu.ie3.codegen.ResolverUtils.resolveType;
 
-import com.squareup.javapoet.*;
+import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.MethodSpec;
 import edu.ie3.codegen.ModelDefinition.ComponentDefinition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.lang.model.element.Modifier;
 
 public final class ConstructorGenerator implements HelperMethods {
@@ -77,7 +81,7 @@ public final class ConstructorGenerator implements HelperMethods {
     }
 
     for (ModelDefinition.ComponentDefinition parameter : parameters) {
-      builder.addParameter(resolveType(parameter.type, genConfig.packageName), parameter.name);
+      builder.addParameter(resolveType(parameter.type), parameter.name);
     }
 
     CodeBlock superArgs;
@@ -111,11 +115,11 @@ public final class ConstructorGenerator implements HelperMethods {
       boolean isConstructorParameter =
           parameters.stream().anyMatch(parameter -> parameter.name.equals(componentName));
 
-      TypeRegistry.TypeDefinition type = TypeRegistry.get(localField.type);
-
       if (!isConstructorParameter) {
-        if (type.defaultExpression != null && !type.defaultExpression.isBlank()) {
-          builder.addStatement("this.$L = $L", componentName, type.defaultExpression);
+        Optional<String> defaultExpression = ResolverUtils.getDefaultExpression(localField.type);
+
+        if (defaultExpression.isPresent() && !defaultExpression.get().isBlank()) {
+          builder.addStatement("this.$L = $L", componentName, defaultExpression.get());
 
         } else if (!componentName.equals("additionalInformation")
             && !constructor.constructorModifications.containsKey(componentName)) {
@@ -139,21 +143,21 @@ public final class ConstructorGenerator implements HelperMethods {
                 builder.addStatement(
                     "this.$L = " + modification.expression,
                     componentName,
-                    getClassName(modification.className),
-                    getClassName(modification.unitClass));
+                    resolveClassName(modification.className),
+                    resolveClassName(modification.unitClass));
 
               } else {
                 builder.addStatement(
                     "this.$L = " + modification.expression,
                     componentName,
-                    getClassName(modification.className));
+                    resolveClassName(modification.className));
               }
 
             } else {
               builder.addStatement(
                   "this.$L = $T." + modification.expression,
                   componentName,
-                  getClassName(modification.className));
+                  resolveClassName(modification.className));
             }
 
           } else {
@@ -174,21 +178,21 @@ public final class ConstructorGenerator implements HelperMethods {
                 builder.addStatement(
                     "this.$L = " + modification.expression,
                     componentName,
-                    getClassName(modification.className),
-                    getClassName(modification.unitClass));
+                    resolveClassName(modification.className),
+                    resolveClassName(modification.unitClass));
 
               } else {
                 builder.addStatement(
                     "this.$L = " + modification.expression,
                     componentName,
-                    getClassName(modification.className));
+                    resolveClassName(modification.className));
               }
 
             } else {
               builder.addStatement(
                   "this.$L = $T." + modification.expression,
                   componentName,
-                  getClassName(modification.className));
+                  resolveClassName(modification.className));
             }
 
           } else {
@@ -204,7 +208,7 @@ public final class ConstructorGenerator implements HelperMethods {
     for (GenerationConfig.ConstructorCheck check : constructor.constructorChecks) {
 
       if (check.className != null && !check.className.isBlank()) {
-        builder.addStatement("$T." + check.expression, getClassName(check.className));
+        builder.addStatement("$T." + check.expression, resolveClassName(check.className));
       } else {
         builder.addStatement(check.expression);
       }
