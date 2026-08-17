@@ -88,6 +88,7 @@ public final class GenerationConfig implements HelperMethods {
   public static final class CopyBuilderMethods {
     public String name;
     public boolean isAbstract;
+    public boolean annotation = !isAbstract;
     public String expression;
     public String className;
     public String javaDoc = "";

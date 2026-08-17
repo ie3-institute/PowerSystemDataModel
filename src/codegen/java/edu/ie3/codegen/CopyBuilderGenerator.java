@@ -108,16 +108,25 @@ public final class CopyBuilderGenerator implements HelperMethods {
         methodBuilder.addParameter(resolveType(parameter.type), parameter.name);
       }
 
+      if (insert.annotation) {
+        methodBuilder.addAnnotation(Override.class);
+      }
+
+      if (!insert.javaDoc.isBlank()) {
+        builder.addJavadoc(insert.javaDoc);
+      }
+
       if (insert.isAbstract) {
         methodBuilder.addModifiers(Modifier.ABSTRACT);
 
       } else {
         if (insert.className != null && !insert.className.isBlank()) {
-          methodBuilder.addStatement(
-              "return $T." + insert.expression, resolveClassName(insert.className));
+          methodBuilder.addStatement("$T." + insert.expression, resolveClassName(insert.className));
         } else {
-          methodBuilder.addStatement("return " + insert.expression);
+          methodBuilder.addStatement(insert.expression);
         }
+
+        methodBuilder.addStatement("return thisInstance()");
       }
 
       builder.addMethod(methodBuilder.build());
@@ -192,10 +201,11 @@ public final class CopyBuilderGenerator implements HelperMethods {
 
     for (GenerationConfig.CopyBuilderMethods insert : genConfig.copyBuilderAdditionalMethods) {
       var methodBuilder =
-          MethodSpec.methodBuilder(insert.name)
-              .returns(builderClass)
-              .addModifiers(Modifier.PUBLIC)
-              .addAnnotation(Override.class);
+          MethodSpec.methodBuilder(insert.name).returns(builderClass).addModifiers(Modifier.PUBLIC);
+
+      if (insert.annotation) {
+        methodBuilder.addAnnotation(Override.class);
+      }
 
       for (GenerationConfig.CopyBuilderMethods.Parameter parameter : insert.parameters) {
         methodBuilder.addParameter(resolveType(parameter.type), parameter.name);

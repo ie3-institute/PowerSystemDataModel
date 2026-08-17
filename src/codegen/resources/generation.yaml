@@ -795,6 +795,14 @@ models:
         constructorChecks:
           - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC)
             className: ConnectorValidationUtils
+    copyBuilderAdditionalMethods:
+      - name: internalSlack
+        isAbstract: false
+        annotation: false
+        parameters:
+          - name: internalNodeIsSlack
+            type: bool
+        expression: this.nodeInternal = this.nodeInternal.copy().slack(internalNodeIsSlack).build()
 
   Transformer3WTypeInput:
     package: edu.ie3.datamodel.models.input.connector.type

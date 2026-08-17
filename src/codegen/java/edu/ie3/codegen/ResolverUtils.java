@@ -102,6 +102,7 @@ public class ResolverUtils {
         .forEach(ResolverUtils::add);
 
     classes.put("bool", ClassName.get("", "boolean"));
+    classes.put("boolean", ClassName.get("", "boolean"));
     classes.put("int", ClassName.get("", "int"));
     classes.put("double", ClassName.get("", "double"));
   }
@@ -151,14 +152,14 @@ public class ResolverUtils {
     Stream.of("ConnectorInput", "TransformerInput")
         .forEach(
             name ->
-                classes.put(name, ClassName.get("edu.ie3.datamodel.models.input.conector", name)));
+                classes.put(name, ClassName.get("edu.ie3.datamodel.models.input.connector", name)));
 
     // model.input.conector.type package
     Stream.of("LineTypeInput", "Transformer2WTypeInput", "Transformer3WTypeInput")
         .forEach(
             name ->
                 classes.put(
-                    name, ClassName.get("edu.ie3.datamodel.models.input.conector.type", name)));
+                    name, ClassName.get("edu.ie3.datamodel.models.input.connector.type", name)));
 
     // participant
     Stream.of("SystemParticipantInput")
