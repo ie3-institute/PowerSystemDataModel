@@ -2257,7 +2257,7 @@ models:
     classJavaDoc: "Quite simple thermal model of a house to serve as a heat sink."
     constructors:
       - name: minimal
-        components: [uuid, id, thermalBus, ethLosses, ethCapa, targetTemperature, upperTemperatureLimit, lowerTemperatureLimit, housingType, numberInhabitants]
+        components: [uuid, id, thermalBus, ethLosses, ethCapa, targetTemperature, upperTemperatureLimit, lowerTemperatureLimit, housingType, numberOfInhabitants]
         superArgs: [uuid, id, thermalBus]
         javaDoc: "@param uuid Unique identifier of a thermal house model\n
                @param id Identifier of the model\n
@@ -2268,9 +2268,9 @@ models:
                @param upperTemperatureLimit Upper boundary temperature of the thermal house model\n
                @param lowerTemperatureLimit Lower boundary temperature of the thermal house model\n
                @param housingType Type of the building: either house or flat\n
-               @param numberInhabitants Number of inhabitants living in this house"
+               @param numberOfInhabitants Number of inhabitants living in this house"
       - name: full
-        components: [uuid, id, operator, operationTime, thermalBus, ethLosses, ethCapa, targetTemperature, upperTemperatureLimit, lowerTemperatureLimit, housingType, numberInhabitants]
+        components: [uuid, id, operator, operationTime, thermalBus, ethLosses, ethCapa, targetTemperature, upperTemperatureLimit, lowerTemperatureLimit, housingType, numberOfInhabitants]
         superArgs: [uuid, id, operator, operationTime, thermalBus]
         javaDoc: "@param uuid Unique identifier of a thermal house model\n
                @param id Identifier of the model\n
@@ -2283,9 +2283,9 @@ models:
                @param upperTemperatureLimit Upper boundary temperature of the thermal house model\n
                @param lowerTemperatureLimit Lower boundary temperature of the thermal house model\n
                @param housingType Type of the building: either house or flat\n
-               @param numberInhabitants Number of inhabitants living in this house"
+               @param numberOfInhabitants Number of inhabitants living in this house"
       - name: fullWithAdditionalInformation
-        components: [uuid, id, operator, operationTime, thermalBus, ethLosses, ethCapa, targetTemperature, upperTemperatureLimit, lowerTemperatureLimit, housingType, numberInhabitants, additionalInformation]
+        components: [uuid, id, operator, operationTime, thermalBus, ethLosses, ethCapa, targetTemperature, upperTemperatureLimit, lowerTemperatureLimit, housingType, numberOfInhabitants, additionalInformation]
         superArgs: [uuid, id, operator, operationTime, thermalBus]
         javaDoc: "@param uuid Unique identifier of a thermal house model\n
                @param id Identifier of the model\n
@@ -2298,7 +2298,7 @@ models:
                @param upperTemperatureLimit Upper boundary temperature of the thermal house model\n
                @param lowerTemperatureLimit Lower boundary temperature of the thermal house model\n
                @param housingType Type of the building: either house or flat\n
-               @param numberInhabitants Number of inhabitants living in this house\n
+               @param numberOfInhabitants Number of inhabitants living in this house\n
                @param additionalInformation Of the input"
     copyBuilderAdditionalMethods:
       - name: scale
@@ -2306,7 +2306,7 @@ models:
         parameters:
           - name: factor
             type: double
-        expression: ethLosses(ethLosses.multiply(factor)); ethCapa(ethCapa.multiply(factor)); numberInhabitants(numberInhabitants * factor)
+        expression: ethLosses(ethLosses.multiply(factor)); ethCapa(ethCapa.multiply(factor)); numberOfInhabitants(numberOfInhabitants * factor)
         comment: "scale losses as well as capacity and number of inhabitants to keep equal\n
                 // the time needed to heat a scaled house"
 

@@ -694,7 +694,7 @@ models:
       - name: housingType
         type: String
         javaDoc: "Type of the building, e.g. house or flat."
-      - name: numberInhabitants
+      - name: numberOfInhabitants
         type: double
         javaDoc: "Number of people living in the building, double to allow proper scaling."
 

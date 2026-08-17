@@ -108,10 +108,6 @@ public final class CopyBuilderGenerator implements HelperMethods {
         methodBuilder.addParameter(resolveType(parameter.type), parameter.name);
       }
 
-      if (insert.annotation) {
-        methodBuilder.addAnnotation(Override.class);
-      }
-
       if (!insert.javaDoc.isBlank()) {
         builder.addJavadoc(insert.javaDoc);
       }
@@ -120,6 +116,10 @@ public final class CopyBuilderGenerator implements HelperMethods {
         methodBuilder.addModifiers(Modifier.ABSTRACT);
 
       } else {
+        if (insert.annotation) {
+          methodBuilder.addAnnotation(Override.class);
+        }
+
         if (insert.className != null && !insert.className.isBlank()) {
           methodBuilder.addStatement("$T." + insert.expression, resolveClassName(insert.className));
         } else {
