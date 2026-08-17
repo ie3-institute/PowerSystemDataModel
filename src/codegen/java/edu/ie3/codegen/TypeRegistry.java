@@ -16,12 +16,14 @@ public final class TypeRegistry {
   private static final Map<String, TypeDefinition> registry = new LinkedHashMap<>();
 
   static {
+    registerOwnClasses();
     registerQuantities();
 
     registry.put("UUID", new TypeDefinition("java.util.UUID", "getUUID", "UUID.randomUUID()"));
     registry.put("String", new TypeDefinition("java.lang.String", "getField"));
     registry.put("bool", new TypeDefinition("boolean", "getBoolean"));
     registry.put("int", new TypeDefinition("int", "getInt"));
+    registry.put("double", new TypeDefinition("double", "getInt"));
     registry.put(
         "StringMap",
         new TypeDefinition(
@@ -42,9 +44,6 @@ public final class TypeRegistry {
         "NodeInput", new TypeDefinition("edu.ie3.datamodel.models.input.NodeInput", "getEntity"));
     registry.put("AssetInput", new TypeDefinition("edu.ie3.datamodel.models.input.AssetInput"));
     registry.put(
-        "LineTypeInput",
-        new TypeDefinition("edu.ie3.datamodel.models.input.connector.type.LineTypeInput"));
-    registry.put(
         "OperationTime",
         new TypeDefinition(
             "edu.ie3.datamodel.models.OperationTime",
@@ -63,11 +62,9 @@ public final class TypeRegistry {
         new TypeDefinition(
             "edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput"));
     registry.put(
-        "Transformer2WTypeInput",
-        new TypeDefinition("edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput"));
-    registry.put(
-        "Transformer3WTypeInput",
-        new TypeDefinition("edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput"));
+        "ReactivePowerCharacteristic",
+        new TypeDefinition(
+            "edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic"));
   }
 
   public static boolean containsKey(String name) {
@@ -139,17 +136,71 @@ public final class TypeRegistry {
             "ElectricResistance",
             "ElectricConductance",
             "Power",
-            "Percent",
-            "DegreeGeom")
+            "EnergyPrice",
+            "Energy")
         .forEach(
             name ->
                 registry.put(
                     name,
                     new TypeDefinition("tech.units.indriya.ComparableQuantity", List.of(name))));
 
+    Stream.of("DegreeGeom")
+        .forEach(
+            name ->
+                registry.put(
+                    name,
+                    new TypeDefinition("tech.units.indriya.ComparableQuantity", List.of("Angle"))));
+
+    Stream.of("Dimensionless", "Percent")
+        .forEach(
+            name ->
+                registry.put(
+                    name,
+                    new TypeDefinition(
+                        "tech.units.indriya.ComparableQuantity", List.of("Dimensionless"))));
+  }
+
+  static void registerOwnClasses() {
+    // grid types
+    Stream.of("LineTypeInput", "Transformer2WTypeInput", "Transformer3WTypeInput")
+        .forEach(
+            name ->
+                registry.put(
+                    name,
+                    new TypeDefinition("edu.ie3.datamodel.models.input.connector.type." + name)));
+
+    // participant types
+    Stream.of(
+            "AcTypeInput",
+            "BmTypeInput",
+            "ChpTypeInput",
+            "EvTypeInput",
+            "HpTypeInput",
+            "StorageTypeInput",
+            "SystemParticipantTypeInput",
+            "WecTypeInput")
+        .forEach(
+            name ->
+                registry.put(
+                    name,
+                    new TypeDefinition("edu.ie3.datamodel.models.input.system.type." + name)));
+
     registry.put(
-        "Dimensionless",
+        "ChargingPointType",
         new TypeDefinition(
-            "tech.units.indriya.ComparableQuantity", List.of("Dimensionless"), "getDimensionless"));
+            "edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointType"));
+    registry.put(
+        "EvcsLocationType",
+        new TypeDefinition(
+            "edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType"));
+    registry.put(
+        "PowerProfileKey", new TypeDefinition("edu.ie3.datamodel.models.profile.PowerProfileKey"));
+
+    // thermal
+    Stream.of("ThermalBusInput", "ThermalStorageInput")
+        .forEach(
+            name ->
+                registry.put(
+                    name, new TypeDefinition("edu.ie3.datamodel.models.input.thermal." + name)));
   }
 }

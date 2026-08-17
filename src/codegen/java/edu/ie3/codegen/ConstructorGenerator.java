@@ -27,120 +27,12 @@ public final class ConstructorGenerator implements HelperMethods {
     this.models = models;
   }
 
-  public MethodSpec getFromMapConstructor() {
-    GenerationConfig.ConstructorDefinition targetConstructor =
-        genConfig.constructors.stream()
-            .filter(constructor -> constructor.name.equals(genConfig.fromMapConstructor))
-            .findFirst()
-            .orElseThrow(
-                () ->
-                    new IllegalArgumentException(
-                        "Unknown fromMapConstructor '"
-                            + genConfig.fromMapConstructor
-                            + "' for "
-                            + model.name));
-
-    Map<String, ComponentDefinition> allComponents = visibleComponents(model, models);
-
-    List<ComponentDefinition> resolverComponents = orderedResolverComponents(model, allComponents);
-
-    TypeName mapType = ParameterizedTypeName.get(MAP, STRING, STRING);
-
-    MethodSpec.Builder builder =
-        MethodSpec.methodBuilder("fromMap")
-            .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-            .returns(ClassName.get(model.packageName, model.name))
-            .addParameter(mapType, "data");
-
-    for (ComponentDefinition resolverComponent : resolverComponents) {
-      TypeName resolverType =
-          ParameterizedTypeName.get(
-              MAP, UUID_CLASS, resolveType(resolverComponent.type, model.packageName));
-
-      builder.addParameter(resolverType, resolverName(resolverComponent));
-    }
-
-    List<ComponentDefinition> constructorParameters =
-        resolveParameters(targetConstructor.components, allComponents, model.name + ".fromMap");
-
-    for (ComponentDefinition component : constructorParameters) {
-      generateFromMapLocalVariable(
-          builder, model, component, resolverComponents.contains(component));
-    }
-
-    builder.addCode("\n");
-
-    CodeBlock arguments =
-        constructorParameters.stream()
-            .map(component -> CodeBlock.of("$L", component.name))
-            .collect(CodeBlock.joining(",\n"));
-
-    ClassName name = ClassName.get(model.packageName, model.name);
-
-    builder.addStatement("$T model = new $T(\n$L\n)", name, name, indent(arguments));
-    builder.addCode("\n");
-    builder.addStatement("model.setAdditionalInformation(data)");
-    builder.addStatement("return model");
-
-    return builder.build();
-  }
-
-  private void generateFromMapLocalVariable(
-      MethodSpec.Builder builder,
-      ModelDefinition model,
-      ModelDefinition.ComponentDefinition component,
-      boolean useMap) {
-    TypeRegistry.TypeDefinition typeDefinition = TypeRegistry.get(component.type);
-
-    TypeName targetType = resolveType(component.type, model.packageName);
-
-    CodeBlock arguments;
-
-    if (!useMap) {
-      arguments =
-          switch (component.keys.size()) {
-            case 0 ->
-                CodeBlock.of(
-                    "$T.$L(data, $S)", CONVERSION_UTILS, typeDefinition.converter, component.name);
-            case 1 ->
-                CodeBlock.of(
-                    "$T.$L(data, $S)",
-                    CONVERSION_UTILS,
-                    typeDefinition.converter,
-                    component.keys.getFirst());
-            default -> {
-              CodeBlock keyArguments =
-                  component.keys.stream()
-                      .map(key -> CodeBlock.of("$S", key))
-                      .collect(CodeBlock.joining(", "));
-
-              yield CodeBlock.of(
-                  "$T.$L(data, $L)", CONVERSION_UTILS, typeDefinition.converter, keyArguments);
-            }
-          };
-    } else {
-      arguments =
-          CodeBlock.of(
-              "$T.$L(data, $S, $L)",
-              CONVERSION_UTILS,
-              typeDefinition.converter,
-              component.name,
-              resolverName(component));
-    }
-
-    builder.addStatement("$T $L = $L", targetType, component.name, arguments);
-  }
-
   public List<MethodSpec> getConstructors() {
     return genConfig.constructors.stream().map(this::generateConstructor).toList();
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // helper methods
-
-  private String resolverName(ComponentDefinition component) {
-    return component.name + "s";
-  }
 
   private List<ComponentDefinition> resolveParameters(
       List<String> parameterNames, Map<String, ComponentDefinition> available, String context) {
@@ -159,43 +51,6 @@ public final class ConstructorGenerator implements HelperMethods {
     }
 
     return result;
-  }
-
-  private List<ComponentDefinition> orderedResolverComponents(
-      ModelDefinition model, Map<String, ComponentDefinition> allComponents) {
-
-    List<String> resolveList = genConfig.resolverOrder;
-
-    List<ComponentDefinition> resolvers =
-        allComponents.values().stream()
-            .filter(component -> resolveList.contains(component.name))
-            .toList();
-
-    if (genConfig.resolverOrder.isEmpty()) {
-      return resolvers;
-    }
-
-    List<ComponentDefinition> ordered = new ArrayList<>();
-
-    for (String resolverName : genConfig.resolverOrder) {
-      ComponentDefinition component = allComponents.get(resolverName);
-
-      if (component == null) {
-        throw new IllegalArgumentException(
-            "Unknown resolver component '" + resolverName + "' in " + model.name);
-      }
-
-      ordered.add(component);
-    }
-
-    if (ordered.size() != resolvers.size()) {
-      throw new IllegalArgumentException(
-          "resolverOrder of "
-              + model.name
-              + " must contain every resolve: true component exactly once.");
-    }
-
-    return ordered;
   }
 
   private MethodSpec generateConstructor(GenerationConfig.ConstructorDefinition constructor) {

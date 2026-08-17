@@ -13,10 +13,7 @@ import java.util.*;
 
 public interface HelperMethods {
   ClassName OBJECTS = ClassName.get(Objects.class);
-  ClassName MAP = ClassName.get(Map.class);
   ClassName STRING = ClassName.get(String.class);
-  ClassName UUID_CLASS = ClassName.get(UUID.class);
-  ClassName CONVERSION_UTILS = ClassName.get("edu.ie3.datamodel.utils", "ConversionUtils");
 
   static ClassName getClassName(String name) {
     return ClassRegistry.get(name);
@@ -30,16 +27,15 @@ public interface HelperMethods {
     return "bool".equals(type) || "int".equals(type);
   }
 
-  static String defaultGetterName(
-      String name, String type, GenerationConfig.GetterOptions getterOptions) {
-    if (isPrimitive(type) || getterOptions == null) {
+  static String defaultGetterName(String name, String type, List<String> nonCapitalizedGetters) {
+    if (isPrimitive(type) || nonCapitalizedGetters == null || nonCapitalizedGetters.isEmpty()) {
       if ("bool".equals(type)) {
         return "is" + capitalize(name);
       }
 
       return "get" + capitalize(name);
     } else {
-      if (getterOptions.capitalize) {
+      if (!nonCapitalizedGetters.contains(name)) {
         return "get" + capitalize(name);
       } else {
         return "get" + name;

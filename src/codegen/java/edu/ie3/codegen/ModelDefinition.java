@@ -53,29 +53,29 @@ public final class ModelDefinition implements HelperMethods {
 
     if (genConfig.getters) {
       for (ComponentDefinition component : components) {
-        GenerationConfig.GetterOptions options = genConfig.getterOptions.get(component.name);
+        if (!genConfig.noGetters.contains(component.name)) {
+          List<String> optionalGetter = genConfig.optionalGetters;
 
-        String getter = defaultGetterName(component.name, component.type, options);
-        TypeName returnType = resolveType(component.type, packageName);
+          String getter =
+              defaultGetterName(component.name, component.type, genConfig.nonCapitalizedGetters);
+          TypeName returnType = resolveType(component.type, packageName);
 
-        var builder = MethodSpec.methodBuilder(getter).addModifiers(Modifier.PUBLIC);
+          var builder = MethodSpec.methodBuilder(getter).addModifiers(Modifier.PUBLIC);
 
-        if (options != null && !options.javaDoc.isBlank()) {
-          builder.addJavadoc(options.javaDoc);
+          if (isMap(component)) {
+            builder.addStatement(
+                "return $T.unmodifiableMap($L)", Collections.class, component.name);
+          } else if (optionalGetter != null && optionalGetter.contains(component.name)) {
+            // TODO: options != null && options.optional -> component.required
+            returnType = ParameterizedTypeName.get(ClassName.get(Optional.class), returnType.box());
+
+            builder.addStatement("return $T.ofNullable($L)", Optional.class, component.name);
+          } else {
+            builder.addStatement("return $L", component.name);
+          }
+
+          methodSpecs.add(builder.returns(returnType).build());
         }
-
-        if (isMap(component)) {
-          builder.addStatement("return $T.unmodifiableMap($L)", Collections.class, component.name);
-        } else if (options != null && options.optional) {
-          // TODO: options != null && options.optional -> component.required
-          returnType = ParameterizedTypeName.get(ClassName.get(Optional.class), returnType.box());
-
-          builder.addStatement("return $T.ofNullable($L)", Optional.class, component.name);
-        } else {
-          builder.addStatement("return $L", component.name);
-        }
-
-        methodSpecs.add(builder.returns(returnType).build());
       }
     }
 

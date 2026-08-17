@@ -99,12 +99,7 @@ models:
         expression: buildPoint(51.4843281, 7.4116482)
         className: GeoUtils
         javaDoc: "Use this default value if geoPosition is unknown."
-    getterOptions:
-      vTarget:
-        capitalize: false
-    fromMap: true
-    fromMapConstructor: full
-    resolverOrder: [operator]
+    nonCapitalizedGetters: [vTarget]
 
   OperatorInput:
     classJavaDoc: "Describes an operator, that operates assets."
@@ -128,8 +123,6 @@ models:
       - name: NO_OPERATOR_ASSIGNED
         type: OperatorInput
         expression: new OperatorInput(UUID.randomUUID(), "NO_OPERATOR_ASSIGNED")
-    fromMap: true
-    fromMapConstructor: minimal
 
   MeasurementUnitInput:
     classJavaDoc: "Model of a measuring unit attached to a certain {@link NodeInput}."
@@ -176,9 +169,6 @@ models:
                  @param vAng True, if the voltage angle is measured\n
                  @param p True, if the nodal residual active power is measured\n
                  @param q True, if the reactive power is measured"
-    fromMap: true
-    fromMapConstructor: full
-    resolverOrder: [operator, node]
     methodOverrides:
       - name: allNodes
         type: NodeList
@@ -221,9 +211,7 @@ models:
                  @param id of the asset\n
                  @param controlStrategy the control strategy\n
                  @param controllingEm The {@link EmInput} controlling this em unit. Null, if not applicable."
-    getterOptions:
-      controllingEm:
-        optional: true
+    optionalGetters: [controllingEm]
 
   ConnectorInput:
     classJavaDoc: "Describes an asset that connects two {@link NodeInput}s."
@@ -440,11 +428,7 @@ models:
             expression: vRated.to($T.RATED_VOLTAGE_MAGNITUDE)
             className: StandardUnits
             insert: true
-    getterOptions:
-      iMax:
-        capitalize: false
-      vRated:
-        capitalize: false
+    nonCapitalizedGetters: [iMax, vRated]
 
   SwitchInput:
     classJavaDoc: "Describes an electrical grid switch between two {@link NodeInput}s."
@@ -692,25 +676,7 @@ models:
             expression: dPhi.to($T.DPHI_TAP)
             className: StandardUnits
             insert: true
-    getterOptions:
-      rSc:
-        capitalize: false
-      xSc:
-        capitalize: false
-      sRated:
-        capitalize: false
-      vRatedA:
-        capitalize: false
-      vRatedB:
-        capitalize: false
-      gM:
-        capitalize: false
-      bM:
-        capitalize: false
-      dV:
-        capitalize: false
-      dPhi:
-        capitalize: false
+    nonCapitalizedGetters: [rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi]
 
   Transformer3WInput:
     classJavaDoc: "Describes a three winding transformer, that is connected to three {@link NodeInput}s."
@@ -996,50 +962,718 @@ models:
             expression: dPhi.to($T.DPHI_TAP)
             className: StandardUnits
             insert: true
-    getterOptions:
-      sRatedA:
-        capitalize: false
-      sRatedB:
-        capitalize: false
-      sRatedC:
-        capitalize: false
-      vRatedA:
-        capitalize: false
-      vRatedB:
-        capitalize: false
-      vRatedC:
-        capitalize: false
-      rScA:
-        capitalize: false
-      rScB:
-        capitalize: false
-      rScC:
-        capitalize: false
-      xScA:
-        capitalize: false
-      xScB:
-        capitalize: false
-      xScC:
-        capitalize: false
-      gM:
-        capitalize: false
-      bM:
-        capitalize: false
-      dV:
-        capitalize: false
-      dPhi:
-        capitalize: false
+    nonCapitalizedGetters: [sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi]
 
+  SystemParticipantInput:
+    classJavaDoc: "Describes a system asset that is connected to a node."
+    inherits: [HasNodes, HasEm]
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        superArgs: [uuid, id, operator, operationTime]
+        javaDoc: "Constructor for an operated system participant.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node that the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable."
+      - name: minimal
+        components: [uuid, id, node, qCharacteristics, controllingEm]
+        superArgs: [uuid, id]
+        javaDoc: "Constructor for an operated system participant.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param node that the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable."
+    methodOverrides:
+      - name: allNodes
+        type: NodeList
+        expression: singletonList(node)
+        className: Collections
+    methodInserts:
+      - name: sRated
+        type: Power
+        isAbstract: true
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: true
+        javaDoc: "Scales the input entity in a way that tries to preserve proportions that are related to\n
+               power. This means that capacity, consumption etc. are scaled with the same factor. Related\n
+               properties associated with the input type (if applicable) are scaled as well.\n
+               \n
+               @param factor The factor to scale with\n
+               @return A copy builder with scaled relevant properties"
+        parameters:
+          - name: factor
+            type: double
+    nonCapitalizedGetters: [qCharacteristics]
+    optionalGetters: [controllingEm]
 
+  AcInput:
+    classJavaDoc: "Describes an air condition."
+    inherits: [HasType, HasThermalBus]
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, node, thermalBus, qCharacteristics, controllingEm, type]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated air condition.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node the asset is connected to\n
+               @param thermalBus The thermal bus, this model is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of AC"
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, operator, operationTime, node, thermalBus, qCharacteristics, controllingEm, type, additionalInformation]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated air condition.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node the asset is connected to\n
+               @param thermalBus The thermal bus, this model is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of AC\n
+               @param additionalInformation That were provided by the source"
+      - name: minimal
+        components: [uuid, id, node, thermalBus, qCharacteristics, controllingEm, type]
+        superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated air condition.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param node the asset is connected to\n
+               @param thermalBus The thermal bus, this model is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of AC"
+    methodOverrides:
+      - name: sRated
+        type: Power
+        expression: this.type.getsRated()
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: false
+        parameters:
+          - name: factor
+            type: double
+        expression: type(type.copy().scale(factor).build())
+    nonCapitalizedGetters: [qCharacteristics]
 
+  BmInput:
+    classJavaDoc: "Describes a biomass plant."
+    inherits: [HasType]
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type, costControlled, feedInTariff]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated biomass plant.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of BM\n
+               @param costControlled Does this plant increase the output power if the revenues exceed the\n
+                   energy generation costs?\n
+               @param feedInTariff Granted feed in tariff (typically in €/MWh)"
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type, costControlled, feedInTariff, additionalInformation]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated biomass plant.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of BM\n
+               @param costControlled Does this plant increase the output power if the revenues exceed the\n
+                   energy generation costs?\n
+               @param feedInTariff Granted feed in tariff (typically in €/MWh)\n
+               @param additionalInformation That were provided by the source"
+      - name: minimal
+        components: [uuid, id, node, qCharacteristics, controllingEm, type, costControlled, feedInTariff]
+        superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated biomass plant.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of BM\n
+               @param costControlled Does this plant increase the output power if the revenues exceed the\n
+                   energy generation costs?\n
+               @param feedInTariff Granted feed in tariff (typically in €/MWh)"
+    methodOverrides:
+      - name: sRated
+        type: Power
+        expression: this.type.getsRated()
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: false
+        parameters:
+          - name: factor
+            type: double
+        expression: this.type = this.type.copy().scale(factor).build()
+    nonCapitalizedGetters: [qCharacteristics]
 
+  ChpInput:
+    classJavaDoc: "Describes a combined heat and power plant."
+    inherits: [HasType, HasThermalBus, HasThermalStorage]
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, node, thermalBus, qCharacteristics, controllingEm, type, thermalStorage]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated combined heat and power plant.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node the asset is connected to\n
+               @param thermalBus The thermal bus, this model is connected to (normally equal to the thermal\n
+                   bus of the provided thermal storage!)\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of CHP\n
+               @param thermalStorage Thermal storage model"
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, operator, operationTime, node, thermalBus, qCharacteristics, controllingEm, type, thermalStorage, additionalInformation]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated combined heat and power plant.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node the asset is connected to\n
+               @param thermalBus The thermal bus, this model is connected to (normally equal to the thermal\n
+                   bus of the provided thermal storage!)\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of CHP\n
+               @param thermalStorage Thermal storage model\n
+               @param additionalInformation That were provided by the source"
+      - name: minimal
+        components: [uuid, id, node, thermalBus, qCharacteristics, controllingEm, type, thermalStorage]
+        superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated combined heat and power plant.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param node the asset is connected to\n
+               @param thermalBus The thermal bus, this model is connected to (normally equal to the thermal\n
+                   bus of the provided thermal storage!)\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of CHP\n
+               @param thermalStorage Thermal storage model"
+    methodOverrides:
+      - name: sRated
+        type: Power
+        expression: this.type.getsRated()
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: false
+        parameters:
+          - name: factor
+            type: double
+        expression: this.type = this.type.copy().scale(factor).build()
+    nonCapitalizedGetters: [qCharacteristics]
 
+  EvcsInput:
+    classJavaDoc: "Describes an electric vehicle charging station."
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type, chargingPoints, cosPhiRated, locationType, v2gSupport]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "@param uuid Unique identifier\n
+               @param id Human readable identifier\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node that the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type type of the charging points available to this charging station\n
+               @param chargingPoints number of charging points available at this charging station\n
+               @param cosPhiRated rated cos phi\n
+               @param locationType the location type\n
+               @param v2gSupport whether charging station supports vehicle to grid"
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type, chargingPoints, cosPhiRated, locationType, v2gSupport, additionalInformation]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "@param uuid Unique identifier\n
+               @param id Human readable identifier\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node that the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type type of the charging points available to this charging station\n
+               @param chargingPoints number of charging points available at this charging station\n
+               @param cosPhiRated rated cos phi\n
+               @param locationType the location type\n
+               @param v2gSupport whether charging station supports vehicle to grid\n
+               @param additionalInformation That were provided by the source"
+      - name: minimal
+        components: [uuid, id, node, qCharacteristics, controllingEm, type, chargingPoints, cosPhiRated, locationType, v2gSupport]
+        superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+        javaDoc: "@param uuid Unique identifier\n
+               @param id Human readable identifier\n
+               @param node that the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type type of the charging points available to this charging station\n
+               @param chargingPoints number of charging points available at this charging station\n
+               @param cosPhiRated rated cos phi\n
+               @param locationType the location type\n
+               @param v2gSupport whether charging station supports vehicle to grid"
+    methodOverrides:
+      - name: sRated
+        type: Power
+        expression: this.type.getsRated()
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: false
+        parameters:
+          - name: factor
+            type: double
+        expression: type(type.copy().scale(factor).build())
+    nonCapitalizedGetters: [qCharacteristics]
 
+  EvInput:
+    classJavaDoc: "Describes an electric vehicle."
+    inherits: [HasType]
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated electric vehicle.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of EV"
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type, additionalInformation]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated electric vehicle.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of EV\n
+               @param additionalInformation That were provided by the source"
+      - name: minimal
+        components: [uuid, id, node, qCharacteristics, controllingEm, type]
+        superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated electric vehicle.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of EV"
+    methodOverrides:
+      - name: sRated
+        type: Power
+        expression: this.type.getsRated()
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: false
+        parameters:
+          - name: factor
+            type: double
+        expression: type(type.copy().scale(factor).build())
+    nonCapitalizedGetters: [qCharacteristics]
 
+  FixedFeedInInput:
+    classJavaDoc: "Dummy class to represent a constant feed in regardless of its type."
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, sRated, cosPhiRated]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated feed in.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param sRated Rated apparent power\n
+               @param cosPhiRated Power factor"
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, sRated, cosPhiRated, additionalInformation]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated feed in.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param sRated Rated apparent power\n
+               @param cosPhiRated Power factor\n
+               @param additionalInformation That were provided by the source"
+      - name: minimal
+        components: [uuid, id, node, qCharacteristics, controllingEm, sRated, cosPhiRated]
+        superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated feed in.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param sRated Rated apparent power\n
+               @param cosPhiRated Power factor"
+    methodOverrides:
+      - name: sRated
+        type: Power
+        expression: sRated
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: false
+        parameters:
+          - name: factor
+            type: double
+        expression: sRated(sRated.multiply(factor))
+    nonCapitalizedGetters: [qCharacteristics, sRated]
 
+  HpInput:
+    classJavaDoc: "Describes a heat pump."
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type, thermalBus]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated, always on heat pump.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node the asset is connected to\n
+               @param thermalBus The thermal bus, this model is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of HP"
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type, thermalBus, additionalInformation]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated, always on heat pump.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node the asset is connected to\n
+               @param thermalBus The thermal bus, this model is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of HP\n
+               @param additionalInformation That were provided by the source"
+      - name: minimal
+        components: [uuid, id, node, qCharacteristics, controllingEm, type, thermalBus]
+        superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated, always on heat pump.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param node the asset is connected to\n
+               @param thermalBus The thermal bus, this model is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of HP"
+    methodOverrides:
+      - name: sRated
+        type: Power
+        expression: this.type.getsRated()
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: false
+        parameters:
+          - name: factor
+            type: double
+        expression: type(type.copy().scale(factor).build())
+    nonCapitalizedGetters: [qCharacteristics]
 
+  LoadInput:
+    classJavaDoc: "Describes a load."
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, loadProfile, eConsAnnual, sRated, cosPhiRated]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated load.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param loadProfile Key of the load profile to use for this model\n
+               @param eConsAnnual Annually consumed energy (typically in kWh)\n
+               @param sRated Rated apparent power (in kVA)\n
+               @param cosPhiRated Rated power factor"
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, loadProfile, eConsAnnual, sRated, cosPhiRated, additionalInformation]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated load.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param loadProfile Key of the load profile to use for this model\n
+               @param eConsAnnual Annually consumed energy (typically in kWh)\n
+               @param sRated Rated apparent power (in kVA)\n
+               @param cosPhiRated Rated power factor\n
+               @param additionalInformation That were provided by the source"
+      - name: minimal
+        components: [uuid, id, node, qCharacteristics, controllingEm, loadProfile, eConsAnnual, sRated, cosPhiRated]
+        superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated load.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param loadProfile Key of the load profile to use for this model\n
+               @param eConsAnnual Annually consumed energy (typically in kWh)\n
+               @param sRated Rated apparent power (in kVA)\n
+               @param cosPhiRated Rated power factor"
+    methodOverrides:
+      - name: sRated
+        type: Power
+        expression: sRated
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: false
+        parameters:
+          - name: factor
+            type: double
+        expression: eConsAnnual(eConsAnnual.multiply(factor)); sRated(sRated.multiply(factor))
+    nonCapitalizedGetters: [qCharacteristics, sRated]
 
+  PvInput:
+    classJavaDoc: "Describes a photovoltaic plant."
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, albedo, azimuth, etaConv, elevationAngle, kG, kT, sRated, cosPhiRated]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated photovoltaic plant.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param em The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param albedo Albedo value (typically a value between 0 and 1)\n
+               @param azimuth Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)\n
+               @param etaConv Efficiency of converter (typically in %)\n
+               @param elevationAngle Tilted inclination from horizontal (typically in °)\n
+               @param kG Generator correction factor merging different technical influences\n
+               @param kT Generator correction factor merging different technical influences\n
+               @param sRated Rated apparent power (typically in kVA)\n
+               @param cosPhiRated Power factor"
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, albedo, azimuth, etaConv, elevationAngle, kG, kT, sRated, cosPhiRated, additionalInformation]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated photovoltaic plant.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param em The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param albedo Albedo value (typically a value between 0 and 1)\n
+               @param azimuth Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)\n
+               @param etaConv Efficiency of converter (typically in %)\n
+               @param elevationAngle Tilted inclination from horizontal (typically in °)\n
+               @param kG Generator correction factor merging different technical influences\n
+               @param kT Generator correction factor merging different technical influences\n
+               @param sRated Rated apparent power (typically in kVA)\n
+               @param cosPhiRated Power factor\n
+               @param additionalInformation That were provided by the source"
+      - name: minimal
+        components: [uuid, id, node, qCharacteristics, controllingEm, albedo, azimuth, etaConv, elevationAngle, kG, kT, sRated, cosPhiRated]
+        superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated photovoltaic plant.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param em The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param albedo Albedo value (typically a value between 0 and 1)\n
+               @param azimuth Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)\n
+               @param etaConv Efficiency of converter (typically in %)\n
+               @param elevationAngle Tilted inclination from horizontal (typically in °)\n
+               @param kG Generator correction factor merging different technical influences\n
+               @param kT Generator correction factor merging different technical influences\n
+               @param sRated Rated apparent power (typically in kVA)\n
+               @param cosPhiRated Power factor"
+    methodOverrides:
+      - name: sRated
+        type: Power
+        expression: sRated
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: false
+        parameters:
+          - name: factor
+            type: double
+        expression: this.sRated = this.sRated.multiply(factor)
+    nonCapitalizedGetters: [qCharacteristics, sRated]
 
+  StorageInput:
+    classJavaDoc: "Describes a battery storage."
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated photovoltaic plant.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of storage"
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type, additionalInformation]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated photovoltaic plant.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of storage\n
+               @param additionalInformation That were provided by the source"
+      - name: minimal
+        components: [uuid, id, node, qCharacteristics, controllingEm, type]
+        superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated photovoltaic plant.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of storage"
+    methodOverrides:
+      - name: sRated
+        type: Power
+        expression: this.type.getsRated()
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: false
+        parameters:
+          - name: factor
+            type: double
+        expression: type(type.copy().scale(factor).build())
+    nonCapitalizedGetters: [qCharacteristics]
+
+  WecInput:
+    classJavaDoc: "Describes a Wind Energy Converter."
+    constructors:
+      - name: full
+        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated wind energy converter.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of this WEC"
+      - name: fullWithAdditionalInformation
+        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type, additionalInformation]
+        superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated wind energy converter.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param operator of the asset\n
+               @param operationTime Time for which the entity is operated\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of this WEC\n
+               @param additionalInformation That were provided by the source"
+      - name: minimal
+        components: [uuid, id, node, qCharacteristics, controllingEm, type]
+        superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+        javaDoc: "Constructor for an operated wind energy converter.\n
+               \n
+               @param uuid of the input entity\n
+               @param id of the asset\n
+               @param node the asset is connected to\n
+               @param qCharacteristics Description of a reactive power characteristic\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param type of this WEC"
+    methodOverrides:
+      - name: sRated
+        type: Power
+        expression: this.type.getsRated()
+    copyBuilderAdditionalMethods:
+      - name: scale
+        isAbstract: false
+        parameters:
+          - name: factor
+            type: double
+        expression: type(type.copy().scale(factor).build())
+    nonCapitalizedGetters: [qCharacteristics]
 
 
 

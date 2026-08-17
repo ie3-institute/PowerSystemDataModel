@@ -67,8 +67,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
 
   private static String builderGetterName(
       ModelDefinition.ComponentDefinition component, GenerationConfig genConfig) {
-    return defaultGetterName(
-        component.name, component.type, genConfig.getterOptions.get(component.name));
+    return defaultGetterName(component.name, component.type, genConfig.nonCapitalizedGetters);
   }
 
   private TypeSpec generateAbstractCopyBuilder() {
@@ -95,6 +94,31 @@ public final class CopyBuilderGenerator implements HelperMethods {
     for (ModelDefinition.ComponentDefinition component : model.components) {
       builder.addMethod(generateCopyBuilderSetter(component, model, builderTypeVariable));
       builder.addMethod(generateCopyBuilderGetter(component, model));
+    }
+
+    for (GenerationConfig.CopyBuilderMethods insert : genConfig.copyBuilderAdditionalMethods) {
+      var methodBuilder =
+          MethodSpec.methodBuilder(insert.name)
+              .returns(builderTypeVariable)
+              .addModifiers(Modifier.PUBLIC);
+
+      for (GenerationConfig.CopyBuilderMethods.Parameter parameter : insert.parameters) {
+        methodBuilder.addParameter(resolveType(parameter.type, model.packageName), parameter.name);
+      }
+
+      if (insert.isAbstract) {
+        methodBuilder.addModifiers(Modifier.ABSTRACT);
+
+      } else {
+        if (insert.className != null && !insert.className.isBlank()) {
+          methodBuilder.addStatement(
+              "return $T." + insert.expression, getClassName(insert.className));
+        } else {
+          methodBuilder.addStatement("return " + insert.expression);
+        }
+      }
+
+      builder.addMethod(methodBuilder.build());
     }
 
     if (parent == null) {
@@ -164,6 +188,28 @@ public final class CopyBuilderGenerator implements HelperMethods {
       builder.addMethod(generateCopyBuilderGetter(component, model));
     }
 
+    for (GenerationConfig.CopyBuilderMethods insert : genConfig.copyBuilderAdditionalMethods) {
+      var methodBuilder =
+          MethodSpec.methodBuilder(insert.name)
+              .returns(builderClass)
+              .addModifiers(Modifier.PUBLIC)
+              .addAnnotation(Override.class);
+
+      for (GenerationConfig.CopyBuilderMethods.Parameter parameter : insert.parameters) {
+        methodBuilder.addParameter(resolveType(parameter.type, model.packageName), parameter.name);
+      }
+
+      if (insert.className != null && !insert.className.isBlank()) {
+        methodBuilder.addStatement("$T." + insert.expression, getClassName(insert.className));
+      } else {
+        methodBuilder.addStatement(insert.expression);
+      }
+
+      methodBuilder.addStatement("return thisInstance()");
+
+      builder.addMethod(methodBuilder.build());
+    }
+
     builder.addMethod(generateConcreteBuilderBuildMethod(model));
 
     builder.addMethod(
@@ -203,8 +249,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
 
     for (ModelDefinition.ComponentDefinition component : model.components) {
       String entityGetter =
-          defaultGetterName(
-              component.name, component.type, genConfig.getterOptions.get(component.name));
+          defaultGetterName(component.name, component.type, genConfig.nonCapitalizedGetters);
 
       if (isMap(component)) {
         builder.addStatement(

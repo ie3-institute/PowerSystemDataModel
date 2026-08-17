@@ -88,10 +88,6 @@ final class ModelGenerator implements HelperMethods {
     typeBuilder.addMethods(model.getAllMethods(genConfig));
     typeBuilder.addMethod(copyBuilderGenerator.generateCopyMethod());
 
-    if (genConfig.fromMap && model.isClass) {
-      typeBuilder.addMethod(constructorGenerator.getFromMapConstructor());
-    }
-
     for (GenerationConfig.MethodOverride override : genConfig.methodOverrides) {
       var methodBuilder =
           MethodSpec.methodBuilder(override.name)
@@ -104,6 +100,27 @@ final class ModelGenerator implements HelperMethods {
             "return $T." + override.expression, getClassName(override.className));
       } else {
         methodBuilder.addStatement("return " + override.expression);
+      }
+
+      typeBuilder.addMethod(methodBuilder.build());
+    }
+
+    for (GenerationConfig.MethodInsert insert : genConfig.methodInserts) {
+      var methodBuilder =
+          MethodSpec.methodBuilder(insert.name)
+              .returns(resolveType(insert.type, model.packageName))
+              .addModifiers(Modifier.PUBLIC);
+
+      if (insert.isAbstract) {
+        methodBuilder.addModifiers(Modifier.ABSTRACT);
+
+      } else {
+        if (insert.className != null && !insert.className.isBlank()) {
+          methodBuilder.addStatement(
+              "return $T." + insert.expression, getClassName(insert.className));
+        } else {
+          methodBuilder.addStatement("return " + insert.expression);
+        }
       }
 
       typeBuilder.addMethod(methodBuilder.build());
@@ -282,8 +299,7 @@ final class ModelGenerator implements HelperMethods {
 
       } else {
         String getter =
-            defaultGetterName(
-                component.name, component.type, genConfig.getterOptions.get(component.name));
+            defaultGetterName(component.name, component.type, genConfig.nonCapitalizedGetters);
 
         if (component.nested) {
           builder.addCode("    + $S + $L().getUuid()\n", prefix, getter);

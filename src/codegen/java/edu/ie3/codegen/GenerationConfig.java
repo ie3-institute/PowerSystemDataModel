@@ -15,10 +15,6 @@ public final class GenerationConfig implements HelperMethods {
 
   public List<ConstructorDefinition> constructors = new ArrayList<>();
 
-  public List<String> resolverOrder = new ArrayList<>();
-
-  public String fromMapConstructor;
-
   public List<String> inherits = new ArrayList<>();
 
   public boolean getters = true;
@@ -29,13 +25,19 @@ public final class GenerationConfig implements HelperMethods {
 
   public boolean toString = true;
 
-  public boolean fromMap = false;
-
   public List<StaticFieldDefinition> staticFields = new ArrayList<>();
 
-  public Map<String, GetterOptions> getterOptions = new HashMap<>();
+  public List<String> nonCapitalizedGetters = new ArrayList<>();
+
+  public List<String> optionalGetters = new ArrayList<>();
+
+  public List<String> noGetters = new ArrayList<>();
 
   public List<MethodOverride> methodOverrides = new ArrayList<>();
+
+  public List<MethodInsert> methodInserts = new ArrayList<>();
+
+  public List<CopyBuilderMethods> copyBuilderAdditionalMethods = new ArrayList<>();
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // helper definition
@@ -62,17 +64,34 @@ public final class GenerationConfig implements HelperMethods {
     public String javaDoc = "";
   }
 
-  public static final class GetterOptions {
-    public boolean optional = false;
-    public boolean capitalize = true;
-    public String javaDoc = "";
-  }
-
   public static final class MethodOverride {
     public String name;
     public String type;
     public String expression;
     public String className;
+  }
+
+  public static final class MethodInsert {
+    public String name;
+    public String type;
+    public boolean isAbstract = false;
+    public String expression;
+    public String className;
+    public String javaDoc = "";
+  }
+
+  public static final class CopyBuilderMethods {
+    public String name;
+    public boolean isAbstract;
+    public String expression;
+    public String className;
+    public String javaDoc = "";
+    public List<Parameter> parameters = new ArrayList<>();
+
+    public static final class Parameter {
+      public String name;
+      public String type;
+    }
   }
 
   public static final class ConstructorModification {
