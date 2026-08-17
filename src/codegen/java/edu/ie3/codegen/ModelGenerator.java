@@ -71,27 +71,27 @@ final class ModelGenerator implements HelperMethods {
     }
 
     if (model.extendsName != null && !model.extendsName.isBlank()) {
-      typeBuilder.superclass(resolveClassName(model.extendsName, model.packageName));
+      typeBuilder.superclass(resolveClassName(model.extendsName, genConfig.packageName));
     }
 
     for (String interfaceName : genConfig.inherits) {
-      typeBuilder.addSuperinterface(resolveClassName(interfaceName, model.packageName));
+      typeBuilder.addSuperinterface(resolveClassName(interfaceName, genConfig.packageName));
     }
 
     typeBuilder.addFields(getStaticFields(model, genConfig));
-    typeBuilder.addFields(model.getPrivateFields());
+    typeBuilder.addFields(getPrivateFields(model, genConfig));
 
     ConstructorGenerator constructorGenerator = new ConstructorGenerator(model, genConfig, models);
     CopyBuilderGenerator copyBuilderGenerator = new CopyBuilderGenerator(model, genConfig, models);
 
     typeBuilder.addMethods(constructorGenerator.getConstructors());
-    typeBuilder.addMethods(model.getAllMethods(genConfig));
+    typeBuilder.addMethods(getAllMethods(model, genConfig));
     typeBuilder.addMethod(copyBuilderGenerator.generateCopyMethod());
 
     for (GenerationConfig.MethodOverride override : genConfig.methodOverrides) {
       var methodBuilder =
           MethodSpec.methodBuilder(override.name)
-              .returns(resolveType(override.type, model.packageName))
+              .returns(resolveType(override.type, genConfig.packageName))
               .addAnnotation(Override.class)
               .addModifiers(Modifier.PUBLIC);
 
@@ -108,7 +108,7 @@ final class ModelGenerator implements HelperMethods {
     for (GenerationConfig.MethodInsert insert : genConfig.methodInserts) {
       var methodBuilder =
           MethodSpec.methodBuilder(insert.name)
-              .returns(resolveType(insert.type, model.packageName))
+              .returns(resolveType(insert.type, genConfig.packageName))
               .addModifiers(Modifier.PUBLIC);
 
       if (insert.isAbstract) {
@@ -140,7 +140,7 @@ final class ModelGenerator implements HelperMethods {
 
     typeBuilder.addType(copyBuilderGenerator.generateCopyBuilder());
 
-    JavaFile.builder(model.packageName, typeBuilder.build())
+    JavaFile.builder(genConfig.packageName, typeBuilder.build())
         .skipJavaLangImports(true)
         .build()
         .writeTo(outputDirectory);
@@ -153,7 +153,7 @@ final class ModelGenerator implements HelperMethods {
             staticField -> {
               FieldSpec.Builder builder =
                   FieldSpec.builder(
-                      resolveType(staticField.type, model.packageName),
+                      resolveType(staticField.type, genConfig.packageName),
                       staticField.name,
                       Modifier.PUBLIC,
                       Modifier.STATIC,
@@ -173,6 +173,85 @@ final class ModelGenerator implements HelperMethods {
               return builder.build();
             })
         .toList();
+  }
+
+  private static List<FieldSpec> getPrivateFields(
+      ModelDefinition model, GenerationConfig genConfig) {
+    return model.components.stream()
+        .map(
+            component -> {
+              var builder =
+                  FieldSpec.builder(
+                      resolveType(component.type, genConfig.packageName),
+                      component.name,
+                      Modifier.PRIVATE,
+                      Modifier.FINAL);
+
+              if (!component.javaDoc.isBlank()) {
+                builder.addJavadoc(component.javaDoc);
+              }
+
+              return builder.build();
+            })
+        .toList();
+  }
+
+  private static List<MethodSpec> getAllMethods(ModelDefinition model, GenerationConfig genConfig) {
+    List<MethodSpec> methodSpecs = new ArrayList<>();
+
+    if (genConfig.getters) {
+      for (ModelDefinition.ComponentDefinition component : model.components) {
+        if (!genConfig.noGetters.contains(component.name)) {
+          List<String> optionalGetter = genConfig.optionalGetters;
+
+          String getter =
+              defaultGetterName(component.name, component.type, genConfig.nonCapitalizedGetters);
+          TypeName returnType = resolveType(component.type, genConfig.packageName);
+
+          var builder = MethodSpec.methodBuilder(getter).addModifiers(Modifier.PUBLIC);
+
+          if (isMap(component)) {
+            builder.addStatement(
+                "return $T.unmodifiableMap($L)", Collections.class, component.name);
+          } else if (optionalGetter != null && optionalGetter.contains(component.name)) {
+            // TODO: options != null && options.optional -> component.required
+            returnType = ParameterizedTypeName.get(ClassName.get(Optional.class), returnType.box());
+
+            builder.addStatement("return $T.ofNullable($L)", Optional.class, component.name);
+          } else {
+            builder.addStatement("return $L", component.name);
+          }
+
+          methodSpecs.add(builder.returns(returnType).build());
+        }
+      }
+    }
+
+    if (model.components.stream().anyMatch(s -> s.name.equals("additionalInformation"))) {
+      // type Map<String,String>
+      TypeName mapStringString =
+          ParameterizedTypeName.get(
+              ClassName.get(Map.class), ClassName.get(String.class), ClassName.get(String.class));
+
+      MethodSpec.Builder builder =
+          MethodSpec.methodBuilder("setAdditionalInformation")
+              .addModifiers(Modifier.PROTECTED)
+              .returns(void.class)
+              .addParameter(mapStringString, "additionalInformation");
+
+      // if (additionalInformation == null) return;
+      builder
+          .beginControlFlow("if (additionalInformation == null)")
+          .addStatement("return")
+          .endControlFlow();
+
+      // this.additionalInformation.putAll(additionalInformation);
+      builder.addStatement("this.additionalInformation.putAll(additionalInformation)");
+
+      methodSpecs.add(builder.build());
+    }
+
+    return methodSpecs;
   }
 
   private static MethodSpec generateEquals(ModelDefinition model) {

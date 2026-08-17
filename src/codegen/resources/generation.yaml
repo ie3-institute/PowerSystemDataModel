@@ -1,5 +1,6 @@
 models:
   UniqueEntity:
+    package: edu.ie3.datamodel.models
     classJavaDoc: "Supplies every subclass with a generated UUID, making it unique."
     inherits: [Entity, Uniqueness, Serializable]
     constructors:
@@ -9,6 +10,7 @@ models:
         components: [uuid]
 
   UniqueInputEntity:
+    package: edu.ie3.datamodel.models.input
     classJavaDoc: "Functionless class to describe that all subclasses are unique input classes."
     inherits: [InputEntity]
     constructors:
@@ -17,6 +19,7 @@ models:
         superArgs: [uuid]
 
   AssetInput:
+    package: edu.ie3.datamodel.models.input
     classJavaDoc: "Describes a grid asset under the assumption that every asset could be operable."
     inherits: [Operable]
     constructors:
@@ -38,6 +41,7 @@ models:
                  @param id Human-readable identifier"
 
   AssetTypeInput:
+    package: edu.ie3.datamodel.models.input
     classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.AssetInput}."
     constructors:
       - name: full
@@ -47,6 +51,7 @@ models:
                 @param id of the asset"
 
   NodeInput:
+    package: edu.ie3.datamodel.models.input
     classJavaDoc: "Describes an electrical grid node, that other assets can connect to."
     constructors:
       - name: full
@@ -102,6 +107,7 @@ models:
     nonCapitalizedGetters: [vTarget]
 
   OperatorInput:
+    package: edu.ie3.datamodel.models.input
     classJavaDoc: "Describes an operator, that operates assets."
     constructors:
       - name: minimal
@@ -125,6 +131,7 @@ models:
         expression: new OperatorInput(UUID.randomUUID(), "NO_OPERATOR_ASSIGNED")
 
   MeasurementUnitInput:
+    package: edu.ie3.datamodel.models.input
     classJavaDoc: "Model of a measuring unit attached to a certain {@link NodeInput}."
     inherits: [HasNodes]
     constructors:
@@ -176,6 +183,7 @@ models:
         className: Collections
 
   EmInput:
+    package: edu.ie3.datamodel.models.input
     classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.AssetInput}."
     inherits: [HasEm]
     constructors:
@@ -214,6 +222,7 @@ models:
     optionalGetters: [controllingEm]
 
   ConnectorInput:
+    package: edu.ie3.datamodel.models.input.connector
     classJavaDoc: "Describes an asset that connects two {@link NodeInput}s."
     inherits: [HasNodes]
     constructors:
@@ -274,6 +283,7 @@ models:
         className: List
 
   LineInput:
+    package: edu.ie3.datamodel.models.input.connector
     classJavaDoc: "Describes an electrical grid line that connects two {@link NodeInput}s."
     inherits: [HasType]
     constructors:
@@ -353,6 +363,7 @@ models:
             insert: true
 
   LineTypeInput:
+    package: edu.ie3.datamodel.models.input.connector.type
     classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.connector.LineInput}."
     constructors:
       - name: full
@@ -431,6 +442,7 @@ models:
     nonCapitalizedGetters: [iMax, vRated]
 
   SwitchInput:
+    package: edu.ie3.datamodel.models.input.connector
     classJavaDoc: "Describes an electrical grid switch between two {@link NodeInput}s."
     constructors:
       - name: full
@@ -470,6 +482,7 @@ models:
                  @param closed Is the switching state 'closed'?"
 
   TransformerInput:
+    package: edu.ie3.datamodel.models.input.connector
     classJavaDoc: "Describes an electrical grid transformer, is \"located\" in the inferior subnet."
     constructors:
       - name: full
@@ -502,6 +515,7 @@ models:
                @param autoTap True, if the tap position of the transformer is adapted automatically"
 
   Transformer2WInput:
+    package: edu.ie3.datamodel.models.input.connector
     classJavaDoc: "Describes a two winding transformer, that is connected to two {@link NodeInput}s."
     inherits: [HasType]
     constructors:
@@ -563,6 +577,7 @@ models:
             className: ConnectorValidationUtils
 
   Transformer2WTypeInput:
+    package: edu.ie3.datamodel.models.input.connector.type
     classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput}."
     constructors:
       - name: full
@@ -679,6 +694,7 @@ models:
     nonCapitalizedGetters: [rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi]
 
   Transformer3WInput:
+    package: edu.ie3.datamodel.models.input.connector
     classJavaDoc: "Describes a three winding transformer, that is connected to three {@link NodeInput}s."
     inherits: [HasType]
     constructors:
@@ -781,6 +797,7 @@ models:
             className: ConnectorValidationUtils
 
   Transformer3WTypeInput:
+    package: edu.ie3.datamodel.models.input.connector.type
     classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer3WInput}."
     constructors:
       - name: full
@@ -965,6 +982,7 @@ models:
     nonCapitalizedGetters: [sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi]
 
   SystemParticipantInput:
+    package: edu.ie3.datamodel.models.input.system
     classJavaDoc: "Describes a system asset that is connected to a node."
     inherits: [HasNodes, HasEm]
     constructors:
@@ -1015,6 +1033,7 @@ models:
     optionalGetters: [controllingEm]
 
   SystemParticipantTypeInput:
+    package: edu.ie3.datamodel.models.input.system.type
     classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput}."
     constructors:
       - name: full
@@ -1041,6 +1060,7 @@ models:
     nonCapitalizedGetters: [sRated]
 
   AcInput:
+    package: edu.ie3.datamodel.models.input.system
     classJavaDoc: "Describes an air condition."
     inherits: [HasType, HasThermalBus]
     constructors:
@@ -1099,6 +1119,7 @@ models:
     nonCapitalizedGetters: [qCharacteristics]
 
   AcTypeInput:
+    package: edu.ie3.datamodel.models.input.system.type
     classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.system.AcInput}."
     constructors:
       - name: full
@@ -1134,6 +1155,7 @@ models:
     nonCapitalizedGetters: [pThermal, sRated]
 
   BmInput:
+    package: edu.ie3.datamodel.models.input.system
     classJavaDoc: "Describes a biomass plant."
     inherits: [HasType]
     constructors:
@@ -1198,6 +1220,7 @@ models:
     nonCapitalizedGetters: [qCharacteristics]
 
   BmTypeInput:
+    package: edu.ie3.datamodel.models.input.system.type
     classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.system.BmInput}."
     constructors:
       - name: full
@@ -1233,6 +1256,7 @@ models:
     nonCapitalizedGetters: [sRated]
 
   ChpInput:
+    package: edu.ie3.datamodel.models.input.system
     classJavaDoc: "Describes a combined heat and power plant."
     inherits: [HasType, HasThermalBus, HasThermalStorage]
     constructors:
@@ -1297,6 +1321,7 @@ models:
     nonCapitalizedGetters: [qCharacteristics]
 
   ChpTypeInput:
+    package: edu.ie3.datamodel.models.input.system.type
     classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.ChpInput}."
     constructors:
       - name: full
@@ -1336,6 +1361,7 @@ models:
     nonCapitalizedGetters: [pOwn, pThermal, sRated]
 
   EvcsInput:
+    package: edu.ie3.datamodel.models.input.system
     classJavaDoc: "Describes an electric vehicle charging station."
     constructors:
       - name: full
@@ -1396,6 +1422,7 @@ models:
     nonCapitalizedGetters: [qCharacteristics]
 
   EvInput:
+    package: edu.ie3.datamodel.models.input.system
     classJavaDoc: "Describes an electric vehicle."
     inherits: [HasType]
     constructors:
@@ -1451,6 +1478,7 @@ models:
     nonCapitalizedGetters: [qCharacteristics]
 
   EvTypeInput:
+    package: edu.ie3.datamodel.models.input.system.type
     classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.EvInput}."
     constructors:
       - name: full
@@ -1488,6 +1516,7 @@ models:
     nonCapitalizedGetters: [eStorage, eCons, sRated, sRatedDC]
 
   FixedFeedInInput:
+    package: edu.ie3.datamodel.models.input.system
     classJavaDoc: "Dummy class to represent a constant feed in regardless of its type."
     constructors:
       - name: full
@@ -1545,6 +1574,7 @@ models:
     nonCapitalizedGetters: [qCharacteristics, sRated]
 
   HpInput:
+    package: edu.ie3.datamodel.models.input.system
     classJavaDoc: "Describes a heat pump."
     constructors:
       - name: full
@@ -1602,6 +1632,7 @@ models:
     nonCapitalizedGetters: [qCharacteristics]
 
   HpTypeInput:
+    package: edu.ie3.datamodel.models.input.system.type
     classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.system.HpInput}."
     constructors:
       - name: full
@@ -1637,6 +1668,7 @@ models:
     nonCapitalizedGetters: [pThermal, sRated]
 
   LoadInput:
+    package: edu.ie3.datamodel.models.input.system
     classJavaDoc: "Describes a load."
     constructors:
       - name: full
@@ -1700,6 +1732,7 @@ models:
     nonCapitalizedGetters: [qCharacteristics, sRated]
 
   PvInput:
+    package: edu.ie3.datamodel.models.input.system
     classJavaDoc: "Describes a photovoltaic plant."
     constructors:
       - name: full
@@ -1775,6 +1808,7 @@ models:
     nonCapitalizedGetters: [qCharacteristics, sRated]
 
   StorageInput:
+    package: edu.ie3.datamodel.models.input.system
     classJavaDoc: "Describes a battery storage."
     constructors:
       - name: full
@@ -1829,6 +1863,7 @@ models:
     nonCapitalizedGetters: [qCharacteristics]
 
   StorageTypeInput:
+    package: edu.ie3.datamodel.models.input.system.type
     classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.StorageInput}."
     constructors:
       - name: full
@@ -1868,6 +1903,7 @@ models:
     nonCapitalizedGetters: [eStorage, pMax, sRated]
 
   WecInput:
+    package: edu.ie3.datamodel.models.input.system
     classJavaDoc: "Describes a Wind Energy Converter."
     constructors:
       - name: full
@@ -1922,6 +1958,7 @@ models:
     nonCapitalizedGetters: [qCharacteristics]
 
   WecTypeInput:
+    package: edu.ie3.datamodel.models.input.system.type
     classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.WecInput}."
     constructors:
       - name: full
@@ -1961,6 +1998,7 @@ models:
     nonCapitalizedGetters: [sRated]
 
   ThermalInput:
+    package: edu.ie3.datamodel.models.input.thermal
     classJavaDoc: "Abstract class as a common super class of all thermal input models."
     constructors:
       - name: full
@@ -1981,6 +2019,7 @@ models:
                @param id Human readable identifier"
 
   ThermalUnitInput:
+    package: edu.ie3.datamodel.models.input.thermal
     classJavaDoc: "Abstract class for grouping all common properties to thermal models."
     inherits: [HasThermalBus]
     constructors:
@@ -2006,6 +2045,7 @@ models:
             type: double
 
   ThermalStorageInput:
+    package: edu.ie3.datamodel.models.input.thermal
     classJavaDoc: "Common properties to all thermal storage devices."
     constructors:
       - name: minimal
@@ -2024,6 +2064,7 @@ models:
                @param thermalBus Thermal bus, a thermal unit is connected to"
 
   AbstractStorageInput:
+    package: edu.ie3.datamodel.models.input.thermal
     classJavaDoc: "Thermal storage with cylindrical shape."
     constructors:
       - name: full
@@ -2060,6 +2101,7 @@ models:
     nonCapitalizedGetters: [pThermalMax]
 
   CylindricalStorageInput:
+    package: edu.ie3.datamodel.models.input.thermal
     classJavaDoc: "Thermal storage with cylindrical shape."
     constructors:
       - name: full
@@ -2103,6 +2145,7 @@ models:
     nonCapitalizedGetters: [pThermalMax]
 
   DomesticHotWaterStorageInput:
+    package: edu.ie3.datamodel.models.input.thermal
     classJavaDoc: "Thermal storage with cylindrical shape for domestic hot water."
     constructors:
       - name: full
@@ -2152,6 +2195,7 @@ models:
     nonCapitalizedGetters: [pThermalMax]
 
   ThermalBusInput:
+    package: edu.ie3.datamodel.models.input.thermal
     classJavaDoc: "A thermal bus, to which different {@link ThermalUnitInput} units may be connected."
     constructors:
       - name: full
@@ -2182,6 +2226,7 @@ models:
                @param id of the asset"
 
   ThermalSinkInput:
+    package: edu.ie3.datamodel.models.input.thermal
     classJavaDoc: "Common properties to all thermal sinks."
     constructors:
       - name: minimal
@@ -2200,6 +2245,7 @@ models:
                @param thermalBus Thermal bus, a thermal unit is connected to"
 
   ThermalHouseInput:
+    package: edu.ie3.datamodel.models.input.thermal
     classJavaDoc: "Quite simple thermal model of a house to serve as a heat sink."
     constructors:
       - name: minimal

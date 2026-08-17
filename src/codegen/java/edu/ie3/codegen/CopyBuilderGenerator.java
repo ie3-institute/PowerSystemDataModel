@@ -33,7 +33,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
   }
 
   public MethodSpec generateCopyMethod() {
-    ClassName builderClass = copyBuilderClassName(model);
+    ClassName builderClass = copyBuilderClassName(model, genConfig);
 
     boolean hasParent = model.extendsName != null && !model.extendsName.isBlank();
 
@@ -57,12 +57,12 @@ public final class CopyBuilderGenerator implements HelperMethods {
     return model.name + "CopyBuilder";
   }
 
-  private static ClassName modelClassName(ModelDefinition model) {
-    return ClassName.get(model.packageName, model.name);
+  private static ClassName modelClassName(ModelDefinition model, GenerationConfig genConfig) {
+    return ClassName.get(genConfig.packageName, model.name);
   }
 
-  private static ClassName copyBuilderClassName(ModelDefinition model) {
-    return ClassName.get(model.packageName, model.name, copyBuilderName(model));
+  private static ClassName copyBuilderClassName(ModelDefinition model, GenerationConfig genConfig) {
+    return ClassName.get(genConfig.packageName, model.name, copyBuilderName(model));
   }
 
   private static String builderGetterName(
@@ -71,8 +71,8 @@ public final class CopyBuilderGenerator implements HelperMethods {
   }
 
   private TypeSpec generateAbstractCopyBuilder() {
-    ClassName modelClass = modelClassName(model);
-    ClassName builderClass = copyBuilderClassName(model);
+    ClassName modelClass = modelClassName(model, genConfig);
+    ClassName builderClass = copyBuilderClassName(model, genConfig);
 
     TypeVariableName builderTypeVariable = TypeVariableName.get("B");
 
@@ -86,14 +86,14 @@ public final class CopyBuilderGenerator implements HelperMethods {
     ModelDefinition parent = getParent(model.extendsName, models);
 
     for (ModelDefinition.ComponentDefinition component : model.components) {
-      builder.addField(generateCopyBuilderField(component, model));
+      builder.addField(generateCopyBuilderField(component));
     }
 
     builder.addMethod(generateCopyBuilderConstructor(model, true));
 
     for (ModelDefinition.ComponentDefinition component : model.components) {
-      builder.addMethod(generateCopyBuilderSetter(component, model, builderTypeVariable));
-      builder.addMethod(generateCopyBuilderGetter(component, model));
+      builder.addMethod(generateCopyBuilderSetter(component, builderTypeVariable));
+      builder.addMethod(generateCopyBuilderGetter(component));
     }
 
     for (GenerationConfig.CopyBuilderMethods insert : genConfig.copyBuilderAdditionalMethods) {
@@ -103,7 +103,8 @@ public final class CopyBuilderGenerator implements HelperMethods {
               .addModifiers(Modifier.PUBLIC);
 
       for (GenerationConfig.CopyBuilderMethods.Parameter parameter : insert.parameters) {
-        methodBuilder.addParameter(resolveType(parameter.type, model.packageName), parameter.name);
+        methodBuilder.addParameter(
+            resolveType(parameter.type, genConfig.packageName), parameter.name);
       }
 
       if (insert.isAbstract) {
@@ -135,7 +136,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
               .build());
 
     } else {
-      ClassName parentBuilderClass = copyBuilderClassName(parent);
+      ClassName parentBuilderClass = copyBuilderClassName(parent, genConfig);
 
       TypeName parentBuilderType =
           ParameterizedTypeName.get(parentBuilderClass, builderTypeVariable);
@@ -161,7 +162,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
   }
 
   private TypeSpec generateConcreteCopyBuilder() {
-    ClassName builderClass = copyBuilderClassName(model);
+    ClassName builderClass = copyBuilderClassName(model, genConfig);
 
     TypeSpec.Builder builder =
         TypeSpec.classBuilder(copyBuilderName(model))
@@ -170,7 +171,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
     ModelDefinition parent = findParentModel(model);
 
     if (parent != null) {
-      ClassName parentBuilderClass = copyBuilderClassName(parent);
+      ClassName parentBuilderClass = copyBuilderClassName(parent, genConfig);
 
       TypeName parentBuilderType = ParameterizedTypeName.get(parentBuilderClass, builderClass);
 
@@ -178,14 +179,14 @@ public final class CopyBuilderGenerator implements HelperMethods {
     }
 
     for (ModelDefinition.ComponentDefinition component : model.components) {
-      builder.addField(generateCopyBuilderField(component, model));
+      builder.addField(generateCopyBuilderField(component));
     }
 
     builder.addMethod(generateCopyBuilderConstructor(model, false));
 
     for (ModelDefinition.ComponentDefinition component : model.components) {
-      builder.addMethod(generateCopyBuilderSetter(component, model, builderClass));
-      builder.addMethod(generateCopyBuilderGetter(component, model));
+      builder.addMethod(generateCopyBuilderSetter(component, builderClass));
+      builder.addMethod(generateCopyBuilderGetter(component));
     }
 
     for (GenerationConfig.CopyBuilderMethods insert : genConfig.copyBuilderAdditionalMethods) {
@@ -196,7 +197,8 @@ public final class CopyBuilderGenerator implements HelperMethods {
               .addAnnotation(Override.class);
 
       for (GenerationConfig.CopyBuilderMethods.Parameter parameter : insert.parameters) {
-        methodBuilder.addParameter(resolveType(parameter.type, model.packageName), parameter.name);
+        methodBuilder.addParameter(
+            resolveType(parameter.type, genConfig.packageName), parameter.name);
       }
 
       if (!insert.javaDoc.isBlank()) {
@@ -231,10 +233,9 @@ public final class CopyBuilderGenerator implements HelperMethods {
     return builder.build();
   }
 
-  private FieldSpec generateCopyBuilderField(
-      ModelDefinition.ComponentDefinition component, ModelDefinition model) {
+  private FieldSpec generateCopyBuilderField(ModelDefinition.ComponentDefinition component) {
 
-    TypeName type = resolveType(component.type, model.packageName);
+    TypeName type = resolveType(component.type, genConfig.packageName);
 
     return FieldSpec.builder(type, component.name, Modifier.PRIVATE).build();
   }
@@ -242,7 +243,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
   private MethodSpec generateCopyBuilderConstructor(
       ModelDefinition model, boolean abstractBuilder) {
 
-    ClassName modelClass = modelClassName(model);
+    ClassName modelClass = modelClassName(model, genConfig);
 
     MethodSpec.Builder builder =
         MethodSpec.constructorBuilder()
@@ -271,11 +272,9 @@ public final class CopyBuilderGenerator implements HelperMethods {
   }
 
   private MethodSpec generateCopyBuilderSetter(
-      ModelDefinition.ComponentDefinition component,
-      ModelDefinition model,
-      TypeName builderReturnType) {
+      ModelDefinition.ComponentDefinition component, TypeName builderReturnType) {
 
-    TypeName componentType = resolveType(component.type, model.packageName);
+    TypeName componentType = resolveType(component.type, genConfig.packageName);
 
     MethodSpec.Builder builder =
         MethodSpec.methodBuilder(component.name)
@@ -294,10 +293,8 @@ public final class CopyBuilderGenerator implements HelperMethods {
     return builder.build();
   }
 
-  private MethodSpec generateCopyBuilderGetter(
-      ModelDefinition.ComponentDefinition component, ModelDefinition model) {
-
-    TypeName componentType = resolveType(component.type, model.packageName);
+  private MethodSpec generateCopyBuilderGetter(ModelDefinition.ComponentDefinition component) {
+    TypeName componentType = resolveType(component.type, genConfig.packageName);
 
     return MethodSpec.methodBuilder(builderGetterName(component, genConfig))
         .addModifiers(Modifier.PROTECTED)
@@ -331,7 +328,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
 
   private MethodSpec generateConcreteBuilderBuildMethod(ModelDefinition model) {
 
-    ClassName modelClass = modelClassName(model);
+    ClassName modelClass = modelClassName(model, genConfig);
 
     List<String> components = model.components.stream().map(c -> c.name).toList();
 

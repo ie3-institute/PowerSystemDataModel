@@ -5,12 +5,17 @@
 */
 package edu.ie3.codegen;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public final class GenerationConfig implements HelperMethods {
+
+  @JsonProperty("package")
+  public String packageName;
+
   public String classJavaDoc = "";
 
   public List<ConstructorDefinition> constructors = new ArrayList<>();

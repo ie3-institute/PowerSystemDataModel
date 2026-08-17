@@ -77,7 +77,7 @@ public final class ConstructorGenerator implements HelperMethods {
     }
 
     for (ModelDefinition.ComponentDefinition parameter : parameters) {
-      builder.addParameter(resolveType(parameter.type, model.packageName), parameter.name);
+      builder.addParameter(resolveType(parameter.type, genConfig.packageName), parameter.name);
     }
 
     CodeBlock superArgs;

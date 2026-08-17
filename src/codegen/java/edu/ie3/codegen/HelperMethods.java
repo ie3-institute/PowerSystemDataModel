@@ -51,7 +51,7 @@ public interface HelperMethods {
     return "additionalInformation".equals(component.name);
   }
 
-  default boolean isMap(ModelDefinition.ComponentDefinition component) {
+  static boolean isMap(ModelDefinition.ComponentDefinition component) {
     return component.type.equals("StringMap");
   }
 

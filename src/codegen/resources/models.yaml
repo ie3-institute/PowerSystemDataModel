@@ -1,14 +1,12 @@
 models:
   UniqueEntity:
     name: UniqueEntity
-    package: edu.ie3.datamodel.models
     components:
       - name: uuid
         type: UUID
 
   UniqueInputEntity:
     name: UniqueInputEntity
-    package: edu.ie3.datamodel.models.input
     extends: UniqueEntity
     components:
       - name: additionalInformation
@@ -18,7 +16,6 @@ models:
 
   AssetInput:
     name: AssetInput
-    package: edu.ie3.datamodel.models.input
     extends: UniqueInputEntity
     components:
       - name: id
@@ -37,7 +34,6 @@ models:
 
   AssetTypeInput:
     name: AssetTypeInput
-    package: edu.ie3.datamodel.models.input
     extends: UniqueInputEntity
     components:
       - name: id
@@ -47,7 +43,6 @@ models:
 
   NodeInput:
     name: NodeInput
-    package: edu.ie3.datamodel.models.input
     class: true
     extends: AssetInput
     components:
@@ -70,7 +65,6 @@ models:
 
   OperatorInput:
     name: OperatorInput
-    package: edu.ie3.datamodel.models.input
     class: true
     extends: UniqueInputEntity
     components:
@@ -80,7 +74,6 @@ models:
 
   MeasurementUnitInput:
     name: MeasurementUnitInput
-    package: edu.ie3.datamodel.models.input
     class: true
     extends: AssetInput
     components:
@@ -102,7 +95,6 @@ models:
 
   EmInput:
     name: EmInput
-    package: edu.ie3.datamodel.models.input
     extends: AssetInput
     class: true
     components:
@@ -117,7 +109,6 @@ models:
 
   ConnectorInput:
     name: ConnectorInput
-    package: edu.ie3.datamodel.models.input.connector
     extends: AssetInput
     components:
       - name: nodeA
@@ -134,7 +125,6 @@ models:
 
   LineInput:
     name: LineInput
-    package: edu.ie3.datamodel.models.input.connector
     extends: ConnectorInput
     class: true
     components:
@@ -153,7 +143,6 @@ models:
 
   LineTypeInput:
     name: LineTypeInput
-    package: edu.ie3.datamodel.models.input.connector.type
     extends: AssetTypeInput
     class: true
     components:
@@ -176,9 +165,18 @@ models:
         type: ElectricPotential
         javaDoc: "Rated voltage for this type of line (typically in V)."
 
+  SwitchInput:
+    name: SwitchInput
+    extends: ConnectorInput
+    class: true
+    unsupported: [parallelDevices]
+    components:
+      - name: closed
+        type: bool
+        javaDoc: "Is the switching state 'closed'?"
+
   TransformerInput:
     name: TransformerInput
-    package: edu.ie3.datamodel.models.input.connector
     extends: ConnectorInput
     components:
       - name: tapPos
@@ -190,7 +188,6 @@ models:
 
   Transformer2WInput:
     name: Transformer2WInput
-    package: edu.ie3.datamodel.models.input.connector
     extends: TransformerInput
     class: true
     components:
@@ -201,7 +198,6 @@ models:
 
   Transformer2WTypeInput:
     name: Transformer2WTypeInput
-    package: edu.ie3.datamodel.models.input.connector.type
     extends: AssetTypeInput
     class: true
     components:
@@ -247,7 +243,6 @@ models:
 
   Transformer3WInput:
     name: Transformer3WInput
-    package: edu.ie3.datamodel.models.input.connector
     extends: TransformerInput
     class: true
     components:
@@ -264,20 +259,8 @@ models:
         nested: true
         javaDoc: "Internal node of the transformers T equivalent circuit."
 
-  SwitchInput:
-    name: SwitchInput
-    package: edu.ie3.datamodel.models.input.connector
-    extends: ConnectorInput
-    class: true
-    unsupported: [parallelDevices]
-    components:
-      - name: closed
-        type: bool
-        javaDoc: "Is the switching state 'closed'?"
-
   Transformer3WTypeInput:
     name: Transformer3WTypeInput
-    package: edu.ie3.datamodel.models.input.connector.type
     extends: AssetTypeInput
     class: true
     components:
@@ -341,7 +324,6 @@ models:
 
   SystemParticipantInput:
     name: SystemParticipantInput
-    package: edu.ie3.datamodel.models.input.system
     extends: AssetInput
     components:
       - name: node
@@ -356,7 +338,6 @@ models:
 
   SystemParticipantTypeInput:
     name: SystemParticipantTypeInput
-    package: edu.ie3.datamodel.models.input.system.type
     extends: AssetTypeInput
     components:
       - name: capex
@@ -374,7 +355,6 @@ models:
 
   AcInput:
     name: AcInput
-    package: edu.ie3.datamodel.models.input.system
     extends: SystemParticipantInput
     class: true
     components:
@@ -387,7 +367,6 @@ models:
 
   AcTypeInput:
     name: AcTypeInput
-    package: edu.ie3.datamodel.models.input.system.type
     extends: SystemParticipantTypeInput
     class: true
     components:
@@ -397,7 +376,6 @@ models:
 
   BmInput:
     name: BmInput
-    package: edu.ie3.datamodel.models.input.system
     extends: SystemParticipantInput
     class: true
     components:
@@ -413,7 +391,6 @@ models:
 
   BmTypeInput:
     name: BmTypeInput
-    package: edu.ie3.datamodel.models.input.system.type
     extends: SystemParticipantTypeInput
     class: true
     components:
@@ -426,7 +403,6 @@ models:
 
   ChpInput:
     name: ChpInput
-    package: edu.ie3.datamodel.models.input.system
     extends: SystemParticipantInput
     class: true
     components:
@@ -442,7 +418,6 @@ models:
 
   ChpTypeInput:
     name: ChpTypeInput
-    package: edu.ie3.datamodel.models.input.system.type
     extends: SystemParticipantTypeInput
     class: true
     components:
@@ -461,7 +436,6 @@ models:
 
   EvcsInput:
     name: EvcsInput
-    package: edu.ie3.datamodel.models.input.system
     extends: SystemParticipantInput
     class: true
     components:
@@ -483,7 +457,6 @@ models:
 
   EvInput:
     name: EvInput
-    package: edu.ie3.datamodel.models.input.system
     extends: SystemParticipantInput
     class: true
     components:
@@ -493,7 +466,6 @@ models:
 
   EvTypeInput:
     name: EvTypeInput
-    package: edu.ie3.datamodel.models.input.system.type
     extends: SystemParticipantTypeInput
     class: true
     components:
@@ -509,7 +481,6 @@ models:
 
   FixedFeedInInput:
     name: FixedFeedInInput
-    package: edu.ie3.datamodel.models.input.system
     extends: SystemParticipantInput
     class: true
     components:
@@ -522,7 +493,6 @@ models:
 
   HpInput:
     name: HpInput
-    package: edu.ie3.datamodel.models.input.system
     extends: SystemParticipantInput
     class: true
     components:
@@ -535,7 +505,6 @@ models:
 
   HpTypeInput:
     name: HpTypeInput
-    package: edu.ie3.datamodel.models.input.system.type
     extends: SystemParticipantTypeInput
     class: true
     components:
@@ -545,7 +514,6 @@ models:
 
   LoadInput:
     name: LoadInput
-    package: edu.ie3.datamodel.models.input.system
     extends: SystemParticipantInput
     class: true
     components:
@@ -566,7 +534,6 @@ models:
 
   PvInput:
     name: PvInput
-    package: edu.ie3.datamodel.models.input.system
     extends: SystemParticipantInput
     class: true
     components:
@@ -597,7 +564,6 @@ models:
 
   StorageInput:
     name: StorageInput
-    package: edu.ie3.datamodel.models.input.system
     extends: SystemParticipantInput
     class: true
     components:
@@ -607,7 +573,6 @@ models:
 
   StorageTypeInput:
     name: StorageTypeInput
-    package: edu.ie3.datamodel.models.input.system.type
     extends: SystemParticipantTypeInput
     class: true
     components:
@@ -626,7 +591,6 @@ models:
 
   WecInput:
     name: WecInput
-    package: edu.ie3.datamodel.models.input.system
     extends: SystemParticipantInput
     class: true
     components:
@@ -636,7 +600,6 @@ models:
 
   WecTypeInput:
     name: WecTypeInput
-    package: edu.ie3.datamodel.models.input.system.type
     extends: SystemParticipantTypeInput
     class: true
     components:
@@ -655,12 +618,10 @@ models:
 
   ThermalInput:
     name: ThermalInput
-    package: edu.ie3.datamodel.models.input.thermal
     extends: AssetInput
 
   ThermalUnitInput:
     name: ThermalUnitInput
-    package: edu.ie3.datamodel.models.input.thermal
     extends: ThermalInput
     components:
       - name: thermalBus
@@ -669,12 +630,10 @@ models:
 
   ThermalStorageInput:
     name: ThermalStorageInput
-    package: edu.ie3.datamodel.models.input.thermal
     extends: ThermalUnitInput
 
   AbstractStorageInput:
     name: AbstractStorageInput
-    package: edu.ie3.datamodel.models.input.thermal
     extends: ThermalStorageInput
     components:
       - name: storageVolumeLvl
@@ -695,30 +654,25 @@ models:
 
   CylindricalStorageInput:
     name: CylindricalStorageInput
-    package: edu.ie3.datamodel.models.input.thermal
     extends: AbstractStorageInput
     class: true
 
   DomesticHotWaterStorageInput:
     name: DomesticHotWaterStorageInput
-    package: edu.ie3.datamodel.models.input.thermal
     extends: AbstractStorageInput
     class: true
 
   ThermalBusInput:
     name: ThermalBusInput
-    package: edu.ie3.datamodel.models.input.thermal
     extends: ThermalInput
     class: true
 
   ThermalSinkInput:
     name: ThermalSinkInput
-    package: edu.ie3.datamodel.models.input.thermal
     extends: ThermalUnitInput
 
   ThermalHouseInput:
     name: ThermalHouseInput
-    package: edu.ie3.datamodel.models.input.thermal
     extends: ThermalSinkInput
     class: true
     components:
