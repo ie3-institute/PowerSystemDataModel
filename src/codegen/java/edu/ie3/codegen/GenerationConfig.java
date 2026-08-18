@@ -58,7 +58,7 @@ public final class GenerationConfig implements HelperMethods {
     public List<ConstructorModification> constructorChecks = new ArrayList<>();
   }
 
-  public static final class StaticFieldDefinition {
+  public static sealed class StandardFields {
     public String name;
     public String type;
     public String expression;
@@ -66,21 +66,13 @@ public final class GenerationConfig implements HelperMethods {
     public String javaDoc = "";
   }
 
-  public static final class MethodOverride {
-    public String name;
-    public String type;
-    public String expression;
-    public String className;
-  }
+  public static final class StaticFieldDefinition extends StandardFields {}
 
-  public static final class MethodInsert {
-    public String name;
-    public String type;
+  public static final class MethodOverride extends StandardFields {}
+
+  public static final class MethodInsert extends StandardFields {
     public boolean isAbstract = false;
     public boolean annotation = !isAbstract;
-    public String expression;
-    public String className;
-    public String javaDoc = "";
     public String comment = "";
     public List<Parameter> parameters = new ArrayList<>();
   }
