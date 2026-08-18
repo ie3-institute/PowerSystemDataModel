@@ -51,6 +51,10 @@ public class MethodGenerator implements HelperMethods {
               .returns(resolveType(insert.type))
               .addModifiers(Modifier.PUBLIC);
 
+      if (!insert.javaDoc.isBlank()) {
+        methodBuilder.addJavadoc(insert.javaDoc);
+      }
+
       if (insert.isAbstract) {
         methodBuilder.addModifiers(Modifier.ABSTRACT);
 

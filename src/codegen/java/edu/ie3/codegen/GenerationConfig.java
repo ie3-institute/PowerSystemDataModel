@@ -44,23 +44,18 @@ public final class GenerationConfig implements HelperMethods {
 
   public List<MethodInsert> methodInserts = new ArrayList<>();
 
-  public List<CopyBuilderMethods> copyBuilderAdditionalMethods = new ArrayList<>();
+  public List<MethodInsert> copyBuilderAdditionalMethods = new ArrayList<>();
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // helper definition
 
   public static final class ConstructorDefinition {
     public String name;
-
     public List<String> superArgs;
-
     public List<String> components = new ArrayList<>();
-
     public String javaDoc = "";
-
     public Map<String, ConstructorModification> constructorModifications = new HashMap<>();
-
-    public List<ConstructorCheck> constructorChecks = new ArrayList<>();
+    public List<ConstructorModification> constructorChecks = new ArrayList<>();
   }
 
   public static final class StaticFieldDefinition {
@@ -82,25 +77,17 @@ public final class GenerationConfig implements HelperMethods {
     public String name;
     public String type;
     public boolean isAbstract = false;
-    public String expression;
-    public String className;
-    public String javaDoc = "";
-  }
-
-  public static final class CopyBuilderMethods {
-    public String name;
-    public boolean isAbstract;
     public boolean annotation = !isAbstract;
     public String expression;
     public String className;
     public String javaDoc = "";
     public String comment = "";
     public List<Parameter> parameters = new ArrayList<>();
+  }
 
-    public static final class Parameter {
-      public String name;
-      public String type;
-    }
+  public static final class Parameter {
+    public String name;
+    public String type;
   }
 
   public static final class ConstructorModification {
@@ -108,10 +95,5 @@ public final class GenerationConfig implements HelperMethods {
     public String className;
     public boolean insert;
     public String unitClass;
-  }
-
-  public static final class ConstructorCheck {
-    public String expression;
-    public String className;
   }
 }

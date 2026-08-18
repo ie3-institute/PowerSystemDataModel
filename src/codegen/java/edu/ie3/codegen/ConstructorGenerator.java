@@ -204,7 +204,7 @@ public final class ConstructorGenerator implements HelperMethods {
       }
     }
 
-    for (GenerationConfig.ConstructorCheck check : constructor.constructorChecks) {
+    for (GenerationConfig.ConstructorModification check : constructor.constructorChecks) {
 
       if (check.className != null && !check.className.isBlank()) {
         builder.addStatement("$T." + check.expression, resolveClassName(check.className));

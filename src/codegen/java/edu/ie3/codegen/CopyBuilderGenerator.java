@@ -98,13 +98,13 @@ public final class CopyBuilderGenerator implements HelperMethods {
       builder.addMethod(generateCopyBuilderGetter(component));
     }
 
-    for (GenerationConfig.CopyBuilderMethods insert : genConfig.copyBuilderAdditionalMethods) {
+    for (GenerationConfig.MethodInsert insert : genConfig.copyBuilderAdditionalMethods) {
       var methodBuilder =
           MethodSpec.methodBuilder(insert.name)
               .returns(builderTypeVariable)
               .addModifiers(Modifier.PUBLIC);
 
-      for (GenerationConfig.CopyBuilderMethods.Parameter parameter : insert.parameters) {
+      for (GenerationConfig.Parameter parameter : insert.parameters) {
         methodBuilder.addParameter(resolveType(parameter.type), parameter.name);
       }
 
@@ -199,7 +199,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
       builder.addMethod(generateCopyBuilderGetter(component));
     }
 
-    for (GenerationConfig.CopyBuilderMethods insert : genConfig.copyBuilderAdditionalMethods) {
+    for (GenerationConfig.MethodInsert insert : genConfig.copyBuilderAdditionalMethods) {
       var methodBuilder =
           MethodSpec.methodBuilder(insert.name).returns(builderClass).addModifiers(Modifier.PUBLIC);
 
@@ -207,7 +207,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
         methodBuilder.addAnnotation(Override.class);
       }
 
-      for (GenerationConfig.CopyBuilderMethods.Parameter parameter : insert.parameters) {
+      for (GenerationConfig.Parameter parameter : insert.parameters) {
         methodBuilder.addParameter(resolveType(parameter.type), parameter.name);
       }
 
