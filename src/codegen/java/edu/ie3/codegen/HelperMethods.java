@@ -13,15 +13,15 @@ public interface HelperMethods {
   ClassName OBJECTS = ClassName.get(Objects.class);
   ClassName STRING = ClassName.get(String.class);
 
-  static CodeBlock indent(CodeBlock codeBlock) {
+  default CodeBlock indent(CodeBlock codeBlock) {
     return CodeBlock.builder().indent().add(codeBlock).unindent().build();
   }
 
-  static boolean isPrimitive(String type) {
+  default boolean isPrimitive(String type) {
     return "bool".equals(type) || "int".equals(type);
   }
 
-  static String defaultGetterName(String name, String type, List<String> nonCapitalizedGetters) {
+  default String defaultGetterName(String name, String type, List<String> nonCapitalizedGetters) {
     if (isPrimitive(type) || nonCapitalizedGetters == null || nonCapitalizedGetters.isEmpty()) {
       if ("bool".equals(type)) {
         return "is" + capitalize(name);
@@ -37,19 +37,19 @@ public interface HelperMethods {
     }
   }
 
-  static String capitalize(String value) {
+  default String capitalize(String value) {
     return Character.toUpperCase(value.charAt(0)) + value.substring(1);
   }
 
-  static boolean excludeFromMethods(ModelDefinition.ComponentDefinition component) {
+  default boolean excludeFromMethods(ModelDefinition.ComponentDefinition component) {
     return "additionalInformation".equals(component.name);
   }
 
-  static boolean isMap(ModelDefinition.ComponentDefinition component) {
+  default boolean isMap(ModelDefinition.ComponentDefinition component) {
     return component.type.equals("StringMap");
   }
 
-  static Map<String, ModelDefinition.ComponentDefinition> visibleComponents(
+  default Map<String, ModelDefinition.ComponentDefinition> visibleComponents(
       ModelDefinition model, Map<String, ModelDefinition> models) {
 
     LinkedHashMap<String, ModelDefinition.ComponentDefinition> result = new LinkedHashMap<>();
@@ -66,7 +66,7 @@ public interface HelperMethods {
     return result;
   }
 
-  private static List<ModelDefinition> hierarchy(
+  private List<ModelDefinition> hierarchy(
       ModelDefinition model, Map<String, ModelDefinition> models) {
     List<ModelDefinition> hierarchy = new ArrayList<>();
 
@@ -87,7 +87,7 @@ public interface HelperMethods {
     return hierarchy;
   }
 
-  static ModelDefinition getParent(String name, Map<String, ModelDefinition> models) {
+  default ModelDefinition getParent(String name, Map<String, ModelDefinition> models) {
     return models.get(name);
   }
 }

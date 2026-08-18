@@ -5,7 +5,6 @@
 */
 package edu.ie3.codegen;
 
-import static edu.ie3.codegen.HelperMethods.*;
 import static edu.ie3.codegen.ResolverUtils.resolveClassName;
 import static edu.ie3.codegen.ResolverUtils.resolveType;
 
@@ -67,7 +66,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
     return ClassName.get("", copyBuilderName(model));
   }
 
-  private static String builderGetterName(
+  private String builderGetterName(
       ModelDefinition.ComponentDefinition component, GenerationConfig genConfig) {
     return defaultGetterName(component.name, component.type, genConfig.nonCapitalizedGetters);
   }

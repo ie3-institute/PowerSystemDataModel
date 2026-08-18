@@ -5,7 +5,6 @@
 */
 package edu.ie3.codegen;
 
-import static edu.ie3.codegen.HelperMethods.visibleComponents;
 import static edu.ie3.codegen.ResolverUtils.resolveClassName;
 import static edu.ie3.codegen.ResolverUtils.resolveType;
 

@@ -5,8 +5,6 @@ def codegen = sourceSets.create('codegen') {
   resources.srcDir('src/codegen/resources')
 }
 
-def generatedModelDir = file("src/main/java").absolutePath
-
 def generateModels = tasks.register('generateModels', JavaExec) {
   group = 'code generation'
   description = 'Generates some model classes from YAML definition.'
@@ -16,7 +14,7 @@ def generateModels = tasks.register('generateModels', JavaExec) {
   classpath = codegen.runtimeClasspath
   mainClass = 'edu.ie3.codegen.ModelGenerator'
 
-  args(generatedModelDir)
+  args([])
 
   doFirst {
     delete(layout.buildDirectory.dir("src/main/java"))
@@ -25,10 +23,6 @@ def generateModels = tasks.register('generateModels', JavaExec) {
   doLast {
     spotlessApply
   }
-}
-
-sourceSets.named('main') {
-  java.srcDir(generatedModelDir)
 }
 
 tasks.named('processCodegenResources', ProcessResources) {

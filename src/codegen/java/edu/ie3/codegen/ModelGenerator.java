@@ -5,7 +5,6 @@
 */
 package edu.ie3.codegen;
 
-import static edu.ie3.codegen.HelperMethods.*;
 import static edu.ie3.codegen.ResolverUtils.resolveClassName;
 import static edu.ie3.codegen.ResolverUtils.resolveType;
 
@@ -20,15 +19,10 @@ import javax.lang.model.element.Modifier;
 final class ModelGenerator implements HelperMethods {
 
   public static void main(String[] args) throws IOException {
-    if (args.length != 1) {
-      System.err.println("Usage: ModelGenerator <output-directory>");
-      System.exit(1);
-    }
-
     Path resources = Path.of(".", "src", "codegen", "resources");
     Path modelsFile = resources.resolve("models.yaml");
     Path generationConfig = resources.resolve("generation.yaml");
-    Path outputDirectory = Path.of(args[0]);
+    Path outputDirectory = Path.of(".", "src", "main", "java");
 
     // read in all information
     ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -83,62 +77,14 @@ final class ModelGenerator implements HelperMethods {
     typeBuilder.addFields(getStaticFields(genConfig));
     typeBuilder.addFields(getPrivateFields(model));
 
+    MethodGenerator methodGenerator = new MethodGenerator(model, genConfig, models);
     ConstructorGenerator constructorGenerator = new ConstructorGenerator(model, genConfig, models);
     CopyBuilderGenerator copyBuilderGenerator = new CopyBuilderGenerator(model, genConfig, models);
 
     typeBuilder.addMethods(constructorGenerator.getConstructors());
-    typeBuilder.addMethods(getAllMethods(model, genConfig));
+    typeBuilder.addMethods(methodGenerator.getGetters());
     typeBuilder.addMethod(copyBuilderGenerator.generateCopyMethod());
-
-    for (GenerationConfig.MethodOverride override : genConfig.methodOverrides) {
-      var methodBuilder =
-          MethodSpec.methodBuilder(override.name)
-              .returns(resolveType(override.type))
-              .addAnnotation(Override.class)
-              .addModifiers(Modifier.PUBLIC);
-
-      if (override.className != null && !override.className.isBlank()) {
-        methodBuilder.addStatement(
-            "return $T." + override.expression, resolveClassName(override.className));
-      } else {
-        methodBuilder.addStatement("return " + override.expression);
-      }
-
-      typeBuilder.addMethod(methodBuilder.build());
-    }
-
-    for (GenerationConfig.MethodInsert insert : genConfig.methodInserts) {
-      var methodBuilder =
-          MethodSpec.methodBuilder(insert.name)
-              .returns(resolveType(insert.type))
-              .addModifiers(Modifier.PUBLIC);
-
-      if (insert.isAbstract) {
-        methodBuilder.addModifiers(Modifier.ABSTRACT);
-
-      } else {
-        if (insert.className != null && !insert.className.isBlank()) {
-          methodBuilder.addStatement(
-              "return $T." + insert.expression, resolveClassName(insert.className));
-        } else {
-          methodBuilder.addStatement("return " + insert.expression);
-        }
-      }
-
-      typeBuilder.addMethod(methodBuilder.build());
-    }
-
-    if (genConfig.equals) {
-      typeBuilder.addMethod(generateEquals(model));
-    }
-
-    if (genConfig.hashCode) {
-      typeBuilder.addMethod(generateHashCode(model));
-    }
-
-    if (genConfig.toString) {
-      typeBuilder.addMethod(generateToString(model, models, genConfig));
-    }
+    typeBuilder.addMethods(methodGenerator.getOtherMethods());
 
     typeBuilder.addType(copyBuilderGenerator.generateCopyBuilder());
 
@@ -194,210 +140,6 @@ final class ModelGenerator implements HelperMethods {
               return builder.build();
             })
         .toList();
-  }
-
-  private static List<MethodSpec> getAllMethods(ModelDefinition model, GenerationConfig genConfig) {
-    List<MethodSpec> methodSpecs = new ArrayList<>();
-
-    if (genConfig.getters) {
-      for (ModelDefinition.ComponentDefinition component : model.components) {
-        if (!genConfig.noGetters.contains(component.name)) {
-          List<String> optionalGetter = genConfig.optionalGetters;
-
-          String getter =
-              defaultGetterName(component.name, component.type, genConfig.nonCapitalizedGetters);
-          TypeName returnType = resolveType(component.type);
-
-          var builder = MethodSpec.methodBuilder(getter).addModifiers(Modifier.PUBLIC);
-
-          if (isMap(component)) {
-            builder.addStatement(
-                "return $T.unmodifiableMap($L)", Collections.class, component.name);
-          } else if (optionalGetter != null && optionalGetter.contains(component.name)) {
-            // TODO: options != null && options.optional -> component.required
-            returnType = ParameterizedTypeName.get(ClassName.get(Optional.class), returnType.box());
-
-            builder.addStatement("return $T.ofNullable($L)", Optional.class, component.name);
-          } else {
-            builder.addStatement("return $L", component.name);
-          }
-
-          methodSpecs.add(builder.returns(returnType).build());
-        }
-      }
-    }
-
-    if (model.components.stream().anyMatch(s -> s.name.equals("additionalInformation"))) {
-      // type Map<String,String>
-      TypeName mapStringString =
-          ParameterizedTypeName.get(
-              ClassName.get(Map.class), ClassName.get(String.class), ClassName.get(String.class));
-
-      MethodSpec.Builder builder =
-          MethodSpec.methodBuilder("setAdditionalInformation")
-              .addModifiers(Modifier.PROTECTED)
-              .returns(void.class)
-              .addParameter(mapStringString, "additionalInformation");
-
-      // if (additionalInformation == null) return;
-      builder
-          .beginControlFlow("if (additionalInformation == null)")
-          .addStatement("return")
-          .endControlFlow();
-
-      // this.additionalInformation.putAll(additionalInformation);
-      builder.addStatement("this.additionalInformation.putAll(additionalInformation)");
-
-      methodSpecs.add(builder.build());
-    }
-
-    return methodSpecs;
-  }
-
-  private static MethodSpec generateEquals(ModelDefinition model) {
-    MethodSpec.Builder builder =
-        MethodSpec.methodBuilder("equals")
-            .addAnnotation(Override.class)
-            .addModifiers(Modifier.PUBLIC)
-            .returns(TypeName.BOOLEAN)
-            .addParameter(Object.class, "o");
-
-    builder.addStatement("if (this == o) return true");
-    builder.addStatement("if (!(o instanceof $L that)) return false", model.name);
-
-    List<ModelDefinition.ComponentDefinition> filteredComponents = new ArrayList<>();
-    for (ModelDefinition.ComponentDefinition component : model.components) {
-      if (excludeFromMethods(component)) {
-        continue;
-      }
-      filteredComponents.add(component);
-    }
-
-    boolean superStatement = model.extendsName != null && !model.extendsName.isBlank();
-
-    if (filteredComponents.isEmpty()) {
-      if (superStatement) {
-        builder.addStatement("return super.equals(o)");
-      } else {
-        builder.addStatement("if (!super.equals(o)) return false");
-        builder.addStatement("return true");
-      }
-    } else {
-      builder.addStatement("if (!super.equals(o)) return false");
-
-      CodeBlock.Builder expression = CodeBlock.builder();
-
-      for (int index = 0; index < filteredComponents.size(); index++) {
-        ModelDefinition.ComponentDefinition component = filteredComponents.get(index);
-
-        if (index > 0) {
-          expression.add("\n&& ");
-        }
-
-        if (isPrimitive(component.type)) {
-          expression.add("$L == that.$L", component.name, component.name);
-        } else {
-          expression.add("$T.equals($L, that.$L)", OBJECTS, component.name, component.name);
-        }
-      }
-
-      builder.addStatement("return $L", expression.build());
-    }
-
-    return builder.build();
-  }
-
-  private static MethodSpec generateHashCode(ModelDefinition model) {
-    MethodSpec.Builder builder =
-        MethodSpec.methodBuilder("hashCode")
-            .addAnnotation(Override.class)
-            .addModifiers(Modifier.PUBLIC)
-            .returns(TypeName.INT);
-
-    List<CodeBlock> arguments = new ArrayList<>();
-
-    if (model.extendsName != null && !model.extendsName.isBlank()) {
-      arguments.add(CodeBlock.of("super.hashCode()"));
-    }
-
-    for (ModelDefinition.ComponentDefinition component : model.components) {
-      if (excludeFromMethods(component)) {
-        continue;
-      }
-
-      arguments.add(CodeBlock.of("$L", component.name));
-    }
-
-    if (arguments.isEmpty()) {
-      builder.addStatement("return 0");
-    } else {
-      builder.addStatement("return $T.hash($L)", OBJECTS, CodeBlock.join(arguments, ", "));
-    }
-
-    return builder.build();
-  }
-
-  private static MethodSpec generateToString(
-      ModelDefinition model, Map<String, ModelDefinition> models, GenerationConfig genConfig) {
-    MethodSpec.Builder builder =
-        MethodSpec.methodBuilder("toString")
-            .addAnnotation(Override.class)
-            .addModifiers(Modifier.PUBLIC)
-            .returns(STRING);
-
-    builder.addCode("return $S\n", model.name + "{");
-
-    List<String> components = model.components.stream().map(c -> c.name).toList();
-
-    int index = 0;
-    for (ModelDefinition.ComponentDefinition component :
-        visibleComponents(model, models).values()) {
-      if (excludeFromMethods(component)) {
-        continue;
-      }
-
-      String prefix = (index == 0) ? component.name + "=" : ", " + component.name + "=";
-
-      String componentName = component.name;
-
-      if (component.nullable) {
-        // we need some special calls here
-        builder.addCode(
-            "    + $S + $T.ofNullable($L).map($L::getUuid).map(UUID::toString).orElse(\"\")\n",
-            prefix,
-            Optional.class,
-            componentName,
-            model.name);
-
-      } else if (components.contains(component.name)) {
-        if (component.nested) {
-          builder.addCode("    + $S + $L.getUuid()\n", prefix, component.name);
-        } else {
-          builder.addCode("    + $S + $L\n", prefix, component.name);
-        }
-
-      } else {
-        String getter =
-            defaultGetterName(component.name, component.type, genConfig.nonCapitalizedGetters);
-
-        if (component.nested) {
-          builder.addCode("    + $S + $L().getUuid()\n", prefix, getter);
-        } else {
-          builder.addCode("    + $S + $L()\n", prefix, getter);
-        }
-      }
-
-      index++;
-    }
-
-    if (components.contains("additionalInformation")) {
-      builder.addStatement(
-          "    + \", additionalInformation=\" + getAdditionalInformation()\n+ '}'");
-    } else {
-      builder.addStatement("    + '}'");
-    }
-
-    return builder.build();
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
