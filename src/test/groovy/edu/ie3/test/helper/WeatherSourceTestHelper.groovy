@@ -14,7 +14,7 @@ import edu.ie3.util.quantities.QuantityUtil
 class WeatherSourceTestHelper {
 
   static boolean equalsIgnoreUUID(IndividualTimeSeries<WeatherValue> ts1, IndividualTimeSeries<WeatherValue> ts2) {
-    return WeatherSourceTestHelper.equalsIgnoreUUID(ts1.entries, ts2.entries)
+    return equalsIgnoreUUID(ts1.entries, ts2.entries)
   }
 
   static boolean equalsIgnoreUUID(Collection<TimeBasedValue<WeatherValue>> c1, Collection<TimeBasedValue<WeatherValue>> c2) {
@@ -22,7 +22,7 @@ class WeatherSourceTestHelper {
     if (c1.size() != c2.size()) return false
     for (TimeBasedValue<WeatherValue> value1 : c1) {
       if (!c2.stream().anyMatch({ value2 ->
-            WeatherSourceTestHelper.equalsIgnoreUUID(value1, value2)
+            equalsIgnoreUUID(value1, value2)
             })) return false
     }
     return true
@@ -42,8 +42,8 @@ class WeatherSourceTestHelper {
 
     if (!mandatoryValues) return false
 
-    if (!WeatherSourceTestHelper.compareOptionalTemperature(weatherValueA.groundTemperatureLevel1, weatherValueB.groundTemperatureLevel1)) return false
-    if (!WeatherSourceTestHelper.compareOptionalTemperature(weatherValueA.groundTemperatureLevel2, weatherValueB.groundTemperatureLevel2)) return false
+    if (!compareOptionalTemperature(weatherValueA.groundTemperatureLevel1, weatherValueB.groundTemperatureLevel1)) return false
+    if (!compareOptionalTemperature(weatherValueA.groundTemperatureLevel2, weatherValueB.groundTemperatureLevel2)) return false
 
     return true
   }
