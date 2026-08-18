@@ -109,7 +109,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
       }
 
       if (!insert.javaDoc.isBlank()) {
-        builder.addJavadoc(insert.javaDoc);
+        methodBuilder.addJavadoc(insert.javaDoc);
       }
 
       if (insert.isAbstract) {

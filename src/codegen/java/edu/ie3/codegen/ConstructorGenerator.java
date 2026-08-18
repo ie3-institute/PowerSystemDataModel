@@ -8,6 +8,7 @@ package edu.ie3.codegen;
 import static edu.ie3.codegen.ResolverUtils.resolveClassName;
 import static edu.ie3.codegen.ResolverUtils.resolveType;
 
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import edu.ie3.codegen.ModelDefinition.ComponentDefinition;
@@ -131,87 +132,19 @@ public final class ConstructorGenerator implements HelperMethods {
                   + componentName
                   + "'.");
         } else {
-          GenerationConfig.ConstructorModification modification =
-              constructor.constructorModifications.get(componentName);
-
-          if (modification.className != null && !modification.className.isBlank()) {
-
-            if (modification.insert) {
-
-              if (modification.unitClass != null && !modification.unitClass.isBlank()) {
-                builder.addStatement(
-                    "this.$L = " + modification.expression,
-                    componentName,
-                    resolveClassName(modification.className),
-                    resolveClassName(modification.unitClass));
-
-              } else {
-                builder.addStatement(
-                    "this.$L = " + modification.expression,
-                    componentName,
-                    resolveClassName(modification.className));
-              }
-
-            } else {
-              builder.addStatement(
-                  "this.$L = $T." + modification.expression,
-                  componentName,
-                  resolveClassName(modification.className));
-            }
-
-          } else {
-            builder.addStatement("this.$L = " + modification.expression, componentName);
-          }
+          addStatement(
+              builder, componentName, constructor.constructorModifications.get(componentName));
         }
 
       } else {
         if (constructor.constructorModifications.containsKey(componentName)) {
-          GenerationConfig.ConstructorModification modification =
-              constructor.constructorModifications.get(componentName);
-
-          if (modification.className != null && !modification.className.isBlank()) {
-
-            if (modification.insert) {
-
-              if (modification.unitClass != null && !modification.unitClass.isBlank()) {
-                builder.addStatement(
-                    "this.$L = " + modification.expression,
-                    componentName,
-                    resolveClassName(modification.className),
-                    resolveClassName(modification.unitClass));
-
-              } else {
-                builder.addStatement(
-                    "this.$L = " + modification.expression,
-                    componentName,
-                    resolveClassName(modification.className));
-              }
-
-            } else {
-              builder.addStatement(
-                  "this.$L = $T." + modification.expression,
-                  componentName,
-                  resolveClassName(modification.className));
-            }
-
-          } else {
-            builder.addStatement("this.$L = " + modification.expression, componentName);
-          }
-
-        } else {
-          builder.addStatement("this.$L = $L", componentName, componentName);
+          addStatement(
+              builder, componentName, constructor.constructorModifications.get(componentName));
         }
       }
     }
 
-    for (GenerationConfig.ConstructorModification check : constructor.constructorChecks) {
-
-      if (check.className != null && !check.className.isBlank()) {
-        builder.addStatement("$T." + check.expression, resolveClassName(check.className));
-      } else {
-        builder.addStatement(check.expression);
-      }
-    }
+    constructor.constructorChecks.forEach(c -> addStatement(builder, c));
 
     boolean hasAdditionalInfoParam =
         parameters.stream().anyMatch(p -> "additionalInformation".equals(p.name));
@@ -221,5 +154,60 @@ public final class ConstructorGenerator implements HelperMethods {
     }
 
     return builder.build();
+  }
+
+  public void addStatement(
+      MethodSpec.Builder builder,
+      String componentName,
+      GenerationConfig.ConstructorModification modification) {
+    ClassName className = resolveClassName(modification.className);
+
+    if (modification.usableClassName()) {
+
+      if (modification.insert) {
+
+        if (modification.usableUnitClass()) {
+          builder.addStatement(
+              "this.$L = " + modification.expression,
+              componentName,
+              className,
+              resolveClassName(modification.unitClass));
+
+        } else {
+          builder.addStatement("this.$L = " + modification.expression, componentName, className);
+        }
+
+      } else {
+        builder.addStatement("this.$L = $T." + modification.expression, componentName, className);
+      }
+
+    } else {
+      builder.addStatement("this.$L = " + modification.expression, componentName);
+    }
+  }
+
+  public void addStatement(
+      MethodSpec.Builder builder, GenerationConfig.ConstructorModification modification) {
+    ClassName className = resolveClassName(modification.className);
+
+    if (modification.usableClassName()) {
+
+      if (modification.insert) {
+
+        if (modification.usableUnitClass()) {
+          builder.addStatement(
+              modification.expression, className, resolveClassName(modification.unitClass));
+
+        } else {
+          builder.addStatement(modification.expression, className);
+        }
+
+      } else {
+        builder.addStatement("$T." + modification.expression, className);
+      }
+
+    } else {
+      builder.addStatement(modification.expression);
+    }
   }
 }

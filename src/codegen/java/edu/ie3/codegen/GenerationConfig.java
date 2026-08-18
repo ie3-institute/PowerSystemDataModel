@@ -58,11 +58,22 @@ public final class GenerationConfig implements HelperMethods {
     public List<ConstructorModification> constructorChecks = new ArrayList<>();
   }
 
-  public static sealed class StandardFields {
-    public String name;
-    public String type;
+  public static sealed class BasicExpression {
     public String expression;
     public String className;
+
+    public boolean usableClassName() {
+      return usable(className);
+    }
+
+    boolean usable(String name) {
+      return name != null && !name.isBlank();
+    }
+  }
+
+  public static sealed class StandardFields extends BasicExpression {
+    public String name;
+    public String type;
     public String javaDoc = "";
   }
 
@@ -82,10 +93,12 @@ public final class GenerationConfig implements HelperMethods {
     public String type;
   }
 
-  public static final class ConstructorModification {
-    public String expression;
-    public String className;
+  public static final class ConstructorModification extends BasicExpression {
     public boolean insert;
     public String unitClass;
+
+    public boolean usableUnitClass() {
+      return usable(unitClass);
+    }
   }
 }
