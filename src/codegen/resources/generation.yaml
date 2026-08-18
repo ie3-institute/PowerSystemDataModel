@@ -309,10 +309,10 @@ models:
           geoPosition:
             expression: buildSafeLineString(geoPosition)
             className: GeoUtils
-          length:
-            expression: length.to($T.LINE_LENGTH)
-            className: StandardUnits
-            insert: true
+          #length:
+          #  expression: length.to($T.LINE_LENGTH)
+          #  className: StandardUnits
+          #  insert: true
       - name: fullWithAdditionalInformation
         components: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, type, length, geoPosition, olmCharacteristic, additionalInformation]
         superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices]
@@ -335,10 +335,10 @@ models:
           geoPosition:
             expression: buildSafeLineString(geoPosition)
             className: GeoUtils
-          length:
-            expression: length.to($T.LINE_LENGTH)
-            className: StandardUnits
-            insert: true
+          #length:
+          #  expression: length.to($T.LINE_LENGTH)
+          #  className: StandardUnits
+          #  insert: true
       - name: minimal
         components: [uuid, id, nodeA, nodeB, parallelDevices, type, length, geoPosition, olmCharacteristic]
         superArgs: [uuid, id, nodeA, nodeB, parallelDevices]
@@ -358,10 +358,10 @@ models:
           geoPosition:
             expression: buildSafeLineString(geoPosition)
             className: GeoUtils
-          length:
-            expression: length.to($T.LINE_LENGTH)
-            className: StandardUnits
-            insert: true
+          #length:
+          #  expression: length.to($T.LINE_LENGTH)
+          #  className: StandardUnits
+          #  insert: true
 
   LineTypeInput:
     package: edu.ie3.datamodel.models.input.connector.type
@@ -378,31 +378,6 @@ models:
                @param x Specific reactance for this type of line (typically in Ohm/km)\n
                @param iMax Maximum thermal current for this type of line (typically in A)\n
                @param vRated Rated voltage for this type of line"
-        constructorModifications:
-          r:
-            expression: r.to($T.RESISTANCE_PER_LENGTH)
-            className: StandardUnits
-            insert: true
-          x:
-            expression: x.to($T.REACTANCE_PER_LENGTH)
-            className: StandardUnits
-            insert: true
-          b:
-            expression: b.to($T.SUSCEPTANCE_PER_LENGTH)
-            className: StandardUnits
-            insert: true
-          g:
-            expression: g.to($T.CONDUCTANCE_PER_LENGTH)
-            className: StandardUnits
-            insert: true
-          iMax:
-            expression: iMax.to($T.ELECTRIC_CURRENT_MAGNITUDE)
-            className: StandardUnits
-            insert: true
-          vRated:
-            expression: vRated.to($T.RATED_VOLTAGE_MAGNITUDE)
-            className: StandardUnits
-            insert: true
       - name: fullWithAdditionalInformation
         components: [uuid, id, b, g, r, x, iMax, vRated, additionalInformation]
         superArgs: [uuid, id]
@@ -414,32 +389,6 @@ models:
                @param x Specific reactance for this type of line (typically in Ohm/km)\n
                @param iMax Maximum thermal current for this type of line (typically in A)\n
                @param vRated Rated voltage for this type of line"
-        constructorModifications:
-          r:
-            expression: r.to($T.RESISTANCE_PER_LENGTH)
-            className: StandardUnits
-            insert: true
-          x:
-            expression: x.to($T.REACTANCE_PER_LENGTH)
-            className: StandardUnits
-            insert: true
-          b:
-            expression: b.to($T.SUSCEPTANCE_PER_LENGTH)
-            className: StandardUnits
-            insert: true
-          g:
-            expression: g.to($T.CONDUCTANCE_PER_LENGTH)
-            className: StandardUnits
-            insert: true
-
-          iMax:
-            expression: iMax.to($T.ELECTRIC_CURRENT_MAGNITUDE)
-            className: StandardUnits
-            insert: true
-          vRated:
-            expression: vRated.to($T.RATED_VOLTAGE_MAGNITUDE)
-            className: StandardUnits
-            insert: true
     nonCapitalizedGetters: [iMax, vRated]
 
   SwitchInput:
@@ -599,43 +548,6 @@ models:
                @param tapNeutr Neutral tap position\n
                @param tapMin Minimum available tap position\n
                @param tapMax Maximum available tap position"
-        constructorModifications:
-          rSc:
-            expression: rSc.to($T.RESISTANCE)
-            className: StandardUnits
-            insert: true
-          xSc:
-            expression: xSc.to($T.REACTANCE)
-            className: StandardUnits
-            insert: true
-          sRated:
-            expression: sRated.to($T.S_RATED)
-            className: StandardUnits
-            insert: true
-          vRatedA:
-            expression: vRatedA.to($T.RATED_VOLTAGE_MAGNITUDE)
-            className: StandardUnits
-            insert: true
-          vRatedB:
-            expression: vRatedB.to($T.RATED_VOLTAGE_MAGNITUDE)
-            className: StandardUnits
-            insert: true
-          gM:
-            expression: gM.to($T.CONDUCTANCE)
-            className: StandardUnits
-            insert: true
-          bM:
-            expression: bM.to($T.SUSCEPTANCE)
-            className: StandardUnits
-            insert: true
-          dV:
-            expression: dV.to($T.DV_TAP)
-            className: StandardUnits
-            insert: true
-          dPhi:
-            expression: dPhi.to($T.DPHI_TAP)
-            className: StandardUnits
-            insert: true
       - name: fullWithAdditionalInformation
         components: [uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide, tapNeutr, tapMin, tapMax, additionalInformation]
         superArgs: [uuid, id]
@@ -655,43 +567,6 @@ models:
                @param tapMin Minimum available tap position\n
                @param tapMax Maximum available tap position\n
                @param additionalInformation Of the input"
-        constructorModifications:
-          rSc:
-            expression: rSc.to($T.RESISTANCE)
-            className: StandardUnits
-            insert: true
-          xSc:
-            expression: xSc.to($T.REACTANCE)
-            className: StandardUnits
-            insert: true
-          sRated:
-            expression: sRated.to($T.S_RATED)
-            className: StandardUnits
-            insert: true
-          vRatedA:
-            expression: vRatedA.to($T.RATED_VOLTAGE_MAGNITUDE)
-            className: StandardUnits
-            insert: true
-          vRatedB:
-            expression: vRatedB.to($T.RATED_VOLTAGE_MAGNITUDE)
-            className: StandardUnits
-            insert: true
-          gM:
-            expression: gM.to($T.CONDUCTANCE)
-            className: StandardUnits
-            insert: true
-          bM:
-            expression: bM.to($T.SUSCEPTANCE)
-            className: StandardUnits
-            insert: true
-          dV:
-            expression: dV.to($T.DV_TAP)
-            className: StandardUnits
-            insert: true
-          dPhi:
-            expression: dPhi.to($T.DPHI_TAP)
-            className: StandardUnits
-            insert: true
     nonCapitalizedGetters: [rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi]
 
   Transformer3WInput:
@@ -833,71 +708,6 @@ models:
                @param tapNeutr Neutral tap position\n
                @param tapMin Minimum available tap position\n
                @param tapMax Maximum available tap position"
-        constructorModifications:
-          sRatedA:
-            expression: sRatedA.to($T.S_RATED)
-            className: StandardUnits
-            insert: true
-          sRatedB:
-            expression: sRatedB.to($T.S_RATED)
-            className: StandardUnits
-            insert: true
-          sRatedC:
-            expression: sRatedC.to($T.S_RATED)
-            className: StandardUnits
-            insert: true
-          vRatedA:
-            expression: vRatedA.to($T.RATED_VOLTAGE_MAGNITUDE)
-            className: StandardUnits
-            insert: true
-          vRatedB:
-            expression: vRatedB.to($T.RATED_VOLTAGE_MAGNITUDE)
-            className: StandardUnits
-            insert: true
-          vRatedC:
-            expression: vRatedC.to($T.RATED_VOLTAGE_MAGNITUDE)
-            className: StandardUnits
-            insert: true
-          rScA:
-            expression: rScA.to($T.RESISTANCE)
-            className: StandardUnits
-            insert: true
-          rScB:
-            expression: rScB.to($T.RESISTANCE)
-            className: StandardUnits
-            insert: true
-          rScC:
-            expression: rScC.to($T.RESISTANCE)
-            className: StandardUnits
-            insert: true
-          xScA:
-            expression: xScA.to($T.REACTANCE)
-            className: StandardUnits
-            insert: true
-          xScB:
-            expression: xScB.to($T.REACTANCE)
-            className: StandardUnits
-            insert: true
-          xScC:
-            expression: xScC.to($T.REACTANCE)
-            className: StandardUnits
-            insert: true
-          gM:
-            expression: gM.to($T.CONDUCTANCE)
-            className: StandardUnits
-            insert: true
-          bM:
-            expression: bM.to($T.SUSCEPTANCE)
-            className: StandardUnits
-            insert: true
-          dV:
-            expression: dV.to($T.DV_TAP)
-            className: StandardUnits
-            insert: true
-          dPhi:
-            expression: dPhi.to($T.DPHI_TAP)
-            className: StandardUnits
-            insert: true
       - name: fullWithAdditionalInformation
         components: [uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi, tapNeutr, tapMin, tapMax, additionalInformation]
         superArgs: [uuid, id]
@@ -923,71 +733,6 @@ models:
                @param tapMin Minimum available tap position\n
                @param tapMax Maximum available tap position\n
                @param additionalInformation Of the input"
-        constructorModifications:
-          sRatedA:
-            expression: sRatedA.to($T.S_RATED)
-            className: StandardUnits
-            insert: true
-          sRatedB:
-            expression: sRatedB.to($T.S_RATED)
-            className: StandardUnits
-            insert: true
-          sRatedC:
-            expression: sRatedC.to($T.S_RATED)
-            className: StandardUnits
-            insert: true
-          vRatedA:
-            expression: vRatedA.to($T.RATED_VOLTAGE_MAGNITUDE)
-            className: StandardUnits
-            insert: true
-          vRatedB:
-            expression: vRatedB.to($T.RATED_VOLTAGE_MAGNITUDE)
-            className: StandardUnits
-            insert: true
-          vRatedC:
-            expression: vRatedC.to($T.RATED_VOLTAGE_MAGNITUDE)
-            className: StandardUnits
-            insert: true
-          rScA:
-            expression: rScA.to($T.RESISTANCE)
-            className: StandardUnits
-            insert: true
-          rScB:
-            expression: rScB.to($T.RESISTANCE)
-            className: StandardUnits
-            insert: true
-          rScC:
-            expression: rScC.to($T.RESISTANCE)
-            className: StandardUnits
-            insert: true
-          xScA:
-            expression: xScA.to($T.REACTANCE)
-            className: StandardUnits
-            insert: true
-          xScB:
-            expression: xScB.to($T.REACTANCE)
-            className: StandardUnits
-            insert: true
-          xScC:
-            expression: xScC.to($T.REACTANCE)
-            className: StandardUnits
-            insert: true
-          gM:
-            expression: gM.to($T.CONDUCTANCE)
-            className: StandardUnits
-            insert: true
-          bM:
-            expression: bM.to($T.SUSCEPTANCE)
-            className: StandardUnits
-            insert: true
-          dV:
-            expression: dV.to($T.DV_TAP)
-            className: StandardUnits
-            insert: true
-          dPhi:
-            expression: dPhi.to($T.DPHI_TAP)
-            className: StandardUnits
-            insert: true
     nonCapitalizedGetters: [sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi]
 
   SystemParticipantInput:
@@ -1756,7 +1501,7 @@ models:
                @param operationTime Time for which the entity is operated\n
                @param node the asset is connected to\n
                @param qCharacteristics Description of a reactive power characteristic\n
-               @param em The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
                @param albedo Albedo value (typically a value between 0 and 1)\n
                @param azimuth Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)\n
                @param etaConv Efficiency of converter (typically in %)\n
@@ -1776,7 +1521,7 @@ models:
                @param operationTime Time for which the entity is operated\n
                @param node the asset is connected to\n
                @param qCharacteristics Description of a reactive power characteristic\n
-               @param em The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
                @param albedo Albedo value (typically a value between 0 and 1)\n
                @param azimuth Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)\n
                @param etaConv Efficiency of converter (typically in %)\n
@@ -1795,7 +1540,7 @@ models:
                @param id of the asset\n
                @param node the asset is connected to\n
                @param qCharacteristics Description of a reactive power characteristic\n
-               @param em The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+               @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
                @param albedo Albedo value (typically a value between 0 and 1)\n
                @param azimuth Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)\n
                @param etaConv Efficiency of converter (typically in %)\n
@@ -1815,7 +1560,7 @@ models:
           - name: factor
             type: double
         expression: this.sRated = this.sRated.multiply(factor)
-    nonCapitalizedGetters: [qCharacteristics, sRated]
+    nonCapitalizedGetters: [qCharacteristics, sRated, kG, kT]
 
   StorageInput:
     package: edu.ie3.datamodel.models.input.system

@@ -240,10 +240,12 @@ public class MethodGenerator implements HelperMethods {
     builder.addCode("return $S\n", model.name + "{");
 
     List<String> components = model.components.stream().map(c -> c.name).toList();
+    Collection<ModelDefinition.ComponentDefinition> allComponents =
+        visibleComponents(model, models).values();
+    List<String> allComponentNames = allComponents.stream().map(c -> c.name).toList();
 
     int index = 0;
-    for (ModelDefinition.ComponentDefinition component :
-        visibleComponents(model, models).values()) {
+    for (ModelDefinition.ComponentDefinition component : allComponents) {
       if (excludeFromMethods(component)) {
         continue;
       }
@@ -254,12 +256,34 @@ public class MethodGenerator implements HelperMethods {
 
       if (component.nullable) {
         // we need some special calls here
-        builder.addCode(
-            "    + $S + $T.ofNullable($L).map($L::getUuid).map(UUID::toString).orElse(\"\")\n",
-            prefix,
-            Optional.class,
-            componentName,
-            model.name);
+        if (!component.required) {
+          builder.addCode(
+              "    + $S + $L().map(e -> e.getUuid().toString()).orElse(\"\")\n",
+              prefix,
+              defaultGetterName(
+                  componentName,
+                  component.type,
+                  genConfig.booleanGetter,
+                  genConfig.nonCapitalizedGetters));
+
+        } else if (model.components.contains(component)) {
+          builder.addCode(
+              "    + $S + $T.ofNullable($L).map(e -> e.getUuid().toString()).orElse(\"\")\n",
+              prefix,
+              Optional.class,
+              componentName);
+
+        } else {
+          builder.addCode(
+              "    + $S + $T.ofNullable($L()).map(e -> e.getUuid().toString()).orElse(\"\")\n",
+              prefix,
+              Optional.class,
+              defaultGetterName(
+                  componentName,
+                  component.type,
+                  genConfig.booleanGetter,
+                  genConfig.nonCapitalizedGetters));
+        }
 
       } else if (components.contains(component.name)) {
         if (component.nested) {
@@ -286,11 +310,11 @@ public class MethodGenerator implements HelperMethods {
       index++;
     }
 
-    if (components.contains("additionalInformation")) {
+    if (allComponentNames.contains("additionalInformation")) {
       builder.addStatement(
-          "    + \", additionalInformation=\" + getAdditionalInformation()\n+ '}'");
+          "    + \", additionalInformation=\" + getAdditionalInformation()\n+ \"}\"");
     } else {
-      builder.addStatement("    + '}'");
+      builder.addStatement("    + \"}\"");
     }
 
     return builder.build();

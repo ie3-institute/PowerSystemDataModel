@@ -378,13 +378,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
     }
 
     builder.addStatement(
-        "$T result = new $T($L)",
-        modelClass,
-        modelClass,
-        CodeBlock.join(constructorArguments, ", "));
-
-    builder.addStatement("result.setAdditionalInformation(getAdditionalInformation())");
-    builder.addStatement("return result");
+        "return new $T($L)", modelClass, CodeBlock.join(constructorArguments, ", "));
 
     return builder.build();
   }

@@ -339,6 +339,7 @@ models:
         type: EmInput
         nested: true
         nullable: true
+        required: false
         javaDoc: "Optional {@link EmInput} that is controlling this system participant. If null, this system participant is not em-controlled."
 
   SystemParticipantTypeInput:
