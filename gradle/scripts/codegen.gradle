@@ -5,7 +5,7 @@ def codegen = sourceSets.create('codegen') {
   resources.srcDir('src/codegen/resources')
 }
 
-def generateModels = tasks.register('generateModels', JavaExec) {
+tasks.register('generateModels', JavaExec) {
   group = 'code generation'
   description = 'Generates some model classes from YAML definition.'
 
