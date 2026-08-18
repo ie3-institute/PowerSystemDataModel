@@ -103,6 +103,7 @@ models:
         javaDoc: "Reference to the control strategy to be used for this model."
       - name: controllingEm
         type: EmInput
+        nested: true
         nullable: true
         javaDoc: "Optional UUID of the parent {@link EmInput} that is controlling this em unit. If null, this em
                 unit is not em-controlled."
@@ -130,6 +131,7 @@ models:
     components:
       - name: type
         type: LineTypeInput
+        nested: true
         javaDoc: "Type of this line, containing default values for lines of this kind."
       - name: length
         type: Length
@@ -328,12 +330,15 @@ models:
     components:
       - name: node
         type: NodeInput
+        nested: true
         javaDoc: "The node that the asset is connected to."
       - name: qCharacteristics
         type: ReactivePowerCharacteristic
         javaDoc: "Description of a reactive power characteristic. For details see further documentation."
       - name: controllingEm
         type: EmInput
+        nested: true
+        nullable: true
         javaDoc: "Optional {@link EmInput} that is controlling this system participant. If null, this system participant is not em-controlled."
 
   SystemParticipantTypeInput:
@@ -360,9 +365,11 @@ models:
     components:
       - name: type
         type: AcTypeInput
+        nested: true
         javaDoc: "Type of this air condition, containing default values for air condition of this kind."
       - name: thermalBus
         type: ThermalBusInput
+        nested: true
         javaDoc: "The thermal bus, this model is connected to."
 
   AcTypeInput:
@@ -381,6 +388,7 @@ models:
     components:
       - name: type
         type: BmTypeInput
+        nested: true
         javaDoc: "Type of this BM plant, containing default values for BM plants of this kind."
       - name: costControlled
         type: bool
@@ -408,12 +416,15 @@ models:
     components:
       - name: thermalBus
         type: ThermalBusInput
+        nested: true
         javaDoc: "The thermal bus, this model is connected to."
       - name: type
         type: ChpTypeInput
+        nested: true
         javaDoc: "Type of this CHP plant, containing default values for CHP plants of this kind."
       - name: thermalStorage
         type: ThermalStorageInput
+        nested: true
         javaDoc: "Thermal storage model."
 
   ChpTypeInput:
@@ -462,6 +473,7 @@ models:
     components:
       - name: type
         type: EvTypeInput
+        nested: true
         javaDoc: "Type of this EV, containing default values for EVs of this kind."
 
   EvTypeInput:
@@ -498,9 +510,11 @@ models:
     components:
       - name: type
         type: HpTypeInput
+        nested: true
         javaDoc: "Type of this heat pump, containing default values for heat pump of this kind."
       - name: thermalBus
         type: ThermalBusInput
+        nested: true
         javaDoc: "The thermal bus, this model is connected to."
 
   HpTypeInput:
@@ -569,6 +583,7 @@ models:
     components:
       - name: type
         type: StorageTypeInput
+        nested: true
         javaDoc: "Type of this storage, containing default values for storages of this kind."
 
   StorageTypeInput:
@@ -596,6 +611,7 @@ models:
     components:
       - name: type
         type: WecTypeInput
+        nested: true
         javaDoc: "Type of this WEC, containing default values for WEC assets of this kind."
 
   WecTypeInput:
@@ -626,6 +642,7 @@ models:
     components:
       - name: thermalBus
         type: ThermalBusInput
+        nested: true
         javaDoc: "The thermal bus, a thermal unit is connected to."
 
   ThermalStorageInput:
