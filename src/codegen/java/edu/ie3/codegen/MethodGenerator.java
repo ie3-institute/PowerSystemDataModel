@@ -90,7 +90,11 @@ public class MethodGenerator implements HelperMethods {
           List<String> optionalGetter = genConfig.optionalGetters;
 
           String getter =
-              defaultGetterName(component.name, component.type, genConfig.nonCapitalizedGetters);
+              defaultGetterName(
+                  component.name,
+                  component.type,
+                  genConfig.booleanGetter,
+                  genConfig.nonCapitalizedGetters);
           TypeName returnType = resolveType(component.type);
 
           var builder = MethodSpec.methodBuilder(getter).addModifiers(Modifier.PUBLIC);
@@ -262,7 +266,11 @@ public class MethodGenerator implements HelperMethods {
 
       } else {
         String getter =
-            defaultGetterName(component.name, component.type, genConfig.nonCapitalizedGetters);
+            defaultGetterName(
+                component.name,
+                component.type,
+                genConfig.booleanGetter,
+                genConfig.nonCapitalizedGetters);
 
         if (component.nested) {
           builder.addCode("    + $S + $L().getUuid()\n", prefix, getter);

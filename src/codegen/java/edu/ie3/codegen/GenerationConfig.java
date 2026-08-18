@@ -32,6 +32,8 @@ public final class GenerationConfig implements HelperMethods {
 
   public List<StaticFieldDefinition> staticFields = new ArrayList<>();
 
+  public List<String> booleanGetter = new ArrayList<>();
+
   public List<String> nonCapitalizedGetters = new ArrayList<>();
 
   public List<String> optionalGetters = new ArrayList<>();

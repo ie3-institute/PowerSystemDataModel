@@ -181,6 +181,7 @@ models:
         type: NodeList
         expression: singletonList(node)
         className: Collections
+    booleanGetter: [vMag, vAng, p, q]
 
   EmInput:
     package: edu.ie3.datamodel.models.input
@@ -520,7 +521,7 @@ models:
     inherits: [HasType]
     constructors:
       - name: full
-        components: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap, type]
+        components: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, type, tapPos, autoTap]
         superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap]
         javaDoc: "Constructor for an operated two winding transformer.\n
                  \n
@@ -539,7 +540,7 @@ models:
           - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB)
             className: ConnectorValidationUtils
       - name: fullWithAdditionalInformation
-        components: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap, type, additionalInformation]
+        components: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, type, tapPos, autoTap, additionalInformation]
         superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap]
         javaDoc: "Constructor for an operated two winding transformer.\n
                  \n
@@ -559,7 +560,7 @@ models:
           - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB)
             className: ConnectorValidationUtils
       - name: minimal
-        components: [uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap, type]
+        components: [uuid, id, nodeA, nodeB, parallelDevices, type, tapPos, autoTap]
         superArgs: [uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap]
         javaDoc: "Constructor for an operated two winding transformer.\n
                  \n
@@ -699,7 +700,7 @@ models:
     inherits: [HasType]
     constructors:
       - name: full
-        components: [uuid, id, operator, operationTime, nodeA, nodeB, nodeC, parallelDevices, tapPos, autoTap, type]
+        components: [uuid, id, operator, operationTime, nodeA, nodeB, nodeC, parallelDevices, type, tapPos, autoTap]
         superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap]
         javaDoc: "Constructor for an operated two winding transformer.\n
                  \n
@@ -725,7 +726,7 @@ models:
           - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC)
             className: ConnectorValidationUtils
       - name: fullWithAdditionalInformation
-        components: [uuid, id, operator, operationTime, nodeA, nodeB, nodeC, parallelDevices, tapPos, autoTap, type, additionalInformation]
+        components: [uuid, id, operator, operationTime, nodeA, nodeB, nodeC, parallelDevices, type, tapPos, autoTap, additionalInformation]
         superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap]
         javaDoc: "Constructor for an operated two winding transformer.\n
                  \n
@@ -752,7 +753,7 @@ models:
           - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC)
             className: ConnectorValidationUtils
       - name: minimal
-        components: [uuid, id, nodeA, nodeB, nodeC, parallelDevices, tapPos, autoTap, type]
+        components: [uuid, id, nodeA, nodeB, nodeC, parallelDevices, type, tapPos, autoTap]
         superArgs: [uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap]
         javaDoc: "Constructor for an operated two winding transformer.\n
                  \n
@@ -776,7 +777,7 @@ models:
           - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC)
             className: ConnectorValidationUtils
       - name: fullWithInternalNode
-        components: [uuid, id, operator, operationTime, nodeA, nodeB, nodeC, parallelDevices, tapPos, autoTap, type, nodeInternal]
+        components: [uuid, id, operator, operationTime, nodeA, nodeB, nodeC, parallelDevices, type, tapPos, autoTap, nodeInternal]
         superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap]
         javaDoc: "Constructor for an operated two winding transformer.\n
                  \n
@@ -1584,9 +1585,10 @@ models:
   HpInput:
     package: edu.ie3.datamodel.models.input.system
     classJavaDoc: "Describes a heat pump."
+    inherits: [HasType, HasThermalBus]
     constructors:
       - name: full
-        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type, thermalBus]
+        components: [uuid, id, operator, operationTime, node, thermalBus, qCharacteristics, controllingEm, type]
         superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
         javaDoc: "Constructor for an operated, always on heat pump.\n
                \n
@@ -1600,7 +1602,7 @@ models:
                @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
                @param type of HP"
       - name: fullWithAdditionalInformation
-        components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type, thermalBus, additionalInformation]
+        components: [uuid, id, operator, operationTime, node, thermalBus, qCharacteristics, controllingEm, type, additionalInformation]
         superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
         javaDoc: "Constructor for an operated, always on heat pump.\n
                \n
@@ -1615,7 +1617,7 @@ models:
                @param type of HP\n
                @param additionalInformation That were provided by the source"
       - name: minimal
-        components: [uuid, id, node, qCharacteristics, controllingEm, type, thermalBus]
+        components: [uuid, id, node, thermalBus, qCharacteristics, controllingEm, type]
         superArgs: [uuid, id, node, qCharacteristics, controllingEm]
         javaDoc: "Constructor for an operated, always on heat pump.\n
                \n
@@ -1737,7 +1739,7 @@ models:
           - name: factor
             type: double
         expression: eConsAnnual(eConsAnnual.multiply(factor)); sRated(sRated.multiply(factor))
-    nonCapitalizedGetters: [qCharacteristics, sRated]
+    nonCapitalizedGetters: [eConsAnnual, qCharacteristics, sRated]
 
   PvInput:
     package: edu.ie3.datamodel.models.input.system
@@ -1818,6 +1820,7 @@ models:
   StorageInput:
     package: edu.ie3.datamodel.models.input.system
     classJavaDoc: "Describes a battery storage."
+    inherits: [HasType]
     constructors:
       - name: full
         components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type]
@@ -1913,6 +1916,7 @@ models:
   WecInput:
     package: edu.ie3.datamodel.models.input.system
     classJavaDoc: "Describes a Wind Energy Converter."
+    inherits: [HasType]
     constructors:
       - name: full
         components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type]
@@ -1976,23 +1980,23 @@ models:
                @param id of this type of WEC\n
                @param capex Captial expense for this type of WEC (typically in €)\n
                @param opex Operating expense for this type of WEC (typically in €)\n
+               @param sRated Rated apparent power for this type of WEC (typically in kVA)\n
                @param cosPhiRated Power factor for this type of WEC\n
                @param cpCharacteristic Betz curve of this type\n
                @param etaConv Efficiency of converter for this type of WEC (typically in %)\n
-               @param sRated Rated apparent power for this type of WEC (typically in kVA)\n
                @param rotorArea Swept Area of blades for this type of WEC (typically in m²)\n
                @param hubHeight Height from ground to center of rotor for this type of WEC (typically in m)"
       - name: full
-        components: [uuid, id, capex, opex, cosPhiRated, cpCharacteristic, etaConv, sRated, rotorArea, hubHeight, additionalInformation]
+        components: [uuid, id, capex, opex, sRated, cosPhiRated, cpCharacteristic, etaConv, rotorArea, hubHeight, additionalInformation]
         superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
         javaDoc: "@param uuid of the input entity\n
                @param id of this type of WEC\n
                @param capex Captial expense for this type of WEC (typically in €)\n
                @param opex Operating expense for this type of WEC (typically in €)\n
+               @param sRated Rated apparent power for this type of WEC (typically in kVA)\n
                @param cosPhiRated Power factor for this type of WEC\n
                @param cpCharacteristic Betz curve of this type\n
                @param etaConv Efficiency of converter for this type of WEC (typically in %)\n
-               @param sRated Rated apparent power for this type of WEC (typically in kVA)\n
                @param rotorArea Swept Area of blades for this type of WEC (typically in m²)\n
                @param hubHeight Height from ground to center of rotor for this type of WEC (typically in m)\n
                @param additionalInformation Of the input"

@@ -21,9 +21,10 @@ public interface HelperMethods {
     return "bool".equals(type) || "int".equals(type);
   }
 
-  default String defaultGetterName(String name, String type, List<String> nonCapitalizedGetters) {
+  default String defaultGetterName(
+      String name, String type, List<String> booleanGetter, List<String> nonCapitalizedGetters) {
     if (isPrimitive(type) || nonCapitalizedGetters == null || nonCapitalizedGetters.isEmpty()) {
-      if ("bool".equals(type)) {
+      if ("bool".equals(type) && !booleanGetter.contains(name)) {
         return "is" + capitalize(name);
       }
 
