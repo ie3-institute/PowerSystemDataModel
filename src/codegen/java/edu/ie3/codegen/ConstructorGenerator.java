@@ -138,6 +138,8 @@ public final class ConstructorGenerator implements HelperMethods {
         if (constructor.constructorModifications.containsKey(componentName)) {
           addStatement(
               builder, componentName, constructor.constructorModifications.get(componentName));
+        } else {
+          builder.addStatement("this.$L = $L", componentName, componentName);
         }
       }
     }

@@ -29,7 +29,7 @@ public interface HelperMethods {
 
   default String defaultGetterName(
       String name, String type, List<String> booleanGetter, List<String> nonCapitalizedGetters) {
-    if (nonCapitalizedGetters == null || nonCapitalizedGetters.isEmpty()) {
+    if (isPrimitive(type) || nonCapitalizedGetters == null || nonCapitalizedGetters.isEmpty()) {
       if ("bool".equals(type) && !booleanGetter.contains(name)) {
         return "is" + capitalize(name);
       }
@@ -102,9 +102,8 @@ public interface HelperMethods {
       MethodSpec.Builder builder,
       String componentName,
       GenerationConfig.ConstructorModification modification) {
-    ClassName className = resolveClassName(modification.className);
-
     if (modification.usableClassName()) {
+      ClassName className = resolveClassName(modification.className);
 
       if (modification.insert) {
 
@@ -130,8 +129,6 @@ public interface HelperMethods {
 
   default void addStatement(
       MethodSpec.Builder builder, GenerationConfig.BasicExpression modification) {
-    ClassName className = resolveClassName(modification.className);
-
     if (modification instanceof GenerationConfig.StandardFields sf) {
 
       if (!sf.javaDoc.isBlank()) {
@@ -140,6 +137,7 @@ public interface HelperMethods {
     }
 
     if (modification.usableClassName()) {
+      ClassName className = resolveClassName(modification.className);
 
       if (modification instanceof GenerationConfig.ConstructorModification m && m.insert) {
         if (m.usableUnitClass()) {
