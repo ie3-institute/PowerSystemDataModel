@@ -444,6 +444,7 @@ public class ContainerUtils {
    * @param gridName Name of the grid
    * @param rawGrid Container model of raw grid elements
    * @param systemParticipants Container model of system participants
+   * @param energyManagementUnits Container model of energy system units
    * @return An immutable, directed graph of sub grid topologies.
    */
   public static SubGridTopologyGraph buildSubGridTopologyGraph(
@@ -482,6 +483,7 @@ public class ContainerUtils {
    * @param subnetNumbers Set of available subnet numbers
    * @param rawGrid Container model with all raw grid elements
    * @param systemParticipants Container model with all system participant inputs
+   * @param energyManagementUnits Container model with all energy management unit inputs
    * @return A mapping from subnet number to container model with sub grid elements
    */
   private static HashMap<Integer, SubGridContainer> buildSubGridContainers(

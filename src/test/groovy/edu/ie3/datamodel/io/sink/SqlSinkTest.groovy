@@ -33,7 +33,7 @@ import edu.ie3.test.common.*
 import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.util.TimeUtil
 import org.testcontainers.containers.Container
-import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.postgresql.PostgreSQLContainer
 import org.testcontainers.spock.Testcontainers
 import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
