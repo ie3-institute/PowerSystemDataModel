@@ -5,10 +5,8 @@
 */
 package edu.ie3.codegen;
 
-import static edu.ie3.codegen.ResolverUtils.resolveClassName;
 import static edu.ie3.codegen.ResolverUtils.resolveType;
 
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import edu.ie3.codegen.ModelDefinition.ComponentDefinition;
@@ -154,60 +152,5 @@ public final class ConstructorGenerator implements HelperMethods {
     }
 
     return builder.build();
-  }
-
-  public void addStatement(
-      MethodSpec.Builder builder,
-      String componentName,
-      GenerationConfig.ConstructorModification modification) {
-    ClassName className = resolveClassName(modification.className);
-
-    if (modification.usableClassName()) {
-
-      if (modification.insert) {
-
-        if (modification.usableUnitClass()) {
-          builder.addStatement(
-              "this.$L = " + modification.expression,
-              componentName,
-              className,
-              resolveClassName(modification.unitClass));
-
-        } else {
-          builder.addStatement("this.$L = " + modification.expression, componentName, className);
-        }
-
-      } else {
-        builder.addStatement("this.$L = $T." + modification.expression, componentName, className);
-      }
-
-    } else {
-      builder.addStatement("this.$L = " + modification.expression, componentName);
-    }
-  }
-
-  public void addStatement(
-      MethodSpec.Builder builder, GenerationConfig.ConstructorModification modification) {
-    ClassName className = resolveClassName(modification.className);
-
-    if (modification.usableClassName()) {
-
-      if (modification.insert) {
-
-        if (modification.usableUnitClass()) {
-          builder.addStatement(
-              modification.expression, className, resolveClassName(modification.unitClass));
-
-        } else {
-          builder.addStatement(modification.expression, className);
-        }
-
-      } else {
-        builder.addStatement("$T." + modification.expression, className);
-      }
-
-    } else {
-      builder.addStatement(modification.expression);
-    }
   }
 }

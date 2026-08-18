@@ -211,20 +211,11 @@ public final class CopyBuilderGenerator implements HelperMethods {
         methodBuilder.addParameter(resolveType(parameter.type), parameter.name);
       }
 
-      if (!insert.javaDoc.isBlank()) {
-        builder.addJavadoc(insert.javaDoc);
-      }
-
       if (!insert.comment.isBlank()) {
         methodBuilder.addComment(insert.comment);
       }
 
-      if (insert.className != null && !insert.className.isBlank()) {
-        methodBuilder.addStatement("$T." + insert.expression, resolveClassName(insert.className));
-      } else {
-        methodBuilder.addStatement(insert.expression);
-      }
-
+      addStatement(methodBuilder, insert);
       methodBuilder.addStatement("return thisInstance()");
 
       builder.addMethod(methodBuilder.build());

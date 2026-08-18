@@ -5,8 +5,11 @@
 */
 package edu.ie3.codegen;
 
+import static edu.ie3.codegen.ResolverUtils.resolveClassName;
+
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.MethodSpec;
 import java.util.*;
 
 public interface HelperMethods {
@@ -93,5 +96,65 @@ public interface HelperMethods {
 
   default ModelDefinition getParent(String name, Map<String, ModelDefinition> models) {
     return models.get(name);
+  }
+
+  default void addStatement(
+      MethodSpec.Builder builder,
+      String componentName,
+      GenerationConfig.ConstructorModification modification) {
+    ClassName className = resolveClassName(modification.className);
+
+    if (modification.usableClassName()) {
+
+      if (modification.insert) {
+
+        if (modification.usableUnitClass()) {
+          builder.addStatement(
+              "this.$L = " + modification.expression,
+              componentName,
+              className,
+              resolveClassName(modification.unitClass));
+
+        } else {
+          builder.addStatement("this.$L = " + modification.expression, componentName, className);
+        }
+
+      } else {
+        builder.addStatement("this.$L = $T." + modification.expression, componentName, className);
+      }
+
+    } else {
+      builder.addStatement("this.$L = " + modification.expression, componentName);
+    }
+  }
+
+  default void addStatement(
+      MethodSpec.Builder builder, GenerationConfig.BasicExpression modification) {
+    ClassName className = resolveClassName(modification.className);
+
+    if (modification instanceof GenerationConfig.StandardFields sf) {
+
+      if (!sf.javaDoc.isBlank()) {
+        builder.addJavadoc(sf.javaDoc);
+      }
+    }
+
+    if (modification.usableClassName()) {
+
+      if (modification instanceof GenerationConfig.ConstructorModification m && m.insert) {
+        if (m.usableUnitClass()) {
+          builder.addStatement(modification.expression, className, resolveClassName(m.unitClass));
+
+        } else {
+          builder.addStatement(modification.expression, className);
+        }
+
+      } else {
+        builder.addStatement("$T." + modification.expression, className);
+      }
+
+    } else {
+      builder.addStatement(modification.expression);
+    }
   }
 }
