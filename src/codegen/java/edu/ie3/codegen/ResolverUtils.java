@@ -45,7 +45,12 @@ public class ResolverUtils {
       return ParameterizedTypeName.get(type.name, genericArguments);
     }
 
-    return resolveClassName(name);
+    return switch (name) {
+      case "bool", "boolean" -> TypeName.BOOLEAN;
+      case "int" -> TypeName.INT;
+      case "double" -> TypeName.DOUBLE;
+      default -> resolveClassName(name);
+    };
   }
 
   private static void add(Class<?> clazz) {
@@ -66,11 +71,6 @@ public class ResolverUtils {
     Stream.of(
             Serializable.class, String.class, Collections.class, UUID.class, List.class, Map.class)
         .forEach(ResolverUtils::add);
-
-    classes.put("bool", ClassName.get("", "boolean"));
-    classes.put("boolean", ClassName.get("", "boolean"));
-    classes.put("int", ClassName.get("", "int"));
-    classes.put("double", ClassName.get("", "double"));
   }
 
   static void registerOwnClasses() {
