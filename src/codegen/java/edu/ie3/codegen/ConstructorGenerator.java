@@ -37,16 +37,29 @@ public final class ConstructorGenerator implements HelperMethods {
 
   private MethodSpec generateConstructor(GenerationConfig.ConstructorDefinition constructor) {
 
+    List<String> components = constructor.components;
+
     Map<String, ModelDefinition.ComponentDefinition> visibleComponents =
         visibleComponents(model, models);
 
-    List<ModelDefinition.ComponentDefinition> parameters =
-        resolveParameters(
-            constructor.components, visibleComponents, model.name + "." + constructor.name);
+    List<ModelDefinition.ComponentDefinition> parameters = new ArrayList<>();
+
+    if (!constructor.additionalComponents.isEmpty()) {
+      visibleComponents.values().stream()
+          .filter(c -> components.contains(c.name))
+          .forEach(parameters::add);
+
+      parameters.addAll(constructor.additionalComponents);
+    } else {
+      parameters.addAll(
+          resolveParameters(components, visibleComponents, model.name + "." + constructor.name));
+    }
 
     Modifier modifier;
 
-    if (model.isClass) {
+    if (constructor.isPrivate) {
+      modifier = Modifier.PRIVATE;
+    } else if (model.isClass) {
       modifier = Modifier.PUBLIC;
     } else {
       modifier = Modifier.PROTECTED;

@@ -1632,6 +1632,51 @@ models:
           comment: "scale losses as well as capacity and number of inhabitants to keep equal\n
                   // the time needed to heat a scaled house"
 
+    IdCoordinateInput:
+      package: edu.ie3.datamodel.models.input
+      inherits: [InputEntity]
+      sealed: true
+      constructors:
+        - name: full
+          components: [id, point]
+        - name: lat_lon
+          components: [id, lat, lon]
+          javaDoc: "Constructor for an {@link IdCoordinateInput}.\n
+                 \n
+                 @param id of the pair\n
+                 @param lat of the pair\n
+                 @param lon of the pair"
+          additionalComponents:
+            - name: lat
+              type: double
+            - name: lon
+              type: double
+          constructorModifications:
+            point:
+              expression: buildPoint(lat, lon)
+              className: GeoUtils
+        - name: empty
+          components: []
+          javaDoc: "Constructor needed for differencing between different sources."
+          private: true
+          constructorModifications:
+            id:
+              expression: -1
+            point:
+              expression: DEFAULT_GEO_POSITION
+              className: NodeInput
+      methodOverrides:
+        - name: getAdditionalInformation
+          type: StringMap
+          expression: of()
+          className: Map
+      fieldNameGetters: true
+      equals: false
+      hashCode: false
+      toString: false
+      copy: false
+      nestedClasses: [CosmoIdCoordinateInput, IconIdCoordinateInput, SqlIdCoordinateInput]
+
   typeInput:
     AssetTypeInput:
       package: edu.ie3.datamodel.models.input

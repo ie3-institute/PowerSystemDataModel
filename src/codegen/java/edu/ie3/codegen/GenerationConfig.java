@@ -18,6 +18,9 @@ public final class GenerationConfig implements HelperMethods {
 
   public String classJavaDoc = "";
 
+  @JsonProperty("sealed")
+  public boolean isSealed = false;
+
   public List<ConstructorDefinition> constructors = new ArrayList<>();
 
   public List<String> inherits = new ArrayList<>();
@@ -30,11 +33,15 @@ public final class GenerationConfig implements HelperMethods {
 
   public boolean toString = true;
 
+  public boolean copy = true;
+
   public List<StaticFieldDefinition> staticFields = new ArrayList<>();
 
   public List<String> booleanGetter = new ArrayList<>();
 
   public List<String> nonCapitalizedGetters = new ArrayList<>();
+
+  public boolean fieldNameGetters = false;
 
   public List<String> optionalGetters = new ArrayList<>();
 
@@ -46,6 +53,8 @@ public final class GenerationConfig implements HelperMethods {
 
   public List<MethodInsert> copyBuilderAdditionalMethods = new ArrayList<>();
 
+  public List<String> nestedClasses = new ArrayList<>();
+
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // helper definition
 
@@ -54,6 +63,11 @@ public final class GenerationConfig implements HelperMethods {
     public List<String> superArgs;
     public List<String> components = new ArrayList<>();
     public String javaDoc = "";
+
+    @JsonProperty("private")
+    public boolean isPrivate = false;
+
+    public List<ModelDefinition.ComponentDefinition> additionalComponents = new ArrayList<>();
     public Map<String, ConstructorModification> constructorModifications = new HashMap<>();
     public List<ConstructorModification> constructorChecks = new ArrayList<>();
   }
@@ -83,14 +97,9 @@ public final class GenerationConfig implements HelperMethods {
 
   public static final class MethodInsert extends StandardFields {
     public boolean isAbstract = false;
-    public boolean annotation = !isAbstract;
+    public boolean annotation = true;
     public String comment = "";
-    public List<Parameter> parameters = new ArrayList<>();
-  }
-
-  public static final class Parameter {
-    public String name;
-    public String type;
+    public List<ModelDefinition.Parameter> parameters = new ArrayList<>();
   }
 
   public static final class ConstructorModification extends BasicExpression {

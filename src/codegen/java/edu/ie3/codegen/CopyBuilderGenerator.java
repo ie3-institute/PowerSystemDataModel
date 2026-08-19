@@ -86,7 +86,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
               .returns(builderTypeVariable)
               .addModifiers(Modifier.PUBLIC);
 
-      for (GenerationConfig.Parameter parameter : insert.parameters) {
+      for (ModelDefinition.Parameter parameter : insert.parameters) {
         methodBuilder.addParameter(resolveType(parameter.type), parameter.name);
       }
 
@@ -189,7 +189,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
         methodBuilder.addAnnotation(Override.class);
       }
 
-      for (GenerationConfig.Parameter parameter : insert.parameters) {
+      for (ModelDefinition.Parameter parameter : insert.parameters) {
         methodBuilder.addParameter(resolveType(parameter.type), parameter.name);
       }
 
@@ -240,12 +240,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
     }
 
     for (ModelDefinition.ComponentDefinition component : model.components) {
-      String entityGetter =
-          defaultGetterName(
-              component.name,
-              component.type,
-              genConfig.booleanGetter,
-              genConfig.nonCapitalizedGetters);
+      String entityGetter = defaultGetterName(component, genConfig);
 
       if (isMap(component)) {
         builder.addStatement(

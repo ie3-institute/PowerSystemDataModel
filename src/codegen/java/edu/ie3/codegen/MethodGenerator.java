@@ -93,12 +93,7 @@ public class MethodGenerator implements HelperMethods {
         if (!genConfig.noGetters.contains(component.name)) {
           List<String> optionalGetter = genConfig.optionalGetters;
 
-          String getter =
-              defaultGetterName(
-                  component.name,
-                  component.type,
-                  genConfig.booleanGetter,
-                  genConfig.nonCapitalizedGetters);
+          String getter = defaultGetterName(component, genConfig);
           TypeName returnType = resolveType(component.type);
 
           var builder = MethodSpec.methodBuilder(getter).addModifiers(Modifier.PUBLIC);

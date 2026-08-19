@@ -72,6 +72,10 @@ final class ModelGenerator implements HelperMethods {
       typeBuilder.addModifiers(Modifier.ABSTRACT);
     }
 
+    if (!genConfig.isSealed) {
+      typeBuilder.addModifiers(Modifier.SEALED);
+    }
+
     if (model.extendsName != null && !model.extendsName.isBlank()) {
       typeBuilder.superclass(resolveClassName(model.extendsName));
     }
@@ -85,14 +89,27 @@ final class ModelGenerator implements HelperMethods {
 
     MethodGenerator methodGenerator = new MethodGenerator(model, genConfig, models);
     ConstructorGenerator constructorGenerator = new ConstructorGenerator(model, genConfig, models);
-    CopyBuilderGenerator copyBuilderGenerator = new CopyBuilderGenerator(model, genConfig, models);
 
     typeBuilder.addMethods(constructorGenerator.getConstructors());
     typeBuilder.addMethods(methodGenerator.getGetters());
-    typeBuilder.addMethod(copyBuilderGenerator.generateCopyMethod());
     typeBuilder.addMethods(methodGenerator.getOtherMethods());
 
-    typeBuilder.addType(copyBuilderGenerator.generateCopyBuilder());
+    if (genConfig.copy) {
+      CopyBuilderGenerator copyBuilderGenerator =
+          new CopyBuilderGenerator(model, genConfig, models);
+      typeBuilder.addMethod(copyBuilderGenerator.generateCopyMethod());
+      typeBuilder.addType(copyBuilderGenerator.generateCopyBuilder());
+    }
+
+    for (String nestedClass : genConfig.nestedClasses) {
+      TypeSpec nested =
+          TypeSpec.classBuilder(nestedClass)
+              .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+              .superclass(resolveClassName(model.name))
+              .build();
+
+      typeBuilder.addType(nested);
+    }
 
     JavaFile.builder(genConfig.packageName, typeBuilder.build())
         .skipJavaLangImports(true)

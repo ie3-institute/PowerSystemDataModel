@@ -74,8 +74,14 @@ public interface HelperMethods {
     return cn.equals("Quantity") || cn.equals("ComparableQuantity");
   }
 
-  default String defaultGetterName(
-      String name, String type, List<String> booleanGetter, List<String> nonCapitalizedGetters) {
+  default String defaultGetterName(String name, String type, GenerationConfig genConfig) {
+    if (genConfig.fieldNameGetters) {
+      return name;
+    }
+
+    List<String> nonCapitalizedGetters = genConfig.nonCapitalizedGetters;
+    List<String> booleanGetter = genConfig.booleanGetter;
+
     if (isPrimitive(type) || nonCapitalizedGetters == null || nonCapitalizedGetters.isEmpty()) {
       if ("bool".equals(type) && !booleanGetter.contains(name)) {
         return "is" + capitalize(name);
@@ -93,8 +99,7 @@ public interface HelperMethods {
 
   default String defaultGetterName(
       ModelDefinition.ComponentDefinition component, GenerationConfig genConfig) {
-    return defaultGetterName(
-        component.name, component.type, genConfig.booleanGetter, genConfig.nonCapitalizedGetters);
+    return defaultGetterName(component.name, component.type, genConfig);
   }
 
   default String capitalize(String value) {

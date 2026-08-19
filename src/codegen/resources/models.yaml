@@ -461,6 +461,15 @@ models:
           type: double
           javaDoc: "Number of people living in the building, double to allow proper scaling."
 
+    IdCoordinateInput:
+      name: IdCoordinateInput
+      class: true
+      components:
+        - name: id
+          type: int
+        - name: point
+          type: Point
+
   typeInput:
     AssetTypeInput:
       name: AssetTypeInput

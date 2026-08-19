@@ -22,7 +22,7 @@ public final class ModelDefinition implements HelperMethods {
 
   public List<ComponentDefinition> components = new ArrayList<>();
 
-  public static final class ComponentDefinition {
+  public static final class ComponentDefinition extends Parameter {
     public String name;
     public String type;
     public List<String> keys = new ArrayList<>();
@@ -30,5 +30,10 @@ public final class ModelDefinition implements HelperMethods {
     public boolean nested = false;
     public boolean nullable = false;
     public String javaDoc = "";
+  }
+
+  public static sealed class Parameter {
+    public String name;
+    public String type;
   }
 }

@@ -100,6 +100,7 @@ public class ResolverUtils {
             "AssetTypeInput",
             "EmInput",
             "InputEntity",
+            "IdCoordinateInput",
             "NodeInput",
             "OperatorInput",
             "UniqueInputEntity")
