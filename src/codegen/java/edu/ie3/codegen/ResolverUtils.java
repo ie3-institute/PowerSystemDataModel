@@ -5,9 +5,9 @@
 */
 package edu.ie3.codegen;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.ParameterizedTypeName;
+import com.palantir.javapoet.TypeName;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Stream;

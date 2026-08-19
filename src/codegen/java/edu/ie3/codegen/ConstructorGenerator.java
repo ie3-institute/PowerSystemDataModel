@@ -7,8 +7,8 @@ package edu.ie3.codegen;
 
 import static edu.ie3.codegen.ResolverUtils.resolveType;
 
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.MethodSpec;
+import com.palantir.javapoet.CodeBlock;
+import com.palantir.javapoet.MethodSpec;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

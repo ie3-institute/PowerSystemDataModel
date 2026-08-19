@@ -10,7 +10,7 @@ import static edu.ie3.codegen.ResolverUtils.resolveType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.squareup.javapoet.*;
+import com.palantir.javapoet.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;

@@ -8,7 +8,7 @@ package edu.ie3.codegen;
 import static edu.ie3.codegen.ResolverUtils.resolveClassName;
 import static edu.ie3.codegen.ResolverUtils.resolveType;
 
-import com.squareup.javapoet.*;
+import com.palantir.javapoet.*;
 import java.util.*;
 import javax.lang.model.element.Modifier;
 

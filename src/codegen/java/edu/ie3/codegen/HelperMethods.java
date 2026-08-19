@@ -8,7 +8,7 @@ package edu.ie3.codegen;
 import static edu.ie3.codegen.ResolverUtils.resolveClassName;
 import static edu.ie3.codegen.ResolverUtils.resolveType;
 
-import com.squareup.javapoet.*;
+import com.palantir.javapoet.*;
 import java.util.*;
 
 public interface HelperMethods {
@@ -66,7 +66,7 @@ public interface HelperMethods {
     String cn;
 
     if (resolveType(type) instanceof ParameterizedTypeName ptn) {
-      cn = ptn.rawType.simpleName();
+      cn = ptn.rawType().simpleName();
     } else {
       cn = resolveClassName(type).simpleName();
     }
