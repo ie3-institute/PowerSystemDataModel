@@ -54,24 +54,6 @@ public final class CopyBuilderGenerator implements HelperMethods {
     return builder.returns(builderClass).addStatement("return new $T(this)", builderClass).build();
   }
 
-  private static String copyBuilderName(ModelDefinition model) {
-    return model.name + "CopyBuilder";
-  }
-
-  private static ClassName modelClassName(ModelDefinition model, GenerationConfig genConfig) {
-    return ClassName.get(genConfig.packageName, model.name);
-  }
-
-  private static ClassName copyBuilderClassName(ModelDefinition model) {
-    return ClassName.get("", copyBuilderName(model));
-  }
-
-  private String builderGetterName(
-      ModelDefinition.ComponentDefinition component, GenerationConfig genConfig) {
-    return defaultGetterName(
-        component.name, component.type, genConfig.booleanGetter, genConfig.nonCapitalizedGetters);
-  }
-
   private TypeSpec generateAbstractCopyBuilder() {
     ClassName modelClass = modelClassName(model, genConfig);
     ClassName builderClass = copyBuilderClassName(model);
@@ -178,7 +160,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
         TypeSpec.classBuilder(copyBuilderName(model))
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
 
-    ModelDefinition parent = findParentModel(model);
+    ModelDefinition parent = getParent(model.name, models);
 
     if (parent != null) {
       ClassName parentBuilderClass = copyBuilderClassName(parent);
@@ -251,7 +233,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
             .addModifiers(abstractBuilder ? Modifier.PROTECTED : Modifier.PRIVATE)
             .addParameter(modelClass, "entity");
 
-    ModelDefinition parent = findParentModel(model);
+    ModelDefinition parent = getParent(model.name, models);
 
     if (parent != null) {
       builder.addStatement("super(entity)");
@@ -301,7 +283,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
   private MethodSpec generateCopyBuilderGetter(ModelDefinition.ComponentDefinition component) {
     TypeName componentType = resolveType(component.type);
 
-    return MethodSpec.methodBuilder(builderGetterName(component, genConfig))
+    return MethodSpec.methodBuilder(defaultGetterName(component, genConfig))
         .addModifiers(Modifier.PROTECTED)
         .returns(componentType)
         .addStatement("return $L", component.name)
@@ -310,10 +292,11 @@ public final class CopyBuilderGenerator implements HelperMethods {
 
   private GenerationConfig.ConstructorDefinition selectCopyConstructor(ModelDefinition model) {
 
-    Map<String, ModelDefinition.ComponentDefinition> visible = visibleComponents(model);
+    Map<String, ModelDefinition.ComponentDefinition> visible = visibleComponents(model, models);
 
     List<String> requiredComponentNames =
-        visible.keySet().stream()
+        visible.values().stream()
+            .map(c -> c.name)
             .filter(name -> !"additionalInformation".equals(name))
             .filter(name -> !model.unsupported.contains(name))
             .toList();
@@ -339,7 +322,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
 
     GenerationConfig.ConstructorDefinition constructor = selectCopyConstructor(model);
 
-    Map<String, ModelDefinition.ComponentDefinition> visible = visibleComponents(model);
+    Map<String, ModelDefinition.ComponentDefinition> visible = visibleComponents(model, models);
 
     MethodSpec.Builder builder =
         MethodSpec.methodBuilder("build")
@@ -364,7 +347,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
       if (components.contains(component.name)) {
         constructorArguments.add(CodeBlock.of("$L", component.name));
       } else {
-        constructorArguments.add(CodeBlock.of("$L()", builderGetterName(component, genConfig)));
+        constructorArguments.add(CodeBlock.of("$L()", defaultGetterName(component, genConfig)));
       }
     }
 
@@ -374,42 +357,15 @@ public final class CopyBuilderGenerator implements HelperMethods {
     return builder.build();
   }
 
-  private ModelDefinition findParentModel(ModelDefinition model) {
-    if (model.extendsName == null || model.extendsName.isBlank()) {
-      return null;
-    }
-
-    ModelDefinition parent = models.get(model.extendsName);
-
-    if (parent == null) {
-      throw new IllegalArgumentException(
-          "Unknown parent model '" + model.extendsName + "' for model '" + model.name + "'.");
-    }
-
-    return parent;
+  private static String copyBuilderName(ModelDefinition model) {
+    return model.name + "CopyBuilder";
   }
 
-  private Map<String, ModelDefinition.ComponentDefinition> visibleComponents(
-      ModelDefinition model) {
+  private static ClassName modelClassName(ModelDefinition model, GenerationConfig genConfig) {
+    return ClassName.get(genConfig.packageName, model.name);
+  }
 
-    LinkedHashMap<String, ModelDefinition.ComponentDefinition> result = new LinkedHashMap<>();
-
-    ModelDefinition parent = findParentModel(model);
-
-    if (parent != null) {
-      result.putAll(visibleComponents(parent));
-    }
-
-    for (ModelDefinition.ComponentDefinition component : model.components) {
-      if (result.put(component.name, component) != null) {
-        throw new IllegalArgumentException(
-            "Component '"
-                + component.name
-                + "' occurs multiple times in the hierarchy of "
-                + model.name);
-      }
-    }
-
-    return result;
+  private static ClassName copyBuilderClassName(ModelDefinition model) {
+    return ClassName.get("", copyBuilderName(model));
   }
 }

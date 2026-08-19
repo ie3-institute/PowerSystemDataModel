@@ -9,7 +9,6 @@ import static edu.ie3.codegen.ResolverUtils.resolveType;
 
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
-import edu.ie3.codegen.ModelDefinition.ComponentDefinition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,25 +34,6 @@ public final class ConstructorGenerator implements HelperMethods {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // helper methods
-
-  private List<ComponentDefinition> resolveParameters(
-      List<String> parameterNames, Map<String, ComponentDefinition> available, String context) {
-
-    List<ComponentDefinition> result = new ArrayList<>();
-
-    for (String parameterName : parameterNames) {
-      ComponentDefinition parameter = available.get(parameterName);
-
-      if (parameter == null) {
-        throw new IllegalArgumentException(
-            "Unknown parameter '" + parameterName + "' in " + context);
-      }
-
-      result.add(parameter);
-    }
-
-    return result;
-  }
 
   private MethodSpec generateConstructor(GenerationConfig.ConstructorDefinition constructor) {
 
@@ -135,12 +115,8 @@ public final class ConstructorGenerator implements HelperMethods {
         }
 
       } else {
-        if (constructor.constructorModifications.containsKey(componentName)) {
-          addStatement(
-              builder, componentName, constructor.constructorModifications.get(componentName));
-        } else {
-          builder.addStatement("this.$L = $L", componentName, componentName);
-        }
+        addStatement(
+            builder, componentName, constructor.constructorModifications.get(componentName));
       }
     }
 

@@ -20,6 +20,48 @@ public interface HelperMethods {
     return CodeBlock.builder().indent().add(codeBlock).unindent().build();
   }
 
+  default CodeBlock toString(
+      ModelDefinition.ComponentDefinition component,
+      List<String> components,
+      GenerationConfig genConfig) {
+    String componentName = component.name;
+
+    String valueGetterExpression;
+    boolean optional = false;
+    String getterName;
+
+    if (component.nullable) {
+      // we need some special calls here
+      if (!component.required) {
+        valueGetterExpression = "$L()";
+        getterName = defaultGetterName(component, genConfig);
+
+      } else {
+        valueGetterExpression = "$T.ofNullable($L)";
+        optional = true;
+        getterName =
+            components.contains(componentName)
+                ? componentName
+                : defaultGetterName(component, genConfig);
+      }
+
+      valueGetterExpression += ".map(e -> e.getUuid().toString()).orElse(\"\")";
+
+    } else {
+      valueGetterExpression = component.nested ? "$L().getUuid()" : "$L()";
+      getterName =
+          components.contains(componentName)
+              ? componentName
+              : defaultGetterName(component, genConfig);
+    }
+
+    if (optional) {
+      return CodeBlock.of(valueGetterExpression + "\n", Optional.class, getterName);
+    } else {
+      return CodeBlock.of(valueGetterExpression + "\n", getterName);
+    }
+  }
+
   default boolean isPrimitive(String type) {
     return switch (type) {
       case "bool", "int", "double", "float" -> true;
@@ -42,6 +84,12 @@ public interface HelperMethods {
         return "get" + name;
       }
     }
+  }
+
+  default String defaultGetterName(
+      ModelDefinition.ComponentDefinition component, GenerationConfig genConfig) {
+    return defaultGetterName(
+        component.name, component.type, genConfig.booleanGetter, genConfig.nonCapitalizedGetters);
   }
 
   default String capitalize(String value) {
@@ -98,11 +146,34 @@ public interface HelperMethods {
     return models.get(name);
   }
 
+  default List<ModelDefinition.ComponentDefinition> resolveParameters(
+      List<String> parameterNames,
+      Map<String, ModelDefinition.ComponentDefinition> available,
+      String context) {
+
+    List<ModelDefinition.ComponentDefinition> result = new ArrayList<>();
+
+    for (String parameterName : parameterNames) {
+      ModelDefinition.ComponentDefinition parameter = available.get(parameterName);
+
+      if (parameter == null) {
+        throw new IllegalArgumentException(
+            "Unknown parameter '" + parameterName + "' in: " + context);
+      }
+
+      result.add(parameter);
+    }
+
+    return result;
+  }
+
   default void addStatement(
       MethodSpec.Builder builder,
       String componentName,
       GenerationConfig.ConstructorModification modification) {
-    if (modification.usableClassName()) {
+    if (modification == null) {
+      builder.addStatement("this.$L = $L", componentName, componentName);
+    } else if (modification.usableClassName()) {
       ClassName className = resolveClassName(modification.className);
 
       if (modification.insert) {

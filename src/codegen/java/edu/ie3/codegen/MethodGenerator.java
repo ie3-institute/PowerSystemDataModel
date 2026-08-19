@@ -252,60 +252,8 @@ public class MethodGenerator implements HelperMethods {
 
       String prefix = (index == 0) ? component.name + "=" : ", " + component.name + "=";
 
-      String componentName = component.name;
-
-      if (component.nullable) {
-        // we need some special calls here
-        if (!component.required) {
-          builder.addCode(
-              "    + $S + $L().map(e -> e.getUuid().toString()).orElse(\"\")\n",
-              prefix,
-              defaultGetterName(
-                  componentName,
-                  component.type,
-                  genConfig.booleanGetter,
-                  genConfig.nonCapitalizedGetters));
-
-        } else if (model.components.contains(component)) {
-          builder.addCode(
-              "    + $S + $T.ofNullable($L).map(e -> e.getUuid().toString()).orElse(\"\")\n",
-              prefix,
-              Optional.class,
-              componentName);
-
-        } else {
-          builder.addCode(
-              "    + $S + $T.ofNullable($L()).map(e -> e.getUuid().toString()).orElse(\"\")\n",
-              prefix,
-              Optional.class,
-              defaultGetterName(
-                  componentName,
-                  component.type,
-                  genConfig.booleanGetter,
-                  genConfig.nonCapitalizedGetters));
-        }
-
-      } else if (components.contains(component.name)) {
-        if (component.nested) {
-          builder.addCode("    + $S + $L.getUuid()\n", prefix, component.name);
-        } else {
-          builder.addCode("    + $S + $L\n", prefix, component.name);
-        }
-
-      } else {
-        String getter =
-            defaultGetterName(
-                component.name,
-                component.type,
-                genConfig.booleanGetter,
-                genConfig.nonCapitalizedGetters);
-
-        if (component.nested) {
-          builder.addCode("    + $S + $L().getUuid()\n", prefix, getter);
-        } else {
-          builder.addCode("    + $S + $L()\n", prefix, getter);
-        }
-      }
+      builder.addCode(
+          CodeBlock.of("    + $S + " + toString(component, components, genConfig), prefix));
 
       index++;
     }
