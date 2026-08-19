@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.lang.model.element.Modifier;
 
 public final class ConstructorGenerator implements HelperMethods {
@@ -100,7 +101,16 @@ public final class ConstructorGenerator implements HelperMethods {
               + constructor.name);
     }
 
-    for (ModelDefinition.ComponentDefinition localField : model.components) {
+    Map<String, ModelDefinition.ComponentDefinition> mappedComponents =
+        model.components.stream().collect(Collectors.toMap(c -> c.name, c -> c));
+
+    List<ModelDefinition.ComponentDefinition> orderedComponents =
+        constructor.components.stream()
+            .filter(mappedComponents::containsKey)
+            .map(mappedComponents::get)
+            .toList();
+
+    for (ModelDefinition.ComponentDefinition localField : orderedComponents) {
       String componentName = localField.name;
 
       boolean isConstructorParameter =

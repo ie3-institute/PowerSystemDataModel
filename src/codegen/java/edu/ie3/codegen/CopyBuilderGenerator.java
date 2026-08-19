@@ -73,7 +73,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
       builder.addField(generateCopyBuilderField(component));
     }
 
-    builder.addMethod(generateCopyBuilderConstructor(model, true));
+    builder.addMethod(generateCopyBuilderConstructor(model));
 
     for (ModelDefinition.ComponentDefinition component : model.components) {
       builder.addMethod(generateCopyBuilderSetter(component, builderTypeVariable));
@@ -174,7 +174,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
       builder.addField(generateCopyBuilderField(component));
     }
 
-    builder.addMethod(generateCopyBuilderConstructor(model, false));
+    builder.addMethod(generateCopyBuilderConstructor(model));
 
     for (ModelDefinition.ComponentDefinition component : model.components) {
       builder.addMethod(generateCopyBuilderSetter(component, builderClass));
@@ -223,14 +223,12 @@ public final class CopyBuilderGenerator implements HelperMethods {
     return FieldSpec.builder(type, component.name, Modifier.PRIVATE).build();
   }
 
-  private MethodSpec generateCopyBuilderConstructor(
-      ModelDefinition model, boolean abstractBuilder) {
-
+  private MethodSpec generateCopyBuilderConstructor(ModelDefinition model) {
     ClassName modelClass = modelClassName(model, genConfig);
 
     MethodSpec.Builder builder =
         MethodSpec.constructorBuilder()
-            .addModifiers(abstractBuilder ? Modifier.PROTECTED : Modifier.PRIVATE)
+            .addModifiers(Modifier.PROTECTED)
             .addParameter(modelClass, "entity");
 
     ModelDefinition parent = getParent(model.name, models);
