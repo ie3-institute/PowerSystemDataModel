@@ -175,6 +175,5 @@ final class ModelGenerator implements HelperMethods {
 
       return res;
     }
-
   }
 }
