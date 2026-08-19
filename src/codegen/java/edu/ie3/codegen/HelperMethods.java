@@ -6,10 +6,9 @@
 package edu.ie3.codegen;
 
 import static edu.ie3.codegen.ResolverUtils.resolveClassName;
+import static edu.ie3.codegen.ResolverUtils.resolveType;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.*;
 import java.util.*;
 
 public interface HelperMethods {
@@ -61,6 +60,18 @@ public interface HelperMethods {
       case "bool", "int", "double", "float" -> true;
       default -> false;
     };
+  }
+
+  default boolean useEquals(String type) {
+    String cn;
+
+    if (resolveType(type) instanceof ParameterizedTypeName ptn) {
+      cn = ptn.rawType.simpleName();
+    } else {
+      cn = resolveClassName(type).simpleName();
+    }
+
+    return cn.equals("Quantity") || cn.equals("ComparableQuantity");
   }
 
   default String defaultGetterName(

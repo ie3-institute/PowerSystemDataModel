@@ -187,8 +187,12 @@ public class MethodGenerator implements HelperMethods {
           expression.add("\n&& ");
         }
 
-        if (isPrimitive(component.type)) {
+        String type = component.type;
+
+        if (isPrimitive(type)) {
           expression.add("$L == that.$L", component.name, component.name);
+        } else if (useEquals(type)) {
+          expression.add("$L.equals(that.$L)", component.name, component.name);
         } else {
           expression.add("$T.equals($L, that.$L)", Objects.class, component.name, component.name);
         }
