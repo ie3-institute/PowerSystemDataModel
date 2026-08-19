@@ -160,7 +160,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
         TypeSpec.classBuilder(copyBuilderName(model))
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
 
-    ModelDefinition parent = getParent(model.name, models);
+    ModelDefinition parent = getParent(model.extendsName, models);
 
     if (parent != null) {
       ClassName parentBuilderClass = copyBuilderClassName(parent);

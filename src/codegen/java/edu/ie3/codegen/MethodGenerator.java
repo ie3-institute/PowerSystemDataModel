@@ -190,7 +190,7 @@ public class MethodGenerator implements HelperMethods {
         if (isPrimitive(component.type)) {
           expression.add("$L == that.$L", component.name, component.name);
         } else {
-          expression.add("$T.equals($L, that.$L)", OBJECTS, component.name, component.name);
+          expression.add("$T.equals($L, that.$L)", Objects.class, component.name, component.name);
         }
       }
 
@@ -224,7 +224,7 @@ public class MethodGenerator implements HelperMethods {
     if (arguments.isEmpty()) {
       builder.addStatement("return 0");
     } else {
-      builder.addStatement("return $T.hash($L)", OBJECTS, CodeBlock.join(arguments, ", "));
+      builder.addStatement("return $T.hash($L)", Objects.class, CodeBlock.join(arguments, ", "));
     }
 
     return builder.build();
@@ -235,7 +235,7 @@ public class MethodGenerator implements HelperMethods {
         MethodSpec.methodBuilder("toString")
             .addAnnotation(Override.class)
             .addModifiers(Modifier.PUBLIC)
-            .returns(STRING);
+            .returns(String.class);
 
     builder.addCode("return $S\n", model.name + "{");
 

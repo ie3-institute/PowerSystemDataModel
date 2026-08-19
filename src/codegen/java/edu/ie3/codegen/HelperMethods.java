@@ -13,12 +13,6 @@ import com.squareup.javapoet.MethodSpec;
 import java.util.*;
 
 public interface HelperMethods {
-  ClassName OBJECTS = ClassName.get(Objects.class);
-  ClassName STRING = ClassName.get(String.class);
-
-  default CodeBlock indent(CodeBlock codeBlock) {
-    return CodeBlock.builder().indent().add(codeBlock).unindent().build();
-  }
 
   default CodeBlock toString(
       ModelDefinition.ComponentDefinition component,
@@ -48,11 +42,11 @@ public interface HelperMethods {
       valueGetterExpression += ".map(e -> e.getUuid().toString()).orElse(\"\")";
 
     } else {
-      valueGetterExpression = component.nested ? "$L().getUuid()" : "$L()";
+      valueGetterExpression = component.nested ? "$L.getUuid()" : "$L";
       getterName =
           components.contains(componentName)
               ? componentName
-              : defaultGetterName(component, genConfig);
+              : defaultGetterName(component, genConfig) + "()";
     }
 
     if (optional) {
