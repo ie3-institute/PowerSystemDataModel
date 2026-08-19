@@ -414,7 +414,7 @@ class ConnectorValidationUtilsTest extends Specification {
         overrides.get("tanDelta", 0.1d),
         overrides.get("circulatingLossFactor", 0d),
         overrides.get("eddyCurrentLossFactor", 0d))
-   }
+  }
   private static List<LayerInput> validIsolation() {
     [validLayer()]
   }
