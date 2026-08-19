@@ -34,10 +34,6 @@ models:
           required: false
           javaDoc: "Time for which the entity is operated."
 
-
-
-
-
     NodeInput:
       name: NodeInput
       class: true
@@ -139,9 +135,6 @@ models:
         - name: olmCharacteristic
           type: OlmCharacteristicInput
           javaDoc: "Description of an optional weather dependent operation curve."
-
-
-
 
     SwitchInput:
       name: SwitchInput
@@ -385,24 +378,6 @@ models:
           nested: true
           javaDoc: "Type of this WEC, containing default values for WEC assets of this kind."
 
-      WecTypeInput:
-        name: WecTypeInput
-        extends: SystemParticipantTypeInput
-        class: true
-        components:
-          - name: cpCharacteristic
-            type: WecCharacteristicInput
-            javaDoc: "."
-          - name: etaConv
-            type: Dimensionless
-            javaDoc: "."
-          - name: rotorArea
-            type: Area
-            javaDoc: "."
-          - name: hubHeight
-            type: Length
-            javaDoc: "."
-
     ThermalInput:
       name: ThermalInput
       extends: AssetInput
@@ -495,8 +470,6 @@ models:
           type: String
           required: true
           javaDoc: "Name or ID of the asset."
-
-
 
     LineTypeInput:
       name: LineTypeInput
@@ -686,7 +659,6 @@ models:
           type: Power
           javaDoc: "Internal consumption (typically in kW)."
 
-
     EvTypeInput:
       name: EvTypeInput
       extends: SystemParticipantTypeInput
@@ -729,9 +701,21 @@ models:
           type: Dimensionless
           javaDoc: "."
 
-
-
-
-
-
+    WecTypeInput:
+      name: WecTypeInput
+      extends: SystemParticipantTypeInput
+      class: true
+      components:
+        - name: cpCharacteristic
+          type: WecCharacteristicInput
+          javaDoc: "."
+        - name: etaConv
+          type: Dimensionless
+          javaDoc: "."
+        - name: rotorArea
+          type: Area
+          javaDoc: "."
+        - name: hubHeight
+          type: Length
+          javaDoc: "."
 
