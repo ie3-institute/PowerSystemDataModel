@@ -31,7 +31,13 @@ final class ModelGenerator implements HelperMethods {
     GenerationConfigFile genConfig =
         mapper.readValue(generationConfig.toFile(), GenerationConfigFile.class);
 
-    generateAll(modelFile.models, genConfig.models, outputDirectory);
+    if (!modelFile.version.equals(genConfig.version)) {
+      throw new IllegalStateException("Versions don't match!");
+    } else {
+      System.out.println("Generating models with version: " + modelFile.version);
+    }
+
+    generateAll(modelFile.models.all(), genConfig.models.all(), outputDirectory);
   }
 
   public static void generateAll(
@@ -146,10 +152,29 @@ final class ModelGenerator implements HelperMethods {
   // helper classes
 
   public static final class ModelFile {
-    public Map<String, ModelDefinition> models = new LinkedHashMap<>();
+    public String version;
+    public Models<ModelDefinition> models;
   }
 
   public static final class GenerationConfigFile {
-    public Map<String, GenerationConfig> models = new LinkedHashMap<>();
+    public String version;
+    public Models<GenerationConfig> models;
+  }
+
+  public static final class Models<C> {
+    public Map<String, C> input = new LinkedHashMap<>();
+    public Map<String, C> typeInput = new LinkedHashMap<>();
+
+    public Map<String, C> results = new LinkedHashMap<>();
+
+    public Map<String, C> all() {
+      Map<String, C> res = new HashMap<>();
+      res.putAll(input);
+      res.putAll(typeInput);
+      res.putAll(results);
+
+      return res;
+    }
+
   }
 }
