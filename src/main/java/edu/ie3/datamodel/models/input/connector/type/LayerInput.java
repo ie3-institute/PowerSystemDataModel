@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector.type;
 
+import edu.ie3.datamodel.models.Uniqueness;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
@@ -37,7 +38,12 @@ public record LayerInput(
     ComparableQuantity<ThermalResistivity> thermalResistivity,
     ComparableQuantity<ThermalCapacitance> thermalCapacitance,
     Optional<ComparableQuantity<Area>> area)
-    implements InputEntity, Serializable {
+    implements InputEntity, Uniqueness, Serializable {
+
+  @Override
+  public UUID getUuid() {
+    return uuid;
+  }
 
   @Override
   public Map<String, String> getAdditionalInformation() {

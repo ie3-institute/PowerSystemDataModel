@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector.type;
 
+import edu.ie3.datamodel.models.Uniqueness;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.util.quantities.interfaces.ElectricalResistivity;
 import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
@@ -48,7 +49,12 @@ public record ScreenLayerInput(
     ComparableQuantity<Length> wireDiameter,
     Optional<ComparableQuantity<Length>> lengthOfLay,
     ComparableQuantity<ElectricalResistivity> electricalResistivity)
-    implements InputEntity, Serializable {
+    implements InputEntity, Uniqueness, Serializable {
+
+  @Override
+  public UUID getUuid() {
+    return uuid;
+  }
 
   @Override
   public Map<String, String> getAdditionalInformation() {

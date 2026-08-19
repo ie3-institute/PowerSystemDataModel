@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector.type;
 
+import edu.ie3.datamodel.models.Uniqueness;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
@@ -44,7 +45,7 @@ public record ConductorInput(
     ComparableQuantity<ThermalResistivity> thermalResistivity,
     ComparableQuantity<ThermalCapacitance> thermalCapacitance,
     @Nullable ComparableQuantity<Area> area)
-    implements InputEntity, Serializable {
+    implements InputEntity, Uniqueness, Serializable {
 
   /**
    * Create a new conductor with all required parameters.
@@ -112,5 +113,10 @@ public record ConductorInput(
         + ", area="
         + areaOptional()
         + '}';
+  }
+
+  @Override
+  public UUID getUuid() {
+    return uuid;
   }
 }
