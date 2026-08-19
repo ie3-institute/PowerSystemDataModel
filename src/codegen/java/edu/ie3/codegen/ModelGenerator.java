@@ -72,7 +72,7 @@ final class ModelGenerator implements HelperMethods {
       typeBuilder.addModifiers(Modifier.ABSTRACT);
     }
 
-    if (!genConfig.isSealed) {
+    if (genConfig.isSealed) {
       typeBuilder.addModifiers(Modifier.SEALED);
     }
 
