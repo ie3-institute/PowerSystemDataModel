@@ -71,7 +71,7 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
       int coreNumber,
       ConductorInput conductor,
       List<LayerInput> isolation,
-      Optional<ScreenLayerInput> screen,
+      ScreenLayerInput screen,
       List<LayerInput> filler,
       List<LayerInput> armor,
       List<LayerInput> jack,
@@ -89,7 +89,7 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
     this.coreNumber = coreNumber;
     this.conductor = conductor;
     this.isolation = List.copyOf(isolation);
-    this.screen = screen.orElse(null);
+    this.screen = screen;
     this.filler = List.copyOf(filler);
     this.armor = List.copyOf(armor);
     this.jack = List.copyOf(jack);
@@ -262,7 +262,7 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
     private int coreNumber;
     private ConductorInput conductor;
     private List<LayerInput> isolation;
-    private Optional<ScreenLayerInput> screen;
+    private ScreenLayerInput screen;
     private List<LayerInput> filler;
     private List<LayerInput> armor;
     private List<LayerInput> jack;
@@ -275,12 +275,12 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
     private double circulatingLossFactor;
     private double eddyCurrentLossFactor;
 
-    protected CableTypeInputCopyBuilder(CableTypeInput entity) {
+    private CableTypeInputCopyBuilder(CableTypeInput entity) {
       super(entity);
       this.coreNumber = entity.coreNumber;
       this.conductor = entity.conductor;
       this.isolation = entity.isolation;
-      this.screen = Optional.ofNullable(entity.screen);
+      this.screen = entity.screen;
       this.filler = entity.filler;
       this.armor = entity.armor;
       this.jack = entity.jack;
@@ -309,7 +309,7 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
       return thisInstance();
     }
 
-    public CableTypeInputCopyBuilder screen(Optional<ScreenLayerInput> screen) {
+    public CableTypeInputCopyBuilder screen(ScreenLayerInput screen) {
       this.screen = screen;
       return thisInstance();
     }

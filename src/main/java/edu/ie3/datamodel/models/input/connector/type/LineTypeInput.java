@@ -180,7 +180,7 @@ public class LineTypeInput extends AssetTypeInput {
     private ComparableQuantity<ElectricCurrent> iMax;
     private ComparableQuantity<ElectricPotential> vRated;
 
-    protected LineTypeInputCopyBuilder(LineTypeInput entity) {
+    private LineTypeInputCopyBuilder(LineTypeInput entity) {
       super(entity);
       this.b = entity.b;
       this.g = entity.g;
