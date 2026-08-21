@@ -5,8 +5,9 @@
 */
 package edu.ie3.datamodel.models.input.connector.type;
 
-import edu.ie3.datamodel.models.Uniqueness;
-import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.OperationTime;
+import edu.ie3.datamodel.models.input.AssetInput;
+import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
 import java.io.Serializable;
@@ -24,10 +25,8 @@ import tech.units.indriya.ComparableQuantity;
  * Unlike {@link LayerInput} layers, the conductor has no inner diameter and includes compaction
  * information.
  */
-public class ConductorInput implements InputEntity, Uniqueness, Serializable {
+public class ConductorInput extends AssetInput implements Serializable {
 
-  private final UUID uuid;
-  private final String name;
   private final CableMaterial material;
   private final ComparableQuantity<Area> crossSection;
   private final ComparableQuantity<Length> diameter;
@@ -40,7 +39,7 @@ public class ConductorInput implements InputEntity, Uniqueness, Serializable {
    * Constructor for the conductor of a cable.
    *
    * @param uuid UUID of the ConductorInput
-   * @param name Human-readable id
+   * @param id Human-readable id
    * @param material Material of the conductor (e.g., copper or aluminium)
    * @param crossSection Real nominal cross-sectional area (electrically effective)
    * @param diameter Geometric outer diameter of the conductor
@@ -51,7 +50,7 @@ public class ConductorInput implements InputEntity, Uniqueness, Serializable {
    */
   public ConductorInput(
       UUID uuid,
-      String name,
+      String id,
       CableMaterial material,
       ComparableQuantity<Area> crossSection,
       ComparableQuantity<Length> diameter,
@@ -59,8 +58,62 @@ public class ConductorInput implements InputEntity, Uniqueness, Serializable {
       ComparableQuantity<ThermalResistivity> thermalResistivity,
       ComparableQuantity<ThermalCapacitance> thermalCapacitance,
       ComparableQuantity<Area> area) {
-    this.uuid = uuid;
-    this.name = name;
+    this(
+        uuid,
+        id,
+        OperatorInput.NO_OPERATOR_ASSIGNED,
+        OperationTime.notLimited(),
+        material,
+        crossSection,
+        diameter,
+        isCompacted,
+        thermalResistivity,
+        thermalCapacitance,
+        area,
+        null);
+  }
+
+  public ConductorInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      CableMaterial material,
+      ComparableQuantity<Area> crossSection,
+      ComparableQuantity<Length> diameter,
+      boolean isCompacted,
+      ComparableQuantity<ThermalResistivity> thermalResistivity,
+      ComparableQuantity<ThermalCapacitance> thermalCapacitance,
+      ComparableQuantity<Area> area) {
+    this(
+        uuid,
+        id,
+        operator,
+        operationTime,
+        material,
+        crossSection,
+        diameter,
+        isCompacted,
+        thermalResistivity,
+        thermalCapacitance,
+        area,
+        null);
+  }
+
+  public ConductorInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      CableMaterial material,
+      ComparableQuantity<Area> crossSection,
+      ComparableQuantity<Length> diameter,
+      boolean isCompacted,
+      ComparableQuantity<ThermalResistivity> thermalResistivity,
+      ComparableQuantity<ThermalCapacitance> thermalCapacitance,
+      ComparableQuantity<Area> area,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, operator, operationTime);
     this.material = material;
     this.crossSection = crossSection;
     this.diameter = diameter;
@@ -68,23 +121,28 @@ public class ConductorInput implements InputEntity, Uniqueness, Serializable {
     this.thermalResistivity = thermalResistivity;
     this.thermalCapacitance = thermalCapacitance;
     this.area = area;
+    if (additionalInformation != null) setAdditionalInformation(additionalInformation);
   }
 
-  public Optional<ComparableQuantity<Area>> areaOptional() {
+  public ComparableQuantity<ThermalCapacitance> thermalCapacitance() {
+    return thermalCapacitance;
+  }
+
+  public Optional<ComparableQuantity<Area>> area() {
     return Optional.ofNullable(area);
   }
 
-  public UUID uuid() {
-    return uuid;
+  public Optional<ComparableQuantity<Area>> areaOptional() {
+    return area();
   }
 
   @Override
   public UUID getUuid() {
-    return uuid;
+    return super.getUuid();
   }
 
   public String name() {
-    return name;
+    return getId();
   }
 
   public CableMaterial material() {
@@ -107,26 +165,13 @@ public class ConductorInput implements InputEntity, Uniqueness, Serializable {
     return thermalResistivity;
   }
 
-  public ComparableQuantity<ThermalCapacitance> thermalCapacitance() {
-    return thermalCapacitance;
-  }
-
-  public ComparableQuantity<Area> area() {
-    return area;
-  }
-
-  @Override
-  public Map<String, String> getAdditionalInformation() {
-    return Map.of();
-  }
-
   @Override
   public @NonNull String toString() {
     return "ConductorInput{"
         + "uuid="
-        + uuid
-        + ", name="
-        + name
+        + getUuid()
+        + ", id="
+        + getId()
         + ", material="
         + material
         + ", crossSection="
@@ -140,7 +185,7 @@ public class ConductorInput implements InputEntity, Uniqueness, Serializable {
         + ", thermalCapacitance="
         + thermalCapacitance
         + ", area="
-        + areaOptional()
+        + area()
         + '}';
   }
 
@@ -148,10 +193,9 @@ public class ConductorInput implements InputEntity, Uniqueness, Serializable {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof ConductorInput)) return false;
+    if (!super.equals(o)) return false;
     ConductorInput that = (ConductorInput) o;
     return isCompacted == that.isCompacted
-        && uuid.equals(that.uuid)
-        && name.equals(that.name)
         && material == that.material
         && crossSection.equals(that.crossSection)
         && diameter.equals(that.diameter)
@@ -163,8 +207,7 @@ public class ConductorInput implements InputEntity, Uniqueness, Serializable {
   @Override
   public int hashCode() {
     return Objects.hash(
-        uuid,
-        name,
+        super.hashCode(),
         material,
         crossSection,
         diameter,
@@ -172,5 +215,89 @@ public class ConductorInput implements InputEntity, Uniqueness, Serializable {
         thermalResistivity,
         thermalCapacitance,
         area);
+  }
+
+  @Override
+  public AssetInputCopyBuilder<?> copy() {
+    return new ConductorInputCopyBuilder(this);
+  }
+
+  public static class ConductorInputCopyBuilder
+      extends AssetInputCopyBuilder<ConductorInputCopyBuilder> {
+
+    private CableMaterial material;
+    private ComparableQuantity<Area> crossSection;
+    private ComparableQuantity<Length> diameter;
+    private boolean isCompacted;
+    private ComparableQuantity<ThermalResistivity> thermalResistivity;
+    private ComparableQuantity<ThermalCapacitance> thermalCapacitance;
+    private ComparableQuantity<Area> area;
+
+    protected ConductorInputCopyBuilder(ConductorInput entity) {
+      super(entity);
+      this.material = entity.material;
+      this.crossSection = entity.crossSection;
+      this.diameter = entity.diameter;
+      this.isCompacted = entity.isCompacted;
+      this.thermalResistivity = entity.thermalResistivity;
+      this.thermalCapacitance = entity.thermalCapacitance;
+      this.area = entity.area;
+    }
+
+    public ConductorInputCopyBuilder material(CableMaterial material) {
+      this.material = material;
+      return thisInstance();
+    }
+
+    public ConductorInputCopyBuilder crossSection(ComparableQuantity<Area> crossSection) {
+      this.crossSection = crossSection;
+      return thisInstance();
+    }
+
+    public ConductorInputCopyBuilder diameter(ComparableQuantity<Length> diameter) {
+      this.diameter = diameter;
+      return thisInstance();
+    }
+
+    public ConductorInputCopyBuilder isCompacted(boolean isCompacted) {
+      this.isCompacted = isCompacted;
+      return thisInstance();
+    }
+
+    public ConductorInputCopyBuilder thermalResistivity(ComparableQuantity<ThermalResistivity> tr) {
+      this.thermalResistivity = tr;
+      return thisInstance();
+    }
+
+    public ConductorInputCopyBuilder thermalCapacitance(ComparableQuantity<ThermalCapacitance> tc) {
+      this.thermalCapacitance = tc;
+      return thisInstance();
+    }
+
+    public ConductorInputCopyBuilder area(ComparableQuantity<Area> area) {
+      this.area = area;
+      return thisInstance();
+    }
+
+    @Override
+    public ConductorInput build() {
+      return new ConductorInput(
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          material,
+          crossSection,
+          diameter,
+          isCompacted,
+          thermalResistivity,
+          thermalCapacitance,
+          area);
+    }
+
+    @Override
+    protected ConductorInputCopyBuilder thisInstance() {
+      return this;
+    }
   }
 }

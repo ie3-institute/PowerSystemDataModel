@@ -5,8 +5,9 @@
 */
 package edu.ie3.datamodel.models.input.connector.type;
 
-import edu.ie3.datamodel.models.Uniqueness;
-import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.OperationTime;
+import edu.ie3.datamodel.models.input.AssetInput;
+import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.util.quantities.interfaces.ElectricalResistivity;
 import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
@@ -24,26 +25,24 @@ import tech.units.indriya.ComparableQuantity;
  * Represents a cable screen layer with specific parameters for conductor shielding. Extends the
  * properties of a standard layer with wire-specific parameters.
  */
-public class ScreenLayerInput implements InputEntity, Uniqueness, Serializable {
+public class ScreenLayerInput extends AssetInput implements Serializable {
 
-  private final UUID uuid;
-  private final String name;
   private final CableMaterial material;
   private final ComparableQuantity<Length> innerDiameter;
   private final ComparableQuantity<Length> outerDiameter;
   private final ComparableQuantity<ThermalResistivity> thermalResistivity;
   private final ComparableQuantity<ThermalCapacitance> thermalCapacitance;
-  private final Optional<ComparableQuantity<Area>> area;
+  private final ComparableQuantity<Area> area;
   private final int wiresNumber;
   private final ComparableQuantity<Length> wireDiameter;
-  private final Optional<ComparableQuantity<Length>> lengthOfLay;
+  private final ComparableQuantity<Length> lengthOfLay;
   private final ComparableQuantity<ElectricalResistivity> electricalResistivity;
 
   /**
    * Constructor for a screen layer
    *
    * @param uuid UUID of the screen layer
-   * @param name Name/designation of this screen layer
+   * @param id Name/designation of this screen layer
    * @param material Material of the screen
    * @param innerDiameter Inner diameter of the screen layer
    * @param outerDiameter Outer diameter of the screen layer
@@ -57,7 +56,7 @@ public class ScreenLayerInput implements InputEntity, Uniqueness, Serializable {
    */
   public ScreenLayerInput(
       UUID uuid,
-      String name,
+      String id,
       CableMaterial material,
       ComparableQuantity<Length> innerDiameter,
       ComparableQuantity<Length> outerDiameter,
@@ -68,8 +67,74 @@ public class ScreenLayerInput implements InputEntity, Uniqueness, Serializable {
       ComparableQuantity<Length> wireDiameter,
       Optional<ComparableQuantity<Length>> lengthOfLay,
       ComparableQuantity<ElectricalResistivity> electricalResistivity) {
-    this.uuid = uuid;
-    this.name = name;
+    this(
+        uuid,
+        id,
+        OperatorInput.NO_OPERATOR_ASSIGNED,
+        OperationTime.notLimited(),
+        material,
+        innerDiameter,
+        outerDiameter,
+        thermalResistivity,
+        thermalCapacitance,
+        area.orElse(null),
+        wiresNumber,
+        wireDiameter,
+        lengthOfLay.orElse(null),
+        electricalResistivity,
+        null);
+  }
+
+  public ScreenLayerInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      CableMaterial material,
+      ComparableQuantity<Length> innerDiameter,
+      ComparableQuantity<Length> outerDiameter,
+      ComparableQuantity<ThermalResistivity> thermalResistivity,
+      ComparableQuantity<ThermalCapacitance> thermalCapacitance,
+      Optional<ComparableQuantity<Area>> area,
+      int wiresNumber,
+      ComparableQuantity<Length> wireDiameter,
+      Optional<ComparableQuantity<Length>> lengthOfLay,
+      ComparableQuantity<ElectricalResistivity> electricalResistivity) {
+    this(
+        uuid,
+        id,
+        operator,
+        operationTime,
+        material,
+        innerDiameter,
+        outerDiameter,
+        thermalResistivity,
+        thermalCapacitance,
+        area.orElse(null),
+        wiresNumber,
+        wireDiameter,
+        lengthOfLay.orElse(null),
+        electricalResistivity,
+        null);
+  }
+
+  public ScreenLayerInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      CableMaterial material,
+      ComparableQuantity<Length> innerDiameter,
+      ComparableQuantity<Length> outerDiameter,
+      ComparableQuantity<ThermalResistivity> thermalResistivity,
+      ComparableQuantity<ThermalCapacitance> thermalCapacitance,
+      ComparableQuantity<Area> area,
+      int wiresNumber,
+      ComparableQuantity<Length> wireDiameter,
+      ComparableQuantity<Length> lengthOfLay,
+      ComparableQuantity<ElectricalResistivity> electricalResistivity,
+      Map<String, String> additionalInformation) {
+    super(uuid, id, operator, operationTime);
     this.material = material;
     this.innerDiameter = innerDiameter;
     this.outerDiameter = outerDiameter;
@@ -80,19 +145,127 @@ public class ScreenLayerInput implements InputEntity, Uniqueness, Serializable {
     this.wireDiameter = wireDiameter;
     this.lengthOfLay = lengthOfLay;
     this.electricalResistivity = electricalResistivity;
+    if (additionalInformation != null) setAdditionalInformation(additionalInformation);
+  }
+
+  public static class ScreenLayerInputCopyBuilder
+      extends AssetInputCopyBuilder<ScreenLayerInputCopyBuilder> {
+
+    private CableMaterial material;
+    private ComparableQuantity<Length> innerDiameter;
+    private ComparableQuantity<Length> outerDiameter;
+    private ComparableQuantity<ThermalResistivity> thermalResistivity;
+    private ComparableQuantity<ThermalCapacitance> thermalCapacitance;
+    private ComparableQuantity<Area> area;
+    private int wiresNumber;
+    private ComparableQuantity<Length> wireDiameter;
+    private ComparableQuantity<Length> lengthOfLay;
+    private ComparableQuantity<ElectricalResistivity> electricalResistivity;
+
+    protected ScreenLayerInputCopyBuilder(ScreenLayerInput entity) {
+      super(entity);
+      this.material = entity.material;
+      this.innerDiameter = entity.innerDiameter;
+      this.outerDiameter = entity.outerDiameter;
+      this.thermalResistivity = entity.thermalResistivity;
+      this.thermalCapacitance = entity.thermalCapacitance;
+      this.area = entity.area;
+      this.wiresNumber = entity.wiresNumber;
+      this.wireDiameter = entity.wireDiameter;
+      this.lengthOfLay = entity.lengthOfLay;
+      this.electricalResistivity = entity.electricalResistivity;
+    }
+
+    public ScreenLayerInputCopyBuilder material(CableMaterial material) {
+      this.material = material;
+      return thisInstance();
+    }
+
+    public ScreenLayerInputCopyBuilder innerDiameter(ComparableQuantity<Length> innerDiameter) {
+      this.innerDiameter = innerDiameter;
+      return thisInstance();
+    }
+
+    public ScreenLayerInputCopyBuilder outerDiameter(ComparableQuantity<Length> outerDiameter) {
+      this.outerDiameter = outerDiameter;
+      return thisInstance();
+    }
+
+    public ScreenLayerInputCopyBuilder thermalResistivity(
+        ComparableQuantity<ThermalResistivity> tr) {
+      this.thermalResistivity = tr;
+      return thisInstance();
+    }
+
+    public ScreenLayerInputCopyBuilder thermalCapacitance(
+        ComparableQuantity<ThermalCapacitance> tc) {
+      this.thermalCapacitance = tc;
+      return thisInstance();
+    }
+
+    public ScreenLayerInputCopyBuilder area(ComparableQuantity<Area> area) {
+      this.area = area;
+      return thisInstance();
+    }
+
+    public ScreenLayerInputCopyBuilder wiresNumber(int wiresNumber) {
+      this.wiresNumber = wiresNumber;
+      return thisInstance();
+    }
+
+    public ScreenLayerInputCopyBuilder wireDiameter(ComparableQuantity<Length> wireDiameter) {
+      this.wireDiameter = wireDiameter;
+      return thisInstance();
+    }
+
+    public ScreenLayerInputCopyBuilder lengthOfLay(ComparableQuantity<Length> lengthOfLay) {
+      this.lengthOfLay = lengthOfLay;
+      return thisInstance();
+    }
+
+    public ScreenLayerInputCopyBuilder electricalResistivity(
+        ComparableQuantity<ElectricalResistivity> er) {
+      this.electricalResistivity = er;
+      return thisInstance();
+    }
+
+    @Override
+    public ScreenLayerInput build() {
+      return new ScreenLayerInput(
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          material,
+          innerDiameter,
+          outerDiameter,
+          thermalResistivity,
+          thermalCapacitance,
+          area,
+          wiresNumber,
+          wireDiameter,
+          lengthOfLay,
+          electricalResistivity,
+          null);
+    }
+
+    @Override
+    protected ScreenLayerInputCopyBuilder thisInstance() {
+      return this;
+    }
   }
 
   @Override
-  public UUID getUuid() {
-    return uuid;
+  public ScreenLayerInputCopyBuilder copy() {
+    return new ScreenLayerInputCopyBuilder(this);
   }
 
   public UUID uuid() {
-    return uuid;
+    return getUuid();
   }
 
   public String name() {
-    return name;
+    return getId();
   }
 
   public CableMaterial material() {
@@ -116,7 +289,7 @@ public class ScreenLayerInput implements InputEntity, Uniqueness, Serializable {
   }
 
   public Optional<ComparableQuantity<Area>> area() {
-    return area;
+    return Optional.ofNullable(area);
   }
 
   public int wiresNumber() {
@@ -128,7 +301,7 @@ public class ScreenLayerInput implements InputEntity, Uniqueness, Serializable {
   }
 
   public Optional<ComparableQuantity<Length>> lengthOfLay() {
-    return lengthOfLay;
+    return Optional.ofNullable(lengthOfLay);
   }
 
   public ComparableQuantity<ElectricalResistivity> electricalResistivity() {
@@ -136,17 +309,12 @@ public class ScreenLayerInput implements InputEntity, Uniqueness, Serializable {
   }
 
   @Override
-  public Map<String, String> getAdditionalInformation() {
-    return Map.of();
-  }
-
-  @Override
   public @NonNull String toString() {
     return "ScreenLayerInput{"
         + "uuid="
-        + uuid
-        + ", name="
-        + name
+        + getUuid()
+        + ", id="
+        + getId()
         + ", material="
         + material
         + ", innerDiameter="
@@ -174,26 +342,24 @@ public class ScreenLayerInput implements InputEntity, Uniqueness, Serializable {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof ScreenLayerInput)) return false;
+    if (!super.equals(o)) return false;
     ScreenLayerInput that = (ScreenLayerInput) o;
     return wiresNumber == that.wiresNumber
-        && uuid.equals(that.uuid)
-        && name.equals(that.name)
         && material == that.material
         && innerDiameter.equals(that.innerDiameter)
         && outerDiameter.equals(that.outerDiameter)
         && thermalResistivity.equals(that.thermalResistivity)
         && thermalCapacitance.equals(that.thermalCapacitance)
-        && area.equals(that.area)
+        && Objects.equals(area, that.area)
         && wireDiameter.equals(that.wireDiameter)
-        && lengthOfLay.equals(that.lengthOfLay)
+        && Objects.equals(lengthOfLay, that.lengthOfLay)
         && electricalResistivity.equals(that.electricalResistivity);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        uuid,
-        name,
+        super.hashCode(),
         material,
         innerDiameter,
         outerDiameter,
