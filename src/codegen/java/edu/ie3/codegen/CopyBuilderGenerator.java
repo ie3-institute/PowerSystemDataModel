@@ -17,12 +17,27 @@ public final class CopyBuilderGenerator implements HelperMethods {
   private final ModelDefinition model;
   private final GenerationConfig genConfig;
   private final Map<String, ModelDefinition> models;
+  private final ClassName builderClass;
+  private final TypeVariableName builderTypeVariable = TypeVariableName.get("B");
+  private final boolean hasParent;
+  private TypeName parentBuilderType;
 
   public CopyBuilderGenerator(
       ModelDefinition model, GenerationConfig genConfig, Map<String, ModelDefinition> models) {
     this.model = model;
     this.genConfig = genConfig;
     this.models = models;
+
+    this.builderClass = copyBuilderClassName(model);
+
+    this.hasParent = model.extendsName != null && !model.extendsName.isBlank();
+
+    if (hasParent) {
+      ModelDefinition parent = getParent(model.extendsName, models);
+      ClassName parentBuilderClass = copyBuilderClassName(parent);
+
+      this.parentBuilderType = ParameterizedTypeName.get(parentBuilderClass, builderTypeVariable);
+    }
   }
 
   public TypeSpec generateCopyBuilder() {
@@ -34,10 +49,6 @@ public final class CopyBuilderGenerator implements HelperMethods {
   }
 
   public MethodSpec generateCopyMethod() {
-    ClassName builderClass = copyBuilderClassName(model);
-
-    boolean hasParent = model.extendsName != null && !model.extendsName.isBlank();
-
     MethodSpec.Builder builder = MethodSpec.methodBuilder("copy").addModifiers(Modifier.PUBLIC);
 
     if (hasParent) {
@@ -56,9 +67,6 @@ public final class CopyBuilderGenerator implements HelperMethods {
 
   private TypeSpec generateAbstractCopyBuilder() {
     ClassName modelClass = modelClassName(model, genConfig);
-    ClassName builderClass = copyBuilderClassName(model);
-
-    TypeVariableName builderTypeVariable = TypeVariableName.get("B");
 
     TypeName ownParameterizedBuilder = ParameterizedTypeName.get(builderClass, builderTypeVariable);
 
@@ -66,8 +74,6 @@ public final class CopyBuilderGenerator implements HelperMethods {
         TypeSpec.classBuilder(copyBuilderName(model))
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.ABSTRACT)
             .addTypeVariable(TypeVariableName.get("B", ownParameterizedBuilder));
-
-    ModelDefinition parent = getParent(model.extendsName, models);
 
     for (ModelDefinition.ComponentDefinition component : model.components) {
       builder.addField(generateCopyBuilderField(component));
@@ -114,59 +120,34 @@ public final class CopyBuilderGenerator implements HelperMethods {
       builder.addMethod(methodBuilder.build());
     }
 
-    if (parent == null) {
-      builder.addMethod(
-          MethodSpec.methodBuilder("thisInstance")
-              .addModifiers(Modifier.PROTECTED, Modifier.ABSTRACT)
-              .returns(builderTypeVariable)
-              .build());
+    var thisInstanceBuilder =
+        MethodSpec.methodBuilder("thisInstance")
+            .returns(builderTypeVariable)
+            .addModifiers(Modifier.PROTECTED, Modifier.ABSTRACT);
+    var buildBuilder =
+        MethodSpec.methodBuilder("build")
+            .returns(modelClass)
+            .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT);
 
-      builder.addMethod(
-          MethodSpec.methodBuilder("build")
-              .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-              .returns(modelClass)
-              .build());
+    if (!hasParent) {
+      builder.addMethod(thisInstanceBuilder.build());
+      builder.addMethod(buildBuilder.build());
 
     } else {
-      ClassName parentBuilderClass = copyBuilderClassName(parent);
-
-      TypeName parentBuilderType =
-          ParameterizedTypeName.get(parentBuilderClass, builderTypeVariable);
-
       builder.superclass(parentBuilderType);
-
-      builder.addMethod(
-          MethodSpec.methodBuilder("build")
-              .addAnnotation(Override.class)
-              .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-              .returns(modelClass)
-              .build());
-
-      builder.addMethod(
-          MethodSpec.methodBuilder("thisInstance")
-              .addAnnotation(Override.class)
-              .addModifiers(Modifier.PROTECTED, Modifier.ABSTRACT)
-              .returns(builderTypeVariable)
-              .build());
+      builder.addMethod(buildBuilder.addAnnotation(Override.class).build());
+      builder.addMethod(thisInstanceBuilder.addAnnotation(Override.class).build());
     }
 
     return builder.build();
   }
 
   private TypeSpec generateConcreteCopyBuilder() {
-    ClassName builderClass = copyBuilderClassName(model);
-
     TypeSpec.Builder builder =
         TypeSpec.classBuilder(copyBuilderName(model))
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
 
-    ModelDefinition parent = getParent(model.extendsName, models);
-
-    if (parent != null) {
-      ClassName parentBuilderClass = copyBuilderClassName(parent);
-
-      TypeName parentBuilderType = ParameterizedTypeName.get(parentBuilderClass, builderClass);
-
+    if (hasParent) {
       builder.superclass(parentBuilderType);
     }
 

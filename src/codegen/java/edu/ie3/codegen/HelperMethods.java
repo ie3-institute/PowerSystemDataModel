@@ -16,8 +16,13 @@ public interface HelperMethods {
   default CodeBlock toString(
       ModelDefinition.ComponentDefinition component,
       List<String> components,
-      GenerationConfig genConfig) {
+      GenerationConfig genConfig,
+      boolean explicitConversion) {
     String componentName = component.name;
+
+    if (component.type.equals("String")) {
+      explicitConversion = false;
+    }
 
     String valueGetterExpression;
     boolean optional = false;
@@ -39,6 +44,7 @@ public interface HelperMethods {
       }
 
       valueGetterExpression += ".map(e -> e.getUuid().toString()).orElse(\"\")";
+      explicitConversion = false;
 
     } else {
       valueGetterExpression = component.nested ? "$L.getUuid()" : "$L";
@@ -46,6 +52,63 @@ public interface HelperMethods {
           components.contains(componentName)
               ? componentName
               : defaultGetterName(component, genConfig) + "()";
+    }
+
+    if (explicitConversion) {
+      valueGetterExpression += ".toString()";
+    }
+
+    if (optional) {
+      return CodeBlock.of(valueGetterExpression + "\n", Optional.class, getterName);
+    } else {
+      return CodeBlock.of(valueGetterExpression + "\n", getterName);
+    }
+  }
+
+  default CodeBlock toStringPartial(
+      ModelDefinition.ComponentDefinition component,
+      List<String> components,
+      GenerationConfig genConfig,
+      boolean explicitConversion,
+      String key) {
+    String componentName = component.name;
+
+    if (component.type.equals("String")) {
+      explicitConversion = false;
+    }
+
+    String valueGetterExpression;
+    boolean optional = false;
+    String getterName;
+
+    if (component.nullable) {
+      // we need some special calls here
+      if (!component.required) {
+        valueGetterExpression = "$L()";
+        getterName = defaultGetterName(component, genConfig);
+
+      } else {
+        valueGetterExpression = "$T.ofNullable($L)";
+        optional = true;
+        getterName =
+            components.contains(componentName)
+                ? componentName
+                : defaultGetterName(component, genConfig);
+      }
+
+      valueGetterExpression += ".map(e -> e.getUuid().toString()).orElse(\"\")";
+      explicitConversion = false;
+
+    } else {
+      valueGetterExpression = component.nested ? "$L.getUuid()" : "$L";
+      getterName =
+          components.contains(componentName)
+              ? componentName
+              : defaultGetterName(component, genConfig) + "()";
+    }
+
+    if (explicitConversion) {
+      valueGetterExpression += ".toString()";
     }
 
     if (optional) {

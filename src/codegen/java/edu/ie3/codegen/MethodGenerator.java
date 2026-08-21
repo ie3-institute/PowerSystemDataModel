@@ -25,6 +25,63 @@ public class MethodGenerator implements HelperMethods {
     this.models = models;
   }
 
+  public List<MethodSpec> getGetters() {
+    List<MethodSpec> methodSpecs = new ArrayList<>();
+
+    if (genConfig.getters) {
+      for (ModelDefinition.ComponentDefinition component : model.components) {
+        if (!genConfig.noGetters.contains(component.name)) {
+          List<String> optionalGetter = genConfig.optionalGetters;
+
+          String getter = defaultGetterName(component, genConfig);
+          TypeName returnType = resolveType(component.type);
+
+          var builder = MethodSpec.methodBuilder(getter).addModifiers(Modifier.PUBLIC);
+
+          if (isMap(component)) {
+            builder.addStatement(
+                "return $T.unmodifiableMap($L)", Collections.class, component.name);
+          } else if (optionalGetter != null && optionalGetter.contains(component.name)) {
+            // TODO: options != null && options.optional -> component.required
+            returnType = ParameterizedTypeName.get(ClassName.get(Optional.class), returnType.box());
+
+            builder.addStatement("return $T.ofNullable($L)", Optional.class, component.name);
+          } else {
+            builder.addStatement("return $L", component.name);
+          }
+
+          methodSpecs.add(builder.returns(returnType).build());
+        }
+      }
+    }
+
+    if (model.components.stream().anyMatch(s -> s.name.equals("additionalInformation"))) {
+      // type Map<String,String>
+      TypeName mapStringString =
+          ParameterizedTypeName.get(
+              ClassName.get(Map.class), ClassName.get(String.class), ClassName.get(String.class));
+
+      MethodSpec.Builder builder =
+          MethodSpec.methodBuilder("setAdditionalInformation")
+              .addModifiers(Modifier.PROTECTED)
+              .returns(void.class)
+              .addParameter(mapStringString, "additionalInformation");
+
+      // if (additionalInformation == null) return;
+      builder
+          .beginControlFlow("if (additionalInformation == null)")
+          .addStatement("return")
+          .endControlFlow();
+
+      // this.additionalInformation.putAll(additionalInformation);
+      builder.addStatement("this.additionalInformation.putAll(additionalInformation)");
+
+      methodSpecs.add(builder.build());
+    }
+
+    return methodSpecs;
+  }
+
   public List<MethodSpec> getOtherMethods() {
     List<MethodSpec> methods = new ArrayList<>();
 
@@ -82,64 +139,11 @@ public class MethodGenerator implements HelperMethods {
       methods.add(generateToString());
     }
 
+    if (genConfig.toMap) {
+      methods.add(generateToMap());
+    }
+
     return methods;
-  }
-
-  public List<MethodSpec> getGetters() {
-    List<MethodSpec> methodSpecs = new ArrayList<>();
-
-    if (genConfig.getters) {
-      for (ModelDefinition.ComponentDefinition component : model.components) {
-        if (!genConfig.noGetters.contains(component.name)) {
-          List<String> optionalGetter = genConfig.optionalGetters;
-
-          String getter = defaultGetterName(component, genConfig);
-          TypeName returnType = resolveType(component.type);
-
-          var builder = MethodSpec.methodBuilder(getter).addModifiers(Modifier.PUBLIC);
-
-          if (isMap(component)) {
-            builder.addStatement(
-                "return $T.unmodifiableMap($L)", Collections.class, component.name);
-          } else if (optionalGetter != null && optionalGetter.contains(component.name)) {
-            // TODO: options != null && options.optional -> component.required
-            returnType = ParameterizedTypeName.get(ClassName.get(Optional.class), returnType.box());
-
-            builder.addStatement("return $T.ofNullable($L)", Optional.class, component.name);
-          } else {
-            builder.addStatement("return $L", component.name);
-          }
-
-          methodSpecs.add(builder.returns(returnType).build());
-        }
-      }
-    }
-
-    if (model.components.stream().anyMatch(s -> s.name.equals("additionalInformation"))) {
-      // type Map<String,String>
-      TypeName mapStringString =
-          ParameterizedTypeName.get(
-              ClassName.get(Map.class), ClassName.get(String.class), ClassName.get(String.class));
-
-      MethodSpec.Builder builder =
-          MethodSpec.methodBuilder("setAdditionalInformation")
-              .addModifiers(Modifier.PROTECTED)
-              .returns(void.class)
-              .addParameter(mapStringString, "additionalInformation");
-
-      // if (additionalInformation == null) return;
-      builder
-          .beginControlFlow("if (additionalInformation == null)")
-          .addStatement("return")
-          .endControlFlow();
-
-      // this.additionalInformation.putAll(additionalInformation);
-      builder.addStatement("this.additionalInformation.putAll(additionalInformation)");
-
-      methodSpecs.add(builder.build());
-    }
-
-    return methodSpecs;
   }
 
   private MethodSpec generateEquals() {
@@ -252,7 +256,7 @@ public class MethodGenerator implements HelperMethods {
       String prefix = (index == 0) ? component.name + "=" : ", " + component.name + "=";
 
       builder.addCode(
-          CodeBlock.of("    + $S + " + toString(component, components, genConfig), prefix));
+          CodeBlock.of("    + $S + " + toString(component, components, genConfig, false), prefix));
 
       index++;
     }
@@ -265,5 +269,52 @@ public class MethodGenerator implements HelperMethods {
     }
 
     return builder.build();
+  }
+
+  private MethodSpec generateToMap() {
+    String type = "StringMap";
+
+    TypeName stringMap = resolveType(type);
+
+    MethodSpec.Builder builder =
+        MethodSpec.methodBuilder("toMap")
+            // .addAnnotation(Override.class)
+            .addModifiers(Modifier.PUBLIC)
+            .returns(stringMap);
+
+    builder.addStatement("$T res = new $T<>()", stringMap, HashMap.class);
+
+    List<String> components = model.components.stream().map(c -> c.name).toList();
+
+    Collection<ModelDefinition.ComponentDefinition> allComponents =
+        visibleComponents(model, models).values();
+
+    for (ModelDefinition.ComponentDefinition component : allComponents) {
+      if (excludeFromMethods(component)) {
+        continue;
+      }
+
+      String statement = "res.put($S, $L)";
+
+      if (component.keys.isEmpty()) {
+        builder.addStatement(
+            statement, component.name, toString(component, components, genConfig, true));
+      } else {
+        for (String key : component.keys) {
+          builder.addStatement(
+              statement, key, toStringPartial(component, components, genConfig, true, key));
+        }
+      }
+    }
+
+    builder.addStatement("res.putAll(getAdditionalInformation())");
+    builder.addStatement("return res");
+
+    return builder.build();
+  }
+
+  private String conv(String type) {
+
+    return "toString()";
   }
 }

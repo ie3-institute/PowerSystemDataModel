@@ -840,6 +840,7 @@ models:
               type: double
           expression: this.type = this.type.copy().scale(factor).build()
       nonCapitalizedGetters: [qCharacteristics]
+      toMap: false
 
     EvcsInput:
       package: edu.ie3.datamodel.models.input.system

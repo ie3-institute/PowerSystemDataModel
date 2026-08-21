@@ -80,15 +80,7 @@ public final class ConstructorGenerator implements HelperMethods {
     if (model.extendsName != null && constructor.superArgs != null) {
       List<CodeBlock> argBlocks = new ArrayList<>();
       for (String arg : constructor.superArgs) {
-        // If arg equals a parameter name, use variable; else if it's a visible component name, use
-        // variable;
-        // otherwise treat as raw Java expression
-        if (visibleComponents.containsKey(arg)) {
-          argBlocks.add(CodeBlock.of("$L", arg)); // variable reference
-        } else {
-          // raw expression (e.g. "OperatorInput.NO_OPERATOR_ASSIGNED")
-          argBlocks.add(CodeBlock.of("$L", arg));
-        }
+        argBlocks.add(CodeBlock.of("$L", arg));
       }
       superArgs = CodeBlock.join(argBlocks, ", ");
       builder.addStatement("super($L)", superArgs);
