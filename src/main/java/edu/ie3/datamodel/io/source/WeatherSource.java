@@ -254,7 +254,7 @@ public abstract class WeatherSource extends EntitySource {
           coordinate,
           date,
           fallbackTime);
-      return fallbackValues.get(0);
+      return fallbackValues.getFirst();
     }
     throw new NoDataException(
         "No weather data found for coordinate "

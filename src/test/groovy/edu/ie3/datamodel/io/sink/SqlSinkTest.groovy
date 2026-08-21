@@ -33,7 +33,7 @@ import edu.ie3.test.common.*
 import edu.ie3.test.helper.TestContainerHelper
 import edu.ie3.util.TimeUtil
 import org.testcontainers.containers.Container
-import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.postgresql.PostgreSQLContainer
 import org.testcontainers.spock.Testcontainers
 import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
@@ -83,13 +83,13 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
   def setup() {
     // Execute import script
     Iterable<String> importFiles = Arrays.asList(
-    "grids.sql",
-    "types.sql",
-    "result_entities.sql",
-    "input_entities.sql",
-    "time_series.sql",
-    "load_profiles.sql"
-    )
+        "grids.sql",
+        "types.sql",
+        "result_entities.sql",
+        "input_entities.sql",
+        "time_series.sql",
+        "load_profiles.sql"
+        )
     for (String file: importFiles) {
       Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/" + file)
       assert res.stderr.empty
@@ -108,9 +108,9 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     timeSeriesProcessorMap.put(timeSeriesProcessorKey, timeSeriesProcessor)
 
     SqlSink sink = new SqlSink(schemaName,
-    new ProcessorProvider(),
-    namingStrategy,
-    connector)
+        new ProcessorProvider(),
+        namingStrategy,
+        connector)
     UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")
     Quantity<Power> p = Quantities.getQuantity(10, StandardUnits.ACTIVE_POWER_IN)
     Quantity<Power> q = Quantities.getQuantity(10, StandardUnits.REACTIVE_POWER_IN)
@@ -137,8 +137,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
       powerLimitFlexOptionsResult,
       energyBoundariesFlexOptionsResult,
       GridTestData.transformerCtoG,
-      GridTestData.lineGraphicCtoD,
-      GridTestData.nodeGraphicC,
+      GridTestData.lineCtoD,
       ThermalUnitInputTestData.cylindricalStorageInput,
       ThermalUnitInputTestData.thermalHouseInput,
       SystemParticipantTestData.evcsInput,
@@ -158,9 +157,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "transformer_2_w_input", ps -> {}).count() == 1
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "operator_input", ps -> {}).count() == 2
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "cylindrical_storage_input", ps -> {}).count() == 1
-    sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "line_graphic_input", ps -> {}).count() == 1
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "line_input", ps -> {}).count() == 1
-    sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "node_graphic_input", ps -> {}).count() == 1
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "thermal_bus_input", ps -> {}).count() == 1
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "thermal_house_input", ps -> {}).count() == 1
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "load_input", ps -> {}).count() == 1
@@ -216,22 +213,22 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     given:
     def sink = new SqlSink(schemaName, namingStrategy, connector)
     def nestedInput = new PvInput(
-    UUID.fromString("d56f15b7-8293-4b98-b5bd-58f6273ce229"),
-    "test_pvInput",
-    OperatorInput.NO_OPERATOR_ASSIGNED,
-    OperationTime.notLimited(),
-    Mock(NodeInput),
-    new CosPhiFixed("cosPhiFixed:{(0.0,0.95)}"),
-    null,
-    0.2,
-    Quantities.getQuantity(-8.926613807678223, DEGREE_GEOM),
-    Quantities.getQuantity(95d, PERCENT),
-    Quantities.getQuantity(41.01871871948242, DEGREE_GEOM),
-    0.8999999761581421,
-    1,
-    Quantities.getQuantity(25d, KILOVOLTAMPERE),
-    0.95
-    )
+        UUID.fromString("d56f15b7-8293-4b98-b5bd-58f6273ce229"),
+        "test_pvInput",
+        OperatorInput.NO_OPERATOR_ASSIGNED,
+        OperationTime.notLimited(),
+        Mock(NodeInput),
+        new CosPhiFixed("cosPhiFixed:{(0.0,0.95)}"),
+        null,
+        0.2,
+        Quantities.getQuantity(-8.926613807678223, DEGREE_GEOM),
+        Quantities.getQuantity(95d, PERCENT),
+        Quantities.getQuantity(41.01871871948242, DEGREE_GEOM),
+        0.8999999761581421,
+        1,
+        Quantities.getQuantity(25d, KILOVOLTAMPERE),
+        0.95
+        )
 
     when:
     sink.persistIgnoreNested(nestedInput, identifier)
@@ -248,12 +245,12 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
   def "A valid SqlSink refuses to persist an entity, if no processor can be found for a specific input"() {
     given:
     def sink = new SqlSink(
-    schemaName,
-    new ProcessorProvider(
-    ProcessorProvider.allEntityProcessors(),
-    new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value, Value>, TimeSeriesEntry<Value>, Value, Value>>()),
-    namingStrategy,
-    connector)
+        schemaName,
+        new ProcessorProvider(
+            ProcessorProvider.allEntityProcessors(),
+            new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value, Value>, TimeSeriesEntry<Value>, Value, Value>>()),
+        namingStrategy,
+        connector)
 
     when:
     sink.persist(individualEnergyPriceTimeSeries, identifier)
@@ -268,9 +265,9 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
   def "A valid SqlSink throws an exception if a nested entity hasn't all of its nested entity."() {
     given:
     def sink = new SqlSink(
-    schemaName,
-    namingStrategy,
-    connector)
+        schemaName,
+        namingStrategy,
+        connector)
     def load = SystemParticipantTestData.loadInput
 
     when:
@@ -279,7 +276,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
     then:
     def exception = thrown(SQLException)
     exception.message.contains("ERROR: insert or update on table \"load_input\" violates foreign key constraint \"load_input_node_fkey\"\n" +
-    "  Detail: Key (node)=(4ca90220-74c2-4369-9afa-a18bf068840d) is not present in table \"node_input\".")
+        "  Detail: Key (node)=(4ca90220-74c2-4369-9afa-a18bf068840d) is not present in table \"node_input\".")
   }
 
   def "A valid SqlSink throws an exception if a grid does not exist."() {

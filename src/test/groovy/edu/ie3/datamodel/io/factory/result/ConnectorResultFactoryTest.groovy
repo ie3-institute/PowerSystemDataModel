@@ -35,12 +35,12 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
     given: "a connector result factory and model data"
     def resultFactory = new ConnectorResultFactory()
     Map<String, String> parameter = [
-      "time"      : "2020-01-30T17:26:44Z",
+      "time" : "2020-01-30T17:26:44Z",
       "inputModel": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "iamag"     : "1.0",
-      "iaang"     : "90",
-      "ibmag"     : "0.98123",
-      "ibang"     : "90"
+      "iamag" : "1.0",
+      "iaang" : "90",
+      "ibmag" : "0.98123",
+      "ibang" : "90"
     ]
 
     if (modelClass == Transformer2WResult) {
@@ -80,8 +80,8 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
 
 
     where:
-    modelClass          || resultingModelClass
-    LineResult          || LineResult
+    modelClass || resultingModelClass
+    LineResult || LineResult
     Transformer2WResult || Transformer2WResult
     Transformer3WResult || Transformer3WResult
   }

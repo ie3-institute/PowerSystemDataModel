@@ -25,7 +25,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 @Testcontainers
-class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelper, WeatherSourceTestHelper {
+class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelper {
 
   @Shared
   PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:18.3")
@@ -58,7 +58,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
 
     then:
     optTimeBasedValue != null
-    equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue )
+    WeatherSourceTestHelper.equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
   }
 
   def "A SqlWeatherSource throws NoDataException for an invalid coordinate"() {
@@ -97,8 +97,8 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
 
     then:
     coordinateToTimeSeries.keySet().size() == 2
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeSeries193186)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeSeries193187)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeSeries193186)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeSeries193187)
   }
 
   def "A SqlWeatherSource throws NoDataException for invalid coordinates"() {
@@ -141,9 +141,9 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
 
     then:
     coordinateToTimeSeries.keySet().size() == 3
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeSeries193186.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeSeries193187.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeSeries193188.entries)
   }
 
   def "A SqlWeatherSource falls back to the last known value when no exact weather data is found at a specific time"() {
@@ -156,7 +156,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
 
     then:
     result != null
-    equalsIgnoreUUID(result, expectedFallback)
+    WeatherSourceTestHelper.equalsIgnoreUUID(result, expectedFallback)
   }
 
   def "A SqlWeatherSource throws NoDataException when no weather data is found at a specific time and no earlier data is available"() {

@@ -6,11 +6,12 @@
 package edu.ie3.datamodel.exceptions;
 
 import edu.ie3.datamodel.models.UniqueEntity;
+import java.io.Serial;
 
 /** Is thrown, when a checked entity is illegal and thus not usable */
 public class InvalidEntityException extends ValidationException {
 
-  private static final long serialVersionUID = 809496087520306374L;
+  @Serial private static final long serialVersionUID = 809496087520306374L;
 
   public InvalidEntityException(String faultDescription, UniqueEntity invalidEntity) {
     super("Entity is invalid because of: " + faultDescription + " [" + invalidEntity + "]");

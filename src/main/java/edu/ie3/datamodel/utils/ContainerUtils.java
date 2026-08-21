@@ -444,6 +444,7 @@ public class ContainerUtils {
    * @param gridName Name of the grid
    * @param rawGrid Container model of raw grid elements
    * @param systemParticipants Container model of system participants
+   * @param energyManagementUnits Container model of energy system units
    * @return An immutable, directed graph of sub grid topologies.
    */
   public static SubGridTopologyGraph buildSubGridTopologyGraph(
@@ -452,7 +453,7 @@ public class ContainerUtils {
       SystemParticipants systemParticipants,
       EnergyManagementUnits energyManagementUnits)
       throws InvalidGridException {
-    /* Collect the different sub nets. Through the validation of lines, it is ensured, that no galvanically connected
+    /* Collect the different subnets. Through the validation of lines, it is ensured, that no galvanically connected
      * grid has more than one subnet number assigned */
     SortedSet<Integer> subnetNumbers = determineSubnetNumbers(rawGrid.getNodes());
 
@@ -476,12 +477,13 @@ public class ContainerUtils {
   }
 
   /**
-   * Build a mapping from sub net number to actual {@link SubGridContainer}
+   * Build a mapping from subnet number to actual {@link SubGridContainer}
    *
    * @param gridName Name of the grid
    * @param subnetNumbers Set of available subnet numbers
    * @param rawGrid Container model with all raw grid elements
    * @param systemParticipants Container model with all system participant inputs
+   * @param energyManagementUnits Container model with all energy management unit inputs
    * @return A mapping from subnet number to container model with sub grid elements
    */
   private static HashMap<Integer, SubGridContainer> buildSubGridContainers(
@@ -512,7 +514,7 @@ public class ContainerUtils {
   /**
    * Build an immutable graph of the galvanically separated sub grid topology
    *
-   * @param subGrids Mapping from sub net number to container model
+   * @param subGrids Mapping from subnet number to container model
    * @param rawGridElements Collection of all grid elements
    * @return An immutable graph of the sub grid topology
    */
@@ -724,8 +726,6 @@ public class ContainerUtils {
    *         <li>high voltage nodes are marked as slack nodes
    *         <li>high voltage nodes in the {@link RawGridElements#getNodes()} set are replaced with
    *             the new slack marked high voltage nodes
-   *         <li>high voltage nodes as part of {@link GraphicElements#getNodeGraphics()} are
-   *             replaced with the new slack marked high voltage nodes
    *       </ul>
    *   <li>3 winding transformer handling
    *       <ul>
@@ -773,7 +773,7 @@ public class ContainerUtils {
                             ? oldTrafo3wNodeA.copy().slack(false).build()
                             : oldTrafo3w.getNodeA();
 
-                    // we need to take care for this node in our node sets afterwards
+                    // we need to take care for this node in our node sets afterward
                     // (needs to be replaced by the new nodeA which might have been a slack before)
                     oldToNewTrafo3WANodes.put(oldTrafo3w.getNodeA(), newNodeA);
 

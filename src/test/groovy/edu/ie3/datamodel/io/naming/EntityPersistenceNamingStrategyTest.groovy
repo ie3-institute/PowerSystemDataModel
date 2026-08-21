@@ -16,8 +16,6 @@ import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
-import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
-import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.*
 import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
@@ -128,13 +126,13 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     actual == expected
 
     where:
-    prefix 		|| expected
-    "abc123" 	|| "abc123_"
-    "aBc123" 	|| "abc123_"
-    "ABC123" 	|| "abc123_"
-    "abc123_" 	|| "abc123_"
-    "aBc123_"	|| "abc123_"
-    "ABC123_" 	|| "abc123_"
+    prefix || expected
+    "abc123" || "abc123_"
+    "aBc123" || "abc123_"
+    "ABC123" || "abc123_"
+    "abc123_" || "abc123_"
+    "aBc123_" || "abc123_"
+    "ABC123_" || "abc123_"
   }
 
   def "The EntityPersistenceNamingStrategy is able to prepare the suffix properly"() {
@@ -204,26 +202,26 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     res.get() == expectedString
 
     where:
-    modelClass                        || expectedString
-    LoadResult                        || "load_res"
-    FixedFeedInResult                 || "fixed_feed_in_res"
-    BmResult                          || "bm_res"
-    PvResult                          || "pv_res"
-    ChpResult                         || "chp_res"
-    WecResult                         || "wec_res"
-    StorageResult                     || "storage_res"
-    EvcsResult                        || "evcs_res"
-    EvResult                          || "ev_res"
-    EmResult                          || "em_res"
-    PowerLimitFlexOptionsResult       || "power_limit_flex_options_res"
+    modelClass || expectedString
+    LoadResult || "load_res"
+    FixedFeedInResult || "fixed_feed_in_res"
+    BmResult || "bm_res"
+    PvResult || "pv_res"
+    ChpResult || "chp_res"
+    WecResult || "wec_res"
+    StorageResult || "storage_res"
+    EvcsResult || "evcs_res"
+    EvResult || "ev_res"
+    EmResult || "em_res"
+    PowerLimitFlexOptionsResult || "power_limit_flex_options_res"
     EnergyBoundariesFlexOptionsResult || "energy_boundaries_flex_options_res"
-    Transformer2WResult               || "transformer_2_w_res"
-    Transformer3WResult               || "transformer_3_w_res"
-    LineResult                        || "line_res"
-    SwitchResult                      || "switch_res"
-    NodeResult                        || "node_res"
-    CylindricalStorageResult          || "cylindrical_storage_res"
-    ThermalHouseResult                || "thermal_house_res"
+    Transformer2WResult || "transformer_2_w_res"
+    Transformer3WResult || "transformer_3_w_res"
+    LineResult || "line_res"
+    SwitchResult || "switch_res"
+    NodeResult || "node_res"
+    CylindricalStorageResult || "cylindrical_storage_res"
+    ThermalHouseResult || "thermal_house_res"
   }
 
   def "A EntityPersistenceNamingStrategy with pre- and suffixes should return valid strings for all result models"() {
@@ -238,28 +236,28 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     res.get() == expectedString
 
     where:
-    modelClass                        || expectedString
-    LoadResult                        || "prefix_load_res_suffix"
-    FixedFeedInResult                 || "prefix_fixed_feed_in_res_suffix"
-    BmResult                          || "prefix_bm_res_suffix"
-    PvResult                          || "prefix_pv_res_suffix"
-    ChpResult                         || "prefix_chp_res_suffix"
-    HpResult                          || "prefix_hp_res_suffix"
-    AcResult                          || "prefix_ac_res_suffix"
-    WecResult                         || "prefix_wec_res_suffix"
-    StorageResult                     || "prefix_storage_res_suffix"
-    EvcsResult                        || "prefix_evcs_res_suffix"
-    EvResult                          || "prefix_ev_res_suffix"
-    EmResult                          || "prefix_em_res_suffix"
-    PowerLimitFlexOptionsResult       || "prefix_power_limit_flex_options_res_suffix"
+    modelClass || expectedString
+    LoadResult || "prefix_load_res_suffix"
+    FixedFeedInResult || "prefix_fixed_feed_in_res_suffix"
+    BmResult || "prefix_bm_res_suffix"
+    PvResult || "prefix_pv_res_suffix"
+    ChpResult || "prefix_chp_res_suffix"
+    HpResult || "prefix_hp_res_suffix"
+    AcResult || "prefix_ac_res_suffix"
+    WecResult || "prefix_wec_res_suffix"
+    StorageResult || "prefix_storage_res_suffix"
+    EvcsResult || "prefix_evcs_res_suffix"
+    EvResult || "prefix_ev_res_suffix"
+    EmResult || "prefix_em_res_suffix"
+    PowerLimitFlexOptionsResult || "prefix_power_limit_flex_options_res_suffix"
     EnergyBoundariesFlexOptionsResult || "prefix_energy_boundaries_flex_options_res_suffix"
-    Transformer2WResult               || "prefix_transformer_2_w_res_suffix"
-    Transformer3WResult               || "prefix_transformer_3_w_res_suffix"
-    LineResult                        || "prefix_line_res_suffix"
-    SwitchResult                      || "prefix_switch_res_suffix"
-    NodeResult                        || "prefix_node_res_suffix"
-    CylindricalStorageResult          || "prefix_cylindrical_storage_res_suffix"
-    ThermalHouseResult                || "prefix_thermal_house_res_suffix"
+    Transformer2WResult || "prefix_transformer_2_w_res_suffix"
+    Transformer3WResult || "prefix_transformer_3_w_res_suffix"
+    LineResult || "prefix_line_res_suffix"
+    SwitchResult || "prefix_switch_res_suffix"
+    NodeResult || "prefix_node_res_suffix"
+    CylindricalStorageResult || "prefix_cylindrical_storage_res_suffix"
+    ThermalHouseResult || "prefix_thermal_house_res_suffix"
   }
 
   def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for all input assets models"() {
@@ -274,27 +272,27 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     res.get() == expectedString
 
     where:
-    modelClass              || expectedString
-    FixedFeedInInput        || "fixed_feed_in_input"
-    PvInput                 || "pv_input"
-    WecInput                || "wec_input"
-    ChpInput                || "chp_input"
-    BmInput                 || "bm_input"
-    EvInput                 || "ev_input"
-    LoadInput               || "load_input"
-    StorageInput            || "storage_input"
-    HpInput                 || "hp_input"
-    AcInput                 || "ac_input"
-    LineInput               || "line_input"
-    SwitchInput             || "switch_input"
-    NodeInput               || "node_input"
-    MeasurementUnitInput    || "measurement_unit_input"
-    EvcsInput               || "evcs_input"
-    Transformer2WInput      || "transformer_2_w_input"
-    Transformer3WInput      || "transformer_3_w_input"
+    modelClass || expectedString
+    FixedFeedInInput || "fixed_feed_in_input"
+    PvInput || "pv_input"
+    WecInput || "wec_input"
+    ChpInput || "chp_input"
+    BmInput || "bm_input"
+    EvInput || "ev_input"
+    LoadInput || "load_input"
+    StorageInput || "storage_input"
+    HpInput || "hp_input"
+    AcInput || "ac_input"
+    LineInput || "line_input"
+    SwitchInput || "switch_input"
+    NodeInput || "node_input"
+    MeasurementUnitInput || "measurement_unit_input"
+    EvcsInput || "evcs_input"
+    Transformer2WInput || "transformer_2_w_input"
+    Transformer3WInput || "transformer_3_w_input"
     CylindricalStorageInput || "cylindrical_storage_input"
-    ThermalHouseInput       || "thermal_house_input"
-    EmInput					|| "em_input"
+    ThermalHouseInput || "thermal_house_input"
+    EmInput || "em_input"
   }
 
   def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for all input types models"() {
@@ -309,34 +307,17 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     res.get() == expectedString
 
     where:
-    modelClass             || expectedString
-    BmTypeInput            || "bm_type_input"
-    ChpTypeInput           || "chp_type_input"
-    EvTypeInput            || "ev_type_input"
-    HpTypeInput            || "hp_type_input"
-    LineTypeInput          || "line_type_input"
-    StorageTypeInput       || "storage_type_input"
+    modelClass || expectedString
+    BmTypeInput || "bm_type_input"
+    ChpTypeInput || "chp_type_input"
+    EvTypeInput || "ev_type_input"
+    HpTypeInput || "hp_type_input"
+    LineTypeInput || "line_type_input"
+    StorageTypeInput || "storage_type_input"
     Transformer2WTypeInput || "transformer_2_w_type_input"
     Transformer3WTypeInput || "transformer_3_w_type_input"
-    WecTypeInput           || "wec_type_input"
-    WecTypeInput           || "wec_type_input"
-  }
-
-  def "A EntityPersistenceNamingStrategy without pre- or suffixes should return valid strings for a graphic input Model"() {
-    given: "a naming strategy without pre- or suffixes"
-    EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
-
-    when:
-    Optional<String> res = strategy.getEntityName(modelClass)
-
-    then:
-    res.present
-    res.get() == expectedString
-
-    where:
-    modelClass       || expectedString
-    NodeGraphicInput || "node_graphic_input"
-    LineGraphicInput || "line_graphic_input"
+    WecTypeInput || "wec_type_input"
+    WecTypeInput || "wec_type_input"
   }
 
   def "A EntityPersistenceNamingStrategy without pre- or suffix should return empty Optional, if the content of the time series is not covered"() {
@@ -389,7 +370,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     actual.get() == expectedFileName
 
     where:
-    clazz                | uuid                                                    || expectedFileName
+    clazz | uuid || expectedFileName
     IndividualTimeSeries | UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276"
   }
 
@@ -410,7 +391,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     actual.get() == expectedFileName
 
     where:
-    clazz                | uuid                                                    || expectedFileName
+    clazz | uuid || expectedFileName
     IndividualTimeSeries | UUID.fromString("4881fda2-bcee-4f4f-a5bb-6a09bf785276") || "aa_its_c_4881fda2-bcee-4f4f-a5bb-6a09bf785276_zz"
   }
 
@@ -428,7 +409,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     actual.get() == expectedFileName
 
     where:
-    clazz                     | type                           || expectedFileName
+    clazz | type || expectedFileName
     BdewLoadProfileTimeSeries | BdewStandardLoadProfile.G3.key || "lpts_g3"
   }
 

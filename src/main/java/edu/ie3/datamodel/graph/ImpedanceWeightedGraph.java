@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.graph;
 
 import edu.ie3.datamodel.models.input.NodeInput;
+import java.io.Serial;
 import java.util.function.Supplier;
 import javax.measure.Quantity;
 import javax.measure.quantity.ElectricResistance;
@@ -15,7 +16,7 @@ import tech.units.indriya.ComparableQuantity;
 /** An impedance weighted graph that uses {@link ImpedanceWeightedEdge}s as edge type. */
 public class ImpedanceWeightedGraph extends SimpleWeightedGraph<NodeInput, ImpedanceWeightedEdge> {
 
-  private static final long serialVersionUID = -2797654003980753342L;
+  @Serial private static final long serialVersionUID = -2797654003980753342L;
 
   public ImpedanceWeightedGraph() {
     super(ImpedanceWeightedEdge.class);

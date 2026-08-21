@@ -67,7 +67,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
     then:
     UnsupportedOperationException thrown = thrown(UnsupportedOperationException)
-    thrown.message ==  "Don't invoke this simple method, but TimeSeriesProcessor#handleTimeSeries(TimeSeries)."
+    thrown.message == "Don't invoke this simple method, but TimeSeriesProcessor#handleTimeSeries(TimeSeries)."
   }
 
   def "A TimeSeriesProcessor correctly extracts the field name to getter map"() {

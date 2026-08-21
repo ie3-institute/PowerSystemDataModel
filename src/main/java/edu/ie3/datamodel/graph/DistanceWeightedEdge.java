@@ -7,6 +7,7 @@ package edu.ie3.datamodel.graph;
 
 import static tech.units.indriya.unit.Units.METRE;
 
+import java.io.Serial;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Length;
@@ -19,7 +20,7 @@ import tech.units.indriya.quantity.Quantities;
  * methods.
  */
 public class DistanceWeightedEdge extends DefaultWeightedEdge {
-  private static final long serialVersionUID = -3331046813188425728L;
+  @Serial private static final long serialVersionUID = -3331046813188425728L;
 
   protected static final Unit<Length> DEFAULT_DISTANCE_UNIT = METRE;
 

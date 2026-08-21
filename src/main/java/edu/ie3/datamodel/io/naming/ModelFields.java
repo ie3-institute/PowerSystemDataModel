@@ -21,8 +21,6 @@ import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
-import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
-import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
@@ -199,7 +197,6 @@ public final class ModelFields extends FieldNamingStrategy {
     registerGridAssetFields();
     registerParticipantFields();
     registerThermalFields();
-    registerGraphicFields();
     registerResultFields();
     registerTimeSeriesRelatedFields();
     registerValueFields();
@@ -288,6 +285,15 @@ public final class ModelFields extends FieldNamingStrategy {
 
   /** Method for registering all grid asset fields. */
   private static void registerGridAssetFields() {
+
+    Stream.of(
+            NodeInput.class,
+            SwitchInput.class,
+            LineInput.class,
+            Transformer2WInput.class,
+            Transformer3WInput.class,
+            MeasurementUnitInput.class)
+        .forEach(c -> register(c, assetFields));
 
     addMandatory(NodeInput.class, V_TARGET, V_RATED, SLACK, GEO_POSITION, VOLT_LVL, SUBNET);
 
@@ -384,13 +390,6 @@ public final class ModelFields extends FieldNamingStrategy {
             c ->
                 addMandatory(
                     c, STORAGE_VOLUME_LVL, INLET_TEMP, RETURN_TEMP, C, P_THERMAL_MAX, THERMAL_BUS));
-  }
-
-  /** Method for registering all graphic fields. */
-  private static void registerGraphicFields() {
-    Set<String> graphicBase = newSet(UUID, GRAPHIC_LAYER, PATH_LINE_STRING);
-    registerMandatory(NodeGraphicInput.class, graphicBase, POINT, NODE);
-    registerMandatory(LineGraphicInput.class, graphicBase, LINE);
   }
 
   /** Method for registering all result fields. */

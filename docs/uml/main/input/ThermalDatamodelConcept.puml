@@ -56,7 +56,6 @@ package models {
     childNote .. timeseries
     childNote .. value
     childNote .. connector
-    childNote .. graphics
     childNote .. system
 
     package input {
@@ -68,8 +67,6 @@ package models {
             - name: String
         }
         OperatorInput --|> InputEntity
-
-        package graphics {}
 
         abstract class AssetInput {
             - id: String

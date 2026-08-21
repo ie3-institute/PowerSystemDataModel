@@ -26,7 +26,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 @Testcontainers
-class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContainerHelper, WeatherSourceTestHelper {
+class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContainerHelper {
 
   @Shared
   InfluxDBContainer influxDbContainer = new InfluxDBContainer(DockerImageName.parse("influxdb").withTag("1.8.10"))
@@ -67,7 +67,7 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
 
     then:
     optTimeBasedValue != null
-    equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
+    WeatherSourceTestHelper.equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
   }
 
   def "An InfluxDbWeatherSource can read multiple time series values for multiple coordinates"() {
@@ -93,8 +93,8 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
 
     then:
     coordinateToTimeSeries.keySet().size() == 2
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeseries_193186)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeseries_193187)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186), timeseries_193186)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeseries_193187)
   }
 
   def "An InfluxDbWeatherSource can read all weather data in a given time interval"() {
@@ -121,9 +121,9 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
 
     then:
     coordinateToTimeSeries.keySet().size() == 3
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeseries_193186.entries)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeseries_193187.entries)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeseries_193188.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193186).entries, timeseries_193186.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187).entries, timeseries_193187.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeseries_193188.entries)
   }
 
   def "An InfluxDbWeatherSource will throw NoDataException when being unable to map a coordinate to its ID"() {
@@ -170,7 +170,7 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
 
     then:
     result != null
-    equalsIgnoreUUID(result, expectedFallback)
+    WeatherSourceTestHelper.equalsIgnoreUUID(result, expectedFallback)
   }
 
   def "A InfluxDbWeatherSource throws NoDataException when no weather data is found at a specific time and no earlier data is available"() {

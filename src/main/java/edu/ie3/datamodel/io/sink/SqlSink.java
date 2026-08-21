@@ -26,7 +26,6 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.ConnectorInput;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
-import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
@@ -98,9 +97,8 @@ public class SqlSink {
                   (List<C>) Extractor.extractElements(nestedEntity).stream().toList());
             } catch (ExtractorException e) {
               log.error(
-                  String.format(
-                      "An error occurred during extraction of nested entity'%s': ",
-                      entity.getClass()),
+                  "An error occurred during extraction of nested entity'{}': ",
+                  entity.getClass(),
                   e);
             }
           }
@@ -125,15 +123,14 @@ public class SqlSink {
    * @throws SQLException if an error occurred
    */
   public <C extends Entity> void persist(C entity, DbGridMetadata identifier) throws SQLException {
-    if (entity instanceof InputEntity inputEntity) {
-      persistIncludeNested(inputEntity, identifier);
-    } else if (entity instanceof ResultEntity resultEntity) {
-      insert(resultEntity, identifier);
-    } else if (entity instanceof TimeSeries<?, ?, ?> timeSeries) {
-      persistTimeSeries(timeSeries, identifier);
-    } else {
-      log.error(
-          "I don't know how to handle an entity of class {}", entity.getClass().getSimpleName());
+    switch (entity) {
+      case InputEntity inputEntity -> persistIncludeNested(inputEntity, identifier);
+      case ResultEntity resultEntity -> insert(resultEntity, identifier);
+      case TimeSeries<?, ?, ?> timeSeries -> persistTimeSeries(timeSeries, identifier);
+      default ->
+          log.error(
+              "I don't know how to handle an entity of class {}",
+              entity.getClass().getSimpleName());
     }
   }
 
@@ -459,7 +456,6 @@ public class SqlSink {
     sortedInsert.add(ThermalUnitInput.class); // 5. ThermalUnit
     sortedInsert.add(ConnectorInput.class); // 6a. ConnectorInput
     sortedInsert.add(SystemParticipantInput.class); // 6b. SystemParticipantInput
-    sortedInsert.add(GraphicInput.class); // 7. GraphicInput
     return sortedInsert;
   }
 }
