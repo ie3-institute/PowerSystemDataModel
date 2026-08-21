@@ -20,7 +20,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
   private final ClassName builderClass;
   private final TypeVariableName builderTypeVariable = TypeVariableName.get("B");
   private final boolean hasParent;
-  private TypeName parentBuilderType;
+  private ClassName parentBuilderClass;
 
   public CopyBuilderGenerator(
       ModelDefinition model, GenerationConfig genConfig, Map<String, ModelDefinition> models) {
@@ -34,9 +34,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
 
     if (hasParent) {
       ModelDefinition parent = getParent(model.extendsName, models);
-      ClassName parentBuilderClass = copyBuilderClassName(parent);
-
-      this.parentBuilderType = ParameterizedTypeName.get(parentBuilderClass, builderTypeVariable);
+      this.parentBuilderClass = copyBuilderClassName(parent);
     }
   }
 
@@ -134,6 +132,9 @@ public final class CopyBuilderGenerator implements HelperMethods {
       builder.addMethod(buildBuilder.build());
 
     } else {
+      TypeName parentBuilderType =
+          ParameterizedTypeName.get(parentBuilderClass, builderTypeVariable);
+
       builder.superclass(parentBuilderType);
       builder.addMethod(buildBuilder.addAnnotation(Override.class).build());
       builder.addMethod(thisInstanceBuilder.addAnnotation(Override.class).build());
@@ -148,6 +149,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
 
     if (hasParent) {
+      TypeName parentBuilderType = ParameterizedTypeName.get(parentBuilderClass, builderClass);
       builder.superclass(parentBuilderType);
     }
 
