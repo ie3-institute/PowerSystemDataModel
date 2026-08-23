@@ -136,11 +136,6 @@ public class ConductorInput extends AssetInput implements Serializable {
     return area();
   }
 
-  @Override
-  public UUID getUuid() {
-    return super.getUuid();
-  }
-
   public String name() {
     return getId();
   }
@@ -282,7 +277,7 @@ public class ConductorInput extends AssetInput implements Serializable {
     @Override
     public ConductorInput build() {
       return new ConductorInput(
-          getUuid(),
+          super.getUuid(),
           getId(),
           getOperator(),
           getOperationTime(),
