@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
-
+- Code generation for input model classes [#1706](https://github.com/ie3-institute/PowerSystemDataModel/issues/1706)
 
 ### Fixed
 - Fixed issues regarding determination of additional parameters [#1661](https://github.com/ie3-institute/PowerSystemDataModel/issues/1661)
