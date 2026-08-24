@@ -36,8 +36,12 @@ master_doc = 'index'
 # ones.
 extensions = [
     'sphinx.ext.intersphinx',
-    'myst_parser'
+    'myst_parser',
+    'sphinxcontrib.bibtex'
 ]
+
+bibtex_bibfiles = ["_static/bibliography/bibtex.bib"]
+bibtex_default_style = 'plain'
 
 myst_enable_extensions = ["dollarmath", "amsmath"]
 myst_heading_anchors = 4
