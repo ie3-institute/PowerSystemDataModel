@@ -98,6 +98,7 @@ models:
           type: EmInput
           nested: true
           nullable: true
+          required: false
           javaDoc: "Optional UUID of the parent {@link EmInput} that is controlling this em unit. If null, this em
                   unit is not em-controlled."
 

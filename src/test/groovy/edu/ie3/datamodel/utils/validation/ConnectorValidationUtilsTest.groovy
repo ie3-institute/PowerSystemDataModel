@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.utils.validation
 
 import static edu.ie3.datamodel.models.StandardUnits.*
-import static tech.units.indriya.unit.Units.METRE
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.models.input.connector.LineInput
@@ -96,7 +95,7 @@ class ConnectorValidationUtilsTest extends Specification {
     GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeG).build() || 1 || new InvalidEntityException("LineInput connects the same node, but shouldn't", invalidLine)
     GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().subnet(5).build()).build() || 1 || new InvalidEntityException("LineInput connects different subnets, but shouldn't", invalidLine)
     GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().voltLvl(GermanVoltageLevelUtils.MV_10KV).build()).build() || 1 || new InvalidEntityException("LineInput connects different voltage levels, but shouldn't", invalidLine)
-    GridTestData.lineFtoG.copy().length(Quantities.getQuantity(0d, METRE)).build() || 1 || new InvalidEntityException("The following quantities have to be positive: length=0 km", invalidLine)
+    GridTestData.lineFtoG.copy().length(Quantities.getQuantity(0d, LINE_LENGTH)).build() || 1 || new InvalidEntityException("The following quantities have to be positive: length=0 km", invalidLine)
   }
 
   def "Smoke Test: Correct line type throws no exception"() {

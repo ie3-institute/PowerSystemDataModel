@@ -20,8 +20,8 @@ class WecTypeInputTest extends Specification {
 
     when:
     def alteredUnit = wecType.copy()
-        .setRotorArea(Quantities.getQuantity(25, ROTOR_AREA))
-        .setHubHeight(Quantities.getQuantity(180, HUB_HEIGHT))
+        .rotorArea(Quantities.getQuantity(25, ROTOR_AREA))
+        .hubHeight(Quantities.getQuantity(180, HUB_HEIGHT))
         .build()
 
     then:

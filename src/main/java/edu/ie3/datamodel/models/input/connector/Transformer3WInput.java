@@ -12,6 +12,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.utils.validation.ConnectorValidationUtils;
 import edu.ie3.util.quantities.PowerSystemUnits;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -208,6 +209,11 @@ public class Transformer3WInput extends TransformerInput implements HasType {
 
   public NodeInput getNodeInternal() {
     return nodeInternal;
+  }
+
+  @Override
+  public List<NodeInput> allNodes() {
+    return List.of(getNodeA(), getNodeB(), nodeC);
   }
 
   @Override

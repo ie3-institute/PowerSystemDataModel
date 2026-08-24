@@ -301,10 +301,6 @@ models:
             geoPosition:
               expression: buildSafeLineString(geoPosition)
               className: GeoUtils
-            #length:
-            #  expression: length.to($T.LINE_LENGTH)
-            #  className: StandardUnits
-            #  insert: true
         - name: fullWithAdditionalInformation
           components: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, type, length, geoPosition, olmCharacteristic, additionalInformation]
           superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices]
@@ -327,10 +323,6 @@ models:
             geoPosition:
               expression: buildSafeLineString(geoPosition)
               className: GeoUtils
-            #length:
-            #  expression: length.to($T.LINE_LENGTH)
-            #  className: StandardUnits
-            #  insert: true
         - name: minimal
           components: [uuid, id, nodeA, nodeB, parallelDevices, type, length, geoPosition, olmCharacteristic]
           superArgs: [uuid, id, nodeA, nodeB, parallelDevices]
@@ -350,10 +342,6 @@ models:
             geoPosition:
               expression: buildSafeLineString(geoPosition)
               className: GeoUtils
-            #length:
-            #  expression: length.to($T.LINE_LENGTH)
-            #  className: StandardUnits
-            #  insert: true
 
     SwitchInput:
       package: edu.ie3.datamodel.models.input.connector
@@ -600,6 +588,11 @@ models:
             - name: internalNodeIsSlack
               type: bool
           expression: this.nodeInternal = this.nodeInternal.copy().slack(internalNodeIsSlack).build()
+      methodOverrides:
+        - name: allNodes
+          type: NodeList
+          expression: of(getNodeA(), getNodeB(), nodeC)
+          className: List
 
     SystemParticipantInput:
       package: edu.ie3.datamodel.models.input.system

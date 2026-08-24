@@ -127,19 +127,21 @@ public interface HelperMethods {
     // a list of boolean getters that should use `get` instead of `is`
     List<String> booleanGetter = genConfig.booleanGetter;
 
-    if (isPrimitive(type) || nonCapitalizedGetters == null || nonCapitalizedGetters.isEmpty()) {
-      if ("bool".equals(type) && !booleanGetter.contains(name)) {
-        return "is" + capitalize(name);
-      }
+    String methodName;
 
-      return "get" + capitalize(name);
+    if (nonCapitalizedGetters.contains(name)) {
+      methodName = name;
     } else {
-      if (!nonCapitalizedGetters.contains(name)) {
-        return "get" + capitalize(name);
-      } else {
-        return "get" + name;
+      methodName = capitalize(name);
+    }
+
+    if (isPrimitive(type)) {
+      if ("bool".equals(type) && !booleanGetter.contains(name)) {
+        return "is" + methodName;
       }
     }
+
+    return "get" + methodName;
   }
 
   /**

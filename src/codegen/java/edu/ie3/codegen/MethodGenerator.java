@@ -171,7 +171,9 @@ public class MethodGenerator implements HelperMethods {
         builder.addStatement("return true");
       }
     } else {
-      builder.addStatement("if (!super.equals(o)) return false");
+      if (superStatement) {
+        builder.addStatement("if (!super.equals(o)) return false");
+      }
 
       CodeBlock.Builder expression = CodeBlock.builder();
 

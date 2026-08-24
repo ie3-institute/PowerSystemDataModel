@@ -200,11 +200,11 @@ public class PvInput extends SystemParticipantInput {
     return elevationAngle;
   }
 
-  public double getKG() {
+  public double getkG() {
     return kG;
   }
 
-  public double getKT() {
+  public double getkT() {
     return kT;
   }
 
@@ -356,7 +356,7 @@ public class PvInput extends SystemParticipantInput {
       return thisInstance();
     }
 
-    protected double getKG() {
+    protected double getkG() {
       return kG;
     }
 
@@ -365,7 +365,7 @@ public class PvInput extends SystemParticipantInput {
       return thisInstance();
     }
 
-    protected double getKT() {
+    protected double getkT() {
       return kT;
     }
 

@@ -29,7 +29,6 @@ public abstract class UniqueEntity implements Entity, Uniqueness, Serializable {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof UniqueEntity that)) return false;
-    if (!super.equals(o)) return false;
     return Objects.equals(uuid, that.uuid);
   }
 
