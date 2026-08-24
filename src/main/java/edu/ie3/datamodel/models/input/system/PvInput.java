@@ -1,12 +1,11 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.input.system;
 
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -19,35 +18,34 @@ import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes a photovoltaic plant */
+/** Describes a photovoltaic plant. */
 public class PvInput extends SystemParticipantInput {
-
-  /** Albedo value (typically a value between 0 and 1) */
+  /** Albedo value (typically a value between 0 and 1). */
   private final double albedo;
 
-  /** Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦) */
+  /** Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦). */
   private final ComparableQuantity<Angle> azimuth;
 
-  /** Efficiency of converter (typically in %) */
+  /** Efficiency of converter (typically in %). */
   private final ComparableQuantity<Dimensionless> etaConv;
 
-  /** Tilted inclination from horizontal (typically in °) */
+  /** Tilted inclination from horizontal (typically in °). */
   private final ComparableQuantity<Angle> elevationAngle;
 
-  /** Generator correction factor merging different technical influences */
+  /** Generator correction factor merging different technical influences. */
   private final double kG;
 
-  /** Temperature correction factor */
+  /** Temperature correction factor. */
   private final double kT;
 
-  /** Rated apparent power (typically in kVA) */
+  /** Rated apparent power (typically in kVA). */
   private final ComparableQuantity<Power> sRated;
 
-  /** Rated power factor */
+  /** Rated power factor. */
   private final double cosPhiRated;
 
   /**
-   * Constructor for an operated photovoltaic plant
+   * Constructor for an operated photovoltaic plant.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -55,7 +53,8 @@ public class PvInput extends SystemParticipantInput {
    * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param controllingEm The {@link EmInput} controlling this system participant. Null, if not
+   *     applicable.
    * @param albedo Albedo value (typically a value between 0 and 1)
    * @param azimuth Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)
    * @param etaConv Efficiency of converter (typically in %)
@@ -72,7 +71,7 @@ public class PvInput extends SystemParticipantInput {
       OperationTime operationTime,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
+      EmInput controllingEm,
       double albedo,
       ComparableQuantity<Angle> azimuth,
       ComparableQuantity<Dimensionless> etaConv,
@@ -81,19 +80,19 @@ public class PvInput extends SystemParticipantInput {
       double kT,
       ComparableQuantity<Power> sRated,
       double cosPhiRated) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    super(uuid, id, operator, operationTime, node, qCharacteristics, controllingEm);
     this.albedo = albedo;
-    this.azimuth = azimuth.to(StandardUnits.AZIMUTH);
-    this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
-    this.elevationAngle = elevationAngle.to(StandardUnits.SOLAR_ELEVATION_ANGLE);
+    this.azimuth = azimuth;
+    this.etaConv = etaConv;
+    this.elevationAngle = elevationAngle;
     this.kG = kG;
     this.kT = kT;
-    this.sRated = sRated.to(StandardUnits.S_RATED);
+    this.sRated = sRated;
     this.cosPhiRated = cosPhiRated;
   }
 
   /**
-   * Constructor for an operated photovoltaic plant
+   * Constructor for an operated photovoltaic plant.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -101,7 +100,8 @@ public class PvInput extends SystemParticipantInput {
    * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param controllingEm The {@link EmInput} controlling this system participant. Null, if not
+   *     applicable.
    * @param albedo Albedo value (typically a value between 0 and 1)
    * @param azimuth Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)
    * @param etaConv Efficiency of converter (typically in %)
@@ -119,7 +119,7 @@ public class PvInput extends SystemParticipantInput {
       OperationTime operationTime,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
+      EmInput controllingEm,
       double albedo,
       ComparableQuantity<Angle> azimuth,
       ComparableQuantity<Dimensionless> etaConv,
@@ -129,26 +129,27 @@ public class PvInput extends SystemParticipantInput {
       ComparableQuantity<Power> sRated,
       double cosPhiRated,
       Map<String, String> additionalInformation) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    super(uuid, id, operator, operationTime, node, qCharacteristics, controllingEm);
     this.albedo = albedo;
-    this.azimuth = azimuth.to(StandardUnits.AZIMUTH);
-    this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
-    this.elevationAngle = elevationAngle.to(StandardUnits.SOLAR_ELEVATION_ANGLE);
+    this.azimuth = azimuth;
+    this.etaConv = etaConv;
+    this.elevationAngle = elevationAngle;
     this.kG = kG;
     this.kT = kT;
-    this.sRated = sRated.to(StandardUnits.S_RATED);
+    this.sRated = sRated;
     this.cosPhiRated = cosPhiRated;
     setAdditionalInformation(additionalInformation);
   }
 
   /**
-   * Constructor for an operated, always on photovoltaic plant
+   * Constructor for an operated photovoltaic plant.
    *
    * @param uuid of the input entity
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param controllingEm The {@link EmInput} controlling this system participant. Null, if not
+   *     applicable.
    * @param albedo Albedo value (typically a value between 0 and 1)
    * @param azimuth Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)
    * @param etaConv Efficiency of converter (typically in %)
@@ -163,7 +164,7 @@ public class PvInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
+      EmInput controllingEm,
       double albedo,
       ComparableQuantity<Angle> azimuth,
       ComparableQuantity<Dimensionless> etaConv,
@@ -172,14 +173,14 @@ public class PvInput extends SystemParticipantInput {
       double kT,
       ComparableQuantity<Power> sRated,
       double cosPhiRated) {
-    super(uuid, id, node, qCharacteristics, em);
+    super(uuid, id, node, qCharacteristics, controllingEm);
     this.albedo = albedo;
-    this.azimuth = azimuth.to(StandardUnits.AZIMUTH);
-    this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
-    this.elevationAngle = elevationAngle.to(StandardUnits.SOLAR_ELEVATION_ANGLE);
+    this.azimuth = azimuth;
+    this.etaConv = etaConv;
+    this.elevationAngle = elevationAngle;
     this.kG = kG;
     this.kT = kT;
-    this.sRated = sRated.to(StandardUnits.S_RATED);
+    this.sRated = sRated;
     this.cosPhiRated = cosPhiRated;
   }
 
@@ -199,15 +200,11 @@ public class PvInput extends SystemParticipantInput {
     return elevationAngle;
   }
 
-  public double getCosPhiRated() {
-    return cosPhiRated;
-  }
-
-  public double getkG() {
+  public double getKG() {
     return kG;
   }
 
-  public double getkT() {
+  public double getKT() {
     return kT;
   }
 
@@ -215,28 +212,28 @@ public class PvInput extends SystemParticipantInput {
     return sRated;
   }
 
+  public double getCosPhiRated() {
+    return cosPhiRated;
+  }
+
   @Override
   public ComparableQuantity<Power> sRated() {
     return sRated;
   }
 
-  public PvInputCopyBuilder copy() {
-    return new PvInputCopyBuilder(this);
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof PvInput pvInput)) return false;
+    if (!(o instanceof PvInput that)) return false;
     if (!super.equals(o)) return false;
-    return Double.compare(pvInput.albedo, albedo) == 0
-        && Double.compare(pvInput.kG, kG) == 0
-        && Double.compare(pvInput.kT, kT) == 0
-        && Double.compare(pvInput.cosPhiRated, cosPhiRated) == 0
-        && azimuth.equals(pvInput.azimuth)
-        && etaConv.equals(pvInput.etaConv)
-        && elevationAngle.equals(pvInput.elevationAngle)
-        && sRated.equals(pvInput.sRated);
+    return albedo == that.albedo
+        && azimuth.equals(that.azimuth)
+        && etaConv.equals(that.etaConv)
+        && elevationAngle.equals(that.elevationAngle)
+        && kG == that.kG
+        && kT == that.kT
+        && sRated.equals(that.sRated)
+        && cosPhiRated == that.cosPhiRated;
   }
 
   @Override
@@ -258,10 +255,10 @@ public class PvInput extends SystemParticipantInput {
         + getOperationTime()
         + ", node="
         + getNode().getUuid()
-        + ", qCharacteristics='"
+        + ", qCharacteristics="
         + getqCharacteristics()
-        + "', em="
-        + getControllingEm()
+        + ", controllingEm="
+        + getControllingEm().map(e -> e.getUuid().toString()).orElse("")
         + ", albedo="
         + albedo
         + ", azimuth="
@@ -280,38 +277,42 @@ public class PvInput extends SystemParticipantInput {
         + cosPhiRated
         + ", additionalInformation="
         + getAdditionalInformation()
-        + '}';
+        + "}";
   }
 
-  /**
-   * A builder pattern based approach to create copies of {@link PvInput} entities with altered
-   * field values. For detailed field descriptions refer to java docs of {@link PvInput}
-   *
-   * @version 0.1
-   * @since 05.06.20
-   */
+  @Override
+  public PvInputCopyBuilder copy() {
+    return new PvInputCopyBuilder(this);
+  }
+
   public static class PvInputCopyBuilder
       extends SystemParticipantInputCopyBuilder<PvInputCopyBuilder> {
-
     private double albedo;
+
     private ComparableQuantity<Angle> azimuth;
+
     private ComparableQuantity<Dimensionless> etaConv;
+
     private ComparableQuantity<Angle> elevationAngle;
+
     private double kG;
+
     private double kT;
+
     private ComparableQuantity<Power> sRated;
+
     private double cosPhiRated;
 
-    public PvInputCopyBuilder(PvInput entity) {
+    protected PvInputCopyBuilder(PvInput entity) {
       super(entity);
-      this.albedo = entity.getAlbedo();
-      this.azimuth = entity.getAzimuth();
-      this.etaConv = entity.getEtaConv();
-      this.elevationAngle = entity.getElevationAngle();
-      this.kG = entity.getkG();
-      this.kT = entity.getkT();
-      this.sRated = entity.getsRated();
-      this.cosPhiRated = entity.getCosPhiRated();
+      this.albedo = entity.albedo;
+      this.azimuth = entity.azimuth;
+      this.etaConv = entity.etaConv;
+      this.elevationAngle = entity.elevationAngle;
+      this.kG = entity.kG;
+      this.kT = entity.kT;
+      this.sRated = entity.sRated;
+      this.cosPhiRated = entity.cosPhiRated;
     }
 
     public PvInputCopyBuilder albedo(double albedo) {
@@ -319,9 +320,17 @@ public class PvInput extends SystemParticipantInput {
       return thisInstance();
     }
 
+    protected double getAlbedo() {
+      return albedo;
+    }
+
     public PvInputCopyBuilder azimuth(ComparableQuantity<Angle> azimuth) {
       this.azimuth = azimuth;
       return thisInstance();
+    }
+
+    protected ComparableQuantity<Angle> getAzimuth() {
+      return azimuth;
     }
 
     public PvInputCopyBuilder etaConv(ComparableQuantity<Dimensionless> etaConv) {
@@ -329,9 +338,17 @@ public class PvInput extends SystemParticipantInput {
       return thisInstance();
     }
 
+    protected ComparableQuantity<Dimensionless> getEtaConv() {
+      return etaConv;
+    }
+
     public PvInputCopyBuilder elevationAngle(ComparableQuantity<Angle> elevationAngle) {
       this.elevationAngle = elevationAngle;
       return thisInstance();
+    }
+
+    protected ComparableQuantity<Angle> getElevationAngle() {
+      return elevationAngle;
     }
 
     public PvInputCopyBuilder kG(double kG) {
@@ -339,9 +356,17 @@ public class PvInput extends SystemParticipantInput {
       return thisInstance();
     }
 
+    protected double getKG() {
+      return kG;
+    }
+
     public PvInputCopyBuilder kT(double kT) {
       this.kT = kT;
       return thisInstance();
+    }
+
+    protected double getKT() {
+      return kT;
     }
 
     public PvInputCopyBuilder sRated(ComparableQuantity<Power> sRated) {
@@ -349,13 +374,21 @@ public class PvInput extends SystemParticipantInput {
       return thisInstance();
     }
 
+    protected ComparableQuantity<Power> getsRated() {
+      return sRated;
+    }
+
     public PvInputCopyBuilder cosPhiRated(double cosPhiRated) {
       this.cosPhiRated = cosPhiRated;
       return thisInstance();
     }
 
+    protected double getCosPhiRated() {
+      return cosPhiRated;
+    }
+
     @Override
-    public PvInputCopyBuilder scale(Double factor) {
+    public PvInputCopyBuilder scale(double factor) {
       this.sRated = this.sRated.multiply(factor);
       return thisInstance();
     }
@@ -369,7 +402,7 @@ public class PvInput extends SystemParticipantInput {
           getOperationTime(),
           getNode(),
           getqCharacteristics(),
-          getEm(),
+          getControllingEm(),
           albedo,
           azimuth,
           etaConv,
@@ -377,7 +410,8 @@ public class PvInput extends SystemParticipantInput {
           kG,
           kT,
           sRated,
-          cosPhiRated);
+          cosPhiRated,
+          getAdditionalInformation());
     }
 
     @Override

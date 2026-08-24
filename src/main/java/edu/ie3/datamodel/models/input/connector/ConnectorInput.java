@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -10,21 +10,23 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
-/** Describes an asset that connects two {@link NodeInput}s */
+/** Describes an asset that connects two {@link NodeInput}s. */
 public abstract class ConnectorInput extends AssetInput implements HasNodes {
-  /** Grid node at one side of the connector */
+  /** Grid node at one side of the connector. */
   private final NodeInput nodeA;
 
-  /** Grid node at the other side of the connector */
+  /** Grid node at the other side of the connector. */
   private final NodeInput nodeB;
 
-  /** Amount of parallelDevices */
+  /** Amount of parallel devices. */
   private final int parallelDevices;
 
   /**
-   * Constructor for an operated connector
+   * Constructor for an operated connector.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -50,7 +52,30 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
   }
 
   /**
-   * Constructor for an operated, always on connector
+   * Constructor for an operated connector with no parallel devices (parallelDevices=1).
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param nodeA Grid node at one side of the connector
+   * @param nodeB Grid node at the other side of the connector
+   */
+  protected ConnectorInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      NodeInput nodeA,
+      NodeInput nodeB) {
+    super(uuid, id, operator, operationTime);
+    this.nodeA = nodeA;
+    this.nodeB = nodeB;
+    this.parallelDevices = 1;
+  }
+
+  /**
+   * Constructor for an operated connector.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -67,6 +92,21 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
     this.parallelDevices = parallelDevices;
   }
 
+  /**
+   * Constructor for an operated connector with no parallel devices (parallelDevices=1).
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param nodeA Grid node at one side of the connector
+   * @param nodeB Grid node at the other side of the connector
+   */
+  protected ConnectorInput(UUID uuid, String id, NodeInput nodeA, NodeInput nodeB) {
+    super(uuid, id);
+    this.nodeA = nodeA;
+    this.nodeB = nodeB;
+    this.parallelDevices = 1;
+  }
+
   public NodeInput getNodeA() {
     return nodeA;
   }
@@ -75,16 +115,13 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
     return nodeB;
   }
 
-  @Override
-  public abstract ConnectorInputCopyBuilder<?> copy();
+  public int getParallelDevices() {
+    return parallelDevices;
+  }
 
   @Override
   public List<NodeInput> allNodes() {
     return List.of(getNodeA(), getNodeB());
-  }
-
-  public int getParallelDevices() {
-    return parallelDevices;
   }
 
   @Override
@@ -92,9 +129,9 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
     if (this == o) return true;
     if (!(o instanceof ConnectorInput that)) return false;
     if (!super.equals(o)) return false;
-    return parallelDevices == that.parallelDevices
-        && nodeA.equals(that.nodeA)
-        && nodeB.equals(that.nodeB);
+    return Objects.equals(nodeA, that.nodeA)
+        && Objects.equals(nodeB, that.nodeB)
+        && parallelDevices == that.parallelDevices;
   }
 
   @Override
@@ -117,30 +154,29 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
         + nodeA.getUuid()
         + ", nodeB="
         + nodeB.getUuid()
-        + ", noOfParallelDevices="
+        + ", parallelDevices="
         + parallelDevices
-        + '}';
+        + ", additionalInformation="
+        + getAdditionalInformation()
+        + "}";
   }
 
-  /**
-   * Abstract class for all builder that build child entities of abstract class {@link
-   * ConnectorInput}
-   *
-   * @version 0.1
-   * @since 05.06.20
-   */
+  @Override
+  public abstract ConnectorInputCopyBuilder<?> copy();
+
   public abstract static class ConnectorInputCopyBuilder<B extends ConnectorInputCopyBuilder<B>>
       extends AssetInputCopyBuilder<B> {
-
     private NodeInput nodeA;
+
     private NodeInput nodeB;
+
     private int parallelDevices;
 
     protected ConnectorInputCopyBuilder(ConnectorInput entity) {
       super(entity);
-      this.nodeA = entity.getNodeA();
-      this.nodeB = entity.getNodeB();
-      this.parallelDevices = entity.getParallelDevices();
+      this.nodeA = entity.nodeA;
+      this.nodeB = entity.nodeB;
+      this.parallelDevices = entity.parallelDevices;
     }
 
     public B nodeA(NodeInput nodeA) {
@@ -148,22 +184,22 @@ public abstract class ConnectorInput extends AssetInput implements HasNodes {
       return thisInstance();
     }
 
+    protected NodeInput getNodeA() {
+      return nodeA;
+    }
+
     public B nodeB(NodeInput nodeB) {
       this.nodeB = nodeB;
       return thisInstance();
     }
 
+    protected NodeInput getNodeB() {
+      return nodeB;
+    }
+
     public B parallelDevices(int parallelDevices) {
       this.parallelDevices = parallelDevices;
       return thisInstance();
-    }
-
-    protected NodeInput getNodeA() {
-      return nodeA;
-    }
-
-    protected NodeInput getNodeB() {
-      return nodeB;
     }
 
     protected int getParallelDevices() {

@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -11,21 +11,21 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.Objects;
 import java.util.UUID;
 
-/** Describes an electrical grid transformer, is "located" in the inferior subnet */
+/** Describes an electrical grid transformer, is "located" in the inferior subnet. */
 public abstract class TransformerInput extends ConnectorInput {
-  /** Tap position of this transformer */
+  /** Tap position of this transformer. */
   private final int tapPos;
 
-  /** True, if the tap position of the transformer is adapted automatically */
+  /** True, if the tap position of the transformer is adapted automatically. */
   private final boolean autoTap;
 
   /**
-   * Constructor for an operated transformer
+   * Constructor for an operated transformer.
    *
    * @param uuid of the input entity
-   * @param operationTime Time for which the entity is operated
-   * @param operator of the asset
    * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
    * @param nodeA Grid node at the high voltage winding
    * @param nodeB Grid node at the low voltage winding
    * @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.
@@ -35,9 +35,9 @@ public abstract class TransformerInput extends ConnectorInput {
    */
   protected TransformerInput(
       UUID uuid,
-      OperationTime operationTime,
-      OperatorInput operator,
       String id,
+      OperatorInput operator,
+      OperationTime operationTime,
       NodeInput nodeA,
       NodeInput nodeB,
       int parallelDevices,
@@ -49,7 +49,7 @@ public abstract class TransformerInput extends ConnectorInput {
   }
 
   /**
-   * Constructor for an operated, always on transformer
+   * Constructor for an operated transformer.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -73,16 +73,13 @@ public abstract class TransformerInput extends ConnectorInput {
     this.autoTap = autoTap;
   }
 
-  public boolean isAutoTap() {
-    return autoTap;
-  }
-
   public int getTapPos() {
     return tapPos;
   }
 
-  @Override
-  public abstract TransformerInputCopyBuilder<? extends TransformerInputCopyBuilder<?>> copy();
+  public boolean isAutoTap() {
+    return autoTap;
+  }
 
   @Override
   public boolean equals(Object o) {
@@ -112,32 +109,30 @@ public abstract class TransformerInput extends ConnectorInput {
         + getNodeA().getUuid()
         + ", nodeB="
         + getNodeB().getUuid()
-        + ", noOfParallelDevices="
+        + ", parallelDevices="
         + getParallelDevices()
         + ", tapPos="
         + tapPos
         + ", autoTap="
         + autoTap
-        + '}';
+        + ", additionalInformation="
+        + getAdditionalInformation()
+        + "}";
   }
 
-  /**
-   * Abstract class for all builder that build child entities of abstract class {@link
-   * TransformerInput}
-   *
-   * @version 0.1
-   * @since 05.06.20
-   */
+  @Override
+  public abstract TransformerInputCopyBuilder<?> copy();
+
   public abstract static class TransformerInputCopyBuilder<B extends TransformerInputCopyBuilder<B>>
       extends ConnectorInputCopyBuilder<B> {
-
     private int tapPos;
+
     private boolean autoTap;
 
     protected TransformerInputCopyBuilder(TransformerInput entity) {
       super(entity);
-      this.tapPos = entity.getTapPos();
-      this.autoTap = entity.isAutoTap();
+      this.tapPos = entity.tapPos;
+      this.autoTap = entity.autoTap;
     }
 
     public B tapPos(int tapPos) {
@@ -145,13 +140,13 @@ public abstract class TransformerInput extends ConnectorInput {
       return thisInstance();
     }
 
+    protected int getTapPos() {
+      return tapPos;
+    }
+
     public B autoTap(boolean autoTap) {
       this.autoTap = autoTap;
       return thisInstance();
-    }
-
-    protected int getTapPos() {
-      return tapPos;
     }
 
     protected boolean isAutoTap() {

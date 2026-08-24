@@ -40,13 +40,19 @@ public interface HelperMethods {
     String getterName;
 
     if (component.nullable) {
-      // we need some special calls here, since the
-      valueGetterExpression = "$T.ofNullable($L)";
-      optional = true;
-      getterName =
-          components.contains(componentName)
-              ? componentName
-              : defaultGetterName(component, genConfig);
+      // we need some special calls here
+      if (!component.required) {
+        valueGetterExpression = "$L()";
+        getterName = defaultGetterName(component, genConfig);
+
+      } else {
+        valueGetterExpression = "$T.ofNullable($L)";
+        optional = true;
+        getterName =
+            components.contains(componentName)
+                ? componentName
+                : defaultGetterName(component, genConfig);
+      }
 
       valueGetterExpression += ".map(e -> e.getUuid().toString()).orElse(\"\")";
       explicitConversion = false;
@@ -60,7 +66,6 @@ public interface HelperMethods {
     }
 
     if (explicitConversion) {
-      // add an explicit toString call
       valueGetterExpression += ".toString()";
     }
 

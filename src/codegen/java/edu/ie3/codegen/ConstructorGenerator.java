@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.lang.model.element.Modifier;
 
 /** Class for generating constructors. */
@@ -71,6 +70,8 @@ public final class ConstructorGenerator implements HelperMethods {
       parameters.addAll(constructor.additionalComponents);
     }
 
+    List<ModelDefinition.ComponentDefinition> orderedComponents = new ArrayList<>();
+
     Modifier modifier;
 
     // selects the modifier of the constructor
@@ -93,6 +94,10 @@ public final class ConstructorGenerator implements HelperMethods {
     // add the components with their type to the parameter list
     for (ModelDefinition.ComponentDefinition parameter : parameters) {
       builder.addParameter(resolveType(parameter.type), parameter.name);
+
+      if (model.components.contains(parameter)) {
+        orderedComponents.add(parameter);
+      }
     }
 
     // check if we need a super block
@@ -113,17 +118,11 @@ public final class ConstructorGenerator implements HelperMethods {
               + constructor.name);
     }
 
-    // maps the components to their name
-    Map<String, ModelDefinition.ComponentDefinition> mappedComponents =
-        model.components.stream().collect(Collectors.toMap(c -> c.name, c -> c));
-
-    // ordering the components based on the provided config order
-    // this will ensure the same order for each generation
-    List<ModelDefinition.ComponentDefinition> orderedComponents =
-        constructor.components.stream()
-            .filter(mappedComponents::containsKey)
-            .map(mappedComponents::get)
-            .toList();
+    for (ModelDefinition.ComponentDefinition componentDefinition : model.components) {
+      if (!orderedComponents.contains(componentDefinition)) {
+        orderedComponents.add(componentDefinition);
+      }
+    }
 
     // initializing all necessary fields
     for (ModelDefinition.ComponentDefinition localField : orderedComponents) {

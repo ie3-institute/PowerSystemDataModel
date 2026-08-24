@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -12,13 +12,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-/** Describes an electrical grid switch between two {@link NodeInput}s */
+/** Describes an electrical grid switch between two {@link NodeInput}s. */
 public class SwitchInput extends ConnectorInput {
   /** Is the switching state 'closed'? */
   private final boolean closed;
 
   /**
-   * Constructor for an operated switch
+   * Constructor for an operated switch.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -36,12 +36,12 @@ public class SwitchInput extends ConnectorInput {
       NodeInput nodeA,
       NodeInput nodeB,
       boolean closed) {
-    super(uuid, id, operator, operationTime, nodeA, nodeB, 1);
+    super(uuid, id, operator, operationTime, nodeA, nodeB);
     this.closed = closed;
   }
 
   /**
-   * Constructor for an operated switch
+   * Constructor for an operated switch.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -61,13 +61,13 @@ public class SwitchInput extends ConnectorInput {
       NodeInput nodeB,
       boolean closed,
       Map<String, String> additionalInformation) {
-    super(uuid, id, operator, operationTime, nodeA, nodeB, 1);
+    super(uuid, id, operator, operationTime, nodeA, nodeB);
     this.closed = closed;
     setAdditionalInformation(additionalInformation);
   }
 
   /**
-   * Constructor for an operated, always on switch
+   * Constructor for an operated switch.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -76,7 +76,7 @@ public class SwitchInput extends ConnectorInput {
    * @param closed Is the switching state 'closed'?
    */
   public SwitchInput(UUID uuid, String id, NodeInput nodeA, NodeInput nodeB, boolean closed) {
-    super(uuid, id, nodeA, nodeB, 1);
+    super(uuid, id, nodeA, nodeB);
     this.closed = closed;
   }
 
@@ -85,16 +85,11 @@ public class SwitchInput extends ConnectorInput {
   }
 
   @Override
-  public SwitchInputCopyBuilder copy() {
-    return new SwitchInputCopyBuilder(this);
-  }
-
-  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof SwitchInput that)) return false;
     if (!super.equals(o)) return false;
-    return Objects.equals(closed, that.closed);
+    return closed == that.closed;
   }
 
   @Override
@@ -107,9 +102,8 @@ public class SwitchInput extends ConnectorInput {
     return "SwitchInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + getId()
-        + '\''
         + ", operator="
         + getOperator().getUuid()
         + ", operationTime="
@@ -118,41 +112,49 @@ public class SwitchInput extends ConnectorInput {
         + getNodeA().getUuid()
         + ", nodeB="
         + getNodeB().getUuid()
-        + ", noOfParallelDevices="
+        + ", parallelDevices="
         + getParallelDevices()
         + ", closed="
         + closed
         + ", additionalInformation="
         + getAdditionalInformation()
-        + '}';
+        + "}";
   }
 
-  /**
-   * A builder pattern based approach to create copies of {@link LineInput} entities with altered
-   * field values. For detailed field descriptions refer to java docs of {@link LineInput}
-   *
-   * @version 0.1
-   * @since 05.06.20
-   */
+  @Override
+  public SwitchInputCopyBuilder copy() {
+    return new SwitchInputCopyBuilder(this);
+  }
+
   public static class SwitchInputCopyBuilder
       extends ConnectorInputCopyBuilder<SwitchInputCopyBuilder> {
-
     private boolean closed;
 
-    private SwitchInputCopyBuilder(SwitchInput entity) {
+    protected SwitchInputCopyBuilder(SwitchInput entity) {
       super(entity);
-      this.closed = entity.isClosed();
-    }
-
-    @Override
-    public SwitchInput build() {
-      return new SwitchInput(
-          getUuid(), getId(), getOperator(), getOperationTime(), getNodeA(), getNodeB(), closed);
+      this.closed = entity.closed;
     }
 
     public SwitchInputCopyBuilder closed(boolean closed) {
       this.closed = closed;
       return thisInstance();
+    }
+
+    protected boolean isClosed() {
+      return closed;
+    }
+
+    @Override
+    public SwitchInput build() {
+      return new SwitchInput(
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          getNodeA(),
+          getNodeB(),
+          closed,
+          getAdditionalInformation());
     }
 
     @Override
