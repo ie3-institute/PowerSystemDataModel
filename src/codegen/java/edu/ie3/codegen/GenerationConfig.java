@@ -33,8 +33,6 @@ public final class GenerationConfig implements HelperMethods {
 
   public boolean toString = true;
 
-  public boolean toMap = false;
-
   public boolean copy = true;
 
   public List<StaticFieldDefinition> staticFields = new ArrayList<>();

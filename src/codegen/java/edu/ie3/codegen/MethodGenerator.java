@@ -139,10 +139,6 @@ public class MethodGenerator implements HelperMethods {
       methods.add(generateToString());
     }
 
-    if (genConfig.toMap) {
-      methods.add(generateToMap());
-    }
-
     return methods;
   }
 
@@ -269,52 +265,5 @@ public class MethodGenerator implements HelperMethods {
     }
 
     return builder.build();
-  }
-
-  private MethodSpec generateToMap() {
-    String type = "StringMap";
-
-    TypeName stringMap = resolveType(type);
-
-    MethodSpec.Builder builder =
-        MethodSpec.methodBuilder("toMap")
-            // .addAnnotation(Override.class)
-            .addModifiers(Modifier.PUBLIC)
-            .returns(stringMap);
-
-    builder.addStatement("$T res = new $T<>()", stringMap, HashMap.class);
-
-    List<String> components = model.components.stream().map(c -> c.name).toList();
-
-    Collection<ModelDefinition.ComponentDefinition> allComponents =
-        visibleComponents(model, models).values();
-
-    for (ModelDefinition.ComponentDefinition component : allComponents) {
-      if (excludeFromMethods(component)) {
-        continue;
-      }
-
-      String statement = "res.put($S, $L)";
-
-      if (component.keys.isEmpty()) {
-        builder.addStatement(
-            statement, component.name, toString(component, components, genConfig, true));
-      } else {
-        for (String key : component.keys) {
-          builder.addStatement(
-              statement, key, toStringPartial(component, components, genConfig, true, key));
-        }
-      }
-    }
-
-    builder.addStatement("res.putAll(getAdditionalInformation())");
-    builder.addStatement("return res");
-
-    return builder.build();
-  }
-
-  private String conv(String type) {
-
-    return "toString()";
   }
 }
