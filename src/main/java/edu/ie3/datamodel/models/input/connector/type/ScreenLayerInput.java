@@ -145,7 +145,7 @@ public class ScreenLayerInput extends AssetInput implements Serializable {
     this.wireDiameter = wireDiameter;
     this.lengthOfLay = lengthOfLay;
     this.electricalResistivity = electricalResistivity;
-    if (additionalInformation != null) setAdditionalInformation(additionalInformation);
+    setAdditionalInformation(additionalInformation);
   }
 
   public static class ScreenLayerInputCopyBuilder

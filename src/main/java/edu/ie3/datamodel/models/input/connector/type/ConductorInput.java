@@ -121,7 +121,7 @@ public class ConductorInput extends AssetInput implements Serializable {
     this.thermalResistivity = thermalResistivity;
     this.thermalCapacitance = thermalCapacitance;
     this.area = area;
-    if (additionalInformation != null) setAdditionalInformation(additionalInformation);
+    setAdditionalInformation(additionalInformation);
   }
 
   public ComparableQuantity<ThermalCapacitance> thermalCapacitance() {
