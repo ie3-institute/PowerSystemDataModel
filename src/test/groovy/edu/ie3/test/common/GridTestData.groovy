@@ -6,6 +6,8 @@
 package edu.ie3.test.common
 
 import static edu.ie3.datamodel.models.StandardUnits.*
+import static edu.ie3.util.quantities.PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN
+import static edu.ie3.util.quantities.PowerSystemUnits.KELVIN_METRE_PER_WATT
 import static edu.ie3.util.quantities.PowerSystemUnits.OHM_PER_KILOMETRE
 
 import edu.ie3.datamodel.models.OperationTime
@@ -327,20 +329,21 @@ class GridTestData {
       Quantities.getQuantity(400.0e-6, Units.SQUARE_METRE),
       Quantities.getQuantity(0.0225, Units.METRE),
       false,
-      Quantities.getQuantity(1.0 / 384.0, (Units.KELVIN * Units.METRE).divide(Units.WATT)),
-      Quantities.getQuantity(
-          3449600.0, Units.JOULE.divide(Units.CUBIC_METRE * Units.KELVIN)),
-      Optional.empty()),
-  List.of(new LayerInput(
-      UUID.randomUUID(),
-      "Main insulation",
-      CableMaterial.XLPE,
-      Quantities.getQuantity(0.0225, Units.METRE),
-      Quantities.getQuantity(0.027, Units.METRE),
-      Quantities.getQuantity(3.5, (Units.KELVIN * Units.METRE).divide(Units.WATT)),
-      Quantities.getQuantity(2.4, Units.JOULE.divide(Units.CUBIC_METRE * Units.KELVIN)),
-      Optional.empty())),
-  Optional.empty(),
+      Quantities.getQuantity(1.0 / 384.0, KELVIN_METRE_PER_WATT),
+      Quantities.getQuantity(3449600.0d, JOULE_PER_CUBIC_METRE_KELVIN),
+      Quantities.getQuantity(1.0, Units.SQUARE_METRE)),
+  [
+    new LayerInput(
+        UUID.randomUUID(),
+        "Main insulation",
+        CableMaterial.XLPE,
+        Quantities.getQuantity(0.0225, Units.METRE),
+        Quantities.getQuantity(0.027, Units.METRE),
+        Quantities.getQuantity(3.5, KELVIN_METRE_PER_WATT),
+        Quantities.getQuantity(2.4, JOULE_PER_CUBIC_METRE_KELVIN),
+        Quantities.getQuantity(1.0, Units.SQUARE_METRE))
+  ],
+  null,
   new ArrayList<>(),
   new ArrayList<>(),
   new ArrayList<>(),

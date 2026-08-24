@@ -242,9 +242,6 @@ public abstract class Processor<T> {
       case "Quantity", "ComparableQuantity" ->
           resultStringBuilder.append(handleQuantity((Quantity<?>) methodReturnObject, fieldName));
       case "Optional" ->
-          // only quantity optionals are expected here!
-          // if optional and present, unpack value and call this method again, if not present return
-          // an empty string as by convention null == missing value == "" when persisting data
           resultStringBuilder.append(
               ((Optional<?>) methodReturnObject)
                   .map(
@@ -253,9 +250,9 @@ public abstract class Processor<T> {
                           return Try.of(
                               () -> handleQuantity(quantity, fieldName),
                               EntityProcessorException.class);
-                        } else if (o instanceof UniqueEntity entity) {
-                          return Try.of(entity::getUuid, EntityProcessorException.class);
-                        } else if (o instanceof ScreenLayerInput screenLayer) {
+                        }
+
+                        if (o instanceof ScreenLayerInput screenLayer) {
                           return Try.of(
                               () -> {
                                 try {
@@ -268,13 +265,17 @@ public abstract class Processor<T> {
                                 }
                               },
                               EntityProcessorException.class);
-                        } else {
-                          return Failure.of(
-                              new EntityProcessorException(
-                                  "Handling of "
-                                      + o.getClass().getSimpleName()
-                                      + ".class instance wrapped into Optional is currently not supported by entity processors!"));
                         }
+
+                        if (o instanceof UniqueEntity entity) {
+                          return Try.of(entity::getUuid, EntityProcessorException.class);
+                        }
+
+                        return Failure.of(
+                            new EntityProcessorException(
+                                "Handling of "
+                                    + o.getClass().getSimpleName()
+                                    + ".class instance wrapped into Optional is currently not supported by entity processors!"));
                       })
                   .orElse(Success.of("")) // (in case of empty optional)
                   .getOrThrow());

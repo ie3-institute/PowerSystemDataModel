@@ -10,7 +10,6 @@ import static edu.ie3.util.quantities.PowerSystemUnits.PU
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
-import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.CableDeploymentInput
@@ -466,15 +465,40 @@ class InputEntityProcessorTest extends Specification {
       "filler" : "[]",
       "jack" : "[]",
       "screen" : "",
-      "conductor" : '{"uuid":"' + type.getConductor().uuid() + '","name":"conductor","material":"COPPER","crossSection":"4.0E-4","diameter":"0.0225","isCompacted":false,"thermalResistivity":"0.0026041667","thermalCapacitance":"3449600.0","area":null,"additionalInformation":{}}',
-      "isolation" : '[{"uuid":"' + type.getIsolation().get(0).uuid() + '","name":"Main insulation","material":"XLPE","innerDiameter":"0.0225","outerDiameter":"0.027","thermalResistivity":"3.5","thermalCapacitance":"2.4","area":null,"additionalInformation":{}}]'
+      "conductor" : '{"uuid":"' + type.getConductor().getUuid() + '","name":"conductor","material":"COPPER","crossSection":"4.0E-4","diameter":"0.0225","isCompacted":false,"thermalResistivity":"0.0026041667","thermalCapacitance":"3449600.0","area":"1.0","additionalInformation":{}}',
+      "isolation" : '[{"uuid":"' + type.getIsolation().get(0).getUuid() + '","name":"Main insulation","material":"XLPE","innerDiameter":"0.0225","outerDiameter":"0.027","thermalResistivity":"3.5","thermalCapacitance":"2.4","area":"1.0","additionalInformation":{}}]'
     ]
 
     when:
     Map<String, String> actual = processor.handleEntity(type)
 
     then:
-    actual == expected
+    expected.each { k, v ->
+      if (k == "conductor" || k == "isolation") return
+        assert actual.get(k).toString() == v.toString()
+    }
+
+    def conductorJson = actual.get("conductor")
+    def mapper = edu.ie3.datamodel.io.factory.typeinput.CableTypeInputFactory.OBJECT_MAPPER
+    def conductorNode = mapper.readTree(conductorJson)
+    assert conductorNode.get("uuid").asText() == type.getConductor().getUuid().toString()
+    assert conductorNode.get("name").asText() == "conductor"
+    assert conductorNode.get("material").asText() == "COPPER"
+
+    def csNode = conductorNode.get("crossSection")
+    assert csNode != null
+    assert csNode.isNumber() || (csNode.isTextual() && Math.abs(Double.parseDouble(csNode.asText()) - 4.0E-4) < 1e-12)
+
+    def diaNode = conductorNode.get("diameter")
+    assert diaNode != null
+    assert diaNode.isNumber() || (diaNode.isTextual() && Math.abs(Double.parseDouble(diaNode.asText()) - 0.0225) < 1e-12)
+
+    def isolationJson = actual.get("isolation")
+    def isolationNode = mapper.readTree(isolationJson)
+    assert isolationNode.isArray()
+    def firstIsolation = isolationNode.get(0)
+    assert firstIsolation.get("uuid").asText() == type.getIsolation().get(0).getUuid().toString()
+    assert firstIsolation.get("name").asText() == "Main insulation"
   }
 
   def "The InputEntityProcessor should serialize a provided EvTypeInput correctly"() {

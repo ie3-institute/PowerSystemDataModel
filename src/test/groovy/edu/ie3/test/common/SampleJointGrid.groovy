@@ -61,7 +61,9 @@ class SampleJointGrid extends SystemParticipantTestData {
     // set the participant node to nodeA
     NodeInput participantNode =
         rawGridElements.getNodes().stream()
-        .filter({ node -> node.getId().equalsIgnoreCase("nodeA") })
+        .filter({ node ->
+          node.getId().equalsIgnoreCase("nodeA")
+        })
         .collect(Collectors.toList())
         .get(0)
 
@@ -163,20 +165,22 @@ class SampleJointGrid extends SystemParticipantTestData {
       Quantities.getQuantity(400.0e-6, SQUARE_METRE),
       Quantities.getQuantity(0.0225, METRE),
       false,
-      Quantities.getQuantity(1.0 / 384.0, (KELVIN * METRE).divide(WATT)),
+      Quantities.getQuantity(1.0 / 384.0, KELVIN_METRE_PER_WATT),
       Quantities.getQuantity(
-          3449600.0, JOULE.divide(CUBIC_METRE * KELVIN)),
-      Optional.empty()),
-  List.of(new LayerInput(
-      UUID.randomUUID(),
-      "Main insulation",
-      CableMaterial.XLPE,
-      Quantities.getQuantity(0.0225, METRE),
-      Quantities.getQuantity(0.027, METRE),
-      Quantities.getQuantity(3.5, (KELVIN * METRE).divide(WATT)),
-      Quantities.getQuantity(2.4, JOULE.divide(CUBIC_METRE * KELVIN)),
-      Optional.empty())),
-  Optional.empty(),
+          3449600.0, JOULE_PER_CUBIC_METRE_KELVIN),
+      null),
+  [
+    new LayerInput(
+        UUID.randomUUID(),
+        "Main insulation",
+        CableMaterial.XLPE,
+        Quantities.getQuantity(0.0225, METRE),
+        Quantities.getQuantity(0.027, METRE),
+        Quantities.getQuantity(3.5, KELVIN_METRE_PER_WATT),
+        Quantities.getQuantity(2.4, JOULE_PER_CUBIC_METRE_KELVIN),
+        null)
+  ],
+  null,
   new ArrayList<>(),
   new ArrayList<>(),
   new ArrayList<>(),

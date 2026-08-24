@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 
 /**
  * Interface that provides the capability to build entities of type {@link
- * SystemParticipantTypeInput} and {@link OperatorInput} from different data sources e.g. '.csv' files
- * or databases
+ * SystemParticipantTypeInput} and {@link OperatorInput} from different data sources e.g. '.csv'
+ * files or databases
  */
 public class TypeSource extends EntitySource {
   private static final String SUB_DIRECTORY = "/type";

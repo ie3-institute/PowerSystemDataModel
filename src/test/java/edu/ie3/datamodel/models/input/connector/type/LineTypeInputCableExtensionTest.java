@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import javax.measure.quantity.Area;
 import javax.measure.quantity.ElectricCurrent;
 import javax.measure.quantity.ElectricPotential;
 import org.junit.jupiter.api.DisplayName;
@@ -65,7 +66,7 @@ class LineTypeInputCableExtensionTest {
               false,
               Quantities.getQuantity(1.0 / 384.0, KELVIN_METRE_PER_WATT),
               Quantities.getQuantity(3449600.0, JOULE_PER_CUBIC_METRE_KELVIN),
-              Optional.empty()),
+              null),
           List.of(
               new LayerInput(
                   UUID.randomUUID(),
@@ -75,8 +76,8 @@ class LineTypeInputCableExtensionTest {
                   Quantities.getQuantity(0.027, METRE),
                   Quantities.getQuantity(3.5, KELVIN_METRE_PER_WATT),
                   Quantities.getQuantity(2.4, JOULE_PER_CUBIC_METRE_KELVIN),
-                  Optional.empty())),
-          Optional.empty(),
+                  Optional.<ComparableQuantity<Area>>empty())),
+          null,
           new ArrayList<>(),
           new ArrayList<>(),
           new ArrayList<>(),
@@ -102,7 +103,7 @@ class LineTypeInputCableExtensionTest {
               false,
               Quantities.getQuantity(1.0 / 384.0, KELVIN_METRE_PER_WATT),
               Quantities.getQuantity(3449600.0, JOULE_PER_CUBIC_METRE_KELVIN),
-              Optional.empty()),
+              null),
           List.of(
               new LayerInput(
                   UUID.randomUUID(),
@@ -112,8 +113,8 @@ class LineTypeInputCableExtensionTest {
                   Quantities.getQuantity(0.027, METRE),
                   Quantities.getQuantity(3.5, KELVIN_METRE_PER_WATT),
                   Quantities.getQuantity(2.4, JOULE_PER_CUBIC_METRE_KELVIN),
-                  Optional.empty())),
-          Optional.empty(),
+                  Optional.<ComparableQuantity<Area>>empty())),
+          null,
           new ArrayList<>(),
           new ArrayList<>(),
           new ArrayList<>(),
