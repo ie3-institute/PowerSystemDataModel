@@ -189,7 +189,7 @@ public interface HelperMethods {
   default Map<String, ModelDefinition.ComponentDefinition> visibleComponents(
       ModelDefinition model, Map<String, ModelDefinition> models) {
 
-    Map<String, ModelDefinition.ComponentDefinition> result = new HashMap<>();
+    LinkedHashMap<String, ModelDefinition.ComponentDefinition> result = new LinkedHashMap<>();
 
     for (ModelDefinition level : hierarchy(model, models)) {
       for (ModelDefinition.ComponentDefinition component : level.components) {
