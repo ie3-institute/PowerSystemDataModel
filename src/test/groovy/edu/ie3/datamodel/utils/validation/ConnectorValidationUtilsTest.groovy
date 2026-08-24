@@ -10,24 +10,13 @@ import static edu.ie3.util.quantities.PowerSystemUnits.*
 
 import edu.ie3.datamodel.exceptions.FailedValidationException
 import edu.ie3.datamodel.exceptions.InvalidEntityException
-import edu.ie3.datamodel.models.input.connector.LineInput
-import edu.ie3.datamodel.models.input.connector.type.CableMaterial
-import edu.ie3.datamodel.models.input.connector.type.CableTypeInput
-import edu.ie3.datamodel.models.input.connector.type.ConductorInput
-import edu.ie3.datamodel.models.input.connector.type.LayerInput
-import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput
-import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
-import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
-import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
+import edu.ie3.datamodel.models.input.connector.type.*
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData
-import edu.ie3.util.geo.GeoUtils
 import edu.ie3.util.quantities.interfaces.ElectricalResistivity
 import edu.ie3.util.quantities.interfaces.ThermalCapacitance
 import edu.ie3.util.quantities.interfaces.ThermalResistivity
-import org.locationtech.jts.geom.Coordinate
-import org.locationtech.jts.geom.LineString
 import spock.lang.Specification
 import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
@@ -55,22 +44,6 @@ class ConnectorValidationUtilsTest extends Specification {
     then:
     noExceptionThrown()
   }
-
-  static testCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(10, 10))
-  static invalidLineLengthNotMatchingCoordinateDistances = new LineInput(
-  UUID.fromString("92ec3bcf-1777-4d38-af67-0bf8c9fa73c7"),
-  "test_line_FtoG",
-  GridTestData.profBroccoli,
-  GridTestData.defaultOperationTime,
-  GridTestData.nodeF.copy().geoPosition(GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))).build(),
-  GridTestData.nodeG,
-  2,
-  GridTestData.lineTypeInputCtoD,
-  Quantities.getQuantity(0.003d, LINE_LENGTH),
-  GridTestData.geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.4116482, 51.4843281], [3.4116482, 10.4843281], [7.4116482, 51.4843281]]}") as LineString,
-  OlmCharacteristicInput.CONSTANT_CHARACTERISTIC
-  )
-
 
   def "A ConnectorInput needs at least one parallel device"() {
     when:
@@ -185,17 +158,17 @@ class ConnectorValidationUtilsTest extends Specification {
     validCableType(filler: [validLayer(name: "")]) || "Layer name cannot be empty"
     validCableType(armor: [validLayer(name: "")]) || "Layer name cannot be empty"
     validCableType(jack: [validLayer(name: "")]) || "Layer name cannot be empty"
-    validCableType(screen: Optional.of(validScreenLayer(name: ""))) || "Screen layer name cannot be empty"
-    validCableType(screen: Optional.of(validScreenLayer(innerDiameter: length(-1d)))) || "innerDiameter"
-    validCableType(screen: Optional.of(validScreenLayer(outerDiameter: length(-1d)))) || "outerDiameter"
-    validCableType(screen: Optional.of(validScreenLayer(innerDiameter: length(0.03d), outerDiameter: length(0.02d)))) || "Outer diameter must be greater than or equal to inner diameter"
-    validCableType(screen: Optional.of(validScreenLayer(wiresNumber: 0))) || "Number of wires must be >= 1"
-    validCableType(screen: Optional.of(validScreenLayer(wireDiameter: length(-1d)))) || "wireDiameter"
-    validCableType(screen: Optional.of(validScreenLayer(electricalResistivity: electricalResistivity(-1d)))) || "electricalResistivity"
-    validCableType(screen: Optional.of(validScreenLayer(thermalResistivity: thermalResistivity(-1d)))) || "thermalResistivity"
-    validCableType(screen: Optional.of(validScreenLayer(thermalCapacitance: thermalCapacitance(-1d)))) || "thermalCapacitance"
-    validCableType(screen: Optional.of(validScreenLayer(area: Optional.of(area(-1d))))) || "area"
-    validCableType(screen: Optional.of(validScreenLayer(lengthOfLay: Optional.of(length(-1d))))) || "lengthOfLay"
+    validCableType(screen: validScreenLayer(name: "")) || "Screen layer name cannot be empty"
+    validCableType(screen: validScreenLayer(innerDiameter: length(-1d))) || "innerDiameter"
+    validCableType(screen: validScreenLayer(outerDiameter: length(-1d))) || "outerDiameter"
+    validCableType(screen: validScreenLayer(innerDiameter: length(0.03d), outerDiameter: length(0.02d))) || "Outer diameter must be greater than or equal to inner diameter"
+    validCableType(screen: validScreenLayer(wiresNumber: 0)) || "Number of wires must be >= 1"
+    validCableType(screen: validScreenLayer(wireDiameter: length(-1d))) || "wireDiameter"
+    validCableType(screen: validScreenLayer(electricalResistivity: electricalResistivity(-1d))) || "electricalResistivity"
+    validCableType(screen: validScreenLayer(thermalResistivity: thermalResistivity(-1d))) || "thermalResistivity"
+    validCableType(screen: validScreenLayer(thermalCapacitance: thermalCapacitance(-1d))) || "thermalCapacitance"
+    validCableType(screen: validScreenLayer(area: Optional.of(area(-1d)))) || "area"
+    validCableType(screen: validScreenLayer(lengthOfLay: Optional.of(length(-1d)))) || "lengthOfLay"
   }
 
   def "ConnectorValidationUtils.checkCableType reports all invalid quantities together"() {
@@ -403,6 +376,11 @@ class ConnectorValidationUtilsTest extends Specification {
 
 
   private static ConductorInput validConductor(Map overrides = [:]) {
+    def areaParam = overrides.get("area", null)
+    if (areaParam instanceof Optional) {
+      areaParam = areaParam.orElse(null)
+    }
+
     new ConductorInput(
         overrides.get("uuid", UUID.fromString("793da55e-6021-4468-af1c-5ec61576bb20")),
         overrides.get("name", "conductor"),
@@ -412,18 +390,19 @@ class ConnectorValidationUtilsTest extends Specification {
         overrides.get("isCompacted", false),
         overrides.get("thermalResistivity", thermalResistivity(1.0d / 384.0d)),
         overrides.get("thermalCapacitance", thermalCapacitance(3449600.0d)),
-        overrides.get("area", Optional.empty()))
+        areaParam as ComparableQuantity<Area>)
   }
 
-
-  private CableTypeInput validCableType(Map overrides = [:]) {
+  private static CableTypeInput validCableType(Map overrides = [:]) {
+    def screenParam = overrides.get("screen", null)
+    ScreenLayerInput screen = (screenParam instanceof ScreenLayerInput) ? (ScreenLayerInput) screenParam : null
     new CableTypeInput(
         overrides.get("uuid", UUID.randomUUID()),
         overrides.get("id", "NA2XS2Y 1x120 RM/25 12/20 kV"),
         overrides.get("coreNumber", 1),
         overrides.get("conductor", validConductor()),
         overrides.get("isolation", validIsolation()),
-        overrides.get("screen", Optional.empty()),
+        screen,
         overrides.get("filler", []),
         overrides.get("armor", []),
         overrides.get("jack", []),
@@ -436,7 +415,6 @@ class ConnectorValidationUtilsTest extends Specification {
         overrides.get("circulatingLossFactor", 0d),
         overrides.get("eddyCurrentLossFactor", 0d))
   }
-
   private static List<LayerInput> validIsolation() {
     [validLayer()]
   }
@@ -450,7 +428,7 @@ class ConnectorValidationUtilsTest extends Specification {
         overrides.get("outerDiameter", length(0.027d)),
         overrides.get("thermalResistivity", thermalResistivity(3.5d)),
         overrides.get("thermalCapacitance", thermalCapacitance(2.4d)),
-        overrides.get("area", Optional.empty()))
+        overrides.get("area", Optional.<ComparableQuantity<Area>>empty()))
   }
 
   private static ScreenLayerInput validScreenLayer(Map overrides = [:]) {
@@ -462,10 +440,10 @@ class ConnectorValidationUtilsTest extends Specification {
         overrides.get("outerDiameter", length(0.028d)),
         overrides.get("thermalResistivity", thermalResistivity(2.5d)),
         overrides.get("thermalCapacitance", thermalCapacitance(2.4d)),
-        overrides.get("area", Optional.empty()),
+        overrides.get("area", Optional.<ComparableQuantity<Area>>empty()),
         overrides.get("wiresNumber", 20),
         overrides.get("wireDiameter", length(0.0005d)),
-        overrides.get("lengthOfLay", Optional.empty()),
+        overrides.get("lengthOfLay", Optional.<ComparableQuantity<Length>>empty()),
         overrides.get("electricalResistivity", electricalResistivity(1.7e-7d)))
   }
 

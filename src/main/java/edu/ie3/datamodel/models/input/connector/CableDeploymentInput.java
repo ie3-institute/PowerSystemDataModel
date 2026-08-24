@@ -5,11 +5,12 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
-import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import javax.measure.quantity.Length;
+
 import org.jspecify.annotations.NonNull;
 import tech.units.indriya.ComparableQuantity;
 
@@ -35,8 +36,8 @@ public class CableDeploymentInput extends UniqueInputEntity {
    * @param distanceCables Distance between cable phases/cores from center to center.
    */
   public CableDeploymentInput(
-      UUID uuid,
-      UUID lineUuid,
+          UUID uuid,
+          UUID lineUuid,
       String layoutFormation,
       ComparableQuantity<Length> depthCables,
       ComparableQuantity<Length> distanceCables) {
@@ -48,12 +49,12 @@ public class CableDeploymentInput extends UniqueInputEntity {
   }
 
   public CableDeploymentInput(
-      UUID uuid,
-      UUID lineUuid,
-      String layoutFormation,
-      ComparableQuantity<Length> depthCables,
-      ComparableQuantity<Length> distanceCables,
-      Map<String, String> additionalInformation) {
+          UUID uuid,
+          UUID lineUuid,
+          String layoutFormation,
+          ComparableQuantity<Length> depthCables,
+          ComparableQuantity<Length> distanceCables,
+          Map<String, String> additionalInformation) {
     super(uuid);
     this.lineUuid = lineUuid;
     this.layoutFormation = layoutFormation;
@@ -80,23 +81,23 @@ public class CableDeploymentInput extends UniqueInputEntity {
 
   public CableDeploymentInputCopyBuilder copy() {
     return new CableDeploymentInputCopyBuilder(this);
-  }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof CableDeploymentInput that)) return false;
-    if (!super.equals(o)) return false;
-    return Objects.equals(lineUuid, that.lineUuid)
-        && Objects.equals(layoutFormation, that.layoutFormation)
-        && Objects.equals(depthCables, that.depthCables)
-        && Objects.equals(distanceCables, that.distanceCables);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), lineUuid, layoutFormation, depthCables, distanceCables);
-  }
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (!(o instanceof CableDeploymentInput that)) return false;
+      if (!super.equals(o)) return false;
+      return Objects.equals(lineUuid, that.lineUuid)
+              && Objects.equals(layoutFormation, that.layoutFormation)
+              && Objects.equals(depthCables, that.depthCables)
+              && Objects.equals(distanceCables, that.distanceCables);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(super.hashCode(), lineUuid, layoutFormation, depthCables, distanceCables);
+    }
 
   @Override
   public @NonNull String toString() {
@@ -115,6 +116,11 @@ public class CableDeploymentInput extends UniqueInputEntity {
         + ", additionalInformation="
         + getAdditionalInformation()
         + '}';
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(layoutFormation, depthCables, distanceCables);
   }
 
   public static class CableDeploymentInputCopyBuilder
