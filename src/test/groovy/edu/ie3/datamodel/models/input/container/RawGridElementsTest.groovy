@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.models.input.container
 
+import edu.ie3.datamodel.models.input.AssetInput
 import edu.ie3.test.common.ComplexTopology
 import edu.ie3.test.common.GridTestData
 import spock.lang.Specification
@@ -44,5 +45,33 @@ class RawGridElementsTest extends Specification {
     modifiedRawGrid.transformer3Ws.first() == GridTestData.transformerAtoBtoC
     modifiedRawGrid.switches.first() == GridTestData.switchAtoB
     modifiedRawGrid.measurementUnits.first() == GridTestData.measurementUnitInput
+
+    and:
+    UUID lineUuid = UUID.randomUUID()
+    def deployment = new Object()
+    Map<UUID, List<Object>> deploymentsByLineRaw = new HashMap<>()
+    deploymentsByLineRaw.put(lineUuid, new ArrayList<>(Collections.singletonList(deployment)))
+    RawGridElements base = new RawGridElements(new ArrayList<AssetInput>())
+
+    when:
+    RawGridElements elements = base.copy().cableDeploymentsByLine((Map) deploymentsByLineRaw).build()
+
+    then:
+    elements.getCableDeploymentsByLine().containsKey(lineUuid)
+    elements.getCableDeploymentsByLine().get(lineUuid).size() == 1
+
+    when:
+    def rawMap = (Map) elements.getCableDeploymentsByLine()
+    rawMap.put(UUID.randomUUID(), Collections.singletonList(deployment))
+
+    then:
+    thrown(UnsupportedOperationException)
+
+    when:
+    def entryList = (List) rawMap.get(lineUuid)
+    entryList.add(deployment)
+
+    then:
+    thrown(UnsupportedOperationException)
   }
 }

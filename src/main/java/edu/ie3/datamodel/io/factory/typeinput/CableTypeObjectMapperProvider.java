@@ -58,6 +58,8 @@ public final class CableTypeObjectMapperProvider {
   private static final String FIELD_CROSS_SECTION = "crossSection";
   private static final String FIELD_CROSS_SECTION_ALT = "cross_section";
 
+  private static final String FIELD_ADDITIONAL_INFORMATION = "additionalInformation";
+
   private static final Set<String> DIAMETER_FIELDS =
       Set.of(
           FIELD_DIAMETER,
@@ -113,7 +115,7 @@ public final class CableTypeObjectMapperProvider {
   private static void writeOptionalQuantityNumberField(
       JsonGenerator gen, String fieldName, Optional<? extends ComparableQuantity<?>> opt)
       throws IOException {
-    if (opt == null || opt.isEmpty()) gen.writeNullField(fieldName);
+    if (opt.isEmpty()) gen.writeNullField(fieldName);
     else gen.writeNumberField(fieldName, toBigDecimalFromQuantity(opt.get()));
   }
 
@@ -124,9 +126,8 @@ public final class CableTypeObjectMapperProvider {
 
     SimpleModule strictModule = new SimpleModule("StrictFieldUnitModule");
 
-    strictModule.addDeserializer(
-        (Class<ComparableQuantity<?>>) (Class<?>) ComparableQuantity.class,
-        new JsonDeserializer<ComparableQuantity<?>>() {
+    JsonDeserializer<ComparableQuantity<?>> quantityDeserializer =
+        new JsonDeserializer<>() {
           @Override
           public ComparableQuantity<?> deserialize(JsonParser p, DeserializationContext ctxt)
               throws IOException {
@@ -141,28 +142,27 @@ public final class CableTypeObjectMapperProvider {
             }
 
             JsonToken token = p.currentToken();
-            if (token == JsonToken.VALUE_NUMBER_FLOAT || token == JsonToken.VALUE_NUMBER_INT) {
+            if (token != null && token.isNumeric()) {
               BigDecimal bd = p.getDecimalValue();
               if (bd == null) return null;
               return Quantities.getQuantity(bd.doubleValue(), unit);
             }
 
             String text = p.getText();
-            if (text == null) return null;
-            text = text.trim();
-            if (text.isEmpty() || "null".equalsIgnoreCase(text)) {
-              return null;
+            boolean isNullish = text == null;
+            if (!isNullish) {
+              text = text.trim();
+              isNullish = text.isEmpty() || "null".equalsIgnoreCase(text);
             }
+            if (isNullish) return null;
 
             double value = Double.parseDouble(text);
             return Quantities.getQuantity(value, unit);
           }
-        });
+        };
 
-    strictModule.addSerializer(
-        (Class<ComparableQuantity<?>>) (Class<?>) ComparableQuantity.class,
-        new JsonSerializer<ComparableQuantity<?>>() {
-
+    JsonSerializer<ComparableQuantity<?>> quantitySerializer =
+        new JsonSerializer<>() {
           @Override
           public void serialize(
               ComparableQuantity<?> value, JsonGenerator gen, SerializerProvider serializers)
@@ -173,11 +173,16 @@ public final class CableTypeObjectMapperProvider {
               gen.writeNumber(toBigDecimalFromQuantity(value));
             }
           }
-        });
+        };
+
+    strictModule.addDeserializer(
+        (Class<ComparableQuantity<?>>) (Class<?>) ComparableQuantity.class, quantityDeserializer);
 
     strictModule.addSerializer(
-        ConductorInput.class,
-        new JsonSerializer<ConductorInput>() {
+        (Class<ComparableQuantity<?>>) (Class<?>) ComparableQuantity.class, quantitySerializer);
+
+    JsonSerializer<ConductorInput> conductorSerializer =
+        new JsonSerializer<>() {
           @Override
           public void serialize(
               ConductorInput value, JsonGenerator gen, SerializerProvider serializers)
@@ -198,7 +203,7 @@ public final class CableTypeObjectMapperProvider {
             writeQuantityNumberField(gen, FIELD_THERMAL_CAPACITANCE, value.thermalCapacitance());
             writeOptionalQuantityNumberField(gen, FIELD_AREA, value.area());
 
-            gen.writeObjectFieldStart("additionalInformation");
+            gen.writeObjectFieldStart(FIELD_ADDITIONAL_INFORMATION);
             if (value.getAdditionalInformation() != null) {
               for (Map.Entry<String, String> e : value.getAdditionalInformation().entrySet()) {
                 gen.writeStringField(e.getKey(), e.getValue());
@@ -208,11 +213,12 @@ public final class CableTypeObjectMapperProvider {
 
             gen.writeEndObject();
           }
-        });
+        };
 
-    strictModule.addSerializer(
-        LayerInput.class,
-        new JsonSerializer<LayerInput>() {
+    strictModule.addSerializer(ConductorInput.class, conductorSerializer);
+
+    JsonSerializer<LayerInput> layerSerializer =
+        new JsonSerializer<>() {
           @Override
           public void serialize(LayerInput value, JsonGenerator gen, SerializerProvider serializers)
               throws IOException {
@@ -231,7 +237,7 @@ public final class CableTypeObjectMapperProvider {
             writeQuantityNumberField(gen, FIELD_THERMAL_CAPACITANCE, value.thermalCapacitance());
             writeOptionalQuantityNumberField(gen, FIELD_AREA, value.area());
 
-            gen.writeObjectFieldStart("additionalInformation");
+            gen.writeObjectFieldStart(FIELD_ADDITIONAL_INFORMATION);
             if (value.getAdditionalInformation() != null) {
               for (Map.Entry<String, String> e : value.getAdditionalInformation().entrySet()) {
                 gen.writeStringField(e.getKey(), e.getValue());
@@ -241,11 +247,12 @@ public final class CableTypeObjectMapperProvider {
 
             gen.writeEndObject();
           }
-        });
+        };
 
-    strictModule.addSerializer(
-        ScreenLayerInput.class,
-        new JsonSerializer<ScreenLayerInput>() {
+    strictModule.addSerializer(LayerInput.class, layerSerializer);
+
+    JsonSerializer<ScreenLayerInput> screenLayerSerializer =
+        new JsonSerializer<>() {
           @Override
           public void serialize(
               ScreenLayerInput value, JsonGenerator gen, SerializerProvider serializers)
@@ -271,7 +278,7 @@ public final class CableTypeObjectMapperProvider {
             writeQuantityNumberField(
                 gen, FIELD_ELECTRICAL_RESISTIVITY, value.electricalResistivity());
 
-            gen.writeObjectFieldStart("additionalInformation");
+            gen.writeObjectFieldStart(FIELD_ADDITIONAL_INFORMATION);
             if (value.getAdditionalInformation() != null) {
               for (Map.Entry<String, String> e : value.getAdditionalInformation().entrySet()) {
                 gen.writeStringField(e.getKey(), e.getValue());
@@ -281,7 +288,9 @@ public final class CableTypeObjectMapperProvider {
 
             gen.writeEndObject();
           }
-        });
+        };
+
+    strictModule.addSerializer(ScreenLayerInput.class, screenLayerSerializer);
 
     objectMapper.registerModule(strictModule);
     return objectMapper;

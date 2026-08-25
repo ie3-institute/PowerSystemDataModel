@@ -13,9 +13,12 @@ import edu.ie3.datamodel.models.input.connector.type.CableMaterial;
 import edu.ie3.datamodel.models.input.connector.type.ConductorInput;
 import edu.ie3.datamodel.models.input.connector.type.LayerInput;
 import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput;
+import edu.ie3.util.quantities.PowerSystemUnits;
 import java.io.IOException;
 import java.util.*;
 import javax.measure.Unit;
+import javax.measure.quantity.Area;
+import javax.measure.quantity.Length;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
@@ -57,25 +60,26 @@ public class CableTypeParser {
         UUID uuid = UUID.fromString(element.get(FIELD_UUID).asText());
 
         String id = resolveId(element, new String[] {FIELD_ID, FIELD_NAME});
-        if (id == null)
+        if (id == null) {
           throw new ParsingException("Cannot parse LayerInput: missing id in " + element);
+        }
 
         CableMaterial material = parseMaterial(element, "LayerInput");
 
-        ComparableQuantity<javax.measure.quantity.Length> innerDiameter =
+        ComparableQuantity<Length> innerDiameter =
             parseQuantityField(
                 element,
                 "innerDiameter",
-                javax.measure.quantity.Length.class,
-                edu.ie3.util.quantities.PowerSystemUnits.MILLIMETRE,
+                Length.class,
+                PowerSystemUnits.MILLIMETRE,
                 "Cannot parse LayerInput: missing innerDiameter in " + element);
 
-        ComparableQuantity<javax.measure.quantity.Length> outerDiameter =
+        ComparableQuantity<Length> outerDiameter =
             parseQuantityField(
                 element,
                 "outerDiameter",
-                javax.measure.quantity.Length.class,
-                edu.ie3.util.quantities.PowerSystemUnits.MILLIMETRE,
+                Length.class,
+                PowerSystemUnits.MILLIMETRE,
                 "Cannot parse LayerInput: missing outerDiameter in " + element);
 
         ComparableQuantity<edu.ie3.util.quantities.interfaces.ThermalResistivity>
@@ -84,7 +88,7 @@ public class CableTypeParser {
                     element,
                     FIELD_THERMAL_RESISTIVITY,
                     edu.ie3.util.quantities.interfaces.ThermalResistivity.class,
-                    edu.ie3.util.quantities.PowerSystemUnits.KELVIN_METRE_PER_WATT,
+                    PowerSystemUnits.KELVIN_METRE_PER_WATT,
                     "Cannot parse LayerInput: missing thermalResistivity in " + element);
 
         ComparableQuantity<edu.ie3.util.quantities.interfaces.ThermalCapacitance>
@@ -93,19 +97,20 @@ public class CableTypeParser {
                     element,
                     FIELD_THERMAL_CAPACITANCE,
                     edu.ie3.util.quantities.interfaces.ThermalCapacitance.class,
-                    edu.ie3.util.quantities.PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN,
+                    PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN,
                     "Cannot parse LayerInput: missing thermalCapacitance in " + element);
 
-        ComparableQuantity<javax.measure.quantity.Area> area = null;
-        if (element.has(FIELD_AREA) && !element.get(FIELD_AREA).isNull()) {
-          String a = element.get(FIELD_AREA).asText();
-          if (a != null && !a.isBlank() && !"null".equalsIgnoreCase(a)) {
+        ComparableQuantity<Area> area = null;
+        String a =
+            (element.has(FIELD_AREA) && !element.get(FIELD_AREA).isNull())
+                ? element.get(FIELD_AREA).asText()
+                : null;
+        if (a != null) {
+          a = a.trim();
+          if (!a.isEmpty() && !"null".equalsIgnoreCase(a)) {
             try {
               area =
-                  Quantities.getQuantity(
-                          Double.parseDouble(a),
-                          edu.ie3.util.quantities.PowerSystemUnits.SQUARE_MILLIMETRE)
-                      .asType(javax.measure.quantity.Area.class);
+                  Quantities.getQuantity(Double.parseDouble(a), PowerSystemUnits.SQUARE_MILLIMETRE);
             } catch (NumberFormatException nfe) {
               throw new ParsingException(
                   "Cannot parse LayerInput: invalid area value in " + element, nfe);
@@ -137,43 +142,41 @@ public class CableTypeParser {
 
     try {
       JsonNode node = unwrapTextual(mapper.readTree(json));
-
-      if (node.isObject() && (!node.has(FIELD_UUID) || node.get(FIELD_UUID).isNull())) {
-        ((ObjectNode) node).put(FIELD_UUID, java.util.UUID.randomUUID().toString());
-      }
+      if (node.isObject()) ensureUuid((ObjectNode) node);
 
       JsonNode workingNode = node;
-      if (!workingNode.has(FIELD_MATERIAL) || workingNode.get(FIELD_MATERIAL).isNull()) {
-        // try to find a child node that provides the material value
+      JsonNode materialNode = workingNode.get(FIELD_MATERIAL);
+      if (materialNode == null || materialNode.isNull()) {
         for (JsonNode child : node) {
-          if (child != null && child.has(FIELD_MATERIAL) && !child.get(FIELD_MATERIAL).isNull()) {
+          JsonNode childMaterialNode = child == null ? null : child.get(FIELD_MATERIAL);
+          if (childMaterialNode != null && !childMaterialNode.isNull()) {
             workingNode = child;
             break;
           }
         }
       }
 
-      java.util.UUID uuid = java.util.UUID.fromString(workingNode.get(FIELD_UUID).asText());
+      UUID uuid = UUID.fromString(workingNode.get(FIELD_UUID).asText());
       String id = resolveId(workingNode, new String[] {FIELD_ID, FIELD_NAME});
       if (id == null)
         throw new ParsingException("Cannot parse ScreenLayerInput: missing id in " + json);
 
       CableMaterial material = parseMaterial(workingNode, "ScreenLayerInput");
 
-      ComparableQuantity<javax.measure.quantity.Length> innerDiameter =
+      ComparableQuantity<Length> innerDiameter =
           parseQuantityField(
               workingNode,
               "innerDiameter",
-              javax.measure.quantity.Length.class,
-              edu.ie3.util.quantities.PowerSystemUnits.MILLIMETRE,
+              Length.class,
+              PowerSystemUnits.MILLIMETRE,
               "Cannot parse ScreenLayerInput: missing innerDiameter in " + json);
 
-      ComparableQuantity<javax.measure.quantity.Length> outerDiameter =
+      ComparableQuantity<Length> outerDiameter =
           parseQuantityField(
               workingNode,
               "outerDiameter",
-              javax.measure.quantity.Length.class,
-              edu.ie3.util.quantities.PowerSystemUnits.MILLIMETRE,
+              Length.class,
+              PowerSystemUnits.MILLIMETRE,
               "Cannot parse ScreenLayerInput: missing outerDiameter in " + json);
 
       ComparableQuantity<edu.ie3.util.quantities.interfaces.ThermalResistivity> thermalResistivity =
@@ -181,7 +184,7 @@ public class CableTypeParser {
               workingNode,
               FIELD_THERMAL_RESISTIVITY,
               edu.ie3.util.quantities.interfaces.ThermalResistivity.class,
-              edu.ie3.util.quantities.PowerSystemUnits.KELVIN_METRE_PER_WATT,
+              PowerSystemUnits.KELVIN_METRE_PER_WATT,
               "Cannot parse ScreenLayerInput: missing thermalResistivity in " + json);
 
       ComparableQuantity<edu.ie3.util.quantities.interfaces.ThermalCapacitance> thermalCapacitance =
@@ -189,19 +192,19 @@ public class CableTypeParser {
               workingNode,
               FIELD_THERMAL_CAPACITANCE,
               edu.ie3.util.quantities.interfaces.ThermalCapacitance.class,
-              edu.ie3.util.quantities.PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN,
+              PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN,
               "Cannot parse ScreenLayerInput: missing thermalCapacitance in " + json);
 
-      ComparableQuantity<javax.measure.quantity.Area> area = null;
-      if (node.has(FIELD_AREA) && !node.get(FIELD_AREA).isNull()) {
-        String a = node.get(FIELD_AREA).asText();
-        if (a != null && !a.isBlank() && !"null".equalsIgnoreCase(a)) {
+      ComparableQuantity<Area> area = null;
+      JsonNode areaNode = node.get(FIELD_AREA);
+      String areaText = areaNode == null || areaNode.isNull() ? null : areaNode.asText();
+      if (areaText != null) {
+        areaText = areaText.trim();
+        if (!areaText.isEmpty() && !"null".equalsIgnoreCase(areaText)) {
           try {
             area =
                 Quantities.getQuantity(
-                        Double.parseDouble(a),
-                        edu.ie3.util.quantities.PowerSystemUnits.SQUARE_MILLIMETRE)
-                    .asType(javax.measure.quantity.Area.class);
+                    Double.parseDouble(areaText), PowerSystemUnits.SQUARE_MILLIMETRE);
           } catch (NumberFormatException nfe) {
             throw new ParsingException(
                 "Cannot parse ScreenLayerInput: invalid area value in " + json, nfe);
@@ -209,36 +212,39 @@ public class CableTypeParser {
         }
       }
 
-      int wiresNumber;
-      if (node.has(FIELD_WIRES_NUMBER) && !node.get(FIELD_WIRES_NUMBER).isNull()) {
-        try {
-          wiresNumber = node.get(FIELD_WIRES_NUMBER).asInt();
-        } catch (Exception e) {
-          throw new ParsingException(
-              "Cannot parse ScreenLayerInput: invalid " + FIELD_WIRES_NUMBER + " in " + json, e);
-        }
-      } else {
+      JsonNode wiresNode = node.get(FIELD_WIRES_NUMBER);
+      if (wiresNode == null || wiresNode.isNull()) {
         throw new ParsingException(
             "Cannot parse ScreenLayerInput: missing " + FIELD_WIRES_NUMBER + " in " + json);
       }
+      int wiresNumber;
+      try {
+        wiresNumber = wiresNode.asInt();
+      } catch (Exception e) {
+        throw new ParsingException(
+            "Cannot parse ScreenLayerInput: invalid " + FIELD_WIRES_NUMBER + " in " + json, e);
+      }
 
-      ComparableQuantity<javax.measure.quantity.Length> wireDiameter =
+      ComparableQuantity<Length> wireDiameter =
           parseQuantityField(
               node,
               "wireDiameter",
-              javax.measure.quantity.Length.class,
-              edu.ie3.util.quantities.PowerSystemUnits.MILLIMETRE,
+              Length.class,
+              PowerSystemUnits.MILLIMETRE,
               "Cannot parse ScreenLayerInput: missing wireDiameter in " + json);
 
-      ComparableQuantity<javax.measure.quantity.Length> lengthOfLay = null;
-      if (node.has(FIELD_LENGTH_OF_LAY) && !node.get(FIELD_LENGTH_OF_LAY).isNull()) {
-        String ll = node.get(FIELD_LENGTH_OF_LAY).asText();
-        if (ll != null && !ll.isBlank() && !"null".equalsIgnoreCase(ll)) {
+      ComparableQuantity<Length> lengthOfLay = null;
+      JsonNode lengthOfLayNode = node.get(FIELD_LENGTH_OF_LAY);
+      String lengthOfLayText =
+          lengthOfLayNode == null || lengthOfLayNode.isNull() ? null : lengthOfLayNode.asText();
+      if (lengthOfLayText != null) {
+        lengthOfLayText = lengthOfLayText.trim();
+        if (!lengthOfLayText.isEmpty() && !"null".equalsIgnoreCase(lengthOfLayText)) {
           try {
             lengthOfLay =
                 Quantities.getQuantity(
-                        Double.parseDouble(ll), edu.ie3.util.quantities.PowerSystemUnits.MILLIMETRE)
-                    .asType(javax.measure.quantity.Length.class);
+                        Double.parseDouble(lengthOfLayText), PowerSystemUnits.MILLIMETRE)
+                    .asType(Length.class);
           } catch (NumberFormatException nfe) {
             throw new ParsingException(
                 "Cannot parse ScreenLayerInput: invalid lengthOfLay value in " + json, nfe);
@@ -252,7 +258,7 @@ public class CableTypeParser {
                   node,
                   "electricalResistivity",
                   edu.ie3.util.quantities.interfaces.ElectricalResistivity.class,
-                  edu.ie3.util.quantities.PowerSystemUnits.OHM_METRE,
+                  PowerSystemUnits.OHM_METRE,
                   "Cannot parse ScreenLayerInput: missing electricalResistivity in " + json);
 
       return new ScreenLayerInput(
@@ -263,10 +269,10 @@ public class CableTypeParser {
           outerDiameter,
           thermalResistivity,
           thermalCapacitance,
-          java.util.Optional.ofNullable(area),
+          Optional.ofNullable(area),
           wiresNumber,
           wireDiameter,
-          java.util.Optional.ofNullable(lengthOfLay),
+          Optional.ofNullable(lengthOfLay),
           electricalResistivity);
     } catch (IOException e) {
       throw new ParsingException(
@@ -281,30 +287,30 @@ public class CableTypeParser {
       JsonNode node = unwrapTextual(mapper.readTree(json));
 
       if (node.isObject() && (!node.has(FIELD_UUID) || node.get(FIELD_UUID).isNull())) {
-        ((ObjectNode) node).put(FIELD_UUID, java.util.UUID.randomUUID().toString());
+        ((ObjectNode) node).put(FIELD_UUID, UUID.randomUUID().toString());
       }
 
-      java.util.UUID uuid = java.util.UUID.fromString(node.get(FIELD_UUID).asText());
+      UUID uuid = UUID.fromString(node.get(FIELD_UUID).asText());
       String id = resolveId(node, new String[] {FIELD_ID, FIELD_NAME});
       if (id == null)
         throw new ParsingException("Cannot parse ConductorInput: missing id in " + json);
 
       CableMaterial material = parseMaterial(node, "ConductorInput");
 
-      ComparableQuantity<javax.measure.quantity.Area> crossSection =
+      ComparableQuantity<Area> crossSection =
           parseQuantityField(
               node,
               "crossSection",
-              javax.measure.quantity.Area.class,
-              edu.ie3.util.quantities.PowerSystemUnits.SQUARE_MILLIMETRE,
+              Area.class,
+              PowerSystemUnits.SQUARE_MILLIMETRE,
               "Cannot parse ConductorInput: missing crossSection in " + json);
 
-      ComparableQuantity<javax.measure.quantity.Length> diameter =
+      ComparableQuantity<Length> diameter =
           parseQuantityField(
               node,
               "diameter",
-              javax.measure.quantity.Length.class,
-              edu.ie3.util.quantities.PowerSystemUnits.MILLIMETRE,
+              Length.class,
+              PowerSystemUnits.MILLIMETRE,
               "Cannot parse ConductorInput: missing diameter in " + json);
 
       boolean isCompacted =
@@ -317,7 +323,7 @@ public class CableTypeParser {
               node,
               FIELD_THERMAL_RESISTIVITY,
               edu.ie3.util.quantities.interfaces.ThermalResistivity.class,
-              edu.ie3.util.quantities.PowerSystemUnits.KELVIN_METRE_PER_WATT,
+              PowerSystemUnits.KELVIN_METRE_PER_WATT,
               "Cannot parse ConductorInput: missing thermalResistivity in " + json);
 
       ComparableQuantity<edu.ie3.util.quantities.interfaces.ThermalCapacitance> thermalCapacitance =
@@ -325,19 +331,16 @@ public class CableTypeParser {
               node,
               FIELD_THERMAL_CAPACITANCE,
               edu.ie3.util.quantities.interfaces.ThermalCapacitance.class,
-              edu.ie3.util.quantities.PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN,
+              PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN,
               "Cannot parse ConductorInput: missing thermalCapacitance in " + json);
 
-      ComparableQuantity<javax.measure.quantity.Area> area = null;
+      ComparableQuantity<Area> area = null;
       if (node.has(FIELD_AREA) && !node.get(FIELD_AREA).isNull()) {
         String a = node.get(FIELD_AREA).asText();
         if (a != null && !a.isBlank() && !"null".equalsIgnoreCase(a)) {
           try {
             area =
-                Quantities.getQuantity(
-                        Double.parseDouble(a),
-                        edu.ie3.util.quantities.PowerSystemUnits.SQUARE_MILLIMETRE)
-                    .asType(javax.measure.quantity.Area.class);
+                Quantities.getQuantity(Double.parseDouble(a), PowerSystemUnits.SQUARE_MILLIMETRE);
           } catch (NumberFormatException nfe) {
             throw new ParsingException(
                 "Cannot parse ConductorInput: invalid area value in " + json, nfe);
@@ -368,7 +371,7 @@ public class CableTypeParser {
 
   private void ensureUuid(ObjectNode node) {
     if (!node.has(FIELD_UUID) || node.get(FIELD_UUID).isNull())
-      node.put(FIELD_UUID, java.util.UUID.randomUUID().toString());
+      node.put(FIELD_UUID, UUID.randomUUID().toString());
   }
 
   private String resolveId(JsonNode node, String[] candidates) {
@@ -393,7 +396,6 @@ public class CableTypeParser {
     }
   }
 
-  @SuppressWarnings("unchecked")
   private <T extends javax.measure.Quantity<T>> ComparableQuantity<T> parseQuantityField(
       JsonNode node, String fieldName, Class<T> quantityClass, Unit<?> unit, String missingMessage)
       throws ParsingException {

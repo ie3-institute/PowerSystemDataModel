@@ -18,7 +18,7 @@ import javax.measure.quantity.Length;
 import org.junit.jupiter.api.Test;
 import tech.units.indriya.quantity.Quantities;
 
-public class CableTypeObjectMapperProviderTest {
+class CableTypeObjectMapperProviderTest {
 
   public static class Holder {
     public tech.units.indriya.ComparableQuantity<Length> diameter;
@@ -26,7 +26,7 @@ public class CableTypeObjectMapperProviderTest {
   }
 
   @Test
-  public void conductorSerializationProducesCompactStrings() throws Exception {
+  void conductorSerializationProducesCompactStrings() throws Exception {
     ObjectMapper mapper = CableTypeObjectMapperProvider.createObjectMapper();
 
     ConductorInput conductor =
@@ -63,7 +63,7 @@ public class CableTypeObjectMapperProviderTest {
   }
 
   @Test
-  public void comparableQuantityDeserializerRespectsFieldNameUnitMapping() throws Exception {
+  void comparableQuantityDeserializerRespectsFieldNameUnitMapping() throws Exception {
     ObjectMapper mapper = CableTypeObjectMapperProvider.createObjectMapper();
 
     String json = "{\"diameter\": \"5\", \"crossSection\": \"10\"}";
