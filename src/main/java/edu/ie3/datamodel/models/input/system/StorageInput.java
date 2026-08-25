@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -18,21 +18,22 @@ import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes a battery storage */
+/** Describes a battery storage. */
 public class StorageInput extends SystemParticipantInput implements HasType {
-  /** Type of this storage, containing default values for storages of this kind */
+  /** Type of this storage, containing default values for storages of this kind. */
   private final StorageTypeInput type;
 
   /**
-   * Constructor for an operated storage
+   * Constructor for an operated photovoltaic plant.
    *
    * @param uuid of the input entity
    * @param id of the asset
    * @param operator of the asset
-   * @param operationTime time for which the entity is operated
+   * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
-   * @param qCharacteristics Description of a reactive power characteristic for integrated inverter
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param controllingEm The {@link EmInput} controlling this system participant. Null, if not
+   *     applicable.
    * @param type of storage
    */
   public StorageInput(
@@ -42,22 +43,23 @@ public class StorageInput extends SystemParticipantInput implements HasType {
       OperationTime operationTime,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
+      EmInput controllingEm,
       StorageTypeInput type) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    super(uuid, id, operator, operationTime, node, qCharacteristics, controllingEm);
     this.type = type;
   }
 
   /**
-   * Constructor for an operated storage
+   * Constructor for an operated photovoltaic plant.
    *
    * @param uuid of the input entity
    * @param id of the asset
    * @param operator of the asset
-   * @param operationTime time for which the entity is operated
+   * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
-   * @param qCharacteristics Description of a reactive power characteristic for integrated inverter
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param controllingEm The {@link EmInput} controlling this system participant. Null, if not
+   *     applicable.
    * @param type of storage
    * @param additionalInformation That were provided by the source
    */
@@ -68,22 +70,23 @@ public class StorageInput extends SystemParticipantInput implements HasType {
       OperationTime operationTime,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
+      EmInput controllingEm,
       StorageTypeInput type,
       Map<String, String> additionalInformation) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    super(uuid, id, operator, operationTime, node, qCharacteristics, controllingEm);
     this.type = type;
     setAdditionalInformation(additionalInformation);
   }
 
   /**
-   * Constructor for an operated, always on storage
+   * Constructor for an operated photovoltaic plant.
    *
    * @param uuid of the input entity
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param controllingEm The {@link EmInput} controlling this system participant. Null, if not
+   *     applicable.
    * @param type of storage
    */
   public StorageInput(
@@ -91,13 +94,12 @@ public class StorageInput extends SystemParticipantInput implements HasType {
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
+      EmInput controllingEm,
       StorageTypeInput type) {
-    super(uuid, id, node, qCharacteristics, em);
+    super(uuid, id, node, qCharacteristics, controllingEm);
     this.type = type;
   }
 
-  @Override
   public StorageTypeInput getType() {
     return type;
   }
@@ -105,10 +107,6 @@ public class StorageInput extends SystemParticipantInput implements HasType {
   @Override
   public ComparableQuantity<Power> sRated() {
     return this.type.getsRated();
-  }
-
-  public StorageInputCopyBuilder copy() {
-    return new StorageInputCopyBuilder(this);
   }
 
   @Override
@@ -137,32 +135,29 @@ public class StorageInput extends SystemParticipantInput implements HasType {
         + getOperationTime()
         + ", node="
         + getNode().getUuid()
-        + ", qCharacteristics='"
+        + ", qCharacteristics="
         + getqCharacteristics()
-        + "', em="
-        + getControllingEm()
+        + ", controllingEm="
+        + getControllingEm().map(e -> e.getUuid().toString()).orElse("")
         + ", type="
         + type.getUuid()
         + ", additionalInformation="
         + getAdditionalInformation()
-        + '}';
+        + "}";
   }
 
-  /**
-   * A builder pattern based approach to create copies of {@link StorageInput} entities with altered
-   * field values. For detailed field descriptions refer to java docs of {@link StorageInput}
-   *
-   * @version 0.1
-   * @since 05.06.20
-   */
+  @Override
+  public StorageInputCopyBuilder copy() {
+    return new StorageInputCopyBuilder(this);
+  }
+
   public static class StorageInputCopyBuilder
       extends SystemParticipantInputCopyBuilder<StorageInputCopyBuilder> {
-
     private StorageTypeInput type;
 
-    private StorageInputCopyBuilder(StorageInput entity) {
+    protected StorageInputCopyBuilder(StorageInput entity) {
       super(entity);
-      this.type = entity.getType();
+      this.type = entity.type;
     }
 
     public StorageInputCopyBuilder type(StorageTypeInput type) {
@@ -170,8 +165,12 @@ public class StorageInput extends SystemParticipantInput implements HasType {
       return thisInstance();
     }
 
+    protected StorageTypeInput getType() {
+      return type;
+    }
+
     @Override
-    public StorageInputCopyBuilder scale(Double factor) {
+    public StorageInputCopyBuilder scale(double factor) {
       type(type.copy().scale(factor).build());
       return thisInstance();
     }
@@ -185,8 +184,9 @@ public class StorageInput extends SystemParticipantInput implements HasType {
           getOperationTime(),
           getNode(),
           getqCharacteristics(),
-          getEm(),
-          type);
+          getControllingEm(),
+          type,
+          getAdditionalInformation());
     }
 
     @Override

@@ -30,7 +30,7 @@ models:
           javaDoc: "The operator of this asset."
         - name: operationTime
           type: OperationTime
-          keys: [operatesFrom, operatesUntil]
+          keys: [operationStart, operationEnd]
           required: true # TODO: Change this to false
           javaDoc: "Time for which the entity is operated."
 
@@ -65,6 +65,430 @@ models:
           type: String
           javaDoc: "The id (=name) of this operator."
 
+    MeasurementUnitInput:
+      name: MeasurementUnitInput
+      abstract: false
+      extends: AssetInput
+      components:
+        - name: node
+          type: NodeInput
+          javaDoc: "Grid node, the asset is attached to."
+        - name: vMag
+          type: bool
+          javaDoc: "True, if the voltage magnitude is measured."
+        - name: vAng
+          type: bool
+          javaDoc: "True, if the voltage angle is measured."
+        - name: p
+          type: bool
+          javaDoc: "True, if the nodal residual active power is measured."
+        - name: q
+          type: bool
+          javaDoc: "True, if the reactive power is measured."
+
+    EmInput:
+      name: EmInput
+      extends: AssetInput
+      abstract: false
+      components:
+        - name: controlStrategy
+          type: String
+          javaDoc: "Reference to the control strategy to be used for this model."
+        - name: controllingEm
+          type: EmInput
+          nested: true
+          required: false
+          javaDoc: "Optional UUID of the parent {@link EmInput} that is controlling this em unit. If null, this em
+                  unit is not em-controlled."
+
+    ConnectorInput:
+      name: ConnectorInput
+      extends: AssetInput
+      components:
+        - name: nodeA
+          type: NodeInput
+          nested: true
+          javaDoc: "Grid node at one side of the connector."
+        - name: nodeB
+          type: NodeInput
+          nested: true
+          javaDoc: "Grid node at the other side of the connector."
+        - name: parallelDevices
+          type: int
+          javaDoc: "Amount of parallel devices."
+
+    ConductorInput:
+      name: ConductorInput
+      extends: AssetInput
+      abstract: false
+      components:
+        - name: material
+          type: CableMaterial
+        - name: crossSection
+          type: Area
+        - name: diameter
+          type: Length
+        - name: isCompacted
+          type: bool
+        - name: thermalResistivity
+          type: ThermalResistivity
+        - name: thermalCapacitance
+          type: ThermalCapacitance
+        - name: area
+          type: Area
+          required: false
+
+    LineInput:
+      name: LineInput
+      extends: ConnectorInput
+      abstract: false
+      components:
+        - name: type
+          type: LineTypeInput
+          nested: true
+          javaDoc: "Type of this line, containing default values for lines of this kind."
+        - name: length
+          type: Length
+          javaDoc: "Length of this line."
+        - name: geoPosition
+          type: LineString
+          javaDoc: "Coordinates of this line."
+        - name: olmCharacteristic
+          type: OlmCharacteristicInput
+          javaDoc: "Description of an optional weather dependent operation curve."
+
+    SwitchInput:
+      name: SwitchInput
+      extends: ConnectorInput
+      abstract: false
+      unsupported: [parallelDevices]
+      components:
+        - name: closed
+          type: bool
+          javaDoc: "Is the switching state 'closed'?"
+
+    TransformerInput:
+      name: TransformerInput
+      extends: ConnectorInput
+      components:
+        - name: tapPos
+          type: int
+          javaDoc: "Tap position of this transformer."
+        - name: autoTap
+          type: bool
+          javaDoc: "True, if the tap position of the transformer is adapted automatically."
+
+    Transformer2WInput:
+      name: Transformer2WInput
+      extends: TransformerInput
+      abstract: false
+      components:
+        - name: type
+          type: Transformer2WTypeInput
+          nested: true
+          javaDoc: "Type of this 2W transformer, containing default values for transformers of this kind."
+
+    Transformer3WInput:
+      name: Transformer3WInput
+      extends: TransformerInput
+      abstract: false
+      components:
+        - name: type
+          type: Transformer3WTypeInput
+          nested: true
+          javaDoc: "Type of this 3W transformer, containing default values for transformers of this kind."
+        - name: nodeC
+          type: NodeInput
+          nested: true
+          javaDoc: "The lower voltage node."
+        - name: nodeInternal
+          type: NodeInput
+          nested: true
+          javaDoc: "Internal node of the transformers T equivalent circuit."
+
+    SystemParticipantInput:
+      name: SystemParticipantInput
+      extends: AssetInput
+      components:
+        - name: node
+          type: NodeInput
+          nested: true
+          javaDoc: "The node that the asset is connected to."
+        - name: qCharacteristics
+          type: ReactivePowerCharacteristic
+          javaDoc: "Description of a reactive power characteristic. For details see further documentation."
+        - name: controllingEm
+          type: EmInput
+          nested: true
+          required: false
+          javaDoc: "Optional {@link EmInput} that is controlling this system participant. If null, this system participant is not em-controlled."
+
+    AcInput:
+      name: AcInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: type
+          type: AcTypeInput
+          nested: true
+          javaDoc: "Type of this air condition, containing default values for air condition of this kind."
+        - name: thermalBus
+          type: ThermalBusInput
+          nested: true
+          javaDoc: "The thermal bus, this model is connected to."
+
+    BmInput:
+      name: BmInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: type
+          type: BmTypeInput
+          nested: true
+          javaDoc: "Type of this BM plant, containing default values for BM plants of this kind."
+        - name: costControlled
+          type: bool
+          javaDoc: "Does this plant increase the output power if the revenues exceed the energy generation costs?"
+        - name: feedInTariff
+          type: EnergyPrice
+          javaDoc: "Granted feed in tariff (typically in €/MWh)."
+
+    ChpInput:
+      name: ChpInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: thermalBus
+          type: ThermalBusInput
+          nested: true
+          javaDoc: "The thermal bus, this model is connected to."
+        - name: type
+          type: ChpTypeInput
+          nested: true
+          javaDoc: "Type of this CHP plant, containing default values for CHP plants of this kind."
+        - name: thermalStorage
+          type: ThermalStorageInput
+          nested: true
+          javaDoc: "Thermal storage model."
+
+    EvcsInput:
+      name: EvcsInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: type
+          type: ChargingPointType
+          javaDoc: "Type of all installed charging points."
+        - name: chargingPoints
+          type: int
+          javaDoc: "Number of installed charging points."
+        - name: cosPhiRated
+          type: double
+          javaDoc: "Rated power factor."
+        - name: locationType
+          type: EvcsLocationType
+          javaDoc: "Evcs location type."
+        - name: v2gSupport
+          type: bool
+          javaDoc: "Whether charging station supports vehicle to grid."
+
+    EvInput:
+      name: EvInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: type
+          type: EvTypeInput
+          nested: true
+          javaDoc: "Type of this EV, containing default values for EVs of this kind."
+
+    FixedFeedInInput:
+      name: FixedFeedInInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: sRated
+          type: Power
+          javaDoc: "Rated apparent power (typically in kVA)."
+        - name: cosPhiRated
+          type: double
+          javaDoc: "Rated power factor."
+
+    HpInput:
+      name: HpInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: type
+          type: HpTypeInput
+          nested: true
+          javaDoc: "Type of this heat pump, containing default values for heat pump of this kind."
+        - name: thermalBus
+          type: ThermalBusInput
+          nested: true
+          javaDoc: "The thermal bus, this model is connected to."
+
+    LoadInput:
+      name: LoadInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: loadProfile
+          type: PowerProfileKey
+          javaDoc: "Reference to a load profile to use for the model. If you intend to assign specific values,\n
+                 create an timeSeries and assign it via an external mapping (e.g. by providing a global time\n
+                 series for a specific load profile) to this model."
+        - name: eConsAnnual
+          type: Energy
+          javaDoc: "Annually consumed energy (typically in kWh)."
+        - name: sRated
+          type: Power
+          javaDoc: "Active Power (typically in kVA)."
+        - name: cosPhiRated
+          type: double
+          javaDoc: "Rated power factor."
+
+    PvInput:
+      name: PvInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: albedo
+          type: double
+          javaDoc: "Albedo value (typically a value between 0 and 1)."
+        - name: azimuth
+          type: DegreeGeom
+          javaDoc: "Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)."
+        - name: etaConv
+          type: Percent
+          javaDoc: "Efficiency of converter (typically in %)."
+        - name: elevationAngle
+          type: DegreeGeom
+          javaDoc: "Tilted inclination from horizontal (typically in °)."
+        - name: kG
+          type: double
+          javaDoc: "Generator correction factor merging different technical influences."
+        - name: kT
+          type: double
+          javaDoc: "Temperature correction factor."
+        - name: sRated
+          type: Power
+          javaDoc: "Rated apparent power (typically in kVA)."
+        - name: cosPhiRated
+          type: double
+          javaDoc: "Rated power factor."
+
+    StorageInput:
+      name: StorageInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: type
+          type: StorageTypeInput
+          nested: true
+          javaDoc: "Type of this storage, containing default values for storages of this kind."
+
+    WecInput:
+      name: WecInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: type
+          type: WecTypeInput
+          nested: true
+          javaDoc: "Type of this WEC, containing default values for WEC assets of this kind."
+
+    ThermalInput:
+      name: ThermalInput
+      extends: AssetInput
+
+    ThermalUnitInput:
+      name: ThermalUnitInput
+      extends: ThermalInput
+      components:
+        - name: thermalBus
+          type: ThermalBusInput
+          nested: true
+          javaDoc: "The thermal bus, a thermal unit is connected to."
+
+    ThermalStorageInput:
+      name: ThermalStorageInput
+      extends: ThermalUnitInput
+
+    AbstractStorageInput:
+      name: AbstractStorageInput
+      extends: ThermalStorageInput
+      components:
+        - name: storageVolumeLvl
+          type: Volume
+          javaDoc: "Available storage volume (typically in m³)."
+        - name: inletTemp
+          type: Temperature
+          javaDoc: "Temperature of the inlet (typically in C)."
+        - name: returnTemp
+          type: Temperature
+          javaDoc: "Temperature of the outlet (typically in C)."
+        - name: c
+          type: SpecificHeatCapacity
+          javaDoc: "Specific heat capacity of the storage medium (typically in kWh/K*m³)."
+        - name: pThermalMax
+          type: Power
+          javaDoc: "Maximum permissible thermal power (typically in kW)."
+
+    CylindricalStorageInput:
+      name: CylindricalStorageInput
+      extends: AbstractStorageInput
+      abstract: false
+
+    DomesticHotWaterStorageInput:
+      name: DomesticHotWaterStorageInput
+      extends: AbstractStorageInput
+      abstract: false
+
+    ThermalBusInput:
+      name: ThermalBusInput
+      extends: ThermalInput
+      abstract: false
+
+    ThermalSinkInput:
+      name: ThermalSinkInput
+      extends: ThermalUnitInput
+
+    ThermalHouseInput:
+      name: ThermalHouseInput
+      extends: ThermalSinkInput
+      abstract: false
+      components:
+        - name: ethLosses
+          type: ThermalConductance
+          javaDoc: "Thermal, transitional losses of the included thermal house model (typically in kW/K)."
+        - name: ethCapa
+          type: HeatCapacity
+          javaDoc: "Thermal capacity of the included thermal house model (typically in kWh/K)."
+        - name: targetTemperature
+          type: Temperature
+          javaDoc: "Desired target temperature of the thermal house model (typically in °C)."
+        - name: upperTemperatureLimit
+          type: Temperature
+          javaDoc: "Upper boundary temperature of the thermal house model (typically in °C)."
+        - name: lowerTemperatureLimit
+          type: Temperature
+          javaDoc: "Lower boundary temperature of the thermal house model (typically in °C)."
+        - name: housingType
+          type: String
+          javaDoc: "Type of the building, e.g. house or flat."
+        - name: numberOfInhabitants
+          type: double
+          javaDoc: "Number of people living in the building, double to allow proper scaling."
+
+    IdCoordinateInput:
+      name: IdCoordinateInput
+      abstract: false
+      components:
+        - name: id
+          type: int
+        - name: point
+          type: Point
 
   typeInput:
     AssetTypeInput:

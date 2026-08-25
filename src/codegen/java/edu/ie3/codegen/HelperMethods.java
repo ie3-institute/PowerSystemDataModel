@@ -97,7 +97,7 @@ public interface HelperMethods {
    * @return the name of the getter method
    */
   default String defaultGetterName(String name, String type, GenerationConfig genConfig) {
-    if (genConfig.fieldNameGetters) {
+    if (genConfig.fieldNameGetters.contains(name)) {
       // if we should use the field name directly
       return name;
     }

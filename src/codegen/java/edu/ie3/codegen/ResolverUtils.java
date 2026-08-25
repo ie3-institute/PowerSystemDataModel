@@ -152,7 +152,15 @@ public class ResolverUtils {
                 classes.put(name, ClassName.get("edu.ie3.datamodel.models.input.connector", name)));
 
     // model.input.conector.type package
-    Stream.of("LineTypeInput", "Transformer2WTypeInput", "Transformer3WTypeInput")
+    Stream.of(
+            "CableMaterial",
+            "CableTypeInput",
+            "ConductorInput",
+            "LayerInput",
+            "LineTypeInput",
+            "ScreenLayerInput",
+            "Transformer2WTypeInput",
+            "Transformer3WTypeInput")
         .forEach(
             name ->
                 classes.put(
@@ -244,8 +252,10 @@ public class ResolverUtils {
             "ElectricPotential",
             "ElectricResistance",
             "ElectricConductance",
+            "ElectricCapacitance",
             "Power",
             "Energy",
+            "Frequency",
             "Angle",
             "Area",
             "Volume",
@@ -286,6 +296,7 @@ public class ResolverUtils {
   static void registerCustomTypes() {
     customTypes.put("StringMap", new CustomType("Map", List.of("String", "String")));
     customTypes.put("NodeList", new CustomType("List", List.of("NodeInput")));
+    customTypes.put("LayerList", new CustomType("List", List.of("LayerInput")));
 
     Stream.of(
             "SpecificConductance",
@@ -306,7 +317,12 @@ public class ResolverUtils {
             "Temperature",
             "SpecificHeatCapacity",
             "ThermalConductance",
-            "HeatCapacity")
+            "HeatCapacity",
+            "ElectricCapacitance",
+            "Frequency",
+            "ThermalResistivity",
+            "ThermalCapacitance",
+            "ElectricalResistivity")
         .forEach(
             name -> customTypes.put(name, new CustomType("ComparableQuantity", List.of(name))));
 

@@ -49,7 +49,7 @@ class SystemParticipantTestData {
   public static final String cosPhiFixedSerialized = "cosPhiFixed:{(0.0,0.95)}"
   public static final String cosPhiPSerialized = "cosPhiP:{(0.0,1.0),(0.9,1.0),(1.2,-0.3)}"
   public static final String qVSerialized = "qV:{(0.9,-0.3),(0.95,0.0),(1.05,0.0),(1.1,0.3)}"
-  static final ComparableQuantity<Power> sRated = Quantities.getQuantity(25d, ACTIVE_POWER_IN)
+  static final ComparableQuantity<Power> sRated = Quantities.getQuantity(25d, S_RATED)
   static final double cosPhiRated = 0.95
   private static final UUID typeUuid = UUID.fromString("5ebd8f7e-dedb-4017-bb86-6373c4b68eb8")
   private static final ComparableQuantity<Currency> capex = Quantities.getQuantity(100d, CAPEX)
