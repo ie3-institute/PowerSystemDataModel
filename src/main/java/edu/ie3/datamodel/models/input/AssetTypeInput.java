@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -8,9 +8,9 @@ package edu.ie3.datamodel.models.input;
 import java.util.Objects;
 import java.util.UUID;
 
-/** Describes the type of {@link edu.ie3.datamodel.models.input.AssetInput} */
+/** Describes the type of {@link edu.ie3.datamodel.models.input.AssetInput}. */
 public abstract class AssetTypeInput extends UniqueInputEntity {
-  /** Name or ID of the asset */
+  /** Name or ID of the asset. */
   private final String id;
 
   /**
@@ -25,8 +25,6 @@ public abstract class AssetTypeInput extends UniqueInputEntity {
   public String getId() {
     return id;
   }
-
-  public abstract AssetTypeInputCopyBuilder<?> copy();
 
   @Override
   public boolean equals(Object o) {
@@ -43,22 +41,26 @@ public abstract class AssetTypeInput extends UniqueInputEntity {
 
   @Override
   public String toString() {
-    return "AssetTypeInput{" + "uuid=" + getUuid() + ", id=" + id + "}";
+    return "AssetTypeInput{"
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + id
+        + ", additionalInformation="
+        + getAdditionalInformation()
+        + "}";
   }
 
-  /**
-   * Abstract class for all builder that build child entities of abstract class {@link
-   * AssetTypeInput}
-   */
-  public abstract static class AssetTypeInputCopyBuilder<
-          B extends AssetTypeInput.AssetTypeInputCopyBuilder<B>>
-      extends UniqueEntityCopyBuilder<B> {
+  @Override
+  public abstract AssetTypeInputCopyBuilder<?> copy();
 
+  public abstract static class AssetTypeInputCopyBuilder<B extends AssetTypeInputCopyBuilder<B>>
+      extends UniqueInputEntityCopyBuilder<B> {
     private String id;
 
     protected AssetTypeInputCopyBuilder(AssetTypeInput entity) {
       super(entity);
-      this.id = entity.getId();
+      this.id = entity.id;
     }
 
     public B id(String id) {
