@@ -123,7 +123,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
    * @param tapNeutr Neutral tap position
    * @param tapMin Minimum available tap position
    * @param tapMax Maximum available tap position
-   * @param additionalInformation Of the input
+   * @param additionalInformation That were provided by the source
    */
   public Transformer2WTypeInput(
       UUID uuid,

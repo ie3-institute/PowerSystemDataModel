@@ -19,7 +19,7 @@ class EvTypeInputTest extends Specification {
 
     when:
     def alteredUnit = evTypeInput.copy()
-        .seteStorage(Quantities.getQuantity(150, ENERGY_IN))
+        .eStorage(Quantities.getQuantity(150, ENERGY_IN))
         .build()
 
     then:

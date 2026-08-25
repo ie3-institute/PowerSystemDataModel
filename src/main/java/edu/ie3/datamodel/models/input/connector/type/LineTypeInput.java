@@ -71,7 +71,8 @@ public class LineTypeInput extends AssetTypeInput {
    * @param r Specific resistance for this type of line (typically in Ohm/km)
    * @param x Specific reactance for this type of line (typically in Ohm/km)
    * @param iMax Maximum thermal current for this type of line (typically in A)
-   * @param vRated Rated voltage for this type of line
+   * @param vRated Rated voltage for this type of line @param additionalInformation That were
+   *     provided by the source
    */
   public LineTypeInput(
       UUID uuid,

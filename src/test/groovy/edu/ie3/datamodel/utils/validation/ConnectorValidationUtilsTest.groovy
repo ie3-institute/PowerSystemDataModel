@@ -79,7 +79,7 @@ class ConnectorValidationUtilsTest extends Specification {
     GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeG).build() || 1 || new InvalidEntityException("LineInput connects the same node, but shouldn't", invalidLine)
     GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().subnet(5).build()).build() || 1 || new InvalidEntityException("LineInput connects different subnets, but shouldn't", invalidLine)
     GridTestData.lineFtoG.copy().nodeA(GridTestData.nodeF.copy().voltLvl(GermanVoltageLevelUtils.MV_10KV).build()).build() || 1 || new InvalidEntityException("LineInput connects different voltage levels, but shouldn't", invalidLine)
-    GridTestData.lineFtoG.copy().length(Quantities.getQuantity(0d, METRE)).build() || 1 || new InvalidEntityException("The following quantities have to be positive: length=0 km", invalidLine)
+    GridTestData.lineFtoG.copy().length(Quantities.getQuantity(0d, LINE_LENGTH)).build() || 1 || new InvalidEntityException("The following quantities have to be positive: length=0 km", invalidLine)
   }
 
   def "Smoke Test: Correct line type throws no exception"() {
@@ -150,7 +150,7 @@ class ConnectorValidationUtilsTest extends Specification {
       validLayer(thermalCapacitance: thermalCapacitance(-1d))
     ]) || "thermalCapacitance"
     validCableType(isolation: [
-      validLayer(area: Optional.of(area(-1d)))
+      validLayer(area: area(-1d))
     ]) || "area"
     validCableType(isolation: [
       validLayer(innerDiameter: length(0.03d), outerDiameter: length(0.02d))
@@ -167,8 +167,8 @@ class ConnectorValidationUtilsTest extends Specification {
     validCableType(screen: validScreenLayer(electricalResistivity: electricalResistivity(-1d))) || "electricalResistivity"
     validCableType(screen: validScreenLayer(thermalResistivity: thermalResistivity(-1d))) || "thermalResistivity"
     validCableType(screen: validScreenLayer(thermalCapacitance: thermalCapacitance(-1d))) || "thermalCapacitance"
-    validCableType(screen: validScreenLayer(area: Optional.of(area(-1d)))) || "area"
-    validCableType(screen: validScreenLayer(lengthOfLay: Optional.of(length(-1d)))) || "lengthOfLay"
+    validCableType(screen: validScreenLayer(area: area(-1d))) || "area"
+    validCableType(screen: validScreenLayer(lengthOfLay: length(-1d))) || "lengthOfLay"
   }
 
   def "ConnectorValidationUtils.checkCableType reports all invalid quantities together"() {
@@ -428,7 +428,7 @@ class ConnectorValidationUtilsTest extends Specification {
         overrides.get("outerDiameter", length(0.027d)),
         overrides.get("thermalResistivity", thermalResistivity(3.5d)),
         overrides.get("thermalCapacitance", thermalCapacitance(2.4d)),
-        overrides.get("area", Optional.<ComparableQuantity<Area>>empty()))
+        overrides.get("area", area(0.0)))
   }
 
   private static ScreenLayerInput validScreenLayer(Map overrides = [:]) {
@@ -440,10 +440,10 @@ class ConnectorValidationUtilsTest extends Specification {
         overrides.get("outerDiameter", length(0.028d)),
         overrides.get("thermalResistivity", thermalResistivity(2.5d)),
         overrides.get("thermalCapacitance", thermalCapacitance(2.4d)),
-        overrides.get("area", Optional.<ComparableQuantity<Area>>empty()),
+        overrides.get("area", area(0.0)),
         overrides.get("wiresNumber", 20),
         overrides.get("wireDiameter", length(0.0005d)),
-        overrides.get("lengthOfLay", Optional.<ComparableQuantity<Length>>empty()),
+        overrides.get("lengthOfLay", length(0.0)),
         overrides.get("electricalResistivity", electricalResistivity(1.7e-7d)))
   }
 

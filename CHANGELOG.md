@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Introduce data model for cable types [#1669](https://github.com/ie3-institute/PowerSystemDataModel/issues/1669)
 - Adding code generation code [#1710](https://github.com/ie3-institute/PowerSystemDataModel/issues/1710)
+- Adding all types to code generation [#1712](https://github.com/ie3-institute/PowerSystemDataModel/issues/1712)
 
 ### Fixed
 - Fixed issues regarding determination of additional parameters [#1661](https://github.com/ie3-institute/PowerSystemDataModel/issues/1661)

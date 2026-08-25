@@ -10,7 +10,6 @@ import static edu.ie3.util.quantities.PowerSystemUnits.PU
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
-import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
@@ -343,8 +342,8 @@ class InputEntityProcessorTest extends Specification {
       "opex" : "101.0",
       "cosPhiRated" : "0.95",
       "cpCharacteristic": "cP:{(10.0,0.05),(15.0,0.1),(20.0,0.2)}",
-      "etaConv" : "90.0",
-      "sRated" : "2500.0",
+      "etaConv" : "0.9",
+      "sRated" : "2.5",
       "rotorArea" : "2000.0",
       "hubHeight" : "130.0"
     ]
@@ -474,8 +473,8 @@ class InputEntityProcessorTest extends Specification {
       "id" : "chp type",
       "capex" : "100.0",
       "opex" : "101.0",
-      "etaEl" : "95.0",
-      "etaThermal" : "90.0",
+      "etaEl" : "0.95",
+      "etaThermal" : "0.9",
       "sRated" : "58.0",
       "cosPhiRated": "0.98",
       "pThermal" : "49.59",
@@ -519,10 +518,10 @@ class InputEntityProcessorTest extends Specification {
       "id" : "bm type",
       "capex" : "100.0",
       "opex" : "101.0",
-      "activePowerGradient": "5.0",
+      "activePowerGradient": "0.05",
       "sRated" : "800.0",
       "cosPhiRated" : "0.965",
-      "etaConv" : "89.0"
+      "etaConv" : "0.89"
     ]
 
     when:
@@ -545,8 +544,8 @@ class InputEntityProcessorTest extends Specification {
       "sRated" : "13.0",
       "cosPhiRated" : "0.997",
       "pMax" : "12.961",
-      "activePowerGradient": "3.0",
-      "eta" : "92.0"
+      "activePowerGradient": "0.03",
+      "eta" : "0.92"
     ]
 
     when:

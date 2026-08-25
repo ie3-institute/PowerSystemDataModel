@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.models.input.connector.type;
 
 import edu.ie3.datamodel.models.input.AssetTypeInput;
-import edu.ie3.datamodel.models.input.InputEntity;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -14,7 +13,6 @@ import java.util.UUID;
 import javax.measure.quantity.ElectricCapacitance;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Temperature;
-import org.jspecify.annotations.NonNull;
 import tech.units.indriya.ComparableQuantity;
 
 /**
@@ -22,22 +20,35 @@ import tech.units.indriya.ComparableQuantity;
  * complete specification of a cable type including conductors, insulation layers, screens, armor,
  * and jacket elements, as well as electrical and thermal parameters.
  */
-public class CableTypeInput extends AssetTypeInput implements InputEntity {
-
+public class CableTypeInput extends AssetTypeInput {
   private final int coreNumber;
+
   private final ConductorInput conductor;
+
   private final List<LayerInput> isolation;
+
   private final ScreenLayerInput screen;
+
   private final List<LayerInput> filler;
+
   private final List<LayerInput> armor;
+
   private final List<LayerInput> jack;
+
   private final ComparableQuantity<Temperature> limitTemperature;
+
   private final ComparableQuantity<Frequency> frequency;
+
   private final double skinEffectCoefficient;
+
   private final double proximityEffectCoefficient;
+
   private final ComparableQuantity<ElectricCapacitance> electricalCapacitance;
+
   private final double tanDelta;
+
   private final double circulatingLossFactor;
+
   private final double eddyCurrentLossFactor;
 
   /**
@@ -83,9 +94,7 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
       double tanDelta,
       double circulatingLossFactor,
       double eddyCurrentLossFactor) {
-
     super(uuid, id);
-
     this.coreNumber = coreNumber;
     this.conductor = conductor;
     this.isolation = List.copyOf(isolation);
@@ -164,31 +173,25 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
   }
 
   @Override
-  public CableTypeInputCopyBuilder copy() {
-    return new CableTypeInputCopyBuilder(this);
-  }
-
-  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof CableTypeInput that)) return false;
     if (!super.equals(o)) return false;
-
     return coreNumber == that.coreNumber
-        && Double.compare(that.skinEffectCoefficient, skinEffectCoefficient) == 0
-        && Double.compare(that.proximityEffectCoefficient, proximityEffectCoefficient) == 0
-        && Double.compare(that.tanDelta, tanDelta) == 0
-        && Double.compare(that.circulatingLossFactor, circulatingLossFactor) == 0
-        && Double.compare(that.eddyCurrentLossFactor, eddyCurrentLossFactor) == 0
-        && conductor.equals(that.conductor)
-        && isolation.equals(that.isolation)
+        && Objects.equals(conductor, that.conductor)
+        && Objects.equals(isolation, that.isolation)
         && Objects.equals(screen, that.screen)
-        && filler.equals(that.filler)
-        && armor.equals(that.armor)
-        && jack.equals(that.jack)
+        && Objects.equals(filler, that.filler)
+        && Objects.equals(armor, that.armor)
+        && Objects.equals(jack, that.jack)
         && limitTemperature.equals(that.limitTemperature)
         && frequency.equals(that.frequency)
-        && electricalCapacitance.equals(that.electricalCapacitance);
+        && skinEffectCoefficient == that.skinEffectCoefficient
+        && proximityEffectCoefficient == that.proximityEffectCoefficient
+        && electricalCapacitance.equals(that.electricalCapacitance)
+        && tanDelta == that.tanDelta
+        && circulatingLossFactor == that.circulatingLossFactor
+        && eddyCurrentLossFactor == that.eddyCurrentLossFactor;
   }
 
   @Override
@@ -213,7 +216,7 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
   }
 
   @Override
-  public @NonNull String toString() {
+  public String toString() {
     return "CableTypeInput{"
         + "uuid="
         + getUuid()
@@ -239,7 +242,7 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
         + frequency
         + ", skinEffectCoefficient="
         + skinEffectCoefficient
-        + ", proximityEffectCoeff="
+        + ", proximityEffectCoefficient="
         + proximityEffectCoefficient
         + ", electricalCapacitance="
         + electricalCapacitance
@@ -249,33 +252,49 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
         + circulatingLossFactor
         + ", eddyCurrentLossFactor="
         + eddyCurrentLossFactor
-        + '}';
+        + ", additionalInformation="
+        + getAdditionalInformation()
+        + "}";
   }
 
-  /**
-   * Abstract class for all builder that build child entities of abstract class {@link
-   * CableTypeInput}
-   */
-  public static final class CableTypeInputCopyBuilder
-      extends AssetTypeInput.AssetTypeInputCopyBuilder<CableTypeInputCopyBuilder> {
+  @Override
+  public CableTypeInputCopyBuilder copy() {
+    return new CableTypeInputCopyBuilder(this);
+  }
 
+  public static class CableTypeInputCopyBuilder
+      extends AssetTypeInputCopyBuilder<CableTypeInputCopyBuilder> {
     private int coreNumber;
+
     private ConductorInput conductor;
+
     private List<LayerInput> isolation;
+
     private ScreenLayerInput screen;
+
     private List<LayerInput> filler;
+
     private List<LayerInput> armor;
+
     private List<LayerInput> jack;
+
     private ComparableQuantity<Temperature> limitTemperature;
+
     private ComparableQuantity<Frequency> frequency;
+
     private double skinEffectCoefficient;
+
     private double proximityEffectCoefficient;
+
     private ComparableQuantity<ElectricCapacitance> electricalCapacitance;
+
     private double tanDelta;
+
     private double circulatingLossFactor;
+
     private double eddyCurrentLossFactor;
 
-    private CableTypeInputCopyBuilder(CableTypeInput entity) {
+    protected CableTypeInputCopyBuilder(CableTypeInput entity) {
       super(entity);
       this.coreNumber = entity.coreNumber;
       this.conductor = entity.conductor;
@@ -299,9 +318,17 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
       return thisInstance();
     }
 
+    protected int getCoreNumber() {
+      return coreNumber;
+    }
+
     public CableTypeInputCopyBuilder conductor(ConductorInput conductor) {
       this.conductor = conductor;
       return thisInstance();
+    }
+
+    protected ConductorInput getConductor() {
+      return conductor;
     }
 
     public CableTypeInputCopyBuilder isolation(List<LayerInput> isolation) {
@@ -309,9 +336,17 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
       return thisInstance();
     }
 
+    protected List<LayerInput> getIsolation() {
+      return isolation;
+    }
+
     public CableTypeInputCopyBuilder screen(ScreenLayerInput screen) {
       this.screen = screen;
       return thisInstance();
+    }
+
+    protected ScreenLayerInput getScreen() {
+      return screen;
     }
 
     public CableTypeInputCopyBuilder filler(List<LayerInput> filler) {
@@ -319,14 +354,26 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
       return thisInstance();
     }
 
+    protected List<LayerInput> getFiller() {
+      return filler;
+    }
+
     public CableTypeInputCopyBuilder armor(List<LayerInput> armor) {
       this.armor = armor;
       return thisInstance();
     }
 
+    protected List<LayerInput> getArmor() {
+      return armor;
+    }
+
     public CableTypeInputCopyBuilder jack(List<LayerInput> jack) {
       this.jack = jack;
       return thisInstance();
+    }
+
+    protected List<LayerInput> getJack() {
+      return jack;
     }
 
     public CableTypeInputCopyBuilder limitTemperature(
@@ -335,40 +382,72 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
       return thisInstance();
     }
 
+    protected ComparableQuantity<Temperature> getLimitTemperature() {
+      return limitTemperature;
+    }
+
     public CableTypeInputCopyBuilder frequency(ComparableQuantity<Frequency> frequency) {
       this.frequency = frequency;
       return thisInstance();
     }
 
-    public CableTypeInputCopyBuilder skinEffectCoefficient(double value) {
-      this.skinEffectCoefficient = value;
+    protected ComparableQuantity<Frequency> getFrequency() {
+      return frequency;
+    }
+
+    public CableTypeInputCopyBuilder skinEffectCoefficient(double skinEffectCoefficient) {
+      this.skinEffectCoefficient = skinEffectCoefficient;
       return thisInstance();
     }
 
-    public CableTypeInputCopyBuilder proximityEffectCoefficient(double value) {
-      this.proximityEffectCoefficient = value;
+    protected double getSkinEffectCoefficient() {
+      return skinEffectCoefficient;
+    }
+
+    public CableTypeInputCopyBuilder proximityEffectCoefficient(double proximityEffectCoefficient) {
+      this.proximityEffectCoefficient = proximityEffectCoefficient;
       return thisInstance();
+    }
+
+    protected double getProximityEffectCoefficient() {
+      return proximityEffectCoefficient;
     }
 
     public CableTypeInputCopyBuilder electricalCapacitance(
-        ComparableQuantity<ElectricCapacitance> value) {
-      this.electricalCapacitance = value;
+        ComparableQuantity<ElectricCapacitance> electricalCapacitance) {
+      this.electricalCapacitance = electricalCapacitance;
       return thisInstance();
     }
 
-    public CableTypeInputCopyBuilder tanDelta(double value) {
-      this.tanDelta = value;
+    protected ComparableQuantity<ElectricCapacitance> getElectricalCapacitance() {
+      return electricalCapacitance;
+    }
+
+    public CableTypeInputCopyBuilder tanDelta(double tanDelta) {
+      this.tanDelta = tanDelta;
       return thisInstance();
     }
 
-    public CableTypeInputCopyBuilder circulatingLossFactor(double value) {
-      this.circulatingLossFactor = value;
+    protected double getTanDelta() {
+      return tanDelta;
+    }
+
+    public CableTypeInputCopyBuilder circulatingLossFactor(double circulatingLossFactor) {
+      this.circulatingLossFactor = circulatingLossFactor;
       return thisInstance();
     }
 
-    public CableTypeInputCopyBuilder eddyCurrentLossFactor(double value) {
-      this.eddyCurrentLossFactor = value;
+    protected double getCirculatingLossFactor() {
+      return circulatingLossFactor;
+    }
+
+    public CableTypeInputCopyBuilder eddyCurrentLossFactor(double eddyCurrentLossFactor) {
+      this.eddyCurrentLossFactor = eddyCurrentLossFactor;
       return thisInstance();
+    }
+
+    protected double getEddyCurrentLossFactor() {
+      return eddyCurrentLossFactor;
     }
 
     @Override

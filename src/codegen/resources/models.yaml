@@ -34,6 +34,26 @@ models:
           required: true # TODO: Change this to false
           javaDoc: "Time for which the entity is operated."
 
+    ConductorInput:
+      name: ConductorInput
+      extends: AssetInput
+      abstract: false
+      components:
+        - name: material
+          type: CableMaterial
+        - name: crossSection
+          type: Area
+        - name: diameter
+          type: Length
+        - name: isCompacted
+          type: bool
+        - name: thermalResistivity
+          type: ThermalResistivity
+        - name: thermalCapacitance
+          type: ThermalCapacitance
+        - name: area
+          type: Area
+
     NodeInput:
       name: NodeInput
       abstract: false
@@ -75,6 +95,90 @@ models:
           type: String
           required: true
           javaDoc: "Name or ID of the asset."
+
+    CableTypeInput:
+      name: CableTypeInput
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: coreNumber
+          type: int
+        - name: conductor
+          type: ConductorInput
+        - name: isolation
+          type: LayerList
+        - name: screen
+          type: ScreenLayerInput
+          required: false
+        - name: filler
+          type: LayerList
+        - name: armor
+          type: LayerList
+        - name: jack
+          type: LayerList
+        - name: limitTemperature
+          type: Temperature
+        - name: frequency
+          type: Frequency
+        - name: skinEffectCoefficient
+          type: double
+        - name: proximityEffectCoefficient
+          type: double
+        - name: electricalCapacitance
+          type: ElectricCapacitance
+        - name: tanDelta
+          type: double
+        - name: circulatingLossFactor
+          type: double
+        - name: eddyCurrentLossFactor
+          type: double
+
+    LayerInput:
+      name: LayerInput
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: material
+          type: CableMaterial
+        - name: innerDiameter
+          type: Length
+        - name: outerDiameter
+          type: Length
+        - name: thermalResistivity
+          type: ThermalResistivity
+        - name: thermalCapacitance
+          type: ThermalCapacitance
+        - name: area
+          type: Area
+          required: false
+
+    ScreenLayerInput:
+      name: ScreenLayerInput
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: material
+          type: CableMaterial
+        - name: innerDiameter
+          type: Length
+        - name: outerDiameter
+          type: Length
+        - name: thermalResistivity
+          type: ThermalResistivity
+        - name: thermalCapacitance
+          type: ThermalCapacitance
+        - name: area
+          type: Area
+          required: false
+        - name: wiresNumber
+          type: int
+        - name: wireDiameter
+          type: Length
+        - name: lengthOfLay
+          type: Length
+          required: false
+        - name: electricalResistivity
+          type: ElectricalResistivity
 
     LineTypeInput:
       name: LineTypeInput
@@ -224,3 +328,103 @@ models:
         - name: cosPhiRated
           type: double
           javaDoc: "Power factor for this type of system participant."
+
+    AcTypeInput:
+      name: AcTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: pThermal
+          type: Power
+          javaDoc: "Thermal output of the air condition (typically in kW), when sRated * cosPhiRated is consumed."
+
+    BmTypeInput:
+      name: BmTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: activePowerGradient
+          type: DimensionlessRate
+          javaDoc: "Permissible load gradient (typically in %/h)."
+        - name: etaConv
+          type: Dimensionless
+          javaDoc: "Efficiency of converter for this type of BM (typically in %)."
+
+    ChpTypeInput:
+      name: ChpTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: etaEl
+          type: Dimensionless
+          javaDoc: "Electrical efficiency (typically in %)."
+        - name: etaThermal
+          type: Dimensionless
+          javaDoc: "Thermal efficiency (typically in %)."
+        - name: pThermal
+          type: Power
+          javaDoc: "Rated thermal power (typically in kW)."
+        - name: pOwn
+          type: Power
+          javaDoc: "Internal consumption (typically in kW)."
+
+    EvTypeInput:
+      name: EvTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: eStorage
+          type: Energy
+          javaDoc: "Energy capacity of the storage (typically in kWh)."
+        - name: eCons
+          type: SpecificEnergy
+          javaDoc: "Consumed electric energy per driven distance (typically in kWh/km)."
+        - name: sRatedDC
+          type: Power
+          javaDoc: "Power for DC (typically in kW)."
+
+    HpTypeInput:
+      name: HpTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: pThermal
+          type: Power
+          javaDoc: "Thermal output of the heat pump (typically in kW), when sRated * cosPhiRated is consumed."
+
+    StorageTypeInput:
+      name: StorageTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: eStorage
+          type: Energy
+          javaDoc: "."
+        - name: pMax
+          type: Power
+          javaDoc: "."
+        - name: activePowerGradient
+          type: DimensionlessRate
+          javaDoc: "."
+        - name: eta
+          type: Dimensionless
+          javaDoc: "."
+
+    WecTypeInput:
+      name: WecTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: cpCharacteristic
+          type: WecCharacteristicInput
+          javaDoc: "."
+        - name: etaConv
+          type: Dimensionless
+          javaDoc: "."
+        - name: rotorArea
+          type: Area
+          javaDoc: "."
+        - name: hubHeight
+          type: Length
+          javaDoc: "."
+

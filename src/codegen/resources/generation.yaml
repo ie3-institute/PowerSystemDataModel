@@ -133,6 +133,206 @@ models:
           javaDoc: "@param uuid of the input entity\n
                   @param id of the asset"
 
+    CableTypeInput:
+      package: edu.ie3.datamodel.models.input.connector.type
+      classJavaDoc: "Represents detailed cable construction data at the type/catalog level. This class contains the\n
+                   complete specification of a cable type including conductors, insulation layers, screens, armor,\n
+                   and jacket elements, as well as electrical and thermal parameters."
+      constructors:
+        - name: full
+          components: [uuid, id, coreNumber, conductor, isolation, screen, filler, armor, jack, limitTemperature, frequency, skinEffectCoefficient, proximityEffectCoefficient, electricalCapacitance, tanDelta, circulatingLossFactor, eddyCurrentLossFactor]
+          superArgs: [uuid, id]
+          javaDoc: "Represents detailed cable construction data at the type/catalog level. This class contains the\n
+                 complete specification of a cable type including conductors, insulation layers, screens, armor,\n
+                 and jacket elements, as well as electrical and thermal parameters.\n
+                 \n
+                 @param uuid Unique identifier for this cable type\n
+                 @param id Human-readable identifier/name for this cable type (e.g., \"NA2XS2Y 1x120 RM/25 12/20\n
+                     kV\")\n
+                 @param coreNumber Number of cores/conductors in the cable (e.g., 1 for single-core, 3 for\n
+                     three-phase)\n
+                 @param conductor The innermost conductor/core\n
+                 @param isolation List of insulation layers (from inner to outer)\n
+                 @param screen Optional cable screen layer\n
+                 @param filler List of filler layers (from inner to outer)\n
+                 @param armor List of armor layers (from inner to outer)\n
+                 @param jack List of jacket/outer sheath layers (from inner to outer)\n
+                 @param limitTemperature Maximum permissible operating temperature (°C)\n
+                 @param frequency Rated frequency\n
+                 @param skinEffectCoefficient Skin effect coefficient\n
+                 @param proximityEffectCoefficient Proximity effect coefficient\n
+                 @param electricalCapacitance Capacitance per unit length\n
+                 @param tanDelta Dielectric loss factor tan(δ)\n
+                 @param circulatingLossFactor Circulating loss factor\n
+                 @param eddyCurrentLossFactor Eddy current loss factor"
+          constructorModifications:
+            isolation:
+              expression: copyOf(isolation)
+              className: List
+            filler:
+              expression: copyOf(filler)
+              className: List
+            armor:
+              expression: copyOf(armor)
+              className: List
+            jack:
+              expression: copyOf(jack)
+              className: List
+
+    LayerInput:
+      package: edu.ie3.datamodel.models.input.connector.type
+      classJavaDoc: "Represents a concentric layer of a cable, including insulation, filler, armor, and jacket layers."
+      constructors:
+        - name: full
+          components: [uuid, id, material, innerDiameter, outerDiameter, thermalResistivity, thermalCapacitance, area]
+          superArgs: [uuid, id]
+          javaDoc: "Constructor of a cable layer.\n
+                 \n
+                 @param uuid UUID of this layer\n
+                 @param id Name/designation of this layer\n
+                 @param material Material of this layer\n
+                 @param innerDiameter Inner diameter of this layer\n
+                 @param outerDiameter Outer diameter of this layer\n
+                 @param thermalResistivity Thermal resistivity of the material\n
+                 @param thermalCapacitance Thermal capacitance of the material\n
+                 @param area Real cross-sectional area (if different from geometry)"
+        - name: withoutArea
+          components: [uuid, id, material, innerDiameter, outerDiameter, thermalResistivity, thermalCapacitance]
+          superArgs: [uuid, id]
+          javaDoc: "Constructor of a cable layer.\n
+                 \n
+                 @param uuid UUID of this layer\n
+                 @param id Name/designation of this layer\n
+                 @param material Material of this layer\n
+                 @param innerDiameter Inner diameter of this layer\n
+                 @param outerDiameter Outer diameter of this layer\n
+                 @param thermalResistivity Thermal resistivity of the material\n
+                 @param thermalCapacitance Thermal capacitance of the material"
+          constructorModifications:
+            area:
+              expression: null
+        - name: fullWithAdditionalInformation
+          components: [ uuid, id, material, innerDiameter, outerDiameter, thermalResistivity, thermalCapacitance, area, additionalInformation]
+          superArgs: [ uuid, id ]
+          javaDoc: "Constructor of a cable layer.\n
+                 \n
+                 @param uuid UUID of this layer\n
+                 @param id Name/designation of this layer\n
+                 @param material Material of this layer\n
+                 @param innerDiameter Inner diameter of this layer\n
+                 @param outerDiameter Outer diameter of this layer\n
+                 @param thermalResistivity Thermal resistivity of the material\n
+                 @param thermalCapacitance Thermal capacitance of the material\n
+                 @param area Real cross-sectional area (if different from geometry)\n
+                 @param additionalInformation That were provided by the source"
+        - name: withoutAreaWithAdditionalInformation
+          components: [ uuid, id, material, innerDiameter, outerDiameter, thermalResistivity, thermalCapacitance, additionalInformation]
+          superArgs: [ uuid, id ]
+          javaDoc: "Constructor of a cable layer.\n
+                 \n
+                 @param uuid UUID of this layer\n
+                 @param id Name/designation of this layer\n
+                 @param material Material of this layer\n
+                 @param innerDiameter Inner diameter of this layer\n
+                 @param outerDiameter Outer diameter of this layer\n
+                 @param thermalResistivity Thermal resistivity of the material\n
+                 @param thermalCapacitance Thermal capacitance of the material\n
+                 @param additionalInformation That were provided by the source"
+          constructorModifications:
+            area:
+              expression: null
+      fieldNameGetters: [material, innerDiameter, outerDiameter, thermalResistivity, thermalCapacitance, area]
+      methodInserts:
+        - name: name
+          type: String
+          expression: getId()
+
+    ScreenLayerInput:
+      package: edu.ie3.datamodel.models.input.connector.type
+      classJavaDoc: "Represents a concentric layer of a cable, including insulation, filler, armor, and jacket layers."
+      constructors:
+        - name: full
+          components: [uuid, id, material, innerDiameter, outerDiameter, thermalResistivity, thermalCapacitance, area, wiresNumber, wireDiameter, lengthOfLay, electricalResistivity]
+          superArgs: [uuid, id]
+          javaDoc: "Constructor for a screen layer.\n
+                 \n
+                 @param uuid UUID of the screen layer\n
+                 @param id Name/designation of this screen layer\n
+                 @param material Material of the screen\n
+                 @param innerDiameter Inner diameter of the screen layer\n
+                 @param outerDiameter Outer diameter of the screen layer\n
+                 @param thermalResistivity Thermal resistivity of the material\n
+                 @param thermalCapacitance Thermal capacitance of the material\n
+                 @param area Optional real cross-sectional area (e.g. if different from geometry)\n
+                 @param wiresNumber Number of individual wires in the screen\n
+                 @param wireDiameter Diameter of an individual wire in the screen\n
+                 @param lengthOfLay Optional length of lay (pitch) of the screen winding\n
+                 @param electricalResistivity Electrical resistivity specific to the screen material"
+        - name: withoutOptionals
+          components: [uuid, id, material, innerDiameter, outerDiameter, thermalResistivity, thermalCapacitance, wiresNumber, wireDiameter, electricalResistivity]
+          superArgs: [uuid, id]
+          javaDoc: "Constructor for a screen layer.\n
+                 \n
+                 @param uuid UUID of the screen layer\n
+                 @param id Name/designation of this screen layer\n
+                 @param material Material of the screen\n
+                 @param innerDiameter Inner diameter of the screen layer\n
+                 @param outerDiameter Outer diameter of the screen layer\n
+                 @param thermalResistivity Thermal resistivity of the material\n
+                 @param thermalCapacitance Thermal capacitance of the material\n
+                 @param wiresNumber Number of individual wires in the screen\n
+                 @param wireDiameter Diameter of an individual wire in the screen\n
+                 @param electricalResistivity Electrical resistivity specific to the screen material"
+          constructorModifications:
+            area:
+              expression: null
+            lengthOfLay:
+              expression: null
+        - name: fullWithAdditionalInformation
+          components: [ uuid, id, material, innerDiameter, outerDiameter, thermalResistivity, thermalCapacitance, area, wiresNumber, wireDiameter, lengthOfLay, electricalResistivity, additionalInformation]
+          superArgs: [ uuid, id ]
+          javaDoc: "Constructor for a screen layer.\n
+                 \n
+                 @param uuid UUID of the screen layer\n
+                 @param id Name/designation of this screen layer\n
+                 @param material Material of the screen\n
+                 @param innerDiameter Inner diameter of the screen layer\n
+                 @param outerDiameter Outer diameter of the screen layer\n
+                 @param thermalResistivity Thermal resistivity of the material\n
+                 @param thermalCapacitance Thermal capacitance of the material\n
+                 @param area Optional real cross-sectional area (e.g. if different from geometry)\n
+                 @param wiresNumber Number of individual wires in the screen\n
+                 @param wireDiameter Diameter of an individual wire in the screen\n
+                 @param lengthOfLay Optional length of lay (pitch) of the screen winding\n
+                 @param electricalResistivity Electrical resistivity specific to the screen material
+                 @param additionalInformation That were provided by the source"
+        - name: withoutOptionalsWithAdditionalInformation
+          components: [ uuid, id, material, innerDiameter, outerDiameter, thermalResistivity, thermalCapacitance, wiresNumber, wireDiameter, electricalResistivity, additionalInformation]
+          superArgs: [ uuid, id ]
+          javaDoc: "Constructor for a screen layer.\n
+                 \n
+                 @param uuid UUID of the screen layer\n
+                 @param id Name/designation of this screen layer\n
+                 @param material Material of the screen\n
+                 @param innerDiameter Inner diameter of the screen layer\n
+                 @param outerDiameter Outer diameter of the screen layer\n
+                 @param thermalResistivity Thermal resistivity of the material\n
+                 @param thermalCapacitance Thermal capacitance of the material\n
+                 @param wiresNumber Number of individual wires in the screen\n
+                 @param wireDiameter Diameter of an individual wire in the screen\n
+                 @param electricalResistivity Electrical resistivity specific to the screen material
+                 @param additionalInformation That were provided by the source"
+          constructorModifications:
+            area:
+              expression: null
+            lengthOfLay:
+              expression: null
+      fieldNameGetters: [material, innerDiameter, outerDiameter, thermalResistivity, thermalCapacitance, area, wiresNumber, wireDiameter, lengthOfLay, electricalResistivity]
+      methodInserts:
+        - name: name
+          type: String
+          expression: getId()
+
     LineTypeInput:
       package: edu.ie3.datamodel.models.input.connector.type
       classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.connector.LineInput}."
@@ -158,7 +358,8 @@ models:
                  @param r Specific resistance for this type of line (typically in Ohm/km)\n
                  @param x Specific reactance for this type of line (typically in Ohm/km)\n
                  @param iMax Maximum thermal current for this type of line (typically in A)\n
-                 @param vRated Rated voltage for this type of line"
+                 @param vRated Rated voltage for this type of line
+                 @param additionalInformation That were provided by the source"
       nonCapitalizedGetters: [iMax, vRated]
 
     Transformer2WTypeInput:
@@ -201,7 +402,7 @@ models:
                  @param tapNeutr Neutral tap position\n
                  @param tapMin Minimum available tap position\n
                  @param tapMax Maximum available tap position\n
-                 @param additionalInformation Of the input"
+                 @param additionalInformation That were provided by the source"
       nonCapitalizedGetters: [rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi]
 
     Transformer3WTypeInput:
@@ -256,7 +457,7 @@ models:
                  @param tapNeutr Neutral tap position\n
                  @param tapMin Minimum available tap position\n
                  @param tapMax Maximum available tap position\n
-                 @param additionalInformation Of the input"
+                 @param additionalInformation That were provided by the source"
       nonCapitalizedGetters: [sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi]
 
     SystemParticipantTypeInput:
@@ -285,3 +486,270 @@ models:
             - name: factor
               type: double
       nonCapitalizedGetters: [sRated]
+
+    AcTypeInput:
+      package: edu.ie3.datamodel.models.input.system.type
+      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.system.AcInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, capex, opex, sRated, cosPhiRated, pThermal]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of AC\n
+                 @param capex Capital expense for this type of AC (typically in €)\n
+                 @param opex Operating expense for this type of AC (typically in €)\n
+                 @param cosPhiRated Power factor for this type of AC\n
+                 @param sRated Rated apparent power\n
+                 @param pThermal Thermal output of the air condition, when sRated * cosPhiRated is consumed\n
+                     electrically"
+        - name: full
+          components: [uuid, id, capex, opex, sRated, cosPhiRated, pThermal, additionalInformation]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of AC\n
+                 @param capex Capital expense for this type of AC (typically in €)\n
+                 @param opex Operating expense for this type of AC (typically in €)\n
+                 @param cosPhiRated Power factor for this type of AC\n
+                 @param sRated Rated apparent power\n
+                 @param pThermal Thermal output of the air condition, when sRated * cosPhiRated is consumed\n
+                     electrically\n
+                 @param additionalInformation That were provided by the source"
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); pThermal(getpThermal().multiply(factor))
+      nonCapitalizedGetters: [pThermal, sRated]
+
+    BmTypeInput:
+      package: edu.ie3.datamodel.models.input.system.type
+      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.system.BmInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, capex, opex, activePowerGradient, sRated, cosPhiRated, etaConv]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of BM\n
+                 @param capex Capital expense for this type of BM (typically in €)\n
+                 @param opex Operating expense for this type of BM (typically in €)\n
+                 @param cosPhiRated Power factor for this type of BM\n
+                 @param activePowerGradient Maximum permissible gradient of active power change\n
+                 @param sRated Rated apparent power for this type of BM (typically in kVA)\n
+                 @param etaConv Efficiency of converter for this type of BM (typically in %)"
+        - name: full
+          components: [uuid, id, capex, opex, activePowerGradient, sRated, cosPhiRated, etaConv, additionalInformation]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of BM\n
+                 @param capex Capital expense for this type of BM (typically in €)\n
+                 @param opex Operating expense for this type of BM (typically in €)\n
+                 @param cosPhiRated Power factor for this type of BM\n
+                 @param activePowerGradient Maximum permissible gradient of active power change\n
+                 @param sRated Rated apparent power for this type of BM (typically in kVA)\n
+                 @param etaConv Efficiency of converter for this type of BM (typically in %)\n
+                 @param additionalInformation That were provided by the source"
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor))
+      nonCapitalizedGetters: [sRated]
+
+    ChpTypeInput:
+      package: edu.ie3.datamodel.models.input.system.type
+      classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.ChpInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, capex, opex, etaEl, etaThermal, sRated, cosPhiRated, pThermal, pOwn]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of CHP\n
+                 @param capex Capital expense for this type of CHP (typically in €)\n
+                 @param opex Operating expense for this type of CHP (typically in €)\n
+                 @param etaEl Electrical efficiency\n
+                 @param etaThermal Thermal efficiency\n
+                 @param sRated Rated electrical apparent power\n
+                 @param cosPhiRated Power factor for this type of CHP\n
+                 @param pThermal Rated thermal power\n
+                 @param pOwn Internal consumption"
+        - name: full
+          components: [uuid, id, capex, opex, etaEl, etaThermal, sRated, cosPhiRated, pThermal, pOwn, additionalInformation]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of CHP\n
+                 @param capex Capital expense for this type of CHP (typically in €)\n
+                 @param opex Operating expense for this type of CHP (typically in €)\n
+                 @param etaEl Electrical efficiency\n
+                 @param etaThermal Thermal efficiency\n
+                 @param sRated Rated electrical apparent power\n
+                 @param cosPhiRated Power factor for this type of CHP\n
+                 @param pThermal Rated thermal power\n
+                 @param pOwn Internal consumption\n
+                 @param additionalInformation That were provided by the source"
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); pThermal(getpThermal().multiply(factor)); pOwn(getpOwn().multiply(factor))
+      nonCapitalizedGetters: [pOwn, pThermal, sRated]
+
+    EvTypeInput:
+      package: edu.ie3.datamodel.models.input.system.type
+      classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.EvInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, capex, opex, eStorage, eCons, sRated, cosPhiRated, sRatedDC]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of EV\n
+                 @param capex Capital expense for this type of EV (typically in €)\n
+                 @param opex Operating expense for this type of EV (typically in €)\n
+                 @param eStorage Energy capacity of the storage\n
+                 @param eCons Consumed electric energy per driven distance\n
+                 @param sRated Rated apparent power for this type of EV (typically in kVA)\n
+                 @param cosPhiRated Power factor for this type of EV\n
+                 @param sRatedDC power for DC (typically in kW)"
+        - name: full
+          components: [uuid, id, capex, opex, eStorage, eCons, sRated, cosPhiRated, sRatedDC, additionalInformation]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of EV\n
+                 @param capex Capital expense for this type of EV (typically in €)\n
+                 @param opex Operating expense for this type of EV (typically in €)\n
+                 @param eStorage Energy capacity of the storage\n
+                 @param eCons Consumed electric energy per driven distance\n
+                 @param sRated Rated apparent power for this type of EV (typically in kVA)\n
+                 @param cosPhiRated Power factor for this type of EV\n
+                 @param sRatedDC power for DC (typically in kW)\n
+                 @param additionalInformation That were provided by the source"
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); eStorage(geteStorage().multiply(factor)); eCons(geteCons().multiply(factor)); sRatedDC(getsRatedDC().multiply(factor))
+      nonCapitalizedGetters: [eStorage, eCons, sRated, sRatedDC]
+
+    HpTypeInput:
+      package: edu.ie3.datamodel.models.input.system.type
+      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.system.HpInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, capex, opex, sRated, cosPhiRated, pThermal]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of HP\n
+                 @param capex Capital expense for this type of HP (typically in €)\n
+                 @param opex Operating expense for this type of HP (typically in €)\n
+                 @param cosPhiRated Power factor for this type of HP\n
+                 @param sRated Rated apparent power\n
+                 @param pThermal Thermal output of the heat pump, when sRated * cosPhiRated is consumed\n
+                     electrically"
+        - name: full
+          components: [uuid, id, capex, opex, sRated, cosPhiRated, pThermal, additionalInformation]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of HP\n
+                 @param capex Capital expense for this type of HP (typically in €)\n
+                 @param opex Operating expense for this type of HP (typically in €)\n
+                 @param cosPhiRated Power factor for this type of HP\n
+                 @param sRated Rated apparent power\n
+                 @param pThermal Thermal output of the heat pump, when sRated * cosPhiRated is consumed\n
+                     electrically\n
+                 @param additionalInformation That were provided by the source"
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); pThermal(getpThermal().multiply(factor))
+      nonCapitalizedGetters: [pThermal, sRated]
+
+    StorageTypeInput:
+      package: edu.ie3.datamodel.models.input.system.type
+      classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.StorageInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, capex, opex, eStorage, sRated, cosPhiRated, pMax, activePowerGradient, eta]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of Storage\n
+                 @param capex capital expense for this type of Storage (typically in €)\n
+                 @param opex operating expense for this type of Storage (typically in €/MWh)\n
+                 @param eStorage stored energy capacity\n
+                 @param sRated Rated apparent power of integrated inverter\n
+                 @param cosPhiRated power factor for integrated inverter\n
+                 @param pMax maximum permissible active power of the integrated inverter\n
+                 @param activePowerGradient maximum permissible gradient of active power change\n
+                 @param eta efficiency of the charging and discharging process"
+        - name: full
+          components: [uuid, id, capex, opex, eStorage, sRated, cosPhiRated, pMax, activePowerGradient, eta, additionalInformation]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of Storage\n
+                 @param capex capital expense for this type of Storage (typically in €)\n
+                 @param opex operating expense for this type of Storage (typically in €/MWh)\n
+                 @param eStorage stored energy capacity\n
+                 @param sRated Rated apparent power of integrated inverter\n
+                 @param cosPhiRated power factor for integrated inverter\n
+                 @param pMax maximum permissible active power of the integrated inverter\n
+                 @param activePowerGradient maximum permissible gradient of active power change\n
+                 @param eta efficiency of the charging and discharging process\n
+                 @param additionalInformation That were provided by the source"
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); eStorage(geteStorage().multiply(factor)); pMax(getpMax().multiply(factor))
+      nonCapitalizedGetters: [eStorage, pMax, sRated]
+
+    WecTypeInput:
+      package: edu.ie3.datamodel.models.input.system.type
+      classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.WecInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, capex, opex, sRated, cosPhiRated, cpCharacteristic, etaConv, rotorArea, hubHeight]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of WEC\n
+                 @param capex Captial expense for this type of WEC (typically in €)\n
+                 @param opex Operating expense for this type of WEC (typically in €)\n
+                 @param sRated Rated apparent power for this type of WEC (typically in kVA)\n
+                 @param cosPhiRated Power factor for this type of WEC\n
+                 @param cpCharacteristic Betz curve of this type\n
+                 @param etaConv Efficiency of converter for this type of WEC (typically in %)\n
+                 @param rotorArea Swept Area of blades for this type of WEC (typically in m²)\n
+                 @param hubHeight Height from ground to center of rotor for this type of WEC (typically in m)"
+        - name: full
+          components: [uuid, id, capex, opex, sRated, cosPhiRated, cpCharacteristic, etaConv, rotorArea, hubHeight, additionalInformation]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of WEC\n
+                 @param capex Captial expense for this type of WEC (typically in €)\n
+                 @param opex Operating expense for this type of WEC (typically in €)\n
+                 @param sRated Rated apparent power for this type of WEC (typically in kVA)\n
+                 @param cosPhiRated Power factor for this type of WEC\n
+                 @param cpCharacteristic Betz curve of this type\n
+                 @param etaConv Efficiency of converter for this type of WEC (typically in %)\n
+                 @param rotorArea Swept Area of blades for this type of WEC (typically in m²)\n
+                 @param hubHeight Height from ground to center of rotor for this type of WEC (typically in m)\n
+                 @param additionalInformation That were provided by the source"
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); rotorArea(getRotorArea().multiply(factor))
+      nonCapitalizedGetters: [sRated]
+
