@@ -13,34 +13,33 @@ This model is represented by the Java class `edu.ie3.datamodel.models.input.conn
    :class: wrapping
    :header-rows: 1
 
-    * - Attribute
-      - Unit
-      - Remarks
+  * - Attribute
+    - Unit
+    - Remarks
      
-   * - uuid
-     - –
-     - unique identifier for the cable deployment input
- 
-   * - lineUuid
-     - –
-     - UUID of the line this cable deployment refers to
-
-   * - layoutFormation
-     - –
-     - textual description of the cable layout (e.g., "TREFOIL")
+  * - uuid
+    - –
+    - unique identifier for the cable deployment input
+    
+  * - lineUuid
+    - –
+    - UUID of the line this cable deployment refers to
+    
+  * - layoutFormation
+    - –
+    - textual description of the cable layout (e.g., "TREFOIL")
      
-   * - depthCables
-     - Metre
-     - depth of the cable
+  * - depthCables
+    - Metre
+    - depth of the cable
      
-   * - distanceCables
-     - Metre
-     - distance between cables 
+  * - distanceCables
+    - Metre
+    - distance between cables 
      
-   * - additionalInformation
-     - –
-     - optional map with any additional, string-encoded information
-     
+  * - additionalInformation
+    - –
+    - optional map with any additional, string-encoded information
 ```
 
 

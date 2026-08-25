@@ -24,12 +24,98 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
 public final class CableTypeObjectMapperProvider {
 
   private CableTypeObjectMapperProvider() {}
+
+  private static final String FIELD_UUID = "uuid";
+  private static final String FIELD_NAME = "name";
+  private static final String FIELD_MATERIAL = "material";
+
+  private static final String FIELD_DIAMETER = "diameter";
+  private static final String FIELD_INNER_DIAMETER = "innerDiameter";
+  private static final String FIELD_INNER_DIAMETER_ALT = "inner_diameter";
+  private static final String FIELD_OUTER_DIAMETER = "outerDiameter";
+  private static final String FIELD_OUTER_DIAMETER_ALT = "outer_diameter";
+  private static final String FIELD_WIRE_DIAMETER = "wireDiameter";
+  private static final String FIELD_WIRE_DIAMETER_ALT = "wire_diameter";
+
+  private static final String FIELD_ELECTRICAL_RESISTIVITY = "electricalResistivity";
+  private static final String FIELD_ELECTRICAL_RESISTIVITY_ALT = "electrical_resistivity";
+
+  private static final String FIELD_THERMAL_RESISTIVITY = "thermalResistivity";
+  private static final String FIELD_THERMAL_RESISTIVITY_ALT = "thermal_resistivity";
+
+  private static final String FIELD_THERMAL_CAPACITANCE = "thermalCapacitance";
+  private static final String FIELD_THERMAL_CAPACITANCE_ALT = "thermal_capacitance";
+
+  private static final String FIELD_AREA = "area";
+  private static final String FIELD_CROSS_SECTION = "crossSection";
+  private static final String FIELD_CROSS_SECTION_ALT = "cross_section";
+
+  private static final Set<String> DIAMETER_FIELDS =
+      Set.of(
+          FIELD_DIAMETER,
+          FIELD_INNER_DIAMETER,
+          FIELD_INNER_DIAMETER_ALT,
+          FIELD_OUTER_DIAMETER,
+          FIELD_OUTER_DIAMETER_ALT,
+          FIELD_WIRE_DIAMETER,
+          FIELD_WIRE_DIAMETER_ALT);
+
+  private static final Set<String> ELECTRICAL_RESISTIVITY_FIELDS =
+      Set.of(FIELD_ELECTRICAL_RESISTIVITY, FIELD_ELECTRICAL_RESISTIVITY_ALT);
+
+  private static final Set<String> THERMAL_RESISTIVITY_FIELDS =
+      Set.of(FIELD_THERMAL_RESISTIVITY, FIELD_THERMAL_RESISTIVITY_ALT);
+
+  private static final Set<String> THERMAL_CAPACITANCE_FIELDS =
+      Set.of(FIELD_THERMAL_CAPACITANCE, FIELD_THERMAL_CAPACITANCE_ALT);
+
+  private static final Set<String> AREA_FIELDS =
+      Set.of(FIELD_AREA, FIELD_CROSS_SECTION, FIELD_CROSS_SECTION_ALT);
+
+  // Helper to map field names to units
+  private static javax.measure.Unit<?> unitForField(String fieldName) {
+    if (fieldName == null) return null;
+    if (DIAMETER_FIELDS.contains(fieldName)) return PowerSystemUnits.MILLIMETRE;
+    if (ELECTRICAL_RESISTIVITY_FIELDS.contains(fieldName)) return PowerSystemUnits.OHM_METRE;
+    if (THERMAL_RESISTIVITY_FIELDS.contains(fieldName))
+      return PowerSystemUnits.KELVIN_METRE_PER_WATT;
+    if (THERMAL_CAPACITANCE_FIELDS.contains(fieldName))
+      return PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN;
+    if (AREA_FIELDS.contains(fieldName)) return PowerSystemUnits.SQUARE_MILLIMETRE;
+    return null;
+  }
+
+  // Helper methods
+  private static BigDecimal toBigDecimalFromQuantity(ComparableQuantity<?> quantity) {
+    double d = quantity.getValue().doubleValue();
+    String ds = Double.toString(d);
+    if (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0) {
+      return new BigDecimal(ds);
+    } else {
+      return BigDecimal.valueOf(d).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros();
+    }
+  }
+
+  private static void writeQuantityNumberField(
+      JsonGenerator gen, String fieldName, ComparableQuantity<?> value) throws IOException {
+    if (value == null) gen.writeNullField(fieldName);
+    else gen.writeNumberField(fieldName, toBigDecimalFromQuantity(value));
+  }
+
+  private static void writeOptionalQuantityNumberField(
+      JsonGenerator gen, String fieldName, Optional<? extends ComparableQuantity<?>> opt)
+      throws IOException {
+    if (opt == null || opt.isEmpty()) gen.writeNullField(fieldName);
+    else gen.writeNumberField(fieldName, toBigDecimalFromQuantity(opt.get()));
+  }
 
   public static ObjectMapper createObjectMapper() {
     ObjectMapper objectMapper = new ObjectMapper();
@@ -39,40 +125,19 @@ public final class CableTypeObjectMapperProvider {
     SimpleModule strictModule = new SimpleModule("StrictFieldUnitModule");
 
     strictModule.addDeserializer(
-        (Class) ComparableQuantity.class,
-        new JsonDeserializer() {
+        (Class<ComparableQuantity<?>>) (Class<?>) ComparableQuantity.class,
+        new JsonDeserializer<ComparableQuantity<?>>() {
           @Override
-          public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+          public ComparableQuantity<?> deserialize(JsonParser p, DeserializationContext ctxt)
+              throws IOException {
             String currentField = p.currentName();
-            javax.measure.Unit<?> unit;
+            javax.measure.Unit<?> unit = unitForField(currentField);
 
-            switch (currentField) {
-              case "diameter",
-                  "innerDiameter",
-                  "inner_diameter",
-                  "outerDiameter",
-                  "outer_diameter",
-                  "wireDiameter",
-                  "wire_diameter" ->
-                  unit = PowerSystemUnits.MILLIMETRE;
-
-              case "electricalResistivity", "electrical_resistivity" ->
-                  unit = PowerSystemUnits.OHM_METRE;
-
-              case "thermalResistivity", "thermal_resistivity" ->
-                  unit = PowerSystemUnits.KELVIN_METRE_PER_WATT;
-
-              case "thermalCapacitance", "thermal_capacitance" ->
-                  unit = PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN;
-
-              case "area", "crossSection", "cross_section" ->
-                  unit = PowerSystemUnits.SQUARE_MILLIMETRE;
-
-              default ->
-                  throw new IOException(
-                      "Strict unit enforcement failed: Unknown target unit context for property field '"
-                          + currentField
-                          + "'");
+            if (unit == null) {
+              throw new IOException(
+                  "Strict unit enforcement failed: Unknown target unit context for property field '"
+                      + currentField
+                      + "'");
             }
 
             JsonToken token = p.currentToken();
@@ -95,36 +160,24 @@ public final class CableTypeObjectMapperProvider {
         });
 
     strictModule.addSerializer(
-        (Class) ComparableQuantity.class,
-        (JsonSerializer)
-            new JsonSerializer<ComparableQuantity<?>>() {
+        (Class<ComparableQuantity<?>>) (Class<?>) ComparableQuantity.class,
+        new JsonSerializer<ComparableQuantity<?>>() {
 
-              @Override
-              public void serialize(
-                  ComparableQuantity<?> value, JsonGenerator gen, SerializerProvider serializers)
-                  throws IOException {
-                if (value == null) {
-                  gen.writeNull();
-                } else {
-                  double d = value.getValue().doubleValue();
-                  String ds = Double.toString(d);
-                  BigDecimal bd;
-                  if (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0) {
-                    bd = new BigDecimal(ds);
-                  } else {
-                    bd =
-                        BigDecimal.valueOf(d)
-                            .setScale(10, RoundingMode.HALF_UP)
-                            .stripTrailingZeros();
-                  }
-                  gen.writeNumber(bd);
-                }
-              }
-            });
+          @Override
+          public void serialize(
+              ComparableQuantity<?> value, JsonGenerator gen, SerializerProvider serializers)
+              throws IOException {
+            if (value == null) {
+              gen.writeNull();
+            } else {
+              gen.writeNumber(toBigDecimalFromQuantity(value));
+            }
+          }
+        });
 
     strictModule.addSerializer(
         ConductorInput.class,
-        new JsonSerializer<>() {
+        new JsonSerializer<ConductorInput>() {
           @Override
           public void serialize(
               ConductorInput value, JsonGenerator gen, SerializerProvider serializers)
@@ -135,76 +188,15 @@ public final class CableTypeObjectMapperProvider {
             }
 
             gen.writeStartObject();
-            gen.writeStringField("uuid", value.getUuid().toString());
-            gen.writeStringField("name", value.name());
-            gen.writeStringField("material", value.material().name());
-
-            if (value.crossSection() == null) gen.writeNullField("crossSection");
-            else {
-              double d = value.crossSection().getValue().doubleValue();
-              String ds = Double.toString(d);
-              BigDecimal bd =
-                  (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0)
-                      ? new BigDecimal(ds)
-                      : BigDecimal.valueOf(d)
-                          .setScale(10, RoundingMode.HALF_UP)
-                          .stripTrailingZeros();
-              gen.writeNumberField("crossSection", bd);
-            }
-
-            if (value.diameter() == null) gen.writeNullField("diameter");
-            else {
-              double d = value.diameter().getValue().doubleValue();
-              String ds = Double.toString(d);
-              BigDecimal bd =
-                  (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0)
-                      ? new BigDecimal(ds)
-                      : BigDecimal.valueOf(d)
-                          .setScale(10, RoundingMode.HALF_UP)
-                          .stripTrailingZeros();
-              gen.writeNumberField("diameter", bd);
-            }
-
+            gen.writeStringField(FIELD_UUID, value.getUuid().toString());
+            gen.writeStringField(FIELD_NAME, value.name());
+            gen.writeStringField(FIELD_MATERIAL, value.material().name());
+            writeQuantityNumberField(gen, FIELD_CROSS_SECTION, value.crossSection());
+            writeQuantityNumberField(gen, FIELD_DIAMETER, value.diameter());
             gen.writeBooleanField("isCompacted", value.isCompacted());
-
-            if (value.thermalResistivity() == null) gen.writeNullField("thermalResistivity");
-            else {
-              double d = value.thermalResistivity().getValue().doubleValue();
-              String ds = Double.toString(d);
-              BigDecimal bd =
-                  (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0)
-                      ? new BigDecimal(ds)
-                      : BigDecimal.valueOf(d)
-                          .setScale(10, RoundingMode.HALF_UP)
-                          .stripTrailingZeros();
-              gen.writeNumberField("thermalResistivity", bd);
-            }
-
-            if (value.thermalCapacitance() == null) gen.writeNullField("thermalCapacitance");
-            else {
-              double d = value.thermalCapacitance().getValue().doubleValue();
-              String ds = Double.toString(d);
-              BigDecimal bd =
-                  (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0)
-                      ? new BigDecimal(ds)
-                      : BigDecimal.valueOf(d)
-                          .setScale(10, RoundingMode.HALF_UP)
-                          .stripTrailingZeros();
-              gen.writeNumberField("thermalCapacitance", bd);
-            }
-
-            if (value.area().isEmpty()) gen.writeNullField("area");
-            else {
-              double d = value.area().get().getValue().doubleValue();
-              String ds = Double.toString(d);
-              BigDecimal bd =
-                  (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0)
-                      ? new BigDecimal(ds)
-                      : BigDecimal.valueOf(d)
-                          .setScale(10, RoundingMode.HALF_UP)
-                          .stripTrailingZeros();
-              gen.writeNumberField("area", bd);
-            }
+            writeQuantityNumberField(gen, FIELD_THERMAL_RESISTIVITY, value.thermalResistivity());
+            writeQuantityNumberField(gen, FIELD_THERMAL_CAPACITANCE, value.thermalCapacitance());
+            writeOptionalQuantityNumberField(gen, FIELD_AREA, value.area());
 
             gen.writeObjectFieldStart("additionalInformation");
             if (value.getAdditionalInformation() != null) {
@@ -220,7 +212,7 @@ public final class CableTypeObjectMapperProvider {
 
     strictModule.addSerializer(
         LayerInput.class,
-        new JsonSerializer<>() {
+        new JsonSerializer<LayerInput>() {
           @Override
           public void serialize(LayerInput value, JsonGenerator gen, SerializerProvider serializers)
               throws IOException {
@@ -230,74 +222,14 @@ public final class CableTypeObjectMapperProvider {
             }
 
             gen.writeStartObject();
-            gen.writeStringField("uuid", value.getUuid().toString());
-            gen.writeStringField("name", value.name());
-            gen.writeStringField("material", value.material().name());
-
-            if (value.innerDiameter() == null) gen.writeNullField("innerDiameter");
-            else {
-              double d = value.innerDiameter().getValue().doubleValue();
-              String ds = Double.toString(d);
-              BigDecimal bd =
-                  (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0)
-                      ? new BigDecimal(ds)
-                      : BigDecimal.valueOf(d)
-                          .setScale(10, RoundingMode.HALF_UP)
-                          .stripTrailingZeros();
-              gen.writeNumberField("innerDiameter", bd);
-            }
-
-            if (value.outerDiameter() == null) gen.writeNullField("outerDiameter");
-            else {
-              double d = value.outerDiameter().getValue().doubleValue();
-              String ds = Double.toString(d);
-              BigDecimal bd =
-                  (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0)
-                      ? new BigDecimal(ds)
-                      : BigDecimal.valueOf(d)
-                          .setScale(10, RoundingMode.HALF_UP)
-                          .stripTrailingZeros();
-              gen.writeNumberField("outerDiameter", bd);
-            }
-
-            if (value.thermalResistivity() == null) gen.writeNullField("thermalResistivity");
-            else {
-              double d = value.thermalResistivity().getValue().doubleValue();
-              String ds = Double.toString(d);
-              BigDecimal bd =
-                  (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0)
-                      ? new BigDecimal(ds)
-                      : BigDecimal.valueOf(d)
-                          .setScale(10, RoundingMode.HALF_UP)
-                          .stripTrailingZeros();
-              gen.writeNumberField("thermalResistivity", bd);
-            }
-
-            if (value.thermalCapacitance() == null) gen.writeNullField("thermalCapacitance");
-            else {
-              double d = value.thermalCapacitance().getValue().doubleValue();
-              String ds = Double.toString(d);
-              BigDecimal bd =
-                  (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0)
-                      ? new BigDecimal(ds)
-                      : BigDecimal.valueOf(d)
-                          .setScale(10, RoundingMode.HALF_UP)
-                          .stripTrailingZeros();
-              gen.writeNumberField("thermalCapacitance", bd);
-            }
-
-            if (value.area().isEmpty()) gen.writeNullField("area");
-            else {
-              double d = value.area().get().getValue().doubleValue();
-              String ds = Double.toString(d);
-              BigDecimal bd =
-                  (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0)
-                      ? new BigDecimal(ds)
-                      : BigDecimal.valueOf(d)
-                          .setScale(10, RoundingMode.HALF_UP)
-                          .stripTrailingZeros();
-              gen.writeNumberField("area", bd);
-            }
+            gen.writeStringField(FIELD_UUID, value.getUuid().toString());
+            gen.writeStringField(FIELD_NAME, value.name());
+            gen.writeStringField(FIELD_MATERIAL, value.material().name());
+            writeQuantityNumberField(gen, FIELD_INNER_DIAMETER, value.innerDiameter());
+            writeQuantityNumberField(gen, FIELD_OUTER_DIAMETER, value.outerDiameter());
+            writeQuantityNumberField(gen, FIELD_THERMAL_RESISTIVITY, value.thermalResistivity());
+            writeQuantityNumberField(gen, FIELD_THERMAL_CAPACITANCE, value.thermalCapacitance());
+            writeOptionalQuantityNumberField(gen, FIELD_AREA, value.area());
 
             gen.writeObjectFieldStart("additionalInformation");
             if (value.getAdditionalInformation() != null) {
@@ -313,7 +245,7 @@ public final class CableTypeObjectMapperProvider {
 
     strictModule.addSerializer(
         ScreenLayerInput.class,
-        new JsonSerializer<>() {
+        new JsonSerializer<ScreenLayerInput>() {
           @Override
           public void serialize(
               ScreenLayerInput value, JsonGenerator gen, SerializerProvider serializers)
@@ -324,114 +256,20 @@ public final class CableTypeObjectMapperProvider {
             }
 
             gen.writeStartObject();
-            gen.writeStringField("uuid", value.getUuid().toString());
-            gen.writeStringField("name", value.name());
-            gen.writeStringField("material", value.material().name());
-
-            if (value.innerDiameter() == null) gen.writeNullField("innerDiameter");
-            else {
-              double d = value.innerDiameter().getValue().doubleValue();
-              String ds = Double.toString(d);
-              BigDecimal bd =
-                  (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0)
-                      ? new BigDecimal(ds)
-                      : BigDecimal.valueOf(d)
-                          .setScale(10, RoundingMode.HALF_UP)
-                          .stripTrailingZeros();
-              gen.writeNumberField("innerDiameter", bd);
-            }
-
-            if (value.outerDiameter() == null) gen.writeNullField("outerDiameter");
-            else {
-              double d = value.outerDiameter().getValue().doubleValue();
-              String ds = Double.toString(d);
-              BigDecimal bd =
-                  (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0)
-                      ? new BigDecimal(ds)
-                      : BigDecimal.valueOf(d)
-                          .setScale(10, RoundingMode.HALF_UP)
-                          .stripTrailingZeros();
-              gen.writeNumberField("outerDiameter", bd);
-            }
-
-            if (value.thermalResistivity() == null) gen.writeNullField("thermalResistivity");
-            else {
-              double d = value.thermalResistivity().getValue().doubleValue();
-              String ds = Double.toString(d);
-              BigDecimal bd =
-                  (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0)
-                      ? new BigDecimal(ds)
-                      : BigDecimal.valueOf(d)
-                          .setScale(10, RoundingMode.HALF_UP)
-                          .stripTrailingZeros();
-              gen.writeNumberField("thermalResistivity", bd);
-            }
-
-            if (value.thermalCapacitance() == null) gen.writeNullField("thermalCapacitance");
-            else {
-              double d = value.thermalCapacitance().getValue().doubleValue();
-              String ds = Double.toString(d);
-              BigDecimal bd =
-                  (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0)
-                      ? new BigDecimal(ds)
-                      : BigDecimal.valueOf(d)
-                          .setScale(10, RoundingMode.HALF_UP)
-                          .stripTrailingZeros();
-              gen.writeNumberField("thermalCapacitance", bd);
-            }
-
-            if (value.area().isEmpty()) gen.writeNullField("area");
-            else {
-              double d = value.area().get().getValue().doubleValue();
-              String ds = Double.toString(d);
-              BigDecimal bd =
-                  (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0)
-                      ? new BigDecimal(ds)
-                      : BigDecimal.valueOf(d)
-                          .setScale(10, RoundingMode.HALF_UP)
-                          .stripTrailingZeros();
-              gen.writeNumberField("area", bd);
-            }
+            gen.writeStringField(FIELD_UUID, value.getUuid().toString());
+            gen.writeStringField(FIELD_NAME, value.name());
+            gen.writeStringField(FIELD_MATERIAL, value.material().name());
+            writeQuantityNumberField(gen, FIELD_INNER_DIAMETER, value.innerDiameter());
+            writeQuantityNumberField(gen, FIELD_OUTER_DIAMETER, value.outerDiameter());
+            writeQuantityNumberField(gen, FIELD_THERMAL_RESISTIVITY, value.thermalResistivity());
+            writeQuantityNumberField(gen, FIELD_THERMAL_CAPACITANCE, value.thermalCapacitance());
+            writeOptionalQuantityNumberField(gen, FIELD_AREA, value.area());
 
             gen.writeNumberField("wiresNumber", value.wiresNumber());
-
-            if (value.wireDiameter() == null) gen.writeNullField("wireDiameter");
-            else {
-              double d = value.wireDiameter().getValue().doubleValue();
-              String ds = Double.toString(d);
-              BigDecimal bd =
-                  (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0)
-                      ? new BigDecimal(ds)
-                      : BigDecimal.valueOf(d)
-                          .setScale(10, RoundingMode.HALF_UP)
-                          .stripTrailingZeros();
-              gen.writeNumberField("wireDiameter", bd);
-            }
-
-            if (value.lengthOfLay().isPresent()) {
-              double d = value.lengthOfLay().get().getValue().doubleValue();
-              String ds = Double.toString(d);
-              BigDecimal bd =
-                  (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0)
-                      ? new BigDecimal(ds)
-                      : BigDecimal.valueOf(d)
-                          .setScale(10, RoundingMode.HALF_UP)
-                          .stripTrailingZeros();
-              gen.writeNumberField("lengthOfLay", bd);
-            } else gen.writeNullField("lengthOfLay");
-
-            if (value.electricalResistivity() == null) gen.writeNullField("electricalResistivity");
-            else {
-              double d = value.electricalResistivity().getValue().doubleValue();
-              String ds = Double.toString(d);
-              BigDecimal bd =
-                  (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0)
-                      ? new BigDecimal(ds)
-                      : BigDecimal.valueOf(d)
-                          .setScale(10, RoundingMode.HALF_UP)
-                          .stripTrailingZeros();
-              gen.writeNumberField("electricalResistivity", bd);
-            }
+            writeQuantityNumberField(gen, FIELD_WIRE_DIAMETER, value.wireDiameter());
+            writeOptionalQuantityNumberField(gen, "lengthOfLay", value.lengthOfLay());
+            writeQuantityNumberField(
+                gen, FIELD_ELECTRICAL_RESISTIVITY, value.electricalResistivity());
 
             gen.writeObjectFieldStart("additionalInformation");
             if (value.getAdditionalInformation() != null) {

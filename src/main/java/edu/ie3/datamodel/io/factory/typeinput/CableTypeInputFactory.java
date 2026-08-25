@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.factory.typeinput;
 
-import com.fasterxml.jackson.databind.*;
 import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.typeinput.parser.CableTypeParser;
@@ -14,12 +13,12 @@ import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.ConductorInput;
 import edu.ie3.datamodel.models.input.connector.type.LayerInput;
 import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput;
-import edu.ie3.util.quantities.PowerSystemUnits;
 import java.util.*;
 import javax.measure.quantity.ElectricCapacitance;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Temperature;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.unit.Units;
 
 public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableTypeInput> {
 
@@ -68,11 +67,11 @@ public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableType
 
     ComparableQuantity<Temperature> limitTemp =
         data.getQuantity(LIMIT_TEMP, StandardUnits.TEMPERATURE);
-    ComparableQuantity<Frequency> frequency = data.getQuantity(FREQUENCY, PowerSystemUnits.HERTZ);
+    ComparableQuantity<Frequency> frequency = data.getQuantity(FREQUENCY, Units.HERTZ);
     double skinEffectCoefficient = data.getDouble(SKIN_EFF_COEFF);
     double proxEffectCoefficient = data.getDouble(PROX_EFF_COEFF);
     ComparableQuantity<ElectricCapacitance> electricalCapacitance =
-        data.getQuantity(ELECTR_CAPACITANCE, PowerSystemUnits.FARAD);
+        data.getQuantity(ELECTR_CAPACITANCE, Units.FARAD);
     double tanDelta = data.getDouble(TAN_DELTA);
     double circulatingLossFactor = data.getDouble(CIRCULATING_LOSS_FACTOR);
     double eddyCurrentLossFactor = data.getDouble(EDDY_CURRENT_LOSS_FACTOR);
