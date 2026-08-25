@@ -49,7 +49,7 @@ class RawGridElementsTest extends Specification {
     and:
     UUID lineUuid = UUID.randomUUID()
     def deployment = new Object()
-    Map<UUID, List<Object>> deploymentsByLineRaw = new HashMap<>()
+    Map<UUID, List<Object>> deploymentsByLineRaw = new HashMap<UUID, List<Object>>()
     deploymentsByLineRaw.put(lineUuid, new ArrayList<>(Collections.singletonList(deployment)))
     RawGridElements base = new RawGridElements(new ArrayList<AssetInput>())
 
