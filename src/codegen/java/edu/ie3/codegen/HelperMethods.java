@@ -103,14 +103,14 @@ public interface HelperMethods {
     }
 
     // a list with getters that should not be capitalized
-    List<String> nonCapitalizedGetters = genConfig.nonCapitalizedGetters;
+    List<String> nonCapitalized = genConfig.nonCapitalized;
 
     // a list of boolean getters that should use `get` instead of `is`
     List<String> booleanGetter = genConfig.booleanGetter;
 
     String methodName;
 
-    if (nonCapitalizedGetters.contains(name)) {
+    if (nonCapitalized.contains(name)) {
       methodName = name;
     } else {
       methodName = capitalize(name);
@@ -135,6 +135,27 @@ public interface HelperMethods {
   default String defaultGetterName(
       ModelDefinition.ComponentDefinition component, GenerationConfig genConfig) {
     return defaultGetterName(component.name, component.type, genConfig);
+  }
+
+  /**
+   * Method for getting the default setter name.
+   *
+   * @param component definition to use
+   * @param genConfig generation config to use
+   * @return the name of the setter method
+   */
+  default String defaultSetterName(
+      ModelDefinition.ComponentDefinition component, GenerationConfig genConfig) {
+    String methodName;
+    String name = component.name;
+
+    if (genConfig.nonCapitalized.contains(name)) {
+      methodName = name;
+    } else {
+      methodName = capitalize(name);
+    }
+
+    return "set" + methodName;
   }
 
   /**

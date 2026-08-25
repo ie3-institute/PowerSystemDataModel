@@ -1,11 +1,10 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.result.thermal;
 
-import edu.ie3.datamodel.models.StandardUnits;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -14,11 +13,11 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /**
- * Represents calculation results of {@link
- * edu.ie3.datamodel.models.input.thermal.ThermalStorageInput}
+ * Represents calculation results of a {@link
+ * edu.ie3.datamodel.models.input.thermal.ThermalStorageInput}.
  */
-public abstract class ThermalStorageResult extends ThermalUnitResult {
-  /** Currently stored energy */
+public abstract class ThermalStorageResult extends ThermalSinkResult {
+  /** Currently stored energy. */
   private ComparableQuantity<Energy> energy;
 
   /**
@@ -35,7 +34,7 @@ public abstract class ThermalStorageResult extends ThermalUnitResult {
       ComparableQuantity<Energy> energy,
       ComparableQuantity<Power> qDot) {
     super(time, inputModel, qDot);
-    this.energy = energy.to(StandardUnits.ENERGY_RESULT);
+    this.energy = energy;
   }
 
   public ComparableQuantity<Energy> getEnergy() {
@@ -43,15 +42,14 @@ public abstract class ThermalStorageResult extends ThermalUnitResult {
   }
 
   public void setEnergy(ComparableQuantity<Energy> energy) {
-    this.energy = energy.to(StandardUnits.ENERGY_RESULT);
+    this.energy = energy;
   }
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof ThermalStorageResult that)) return false;
     if (!super.equals(o)) return false;
-    ThermalStorageResult that = (ThermalStorageResult) o;
     return energy.equals(that.energy);
   }
 
@@ -71,6 +69,6 @@ public abstract class ThermalStorageResult extends ThermalUnitResult {
         + getqDot()
         + ", energy="
         + energy
-        + '}';
+        + "}";
   }
 }

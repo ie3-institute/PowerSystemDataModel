@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -12,16 +12,17 @@ import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Abstract class that holds values common to all other result entities */
+/** Abstract class that holds values common to all other result entities. */
 public abstract class SystemParticipantResult extends ResultEntity {
-
-  /** active power output normally provided in MW */
+  /** Active power output normally provided in MW. */
   private ComparableQuantity<Power> p;
 
-  /** reactive power output normally provided in MVAr */
+  /** Reactive power output normally provided in MVAr. */
   private ComparableQuantity<Power> q;
 
   /**
+   * Standard constructor for a system participant result.
+   *
    * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
@@ -37,28 +38,16 @@ public abstract class SystemParticipantResult extends ResultEntity {
     this.q = q;
   }
 
-  /**
-   * Active power output of the decentralised energy resource asset. Convention: Generated powers
-   * are given in negative values.
-   *
-   * @return Active power output in MW.
-   */
   public ComparableQuantity<Power> getP() {
     return p;
   }
 
-  public void setP(ComparableQuantity<Power> p) {
-    this.p = p;
-  }
-
-  /**
-   * Reactive power output of the decentralised energy resource asset. Convention: Generated powers
-   * are given in negative values.
-   *
-   * @return Reactive power output in MVAr.
-   */
   public ComparableQuantity<Power> getQ() {
     return q;
+  }
+
+  public void setP(ComparableQuantity<Power> p) {
+    this.p = p;
   }
 
   public void setQ(ComparableQuantity<Power> q) {
@@ -68,9 +57,8 @@ public abstract class SystemParticipantResult extends ResultEntity {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof SystemParticipantResult that)) return false;
     if (!super.equals(o)) return false;
-    SystemParticipantResult that = (SystemParticipantResult) o;
     return p.equals(that.p) && q.equals(that.q);
   }
 
@@ -90,6 +78,6 @@ public abstract class SystemParticipantResult extends ResultEntity {
         + p
         + ", q="
         + q
-        + '}';
+        + "}";
   }
 }

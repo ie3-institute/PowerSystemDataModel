@@ -1,29 +1,29 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.result.system;
 
 import java.time.ZonedDateTime;
+import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /**
- * Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.StorageInput}
+ * Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.StorageInput}.
  */
 public class StorageResult extends ElectricalEnergyStorageResult {
-
   /**
-   * Standard constructor with automatic uuid generation.
+   * Standard constructor for a storage input result.
    *
    * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
    * @param q reactive power output normally provided in MVAr
-   * @param soc the current state of charge of the storage
+   * @param soc the current state of charge of the electric vehicle
    */
   public StorageResult(
       ZonedDateTime time,
@@ -32,6 +32,18 @@ public class StorageResult extends ElectricalEnergyStorageResult {
       ComparableQuantity<Power> q,
       ComparableQuantity<Dimensionless> soc) {
     super(time, inputModel, p, q, soc);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof StorageResult that)) return false;
+    return super.equals(o);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode());
   }
 
   @Override
@@ -45,8 +57,8 @@ public class StorageResult extends ElectricalEnergyStorageResult {
         + getP()
         + ", q="
         + getQ()
-        + "soc="
+        + ", soc="
         + getSoc()
-        + '}';
+        + "}";
   }
 }

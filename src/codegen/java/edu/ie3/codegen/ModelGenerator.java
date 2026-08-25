@@ -118,7 +118,7 @@ final class ModelGenerator implements HelperMethods {
 
     // add all the fields
     typeBuilder.addFields(getStaticFields(genConfig));
-    typeBuilder.addFields(getPrivateFields(model));
+    typeBuilder.addFields(getPrivateFields(model, genConfig));
 
     MethodGenerator methodGenerator = new MethodGenerator(model, genConfig, models);
     ConstructorGenerator constructorGenerator = new ConstructorGenerator(model, genConfig, models);
@@ -126,10 +126,15 @@ final class ModelGenerator implements HelperMethods {
     // add all the methods
     typeBuilder.addMethods(constructorGenerator.getConstructors());
     typeBuilder.addMethods(methodGenerator.getGetters());
+
+    if (genConfig.setters) {
+      typeBuilder.addMethods(methodGenerator.getSetters());
+    }
+
     typeBuilder.addMethods(methodGenerator.getOtherMethods());
 
     // check if we need to add a copy method and copy builder
-    if (genConfig.copy) {
+    if (genConfig.copy && !genConfig.setters) {
       CopyBuilderGenerator copyBuilderGenerator =
           new CopyBuilderGenerator(model, genConfig, models);
 
@@ -196,19 +201,20 @@ final class ModelGenerator implements HelperMethods {
    * @param model definition to use
    * @return a list of private field definitions
    */
-  private static List<FieldSpec> getPrivateFields(ModelDefinition model) {
+  private static List<FieldSpec> getPrivateFields(
+      ModelDefinition model, GenerationConfig genConfig) {
     return model.components.stream()
         .map(
             component -> {
               var builder =
-                  FieldSpec.builder(
-                      resolveType(component.type),
-                      component.name,
-                      Modifier.PRIVATE,
-                      Modifier.FINAL);
+                  FieldSpec.builder(resolveType(component.type), component.name, Modifier.PRIVATE);
 
               if (!component.javaDoc.isBlank()) {
                 builder.addJavadoc(component.javaDoc);
+              }
+
+              if (!genConfig.setters) {
+                builder.addModifiers(Modifier.FINAL);
               }
 
               return builder.build();

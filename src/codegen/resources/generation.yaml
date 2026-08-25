@@ -96,7 +96,7 @@ models:
           expression: buildPoint(51.4843281, 7.4116482)
           className: GeoUtils
           javaDoc: "Use this default value if geoPosition is unknown."
-      nonCapitalizedGetters: [vTarget]
+      nonCapitalized: [vTarget]
 
     OperatorInput:
       package: edu.ie3.datamodel.models.input
@@ -159,7 +159,7 @@ models:
                  @param x Specific reactance for this type of line (typically in Ohm/km)\n
                  @param iMax Maximum thermal current for this type of line (typically in A)\n
                  @param vRated Rated voltage for this type of line"
-      nonCapitalizedGetters: [iMax, vRated]
+      nonCapitalized: [iMax, vRated]
 
     Transformer2WTypeInput:
       package: edu.ie3.datamodel.models.input.connector.type
@@ -202,7 +202,7 @@ models:
                  @param tapMin Minimum available tap position\n
                  @param tapMax Maximum available tap position\n
                  @param additionalInformation Of the input"
-      nonCapitalizedGetters: [rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi]
+      nonCapitalized: [rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi]
 
     Transformer3WTypeInput:
       package: edu.ie3.datamodel.models.input.connector.type
@@ -257,7 +257,7 @@ models:
                  @param tapMin Minimum available tap position\n
                  @param tapMax Maximum available tap position\n
                  @param additionalInformation Of the input"
-      nonCapitalizedGetters: [sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi]
+      nonCapitalized: [sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi]
 
     SystemParticipantTypeInput:
       package: edu.ie3.datamodel.models.input.system.type
@@ -284,4 +284,559 @@ models:
           parameters:
             - name: factor
               type: double
-      nonCapitalizedGetters: [sRated]
+      nonCapitalized: [sRated]
+
+  results:
+    ResultEntity:
+      package: edu.ie3.datamodel.models.result
+      inherits: [Entity]
+      classJavaDoc: "Abstract class to hold all mappings common to all result models."
+      constructors:
+        - name: full
+          components: [time, inputModel]
+          javaDoc: "Standard constructor for a result entity.\n
+                 \n
+                 @param time Date and time when the result is produced.\n
+                 @param inputModel The UUID of the input model that produces the result."
+      setters: true
+
+    NodeResult:
+      package: edu.ie3.datamodel.models.result
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.NodeInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, vMag, vAng]
+          superArgs: [time, inputModel]
+          javaDoc: "Standard constructor for a node result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param vMag voltage magnitude @ this node in p.u.\n
+                 @param vAng voltage angle @ this node in degree"
+      setters: true
+      nonCapitalized: [vMag, vAng]
+
+    CongestionResult:
+      package: edu.ie3.datamodel.models.result
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.NodeInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, type, subgrid, value, min, max]
+          superArgs: [time, inputModel]
+          javaDoc: "Standard constructor for a congestion result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel identifier of the input model\n
+                 @param type of the input model\n
+                 @param subgrid the subgrid\n
+                 @param value the actual value in percent\n
+                 @param min minimum value in percent\n
+                 @param max maximal value in percent"
+      setters: true
+
+    ConnectorResult:
+      package: edu.ie3.datamodel.models.result.connector
+      classJavaDoc: "Abstract class to hold most 'ElectricCurrent and Angle'-mappings common to all connectors."
+      constructors:
+        - name: full
+          components: [time, inputModel, iAMag, iAAng, iBMag, iBAng]
+          superArgs: [time, inputModel]
+          javaDoc: "Standard constructor for a connector result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param iAMag electric current magnitude @ port A, normally provided in Ampere\n
+                 @param iAAng electric current angle @ Port A in degree\n
+                 @param iBMag electric current magnitude @ port B, normally provided in Ampere\n
+                 @param iBAng electric current angle @ Port B in degree"
+      setters: true
+      nonCapitalized: [iAMag, iAAng, iBMag, iBAng]
+
+    LineResult:
+      package: edu.ie3.datamodel.models.result.connector
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.connector.LineInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, iAMag, iAAng, iBMag, iBAng]
+          superArgs: [time, inputModel, iAMag, iAAng, iBMag, iBAng]
+          javaDoc: "Standard constructor for a line result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param iAMag electric current magnitude @ port A, normally provided in Ampere\n
+                 @param iAAng electric current angle @ Port A in degree\n
+                 @param iBMag electric current magnitude @ port B, normally provided in Ampere\n
+                 @param iBAng electric current angle @ Port B in degree"
+      setters: true
+      nonCapitalized: [iAMag, iAAng, iBMag, iBAng]
+
+    SwitchResult:
+      package: edu.ie3.datamodel.models.result.connector
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.connector.LineInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, closed]
+          superArgs: [time, inputModel]
+          javaDoc: "Standard constructor for a switch result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param closed true if switch is closed, false if switch is open"
+      setters: true
+      booleanGetter: [closed]
+
+    TransformerResult:
+      package: edu.ie3.datamodel.models.result.connector
+      classJavaDoc: "Abstract class that adds a tap changer position attribute to the {@link ConnectorResult} which\n
+                  actually creates a transformer representation."
+      constructors:
+        - name: full
+          components: [time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos]
+          superArgs: [time, inputModel, iAMag, iAAng, iBMag, iBAng]
+          javaDoc: "Standard constructor for a transformer result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param iAMag electric current magnitude @ port A, normally provided in Ampere\n
+                 @param iAAng electric current angle @ Port A in degree\n
+                 @param iBMag electric current magnitude @ port B, normally provided in Ampere\n
+                 @param iBAng electric current angle @ Port B in degree\n
+                 @param tapPos Current position of the tap changer"
+      setters: true
+      nonCapitalized: [iAMag, iAAng, iBMag, iBAng]
+
+    Transformer2WResult:
+      package: edu.ie3.datamodel.models.result.connector
+      classJavaDoc: "Represents calculation results of a {@link\n
+                  edu.ie3.datamodel.models.input.connector.Transformer2WInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos]
+          superArgs: [time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos]
+          javaDoc: "Standard constructor for a two-winding transformer result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param iAMag electric current magnitude @ port A, normally provided in Ampere\n
+                 @param iAAng electric current angle @ Port A in degree\n
+                 @param iBMag electric current magnitude @ port B, normally provided in Ampere\n
+                 @param iBAng electric current angle @ Port B in degree\n
+                 @param tapPos Current position of the tap changer"
+      nonCapitalized: [iAMag, iAAng, iBMag, iBAng]
+      copy: false
+
+    Transformer3WResult:
+      package: edu.ie3.datamodel.models.result.connector
+      classJavaDoc: "Represents calculation results of a {@link\n
+                  edu.ie3.datamodel.models.input.connector.Transformer3WInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos]
+          superArgs: [time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos]
+          javaDoc: "Standard constructor for a three-winding transformer result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param iAMag electric current magnitude @ port A, normally provided in Ampere\n
+                 @param iAAng electric current angle @ Port A in degree\n
+                 @param iBMag electric current magnitude @ port B, normally provided in Ampere\n
+                 @param iBAng electric current angle @ Port B in degree\n
+                 @param iCMag electric current magnitude @ port C, normally provided in Ampere\n
+                 @param iCAng electric current angle @ Port C in degree\n
+                 @param tapPos the current position of the transformers tap changer"
+      setters: true
+      nonCapitalized: [iAMag, iAAng, iBMag, iBAng, iCMag, iCAng]
+
+    SystemParticipantResult:
+      package: edu.ie3.datamodel.models.result.system
+      classJavaDoc: "Abstract class that holds values common to all other result entities."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q]
+          superArgs: [time, inputModel]
+          javaDoc: "Standard constructor for a system participant result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr"
+      setters: true
+
+    SystemParticipantWithHeatResult:
+      package: edu.ie3.datamodel.models.result.system
+      classJavaDoc: "Abstract class that holds values common to result entities having heat result."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q, qDot]
+          superArgs: [time, inputModel, p, q]
+          javaDoc: "Standard constructor for a system participant with heat result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr\n
+                 @param qDot thermal power output normally provided in MW"
+      setters: true
+      nonCapitalized: [qDot]
+
+    ElectricalEnergyStorageResult:
+      package: edu.ie3.datamodel.models.result.system
+      classJavaDoc: "Abstract class that holds values common to result entities having heat result."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q, soc]
+          superArgs: [time, inputModel, p, q]
+          javaDoc: "Standard constructor for a system participant result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr\n
+                 @param soc state of Charge (SoC) in %"
+      setters: true
+
+    FlexOptionsResult:
+      package: edu.ie3.datamodel.models.result.system
+      classJavaDoc: "A result depicting flexibility options of a model (system participant or EM agent)."
+      constructors:
+        - name: full
+          components: [time, inputModel, pMin, pMax]
+          superArgs: [time, inputModel]
+          javaDoc: "Standard constructor for a flex options result entity.\n
+                 \n
+                 @param time Date and time when the result is produced.\n
+                 @param inputModel The UUID of the input model that produces the result.\n
+                 @param pMin The minimum active power of the model at the given point in simulation time.\n
+                 @param pMax The maximum active power of the model at the given point in simulation time."
+      copy: false
+      nonCapitalized: [pMin, pMax]
+
+    AcResult:
+      package: edu.ie3.datamodel.models.result.system
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.AcInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q, qDot]
+          superArgs: [time, inputModel, p, q, qDot]
+          javaDoc: "Standard constructor for an air cooling result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr\n
+                 @param qDot thermal power output normally provided in MW"
+      copy: false
+      nonCapitalized: [qDot]
+
+    BmResult:
+      package: edu.ie3.datamodel.models.result.system
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.BmInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q]
+          superArgs: [time, inputModel, p, q]
+          javaDoc: "Standard constructor for a biomass plant result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr"
+      copy: false
+
+    ChpResult:
+      package: edu.ie3.datamodel.models.result.system
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.ChpInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q, qDot]
+          superArgs: [time, inputModel, p, q, qDot]
+          javaDoc: "Standard constructor for a chp result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr\n
+                 @param qDot thermal power output normally provided in MW"
+      copy: false
+      nonCapitalized: [qDot]
+
+    EmResult:
+      package: edu.ie3.datamodel.models.result.system
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.EmInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q]
+          superArgs: [time, inputModel, p, q]
+          javaDoc: "Standard constructor for an em result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr"
+      copy: false
+
+    EnergyBoundariesFlexOptionsResult:
+      package: edu.ie3.datamodel.models.result.system
+      classJavaDoc: "An energy boundaries flexibility options result of a model (system participant or EM agent)."
+      constructors:
+        - name: full
+          components: [time, inputModel, eState, eMin, eMax, pMin, pMax]
+          superArgs: [time, inputModel, pMin, pMax]
+          javaDoc: "Standard constructor for a power limit flex options result entity.\n
+                 \n
+                 @param time Date and time when the result is produced.\n
+                 @param inputModel The UUID of the input model that produces the result.\n
+                 @param eState State of energy of the model at the given point in simulation time.\n
+                 @param eMin Minimum state of energy of the model at the given point in simulation time.\n
+                 @param eMax Maximum state of energy of the model at the given point in simulation time.\n
+                 @param pMin The minimum active power of the model at the given point in simulation time.\n
+                 @param pMax The maximum active power of the model at the given point in simulation time."
+      copy: false
+      nonCapitalized: [pMin, pMax, eState, eMin, eMax]
+
+    EvcsResult:
+      package: edu.ie3.datamodel.models.result.system
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.EvcsInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q]
+          superArgs: [time, inputModel, p, q]
+          javaDoc: "Standard constructor for an electric vehicle change station result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr"
+      copy: false
+
+    EvResult:
+      package: edu.ie3.datamodel.models.result.system
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.EvInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q, soc]
+          superArgs: [time, inputModel, p, q, soc]
+          javaDoc: "Standard constructor for an electric vehicle change station result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr\n
+                 @param soc the current state of charge of the electric vehicle"
+      copy: false
+
+    FixedFeedInResult:
+      package: edu.ie3.datamodel.models.result.system
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.FixedFeedInInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q]
+          superArgs: [time, inputModel, p, q]
+          javaDoc: "Standard constructor for a fixed feed in result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr"
+      copy: false
+
+    HpResult:
+      package: edu.ie3.datamodel.models.result.system
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.HpInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q, qDot]
+          superArgs: [time, inputModel, p, q, qDot]
+          javaDoc: "Standard constructor for an air cooling result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr\n
+                 @param qDot thermal power output normally provided in MW"
+      copy: false
+      nonCapitalized: [qDot]
+
+    LoadResult:
+      package: edu.ie3.datamodel.models.result.system
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.LoadInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q]
+          superArgs: [time, inputModel, p, q]
+          javaDoc: "Standard constructor for a load result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr"
+      copy: false
+
+    PowerLimitFlexOptionsResult:
+      package: edu.ie3.datamodel.models.result.system
+      classJavaDoc: "A power limit flexibility options result of a model (system participant or EM agent)."
+      constructors:
+        - name: full
+          components: [time, inputModel, pRef, pMin, pMax]
+          superArgs: [time, inputModel, pMin, pMax]
+          javaDoc: "Standard constructor for a power limit flex options result entity.\n
+                  \n
+                  @param time Date and time when the result is produced.\n
+                  @param inputModel The UUID of the input model that produces the result.\n
+                  @param pRef The active power that was suggested for regular usage by the model."
+      copy: false
+      nonCapitalized: [pRef, pMin, pMax]
+
+    PvResult:
+      package: edu.ie3.datamodel.models.result.system
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.PvInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q]
+          superArgs: [time, inputModel, p, q]
+          javaDoc: "Standard constructor for a photovoltaic plant result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr"
+      copy: false
+
+    StorageResult:
+      package: edu.ie3.datamodel.models.result.system
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.StorageInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q, soc]
+          superArgs: [time, inputModel, p, q, soc]
+          javaDoc: "Standard constructor for a storage input result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr\n
+                 @param soc the current state of charge of the electric vehicle"
+      copy: false
+
+    WecResult:
+      package: edu.ie3.datamodel.models.result.system
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.WecInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q]
+          superArgs: [time, inputModel, p, q]
+          javaDoc: "Standard constructor for a wind energy converter result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr"
+      copy: false
+
+    ThermalUnitResult:
+      package: edu.ie3.datamodel.models.result.thermal
+      classJavaDoc: "Representation of a result with regard to a thermal unit."
+      constructors:
+        - name: full
+          components: [time, inputModel, qDot]
+          superArgs: [time, inputModel]
+          javaDoc: "Constructor for the thermal result with\n
+                 \n
+                 @param time The time, the result is related to\n
+                 @param inputModel The input model's UUID, the result is related to\n
+                 @param qDot Average thermal power exchanged with the unit"
+      copy: false
+      nonCapitalized: [qDot]
+
+    ThermalSinkResult:
+      package: edu.ie3.datamodel.models.result.thermal
+      classJavaDoc: "Represents calculation results of a {@link\n
+                  edu.ie3.datamodel.models.input.thermal.ThermalSinkInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, qDot]
+          superArgs: [time, inputModel, qDot]
+          javaDoc: "Standard constructor which includes auto generation of the resulting output models uuid.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param qDot thermal heat demand of the sink"
+      copy: false
+      nonCapitalized: [qDot]
+
+    ThermalStorageResult:
+      package: edu.ie3.datamodel.models.result.thermal
+      classJavaDoc: "Represents calculation results of a {@link\n
+                  edu.ie3.datamodel.models.input.thermal.ThermalStorageInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, energy, qDot]
+          superArgs: [time, inputModel, qDot]
+          javaDoc: "Constructs the result with\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param energy Currently stored energy\n
+                 @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage"
+      setters: true
+      nonCapitalized: [qDot]
+
+    AbstractThermalStorageResult:
+      package: edu.ie3.datamodel.models.result.thermal
+      classJavaDoc: "Abstract class representing the common results of different types of thermal storages."
+      constructors:
+        - name: full
+          components: [time, inputModel, energy, qDot, fillLevel]
+          superArgs: [time, inputModel, energy, qDot]
+          javaDoc: "Constructs the result with\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param energy Currently stored energy\n
+                 @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage\n
+                 @param fillLevel Fill level of the storage"
+      setters: true
+      nonCapitalized: [qDot]
+
+    CylindricalStorageResult:
+      package: edu.ie3.datamodel.models.result.thermal
+      classJavaDoc: "Represents the results of Cylindrical Storage."
+      constructors:
+        - name: full
+          components: [time, inputModel, energy, qDot, fillLevel]
+          superArgs: [time, inputModel, energy, qDot, fillLevel]
+      copy: false
+      nonCapitalized: [qDot]
+
+    DomesticHotWaterStorageResult:
+      package: edu.ie3.datamodel.models.result.thermal
+      classJavaDoc: "Represents the results of Domestic Hot Water Storage."
+      constructors:
+        - name: full
+          components: [time, inputModel, energy, qDot, fillLevel]
+          superArgs: [time, inputModel, energy, qDot, fillLevel]
+      copy: false
+      nonCapitalized: [qDot]
+
+    ThermalHouseResult:
+      package: edu.ie3.datamodel.models.result.thermal
+      classJavaDoc: "Represents the results of {@link edu.ie3.datamodel.models.input.thermal.ThermalHouseInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, qDot, indoorTemperature]
+          superArgs: [time, inputModel, qDot]
+          javaDoc: "Standard constructor for thermal house result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param qDot thermal heat demand of the sink\n
+                 @param indoorTemperature Indoor room temperature"
+      setters: true
+      nonCapitalized: [qDot]
+
+
+
+
+
+
+

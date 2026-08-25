@@ -30,26 +30,22 @@ public class MethodGenerator implements HelperMethods {
 
     if (genConfig.getters) {
       for (ModelDefinition.ComponentDefinition component : model.components) {
-        if (!genConfig.noGetters.contains(component.name)) {
+        String getter = defaultGetterName(component, genConfig);
+        TypeName returnType = resolveType(component.type);
 
-          String getter = defaultGetterName(component, genConfig);
-          TypeName returnType = resolveType(component.type);
+        var builder = MethodSpec.methodBuilder(getter).addModifiers(Modifier.PUBLIC);
 
-          var builder = MethodSpec.methodBuilder(getter).addModifiers(Modifier.PUBLIC);
+        if (isMap(component)) {
+          builder.addStatement("return $T.unmodifiableMap($L)", Collections.class, component.name);
+        } else if (!component.required) {
+          returnType = ParameterizedTypeName.get(ClassName.get(Optional.class), returnType.box());
 
-          if (isMap(component)) {
-            builder.addStatement(
-                "return $T.unmodifiableMap($L)", Collections.class, component.name);
-          } else if (!component.required) {
-            returnType = ParameterizedTypeName.get(ClassName.get(Optional.class), returnType.box());
-
-            builder.addStatement("return $T.ofNullable($L)", Optional.class, component.name);
-          } else {
-            builder.addStatement("return $L", component.name);
-          }
-
-          methodSpecs.add(builder.returns(returnType).build());
+          builder.addStatement("return $T.ofNullable($L)", Optional.class, component.name);
+        } else {
+          builder.addStatement("return $L", component.name);
         }
+
+        methodSpecs.add(builder.returns(returnType).build());
       }
     }
 
@@ -73,6 +69,30 @@ public class MethodGenerator implements HelperMethods {
 
       // this.additionalInformation.putAll(additionalInformation);
       builder.addStatement("this.additionalInformation.putAll(additionalInformation)");
+
+      methodSpecs.add(builder.build());
+    }
+
+    return methodSpecs;
+  }
+
+  public List<MethodSpec> getSetters() {
+    List<MethodSpec> methodSpecs = new ArrayList<>();
+
+    for (ModelDefinition.ComponentDefinition component : model.components) {
+      if (excludeFromMethods(component)) {
+        continue;
+      }
+
+      String name = component.name;
+      String setter = defaultSetterName(component, genConfig);
+
+      var builder =
+          MethodSpec.methodBuilder(setter)
+              .addModifiers(Modifier.PUBLIC)
+              .returns(TypeName.VOID)
+              .addParameter(resolveType(component.type), name)
+              .addStatement("this.$L = $L", name, name);
 
       methodSpecs.add(builder.build());
     }

@@ -65,7 +65,6 @@ models:
           type: String
           javaDoc: "The id (=name) of this operator."
 
-
   typeInput:
     AssetTypeInput:
       name: AssetTypeInput
@@ -224,3 +223,280 @@ models:
         - name: cosPhiRated
           type: double
           javaDoc: "Power factor for this type of system participant."
+
+  results:
+    ResultEntity:
+      name: ResultEntity
+      components:
+        - name: time
+          type: ZonedDateTime
+          javaDoc: "Date and time of the produced result."
+        - name: inputModel
+          type: UUID
+          javaDoc: "Uuid of the input model that produces the result."
+
+    NodeResult:
+      name: NodeResult
+      extends: ResultEntity
+      abstract: false
+      components:
+        - name: vMag
+          type: Dimensionless
+          javaDoc: "Voltage magnitude @ this node in p.u."
+        - name: vAng
+          type: Angle
+          javaDoc: "Voltage angle @ this node in degree."
+
+    CongestionResult:
+      name: CongestionResult
+      extends: ResultEntity
+      abstract: false
+      components:
+        - name: subgrid
+          type: int
+        - name: type
+          type: InputModelType
+        - name: value
+          type: Dimensionless
+        - name: min
+          type: Dimensionless
+        - name: max
+          type: Dimensionless
+
+    ConnectorResult:
+      name: ConnectorResult
+      extends: ResultEntity
+      components:
+        - name: iAMag
+          type: ElectricCurrent
+          javaDoc: "Electric current magnitude @ port A, normally provided in Ampere."
+        - name: iAAng
+          type: Angle
+          javaDoc: "Electric current angle @ Port A in degree °."
+        - name: iBMag
+          type: ElectricCurrent
+          javaDoc: "Electric current magnitude @ port B, normally provided in Ampere."
+        - name: iBAng
+          type: Angle
+          javaDoc: "Electric current angle @ Port B in degree °."
+
+    LineResult:
+      name: LineResult
+      extends: ConnectorResult
+      abstract: false
+
+    SwitchResult:
+      name: SwitchResult
+      extends: ResultEntity
+      abstract: false
+      components:
+        - name: closed
+          type: bool
+          javaDoc: "Is the switching state 'closed'?"
+
+    TransformerResult:
+      name: TransformerResult
+      extends: ConnectorResult
+      abstract: false
+      components:
+        - name: tapPos
+          type: int
+          javaDoc: "Current tapping position if a transformer has a tap changer."
+
+    Transformer2WResult:
+      name: Transformer2WResult
+      extends: TransformerResult
+      abstract: false
+
+    Transformer3WResult:
+      name: Transformer3WResult
+      extends: TransformerResult
+      abstract: false
+      components:
+        - name: iCMag
+          type: ElectricCurrent
+        - name: iCAng
+          type: Angle
+
+    SystemParticipantResult:
+      name: SystemParticipantResult
+      extends: ResultEntity
+      components:
+        - name: p
+          type: Power
+          javaDoc: "Active power output normally provided in MW."
+        - name: q
+          type: Power
+          javaDoc: "Reactive power output normally provided in MVAr."
+
+    SystemParticipantWithHeatResult:
+      name: SystemParticipantWithHeatResult
+      extends: SystemParticipantResult
+      components:
+        - name: qDot
+          type: Power
+          javaDoc: "The thermal power output normally provided in MW."
+
+    ElectricalEnergyStorageResult:
+      name: ElectricalEnergyStorageResult
+      extends: SystemParticipantResult
+      components:
+        - name: soc
+          type: Dimensionless
+          javaDoc: "State of Charge (SoC) in %."
+
+    FlexOptionsResult:
+      name: FlexOptionsResult
+      extends: ResultEntity
+      components:
+        - name: pMin
+          type: Power
+          javaDoc: "Minimum active power to which the operating point of the model can be reduced (might be\n
+                 negative, thus feed-in) at the given point in simulation time. This equates to the lower bound\n
+                 of possible power flexibility provision."
+        - name: pMax
+          type: Power
+          javaDoc: "Maximum active power to which the operating point of the model can be increased (might be\n
+                  negative, thus feed-in) at the given point in simulation time. This equates to upper bound of\n
+                  possible power flexibility provision."
+
+    AcResult:
+      name: AcResult
+      extends: SystemParticipantWithHeatResult
+      abstract: false
+
+    BmResult:
+      name: BmResult
+      extends: SystemParticipantResult
+      abstract: false
+
+    ChpResult:
+      name: ChpResult
+      extends: SystemParticipantWithHeatResult
+      abstract: false
+
+    EmResult:
+      name: EmResult
+      extends: SystemParticipantResult
+      abstract: false
+
+    EnergyBoundariesFlexOptionsResult:
+      name: EnergyBoundariesFlexOptionsResult
+      extends: FlexOptionsResult
+      abstract: false
+      components:
+        - name: eState
+          type: Energy
+          javaDoc: "State of energy of the model at the given point in simulation time."
+        - name: eMin
+          type: Energy
+          javaDoc: "Minimum state of energy of the model at the given point in simulation time."
+        - name: eMax
+          type: Energy
+          javaDoc: "Maximum state of energy of the model at the given point in simulation time."
+
+    EvcsResult:
+      name: EvcsResult
+      extends: SystemParticipantResult
+      abstract: false
+
+    EvResult:
+      name: EvResult
+      extends: ElectricalEnergyStorageResult
+      abstract: false
+
+    FixedFeedInResult:
+      name: FixedFeedInResult
+      extends: SystemParticipantResult
+      abstract: false
+
+    HpResult:
+      name: HpResult
+      extends: SystemParticipantWithHeatResult
+      abstract: false
+
+    LoadResult:
+      name: LoadResult
+      extends: SystemParticipantResult
+      abstract: false
+
+    PowerLimitFlexOptionsResult:
+      name: PowerLimitFlexOptionsResult
+      extends: FlexOptionsResult
+      abstract: false
+      components:
+        - name: pRef
+          type: Power
+          javaDoc: "Active power (might be negative, thus feed-in) that was suggested for regular usage by the\n
+                  model."
+
+    PvResult:
+      name: PvResult
+      extends: SystemParticipantResult
+      abstract: false
+
+    StorageResult:
+      name: StorageResult
+      extends: ElectricalEnergyStorageResult
+      abstract: false
+
+    WecResult:
+      name: WecResult
+      extends: SystemParticipantResult
+      abstract: false
+
+    ThermalUnitResult:
+      name: ThermalUnitResult
+      extends: ResultEntity
+      components:
+        - name: qDot
+          type: Power
+          javaDoc: "Average thermal power flowing into the thermal unit (+: Power flowing into unit, -: Power\n
+                  flowing from unit)"
+
+    ThermalSinkResult:
+      name: ThermalSinkResult
+      extends: ThermalUnitResult
+
+    ThermalStorageResult:
+      name: ThermalStorageResult
+      extends: ThermalSinkResult
+      components:
+        - name: energy
+          type: Energy
+          javaDoc: "Currently stored energy."
+
+    AbstractThermalStorageResult:
+      name: AbstractThermalStorageResult
+      extends: ThermalStorageResult
+      components:
+        - name: fillLevel
+          type: Dimensionless
+          javaDoc: "Fill level of the storage."
+
+    CylindricalStorageResult:
+      name: CylindricalStorageResult
+      extends: AbstractThermalStorageResult
+      abstract: false
+
+    DomesticHotWaterStorageResult:
+      name: DomesticHotWaterStorageResult
+      extends: AbstractThermalStorageResult
+      abstract: false
+
+    ThermalHouseResult:
+      name: ThermalHouseResult
+      extends: ThermalSinkResult
+      abstract: false
+      components:
+        - name: indoorTemperature
+          type: Temperature
+          javaDoc: "Indoor room temperature of the house."
+
+
+
+
+
+
+
+

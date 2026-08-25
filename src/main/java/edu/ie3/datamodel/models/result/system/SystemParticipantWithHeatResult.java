@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -11,12 +11,14 @@ import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Abstract class that holds values common to result entities having heat result */
+/** Abstract class that holds values common to result entities having heat result. */
 public abstract class SystemParticipantWithHeatResult extends SystemParticipantResult {
-  /** The thermal power output normally provided in MW */
-  private final ComparableQuantity<Power> qDot;
+  /** The thermal power output normally provided in MW. */
+  private ComparableQuantity<Power> qDot;
 
   /**
+   * Standard constructor for a system participant with heat result.
+   *
    * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param p active power output normally provided in MW
@@ -33,22 +35,19 @@ public abstract class SystemParticipantWithHeatResult extends SystemParticipantR
     this.qDot = qDot;
   }
 
-  /**
-   * Thermal power output of the decentralised energy resource asset. Convention: Generated powers
-   * are given in negative values.
-   *
-   * @return Thermal power output in MW.
-   */
   public ComparableQuantity<Power> getqDot() {
     return qDot;
+  }
+
+  public void setqDot(ComparableQuantity<Power> qDot) {
+    this.qDot = qDot;
   }
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof SystemParticipantWithHeatResult that)) return false;
     if (!super.equals(o)) return false;
-    SystemParticipantWithHeatResult that = (SystemParticipantWithHeatResult) o;
     return qDot.equals(that.qDot);
   }
 
@@ -69,7 +68,7 @@ public abstract class SystemParticipantWithHeatResult extends SystemParticipantR
         + ", q="
         + getQ()
         + ", qDot="
-        + getqDot()
-        + '}';
+        + qDot
+        + "}";
   }
 }

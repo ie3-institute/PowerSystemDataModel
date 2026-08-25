@@ -1,20 +1,20 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.result.system;
 
-import edu.ie3.datamodel.models.input.system.EvcsInput;
 import java.time.ZonedDateTime;
+import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Represents calculation results of a {@link EvcsInput} */
+/** Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.EvcsInput}. */
 public class EvcsResult extends SystemParticipantResult {
   /**
-   * Standard constructor with automatic uuid generation.
+   * Standard constructor for an electric vehicle change station result.
    *
    * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
@@ -30,6 +30,18 @@ public class EvcsResult extends SystemParticipantResult {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof EvcsResult that)) return false;
+    return super.equals(o);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode());
+  }
+
+  @Override
   public String toString() {
     return "EvcsResult{"
         + "time="
@@ -40,6 +52,6 @@ public class EvcsResult extends SystemParticipantResult {
         + getP()
         + ", q="
         + getQ()
-        + '}';
+        + "}";
   }
 }

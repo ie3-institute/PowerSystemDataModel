@@ -27,6 +27,8 @@ public final class GenerationConfig implements HelperMethods {
 
   public boolean getters = true;
 
+  public boolean setters = false;
+
   public boolean equals = true;
 
   public boolean hashCode = true;
@@ -39,11 +41,9 @@ public final class GenerationConfig implements HelperMethods {
 
   public List<String> booleanGetter = new ArrayList<>();
 
-  public List<String> nonCapitalizedGetters = new ArrayList<>();
+  public List<String> nonCapitalized = new ArrayList<>();
 
   public boolean fieldNameGetters = false;
-
-  public List<String> noGetters = new ArrayList<>();
 
   public List<MethodOverride> methodOverrides = new ArrayList<>();
 

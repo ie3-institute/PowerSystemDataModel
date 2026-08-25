@@ -14,7 +14,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** An energy boundaries flexibility options result of a model (system participant or EM agent). */
 public class EnergyBoundariesFlexOptionsResult extends FlexOptionsResult {
-
   /** State of energy of the model at the given point in simulation time. */
   private final ComparableQuantity<Energy> eState;
 
@@ -62,38 +61,35 @@ public class EnergyBoundariesFlexOptionsResult extends FlexOptionsResult {
   }
 
   @Override
-  public String toString() {
-    return "EnergyBoundariesFlexOptionsResult{"
-        + "time="
-        + getTime()
-        + ", inputModel="
-        + getInputModel()
-        + ", eState="
-        + eState
-        + ", eMin="
-        + eMin
-        + ", eMax="
-        + eMax
-        + ", pMin="
-        + pMin
-        + ", pMax="
-        + pMax
-        + '}';
-  }
-
-  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof EnergyBoundariesFlexOptionsResult that)) return false;
     if (!super.equals(o)) return false;
-
-    EnergyBoundariesFlexOptionsResult that = (EnergyBoundariesFlexOptionsResult) o;
-
     return eState.equals(that.eState) && eMin.equals(that.eMin) && eMax.equals(that.eMax);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), eState, eMin, eMax);
+  }
+
+  @Override
+  public String toString() {
+    return "EnergyBoundariesFlexOptionsResult{"
+        + "time="
+        + getTime()
+        + ", inputModel="
+        + getInputModel()
+        + ", pMin="
+        + getpMin()
+        + ", pMax="
+        + getpMax()
+        + ", eState="
+        + eState
+        + ", eMin="
+        + eMin
+        + ", eMax="
+        + eMax
+        + "}";
   }
 }

@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -10,13 +10,12 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-/** Abstract class to hold all mappings common to all result models */
+/** Abstract class to hold all mappings common to all result models. */
 public abstract class ResultEntity implements Entity {
-
-  /** date and time of the produced result */
+  /** Date and time of the produced result. */
   private ZonedDateTime time;
 
-  /** uuid of the input model that produces the result */
+  /** Uuid of the input model that produces the result. */
   private UUID inputModel;
 
   /**
@@ -30,37 +29,36 @@ public abstract class ResultEntity implements Entity {
     this.inputModel = inputModel;
   }
 
-  public UUID getInputModel() {
-    return inputModel;
-  }
-
-  public void setInputModel(UUID inputID) {
-    inputModel = inputID;
-  }
-
   public ZonedDateTime getTime() {
     return time;
+  }
+
+  public UUID getInputModel() {
+    return inputModel;
   }
 
   public void setTime(ZonedDateTime time) {
     this.time = time;
   }
 
+  public void setInputModel(UUID inputModel) {
+    this.inputModel = inputModel;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    ResultEntity that = (ResultEntity) o;
-    return time.equals(that.time);
+    if (!(o instanceof ResultEntity that)) return false;
+    return Objects.equals(time, that.time) && Objects.equals(inputModel, that.inputModel);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), time);
+    return Objects.hash(time, inputModel);
   }
 
   @Override
   public String toString() {
-    return "ResultEntity{time=" + time + '}';
+    return "ResultEntity{" + "time=" + time + ", inputModel=" + inputModel + "}";
   }
 }

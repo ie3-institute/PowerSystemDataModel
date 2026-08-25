@@ -9,6 +9,7 @@ import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.ParameterizedTypeName;
 import com.palantir.javapoet.TypeName;
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -91,7 +92,13 @@ public class ResolverUtils {
 
   static void registerJavaClasses() {
     Stream.of(
-            Serializable.class, String.class, Collections.class, UUID.class, List.class, Map.class)
+            Serializable.class,
+            String.class,
+            Collections.class,
+            UUID.class,
+            List.class,
+            Map.class,
+            ZonedDateTime.class)
         .forEach(ResolverUtils::add);
   }
 
@@ -226,6 +233,37 @@ public class ResolverUtils {
         .forEach(
             name ->
                 classes.put(name, ClassName.get("edu.ie3.datamodel.models.input.thermal", name)));
+
+    // results
+    Stream.of("InputModelType", "ResultEntity")
+        .forEach(name -> classes.put(name, ClassName.get("edu.ie3.datamodel.models.result", name)));
+
+    // connector results
+    Stream.of("ConnectorResult", "TransformerResult")
+        .forEach(
+            name ->
+                classes.put(
+                    name, ClassName.get("edu.ie3.datamodel.models.result.connector", name)));
+
+    // system results
+    Stream.of(
+            "SystemParticipantResult",
+            "ElectricalEnergyStorageResult",
+            "SystemParticipantWithHeatResult",
+            "FlexOptionsResult")
+        .forEach(
+            name ->
+                classes.put(name, ClassName.get("edu.ie3.datamodel.models.result.system", name)));
+
+    // thermal results
+    Stream.of(
+            "ThermalUnitResult",
+            "ThermalSinkResult",
+            "ThermalStorageResult",
+            "AbstractThermalStorageResult")
+        .forEach(
+            name ->
+                classes.put(name, ClassName.get("edu.ie3.datamodel.models.result.thermal", name)));
   }
 
   static void registerQuantities() {
@@ -306,7 +344,8 @@ public class ResolverUtils {
             "Temperature",
             "SpecificHeatCapacity",
             "ThermalConductance",
-            "HeatCapacity")
+            "HeatCapacity",
+            "Angle")
         .forEach(
             name -> customTypes.put(name, new CustomType("ComparableQuantity", List.of(name))));
 

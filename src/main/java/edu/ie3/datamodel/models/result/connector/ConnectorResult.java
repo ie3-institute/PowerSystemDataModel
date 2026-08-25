@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -13,23 +13,22 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
 import tech.units.indriya.ComparableQuantity;
 
-/** Abstract class to hold most 'ElectricCurrent and Angle'-mappings common to all connectors */
+/** Abstract class to hold most 'ElectricCurrent and Angle'-mappings common to all connectors. */
 public abstract class ConnectorResult extends ResultEntity {
-
-  /** Electric current magnitude @ port A, normally provided in Ampere */
+  /** Electric current magnitude @ port A, normally provided in Ampere. */
   private ComparableQuantity<ElectricCurrent> iAMag;
 
-  /** Electric current angle @ Port A in degree ° */
+  /** Electric current angle @ Port A in degree °. */
   private ComparableQuantity<Angle> iAAng;
 
-  /** Electric current magnitude @ port B, normally provided in Ampere */
+  /** Electric current magnitude @ port B, normally provided in Ampere. */
   private ComparableQuantity<ElectricCurrent> iBMag;
 
-  /** Electric current angle @ Port B in degree ° */
+  /** Electric current angle @ Port B in degree °. */
   private ComparableQuantity<Angle> iBAng;
 
   /**
-   * Standard constructor with automatic uuid generation.
+   * Standard constructor for a connector result.
    *
    * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
@@ -56,28 +55,28 @@ public abstract class ConnectorResult extends ResultEntity {
     return iAMag;
   }
 
-  public void setiAMag(ComparableQuantity<ElectricCurrent> iAMag) {
-    this.iAMag = iAMag;
-  }
-
   public ComparableQuantity<Angle> getiAAng() {
     return iAAng;
-  }
-
-  public void setiAAng(ComparableQuantity<Angle> iAAng) {
-    this.iAAng = iAAng;
   }
 
   public ComparableQuantity<ElectricCurrent> getiBMag() {
     return iBMag;
   }
 
-  public void setiBMag(ComparableQuantity<ElectricCurrent> iBMag) {
-    this.iBMag = iBMag;
-  }
-
   public ComparableQuantity<Angle> getiBAng() {
     return iBAng;
+  }
+
+  public void setiAMag(ComparableQuantity<ElectricCurrent> iAMag) {
+    this.iAMag = iAMag;
+  }
+
+  public void setiAAng(ComparableQuantity<Angle> iAAng) {
+    this.iAAng = iAAng;
+  }
+
+  public void setiBMag(ComparableQuantity<ElectricCurrent> iBMag) {
+    this.iBMag = iBMag;
   }
 
   public void setiBAng(ComparableQuantity<Angle> iBAng) {
@@ -87,9 +86,8 @@ public abstract class ConnectorResult extends ResultEntity {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof ConnectorResult that)) return false;
     if (!super.equals(o)) return false;
-    ConnectorResult that = (ConnectorResult) o;
     return iAMag.equals(that.iAMag)
         && iAAng.equals(that.iAAng)
         && iBMag.equals(that.iBMag)
@@ -116,6 +114,6 @@ public abstract class ConnectorResult extends ResultEntity {
         + iBMag
         + ", iBAng="
         + iBAng
-        + '}';
+        + "}";
   }
 }
