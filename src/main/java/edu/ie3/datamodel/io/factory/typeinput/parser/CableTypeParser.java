@@ -16,6 +16,7 @@ import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import java.io.IOException;
 import java.util.*;
+import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
@@ -106,16 +107,7 @@ public class CableTypeParser {
                 ? element.get(FIELD_AREA).asText()
                 : null;
         if (a != null) {
-          a = a.trim();
-          if (!a.isEmpty() && !"null".equalsIgnoreCase(a)) {
-            try {
-              area =
-                  Quantities.getQuantity(Double.parseDouble(a), PowerSystemUnits.SQUARE_MILLIMETRE);
-            } catch (NumberFormatException nfe) {
-              throw new ParsingException(
-                  "Cannot parse LayerInput: invalid area value in " + element, nfe);
-            }
-          }
+          area = parseArea(a, "LayerInput", element);
         }
 
         layers.add(
@@ -199,17 +191,7 @@ public class CableTypeParser {
       JsonNode areaNode = node.get(FIELD_AREA);
       String areaText = areaNode == null || areaNode.isNull() ? null : areaNode.asText();
       if (areaText != null) {
-        areaText = areaText.trim();
-        if (!areaText.isEmpty() && !"null".equalsIgnoreCase(areaText)) {
-          try {
-            area =
-                Quantities.getQuantity(
-                    Double.parseDouble(areaText), PowerSystemUnits.SQUARE_MILLIMETRE);
-          } catch (NumberFormatException nfe) {
-            throw new ParsingException(
-                "Cannot parse ScreenLayerInput: invalid area value in " + json, nfe);
-          }
-        }
+        area = parseArea(areaText, "ScreenLayerInput", node);
       }
 
       JsonNode wiresNode = node.get(FIELD_WIRES_NUMBER);
@@ -238,18 +220,7 @@ public class CableTypeParser {
       String lengthOfLayText =
           lengthOfLayNode == null || lengthOfLayNode.isNull() ? null : lengthOfLayNode.asText();
       if (lengthOfLayText != null) {
-        lengthOfLayText = lengthOfLayText.trim();
-        if (!lengthOfLayText.isEmpty() && !"null".equalsIgnoreCase(lengthOfLayText)) {
-          try {
-            lengthOfLay =
-                Quantities.getQuantity(
-                        Double.parseDouble(lengthOfLayText), PowerSystemUnits.MILLIMETRE)
-                    .asType(Length.class);
-          } catch (NumberFormatException nfe) {
-            throw new ParsingException(
-                "Cannot parse ScreenLayerInput: invalid lengthOfLay value in " + json, nfe);
-          }
-        }
+        lengthOfLay = parseLengthOfLay(lengthOfLayText, json);
       }
 
       ComparableQuantity<edu.ie3.util.quantities.interfaces.ElectricalResistivity>
@@ -337,15 +308,7 @@ public class CableTypeParser {
       ComparableQuantity<Area> area = null;
       if (node.has(FIELD_AREA) && !node.get(FIELD_AREA).isNull()) {
         String a = node.get(FIELD_AREA).asText();
-        if (a != null && !a.isBlank() && !"null".equalsIgnoreCase(a)) {
-          try {
-            area =
-                Quantities.getQuantity(Double.parseDouble(a), PowerSystemUnits.SQUARE_MILLIMETRE);
-          } catch (NumberFormatException nfe) {
-            throw new ParsingException(
-                "Cannot parse ConductorInput: invalid area value in " + json, nfe);
-          }
-        }
+        area = parseArea(a, "ConductorInput", json);
       }
 
       return new ConductorInput(
@@ -361,6 +324,49 @@ public class CableTypeParser {
     } catch (IOException e) {
       throw new ParsingException(
           "Cannot parse ConductorInput: " + json + ". Cause: " + e.getMessage(), e);
+    }
+  }
+
+  private <T extends Quantity<T>> ComparableQuantity<T> parseQuantityField(
+      JsonNode node, String fieldName, Class<T> quantityClass, Unit<?> unit, String missingMessage)
+      throws ParsingException {
+    try {
+      String s =
+          node.has(fieldName) && !node.get(fieldName).isNull()
+              ? node.get(fieldName).asText()
+              : null;
+      if (s == null || s.isBlank() || "null".equalsIgnoreCase(s))
+        throw new ParsingException(missingMessage);
+      return Quantities.getQuantity(Double.parseDouble(s), unit).asType(quantityClass);
+    } catch (NumberFormatException nfe) {
+      throw new ParsingException("Cannot parse " + fieldName + " value in " + node, nfe);
+    }
+  }
+
+  private ComparableQuantity<Area> parseArea(String a, String context, Object source)
+      throws ParsingException {
+    if (a == null) return null;
+    a = a.trim();
+    if (a.isEmpty() || "null".equalsIgnoreCase(a)) return null;
+    try {
+      return Quantities.getQuantity(Double.parseDouble(a), PowerSystemUnits.SQUARE_MILLIMETRE);
+    } catch (NumberFormatException nfe) {
+      throw new ParsingException(
+          "Cannot parse " + context + ": invalid area value in " + source, nfe);
+    }
+  }
+
+  private ComparableQuantity<Length> parseLengthOfLay(String text, Object source)
+      throws ParsingException {
+    if (text == null) return null;
+    text = text.trim();
+    if (text.isEmpty() || "null".equalsIgnoreCase(text)) return null;
+    try {
+      return Quantities.getQuantity(Double.parseDouble(text), PowerSystemUnits.MILLIMETRE);
+    } catch (NumberFormatException nfe) {
+      throw new ParsingException(
+          "Cannot parse ScreenLayerInput: invalid " + FIELD_LENGTH_OF_LAY + " value in " + source,
+          nfe);
     }
   }
 
@@ -393,22 +399,6 @@ public class CableTypeParser {
               ? node.get(FIELD_MATERIAL).asText()
               : "null";
       throw new ParsingException("Cannot parse " + context + ": invalid material: " + mat, e);
-    }
-  }
-
-  private <T extends javax.measure.Quantity<T>> ComparableQuantity<T> parseQuantityField(
-      JsonNode node, String fieldName, Class<T> quantityClass, Unit<?> unit, String missingMessage)
-      throws ParsingException {
-    try {
-      String s =
-          node.has(fieldName) && !node.get(fieldName).isNull()
-              ? node.get(fieldName).asText()
-              : null;
-      if (s == null || s.isBlank() || "null".equalsIgnoreCase(s))
-        throw new ParsingException(missingMessage);
-      return Quantities.getQuantity(Double.parseDouble(s), unit).asType(quantityClass);
-    } catch (NumberFormatException nfe) {
-      throw new ParsingException("Cannot parse " + fieldName + " value in " + node, nfe);
     }
   }
 }
