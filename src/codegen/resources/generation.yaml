@@ -1,18 +1,17 @@
 version: 1.0
-models:
-  input:
+datamodel:
+  models:
     UniqueEntity:
-      package: edu.ie3.datamodel.models
       classJavaDoc: "Supplies every subclass with a generated UUID, making it unique."
-      inherits: [Entity, Uniqueness, Serializable]
+      inherits: [ Entity, Uniqueness, Serializable ]
       constructors:
         - name: minimal
-          components: []
+          components: [ ]
         - name: full
-          components: [uuid]
+          components: [ uuid ]
 
+  models.input:
     UniqueInputEntity:
-      package: edu.ie3.datamodel.models.input
       classJavaDoc: "Functionless class to describe that all subclasses are unique input classes."
       inherits: [InputEntity]
       constructors:
@@ -21,7 +20,6 @@ models:
           superArgs: [uuid]
 
     AssetInput:
-      package: edu.ie3.datamodel.models.input
       classJavaDoc: "Describes a grid asset under the assumption that every asset could be operable."
       inherits: [Operable]
       constructors:
@@ -42,8 +40,149 @@ models:
                    @param uuid Unique identifier\n
                    @param id Human-readable identifier"
 
+    AssetTypeInput:
+      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.AssetInput}."
+      constructors:
+        - name: full
+          components: [uuid, id]
+          superArgs: [uuid]
+          javaDoc: "@param uuid of the input entity\n
+                  @param id of the asset"
+
+    EmInput:
+      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.AssetInput}."
+      inherits: [HasEm]
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, controlStrategy, controllingEm]
+          superArgs: [uuid, id, operator, operationTime]
+          javaDoc: "Constructor for an operated energy management system.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param operator of the asset\n
+                   @param operationTime time for which the entity is operated\n
+                   @param controlStrategy the control strategy\n
+                   @param controllingEm The {@link EmInput} controlling this em unit. Null, if not applicable."
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, controlStrategy, controllingEm, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime]
+          javaDoc: "Constructor for an operated energy management system.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param operator of the asset\n
+                   @param operationTime time for which the entity is operated\n
+                   @param controlStrategy the control strategy\n
+                   @param controllingEm The {@link EmInput} controlling this em unit. Null, if not applicable.\n
+                   @param additionalInformation That were provided by the source"
+        - name: minimal
+          components: [uuid, id, controlStrategy, controllingEm]
+          superArgs: [uuid, id]
+          javaDoc: "Constructor for an operated energy management system.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param controlStrategy the control strategy\n
+                   @param controllingEm The {@link EmInput} controlling this em unit. Null, if not applicable."
+
+    IdCoordinateInput:
+      inherits: [InputEntity]
+      sealed: true
+      constructors:
+        - name: full
+          components: [id, point]
+        - name: lat_lon
+          components: [id, lat, lon]
+          javaDoc: "Constructor for an {@link IdCoordinateInput}.\n
+                 \n
+                 @param id of the pair\n
+                 @param lat of the pair\n
+                 @param lon of the pair"
+          additionalComponents:
+            - name: lat
+              type: double
+            - name: lon
+              type: double
+          constructorModifications:
+            point:
+              expression: buildPoint(lat, lon)
+              className: GeoUtils
+        - name: empty
+          components: []
+          javaDoc: "Constructor needed for differencing between different sources."
+          private: true
+          constructorModifications:
+            id:
+              expression: -1
+            point:
+              expression: DEFAULT_GEO_POSITION
+              className: NodeInput
+      methodOverrides:
+        - name: getAdditionalInformation
+          type: StringMap
+          expression: of()
+          className: Map
+      fieldNameGetters: [id, point]
+      equals: false
+      hashCode: false
+      toString: false
+      copy: false
+      nestedClasses: [CosmoIdCoordinateInput, IconIdCoordinateInput, SqlIdCoordinateInput]
+
+    MeasurementUnitInput:
+      classJavaDoc: "Model of a measuring unit attached to a certain {@link NodeInput}."
+      inherits: [HasNodes]
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, node, vMag, vAng, p, q]
+          superArgs: [uuid, id, operator, operationTime]
+          javaDoc: "Constructor for an operated measurement unit.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param operator of the asset\n
+                   @param operationTime Time for which the entity is operated\n
+                   @param node Grid node, the asset is attached to\n
+                   @param vMag True, if the voltage magnitude is measured\n
+                   @param vAng True, if the voltage angle is measured\n
+                   @param p True, if the nodal residual active power is measured\n
+                   @param q True, if the reactive power is measured"
+        - name: fullWithAdditionalInformation
+          components: [ uuid, id, operator, operationTime, node, vMag, vAng, p, q, additionalInformation ]
+          superArgs: [ uuid, id, operator, operationTime ]
+          javaDoc: "Constructor for an operated measurement unit.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param operator of the asset\n
+                   @param operationTime Time for which the entity is operated\n
+                   @param node Grid node, the asset is attached to\n
+                   @param vMag True, if the voltage magnitude is measured\n
+                   @param vAng True, if the voltage angle is measured\n
+                   @param p True, if the nodal residual active power is measured\n
+                   @param q True, if the reactive power is measured\n
+                   @param additionalInformation That were provided by the source"
+        - name: minimal
+          components: [uuid, id, node, vMag, vAng, p, q]
+          superArgs: [uuid, id]
+          javaDoc: "Constructor for an operated measurement unit.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param node Grid node, the asset is attached to\n
+                   @param vMag True, if the voltage magnitude is measured\n
+                   @param vAng True, if the voltage angle is measured\n
+                   @param p True, if the nodal residual active power is measured\n
+                   @param q True, if the reactive power is measured"
+      methodOverrides:
+        - name: allNodes
+          type: NodeList
+          expression: singletonList(node)
+          className: Collections
+      booleanGetter: [vMag, vAng, p, q]
+
     NodeInput:
-      package: edu.ie3.datamodel.models.input
       classJavaDoc: "Describes an electrical grid node, that other assets can connect to."
       constructors:
         - name: full
@@ -99,7 +238,6 @@ models:
       nonCapitalizedGetters: [vTarget]
 
     OperatorInput:
-      package: edu.ie3.datamodel.models.input
       classJavaDoc: "Describes an operator, that operates assets."
       constructors:
         - name: minimal
@@ -122,99 +260,8 @@ models:
           type: OperatorInput
           expression: new OperatorInput(UUID.randomUUID(), "NO_OPERATOR_ASSIGNED")
 
-    MeasurementUnitInput:
-      package: edu.ie3.datamodel.models.input
-      classJavaDoc: "Model of a measuring unit attached to a certain {@link NodeInput}."
-      inherits: [HasNodes]
-      constructors:
-        - name: full
-          components: [uuid, id, operator, operationTime, node, vMag, vAng, p, q]
-          superArgs: [uuid, id, operator, operationTime]
-          javaDoc: "Constructor for an operated measurement unit.\n
-                   \n
-                   @param uuid of the input entity\n
-                   @param id of the asset\n
-                   @param operator of the asset\n
-                   @param operationTime Time for which the entity is operated\n
-                   @param node Grid node, the asset is attached to\n
-                   @param vMag True, if the voltage magnitude is measured\n
-                   @param vAng True, if the voltage angle is measured\n
-                   @param p True, if the nodal residual active power is measured\n
-                   @param q True, if the reactive power is measured"
-        - name: fullWithAdditionalInformation
-          components: [ uuid, id, operator, operationTime, node, vMag, vAng, p, q, additionalInformation ]
-          superArgs: [ uuid, id, operator, operationTime ]
-          javaDoc: "Constructor for an operated measurement unit.\n
-                   \n
-                   @param uuid of the input entity\n
-                   @param id of the asset\n
-                   @param operator of the asset\n
-                   @param operationTime Time for which the entity is operated\n
-                   @param node Grid node, the asset is attached to\n
-                   @param vMag True, if the voltage magnitude is measured\n
-                   @param vAng True, if the voltage angle is measured\n
-                   @param p True, if the nodal residual active power is measured\n
-                   @param q True, if the reactive power is measured\n
-                   @param additionalInformation That were provided by the source"
-        - name: minimal
-          components: [uuid, id, node, vMag, vAng, p, q]
-          superArgs: [uuid, id]
-          javaDoc: "Constructor for an operated measurement unit.\n
-                   \n
-                   @param uuid of the input entity\n
-                   @param id of the asset\n
-                   @param node Grid node, the asset is attached to\n
-                   @param vMag True, if the voltage magnitude is measured\n
-                   @param vAng True, if the voltage angle is measured\n
-                   @param p True, if the nodal residual active power is measured\n
-                   @param q True, if the reactive power is measured"
-      methodOverrides:
-        - name: allNodes
-          type: NodeList
-          expression: singletonList(node)
-          className: Collections
-      booleanGetter: [vMag, vAng, p, q]
-
-    EmInput:
-      package: edu.ie3.datamodel.models.input
-      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.AssetInput}."
-      inherits: [HasEm]
-      constructors:
-        - name: full
-          components: [uuid, id, operator, operationTime, controlStrategy, controllingEm]
-          superArgs: [uuid, id, operator, operationTime]
-          javaDoc: "Constructor for an operated energy management system.\n
-                   \n
-                   @param uuid of the input entity\n
-                   @param id of the asset\n
-                   @param operator of the asset\n
-                   @param operationTime time for which the entity is operated\n
-                   @param controlStrategy the control strategy\n
-                   @param controllingEm The {@link EmInput} controlling this em unit. Null, if not applicable."
-        - name: fullWithAdditionalInformation
-          components: [uuid, id, operator, operationTime, controlStrategy, controllingEm, additionalInformation]
-          superArgs: [uuid, id, operator, operationTime]
-          javaDoc: "Constructor for an operated energy management system.\n
-                   \n
-                   @param uuid of the input entity\n
-                   @param id of the asset\n
-                   @param operator of the asset\n
-                   @param operationTime time for which the entity is operated\n
-                   @param controlStrategy the control strategy\n
-                   @param controllingEm The {@link EmInput} controlling this em unit. Null, if not applicable.\n
-                   @param additionalInformation That were provided by the source"
-        - name: minimal
-          components: [uuid, id, controlStrategy, controllingEm]
-          superArgs: [uuid, id]
-          javaDoc: "Constructor for an operated energy management system.\n
-                   \n
-                   @param uuid of the input entity\n
-                   @param id of the asset\n
-                   @param controlStrategy the control strategy\n
-                   @param controllingEm The {@link EmInput} controlling this em unit. Null, if not applicable."
-
+  models.input.connector:
     ConnectorInput:
-      package: edu.ie3.datamodel.models.input.connector
       classJavaDoc: "Describes an asset that connects two {@link NodeInput}s."
       inherits: [HasNodes]
       constructors:
@@ -274,56 +321,7 @@ models:
           expression: of(getNodeA(), getNodeB())
           className: List
 
-    ConductorInput:
-      package: edu.ie3.datamodel.models.input.connector.type
-      classJavaDoc: "Represents the conducting core of a cable with its specific geometric and thermal properties.\n
-                 Unlike {@link LayerInput} layers, the conductor has no inner diameter and includes compaction\n
-                 information."
-      constructors:
-        - name: minimal
-          components: [uuid, id, material, crossSection, diameter, isCompacted, thermalResistivity, thermalCapacitance]
-          superArgs: [uuid, id]
-          javaDoc: ""
-          constructorModifications:
-            area:
-              expression: null
-        - name: withArea
-          components: [uuid, id, material, crossSection, diameter, isCompacted, thermalResistivity, thermalCapacitance, area]
-          superArgs: [uuid, id]
-          javaDoc: "Constructor for the conductor of a cable.\n
-                 \n
-                 @param uuid UUID of the ConductorInput\n
-                 @param id Human-readable id\n
-                 @param material Material of the conductor (e.g., copper or aluminium)\n
-                 @param crossSection Real nominal cross-sectional area (electrically effective)\n
-                 @param diameter Geometric outer diameter of the conductor\n
-                 @param isCompacted Whether the conductor is compacted\n
-                 @param thermalResistivity Thermal resistivity of the conductor material\n
-                 @param thermalCapacitance Thermal capacitance of the conductor material\n
-                 @param area Optional real cross-sectional area (if different from geometric calculation)"
-        - name: fullWithoutArea
-          components: [uuid, id, operator, operationTime, material, crossSection, diameter, isCompacted, thermalResistivity, thermalCapacitance]
-          superArgs: [uuid, id, operator, operationTime]
-          javaDoc: ""
-          constructorModifications:
-            area:
-              expression: null
-        - name: full
-          components: [uuid, id, operator, operationTime, material, crossSection, diameter, isCompacted, thermalResistivity, thermalCapacitance, area]
-          superArgs: [uuid, id, operator, operationTime]
-          javaDoc: ""
-        - name: fullWithAdditionalInformation
-          components: [uuid, id, operator, operationTime, material, crossSection, diameter, isCompacted, thermalResistivity, thermalCapacitance, area, additionalInformation]
-          superArgs: [uuid, id, operator, operationTime]
-          javaDoc: ""
-      fieldNameGetters: [material, crossSection, diameter, isCompacted, thermalResistivity, thermalCapacitance, area]
-      methodInserts:
-        - name: name
-          type: String
-          expression: getId()
-
     LineInput:
-      package: edu.ie3.datamodel.models.input.connector
       classJavaDoc: "Describes an electrical grid line that connects two {@link NodeInput}s."
       inherits: [HasType]
       constructors:
@@ -391,7 +389,6 @@ models:
               className: GeoUtils
 
     SwitchInput:
-      package: edu.ie3.datamodel.models.input.connector
       classJavaDoc: "Describes an electrical grid switch between two {@link NodeInput}s."
       constructors:
         - name: full
@@ -431,7 +428,6 @@ models:
                    @param closed Is the switching state 'closed'?"
 
     TransformerInput:
-      package: edu.ie3.datamodel.models.input.connector
       classJavaDoc: "Describes an electrical grid transformer, is \"located\" in the inferior subnet."
       constructors:
         - name: full
@@ -464,7 +460,6 @@ models:
                  @param autoTap True, if the tap position of the transformer is adapted automatically"
 
     Transformer2WInput:
-      package: edu.ie3.datamodel.models.input.connector
       classJavaDoc: "Describes a two winding transformer, that is connected to two {@link NodeInput}s."
       inherits: [HasType]
       constructors:
@@ -526,7 +521,6 @@ models:
               className: ConnectorValidationUtils
 
     Transformer3WInput:
-      package: edu.ie3.datamodel.models.input.connector
       classJavaDoc: "Describes a three winding transformer, that is connected to three {@link NodeInput}s."
       inherits: [HasType]
       constructors:
@@ -641,8 +635,132 @@ models:
           expression: of(getNodeA(), getNodeB(), nodeC)
           className: List
 
+  models.input.connector.type:
+    LineTypeInput:
+      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.connector.LineInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, b, g, r, x, iMax, vRated]
+          superArgs: [uuid, id]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type\n
+                 @param b Specific phase-to-ground susceptance for this type of line (typically in µS/km)\n
+                 @param g Specific phase-to-ground conductance for this type of line (typically in µS/km)\n
+                 @param r Specific resistance for this type of line (typically in Ohm/km)\n
+                 @param x Specific reactance for this type of line (typically in Ohm/km)\n
+                 @param iMax Maximum thermal current for this type of line (typically in A)\n
+                 @param vRated Rated voltage for this type of line"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, b, g, r, x, iMax, vRated, additionalInformation]
+          superArgs: [uuid, id]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type\n
+                 @param b Specific phase-to-ground susceptance for this type of line (typically in µS/km)\n
+                 @param g Specific phase-to-ground conductance for this type of line (typically in µS/km)\n
+                 @param r Specific resistance for this type of line (typically in Ohm/km)\n
+                 @param x Specific reactance for this type of line (typically in Ohm/km)\n
+                 @param iMax Maximum thermal current for this type of line (typically in A)\n
+                 @param vRated Rated voltage for this type of line"
+      nonCapitalizedGetters: [iMax, vRated]
+
+    Transformer2WTypeInput:
+      classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide, tapNeutr, tapMin, tapMax]
+          superArgs: [uuid, id]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of the type\n
+                 @param rSc Short circuit resistance\n
+                 @param xSc Short circuit reactance\n
+                 @param sRated Rated apparent power (typically in kVA)\n
+                 @param vRatedA Rated voltage of the high voltage winding\n
+                 @param vRatedB Rated voltage of the low voltage winding\n
+                 @param gM Phase-to-ground conductance\n
+                 @param bM Phase-to-ground susceptance\n
+                 @param dV Voltage magnitude deviation per tap position\n
+                 @param dPhi Voltage angle deviation per tap position\n
+                 @param tapSide Selection of winding, where the tap changer is installed. Low voltage, if true\n
+                 @param tapNeutr Neutral tap position\n
+                 @param tapMin Minimum available tap position\n
+                 @param tapMax Maximum available tap position"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide, tapNeutr, tapMin, tapMax, additionalInformation]
+          superArgs: [uuid, id]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of the type\n
+                 @param rSc Short circuit resistance\n
+                 @param xSc Short circuit reactance\n
+                 @param sRated Rated apparent power (typically in kVA)\n
+                 @param vRatedA Rated voltage of the high voltage winding\n
+                 @param vRatedB Rated voltage of the low voltage winding\n
+                 @param gM Phase-to-ground conductance\n
+                 @param bM Phase-to-ground susceptance\n
+                 @param dV Voltage magnitude deviation per tap position\n
+                 @param dPhi Voltage angle deviation per tap position\n
+                 @param tapSide Selection of winding, where the tap changer is installed. Low voltage, if true\n
+                 @param tapNeutr Neutral tap position\n
+                 @param tapMin Minimum available tap position\n
+                 @param tapMax Maximum available tap position\n
+                 @param additionalInformation Of the input"
+      nonCapitalizedGetters: [rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi]
+
+    Transformer3WTypeInput:
+      classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer3WInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi, tapNeutr, tapMin, tapMax]
+          superArgs: [uuid, id]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type\n
+                 @param sRatedA Rated apparent power of the high voltage winding\n
+                 @param sRatedB Rated apparent power of the medium voltage winding\n
+                 @param sRatedC Rated apparent power of the low voltage winding\n
+                 @param vRatedA Rated voltage magnitude of the high voltage winding\n
+                 @param vRatedB Rated voltage magnitude of the medium voltage winding\n
+                 @param vRatedC Rated voltage magnitude of the low voltage winding\n
+                 @param rScA Short-circuit resistance of the high voltage winding\n
+                 @param rScB Short-circuit resistance of the medium voltage winding\n
+                 @param rScC Short-circuit resistance of the low voltage winding\n
+                 @param xScA Short-circuit reactance of the high voltage winding\n
+                 @param xScB Short-circuit reactance of the medium voltage winding\n
+                 @param xScC Short-circuit reactance of the low voltage winding\n
+                 @param gM Phase-to-ground conductance\n
+                 @param bM Phase-to-ground susceptance\n
+                 @param dV Voltage magnitude deviation per tap position\n
+                 @param dPhi Voltage angle deviation per tap position\n
+                 @param tapNeutr Neutral tap position\n
+                 @param tapMin Minimum available tap position\n
+                 @param tapMax Maximum available tap position"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi, tapNeutr, tapMin, tapMax, additionalInformation]
+          superArgs: [uuid, id]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type\n
+                 @param sRatedA Rated apparent power of the high voltage winding\n
+                 @param sRatedB Rated apparent power of the medium voltage winding\n
+                 @param sRatedC Rated apparent power of the low voltage winding\n
+                 @param vRatedA Rated voltage magnitude of the high voltage winding\n
+                 @param vRatedB Rated voltage magnitude of the medium voltage winding\n
+                 @param vRatedC Rated voltage magnitude of the low voltage winding\n
+                 @param rScA Short-circuit resistance of the high voltage winding\n
+                 @param rScB Short-circuit resistance of the medium voltage winding\n
+                 @param rScC Short-circuit resistance of the low voltage winding\n
+                 @param xScA Short-circuit reactance of the high voltage winding\n
+                 @param xScB Short-circuit reactance of the medium voltage winding\n
+                 @param xScC Short-circuit reactance of the low voltage winding\n
+                 @param gM Phase-to-ground conductance\n
+                 @param bM Phase-to-ground susceptance\n
+                 @param dV Voltage magnitude deviation per tap position\n
+                 @param dPhi Voltage angle deviation per tap position\n
+                 @param tapNeutr Neutral tap position\n
+                 @param tapMin Minimum available tap position\n
+                 @param tapMax Maximum available tap position\n
+                 @param additionalInformation Of the input"
+      nonCapitalizedGetters: [sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi]
+
+  models.input.system:
     SystemParticipantInput:
-      package: edu.ie3.datamodel.models.input.system
       classJavaDoc: "Describes a system asset that is connected to a node."
       inherits: [HasNodes, HasEm]
       constructors:
@@ -692,7 +810,6 @@ models:
       nonCapitalizedGetters: [qCharacteristics]
 
     AcInput:
-      package: edu.ie3.datamodel.models.input.system
       classJavaDoc: "Describes an air condition."
       inherits: [HasType, HasThermalBus]
       constructors:
@@ -751,7 +868,6 @@ models:
       nonCapitalizedGetters: [qCharacteristics]
 
     BmInput:
-      package: edu.ie3.datamodel.models.input.system
       classJavaDoc: "Describes a biomass plant."
       inherits: [HasType]
       constructors:
@@ -816,7 +932,6 @@ models:
       nonCapitalizedGetters: [qCharacteristics]
 
     ChpInput:
-      package: edu.ie3.datamodel.models.input.system
       classJavaDoc: "Describes a combined heat and power plant."
       inherits: [HasType, HasThermalBus, HasThermalStorage]
       constructors:
@@ -881,7 +996,6 @@ models:
       nonCapitalizedGetters: [qCharacteristics]
 
     EvcsInput:
-      package: edu.ie3.datamodel.models.input.system
       classJavaDoc: "Describes an electric vehicle charging station."
       constructors:
         - name: full
@@ -942,7 +1056,6 @@ models:
       nonCapitalizedGetters: [qCharacteristics]
 
     EvInput:
-      package: edu.ie3.datamodel.models.input.system
       classJavaDoc: "Describes an electric vehicle."
       inherits: [HasType]
       constructors:
@@ -998,7 +1111,6 @@ models:
       nonCapitalizedGetters: [qCharacteristics]
 
     FixedFeedInInput:
-      package: edu.ie3.datamodel.models.input.system
       classJavaDoc: "Dummy class to represent a constant feed in regardless of its type."
       constructors:
         - name: full
@@ -1056,7 +1168,6 @@ models:
       nonCapitalizedGetters: [qCharacteristics, sRated]
 
     HpInput:
-      package: edu.ie3.datamodel.models.input.system
       classJavaDoc: "Describes a heat pump."
       inherits: [HasType, HasThermalBus]
       constructors:
@@ -1115,7 +1226,6 @@ models:
       nonCapitalizedGetters: [qCharacteristics]
 
     LoadInput:
-      package: edu.ie3.datamodel.models.input.system
       classJavaDoc: "Describes a load."
       constructors:
         - name: full
@@ -1179,7 +1289,6 @@ models:
       nonCapitalizedGetters: [eConsAnnual, qCharacteristics, sRated]
 
     PvInput:
-      package: edu.ie3.datamodel.models.input.system
       classJavaDoc: "Describes a photovoltaic plant."
       constructors:
         - name: full
@@ -1255,7 +1364,6 @@ models:
       nonCapitalizedGetters: [qCharacteristics, sRated, kG, kT]
 
     StorageInput:
-      package: edu.ie3.datamodel.models.input.system
       classJavaDoc: "Describes a battery storage."
       inherits: [HasType]
       constructors:
@@ -1311,7 +1419,6 @@ models:
       nonCapitalizedGetters: [qCharacteristics]
 
     WecInput:
-      package: edu.ie3.datamodel.models.input.system
       classJavaDoc: "Describes a Wind Energy Converter."
       inherits: [HasType]
       constructors:
@@ -1366,8 +1473,35 @@ models:
           expression: type(type.copy().scale(factor).build())
       nonCapitalizedGetters: [qCharacteristics]
 
+  models.input.system.type:
+    SystemParticipantTypeInput:
+      classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, capex, opex, sRated, cosPhiRated]
+          superArgs: [uuid, id]
+          javaDoc: "@param uuid of the input entity\n
+               @param id of this type of system participant\n
+               @param capex Captial expense for this type of system participant (typically in €)\n
+               @param opex Operating expense for this type of system participant (typically in €/MWh)\n
+               @param sRated Rated apparent power\n
+               @param cosPhiRated Power factor for this type of system participant"
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: true
+          javaDoc: "Scales the input entity in a way that tries to preserve proportions that are related to\n
+                 power. This means that capacity, consumption etc. are scaled with the same factor. Related\n
+                 properties associated with the input type (if applicable) are scaled as well.\n
+                 \n
+                 @param factor The factor to scale with\n
+                 @return A copy builder with scaled relevant properties"
+          parameters:
+            - name: factor
+              type: double
+      nonCapitalizedGetters: [sRated]
+
+  models.input.thermal:
     ThermalInput:
-      package: edu.ie3.datamodel.models.input.thermal
       classJavaDoc: "Abstract class as a common super class of all thermal input models."
       constructors:
         - name: full
@@ -1388,7 +1522,6 @@ models:
                  @param id Human readable identifier"
 
     ThermalUnitInput:
-      package: edu.ie3.datamodel.models.input.thermal
       classJavaDoc: "Abstract class for grouping all common properties to thermal models."
       inherits: [HasThermalBus]
       constructors:
@@ -1414,7 +1547,6 @@ models:
               type: double
 
     ThermalStorageInput:
-      package: edu.ie3.datamodel.models.input.thermal
       classJavaDoc: "Common properties to all thermal storage devices."
       constructors:
         - name: minimal
@@ -1433,7 +1565,6 @@ models:
                  @param thermalBus Thermal bus, a thermal unit is connected to"
 
     AbstractStorageInput:
-      package: edu.ie3.datamodel.models.input.thermal
       classJavaDoc: "Thermal storage with cylindrical shape."
       constructors:
         - name: full
@@ -1470,7 +1601,6 @@ models:
       nonCapitalizedGetters: [pThermalMax]
 
     CylindricalStorageInput:
-      package: edu.ie3.datamodel.models.input.thermal
       classJavaDoc: "Thermal storage with cylindrical shape."
       constructors:
         - name: full
@@ -1514,7 +1644,6 @@ models:
       nonCapitalizedGetters: [pThermalMax]
 
     DomesticHotWaterStorageInput:
-      package: edu.ie3.datamodel.models.input.thermal
       classJavaDoc: "Thermal storage with cylindrical shape for domestic hot water."
       constructors:
         - name: full
@@ -1564,7 +1693,6 @@ models:
       nonCapitalizedGetters: [pThermalMax]
 
     ThermalBusInput:
-      package: edu.ie3.datamodel.models.input.thermal
       classJavaDoc: "A thermal bus, to which different {@link ThermalUnitInput} units may be connected."
       constructors:
         - name: full
@@ -1595,7 +1723,6 @@ models:
                  @param id of the asset"
 
     ThermalSinkInput:
-      package: edu.ie3.datamodel.models.input.thermal
       classJavaDoc: "Common properties to all thermal sinks."
       constructors:
         - name: minimal
@@ -1614,7 +1741,6 @@ models:
                  @param thermalBus Thermal bus, a thermal unit is connected to"
 
     ThermalHouseInput:
-      package: edu.ie3.datamodel.models.input.thermal
       classJavaDoc: "Quite simple thermal model of a house to serve as a heat sink."
       constructors:
         - name: minimal
@@ -1671,211 +1797,4 @@ models:
           comment: "scale losses as well as capacity and number of inhabitants to keep equal\n
                   // the time needed to heat a scaled house"
 
-    IdCoordinateInput:
-      package: edu.ie3.datamodel.models.input
-      inherits: [InputEntity]
-      sealed: true
-      constructors:
-        - name: full
-          components: [id, point]
-        - name: lat_lon
-          components: [id, lat, lon]
-          javaDoc: "Constructor for an {@link IdCoordinateInput}.\n
-                 \n
-                 @param id of the pair\n
-                 @param lat of the pair\n
-                 @param lon of the pair"
-          additionalComponents:
-            - name: lat
-              type: double
-            - name: lon
-              type: double
-          constructorModifications:
-            point:
-              expression: buildPoint(lat, lon)
-              className: GeoUtils
-        - name: empty
-          components: []
-          javaDoc: "Constructor needed for differencing between different sources."
-          private: true
-          constructorModifications:
-            id:
-              expression: -1
-            point:
-              expression: DEFAULT_GEO_POSITION
-              className: NodeInput
-      methodOverrides:
-        - name: getAdditionalInformation
-          type: StringMap
-          expression: of()
-          className: Map
-      fieldNameGetters: [id, point]
-      equals: false
-      hashCode: false
-      toString: false
-      copy: false
-      nestedClasses: [CosmoIdCoordinateInput, IconIdCoordinateInput, SqlIdCoordinateInput]
 
-  typeInput:
-    AssetTypeInput:
-      package: edu.ie3.datamodel.models.input
-      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.AssetInput}."
-      constructors:
-        - name: full
-          components: [uuid, id]
-          superArgs: [uuid]
-          javaDoc: "@param uuid of the input entity\n
-                  @param id of the asset"
-
-    LineTypeInput:
-      package: edu.ie3.datamodel.models.input.connector.type
-      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.connector.LineInput}."
-      constructors:
-        - name: full
-          components: [uuid, id, b, g, r, x, iMax, vRated]
-          superArgs: [uuid, id]
-          javaDoc: "@param uuid of the input entity\n
-                 @param id of this type\n
-                 @param b Specific phase-to-ground susceptance for this type of line (typically in µS/km)\n
-                 @param g Specific phase-to-ground conductance for this type of line (typically in µS/km)\n
-                 @param r Specific resistance for this type of line (typically in Ohm/km)\n
-                 @param x Specific reactance for this type of line (typically in Ohm/km)\n
-                 @param iMax Maximum thermal current for this type of line (typically in A)\n
-                 @param vRated Rated voltage for this type of line"
-        - name: fullWithAdditionalInformation
-          components: [uuid, id, b, g, r, x, iMax, vRated, additionalInformation]
-          superArgs: [uuid, id]
-          javaDoc: "@param uuid of the input entity\n
-                 @param id of this type\n
-                 @param b Specific phase-to-ground susceptance for this type of line (typically in µS/km)\n
-                 @param g Specific phase-to-ground conductance for this type of line (typically in µS/km)\n
-                 @param r Specific resistance for this type of line (typically in Ohm/km)\n
-                 @param x Specific reactance for this type of line (typically in Ohm/km)\n
-                 @param iMax Maximum thermal current for this type of line (typically in A)\n
-                 @param vRated Rated voltage for this type of line"
-      nonCapitalizedGetters: [iMax, vRated]
-
-    Transformer2WTypeInput:
-      package: edu.ie3.datamodel.models.input.connector.type
-      classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput}."
-      constructors:
-        - name: full
-          components: [uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide, tapNeutr, tapMin, tapMax]
-          superArgs: [uuid, id]
-          javaDoc: "@param uuid of the input entity\n
-                 @param id of the type\n
-                 @param rSc Short circuit resistance\n
-                 @param xSc Short circuit reactance\n
-                 @param sRated Rated apparent power (typically in kVA)\n
-                 @param vRatedA Rated voltage of the high voltage winding\n
-                 @param vRatedB Rated voltage of the low voltage winding\n
-                 @param gM Phase-to-ground conductance\n
-                 @param bM Phase-to-ground susceptance\n
-                 @param dV Voltage magnitude deviation per tap position\n
-                 @param dPhi Voltage angle deviation per tap position\n
-                 @param tapSide Selection of winding, where the tap changer is installed. Low voltage, if true\n
-                 @param tapNeutr Neutral tap position\n
-                 @param tapMin Minimum available tap position\n
-                 @param tapMax Maximum available tap position"
-        - name: fullWithAdditionalInformation
-          components: [uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide, tapNeutr, tapMin, tapMax, additionalInformation]
-          superArgs: [uuid, id]
-          javaDoc: "@param uuid of the input entity\n
-                 @param id of the type\n
-                 @param rSc Short circuit resistance\n
-                 @param xSc Short circuit reactance\n
-                 @param sRated Rated apparent power (typically in kVA)\n
-                 @param vRatedA Rated voltage of the high voltage winding\n
-                 @param vRatedB Rated voltage of the low voltage winding\n
-                 @param gM Phase-to-ground conductance\n
-                 @param bM Phase-to-ground susceptance\n
-                 @param dV Voltage magnitude deviation per tap position\n
-                 @param dPhi Voltage angle deviation per tap position\n
-                 @param tapSide Selection of winding, where the tap changer is installed. Low voltage, if true\n
-                 @param tapNeutr Neutral tap position\n
-                 @param tapMin Minimum available tap position\n
-                 @param tapMax Maximum available tap position\n
-                 @param additionalInformation Of the input"
-      nonCapitalizedGetters: [rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi]
-
-    Transformer3WTypeInput:
-      package: edu.ie3.datamodel.models.input.connector.type
-      classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer3WInput}."
-      constructors:
-        - name: full
-          components: [uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi, tapNeutr, tapMin, tapMax]
-          superArgs: [uuid, id]
-          javaDoc: "@param uuid of the input entity\n
-                 @param id of this type\n
-                 @param sRatedA Rated apparent power of the high voltage winding\n
-                 @param sRatedB Rated apparent power of the medium voltage winding\n
-                 @param sRatedC Rated apparent power of the low voltage winding\n
-                 @param vRatedA Rated voltage magnitude of the high voltage winding\n
-                 @param vRatedB Rated voltage magnitude of the medium voltage winding\n
-                 @param vRatedC Rated voltage magnitude of the low voltage winding\n
-                 @param rScA Short-circuit resistance of the high voltage winding\n
-                 @param rScB Short-circuit resistance of the medium voltage winding\n
-                 @param rScC Short-circuit resistance of the low voltage winding\n
-                 @param xScA Short-circuit reactance of the high voltage winding\n
-                 @param xScB Short-circuit reactance of the medium voltage winding\n
-                 @param xScC Short-circuit reactance of the low voltage winding\n
-                 @param gM Phase-to-ground conductance\n
-                 @param bM Phase-to-ground susceptance\n
-                 @param dV Voltage magnitude deviation per tap position\n
-                 @param dPhi Voltage angle deviation per tap position\n
-                 @param tapNeutr Neutral tap position\n
-                 @param tapMin Minimum available tap position\n
-                 @param tapMax Maximum available tap position"
-        - name: fullWithAdditionalInformation
-          components: [uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi, tapNeutr, tapMin, tapMax, additionalInformation]
-          superArgs: [uuid, id]
-          javaDoc: "@param uuid of the input entity\n
-                 @param id of this type\n
-                 @param sRatedA Rated apparent power of the high voltage winding\n
-                 @param sRatedB Rated apparent power of the medium voltage winding\n
-                 @param sRatedC Rated apparent power of the low voltage winding\n
-                 @param vRatedA Rated voltage magnitude of the high voltage winding\n
-                 @param vRatedB Rated voltage magnitude of the medium voltage winding\n
-                 @param vRatedC Rated voltage magnitude of the low voltage winding\n
-                 @param rScA Short-circuit resistance of the high voltage winding\n
-                 @param rScB Short-circuit resistance of the medium voltage winding\n
-                 @param rScC Short-circuit resistance of the low voltage winding\n
-                 @param xScA Short-circuit reactance of the high voltage winding\n
-                 @param xScB Short-circuit reactance of the medium voltage winding\n
-                 @param xScC Short-circuit reactance of the low voltage winding\n
-                 @param gM Phase-to-ground conductance\n
-                 @param bM Phase-to-ground susceptance\n
-                 @param dV Voltage magnitude deviation per tap position\n
-                 @param dPhi Voltage angle deviation per tap position\n
-                 @param tapNeutr Neutral tap position\n
-                 @param tapMin Minimum available tap position\n
-                 @param tapMax Maximum available tap position\n
-                 @param additionalInformation Of the input"
-      nonCapitalizedGetters: [sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi]
-
-    SystemParticipantTypeInput:
-      package: edu.ie3.datamodel.models.input.system.type
-      classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput}."
-      constructors:
-        - name: full
-          components: [uuid, id, capex, opex, sRated, cosPhiRated]
-          superArgs: [uuid, id]
-          javaDoc: "@param uuid of the input entity\n
-               @param id of this type of system participant\n
-               @param capex Captial expense for this type of system participant (typically in €)\n
-               @param opex Operating expense for this type of system participant (typically in €/MWh)\n
-               @param sRated Rated apparent power\n
-               @param cosPhiRated Power factor for this type of system participant"
-      copyBuilderAdditionalMethods:
-        - name: scale
-          isAbstract: true
-          javaDoc: "Scales the input entity in a way that tries to preserve proportions that are related to\n
-                 power. This means that capacity, consumption etc. are scaled with the same factor. Related\n
-                 properties associated with the input type (if applicable) are scaled as well.\n
-                 \n
-                 @param factor The factor to scale with\n
-                 @return A copy builder with scaled relevant properties"
-          parameters:
-            - name: factor
-              type: double
-      nonCapitalizedGetters: [sRated]

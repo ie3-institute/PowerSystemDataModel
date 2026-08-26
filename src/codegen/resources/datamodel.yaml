@@ -1,12 +1,13 @@
 version: 1.0
-models:
-  input:
+datamodel:
+  models:
     UniqueEntity:
       name: UniqueEntity
       components:
         - name: uuid
           type: UUID
 
+  models.input:
     UniqueInputEntity:
       name: UniqueInputEntity
       extends: UniqueEntity
@@ -30,9 +31,63 @@ models:
           javaDoc: "The operator of this asset."
         - name: operationTime
           type: OperationTime
-          keys: [operationStart, operationEnd]
+          keys: [operatesFrom, operatesUntil]
           required: true # TODO: Change this to false
           javaDoc: "Time for which the entity is operated."
+
+    AssetTypeInput:
+      name: AssetTypeInput
+      extends: UniqueInputEntity
+      components:
+        - name: id
+          type: String
+          required: true
+          javaDoc: "Name or ID of the asset."
+
+    EmInput:
+      name: EmInput
+      extends: AssetInput
+      abstract: false
+      components:
+        - name: controlStrategy
+          type: String
+          javaDoc: "Reference to the control strategy to be used for this model."
+        - name: controllingEm
+          type: EmInput
+          nested: true
+          required: false
+          javaDoc: "Optional UUID of the parent {@link EmInput} that is controlling this em unit. If null, this em
+                  unit is not em-controlled."
+
+    IdCoordinateInput:
+      name: IdCoordinateInput
+      abstract: false
+      components:
+        - name: id
+          type: int
+        - name: point
+          type: Point
+
+    MeasurementUnitInput:
+      name: MeasurementUnitInput
+      abstract: false
+      extends: AssetInput
+      components:
+        - name: node
+          type: NodeInput
+          javaDoc: "Grid node, the asset is attached to."
+        - name: vMag
+          type: bool
+          javaDoc: "True, if the voltage magnitude is measured."
+        - name: vAng
+          type: bool
+          javaDoc: "True, if the voltage angle is measured."
+        - name: p
+          type: bool
+          javaDoc: "True, if the nodal residual active power is measured."
+        - name: q
+          type: bool
+          javaDoc: "True, if the reactive power is measured."
 
     NodeInput:
       name: NodeInput
@@ -65,42 +120,7 @@ models:
           type: String
           javaDoc: "The id (=name) of this operator."
 
-    MeasurementUnitInput:
-      name: MeasurementUnitInput
-      abstract: false
-      extends: AssetInput
-      components:
-        - name: node
-          type: NodeInput
-          javaDoc: "Grid node, the asset is attached to."
-        - name: vMag
-          type: bool
-          javaDoc: "True, if the voltage magnitude is measured."
-        - name: vAng
-          type: bool
-          javaDoc: "True, if the voltage angle is measured."
-        - name: p
-          type: bool
-          javaDoc: "True, if the nodal residual active power is measured."
-        - name: q
-          type: bool
-          javaDoc: "True, if the reactive power is measured."
-
-    EmInput:
-      name: EmInput
-      extends: AssetInput
-      abstract: false
-      components:
-        - name: controlStrategy
-          type: String
-          javaDoc: "Reference to the control strategy to be used for this model."
-        - name: controllingEm
-          type: EmInput
-          nested: true
-          required: false
-          javaDoc: "Optional UUID of the parent {@link EmInput} that is controlling this em unit. If null, this em
-                  unit is not em-controlled."
-
+  models.input.connector:
     ConnectorInput:
       name: ConnectorInput
       extends: AssetInput
@@ -116,27 +136,6 @@ models:
         - name: parallelDevices
           type: int
           javaDoc: "Amount of parallel devices."
-
-    ConductorInput:
-      name: ConductorInput
-      extends: AssetInput
-      abstract: false
-      components:
-        - name: material
-          type: CableMaterial
-        - name: crossSection
-          type: Area
-        - name: diameter
-          type: Length
-        - name: isCompacted
-          type: bool
-        - name: thermalResistivity
-          type: ThermalResistivity
-        - name: thermalCapacitance
-          type: ThermalCapacitance
-        - name: area
-          type: Area
-          required: false
 
     LineInput:
       name: LineInput
@@ -206,6 +205,140 @@ models:
           nested: true
           javaDoc: "Internal node of the transformers T equivalent circuit."
 
+  models.input.connector.type:
+    LineTypeInput:
+      name: LineTypeInput
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: b
+          type: SpecificConductance
+          javaDoc: "Specific phase-to-ground susceptance for this type of line (typically in µS/km)."
+        - name: g
+          type: SpecificConductance
+          javaDoc: "Specific phase-to-ground conductance for this type of line (typically in µS/km)."
+        - name: r
+          type: SpecificResistance
+          javaDoc: "Specific resistance for this type of line (typically in Ohm/km)."
+        - name: x
+          type: SpecificResistance
+          javaDoc: "Specific reactance for this type of line (typically in Ohm/km)."
+        - name: iMax
+          type: ElectricCurrent
+          javaDoc: "Maximum thermal current for this type of line (typically in A)."
+        - name: vRated
+          type: ElectricPotential
+          javaDoc: "Rated voltage for this type of line (typically in V)."
+
+    Transformer2WTypeInput:
+      name: Transformer2WTypeInput
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: rSc
+          type: ElectricResistance
+          javaDoc: "Short circuit resistance (typically in Ohm)."
+        - name: xSc
+          type: ElectricResistance
+          javaDoc: "Short circuit reactance (typically in Ohm)."
+        - name: sRated
+          type: Power
+          javaDoc: "Rated apparent power (typically in kVA)."
+        - name: vRatedA
+          type: ElectricPotential
+          javaDoc: "Rated voltage of the high voltage winding (typically in kV)."
+        - name: vRatedB
+          type: ElectricPotential
+          javaDoc: "Rated voltage of the low voltage winding (typically in kV)."
+        - name: gM
+          type: ElectricConductance
+          javaDoc: "Phase-to-ground conductance (typically in nS)."
+        - name: bM
+          type: ElectricConductance
+          javaDoc: "Phase-to-ground susceptance (typically in nS)."
+        - name: dV
+          type: Percent
+          javaDoc: "Voltage magnitude deviation per tap position (typically in %)."
+        - name: dPhi
+          type: DegreeGeom
+          javaDoc: "Voltage angle deviation per tap position (typically in °)."
+        - name: tapSide
+          type: bool
+          javaDoc: "Selection of winding, where the tap changer is installed. Low voltage, if true."
+        - name: tapNeutr
+          type: int
+          javaDoc: "Neutral tap position."
+        - name: tapMin
+          type: int
+          javaDoc: "Minimum available tap position."
+        - name: tapMax
+          type: int
+          javaDoc: "Maximum available tap position."
+
+    Transformer3WTypeInput:
+      name: Transformer3WTypeInput
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: sRatedA
+          type: Power
+          javaDoc: "Rated apparent power of the high voltage winding (typically in kVA)."
+        - name: sRatedB
+          type: Power
+          javaDoc: "Rated apparent power of the medium voltage winding (typically in kVA)."
+        - name: sRatedC
+          type: Power
+          javaDoc: "Rated apparent power of the low voltage windings (typically in kVA)."
+        - name: vRatedA
+          type: ElectricPotential
+          javaDoc: "Rated voltage of the high voltage winding (typically in kV)."
+        - name: vRatedB
+          type: ElectricPotential
+          javaDoc: "Rated voltage of the medium voltage winding (typically in kV)."
+        - name: vRatedC
+          type: ElectricPotential
+          javaDoc: "Rated voltage of the low voltage winding (typically in kV)."
+        - name: rScA
+          type: ElectricResistance
+          javaDoc: "Short-circuit resistance of the high voltage winding (typically in Ohm)."
+        - name: rScB
+          type: ElectricResistance
+          javaDoc: "Short-circuit resistance of the medium voltage winding (typically in Ohm)."
+        - name: rScC
+          type: ElectricResistance
+          javaDoc: "Short-circuit resistance of the low voltage winding (typically in Ohm)."
+        - name: xScA
+          type: ElectricResistance
+          javaDoc: "Short-circuit reactance of the high voltage winding (typically in Ohm)."
+        - name: xScB
+          type: ElectricResistance
+          javaDoc: "Short-circuit reactance of the medium voltage winding (typically in Ohm)."
+        - name: xScC
+          type: ElectricResistance
+          javaDoc: "Short-circuit reactance of the low voltage winding (typically in Ohm)."
+        - name: gM
+          type: ElectricConductance
+          javaDoc: "Phase-to-ground conductance (typically in nS)."
+        - name: bM
+          type: ElectricConductance
+          javaDoc: "Phase-to-ground susceptance (typically in nS)."
+        - name: dV
+          type: Percent
+          javaDoc: "Voltage magnitude deviation per tap position (typically in %)."
+        - name: dPhi
+          type: DegreeGeom
+          javaDoc: "Voltage angle deviation per tap position (typically in °)."
+        - name: tapNeutr
+          type: int
+          javaDoc: "Neutral tap position."
+        - name: tapMin
+          type: int
+          javaDoc: "Minimum available tap position."
+        - name: tapMax
+          type: int
+          javaDoc: "Maximum available tap position."
+
+  models.input.system:
     SystemParticipantInput:
       name: SystemParticipantInput
       extends: AssetInput
@@ -398,6 +531,25 @@ models:
           nested: true
           javaDoc: "Type of this WEC, containing default values for WEC assets of this kind."
 
+  models.input.system.type:
+    SystemParticipantTypeInput:
+      name: SystemParticipantTypeInput
+      extends: AssetTypeInput
+      components:
+        - name: capex
+          type: Currency
+          javaDoc: "Capital expense for this type of system participant (typically in €)."
+        - name: opex
+          type: EnergyPrice
+          javaDoc: "Operating expense for this type of system participant (typically in €/MWh)."
+        - name: sRated
+          type: Power
+          javaDoc: "Rated apparent power of the type (in kVA)."
+        - name: cosPhiRated
+          type: double
+          javaDoc: "Power factor for this type of system participant."
+
+  models.input.thermal:
     ThermalInput:
       name: ThermalInput
       extends: AssetInput
@@ -480,171 +632,3 @@ models:
         - name: numberOfInhabitants
           type: double
           javaDoc: "Number of people living in the building, double to allow proper scaling."
-
-    IdCoordinateInput:
-      name: IdCoordinateInput
-      abstract: false
-      components:
-        - name: id
-          type: int
-        - name: point
-          type: Point
-
-  typeInput:
-    AssetTypeInput:
-      name: AssetTypeInput
-      extends: UniqueInputEntity
-      components:
-        - name: id
-          type: String
-          required: true
-          javaDoc: "Name or ID of the asset."
-
-    LineTypeInput:
-      name: LineTypeInput
-      extends: AssetTypeInput
-      abstract: false
-      components:
-        - name: b
-          type: SpecificConductance
-          javaDoc: "Specific phase-to-ground susceptance for this type of line (typically in µS/km)."
-        - name: g
-          type: SpecificConductance
-          javaDoc: "Specific phase-to-ground conductance for this type of line (typically in µS/km)."
-        - name: r
-          type: SpecificResistance
-          javaDoc: "Specific resistance for this type of line (typically in Ohm/km)."
-        - name: x
-          type: SpecificResistance
-          javaDoc: "Specific reactance for this type of line (typically in Ohm/km)."
-        - name: iMax
-          type: ElectricCurrent
-          javaDoc: "Maximum thermal current for this type of line (typically in A)."
-        - name: vRated
-          type: ElectricPotential
-          javaDoc: "Rated voltage for this type of line (typically in V)."
-
-    Transformer2WTypeInput:
-      name: Transformer2WTypeInput
-      extends: AssetTypeInput
-      abstract: false
-      components:
-        - name: rSc
-          type: ElectricResistance
-          javaDoc: "Short circuit resistance (typically in Ohm)."
-        - name: xSc
-          type: ElectricResistance
-          javaDoc: "Short circuit reactance (typically in Ohm)."
-        - name: sRated
-          type: Power
-          javaDoc: "Rated apparent power (typically in kVA)."
-        - name: vRatedA
-          type: ElectricPotential
-          javaDoc: "Rated voltage of the high voltage winding (typically in kV)."
-        - name: vRatedB
-          type: ElectricPotential
-          javaDoc: "Rated voltage of the low voltage winding (typically in kV)."
-        - name: gM
-          type: ElectricConductance
-          javaDoc: "Phase-to-ground conductance (typically in nS)."
-        - name: bM
-          type: ElectricConductance
-          javaDoc: "Phase-to-ground susceptance (typically in nS)."
-        - name: dV
-          type: Percent
-          javaDoc: "Voltage magnitude deviation per tap position (typically in %)."
-        - name: dPhi
-          type: DegreeGeom
-          javaDoc: "Voltage angle deviation per tap position (typically in °)."
-        - name: tapSide
-          type: bool
-          javaDoc: "Selection of winding, where the tap changer is installed. Low voltage, if true."
-        - name: tapNeutr
-          type: int
-          javaDoc: "Neutral tap position."
-        - name: tapMin
-          type: int
-          javaDoc: "Minimum available tap position."
-        - name: tapMax
-          type: int
-          javaDoc: "Maximum available tap position."
-
-    Transformer3WTypeInput:
-      name: Transformer3WTypeInput
-      extends: AssetTypeInput
-      abstract: false
-      components:
-        - name: sRatedA
-          type: Power
-          javaDoc: "Rated apparent power of the high voltage winding (typically in kVA)."
-        - name: sRatedB
-          type: Power
-          javaDoc: "Rated apparent power of the medium voltage winding (typically in kVA)."
-        - name: sRatedC
-          type: Power
-          javaDoc: "Rated apparent power of the low voltage windings (typically in kVA)."
-        - name: vRatedA
-          type: ElectricPotential
-          javaDoc: "Rated voltage of the high voltage winding (typically in kV)."
-        - name: vRatedB
-          type: ElectricPotential
-          javaDoc: "Rated voltage of the medium voltage winding (typically in kV)."
-        - name: vRatedC
-          type: ElectricPotential
-          javaDoc: "Rated voltage of the low voltage winding (typically in kV)."
-        - name: rScA
-          type: ElectricResistance
-          javaDoc: "Short-circuit resistance of the high voltage winding (typically in Ohm)."
-        - name: rScB
-          type: ElectricResistance
-          javaDoc: "Short-circuit resistance of the medium voltage winding (typically in Ohm)."
-        - name: rScC
-          type: ElectricResistance
-          javaDoc: "Short-circuit resistance of the low voltage winding (typically in Ohm)."
-        - name: xScA
-          type: ElectricResistance
-          javaDoc: "Short-circuit reactance of the high voltage winding (typically in Ohm)."
-        - name: xScB
-          type: ElectricResistance
-          javaDoc: "Short-circuit reactance of the medium voltage winding (typically in Ohm)."
-        - name: xScC
-          type: ElectricResistance
-          javaDoc: "Short-circuit reactance of the low voltage winding (typically in Ohm)."
-        - name: gM
-          type: ElectricConductance
-          javaDoc: "Phase-to-ground conductance (typically in nS)."
-        - name: bM
-          type: ElectricConductance
-          javaDoc: "Phase-to-ground susceptance (typically in nS)."
-        - name: dV
-          type: Percent
-          javaDoc: "Voltage magnitude deviation per tap position (typically in %)."
-        - name: dPhi
-          type: DegreeGeom
-          javaDoc: "Voltage angle deviation per tap position (typically in °)."
-        - name: tapNeutr
-          type: int
-          javaDoc: "Neutral tap position."
-        - name: tapMin
-          type: int
-          javaDoc: "Minimum available tap position."
-        - name: tapMax
-          type: int
-          javaDoc: "Maximum available tap position."
-
-    SystemParticipantTypeInput:
-      name: SystemParticipantTypeInput
-      extends: AssetTypeInput
-      components:
-        - name: capex
-          type: Currency
-          javaDoc: "Capital expense for this type of system participant (typically in €)."
-        - name: opex
-          type: EnergyPrice
-          javaDoc: "Operating expense for this type of system participant (typically in €/MWh)."
-        - name: sRated
-          type: Power
-          javaDoc: "Rated apparent power of the type (in kVA)."
-        - name: cosPhiRated
-          type: double
-          javaDoc: "Power factor for this type of system participant."
