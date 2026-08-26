@@ -1,12 +1,13 @@
 version: 1.0
-models:
-  input:
+datamodel:
+  models:
     UniqueEntity:
       name: UniqueEntity
       components:
         - name: uuid
           type: UUID
 
+  models.input:
     UniqueInputEntity:
       name: UniqueInputEntity
       extends: UniqueEntity
@@ -65,7 +66,6 @@ models:
           type: String
           javaDoc: "The id (=name) of this operator."
 
-  typeInput:
     AssetTypeInput:
       name: AssetTypeInput
       extends: UniqueInputEntity
@@ -75,6 +75,7 @@ models:
           required: true
           javaDoc: "Name or ID of the asset."
 
+  models.input.connector.type:
     LineTypeInput:
       name: LineTypeInput
       extends: AssetTypeInput
@@ -207,6 +208,7 @@ models:
           type: int
           javaDoc: "Maximum available tap position."
 
+  models.input.system.type:
     SystemParticipantTypeInput:
       name: SystemParticipantTypeInput
       extends: AssetTypeInput
@@ -224,7 +226,7 @@ models:
           type: double
           javaDoc: "Power factor for this type of system participant."
 
-  results:
+  result:
     ResultEntity:
       name: ResultEntity
       components:
@@ -263,6 +265,7 @@ models:
         - name: max
           type: Dimensionless
 
+  result.connector:
     ConnectorResult:
       name: ConnectorResult
       extends: ResultEntity
@@ -318,6 +321,7 @@ models:
         - name: iCAng
           type: Angle
 
+  results.system:
     SystemParticipantResult:
       name: SystemParticipantResult
       extends: ResultEntity
@@ -445,6 +449,7 @@ models:
       extends: SystemParticipantResult
       abstract: false
 
+  result.thermal:
     ThermalUnitResult:
       name: ThermalUnitResult
       extends: ResultEntity

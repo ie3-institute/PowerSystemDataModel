@@ -17,6 +17,7 @@ import javax.lang.model.element.Modifier;
 /** Class for generating the copy method and copy builder. */
 public final class CopyBuilderGenerator implements HelperMethods {
 
+  private final String packageName;
   private final ModelDefinition model;
   private final GenerationConfig genConfig;
   private final Map<String, ModelDefinition> models;
@@ -26,7 +27,11 @@ public final class CopyBuilderGenerator implements HelperMethods {
   private ClassName parentBuilderClass;
 
   public CopyBuilderGenerator(
-      ModelDefinition model, GenerationConfig genConfig, Map<String, ModelDefinition> models) {
+      String packageName,
+      ModelDefinition model,
+      GenerationConfig genConfig,
+      Map<String, ModelDefinition> models) {
+    this.packageName = packageName;
     this.model = model;
     this.genConfig = genConfig;
     this.models = models;
@@ -76,7 +81,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
 
   /** Generates and returns an abstract copy builder. */
   private TypeSpec generateAbstractCopyBuilder() {
-    ClassName modelClass = modelClassName(model, genConfig);
+    ClassName modelClass = modelClassName(model);
 
     TypeName ownParameterizedBuilder = ParameterizedTypeName.get(builderClass, builderTypeVariable);
 
@@ -246,7 +251,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
    * @return the generated method
    */
   private MethodSpec generateCopyBuilderConstructor(ModelDefinition model) {
-    ClassName modelClass = modelClassName(model, genConfig);
+    ClassName modelClass = modelClassName(model);
 
     MethodSpec.Builder builder =
         MethodSpec.constructorBuilder()
@@ -360,7 +365,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
    */
   private MethodSpec generateConcreteBuilderBuildMethod(ModelDefinition model) {
     // get the class of the model
-    ClassName modelClass = modelClassName(model, genConfig);
+    ClassName modelClass = modelClassName(model);
 
     // get a list of all components
     List<String> components = model.components.stream().map(c -> c.name).toList();
@@ -421,8 +426,8 @@ public final class CopyBuilderGenerator implements HelperMethods {
     return model.name + "CopyBuilder";
   }
 
-  private static ClassName modelClassName(ModelDefinition model, GenerationConfig genConfig) {
-    return ClassName.get(genConfig.packageName, model.name);
+  private ClassName modelClassName(ModelDefinition model) {
+    return ClassName.get(packageName, model.name);
   }
 
   /**

@@ -1,18 +1,17 @@
 version: 1.0
-models:
-  input:
+datamodel:
+  models:
     UniqueEntity:
-      package: edu.ie3.datamodel.models
       classJavaDoc: "Supplies every subclass with a generated UUID, making it unique."
-      inherits: [Entity, Uniqueness, Serializable]
+      inherits: [ Entity, Uniqueness, Serializable ]
       constructors:
         - name: minimal
-          components: []
+          components: [ ]
         - name: full
-          components: [uuid]
+          components: [ uuid ]
 
+  models.input:
     UniqueInputEntity:
-      package: edu.ie3.datamodel.models.input
       classJavaDoc: "Functionless class to describe that all subclasses are unique input classes."
       inherits: [InputEntity]
       constructors:
@@ -21,7 +20,6 @@ models:
           superArgs: [uuid]
 
     AssetInput:
-      package: edu.ie3.datamodel.models.input
       classJavaDoc: "Describes a grid asset under the assumption that every asset could be operable."
       inherits: [Operable]
       constructors:
@@ -42,8 +40,16 @@ models:
                    @param uuid Unique identifier\n
                    @param id Human-readable identifier"
 
+    AssetTypeInput:
+      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.AssetInput}."
+      constructors:
+        - name: full
+          components: [uuid, id]
+          superArgs: [uuid]
+          javaDoc: "@param uuid of the input entity\n
+                  @param id of the asset"
+
     NodeInput:
-      package: edu.ie3.datamodel.models.input
       classJavaDoc: "Describes an electrical grid node, that other assets can connect to."
       constructors:
         - name: full
@@ -99,7 +105,6 @@ models:
       nonCapitalized: [vTarget]
 
     OperatorInput:
-      package: edu.ie3.datamodel.models.input
       classJavaDoc: "Describes an operator, that operates assets."
       constructors:
         - name: minimal
@@ -122,19 +127,8 @@ models:
           type: OperatorInput
           expression: new OperatorInput(UUID.randomUUID(), "NO_OPERATOR_ASSIGNED")
 
-  typeInput:
-    AssetTypeInput:
-      package: edu.ie3.datamodel.models.input
-      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.AssetInput}."
-      constructors:
-        - name: full
-          components: [uuid, id]
-          superArgs: [uuid]
-          javaDoc: "@param uuid of the input entity\n
-                  @param id of the asset"
-
+  models.input.connector.type:
     LineTypeInput:
-      package: edu.ie3.datamodel.models.input.connector.type
       classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.connector.LineInput}."
       constructors:
         - name: full
@@ -162,7 +156,6 @@ models:
       nonCapitalized: [iMax, vRated]
 
     Transformer2WTypeInput:
-      package: edu.ie3.datamodel.models.input.connector.type
       classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput}."
       constructors:
         - name: full
@@ -205,7 +198,6 @@ models:
       nonCapitalized: [rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi]
 
     Transformer3WTypeInput:
-      package: edu.ie3.datamodel.models.input.connector.type
       classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer3WInput}."
       constructors:
         - name: full
@@ -259,8 +251,8 @@ models:
                  @param additionalInformation Of the input"
       nonCapitalized: [sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi]
 
+  models.input.system.type:
     SystemParticipantTypeInput:
-      package: edu.ie3.datamodel.models.input.system.type
       classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput}."
       constructors:
         - name: full
@@ -288,7 +280,6 @@ models:
 
   results:
     ResultEntity:
-      package: edu.ie3.datamodel.models.result
       inherits: [Entity]
       classJavaDoc: "Abstract class to hold all mappings common to all result models."
       constructors:
@@ -301,7 +292,6 @@ models:
       setters: true
 
     NodeResult:
-      package: edu.ie3.datamodel.models.result
       classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.NodeInput}."
       constructors:
         - name: full
@@ -317,7 +307,6 @@ models:
       nonCapitalized: [vMag, vAng]
 
     CongestionResult:
-      package: edu.ie3.datamodel.models.result
       classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.NodeInput}."
       constructors:
         - name: full
@@ -334,8 +323,8 @@ models:
                  @param max maximal value in percent"
       setters: true
 
+  results.connector:
     ConnectorResult:
-      package: edu.ie3.datamodel.models.result.connector
       classJavaDoc: "Abstract class to hold most 'ElectricCurrent and Angle'-mappings common to all connectors."
       constructors:
         - name: full
@@ -353,7 +342,6 @@ models:
       nonCapitalized: [iAMag, iAAng, iBMag, iBAng]
 
     LineResult:
-      package: edu.ie3.datamodel.models.result.connector
       classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.connector.LineInput}."
       constructors:
         - name: full
@@ -371,7 +359,6 @@ models:
       nonCapitalized: [iAMag, iAAng, iBMag, iBAng]
 
     SwitchResult:
-      package: edu.ie3.datamodel.models.result.connector
       classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.connector.LineInput}."
       constructors:
         - name: full
@@ -386,7 +373,6 @@ models:
       booleanGetter: [closed]
 
     TransformerResult:
-      package: edu.ie3.datamodel.models.result.connector
       classJavaDoc: "Abstract class that adds a tap changer position attribute to the {@link ConnectorResult} which\n
                   actually creates a transformer representation."
       constructors:
@@ -406,7 +392,6 @@ models:
       nonCapitalized: [iAMag, iAAng, iBMag, iBAng]
 
     Transformer2WResult:
-      package: edu.ie3.datamodel.models.result.connector
       classJavaDoc: "Represents calculation results of a {@link\n
                   edu.ie3.datamodel.models.input.connector.Transformer2WInput}."
       constructors:
@@ -426,7 +411,6 @@ models:
       copy: false
 
     Transformer3WResult:
-      package: edu.ie3.datamodel.models.result.connector
       classJavaDoc: "Represents calculation results of a {@link\n
                   edu.ie3.datamodel.models.input.connector.Transformer3WInput}."
       constructors:
@@ -447,8 +431,8 @@ models:
       setters: true
       nonCapitalized: [iAMag, iAAng, iBMag, iBAng, iCMag, iCAng]
 
+  result.system:
     SystemParticipantResult:
-      package: edu.ie3.datamodel.models.result.system
       classJavaDoc: "Abstract class that holds values common to all other result entities."
       constructors:
         - name: full
@@ -463,7 +447,6 @@ models:
       setters: true
 
     SystemParticipantWithHeatResult:
-      package: edu.ie3.datamodel.models.result.system
       classJavaDoc: "Abstract class that holds values common to result entities having heat result."
       constructors:
         - name: full
@@ -480,7 +463,6 @@ models:
       nonCapitalized: [qDot]
 
     ElectricalEnergyStorageResult:
-      package: edu.ie3.datamodel.models.result.system
       classJavaDoc: "Abstract class that holds values common to result entities having heat result."
       constructors:
         - name: full
@@ -496,7 +478,6 @@ models:
       setters: true
 
     FlexOptionsResult:
-      package: edu.ie3.datamodel.models.result.system
       classJavaDoc: "A result depicting flexibility options of a model (system participant or EM agent)."
       constructors:
         - name: full
@@ -512,7 +493,6 @@ models:
       nonCapitalized: [pMin, pMax]
 
     AcResult:
-      package: edu.ie3.datamodel.models.result.system
       classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.AcInput}."
       constructors:
         - name: full
@@ -529,7 +509,6 @@ models:
       nonCapitalized: [qDot]
 
     BmResult:
-      package: edu.ie3.datamodel.models.result.system
       classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.BmInput}."
       constructors:
         - name: full
@@ -544,7 +523,6 @@ models:
       copy: false
 
     ChpResult:
-      package: edu.ie3.datamodel.models.result.system
       classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.ChpInput}."
       constructors:
         - name: full
@@ -561,7 +539,6 @@ models:
       nonCapitalized: [qDot]
 
     EmResult:
-      package: edu.ie3.datamodel.models.result.system
       classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.EmInput}."
       constructors:
         - name: full
@@ -576,7 +553,6 @@ models:
       copy: false
 
     EnergyBoundariesFlexOptionsResult:
-      package: edu.ie3.datamodel.models.result.system
       classJavaDoc: "An energy boundaries flexibility options result of a model (system participant or EM agent)."
       constructors:
         - name: full
@@ -595,7 +571,6 @@ models:
       nonCapitalized: [pMin, pMax, eState, eMin, eMax]
 
     EvcsResult:
-      package: edu.ie3.datamodel.models.result.system
       classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.EvcsInput}."
       constructors:
         - name: full
@@ -610,7 +585,6 @@ models:
       copy: false
 
     EvResult:
-      package: edu.ie3.datamodel.models.result.system
       classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.EvInput}."
       constructors:
         - name: full
@@ -626,7 +600,6 @@ models:
       copy: false
 
     FixedFeedInResult:
-      package: edu.ie3.datamodel.models.result.system
       classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.FixedFeedInInput}."
       constructors:
         - name: full
@@ -641,7 +614,6 @@ models:
       copy: false
 
     HpResult:
-      package: edu.ie3.datamodel.models.result.system
       classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.HpInput}."
       constructors:
         - name: full
@@ -658,7 +630,6 @@ models:
       nonCapitalized: [qDot]
 
     LoadResult:
-      package: edu.ie3.datamodel.models.result.system
       classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.LoadInput}."
       constructors:
         - name: full
@@ -673,7 +644,6 @@ models:
       copy: false
 
     PowerLimitFlexOptionsResult:
-      package: edu.ie3.datamodel.models.result.system
       classJavaDoc: "A power limit flexibility options result of a model (system participant or EM agent)."
       constructors:
         - name: full
@@ -688,7 +658,6 @@ models:
       nonCapitalized: [pRef, pMin, pMax]
 
     PvResult:
-      package: edu.ie3.datamodel.models.result.system
       classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.PvInput}."
       constructors:
         - name: full
@@ -703,7 +672,6 @@ models:
       copy: false
 
     StorageResult:
-      package: edu.ie3.datamodel.models.result.system
       classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.StorageInput}."
       constructors:
         - name: full
@@ -719,7 +687,6 @@ models:
       copy: false
 
     WecResult:
-      package: edu.ie3.datamodel.models.result.system
       classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.WecInput}."
       constructors:
         - name: full
@@ -733,8 +700,8 @@ models:
                  @param q reactive power output normally provided in MVAr"
       copy: false
 
+  result.thermal:
     ThermalUnitResult:
-      package: edu.ie3.datamodel.models.result.thermal
       classJavaDoc: "Representation of a result with regard to a thermal unit."
       constructors:
         - name: full
@@ -749,7 +716,6 @@ models:
       nonCapitalized: [qDot]
 
     ThermalSinkResult:
-      package: edu.ie3.datamodel.models.result.thermal
       classJavaDoc: "Represents calculation results of a {@link\n
                   edu.ie3.datamodel.models.input.thermal.ThermalSinkInput}."
       constructors:
@@ -765,7 +731,6 @@ models:
       nonCapitalized: [qDot]
 
     ThermalStorageResult:
-      package: edu.ie3.datamodel.models.result.thermal
       classJavaDoc: "Represents calculation results of a {@link\n
                   edu.ie3.datamodel.models.input.thermal.ThermalStorageInput}."
       constructors:
@@ -782,7 +747,6 @@ models:
       nonCapitalized: [qDot]
 
     AbstractThermalStorageResult:
-      package: edu.ie3.datamodel.models.result.thermal
       classJavaDoc: "Abstract class representing the common results of different types of thermal storages."
       constructors:
         - name: full
@@ -799,7 +763,6 @@ models:
       nonCapitalized: [qDot]
 
     CylindricalStorageResult:
-      package: edu.ie3.datamodel.models.result.thermal
       classJavaDoc: "Represents the results of Cylindrical Storage."
       constructors:
         - name: full
@@ -809,7 +772,6 @@ models:
       nonCapitalized: [qDot]
 
     DomesticHotWaterStorageResult:
-      package: edu.ie3.datamodel.models.result.thermal
       classJavaDoc: "Represents the results of Domestic Hot Water Storage."
       constructors:
         - name: full
@@ -819,7 +781,6 @@ models:
       nonCapitalized: [qDot]
 
     ThermalHouseResult:
-      package: edu.ie3.datamodel.models.result.thermal
       classJavaDoc: "Represents the results of {@link edu.ie3.datamodel.models.input.thermal.ThermalHouseInput}."
       constructors:
         - name: full

@@ -27,7 +27,7 @@ final class ModelGenerator implements HelperMethods {
    */
   public static void main(String[] args) throws IOException {
     Path resources = Path.of(".", "src", "codegen", "resources");
-    Path modelsFile = resources.resolve("models.yaml");
+    Path modelsFile = resources.resolve("datamodel.yaml");
     Path generationConfig = resources.resolve("generation.yaml");
     Path outputDirectory = Path.of(".", "src", "main", "java");
 
@@ -45,19 +45,22 @@ final class ModelGenerator implements HelperMethods {
       System.out.println("Generating models with version: " + modelFile.version);
     }
 
-    // generate the models
-    generateAll(modelFile.models.all(), genConfig.models.all(), outputDirectory);
+    // generate the data model
+    generateAll(
+        modelFile.modelToPackage(), modelFile.flatten(), genConfig.flatten(), outputDirectory);
   }
 
   /**
    * Method for generating the models.
    *
+   * @param modelToPackage map: model name to package name
    * @param models to generate
    * @param generationConfigs to use
    * @param outputDirectory directory for the classes
    * @throws IOException throws an I/O exception if writing a class file fails.
    */
   private static void generateAll(
+      Map<String, String> modelToPackage,
       Map<String, ModelDefinition> models,
       Map<String, GenerationConfig> generationConfigs,
       Path outputDirectory)
@@ -69,7 +72,8 @@ final class ModelGenerator implements HelperMethods {
       if (!generationConfigs.containsKey(name)) {
         System.out.println("No configuration present for: " + name + " Skipping generation.");
       } else {
-        generate(model, generationConfigs.get(name), models, outputDirectory);
+        generate(
+            modelToPackage.get(name), model, generationConfigs.get(name), models, outputDirectory);
       }
     }
   }
@@ -77,6 +81,7 @@ final class ModelGenerator implements HelperMethods {
   /**
    * Method for generating a model.
    *
+   * @param packageName name of the package
    * @param model to generate
    * @param genConfig to use
    * @param models all available models
@@ -84,6 +89,7 @@ final class ModelGenerator implements HelperMethods {
    * @throws IOException throws an I/O exception if writing a class file fails.
    */
   private static void generate(
+      String packageName,
       ModelDefinition model,
       GenerationConfig genConfig,
       Map<String, ModelDefinition> models,
@@ -136,7 +142,7 @@ final class ModelGenerator implements HelperMethods {
     // check if we need to add a copy method and copy builder
     if (genConfig.copy && !genConfig.setters) {
       CopyBuilderGenerator copyBuilderGenerator =
-          new CopyBuilderGenerator(model, genConfig, models);
+          new CopyBuilderGenerator(packageName, model, genConfig, models);
 
       // add the method and the copy builder
       typeBuilder.addMethod(copyBuilderGenerator.generateCopyMethod());
@@ -155,7 +161,7 @@ final class ModelGenerator implements HelperMethods {
     }
 
     // build the class file and write to it
-    JavaFile.builder(genConfig.packageName, typeBuilder.build())
+    JavaFile.builder(packageName, typeBuilder.build())
         .skipJavaLangImports(true)
         .build()
         .writeTo(outputDirectory);
@@ -225,28 +231,32 @@ final class ModelGenerator implements HelperMethods {
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // helper classes
 
-  public static final class ModelFile {
+  public static final class ModelFile extends Models<ModelDefinition> {
     public String version;
-    public Models<ModelDefinition> models;
   }
 
-  public static final class GenerationConfigFile {
+  public static final class GenerationConfigFile extends Models<GenerationConfig> {
     public String version;
-    public Models<GenerationConfig> models;
   }
 
-  public static final class Models<C> {
-    public Map<String, C> input = new LinkedHashMap<>();
-    public Map<String, C> typeInput = new LinkedHashMap<>();
+  public static sealed class Models<C> {
+    public Map<String, Map<String, C>> datamodel = new HashMap<>();
 
-    public Map<String, C> results = new LinkedHashMap<>();
+    public Map<String, String> modelToPackage() {
+      Map<String, String> res = new HashMap<>();
 
-    public Map<String, C> all() {
+      datamodel.forEach(
+          (packageName, models) -> {
+            String fullPackageName = "edu.ie3.datamodel." + packageName;
+            models.keySet().forEach(name -> res.put(name, fullPackageName));
+          });
+
+      return res;
+    }
+
+    public Map<String, C> flatten() {
       Map<String, C> res = new HashMap<>();
-      res.putAll(input);
-      res.putAll(typeInput);
-      res.putAll(results);
-
+      datamodel.values().forEach(res::putAll);
       return res;
     }
   }

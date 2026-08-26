@@ -13,9 +13,6 @@ import java.util.Map;
 
 public final class GenerationConfig implements HelperMethods {
 
-  @JsonProperty("package")
-  public String packageName;
-
   public String classJavaDoc = "";
 
   @JsonProperty("sealed")
