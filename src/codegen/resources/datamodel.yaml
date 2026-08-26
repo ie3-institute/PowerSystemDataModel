@@ -1,12 +1,13 @@
 version: 1.0
-models:
-  input:
+datamodel:
+  models:
     UniqueEntity:
       name: UniqueEntity
       components:
         - name: uuid
           type: UUID
 
+  models.input:
     UniqueInputEntity:
       name: UniqueInputEntity
       extends: UniqueEntity
@@ -33,26 +34,6 @@ models:
           keys: [operatesFrom, operatesUntil]
           required: true # TODO: Change this to false
           javaDoc: "Time for which the entity is operated."
-
-    ConductorInput:
-      name: ConductorInput
-      extends: AssetInput
-      abstract: false
-      components:
-        - name: material
-          type: CableMaterial
-        - name: crossSection
-          type: Area
-        - name: diameter
-          type: Length
-        - name: isCompacted
-          type: bool
-        - name: thermalResistivity
-          type: ThermalResistivity
-        - name: thermalCapacitance
-          type: ThermalCapacitance
-        - name: area
-          type: Area
 
     NodeInput:
       name: NodeInput
@@ -85,8 +66,6 @@ models:
           type: String
           javaDoc: "The id (=name) of this operator."
 
-
-  typeInput:
     AssetTypeInput:
       name: AssetTypeInput
       extends: UniqueInputEntity
@@ -96,6 +75,7 @@ models:
           required: true
           javaDoc: "Name or ID of the asset."
 
+  models.input.connector.type:
     CableTypeInput:
       name: CableTypeInput
       extends: AssetTypeInput
@@ -133,6 +113,26 @@ models:
         - name: eddyCurrentLossFactor
           type: double
 
+    ConductorInput:
+      name: ConductorInput
+      extends: AssetInput
+      abstract: false
+      components:
+        - name: material
+          type: CableMaterial
+        - name: crossSection
+          type: Area
+        - name: diameter
+          type: Length
+        - name: isCompacted
+          type: bool
+        - name: thermalResistivity
+          type: ThermalResistivity
+        - name: thermalCapacitance
+          type: ThermalCapacitance
+        - name: area
+          type: Area
+
     LayerInput:
       name: LayerInput
       extends: AssetTypeInput
@@ -151,6 +151,30 @@ models:
         - name: area
           type: Area
           required: false
+
+    LineTypeInput:
+      name: LineTypeInput
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: b
+          type: SpecificConductance
+          javaDoc: "Specific phase-to-ground susceptance for this type of line (typically in µS/km)."
+        - name: g
+          type: SpecificConductance
+          javaDoc: "Specific phase-to-ground conductance for this type of line (typically in µS/km)."
+        - name: r
+          type: SpecificResistance
+          javaDoc: "Specific resistance for this type of line (typically in Ohm/km)."
+        - name: x
+          type: SpecificResistance
+          javaDoc: "Specific reactance for this type of line (typically in Ohm/km)."
+        - name: iMax
+          type: ElectricCurrent
+          javaDoc: "Maximum thermal current for this type of line (typically in A)."
+        - name: vRated
+          type: ElectricPotential
+          javaDoc: "Rated voltage for this type of line (typically in V)."
 
     ScreenLayerInput:
       name: ScreenLayerInput
@@ -179,30 +203,6 @@ models:
           required: false
         - name: electricalResistivity
           type: ElectricalResistivity
-
-    LineTypeInput:
-      name: LineTypeInput
-      extends: AssetTypeInput
-      abstract: false
-      components:
-        - name: b
-          type: SpecificConductance
-          javaDoc: "Specific phase-to-ground susceptance for this type of line (typically in µS/km)."
-        - name: g
-          type: SpecificConductance
-          javaDoc: "Specific phase-to-ground conductance for this type of line (typically in µS/km)."
-        - name: r
-          type: SpecificResistance
-          javaDoc: "Specific resistance for this type of line (typically in Ohm/km)."
-        - name: x
-          type: SpecificResistance
-          javaDoc: "Specific reactance for this type of line (typically in Ohm/km)."
-        - name: iMax
-          type: ElectricCurrent
-          javaDoc: "Maximum thermal current for this type of line (typically in A)."
-        - name: vRated
-          type: ElectricPotential
-          javaDoc: "Rated voltage for this type of line (typically in V)."
 
     Transformer2WTypeInput:
       name: Transformer2WTypeInput
@@ -312,6 +312,7 @@ models:
           type: int
           javaDoc: "Maximum available tap position."
 
+  models.input.system.type:
     SystemParticipantTypeInput:
       name: SystemParticipantTypeInput
       extends: AssetTypeInput
@@ -427,4 +428,3 @@ models:
         - name: hubHeight
           type: Length
           javaDoc: "."
-

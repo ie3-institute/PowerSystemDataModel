@@ -1,18 +1,17 @@
 version: 1.0
-models:
-  input:
+datamodel:
+  models:
     UniqueEntity:
-      package: edu.ie3.datamodel.models
       classJavaDoc: "Supplies every subclass with a generated UUID, making it unique."
-      inherits: [Entity, Uniqueness, Serializable]
+      inherits: [ Entity, Uniqueness, Serializable ]
       constructors:
         - name: minimal
-          components: []
+          components: [ ]
         - name: full
-          components: [uuid]
+          components: [ uuid ]
 
+  models.input:
     UniqueInputEntity:
-      package: edu.ie3.datamodel.models.input
       classJavaDoc: "Functionless class to describe that all subclasses are unique input classes."
       inherits: [InputEntity]
       constructors:
@@ -21,7 +20,6 @@ models:
           superArgs: [uuid]
 
     AssetInput:
-      package: edu.ie3.datamodel.models.input
       classJavaDoc: "Describes a grid asset under the assumption that every asset could be operable."
       inherits: [Operable]
       constructors:
@@ -42,8 +40,16 @@ models:
                    @param uuid Unique identifier\n
                    @param id Human-readable identifier"
 
+    AssetTypeInput:
+      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.AssetInput}."
+      constructors:
+        - name: full
+          components: [uuid, id]
+          superArgs: [uuid]
+          javaDoc: "@param uuid of the input entity\n
+                  @param id of the asset"
+
     NodeInput:
-      package: edu.ie3.datamodel.models.input
       classJavaDoc: "Describes an electrical grid node, that other assets can connect to."
       constructors:
         - name: full
@@ -99,7 +105,6 @@ models:
       nonCapitalizedGetters: [vTarget]
 
     OperatorInput:
-      package: edu.ie3.datamodel.models.input
       classJavaDoc: "Describes an operator, that operates assets."
       constructors:
         - name: minimal
@@ -122,19 +127,8 @@ models:
           type: OperatorInput
           expression: new OperatorInput(UUID.randomUUID(), "NO_OPERATOR_ASSIGNED")
 
-  typeInput:
-    AssetTypeInput:
-      package: edu.ie3.datamodel.models.input
-      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.AssetInput}."
-      constructors:
-        - name: full
-          components: [uuid, id]
-          superArgs: [uuid]
-          javaDoc: "@param uuid of the input entity\n
-                  @param id of the asset"
-
+  models.input.connector.type:
     CableTypeInput:
-      package: edu.ie3.datamodel.models.input.connector.type
       classJavaDoc: "Represents detailed cable construction data at the type/catalog level. This class contains the\n
                    complete specification of a cable type including conductors, insulation layers, screens, armor,\n
                    and jacket elements, as well as electrical and thermal parameters."
@@ -180,7 +174,6 @@ models:
               className: List
 
     LayerInput:
-      package: edu.ie3.datamodel.models.input.connector.type
       classJavaDoc: "Represents a concentric layer of a cable, including insulation, filler, armor, and jacket layers."
       constructors:
         - name: full
@@ -247,8 +240,35 @@ models:
           type: String
           expression: getId()
 
+    LineTypeInput:
+      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.connector.LineInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, b, g, r, x, iMax, vRated]
+          superArgs: [uuid, id]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type\n
+                 @param b Specific phase-to-ground susceptance for this type of line (typically in µS/km)\n
+                 @param g Specific phase-to-ground conductance for this type of line (typically in µS/km)\n
+                 @param r Specific resistance for this type of line (typically in Ohm/km)\n
+                 @param x Specific reactance for this type of line (typically in Ohm/km)\n
+                 @param iMax Maximum thermal current for this type of line (typically in A)\n
+                 @param vRated Rated voltage for this type of line"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, b, g, r, x, iMax, vRated, additionalInformation]
+          superArgs: [uuid, id]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type\n
+                 @param b Specific phase-to-ground susceptance for this type of line (typically in µS/km)\n
+                 @param g Specific phase-to-ground conductance for this type of line (typically in µS/km)\n
+                 @param r Specific resistance for this type of line (typically in Ohm/km)\n
+                 @param x Specific reactance for this type of line (typically in Ohm/km)\n
+                 @param iMax Maximum thermal current for this type of line (typically in A)\n
+                 @param vRated Rated voltage for this type of line\n
+                 @param additionalInformation That were provided by the source"
+      nonCapitalizedGetters: [iMax, vRated]
+
     ScreenLayerInput:
-      package: edu.ie3.datamodel.models.input.connector.type
       classJavaDoc: "Represents a concentric layer of a cable, including insulation, filler, armor, and jacket layers."
       constructors:
         - name: full
@@ -333,37 +353,7 @@ models:
           type: String
           expression: getId()
 
-    LineTypeInput:
-      package: edu.ie3.datamodel.models.input.connector.type
-      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.connector.LineInput}."
-      constructors:
-        - name: full
-          components: [uuid, id, b, g, r, x, iMax, vRated]
-          superArgs: [uuid, id]
-          javaDoc: "@param uuid of the input entity\n
-                 @param id of this type\n
-                 @param b Specific phase-to-ground susceptance for this type of line (typically in µS/km)\n
-                 @param g Specific phase-to-ground conductance for this type of line (typically in µS/km)\n
-                 @param r Specific resistance for this type of line (typically in Ohm/km)\n
-                 @param x Specific reactance for this type of line (typically in Ohm/km)\n
-                 @param iMax Maximum thermal current for this type of line (typically in A)\n
-                 @param vRated Rated voltage for this type of line"
-        - name: fullWithAdditionalInformation
-          components: [uuid, id, b, g, r, x, iMax, vRated, additionalInformation]
-          superArgs: [uuid, id]
-          javaDoc: "@param uuid of the input entity\n
-                 @param id of this type\n
-                 @param b Specific phase-to-ground susceptance for this type of line (typically in µS/km)\n
-                 @param g Specific phase-to-ground conductance for this type of line (typically in µS/km)\n
-                 @param r Specific resistance for this type of line (typically in Ohm/km)\n
-                 @param x Specific reactance for this type of line (typically in Ohm/km)\n
-                 @param iMax Maximum thermal current for this type of line (typically in A)\n
-                 @param vRated Rated voltage for this type of line
-                 @param additionalInformation That were provided by the source"
-      nonCapitalizedGetters: [iMax, vRated]
-
     Transformer2WTypeInput:
-      package: edu.ie3.datamodel.models.input.connector.type
       classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput}."
       constructors:
         - name: full
@@ -406,7 +396,6 @@ models:
       nonCapitalizedGetters: [rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi]
 
     Transformer3WTypeInput:
-      package: edu.ie3.datamodel.models.input.connector.type
       classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer3WInput}."
       constructors:
         - name: full
@@ -460,8 +449,8 @@ models:
                  @param additionalInformation That were provided by the source"
       nonCapitalizedGetters: [sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi]
 
+  models.input.system.type:
     SystemParticipantTypeInput:
-      package: edu.ie3.datamodel.models.input.system.type
       classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput}."
       constructors:
         - name: full
@@ -488,7 +477,6 @@ models:
       nonCapitalizedGetters: [sRated]
 
     AcTypeInput:
-      package: edu.ie3.datamodel.models.input.system.type
       classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.system.AcInput}."
       constructors:
         - name: full
@@ -524,7 +512,6 @@ models:
       nonCapitalizedGetters: [pThermal, sRated]
 
     BmTypeInput:
-      package: edu.ie3.datamodel.models.input.system.type
       classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.system.BmInput}."
       constructors:
         - name: full
@@ -560,7 +547,6 @@ models:
       nonCapitalizedGetters: [sRated]
 
     ChpTypeInput:
-      package: edu.ie3.datamodel.models.input.system.type
       classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.ChpInput}."
       constructors:
         - name: full
@@ -600,7 +586,6 @@ models:
       nonCapitalizedGetters: [pOwn, pThermal, sRated]
 
     EvTypeInput:
-      package: edu.ie3.datamodel.models.input.system.type
       classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.EvInput}."
       constructors:
         - name: full
@@ -638,7 +623,6 @@ models:
       nonCapitalizedGetters: [eStorage, eCons, sRated, sRatedDC]
 
     HpTypeInput:
-      package: edu.ie3.datamodel.models.input.system.type
       classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.system.HpInput}."
       constructors:
         - name: full
@@ -674,7 +658,6 @@ models:
       nonCapitalizedGetters: [pThermal, sRated]
 
     StorageTypeInput:
-      package: edu.ie3.datamodel.models.input.system.type
       classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.StorageInput}."
       constructors:
         - name: full
@@ -714,7 +697,6 @@ models:
       nonCapitalizedGetters: [eStorage, pMax, sRated]
 
     WecTypeInput:
-      package: edu.ie3.datamodel.models.input.system.type
       classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.WecInput}."
       constructors:
         - name: full
