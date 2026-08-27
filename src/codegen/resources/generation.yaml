@@ -266,7 +266,7 @@ datamodel:
                @param cosPhiRated Power factor for this type of system participant"
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: true
+          abstract: true
           javaDoc: "Scales the input entity in a way that tries to preserve proportions that are related to\n
                  power. This means that capacity, consumption etc. are scaled with the same factor. Related\n
                  properties associated with the input type (if applicable) are scaled as well.\n
@@ -277,3 +277,433 @@ datamodel:
             - name: factor
               type: double
       nonCapitalizedGetters: [sRated]
+
+  models.value:
+    CoordinateValue:
+      inherits: [Value]
+      constructors:
+        - name: full
+          components: [id, coordinate]
+      publicFields: [id, coordinate]
+      noGetters: [id, coordinate]
+      copy: false
+      equals: false
+      hashCode: false
+      toString: false
+
+    EnergyPriceValue:
+      classJavaDoc: "Describes a price for energy."
+      inherits: [Value]
+      constructors:
+        - name: full
+          components: [price]
+          javaDoc: "@param price per MWh"
+      copy: false
+
+    TemperatureValue:
+      classJavaDoc: "Describes a temperature value."
+      inherits: [Value]
+      constructors:
+        - name: full
+          components: [temperature]
+          javaDoc: "@param temperature (typically in K)"
+      copy: false
+
+    GroundTemperatureValue:
+      classJavaDoc: "Describes a ground temperature value. This class extends {@link TemperatureValue} to represent\n
+                 temperature at a specific depth in the ground."
+      constructors:
+        - name: full
+          components: [temperature]
+          superArgs: [temperature]
+          javaDoc: "Constructs a new GroundTemperatureValue.\n
+                 \n
+                 @param temperature The temperature quantity (typically in K)"
+      copy: false
+      equals: false
+      hashCode: false
+
+    PValue:
+      classJavaDoc: "Describes a active power value as active power."
+      inherits: [Value]
+      constructors:
+        - name: full
+          components: [p]
+          javaDoc: "@param p Active power"
+      copy: false
+
+    SValue:
+      classJavaDoc: "Describes a apparent power value as a pair of active and reactive power."
+      constructors:
+        - name: full
+          components: [p, q]
+          superArgs: [p]
+          javaDoc: "Creates a new value representing apparent power.\n
+                 \n
+                 @param p Active power\n
+                 @param q Reactive power"
+      copy: false
+
+    HeatAndPValue:
+      classJavaDoc: "Describes a tuple based on active electrical power, as well as heat power."
+      constructors:
+        - name: full
+          components: [p, heatDemand]
+          superArgs: [p]
+          javaDoc: "@param p Active power\n
+                 @param heatDemand Heat demand"
+      copy: false
+
+    HeatAndSValue:
+      classJavaDoc: "Describes a triple based on active and reactive electrical power, as well as heat power."
+      constructors:
+        - name: full
+          components: [p, q, heatDemand]
+          superArgs: [p, q]
+          javaDoc: "@param p Active power\n
+                 @param q Reactive power\n
+                 @param heatDemand Heat demand"
+      copy: false
+
+    HeatDemandValue:
+      classJavaDoc: "Describes as heat demand value."
+      inherits: [Value]
+      constructors:
+        - name: full
+          components: [heatDemand]
+      copy: false
+
+    SolarIrradianceValue:
+      classJavaDoc: "Describes an irradiance value as a pair of diffuse and direct irradiance."
+      inherits: [Value]
+      constructors:
+        - name: full
+          components: [directIrradiance, diffuseIrradiance]
+          javaDoc: "@param directIrradiance Direct sun radiation (typically in W/m²)\n
+                  @param diffuseIrradiance Diffuse sun radiation (typically in W/m²)"
+      copy: false
+
+    VoltageValue:
+      classJavaDoc: "Describes a voltage value as a pair of magnitude and angle."
+      inherits: [Value]
+      constructors:
+        - name: full
+          components: [magnitude, angle]
+          javaDoc: "@param magnitude of the voltage in p.u.\n
+                  @param angle of this voltage in degree"
+        - name: minimal
+          components: [magnitude]
+          javaDoc: "@param magnitude of the voltage in p.u."
+          constructorModifications:
+            angle:
+              expression: null
+      copy: false
+
+    WeatherValue:
+      classJavaDoc: "Describes weather as a combination of solar irradiance, temperature and wind values."
+      inherits: [Value]
+      constructors:
+        - name: full
+          components: [coordinate, solarIrradiance, temperature, wind, groundTemperatureLevel1, groundTemperatureLevel2]
+          javaDoc: "@param coordinate of this weather value set\n
+                 @param solarIrradiance values for this coordinate\n
+                 @param temperature values for this coordinate\n
+                 @param wind values for this coordinate\n
+                 @param groundTemperatureLevel1 values for this coordinate (can be null)\n
+                 @param groundTemperatureLevel2 values for this coordinate (can be null)"
+        - name: fullAlternative
+          components: [coordinate, directSolarIrradiance, diffuseSolarIrradiance, temperature, direction, velocity, groundTempValOne, groundTempValTwo]
+          javaDoc: "Constructor with all parameters as quantities.\n
+                 \n
+                 @param coordinate of this weather value set\n
+                 @param directSolarIrradiance Direct sun irradiance for this coordinate (typically in W/m²)\n
+                 @param diffuseSolarIrradiance Diffuse sun irradiance for this coordinate (typically in W/m²)\n
+                 @param temperature for this coordinate (typically in K)\n
+                 @param direction Direction, the wind comes from as an angle from north increasing clockwise\n
+                     (typically in rad)\n
+                 @param velocity Wind velocity for this coordinate (typically in m/s)\n
+                 @param groundTempValOne Ground temperature for this coordinate (typically in K, can be null)\n
+                 @param groundTempValTwo Ground temperature for this coordinate (typically in K, can be null)"
+          additionalComponents:
+            - name: directSolarIrradiance
+              type: Irradiance
+            - name: diffuseSolarIrradiance
+              type: Irradiance
+            - name: temperature
+              type: Temperature
+            - name: direction
+              type: Angle
+            - name: velocity
+              type: Speed
+            - name: groundTempValOne
+              type: Temperature
+            - name: groundTempValTwo
+              type: Temperature
+          constructorModifications:
+            solarIrradiance:
+              expression: new SolarIrradianceValue(directSolarIrradiance, diffuseSolarIrradiance)
+            temperature:
+              expression: new TemperatureValue(temperature)
+            wind:
+              expression: new WindValue(direction, velocity)
+            groundTemperatureLevel1:
+              expression: new GroundTemperatureValue(groundTempValOne)
+            groundTemperatureLevel2:
+              expression: new GroundTemperatureValue(groundTempValTwo)
+        - name: minimal
+          components: [coordinate, solarIrradiance, temperature, wind]
+          javaDoc: "@param coordinate of this weather value set\n
+                 @param solarIrradiance values for this coordinate\n
+                 @param temperature values for this coordinate\n
+                 @param wind values for this coordinate"
+          constructorModifications:
+            groundTemperatureLevel1:
+              expression: null
+            groundTemperatureLevel2:
+              expression: null
+        - name: minimalAlternative
+          components: [coordinate, directSolarIrradiance, diffuseSolarIrradiance, temperature, direction, velocity]
+          javaDoc: "Constructor with all parameters as quantities.\n
+                 \n
+                 @param coordinate of this weather value set\n
+                 @param directSolarIrradiance Direct sun irradiance for this coordinate (typically in W/m²)\n
+                 @param diffuseSolarIrradiance Diffuse sun irradiance for this coordinate (typically in W/m²)\n
+                 @param temperature for this coordinate (typically in K)\n
+                 @param direction Direction, the wind comes from as an angle from north increasing clockwise\n
+                     (typically in rad)\n
+                 @param velocity Wind velocity for this coordinate (typically in m/s)"
+          additionalComponents:
+            - name: directSolarIrradiance
+              type: Irradiance
+            - name: diffuseSolarIrradiance
+              type: Irradiance
+            - name: temperature
+              type: Temperature
+            - name: direction
+              type: Angle
+            - name: velocity
+              type: Speed
+          constructorModifications:
+            solarIrradiance:
+              expression: new SolarIrradianceValue(directSolarIrradiance, diffuseSolarIrradiance)
+            temperature:
+              expression: new TemperatureValue(temperature)
+            wind:
+              expression: new WindValue(direction, velocity)
+            groundTemperatureLevel1:
+              expression: null
+            groundTemperatureLevel2:
+              expression: null
+        - name: empty
+          private: true
+          components: []
+          constructorModifications:
+            coordinate:
+              expression: null
+            solarIrradiance:
+              expression: null
+            temperature:
+              expression: null
+            wind:
+              expression: null
+            groundTemperatureLevel1:
+              expression: null
+            groundTemperatureLevel2:
+              expression: null
+      copy: false
+      nested: [CosmoWeatherValue, IconWeatherValue]
+
+    WindValue:
+      classJavaDoc: "Describes wind as a pair of direction and velocity."
+      inherits: [Value]
+      constructors:
+        - name: full
+          components: [direction, velocity]
+          javaDoc: "@param direction Direction, the wind comes from as an angle from north increasing clockwise\n
+                     (typically in rad)\n
+                 @param velocity Wind velocity (typically in m/s)"
+      copy: false
+
+  models.value.load:
+    RandomLoadValues:
+      classJavaDoc: "Data model to describe the parameters of a probability density function to draw random power\n
+                 consumptions. This model represents a generalized extreme value distribution (GEV), that has been\n
+                 sampled for each quarter-hour of a day, subdivided into workdays, Saturdays and Sundays. In\n
+                 general the GEV is described by the three parameters \"location\", \"scale\" and \"shape\"."
+      inherits: [LoadValues, RandomNumberProvider]
+      constructors:
+        - name: full
+          components: [kSa, kSu, kWd, mySa, mySu, myWd, sigmaSa, sigmaSu, sigmaWd]
+          javaDoc: "@param kSa Shape parameter for a Saturday\n
+                 @param kSu Shape parameter for a Sunday\n
+                 @param kWd Shape parameter for a working day\n
+                 @param mySa Location parameter for a Saturday\n
+                 @param mySu Location parameter for a Sunday\n
+                 @param myWd Location parameter for a working day\n
+                 @param sigmaSa Scale parameter for a Saturday\n
+                 @param sigmaSu Scale parameter for a Sunday\n
+                 @param sigmaWd Scale parameter for a working day"
+          constructorModifications:
+            gevWd:
+              expression: new GeneralizedExtremeValueDistribution(myWd, sigmaWd, kWd, factory.getRandom())
+            gevSa:
+              expression: new GeneralizedExtremeValueDistribution(mySa, sigmaSa, kSa, factory.getRandom())
+            gevSu:
+              expression: new GeneralizedExtremeValueDistribution(mySu, sigmaSu, kSu, factory.getRandom())
+      copy: false
+      excludeFromMethods: [gevWd, gevSa, gevSu]
+      methodOverrides:
+        - name: getValue
+          type: PValue
+          parameters:
+            - name: time
+              type: ZonedDateTime
+            - name: powerProfileKey
+              type: PowerProfileKey
+          expression: new PValue($T.getQuantity(getValue(time.getDayOfWeek()), $T.KILOWATT))
+          className: Quantities
+          unitClass: PowerSystemUnits
+      methodInserts:
+        - name: getValue
+          type: double
+          annotation: false
+          private: true
+          explicitReturn: false
+          parameters:
+            - name: day
+              type: DayOfWeek
+          expression: "double randomValue =\n
+                          switch (day) {\n
+                            case SATURDAY -> gevSa.nextRandom();\n
+                            case SUNDAY -> gevSu.nextRandom();\n
+                            default -> gevWd.nextRandom();\n
+                          };\n
+                      \n
+                      while (randomValue < 0) {\n
+                        randomValue = getValue(day);\n
+                      }\n
+                      return randomValue"
+
+    BdewLoadValues:
+      classJavaDoc: "Load values for a {@link edu.ie3.datamodel.models.profile.BdewStandardLoadProfile}."
+      inherits: [LoadValues]
+      sealed: true
+      copy: false
+      additionalFields:
+        - name: values
+          type: StringDoubleMap
+          protected: true
+          transient: true
+          expression: new $T<>()
+          className: HashMap
+          insert: true
+      methodInserts:
+        - name: getValue
+          type: PValue
+          parameters:
+            - name: time
+              type: ZonedDateTime
+            - name: powerProfileKey
+              type: PowerProfileKey
+          expression: "return $T.dynamization(powerProfileKey, getPower(time), time.getDayOfYear()); // leap years are ignored"
+          explicitReturn: false
+          className: BdewStandardLoadProfile
+        - name: getPower
+          type: double
+          protected: true
+          parameters:
+            - name: time
+              type: ZonedDateTime
+          abstract: true
+        - name: getMaxValue
+          type: double
+          parameters:
+            - name: lastDayOfYear
+              type: bool
+          javaDoc: "Method to calculate the maximal value contained in this {@link BdewLoadValues}.\n
+                 \n
+                 @param lastDayOfYear if true, only the values, that could occur at the last day of a year, are\n
+                     considered\n
+                 @return the maximal value"
+          abstract: true
+
+    Bdew1999:
+      static: true
+      final: true
+      constructors:
+        - name: full
+          components: [suSa, suSu, suWd, trSa, trSu, trWd, wiSa, wiSu, wiWd]
+          superArgs: []
+          valuesMap: values
+      copy: false
+      methodOverrides:
+        - name: getPower
+          type: double
+          protected: true
+          parameters:
+            - name: time
+              type: ZonedDateTime
+          expression: "String key = $T.getSeason(time).getKey().toLowerCase();\n
+                    switch (time.getDayOfWeek()) {\n
+                      case SATURDAY -> key += \"Sa\";\n
+                      case SUNDAY -> key += \"Su\";\n
+                      default -> key += \"Wd\";\n
+                    }\n
+                    \n
+                    return values.get(key)"
+          className: BdewSeason
+        - name: getMaxValue
+          type: double
+          parameters:
+            - name: lastDayOfYear
+              type: bool
+          expression: "$T stream;\n
+                    \n
+                    if (lastDayOfYear) {\n
+                      stream = DoubleStream.of(wiSa, wiSu, wiWd);\n
+                    } else {\n
+                      stream = values.values().stream().mapToDouble(d -> d);\n
+                    }\n
+                    \n
+                    return stream.max().orElse(0.0)"
+          className: DoubleStream
+
+    Bdew2025:
+      static: true
+      final: true
+      constructors:
+        - name: full
+          components: [janSa, janSu, janWd, febSa, febSu, febWd, marSa, marSu, marWd, aprSa, aprSu, aprWd, maySa, maySu, mayWd, junSa, junSu, junWd, julSa, julSu, julWd, augSa, augSu, augWd, sepSa, sepSu, sepWd, octSa, octSu, octWd, novSa, novSu, novWd, decSa, decSu, decWd]
+          superArgs: []
+          valuesMap: values
+      copy: false
+      methodOverrides:
+        - name: getPower
+          type: double
+          protected: true
+          parameters:
+            - name: time
+              type: ZonedDateTime
+          expression: "String key = time.getMonth().toString().substring(0, 2).toLowerCase();\n
+                    switch (time.getDayOfWeek()) {\n
+                      case SATURDAY -> key += \"Sa\";\n
+                      case SUNDAY -> key += \"Su\";\n
+                      default -> key += \"Wd\";\n
+                    }\n
+                    \n
+                    return values.get(key)"
+        - name: getMaxValue
+          type: double
+          parameters:
+            - name: lastDayOfYear
+              type: bool
+          expression: "$T stream;\n
+                    \n
+                    if (lastDayOfYear) {\n
+                      stream = DoubleStream.of(decSa, decSu, decWd);\n
+                    } else {\n
+                      stream = values.values().stream().mapToDouble(d -> d);\n
+                    }\n
+                    \n
+                    return stream.max().orElse(0.0)"
+          className: DoubleStream

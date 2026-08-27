@@ -10,6 +10,7 @@ import static edu.ie3.codegen.ResolverUtils.resolveType;
 
 import com.palantir.javapoet.*;
 import java.util.*;
+import javax.lang.model.element.Modifier;
 
 /** Interface containing some helper methods. */
 public interface HelperMethods {
@@ -153,8 +154,10 @@ public interface HelperMethods {
    * @param component definition to use
    * @return true, if the component should not be used
    */
-  default boolean excludeFromMethods(ModelDefinition.ComponentDefinition component) {
-    return "additionalInformation".equals(component.name);
+  default boolean excludeFromMethods(
+      ModelDefinition.ComponentDefinition component, List<String> excludeFromMethods) {
+    return "additionalInformation".equals(component.name)
+        || excludeFromMethods.contains(component.name);
   }
 
   /**
@@ -259,6 +262,34 @@ public interface HelperMethods {
     return result;
   }
 
+  default MethodSpec.Builder enrichBuilder(
+      MethodSpec.Builder builder, GenerationConfig.MethodFields insert) {
+    // add the parameters to the method
+    for (ModelDefinition.Parameter parameter : insert.parameters) {
+      builder.addParameter(resolveType(parameter.type), parameter.name);
+    }
+
+    // add Javadoc if present
+    if (!insert.javaDoc.isBlank()) {
+      builder.addJavadoc(insert.javaDoc);
+    }
+
+    if (insert.isAbstract) {
+      // if the method should be abstract, we need to add the modifier
+      builder.addModifiers(Modifier.ABSTRACT);
+
+    } else {
+      if (insert.annotation) {
+        // add an annotation if needed
+        builder.addAnnotation(Override.class);
+      }
+
+      addStatement(builder, insert);
+    }
+
+    return builder;
+  }
+
   /**
    * Adds a statement to a method builder.
    *
@@ -311,24 +342,33 @@ public interface HelperMethods {
         builder.addJavadoc(sf.javaDoc);
       }
     }
+    String expression;
 
-    if (modification.usableClassName()) {
+    if (modification instanceof GenerationConfig.MethodFields mf && mf.explicitReturn) {
+      expression = "return " + modification.expression;
+    } else {
+      expression = modification.expression;
+    }
+
+    if (modification.expression.contains("\n")) {
+      if (modification.usableClassName()) {
+        builder.addStatement(modification.expression, resolveClassName(modification.className));
+      } else {
+        builder.addStatement(modification.expression);
+      }
+
+    } else if (modification.usableClassName()) {
       ClassName className = resolveClassName(modification.className);
 
-      if (modification instanceof GenerationConfig.ConstructorModification m && m.insert) {
-        if (m.usableUnitClass()) {
-          builder.addStatement(modification.expression, className, resolveClassName(m.unitClass));
-
-        } else {
-          builder.addStatement(modification.expression, className);
-        }
+      if (modification.usableUnitClass()) {
+        builder.addStatement(expression, className, resolveClassName(modification.unitClass));
 
       } else {
-        builder.addStatement("$T." + modification.expression, className);
+        builder.addStatement(expression, className);
       }
 
     } else {
-      builder.addStatement(modification.expression);
+      builder.addStatement(expression);
     }
   }
 }

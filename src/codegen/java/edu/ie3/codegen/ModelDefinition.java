@@ -22,12 +22,18 @@ public final class ModelDefinition implements HelperMethods {
 
   public List<ComponentDefinition> components = new ArrayList<>();
 
+  public List<ModelDefinition> nested = new ArrayList<>();
+
   public static final class ComponentDefinition extends Parameter {
     public String name;
     public String type;
     public List<String> keys = new ArrayList<>();
     public boolean required = true;
     public boolean nested = false;
+
+    @JsonProperty("transient")
+    public boolean isTransient = false;
+
     public String javaDoc = "";
   }
 

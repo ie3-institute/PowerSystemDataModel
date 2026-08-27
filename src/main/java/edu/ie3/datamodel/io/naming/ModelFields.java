@@ -5,8 +5,6 @@
 */
 package edu.ie3.datamodel.io.naming;
 
-import static edu.ie3.datamodel.io.factory.timeseries.BdewLoadProfileFactory.BDEW1999_FIELDS;
-import static edu.ie3.datamodel.io.factory.timeseries.BdewLoadProfileFactory.BDEW2025_FIELDS;
 import static edu.ie3.datamodel.utils.CollectionUtils.expandSet;
 import static edu.ie3.datamodel.utils.CollectionUtils.newSet;
 
@@ -108,6 +106,16 @@ public final class ModelFields extends FieldNamingStrategy {
     allFields.addAll(mandatoryFields.getOrDefault(entityClass, Collections.emptySet()));
     allFields.addAll(optionalFields.getOrDefault(entityClass, Collections.emptySet()));
     return allFields;
+  }
+
+  /**
+   * Method to return all value schemes as a list of sets.
+   *
+   * @param valueClass to use
+   * @return a flattened set of all fields
+   */
+  public static List<Set<String>> getValueSchemes(Class<? extends Value> valueClass) {
+    return valueMandatoryFields.getOrDefault(valueClass, Collections.emptyList());
   }
 
   /**
@@ -463,8 +471,45 @@ public final class ModelFields extends FieldNamingStrategy {
     // load values
     registerValue(
         BdewLoadValues.class,
-        expandSet(BDEW1999_FIELDS.values(), QUARTER_HOUR),
-        expandSet(BDEW2025_FIELDS.values(), QUARTER_HOUR));
+        newSet(SU_SA, SU_SU, SU_WD, TR_SA, TR_SA, TR_SU, TR_WD, WI_SA, WI_SU, WI_WD, QUARTER_HOUR),
+        newSet(
+            JAN_SA,
+            JAN_SU,
+            JAN_WD,
+            FEB_SA,
+            FEB_SU,
+            FEB_WD,
+            MAR_SA,
+            MAR_SU,
+            MAR_WD,
+            APR_SA,
+            APR_SU,
+            APR_WD,
+            MAY_SA,
+            MAY_SU,
+            MAY_WD,
+            JUN_SA,
+            JUN_SU,
+            JUN_WD,
+            JUL_SA,
+            JUL_SU,
+            JUL_WD,
+            AUG_SA,
+            AUG_SU,
+            AUG_WD,
+            SEP_SA,
+            SEP_SU,
+            SEP_WD,
+            OCT_SA,
+            OCT_SU,
+            OCT_WD,
+            NOV_SA,
+            NOV_SU,
+            NOV_WD,
+            DEC_SA,
+            DEC_SU,
+            DEC_WD,
+            QUARTER_HOUR));
     registerValue(
         RandomLoadValues.class,
         newSet(

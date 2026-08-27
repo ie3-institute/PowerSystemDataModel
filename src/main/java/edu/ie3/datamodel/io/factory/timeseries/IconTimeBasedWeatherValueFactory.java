@@ -55,8 +55,8 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             solarIrradianceValue,
             temperatureValue,
             windValue,
-            groundTemperatureLevel1.map(GroundTemperatureValue::new),
-            groundTemperatureLevel2.map(GroundTemperatureValue::new));
+            groundTemperatureLevel1.map(GroundTemperatureValue::new).orElse(null),
+            groundTemperatureLevel2.map(GroundTemperatureValue::new).orElse(null));
     return new TimeBasedValue<>(time, weatherValue);
   }
 

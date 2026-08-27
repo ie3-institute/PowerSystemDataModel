@@ -52,11 +52,17 @@ public class TimeBasedSimpleValueFactory<V extends Value>
     } else if (PValue.class.isAssignableFrom(data.getTargetClass())) {
       value = (V) new PValue(data.getQuantity(ACTIVE_POWER, ACTIVE_POWER_IN));
     } else if (VoltageValue.class.isAssignableFrom(data.getTargetClass())) {
-      value =
-          (V)
-              new VoltageValue(
-                  data.getQuantity(V_MAG, VOLTAGE_MAGNITUDE),
-                  data.getQuantityOptional(V_ANG, VOLTAGE_ANGLE));
+
+      if (data.isFieldEmpty(V_ANG)) {
+        value = (V) new VoltageValue(data.getQuantity(V_MAG, VOLTAGE_MAGNITUDE));
+      } else {
+        value =
+            (V)
+                new VoltageValue(
+                    data.getQuantity(V_MAG, VOLTAGE_MAGNITUDE),
+                    data.getQuantity(V_ANG, VOLTAGE_ANGLE));
+      }
+
     } else {
       throw new FactoryException(
           "The given factory cannot handle target class '" + data.getTargetClass() + "'.");

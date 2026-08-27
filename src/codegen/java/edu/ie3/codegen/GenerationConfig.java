@@ -18,6 +18,15 @@ public final class GenerationConfig implements HelperMethods {
   @JsonProperty("sealed")
   public boolean isSealed = false;
 
+  @JsonProperty("final")
+  public boolean isFinal = false;
+
+  @JsonProperty("private")
+  public boolean isPrivate = false;
+
+  @JsonProperty("static")
+  public boolean isStatic = false;
+
   public List<ConstructorDefinition> constructors = new ArrayList<>();
 
   public List<String> inherits = new ArrayList<>();
@@ -32,13 +41,21 @@ public final class GenerationConfig implements HelperMethods {
 
   public boolean copy = true;
 
-  public List<StaticFieldDefinition> staticFields = new ArrayList<>();
+  public List<String> publicFields = new ArrayList<>();
+
+  public List<String> excludeFromMethods = new ArrayList<>();
+
+  public List<FieldDefinition> staticFields = new ArrayList<>();
+
+  public List<FieldDefinition> additionalFields = new ArrayList<>();
 
   public List<String> booleanGetter = new ArrayList<>();
 
   public List<String> nonCapitalizedGetters = new ArrayList<>();
 
   public boolean fieldNameGetters = false;
+
+  public List<String> setters = new ArrayList<>();
 
   public List<String> noGetters = new ArrayList<>();
 
@@ -48,7 +65,7 @@ public final class GenerationConfig implements HelperMethods {
 
   public List<MethodInsert> copyBuilderAdditionalMethods = new ArrayList<>();
 
-  public List<String> nestedClasses = new ArrayList<>();
+  public List<String> nested = new ArrayList<>();
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // helper definition
@@ -65,14 +82,26 @@ public final class GenerationConfig implements HelperMethods {
     public List<ModelDefinition.ComponentDefinition> additionalComponents = new ArrayList<>();
     public Map<String, ConstructorModification> constructorModifications = new HashMap<>();
     public List<ConstructorModification> constructorChecks = new ArrayList<>();
+
+    public String valuesMap = "";
   }
 
   public static sealed class BasicExpression {
     public String expression;
     public String className;
 
+    @JsonProperty("transient")
+    public boolean isTransient = false;
+
+    public boolean insert;
+    public String unitClass;
+
     public boolean usableClassName() {
       return usable(className);
+    }
+
+    public boolean usableUnitClass() {
+      return usable(unitClass);
     }
 
     boolean usable(String name) {
@@ -86,23 +115,36 @@ public final class GenerationConfig implements HelperMethods {
     public String javaDoc = "";
   }
 
-  public static final class StaticFieldDefinition extends StandardFields {}
-
-  public static final class MethodOverride extends StandardFields {}
-
-  public static final class MethodInsert extends StandardFields {
+  public static sealed class MethodFields extends StandardFields {
+    @JsonProperty("abstract")
     public boolean isAbstract = false;
+
+    public boolean explicitReturn = true;
     public boolean annotation = true;
     public String comment = "";
     public List<ModelDefinition.Parameter> parameters = new ArrayList<>();
   }
 
-  public static final class ConstructorModification extends BasicExpression {
-    public boolean insert;
-    public String unitClass;
-
-    public boolean usableUnitClass() {
-      return usable(unitClass);
-    }
+  public static final class FieldDefinition extends StandardFields {
+    @JsonProperty("protected")
+    public boolean isProtected = false;
   }
+
+  public static final class MethodOverride extends MethodFields {
+    @JsonProperty("protected")
+    public boolean isProtected = false;
+  }
+
+  public static final class MethodInsert extends MethodFields {
+    @JsonProperty("private")
+    public boolean isPrivate = false;
+
+    @JsonProperty("protected")
+    public boolean isProtected = false;
+
+    @JsonProperty("static")
+    public boolean isStatic = false;
+  }
+
+  public static final class ConstructorModification extends BasicExpression {}
 }

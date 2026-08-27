@@ -19,7 +19,6 @@ import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
-import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -61,13 +60,11 @@ public class TimeSeriesProcessor<
           new TimeSeriesProcessorKey(
               BdewLoadProfileTimeSeries.class,
               LoadProfileEntry.class,
-              BdewLoadValues.class,
-              BdewLoadValues.BdewScheme.BDEW1999),
+              BdewLoadValues.Bdew1999.class),
           new TimeSeriesProcessorKey(
               BdewLoadProfileTimeSeries.class,
               LoadProfileEntry.class,
-              BdewLoadValues.class,
-              BdewLoadValues.BdewScheme.BDEW2025),
+              BdewLoadValues.Bdew2025.class),
           new TimeSeriesProcessorKey(
               RandomLoadProfileTimeSeries.class, LoadProfileEntry.class, RandomLoadValues.class));
 
@@ -87,26 +84,11 @@ public class TimeSeriesProcessor<
 
   public TimeSeriesProcessor(Class<T> timeSeriesClass, Class<E> entryClass, Class<V> valueClass)
       throws EntityProcessorException {
-    this(timeSeriesClass, entryClass, valueClass, Optional.empty());
-  }
-
-  public TimeSeriesProcessor(
-      Class<T> timeSeriesClass, Class<E> entryClass, Class<V> valueClass, LoadValues.Scheme scheme)
-      throws EntityProcessorException {
-    this(timeSeriesClass, entryClass, valueClass, Optional.ofNullable(scheme));
-  }
-
-  public TimeSeriesProcessor(
-      Class<T> timeSeriesClass,
-      Class<E> entryClass,
-      Class<V> valueClass,
-      Optional<LoadValues.Scheme> scheme)
-      throws EntityProcessorException {
     super(timeSeriesClass);
 
     /* Check, if this processor can handle the foreseen combination of time series, entry and value */
     TimeSeriesProcessorKey timeSeriesKey =
-        new TimeSeriesProcessorKey(timeSeriesClass, entryClass, valueClass, scheme);
+        new TimeSeriesProcessorKey(timeSeriesClass, entryClass, valueClass);
     if (!eligibleKeys.contains(timeSeriesKey))
       throw new EntityProcessorException(
           "Cannot register time series combination '"
@@ -120,7 +102,7 @@ public class TimeSeriesProcessor<
     this.registeredKey = timeSeriesKey;
 
     /* Register, where to get which information from */
-    this.fieldToSource = buildFieldToSource(timeSeriesClass, entryClass, valueClass, scheme);
+    this.fieldToSource = buildFieldToSource(timeSeriesClass, entryClass, valueClass);
 
     /* Collect all header elements */
     this.flattenedHeaderElements = fieldToSource.keySet().toArray(new String[0]);
@@ -137,14 +119,10 @@ public class TimeSeriesProcessor<
    * @param timeSeriesClass Class of the time series
    * @param entryClass Class of the entry in the time series for the "outer" fields
    * @param valueClass Class of the actual value in the entries for the "inner" fields
-   * @param scheme option for a scheme (used for load values)
    * @return A mapping from field name to a tuple of source information and equivalent getter method
    */
   private SortedMap<String, FieldSourceToMethod> buildFieldToSource(
-      Class<T> timeSeriesClass,
-      Class<E> entryClass,
-      Class<V> valueClass,
-      Optional<? extends LoadValues.Scheme> scheme)
+      Class<T> timeSeriesClass, Class<E> entryClass, Class<V> valueClass)
       throws EntityProcessorException {
     /* Joined mapping */
     HashMap<String, FieldSourceToMethod> jointMapping = new HashMap<>();
@@ -191,27 +169,6 @@ public class TimeSeriesProcessor<
               addFunction
                   .apply(GROUND_TEMPERATURE_LEVEL_2)
                   .accept("groundTemperatureLevel2", getter));
-
-    } else if (valueClass.equals(BdewLoadValues.class)) {
-
-      Collection<BdewLoadValues.BdewKey> keys;
-
-      if (scheme.isPresent() && scheme.get() instanceof BdewLoadValues.BdewScheme bdewScheme) {
-        keys = bdewScheme.getKeys();
-      } else {
-        keys = Collections.emptySet();
-      }
-
-      keys.stream()
-          .collect(
-              Collectors.toMap(
-                  BdewLoadValues.BdewKey::getFieldName,
-                  key ->
-                      new GetterMethod(
-                          "get" + key.getName(),
-                          value -> ((BdewLoadValues) value).get(key),
-                          "double")))
-          .forEach(addFunction.apply(VALUE));
 
     } else {
       mapFieldNameToGetter(valueClass).forEach(addFunction.apply(VALUE));

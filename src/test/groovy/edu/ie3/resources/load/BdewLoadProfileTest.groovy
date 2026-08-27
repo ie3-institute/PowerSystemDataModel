@@ -8,6 +8,7 @@ package edu.ie3.resources.load
 import edu.ie3.datamodel.io.factory.timeseries.BdewLoadProfileFactory
 import edu.ie3.datamodel.io.factory.timeseries.LoadProfileData
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
+import edu.ie3.datamodel.io.naming.ModelFields
 import edu.ie3.datamodel.io.source.csv.CsvDataSource
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.value.load.BdewLoadValues
@@ -15,7 +16,6 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 import java.nio.file.Path
-import java.util.function.Function
 
 class BdewLoadProfileTest extends Specification {
 
@@ -40,8 +40,10 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G0)
 
     when:
-    BdewLoadValues.BdewScheme.BDEW1999.keys.each { key ->
-      results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
+    ModelFields.getValueSchemes(BdewLoadValues).first.each { key ->
+      if (!key.equals("quarterHour")) {
+        results["$key"] = sumValues(data, key)
+      }
     }
 
     then:
@@ -63,8 +65,10 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G1)
 
     when:
-    BdewLoadValues.BdewScheme.BDEW1999.keys.each { key ->
-      results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
+    ModelFields.getValueSchemes(BdewLoadValues).first.each { key ->
+      if (!key.equals("quarterHour")) {
+        results["$key"] = sumValues(data, key)
+      }
     }
 
     then:
@@ -86,8 +90,10 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G2)
 
     when:
-    BdewLoadValues.BdewScheme.BDEW1999.keys.each { key ->
-      results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
+    ModelFields.getValueSchemes(BdewLoadValues).first.each { key ->
+      if (!key.equals("quarterHour")) {
+        results["$key"] = sumValues(data, key)
+      }
     }
 
     then:
@@ -109,8 +115,10 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G3)
 
     when:
-    BdewLoadValues.BdewScheme.BDEW1999.keys.each { key ->
-      results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
+    ModelFields.getValueSchemes(BdewLoadValues).first.each { key ->
+      if (!key.equals("quarterHour")) {
+        results["$key"] = sumValues(data, key)
+      }
     }
 
     then:
@@ -132,8 +140,10 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G4)
 
     when:
-    BdewLoadValues.BdewScheme.BDEW1999.keys.each { key ->
-      results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
+    ModelFields.getValueSchemes(BdewLoadValues).first.each { key ->
+      if (!key.equals("quarterHour")) {
+        results["$key"] = sumValues(data, key)
+      }
     }
 
     then:
@@ -155,8 +165,10 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G5)
 
     when:
-    BdewLoadValues.BdewScheme.BDEW1999.keys.each { key ->
-      results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
+    ModelFields.getValueSchemes(BdewLoadValues).first.each { key ->
+      if (!key.equals("quarterHour")) {
+        results["$key"] = sumValues(data, key)
+      }
     }
 
     then:
@@ -178,8 +190,10 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.G6)
 
     when:
-    BdewLoadValues.BdewScheme.BDEW1999.keys.each { key ->
-      results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
+    ModelFields.getValueSchemes(BdewLoadValues).first.each { key ->
+      if (!key.equals("quarterHour")) {
+        results["$key"] = sumValues(data, key)
+      }
     }
 
     then:
@@ -201,8 +215,10 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.H0)
 
     when:
-    BdewLoadValues.BdewScheme.BDEW1999.keys.each { key ->
-      results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
+    ModelFields.getValueSchemes(BdewLoadValues).first.each { key ->
+      if (!key.equals("quarterHour")) {
+        results["$key"] = sumValues(data, key)
+      }
     }
 
     then:
@@ -221,7 +237,7 @@ class BdewLoadProfileTest extends Specification {
 
   def "The BDEW dynamization function for the profile H0 should work as expected"() {
     when:
-    def dynamizedValue = BdewLoadValues.dynamization(value, dayOfTheYear)
+    def dynamizedValue = BdewStandardLoadProfile.dynamization(value, dayOfTheYear)
 
     then:
     dynamizedValue == expectedValue
@@ -238,8 +254,10 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.L0)
 
     when:
-    BdewLoadValues.BdewScheme.BDEW1999.keys.each { key ->
-      results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
+    ModelFields.getValueSchemes(BdewLoadValues).first.each { key ->
+      if (!key.equals("quarterHour")) {
+        results["$key"] = sumValues(data, key)
+      }
     }
 
     then:
@@ -261,8 +279,10 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.L1)
 
     when:
-    BdewLoadValues.BdewScheme.BDEW1999.keys.each { key ->
-      results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
+    ModelFields.getValueSchemes(BdewLoadValues).first.each { key ->
+      if (!key.equals("quarterHour")) {
+        results["$key"] = sumValues(data, key)
+      }
     }
 
     then:
@@ -284,8 +304,10 @@ class BdewLoadProfileTest extends Specification {
     def data = read(BdewStandardLoadProfile.L2)
 
     when:
-    BdewLoadValues.BdewScheme.BDEW1999.keys.each { key ->
-      results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
+    ModelFields.getValueSchemes(BdewLoadValues).first.each { key ->
+      if (!key.equals("quarterHour")) {
+        results["$key"] = sumValues(data, key)
+      }
     }
 
     then:
@@ -310,8 +332,10 @@ class BdewLoadProfileTest extends Specification {
     Map results = [:]
 
     when:
-    BdewLoadValues.BdewScheme.BDEW2025.keys.each { key ->
-      results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
+    ModelFields.getValueSchemes(BdewLoadValues).get(1).each { key ->
+      if (!key.equals("quarterHour")) {
+        results["$key"] = sumValues(data, key)
+      }
     }
 
     then:
@@ -370,8 +394,10 @@ class BdewLoadProfileTest extends Specification {
     Map results = [:]
 
     when:
-    BdewLoadValues.BdewScheme.BDEW2025.keys.each { key ->
-      results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
+    ModelFields.getValueSchemes(BdewLoadValues).get(1).each { key ->
+      if (!key.equals("quarterHour")) {
+        results["$key"] = sumValues(data, key)
+      }
     }
 
     then:
@@ -430,8 +456,10 @@ class BdewLoadProfileTest extends Specification {
     Map results = [:]
 
     when:
-    BdewLoadValues.BdewScheme.BDEW2025.keys.each { key ->
-      results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
+    ModelFields.getValueSchemes(BdewLoadValues).get(1).each { key ->
+      if (!key.equals("quarterHour")) {
+        results["$key"] = sumValues(data, key)
+      }
     }
 
     then:
@@ -490,9 +518,12 @@ class BdewLoadProfileTest extends Specification {
     Map results = [:]
 
     when:
-    BdewLoadValues.BdewScheme.BDEW2025.keys.each { key ->
-      results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
+    ModelFields.getValueSchemes(BdewLoadValues).get(1).each { key ->
+      if (!key.equals("quarterHour")) {
+        results["$key"] = sumValues(data, key)
+      }
     }
+
     then:
     results["janSa"] == 3937.182
     results["janSu"] == 3826.787
@@ -549,8 +580,10 @@ class BdewLoadProfileTest extends Specification {
     Map results = [:]
 
     when:
-    BdewLoadValues.BdewScheme.BDEW2025.keys.each { key ->
-      results["${key.fieldName}"] = sumValues(data, v -> v.get(key))
+    ModelFields.getValueSchemes(BdewLoadValues).get(1).each { key ->
+      if (!key.equals("quarterHour")) {
+        results["$key"] = sumValues(data, key)
+      }
     }
 
     then:
@@ -611,9 +644,9 @@ class BdewLoadProfileTest extends Specification {
     }.toList()
   }
 
-  private static double sumValues(List<BdewLoadValues> values, Function<BdewLoadValues, Double> extractor) {
+  private static double sumValues(List<? extends BdewLoadValues> values, String key) {
     values.stream().map {
-      extractor.apply(it)
+      it.values.get(key)
     }.mapToDouble {
       it.doubleValue()
     }.sum()

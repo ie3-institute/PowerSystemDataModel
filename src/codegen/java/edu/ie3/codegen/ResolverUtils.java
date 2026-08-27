@@ -9,7 +9,10 @@ import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.ParameterizedTypeName;
 import com.palantir.javapoet.TypeName;
 import java.io.Serializable;
+import java.time.DayOfWeek;
+import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
 /** Utility class for resolving types and classes. */
@@ -91,7 +94,20 @@ public class ResolverUtils {
 
   static void registerJavaClasses() {
     Stream.of(
-            Serializable.class, String.class, Collections.class, UUID.class, List.class, Map.class)
+            Serializable.class,
+            String.class,
+            Double.class,
+            Collections.class,
+            Optional.class,
+            UUID.class,
+            Math.class,
+            List.class,
+            Map.class,
+            HashMap.class,
+            DayOfWeek.class,
+            Stream.class,
+            DoubleStream.class,
+            ZonedDateTime.class)
         .forEach(ResolverUtils::add);
   }
 
@@ -100,6 +116,13 @@ public class ResolverUtils {
     classes.put("GeoUtils", ClassName.get("edu.ie3.util.geo", "GeoUtils"));
     classes.put("Quantities", ClassName.get("tech.units.indriya.quantity", "Quantities"));
     classes.put("PowerSystemUnits", ClassName.get("edu.ie3.util.quantities", "PowerSystemUnits"));
+    classes.put(
+        "GeneralizedExtremeValueDistribution",
+        ClassName.get(
+            "de.lmu.ifi.dbs.elki.math.statistics.distribution",
+            "GeneralizedExtremeValueDistribution"));
+    classes.put(
+        "RandomFactory", ClassName.get("de.lmu.ifi.dbs.elki.utilities.random", "RandomFactory"));
 
     // validations
     classes.put(
@@ -226,6 +249,24 @@ public class ResolverUtils {
         .forEach(
             name ->
                 classes.put(name, ClassName.get("edu.ie3.datamodel.models.input.thermal", name)));
+
+    // values
+    Stream.of(
+            "Value",
+            "TemperatureValue",
+            "PValue",
+            "SValue",
+            "SolarIrradianceValue",
+            "TemperatureValue",
+            "WindValue",
+            "GroundTemperatureValue",
+            "WeatherValue")
+        .forEach(name -> classes.put(name, ClassName.get("edu.ie3.datamodel.models.value", name)));
+
+    // load values
+    Stream.of("LoadValues", "RandomNumberProvider", "BdewLoadValues", "BdewSeason")
+        .forEach(
+            name -> classes.put(name, ClassName.get("edu.ie3.datamodel.models.value.load", name)));
   }
 
   static void registerQuantities() {
@@ -250,7 +291,8 @@ public class ResolverUtils {
             "Area",
             "Volume",
             "Temperature",
-            "SpecificHeatCapacity")
+            "SpecificHeatCapacity",
+            "Speed")
         .forEach(name -> classes.put(name, ClassName.get("javax.measure.quantity", name)));
 
     Stream.of(
@@ -276,6 +318,10 @@ public class ResolverUtils {
             "VolumetricFlowRate")
         .forEach(
             name -> classes.put(name, ClassName.get("edu.ie3.util.quantities.interfaces", name)));
+
+    classes.put(
+        "BdewStandardLoadProfile",
+        ClassName.get("edu.ie3.datamodel.models.profile", "BdewStandardLoadProfile"));
   }
 
   static void registerOtherClasses() {
@@ -285,6 +331,7 @@ public class ResolverUtils {
 
   static void registerCustomTypes() {
     customTypes.put("StringMap", new CustomType("Map", List.of("String", "String")));
+    customTypes.put("StringDoubleMap", new CustomType("Map", List.of("String", "Double")));
     customTypes.put("NodeList", new CustomType("List", List.of("NodeInput")));
 
     Stream.of(
@@ -306,7 +353,10 @@ public class ResolverUtils {
             "Temperature",
             "SpecificHeatCapacity",
             "ThermalConductance",
-            "HeatCapacity")
+            "HeatCapacity",
+            "Irradiance",
+            "Angle",
+            "Speed")
         .forEach(
             name -> customTypes.put(name, new CustomType("ComparableQuantity", List.of(name))));
 
@@ -319,12 +369,16 @@ public class ResolverUtils {
             name ->
                 customTypes.put(
                     name, new CustomType("ComparableQuantity", List.of("Dimensionless"))));
+
+    customTypes.put(
+        "OptionalDimensionless", CustomType.withType("Optional", List.of("Dimensionless")));
   }
 
   static void addDefaultExpressions() {
     defaultExpressions.put("UUID", "UUID.randomUUID()");
     defaultExpressions.put("Map", "new HashMap<>()");
     defaultExpressions.put("StringMap", "new HashMap<>()");
+    defaultExpressions.put("StringDoubleMap", "new HashMap<>()");
     defaultExpressions.put("List", "new ArrayList<>()");
     defaultExpressions.put("OperatorInput", "OperatorInput.NO_OPERATOR_ASSIGNED");
     defaultExpressions.put("OperationTime", "OperationTime.notLimited()");
@@ -336,11 +390,17 @@ public class ResolverUtils {
    * @param name of the base class
    * @param genericArguments arguments to use
    */
-  public record CustomType(ClassName name, List<ClassName> genericArguments) {
+  public record CustomType(ClassName name, List<TypeName> genericArguments) {
     public CustomType(String name, List<String> genericArguments) {
       this(
           resolveClassName(name),
-          genericArguments.stream().map(ResolverUtils::resolveClassName).toList());
+          genericArguments.stream().map(n -> (TypeName) resolveClassName(n)).toList());
+    }
+
+    public static CustomType withType(String name, List<String> genericArguments) {
+      return new CustomType(
+          resolveClassName(name),
+          genericArguments.stream().map(ResolverUtils::resolveType).toList());
     }
   }
 }

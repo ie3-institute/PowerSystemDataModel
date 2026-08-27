@@ -70,8 +70,8 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
         Quantities.getQuantity(278.019012451172d, Units.KELVIN),
         Quantities.getQuantity(0d, StandardUnits.WIND_DIRECTION),
         Quantities.getQuantity(1.66103506088257d, StandardUnits.WIND_VELOCITY),
-        Optional.of(Quantities.getQuantity(278.019012451172d, Units.KELVIN)),
-        Optional.empty()))
+        Quantities.getQuantity(278.019012451172d, Units.KELVIN),
+        null))
 
     when:
     def model = factory.buildModel(data)
@@ -126,9 +126,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
         Quantities.getQuantity(4.0, StandardUnits.SOLAR_IRRADIANCE),
         Quantities.getQuantity(3.0, StandardUnits.TEMPERATURE),
         Quantities.getQuantity(2d, StandardUnits.WIND_DIRECTION),
-        Quantities.getQuantity(1.0, StandardUnits.WIND_VELOCITY),
-        Optional.empty(),
-        Optional.empty()))
+        Quantities.getQuantity(1.0, StandardUnits.WIND_VELOCITY)))
 
     when:
     def model = factory.buildModel(data)

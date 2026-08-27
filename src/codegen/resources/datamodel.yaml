@@ -225,3 +225,302 @@ datamodel:
         - name: cosPhiRated
           type: double
           javaDoc: "Power factor for this type of system participant."
+
+  models.value:
+    CoordinateValue:
+      name: CoordinateValue
+      abstract: false
+      components:
+        - name: id
+          type: int
+        - name: coordinate
+          type: Point
+
+    EnergyPriceValue:
+      name: EnergyPriceValue
+      abstract: false
+      components:
+        - name: price
+          type: EnergyPrice
+          required: false
+          javaDoc: "Price of energy (typically in €/MWh)."
+
+    TemperatureValue:
+      name: TemperatureValue
+      abstract: false
+      components:
+        - name: temperature
+          type: Temperature
+          required: false
+          javaDoc: "Temperature (typically in K)."
+
+    GroundTemperatureValue:
+      name: GroundTemperatureValue
+      extends: TemperatureValue
+      abstract: false
+
+    PValue:
+      name: PValue
+      abstract: false
+      components:
+        - name: p
+          type: Power
+          required: false
+          javaDoc: "Active power."
+
+    SValue:
+      name: SValue
+      extends: PValue
+      abstract: false
+      components:
+        - name: q
+          type: Power
+          required: false
+          javaDoc: "Reactive power."
+
+    HeatAndPValue:
+      name: HeatAndPValue
+      extends: PValue
+      abstract: false
+      components:
+        - name: heatDemand
+          type: Power
+          required: false
+          javaDoc: "Heat demand as power."
+
+    HeatAndSValue:
+      name: HeatAndSValue
+      extends: SValue
+      abstract: false
+      components:
+        - name: heatDemand
+          type: Power
+          required: false
+          javaDoc: "Heat demand as power."
+
+    HeatDemandValue:
+      name: HeatDemandValue
+      abstract: false
+      components:
+        - name: heatDemand
+          type: Power
+          required: false
+          javaDoc: "Heat demand as power."
+
+    SolarIrradianceValue:
+      name: SolarIrradianceValue
+      abstract: false
+      components:
+        - name: directIrradiance
+          type: Irradiance
+          required: false
+          javaDoc: "Direct sun irradiance (typically in W/m²)."
+        - name: diffuseIrradiance
+          type: Irradiance
+          required: false
+          javaDoc: "Diffuse sun irradiance (typically in W/m²)."
+
+    VoltageValue:
+      name: VoltageValue
+      abstract: false
+      components:
+        - name: magnitude
+          type: Dimensionless
+          required: false
+          javaDoc: "Magnitude of the voltage in p.u."
+        - name: angle
+          type: Angle
+          required: false
+          javaDoc: "Angle of the voltage in degree."
+
+    WeatherValue:
+      name: WeatherValue
+      abstract: false
+      components:
+        - name: coordinate
+          type: Point
+          javaDoc: "The coordinate of this weather value set."
+        - name: solarIrradiance
+          type: SolarIrradianceValue
+          javaDoc: "Solar irradiance values for this coordinate."
+        - name: temperature
+          type: TemperatureValue
+          javaDoc: "Temperature value for this coordinate."
+        - name: wind
+          type: WindValue
+          javaDoc: "Wind values for this coordinate."
+        - name: groundTemperatureLevel1
+          type: GroundTemperatureValue
+          required: false
+          javaDoc: "Ground temperature value for this coordinate."
+        - name: groundTemperatureLevel2
+          type: GroundTemperatureValue
+          required: false
+          javaDoc: "Ground temperature value for this coordinate."
+
+    WindValue:
+      name: WindValue
+      abstract: false
+      components:
+        - name: direction
+          type: Angle
+          required: false
+          javaDoc: "Wind direction as an angle from north (typically in rad)."
+        - name: velocity
+          type: Speed
+          required: false
+          javaDoc: "Wind velocity (typically in m/s)."
+
+  models.value.load:
+    RandomLoadValues:
+      name: RandomLoadValues
+      abstract: false
+      components:
+        - name: kSa
+          type: double
+          javaDoc: "Shape parameter for a Saturday."
+        - name: kSu
+          type: double
+          javaDoc: "Shape parameter for a Sunday."
+        - name: kWd
+          type: double
+          javaDoc: "Shape parameter for a working day."
+        - name: mySa
+          type: double
+          javaDoc: "Shape parameter for a Saturday."
+        - name: mySu
+          type: double
+          javaDoc: "Shape parameter for a Sunday."
+        - name: myWd
+          type: double
+          javaDoc: "Shape parameter for a working day."
+        - name: sigmaSa
+          type: double
+          javaDoc: "Shape parameter for a Saturday."
+        - name: sigmaSu
+          type: double
+          javaDoc: "Shape parameter for a Sunday."
+        - name: sigmaWd
+          type: double
+          javaDoc: "Shape parameter for a working day."
+        - name: gevWd
+          type: GeneralizedExtremeValueDistribution
+          transient: true
+        - name: gevSa
+          type: GeneralizedExtremeValueDistribution
+          transient: true
+        - name: gevSu
+          type: GeneralizedExtremeValueDistribution
+          transient: true
+
+    BdewLoadValues:
+      name: BdewLoadValues
+      nested:
+        - name: Bdew1999
+          extends: BdewLoadValues
+          abstract: false
+          components:
+            - name: suSa
+              type: double
+            - name: suSu
+              type: double
+            - name: suWd
+              type: double
+            - name: trSa
+              type: double
+            - name: trSu
+              type: double
+            - name: trWd
+              type: double
+            - name: wiSa
+              type: double
+            - name: wiSu
+              type: double
+            - name: wiWd
+              type: double
+        - name: Bdew2025
+          extends: BdewLoadValues
+          abstract: false
+          components:
+            - name: janSa
+              type: double
+            - name: janSu
+              type: double
+            - name: janWd
+              type: double
+            - name: febSa
+              type: double
+            - name: febSu
+              type: double
+            - name: febWd
+              type: double
+            - name: marSa
+              type: double
+            - name: marSu
+              type: double
+            - name: marWd
+              type: double
+            - name: aprSa
+              type: double
+            - name: aprSu
+              type: double
+            - name: aprWd
+              type: double
+            - name: maySa
+              type: double
+            - name: maySu
+              type: double
+            - name: mayWd
+              type: double
+            - name: junSa
+              type: double
+            - name: junSu
+              type: double
+            - name: junWd
+              type: double
+            - name: julSa
+              type: double
+            - name: julSu
+              type: double
+            - name: julWd
+              type: double
+            - name: augSa
+              type: double
+            - name: augSu
+              type: double
+            - name: augWd
+              type: double
+            - name: sepSa
+              type: double
+            - name: sepSu
+              type: double
+            - name: sepWd
+              type: double
+            - name: octSa
+              type: double
+            - name: octSu
+              type: double
+            - name: octWd
+              type: double
+            - name: novSa
+              type: double
+            - name: novSu
+              type: double
+            - name: novWd
+              type: double
+            - name: decSa
+              type: double
+            - name: decSu
+              type: double
+            - name: decWd
+              type: double
+
+
+
+
+
+
+
+
+
+
