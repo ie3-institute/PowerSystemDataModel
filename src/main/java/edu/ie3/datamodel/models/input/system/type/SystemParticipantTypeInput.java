@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.system.type;
 
 import edu.ie3.datamodel.models.input.AssetTypeInput;
+import edu.ie3.datamodel.utils.QuantityUtils;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
@@ -70,9 +71,9 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
     if (this == o) return true;
     if (!(o instanceof SystemParticipantTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    return capex.equals(that.capex)
-        && opex.equals(that.opex)
-        && sRated.equals(that.sRated)
+    return QuantityUtils.equals(capex, that.capex)
+        && QuantityUtils.equals(opex, that.opex)
+        && QuantityUtils.equals(sRated, that.sRated)
         && cosPhiRated == that.cosPhiRated;
   }
 

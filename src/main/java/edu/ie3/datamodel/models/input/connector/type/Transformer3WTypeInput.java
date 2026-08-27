@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.connector.type;
 
 import edu.ie3.datamodel.models.input.AssetTypeInput;
+import edu.ie3.datamodel.utils.QuantityUtils;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -294,22 +295,22 @@ public class Transformer3WTypeInput extends AssetTypeInput {
     if (this == o) return true;
     if (!(o instanceof Transformer3WTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    return sRatedA.equals(that.sRatedA)
-        && sRatedB.equals(that.sRatedB)
-        && sRatedC.equals(that.sRatedC)
-        && vRatedA.equals(that.vRatedA)
-        && vRatedB.equals(that.vRatedB)
-        && vRatedC.equals(that.vRatedC)
-        && rScA.equals(that.rScA)
-        && rScB.equals(that.rScB)
-        && rScC.equals(that.rScC)
-        && xScA.equals(that.xScA)
-        && xScB.equals(that.xScB)
-        && xScC.equals(that.xScC)
-        && gM.equals(that.gM)
-        && bM.equals(that.bM)
-        && dV.equals(that.dV)
-        && dPhi.equals(that.dPhi)
+    return QuantityUtils.equals(sRatedA, that.sRatedA)
+        && QuantityUtils.equals(sRatedB, that.sRatedB)
+        && QuantityUtils.equals(sRatedC, that.sRatedC)
+        && QuantityUtils.equals(vRatedA, that.vRatedA)
+        && QuantityUtils.equals(vRatedB, that.vRatedB)
+        && QuantityUtils.equals(vRatedC, that.vRatedC)
+        && QuantityUtils.equals(rScA, that.rScA)
+        && QuantityUtils.equals(rScB, that.rScB)
+        && QuantityUtils.equals(rScC, that.rScC)
+        && QuantityUtils.equals(xScA, that.xScA)
+        && QuantityUtils.equals(xScB, that.xScB)
+        && QuantityUtils.equals(xScC, that.xScC)
+        && QuantityUtils.equals(gM, that.gM)
+        && QuantityUtils.equals(bM, that.bM)
+        && QuantityUtils.equals(dV, that.dV)
+        && QuantityUtils.equals(dPhi, that.dPhi)
         && tapNeutr == that.tapNeutr
         && tapMin == that.tapMin
         && tapMax == that.tapMax;

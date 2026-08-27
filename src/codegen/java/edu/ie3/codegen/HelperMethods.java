@@ -72,12 +72,12 @@ public interface HelperMethods {
   }
 
   /**
-   * Check if we should use an {@code equals()} call.
+   * Check if the class is a quantity.
    *
    * @param type of the field
-   * @return true, if an {@code equals()} call should be used
+   * @return true, if the type is a quantity
    */
-  default boolean useEquals(String type) {
+  default boolean isQuantity(String type) {
     String cn;
 
     if (resolveType(type) instanceof ParameterizedTypeName ptn) {
@@ -323,6 +323,11 @@ public interface HelperMethods {
         builder.addStatement("this.$L = $T." + modification.expression, componentName, className);
       }
 
+    } else if (modification.usableUnitClass()) {
+      builder.addStatement(
+          "this.$L = " + modification.expression,
+          componentName,
+          resolveClassName(modification.unitClass));
     } else {
       builder.addStatement("this.$L = " + modification.expression, componentName);
     }

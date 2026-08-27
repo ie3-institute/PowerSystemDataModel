@@ -112,7 +112,9 @@ public class ResolverUtils {
   }
 
   static void registerOwnClasses() {
-    classes.put("CollectionUtils", ClassName.get("edu.ie3.datamodel.utils", "CollectionUtils"));
+    Stream.of("CollectionUtils", "QuantityUtils")
+        .forEach(name -> classes.put(name, ClassName.get("edu.ie3.datamodel.utils", name)));
+
     classes.put("GeoUtils", ClassName.get("edu.ie3.util.geo", "GeoUtils"));
     classes.put("Quantities", ClassName.get("tech.units.indriya.quantity", "Quantities"));
     classes.put("PowerSystemUnits", ClassName.get("edu.ie3.util.quantities", "PowerSystemUnits"));
@@ -293,7 +295,11 @@ public class ResolverUtils {
             "Temperature",
             "SpecificHeatCapacity",
             "Speed")
-        .forEach(name -> classes.put(name, ClassName.get("javax.measure.quantity", name)));
+        .forEach(
+            name -> {
+              classes.put(name, ClassName.get("javax.measure.quantity", name));
+              customTypes.put(name, new CustomType("ComparableQuantity", List.of(name)));
+            });
 
     Stream.of(
             "Currency",
@@ -317,7 +323,10 @@ public class ResolverUtils {
             "ThermalResistivity",
             "VolumetricFlowRate")
         .forEach(
-            name -> classes.put(name, ClassName.get("edu.ie3.util.quantities.interfaces", name)));
+            name -> {
+              classes.put(name, ClassName.get("edu.ie3.util.quantities.interfaces", name));
+              customTypes.put(name, new CustomType("ComparableQuantity", List.of(name)));
+            });
 
     classes.put(
         "BdewStandardLoadProfile",
@@ -333,32 +342,6 @@ public class ResolverUtils {
     customTypes.put("StringMap", new CustomType("Map", List.of("String", "String")));
     customTypes.put("StringDoubleMap", new CustomType("Map", List.of("String", "Double")));
     customTypes.put("NodeList", new CustomType("List", List.of("NodeInput")));
-
-    Stream.of(
-            "SpecificConductance",
-            "SpecificResistance",
-            "Length",
-            "ElectricCurrent",
-            "ElectricPotential",
-            "ElectricResistance",
-            "ElectricConductance",
-            "Power",
-            "EnergyPrice",
-            "Energy",
-            "Currency",
-            "DimensionlessRate",
-            "SpecificEnergy",
-            "Area",
-            "Volume",
-            "Temperature",
-            "SpecificHeatCapacity",
-            "ThermalConductance",
-            "HeatCapacity",
-            "Irradiance",
-            "Angle",
-            "Speed")
-        .forEach(
-            name -> customTypes.put(name, new CustomType("ComparableQuantity", List.of(name))));
 
     Stream.of("DegreeGeom")
         .forEach(

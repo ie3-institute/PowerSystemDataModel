@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.value;
 
+import edu.ie3.datamodel.utils.QuantityUtils;
 import java.util.Objects;
 import java.util.Optional;
 import javax.measure.quantity.Angle;
@@ -49,7 +50,8 @@ public class VoltageValue implements Value {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof VoltageValue that)) return false;
-    return Objects.equals(magnitude, that.magnitude) && Objects.equals(angle, that.angle);
+    return QuantityUtils.equals(magnitude, that.magnitude)
+        && QuantityUtils.equals(angle, that.angle);
   }
 
   @Override

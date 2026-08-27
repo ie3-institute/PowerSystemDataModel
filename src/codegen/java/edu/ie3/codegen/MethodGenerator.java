@@ -5,6 +5,7 @@
 */
 package edu.ie3.codegen;
 
+import static edu.ie3.codegen.ResolverUtils.resolveClassName;
 import static edu.ie3.codegen.ResolverUtils.resolveType;
 
 import com.palantir.javapoet.*;
@@ -173,14 +174,15 @@ public class MethodGenerator implements HelperMethods {
           expression.add("\n&& ");
         }
 
+        String name = component.name;
         String type = component.type;
 
         if (isPrimitive(type)) {
-          expression.add("$L == that.$L", component.name, component.name);
-        } else if (useEquals(type) && component.required) {
-          expression.add("$L.equals(that.$L)", component.name, component.name);
+          expression.add("$L == that.$L", name, name);
+        } else if (isQuantity(type)) {
+          expression.add("$T.equals($L, that.$L)", resolveClassName("QuantityUtils"), name, name);
         } else {
-          expression.add("$T.equals($L, that.$L)", Objects.class, component.name, component.name);
+          expression.add("$T.equals($L, that.$L)", Objects.class, name, name);
         }
       }
 

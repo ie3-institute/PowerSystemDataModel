@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input.connector.type;
 
 import edu.ie3.datamodel.models.input.AssetTypeInput;
+import edu.ie3.datamodel.utils.QuantityUtils;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -216,15 +217,15 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     if (this == o) return true;
     if (!(o instanceof Transformer2WTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    return rSc.equals(that.rSc)
-        && xSc.equals(that.xSc)
-        && sRated.equals(that.sRated)
-        && vRatedA.equals(that.vRatedA)
-        && vRatedB.equals(that.vRatedB)
-        && gM.equals(that.gM)
-        && bM.equals(that.bM)
-        && dV.equals(that.dV)
-        && dPhi.equals(that.dPhi)
+    return QuantityUtils.equals(rSc, that.rSc)
+        && QuantityUtils.equals(xSc, that.xSc)
+        && QuantityUtils.equals(sRated, that.sRated)
+        && QuantityUtils.equals(vRatedA, that.vRatedA)
+        && QuantityUtils.equals(vRatedB, that.vRatedB)
+        && QuantityUtils.equals(gM, that.gM)
+        && QuantityUtils.equals(bM, that.bM)
+        && QuantityUtils.equals(dV, that.dV)
+        && QuantityUtils.equals(dPhi, that.dPhi)
         && tapSide == that.tapSide
         && tapNeutr == that.tapNeutr
         && tapMin == that.tapMin

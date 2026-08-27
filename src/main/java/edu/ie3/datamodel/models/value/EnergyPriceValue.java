@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.value;
 
+import edu.ie3.datamodel.utils.QuantityUtils;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,7 +31,7 @@ public class EnergyPriceValue implements Value {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof EnergyPriceValue that)) return false;
-    return Objects.equals(price, that.price);
+    return QuantityUtils.equals(price, that.price);
   }
 
   @Override

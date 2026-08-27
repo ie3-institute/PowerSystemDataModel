@@ -25,6 +25,6 @@ class SValueTest extends Specification {
     null | new SValue(null, null) || false
     null | null || true
     new SValue(Quantities.getQuantity(10.23d, StandardUnits.ACTIVE_POWER_IN), null) | new SValue(Quantities.getQuantity(10.23, StandardUnits.ACTIVE_POWER_IN), null) || false
-    new SValue(Quantities.getQuantity(10230, Units.WATT), null) | new SValue(Quantities.getQuantity(10.23, StandardUnits.ACTIVE_POWER_IN), null) || false
+    new SValue(Quantities.getQuantity(10230, Units.WATT), null) | new SValue(Quantities.getQuantity(10.23, StandardUnits.ACTIVE_POWER_IN), null) || true
   }
 }

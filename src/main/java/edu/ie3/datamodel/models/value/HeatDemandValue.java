@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.value;
 
+import edu.ie3.datamodel.utils.QuantityUtils;
 import java.util.Objects;
 import java.util.Optional;
 import javax.measure.quantity.Power;
@@ -27,7 +28,7 @@ public class HeatDemandValue implements Value {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof HeatDemandValue that)) return false;
-    return Objects.equals(heatDemand, that.heatDemand);
+    return QuantityUtils.equals(heatDemand, that.heatDemand);
   }
 
   @Override

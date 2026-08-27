@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.value;
 
+import edu.ie3.datamodel.utils.QuantityUtils;
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.util.Objects;
 import java.util.Optional;
@@ -41,8 +42,8 @@ public class SolarIrradianceValue implements Value {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof SolarIrradianceValue that)) return false;
-    return Objects.equals(directIrradiance, that.directIrradiance)
-        && Objects.equals(diffuseIrradiance, that.diffuseIrradiance);
+    return QuantityUtils.equals(directIrradiance, that.directIrradiance)
+        && QuantityUtils.equals(diffuseIrradiance, that.diffuseIrradiance);
   }
 
   @Override

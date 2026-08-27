@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.value;
 
+import edu.ie3.datamodel.utils.QuantityUtils;
 import java.util.Objects;
 import java.util.Optional;
 import javax.measure.quantity.Power;
@@ -33,7 +34,7 @@ public class HeatAndPValue extends PValue {
     if (this == o) return true;
     if (!(o instanceof HeatAndPValue that)) return false;
     if (!super.equals(o)) return false;
-    return Objects.equals(heatDemand, that.heatDemand);
+    return QuantityUtils.equals(heatDemand, that.heatDemand);
   }
 
   @Override

@@ -101,7 +101,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     ], EnergyPriceValue)
     def expected = new TimeBasedValue(
         time,
-        new EnergyPriceValue(Quantities.getQuantity(52.4, StandardUnits.ENERGY_PRICE))
+        new EnergyPriceValue(Quantities.getQuantity(52.4d, StandardUnits.ENERGY_PRICE))
         )
 
     expect:

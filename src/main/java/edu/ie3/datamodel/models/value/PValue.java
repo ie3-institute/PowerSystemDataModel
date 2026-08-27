@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.value;
 
+import edu.ie3.datamodel.utils.QuantityUtils;
 import java.util.Objects;
 import java.util.Optional;
 import javax.measure.quantity.Power;
@@ -30,7 +31,7 @@ public class PValue implements Value {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof PValue that)) return false;
-    return Objects.equals(p, that.p);
+    return QuantityUtils.equals(p, that.p);
   }
 
   @Override

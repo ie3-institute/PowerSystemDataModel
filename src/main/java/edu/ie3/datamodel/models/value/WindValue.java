@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.value;
 
+import edu.ie3.datamodel.utils.QuantityUtils;
 import java.util.Objects;
 import java.util.Optional;
 import javax.measure.quantity.Angle;
@@ -41,7 +42,8 @@ public class WindValue implements Value {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof WindValue that)) return false;
-    return Objects.equals(direction, that.direction) && Objects.equals(velocity, that.velocity);
+    return QuantityUtils.equals(direction, that.direction)
+        && QuantityUtils.equals(velocity, that.velocity);
   }
 
   @Override
