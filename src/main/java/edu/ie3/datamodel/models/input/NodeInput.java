@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input;
 
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
+import edu.ie3.datamodel.utils.QuantityUtils;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.Map;
 import java.util.Objects;
@@ -158,7 +159,7 @@ public class NodeInput extends AssetInput {
     if (this == o) return true;
     if (!(o instanceof NodeInput that)) return false;
     if (!super.equals(o)) return false;
-    return vTarget.equals(that.vTarget)
+    return QuantityUtils.equals(vTarget, that.vTarget)
         && slack == that.slack
         && Objects.equals(geoPosition, that.geoPosition)
         && Objects.equals(voltLvl, that.voltLvl)

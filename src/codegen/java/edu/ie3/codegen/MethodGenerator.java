@@ -149,7 +149,6 @@ public class MethodGenerator implements HelperMethods {
             .addParameter(Object.class, "o");
 
     builder.addStatement("if (this == o) return true");
-    builder.addStatement("if (!(o instanceof $L that)) return false", model.name);
 
     List<ModelDefinition.ComponentDefinition> filteredComponents = new ArrayList<>();
     for (ModelDefinition.ComponentDefinition component : model.components) {
@@ -163,12 +162,14 @@ public class MethodGenerator implements HelperMethods {
 
     if (filteredComponents.isEmpty()) {
       if (superStatement) {
+        builder.addStatement("if (!(o instanceof $L that)) return false", model.name);
         builder.addStatement("return super.equals(o)");
       } else {
-        builder.addStatement("if (!super.equals(o)) return false");
-        builder.addStatement("return true");
+        builder.addStatement("return o instanceof $L that", model.name);
       }
     } else {
+      builder.addStatement("if (!(o instanceof $L that)) return false", model.name);
+
       if (superStatement) {
         builder.addStatement("if (!super.equals(o)) return false");
       }
@@ -182,14 +183,15 @@ public class MethodGenerator implements HelperMethods {
           expression.add("\n&& ");
         }
 
+        String name = component.name;
         String type = component.type;
 
         if (isPrimitive(type)) {
-          expression.add("$L == that.$L", component.name, component.name);
-        } else if (useEquals(type)) {
-          expression.add("$L.equals(that.$L)", component.name, component.name);
+          expression.add("$L == that.$L", name, name);
+        } else if (isQuantity(type)) {
+          expression.add("$T.equals($L, that.$L)", resolveClassName("QuantityUtils"), name, name);
         } else {
-          expression.add("$T.equals($L, that.$L)", Objects.class, component.name, component.name);
+          expression.add("$T.equals($L, that.$L)", Objects.class, name, name);
         }
       }
 

@@ -96,7 +96,9 @@ public class ResolverUtils {
   }
 
   static void registerOwnClasses() {
-    classes.put("CollectionUtils", ClassName.get("edu.ie3.datamodel.utils", "CollectionUtils"));
+    Stream.of("CollectionUtils", "QuantityUtils")
+        .forEach(name -> classes.put(name, ClassName.get("edu.ie3.datamodel.utils", name)));
+
     classes.put("GeoUtils", ClassName.get("edu.ie3.util.geo", "GeoUtils"));
     classes.put("Quantities", ClassName.get("tech.units.indriya.quantity", "Quantities"));
     classes.put("PowerSystemUnits", ClassName.get("edu.ie3.util.quantities", "PowerSystemUnits"));
@@ -250,8 +252,13 @@ public class ResolverUtils {
             "Area",
             "Volume",
             "Temperature",
-            "SpecificHeatCapacity")
-        .forEach(name -> classes.put(name, ClassName.get("javax.measure.quantity", name)));
+            "SpecificHeatCapacity",
+            "Speed")
+        .forEach(
+            name -> {
+              classes.put(name, ClassName.get("javax.measure.quantity", name));
+              customTypes.put(name, new CustomType("ComparableQuantity", List.of(name)));
+            });
 
     Stream.of(
             "Currency",
@@ -275,7 +282,10 @@ public class ResolverUtils {
             "ThermalResistivity",
             "VolumetricFlowRate")
         .forEach(
-            name -> classes.put(name, ClassName.get("edu.ie3.util.quantities.interfaces", name)));
+            name -> {
+              classes.put(name, ClassName.get("edu.ie3.util.quantities.interfaces", name));
+              customTypes.put(name, new CustomType("ComparableQuantity", List.of(name)));
+            });
   }
 
   static void registerOtherClasses() {
@@ -286,29 +296,6 @@ public class ResolverUtils {
   static void registerCustomTypes() {
     customTypes.put("StringMap", new CustomType("Map", List.of("String", "String")));
     customTypes.put("NodeList", new CustomType("List", List.of("NodeInput")));
-
-    Stream.of(
-            "SpecificConductance",
-            "SpecificResistance",
-            "Length",
-            "ElectricCurrent",
-            "ElectricPotential",
-            "ElectricResistance",
-            "ElectricConductance",
-            "Power",
-            "EnergyPrice",
-            "Energy",
-            "Currency",
-            "DimensionlessRate",
-            "SpecificEnergy",
-            "Area",
-            "Volume",
-            "Temperature",
-            "SpecificHeatCapacity",
-            "ThermalConductance",
-            "HeatCapacity")
-        .forEach(
-            name -> customTypes.put(name, new CustomType("ComparableQuantity", List.of(name))));
 
     Stream.of("DegreeGeom")
         .forEach(
@@ -336,11 +323,17 @@ public class ResolverUtils {
    * @param name of the base class
    * @param genericArguments arguments to use
    */
-  public record CustomType(ClassName name, List<ClassName> genericArguments) {
+  public record CustomType(ClassName name, List<TypeName> genericArguments) {
     public CustomType(String name, List<String> genericArguments) {
       this(
           resolveClassName(name),
-          genericArguments.stream().map(ResolverUtils::resolveClassName).toList());
+          genericArguments.stream().map(n -> (TypeName) resolveClassName(n)).toList());
+    }
+
+    public static CustomType withType(String name, List<String> genericArguments) {
+      return new CustomType(
+          resolveClassName(name),
+          genericArguments.stream().map(ResolverUtils::resolveType).toList());
     }
   }
 }
