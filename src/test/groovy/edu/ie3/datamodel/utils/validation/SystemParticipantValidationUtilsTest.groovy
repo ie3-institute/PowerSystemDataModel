@@ -69,7 +69,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
   private static final String id = "test_id"
   private static final ComparableQuantity<Currency> capex = Quantities.getQuantity(100d, CAPEX)
   private static final ComparableQuantity<EnergyPrice> opex = Quantities.getQuantity(50d, ENERGY_PRICE)
-  private static final ComparableQuantity<Power> sRated = Quantities.getQuantity(25d, ACTIVE_POWER_IN)
+  private static final ComparableQuantity<Power> sRated = Quantities.getQuantity(25d, S_RATED)
   private static final cosPhiRated = 0.95
 
   // Common data for some (but not all) system participant types
@@ -107,7 +107,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
     where:
     invalidType || expectedException
     new BmTypeInput(uuid, id, null, opex, activePowerGradient, sRated, cosPhiRated, etaConv) || new InvalidEntityException("At least one of capex, opex, or sRated is null", invalidType)
-    new BmTypeInput(uuid, id, Quantities.getQuantity(-100d, CAPEX), Quantities.getQuantity(-50d, ENERGY_PRICE), activePowerGradient, Quantities.getQuantity(-25d, ACTIVE_POWER_IN), cosPhiRated, etaConv) || new InvalidEntityException("The following quantities have to be zero or positive: capex=-100 EUR, opex=-50 EUR/MWh, sRated=-25 kVA", invalidType)
+    new BmTypeInput(uuid, id, Quantities.getQuantity(-100d, CAPEX), Quantities.getQuantity(-50d, ENERGY_PRICE), activePowerGradient, Quantities.getQuantity(-25d, S_RATED), cosPhiRated, etaConv) || new InvalidEntityException("The following quantities have to be zero or positive: capex=-100 EUR, opex=-50 EUR/MWh, sRated=-25 kVA", invalidType)
     new BmTypeInput(uuid, id, capex, opex, activePowerGradient, sRated, 2, etaConv) || new InvalidEntityException("Rated power factor of BmTypeInput must be between 0 and 1", invalidType)
   }
 
@@ -259,7 +259,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
     where:
     invalidFixedFeedIn || expectedSize || expectedException
-    SystemParticipantTestData.fixedFeedInInput.copy().sRated(Quantities.getQuantity(-100d, ACTIVE_POWER_IN)).build() || 1 || new InvalidEntityException("The following quantities have to be zero or positive: sRated=-100 kVA", invalidFixedFeedIn)
+    SystemParticipantTestData.fixedFeedInInput.copy().sRated(Quantities.getQuantity(-100d, S_RATED)).build() || 1 || new InvalidEntityException("The following quantities have to be zero or positive: sRated=-100 kVA", invalidFixedFeedIn)
     SystemParticipantTestData.fixedFeedInInput.copy().cosPhiRated(-1d).build() || 1 || new InvalidEntityException("Rated power factor of FixedFeedInInput must be between 0 and 1", invalidFixedFeedIn)
   }
 
@@ -372,7 +372,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
     where:
     invalidLoad || expectedSize || expectedException
     SystemParticipantTestData.loadInput.copy().loadProfile(null).build() || 1 || new InvalidEntityException("No load profile key defined for load", invalidLoad)
-    SystemParticipantTestData.loadInput.copy().sRated(Quantities.getQuantity(-25d, ACTIVE_POWER_IN)).eConsAnnual(Quantities.getQuantity(-4000, ENERGY_IN)).build() || 1 || new InvalidEntityException("The following quantities have to be zero or positive: sRated=-25 kVA, eConsAnnual=-4000 kWh", invalidLoad)
+    SystemParticipantTestData.loadInput.copy().sRated(Quantities.getQuantity(-25d, S_RATED)).eConsAnnual(Quantities.getQuantity(-4000, ENERGY_IN)).build() || 1 || new InvalidEntityException("The following quantities have to be zero or positive: sRated=-25 kVA, eConsAnnual=-4000 kWh", invalidLoad)
     SystemParticipantTestData.loadInput.copy().cosPhiRated(2).build() || 1 || new InvalidEntityException("Rated power factor of LoadInput must be between 0 and 1", invalidLoad)
   }
 
@@ -403,7 +403,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
     where:
     invalidPV || expectedSize || expectedException
-    SystemParticipantTestData.pvInput.copy().sRated(Quantities.getQuantity(-25d, ACTIVE_POWER_IN)).build() || 1 || new InvalidEntityException("The following quantities have to be zero or positive: sRated=-25 kVA", invalidPV)
+    SystemParticipantTestData.pvInput.copy().sRated(Quantities.getQuantity(-25d, S_RATED)).build() || 1 || new InvalidEntityException("The following quantities have to be zero or positive: sRated=-25 kVA", invalidPV)
     SystemParticipantTestData.pvInput.copy().albedo(2).build() || 1 || new InvalidEntityException("Albedo of the plant's surrounding of PvInput must be between 0 and 1", invalidPV)
     SystemParticipantTestData.pvInput.copy().azimuth(Quantities.getQuantity(-181d, AZIMUTH)).build() || 1 || new InvalidEntityException("Azimuth angle of PvInput must be between -180° and 180°", invalidPV)
     SystemParticipantTestData.pvInput.copy().etaConv(Quantities.getQuantity(110d, EFFICIENCY)).build() || 1 || new InvalidEntityException("Efficiency of the converter of PvInput must be between 0% and 100%", invalidPV)

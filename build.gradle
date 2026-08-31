@@ -46,6 +46,7 @@ apply from: scriptsLocation + 'sonarqube.gradle'
 apply from: scriptsLocation + 'vcs.gradle'
 apply from: scriptsLocation + 'semVer.gradle'
 apply from: scriptsLocation + 'branchName.gradle' // checks naming scheme of branches
+apply from: scriptsLocation + 'codegen.gradle'
 
 repositories {
   mavenCentral() // searches in Sonatype's repository 'Maven Central'
@@ -106,6 +107,10 @@ dependencies {
   implementation 'commons-io:commons-io:2.22.0' // I/O functionalities
   implementation 'commons-codec:commons-codec:1.22.1' // needed by commons-compress
   implementation 'org.apache.commons:commons-compress:1.28.0' // I/O functionalities
+
+  // model generation
+  codegenImplementation 'com.palantir.javapoet:javapoet:0.19.0'
+  codegenImplementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.0'
 }
 
 tasks.withType(JavaCompile).configureEach {

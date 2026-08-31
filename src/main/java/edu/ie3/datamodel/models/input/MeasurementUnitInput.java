@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -7,27 +7,31 @@ package edu.ie3.datamodel.models.input;
 
 import edu.ie3.datamodel.io.extractor.HasNodes;
 import edu.ie3.datamodel.models.OperationTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 /** Model of a measuring unit attached to a certain {@link NodeInput}. */
 public class MeasurementUnitInput extends AssetInput implements HasNodes {
-  /** Grid node, the asset is attached to */
+  /** Grid node, the asset is attached to. */
   private final NodeInput node;
 
-  /** True, if the voltage magnitude is measured */
+  /** True, if the voltage magnitude is measured. */
   private final boolean vMag;
 
-  /** True, if the voltage angle is measured */
+  /** True, if the voltage angle is measured. */
   private final boolean vAng;
 
-  /** True, if the nodal residual active power is measured */
+  /** True, if the nodal residual active power is measured. */
   private final boolean p;
 
-  /** True, if the reactive power is measured */
+  /** True, if the reactive power is measured. */
   private final boolean q;
 
   /**
-   * Constructor for an operated measurement unit
+   * Constructor for an operated measurement unit.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -58,7 +62,7 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
   }
 
   /**
-   * Constructor for an operated measurement unit
+   * Constructor for an operated measurement unit.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -92,7 +96,7 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
   }
 
   /**
-   * Constructor for an operated, always on measurement unit
+   * Constructor for an operated measurement unit.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -133,8 +137,8 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
   }
 
   @Override
-  public MeasurementUnitInputCopyBuilder copy() {
-    return new MeasurementUnitInputCopyBuilder(this);
+  public List<NodeInput> allNodes() {
+    return Collections.singletonList(node);
   }
 
   @Override
@@ -166,7 +170,7 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
         + ", operationTime="
         + getOperationTime()
         + ", node="
-        + node.getUuid()
+        + node
         + ", vMag="
         + vMag
         + ", vAng="
@@ -177,44 +181,33 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
         + q
         + ", additionalInformation="
         + getAdditionalInformation()
-        + '}';
+        + "}";
   }
 
   @Override
-  public List<NodeInput> allNodes() {
-    return Collections.singletonList(node);
+  public MeasurementUnitInputCopyBuilder copy() {
+    return new MeasurementUnitInputCopyBuilder(this);
   }
 
-  /**
-   * A builder pattern based approach to create copies of {@link MeasurementUnitInput} entities with
-   * altered field values. For detailed field descriptions refer to java docs of {@link
-   * MeasurementUnitInput}
-   *
-   * @version 0.1
-   * @since 05.06.20
-   */
   public static class MeasurementUnitInputCopyBuilder
       extends AssetInputCopyBuilder<MeasurementUnitInputCopyBuilder> {
-
     private NodeInput node;
+
     private boolean vMag;
+
     private boolean vAng;
+
     private boolean p;
+
     private boolean q;
 
-    private MeasurementUnitInputCopyBuilder(MeasurementUnitInput entity) {
+    protected MeasurementUnitInputCopyBuilder(MeasurementUnitInput entity) {
       super(entity);
-      this.node = entity.getNode();
-      this.vAng = entity.getVAng();
-      this.vMag = entity.getVMag();
-      this.p = entity.getP();
-      this.q = entity.getQ();
-    }
-
-    @Override
-    public MeasurementUnitInput build() {
-      return new MeasurementUnitInput(
-          getUuid(), getId(), getOperator(), getOperationTime(), node, vMag, vAng, p, q);
+      this.node = entity.node;
+      this.vMag = entity.vMag;
+      this.vAng = entity.vAng;
+      this.p = entity.p;
+      this.q = entity.q;
     }
 
     public MeasurementUnitInputCopyBuilder node(NodeInput node) {
@@ -222,9 +215,17 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
       return thisInstance();
     }
 
+    protected NodeInput getNode() {
+      return node;
+    }
+
     public MeasurementUnitInputCopyBuilder vMag(boolean vMag) {
       this.vMag = vMag;
       return thisInstance();
+    }
+
+    protected boolean getVMag() {
+      return vMag;
     }
 
     public MeasurementUnitInputCopyBuilder vAng(boolean vAng) {
@@ -232,14 +233,41 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
       return thisInstance();
     }
 
+    protected boolean getVAng() {
+      return vAng;
+    }
+
     public MeasurementUnitInputCopyBuilder p(boolean p) {
       this.p = p;
       return thisInstance();
     }
 
+    protected boolean getP() {
+      return p;
+    }
+
     public MeasurementUnitInputCopyBuilder q(boolean q) {
       this.q = q;
       return thisInstance();
+    }
+
+    protected boolean getQ() {
+      return q;
+    }
+
+    @Override
+    public MeasurementUnitInput build() {
+      return new MeasurementUnitInput(
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          node,
+          vMag,
+          vAng,
+          p,
+          q,
+          getAdditionalInformation());
     }
 
     @Override
