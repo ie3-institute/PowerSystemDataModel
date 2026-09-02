@@ -10,6 +10,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.*
 
 import edu.ie3.datamodel.exceptions.FailedValidationException
 import edu.ie3.datamodel.exceptions.InvalidEntityException
+import edu.ie3.datamodel.models.input.connector.CableDeploymentInput
 import edu.ie3.datamodel.models.input.connector.type.*
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.datamodel.utils.Try
@@ -375,6 +376,27 @@ class ConnectorValidationUtilsTest extends Specification {
   }
 
 
+  def "ConnectorValidationUtils validates cable deployments"() {
+    when:
+    def results = ConnectorValidationUtils.checkCableDeployment(deployment, GridTestData.lineAtoB)
+
+    then:
+    results.count { it.failure } == failureCount
+    results.findAll {
+      it.failure
+    }.every {
+      it.exception.get().message.contains(expectedMessage)
+    }
+
+    where:
+    deployment || failureCount || expectedMessage
+    cableDeployment("TREFOIL", -0.5d, 0.1d) || 0 || ""
+    cableDeployment("", -0.5d, 0.1d) || 1 || "Layout formation cannot be empty"
+    cableDeployment("TREFOIL", 0.5d, 0.1d) || 1 || "Cable depth must be less than or equal to 0"
+    cableDeployment("TREFOIL", -0.5d, 0d) || 1 || "distanceCables"
+  }
+
+
   private static ConductorInput validConductor(Map overrides = [:]) {
     def areaParam = overrides.get("area", null)
     if (areaParam instanceof Optional) {
@@ -445,6 +467,15 @@ class ConnectorValidationUtilsTest extends Specification {
         overrides.get("wireDiameter", length(0.0005d)),
         overrides.get("lengthOfLay", Optional.<ComparableQuantity<Length>>empty()),
         overrides.get("electricalResistivity", electricalResistivity(1.7e-7d)))
+  }
+
+  private static CableDeploymentInput cableDeployment(String layoutFormation, double depth, double distance) {
+    new CableDeploymentInput(
+            UUID.randomUUID(),
+            GridTestData.lineAtoB.uuid,
+            layoutFormation,
+            Quantities.getQuantity(depth, METRE),
+            Quantities.getQuantity(distance, METRE))
   }
 
   private static ComparableQuantity<Temperature> temperature(double value) {

@@ -42,6 +42,9 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
   public List<UniqueInputEntity> allEntitiesAsList() {
     List<UniqueInputEntity> allEntities = new LinkedList<>();
     allEntities.addAll(rawGrid.allEntitiesAsList());
+    rawGrid.getCableDeploymentsByLine().values().stream()
+        .flatMap(java.util.Collection::stream)
+        .forEach(allEntities::add);
     allEntities.addAll(systemParticipants.allEntitiesAsList());
     allEntities.addAll(emUnits.allEntitiesAsList());
     allEntities.addAll(rawGridTypes.allEntitiesAsList());

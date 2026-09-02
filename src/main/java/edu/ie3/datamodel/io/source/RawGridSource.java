@@ -67,6 +67,7 @@ public class RawGridSource extends AssetEntitySource {
         dataSource,
         NodeInput.class,
         LineInput.class,
+        CableDeploymentInput.class,
         Transformer2WInput.class,
         Transformer3WInput.class,
         SwitchInput.class,

@@ -152,15 +152,28 @@ public class ConnectorValidationUtils extends ValidationUtils {
       return List.of(isNull);
     }
 
-    return Try.ofVoid(
-        InvalidEntityException.class,
-        () ->
-            detectNegativeQuantities(quantities(B, lineType.getB(), G, lineType.getG()), lineType),
-        () ->
-            detectZeroOrNegativeQuantities(
-                quantities(
-                    V_RATED, lineType.getvRated(), I_MAX, lineType.getiMax(), R, lineType.getR()),
-                lineType));
+    List<Try<Void, InvalidEntityException>> exceptions =
+        new ArrayList<>(
+            Try.ofVoid(
+                InvalidEntityException.class,
+                () ->
+                    detectNegativeQuantities(
+                        quantities(B, lineType.getB(), G, lineType.getG()), lineType),
+                () ->
+                    detectZeroOrNegativeQuantities(
+                        quantities(
+                            V_RATED,
+                            lineType.getvRated(),
+                            I_MAX,
+                            lineType.getiMax(),
+                            R,
+                            lineType.getR()),
+                        lineType)));
+
+    // Also validate cable type if present
+    lineType.getCableType().ifPresent(ct -> exceptions.addAll(checkCableType(ct)));
+
+    return exceptions;
   }
 
   /**
@@ -220,7 +233,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
     return exceptions;
   }
 
-  private static List<Try<Void, InvalidEntityException>> checkCableDeployment(
+  protected static List<Try<Void, InvalidEntityException>> checkCableDeployment(
       CableDeploymentInput deployment, LineInput line) {
     Try<Void, InvalidEntityException> isNull = checkNonNull(deployment, "a cable deployment");
 
@@ -232,13 +245,20 @@ public class ConnectorValidationUtils extends ValidationUtils {
         InvalidEntityException.class,
         () -> checkCableDeploymentLayoutFormation(deployment, line),
         () -> checkCableDepth(deployment, line),
-        () ->
-            detectZeroOrNegativeQuantities(
-                quantities("distanceCables", deployment.getDistanceCables()), line));
+        () -> {
+          if (deployment.getDistanceCables() == null) {
+            throw new InvalidEntityException("Distance between cables must be provided", line);
+          }
+          detectZeroOrNegativeQuantities(
+              quantities("distanceCables", deployment.getDistanceCables()), line);
+        });
   }
 
   private static void checkCableDepth(CableDeploymentInput deployment, LineInput line)
       throws InvalidEntityException {
+    if (deployment.getDepthCables() == null) {
+      throw new InvalidEntityException("Cable depth must be provided", line);
+    }
     if (deployment.getDepthCables().getValue().doubleValue() > 0d) {
       throw new InvalidEntityException("Cable depth must be less than or equal to 0", line);
     }
@@ -246,7 +266,7 @@ public class ConnectorValidationUtils extends ValidationUtils {
 
   private static void checkCableDeploymentLayoutFormation(
       CableDeploymentInput deployment, LineInput line) throws InvalidEntityException {
-    if (deployment.getLayoutFormation().isEmpty()) {
+    if (deployment.getLayoutFormation() == null || deployment.getLayoutFormation().isEmpty()) {
       throw new InvalidEntityException("Layout formation cannot be empty", line);
     }
   }
