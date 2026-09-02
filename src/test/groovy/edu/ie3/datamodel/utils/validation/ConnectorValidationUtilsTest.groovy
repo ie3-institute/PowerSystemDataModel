@@ -471,11 +471,11 @@ class ConnectorValidationUtilsTest extends Specification {
 
   private static CableDeploymentInput cableDeployment(String layoutFormation, double depth, double distance) {
     new CableDeploymentInput(
-            UUID.randomUUID(),
-            GridTestData.lineAtoB.uuid,
-            layoutFormation,
-            Quantities.getQuantity(depth, METRE),
-            Quantities.getQuantity(distance, METRE))
+        UUID.randomUUID(),
+        GridTestData.lineAtoB.uuid,
+        layoutFormation,
+        Quantities.getQuantity(depth, METRE),
+        Quantities.getQuantity(distance, METRE))
   }
 
   private static ComparableQuantity<Temperature> temperature(double value) {
