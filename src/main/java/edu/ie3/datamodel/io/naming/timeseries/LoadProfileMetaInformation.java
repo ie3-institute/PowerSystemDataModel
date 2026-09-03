@@ -14,8 +14,16 @@ public class LoadProfileMetaInformation extends TimeSeriesMetaInformation {
   private final PowerProfileKey profileKey;
 
   public LoadProfileMetaInformation(String profileKey) {
+    this(profileKey, PowerProfileKey.Type.TS);
+  }
+
+  public LoadProfileMetaInformation(String profileKey, String type) {
+    this(profileKey, PowerProfileKey.Type.parse(type));
+  }
+
+  public LoadProfileMetaInformation(String profileKey, PowerProfileKey.Type type) {
     super(UUID.randomUUID());
-    this.profileKey = new PowerProfileKey(profileKey);
+    this.profileKey = new PowerProfileKey(profileKey, type);
   }
 
   public LoadProfileMetaInformation(PowerProfileKey powerProfileKey) {

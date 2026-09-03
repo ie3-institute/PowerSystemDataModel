@@ -21,6 +21,7 @@ import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
+import edu.ie3.datamodel.models.profile.PowerProfileKey
 import edu.ie3.datamodel.models.result.NodeResult
 import edu.ie3.datamodel.models.result.connector.LineResult
 import edu.ie3.datamodel.models.result.connector.SwitchResult
@@ -87,9 +88,25 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     matcher.matches()
 
     then: "it also has correct capturing groups"
-    matcher.groupCount() == 1
-    matcher.group(1) == "g3"
+    matcher.groupCount() == 2
+    matcher.group(1) == "lpts"
+    matcher.group("type") == "lpts"
+    matcher.group(2) == "g3"
     matcher.group("profile") == "g3"
+  }
+
+  def "The pattern for a Markov load profile time series file name matches and extracts the correct profile"() {
+    given:
+    def ens = new EntityPersistenceNamingStrategy()
+    def validFileName = "markov_demo1"
+
+    when:
+    def matcher = ens.loadProfileTimeSeriesPattern.matcher(validFileName)
+
+    then:
+    matcher.matches()
+    matcher.group("type") == "markov"
+    matcher.group("profile") == "demo1"
   }
 
   def "Trying to extract individual time series meta information throws an Exception, if it is provided a malformed string"() {
@@ -116,6 +133,19 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     then:
     def ex = thrown(IllegalArgumentException)
     ex.message == "Cannot extract meta information on load profile time series from 'foo'."
+  }
+
+  def "loadProfileTimesSeriesMetaInformation extracts profile from Markov load profile file name"() {
+    given:
+    def ens = new EntityPersistenceNamingStrategy()
+    def fileName = "markov_demo2"
+
+    when:
+    def meta = ens.loadProfileTimesSeriesMetaInformation(fileName)
+
+    then:
+    meta.profileKey.getValue() == "demo2"
+    meta.profileKey.type == PowerProfileKey.Type.MARKOV
   }
 
   def "The EntityPersistenceNamingStrategy is able to prepare the prefix properly"() {
