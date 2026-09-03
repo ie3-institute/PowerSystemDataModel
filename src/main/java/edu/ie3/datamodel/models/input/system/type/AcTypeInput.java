@@ -136,7 +136,7 @@ public class AcTypeInput extends SystemParticipantTypeInput {
     }
 
     @Override
-    public AcTypeInput.AcTypeInputCopyBuilder scale(Double factor) {
+    public AcTypeInput.AcTypeInputCopyBuilder scale(double factor) {
       capex(getCapex().multiply(factor));
       sRated(getsRated().multiply(factor));
       pThermal(getpThermal().multiply(factor));
