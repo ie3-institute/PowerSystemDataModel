@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Introduce data model for cable types [#1669](https://github.com/ie3-institute/PowerSystemDataModel/issues/1669)
+- Added support for Markov-chain-based load profiles loaded from JSON [#1472](https://github.com/ie3-institute/PowerSystemDataModel/issues/1472)
 
 ### Fixed
 - Fixed issues regarding determination of additional parameters [#1661](https://github.com/ie3-institute/PowerSystemDataModel/issues/1661)
