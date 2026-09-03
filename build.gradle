@@ -4,12 +4,12 @@ plugins {
   id 'maven-publish'
   id 'signing'
   id 'pmd' // code check, working on source code
-  id 'com.diffplug.spotless' version '8.8.0' //code format
-  id 'com.github.spotbugs' version '6.5.9' // code check, working on byte code
+  id 'com.diffplug.spotless' version '8.10.1' //code format
+  id 'com.github.spotbugs' version '6.5.11' // code check, working on byte code
   id 'de.undercouch.download' version '5.7.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
-  id "org.sonarqube" version "7.3.1.8318" // sonarqube
+  id "org.sonarqube" version "7.4.0.8496" // sonarqube
   id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
   id 'com.gradleup.shadow' version '9.6.1' // fat jar
 }
@@ -17,9 +17,9 @@ plugins {
 ext {
   //version (changing these should be considered thoroughly!)
   javaVersion = JavaVersion.VERSION_21
-  groovyBinaryVersion = "5.0.8"
+  groovyBinaryVersion = "5.1.1"
 
-  junitVersion = '6.1.2'
+  junitVersion = '6.1.3'
   testcontainersVersion = '2.0.5'
 
   scriptsLocation = 'gradle' + File.separator + 'scripts' + File.separator //location of script plugins
@@ -59,11 +59,15 @@ dependencies {
   implementation 'tech.units:indriya:2.2.4'
 
   // JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
-  implementation ('org.locationtech.jts:jts-core:1.20.0'){
+  implementation('org.locationtech.jts:jts-core:1.20.0'){
     exclude group: 'junit', module: 'junit'
   }
 
   implementation 'org.locationtech.jts.io:jts-io-common:1.20.0'
+
+  // parsing json
+  implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.2'
+  implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.22.2'
 
   // Graphs
   implementation 'org.jgrapht:jgrapht-core:1.5.3'
@@ -79,7 +83,7 @@ dependencies {
   testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
   testImplementation "org.spockframework:spock-core:2.4-groovy-5.0"
   testImplementation 'org.objenesis:objenesis:3.6' // Mock creation with constructor parameters
-  testImplementation 'net.bytebuddy:byte-buddy:1.18.11' // Mocks of classes
+  testImplementation 'net.bytebuddy:byte-buddy:1.18.12' // Mocks of classes
 
   // testcontainers (docker framework for testing)
   testImplementation "org.testcontainers:testcontainers:$testcontainersVersion"

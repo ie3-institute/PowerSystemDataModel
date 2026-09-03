@@ -18,7 +18,7 @@ import javax.measure.quantity.Power;
 import javax.measure.quantity.Time;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes the type of a {@link edu.ie3.datamodel.models.input.system.StorageInput} */
+/** Describes the type of {@link edu.ie3.datamodel.models.input.system.StorageInput} */
 public class StorageTypeInput extends SystemParticipantTypeInput {
   /** Energy capacity (typically in kWh) */
   private final ComparableQuantity<Energy> eStorage;

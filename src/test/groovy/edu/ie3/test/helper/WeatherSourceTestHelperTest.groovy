@@ -82,9 +82,9 @@ class WeatherSourceTestHelperTest extends Specification {
       new WeatherValue(
       coordinate,
       new SolarIrradianceValue(
-      Quantities.getQuantity(directVal, StandardUnits.SOLAR_IRRADIANCE),
-      baseWeather.solarIrradiance.diffuseIrradiance.get()
-      ),
+          Quantities.getQuantity(directVal, StandardUnits.SOLAR_IRRADIANCE),
+          baseWeather.solarIrradiance.diffuseIrradiance.get()
+          ),
       baseWeather.temperature,
       baseWeather.wind,
       baseWeather.groundTemperatureLevel1,

@@ -122,8 +122,8 @@ class TryTest extends Specification {
     }
 
     where:
-    bool  || expected
-    true  || true
+    bool || expected
+    true || true
     false || false
   }
 
@@ -239,7 +239,11 @@ class TryTest extends Specification {
         )
 
     when:
-    Try<Set<String>, Exception> scan = Try.scanCollection(set, String, Exception::new)
+    Try<Set<String>, Exception> scan = Try.scanCollection(
+        set,
+        String,
+        { message -> new Exception(message) }
+        )
 
     then:
     scan.failure
@@ -256,7 +260,11 @@ class TryTest extends Specification {
         )
 
     when:
-    Try<Set<String>, Exception> scan = Try.scanCollection(set, String, Exception::new)
+    Try<Set<String>, Exception> scan = Try.scanCollection(
+        set,
+        String,
+        { -> new Exception() }
+        )
 
     then:
     scan.success
@@ -294,12 +302,12 @@ class TryTest extends Specification {
     SourceException exc = new SourceException("source exception")
 
     when:
-    Try<Integer, Exception> transformS = success.transformS(str -> Integer.parseInt(str) )
-    Try<Integer, Exception> map = success.map(str -> Integer.parseInt(str) )
-    Try<String, Exception> transformF = success.transformF(ex -> new Exception(ex) )
-    Try<Integer, Exception> transform = success.transform(str -> Integer.parseInt(str), ex -> new Exception(ex) )
-    Try<Integer, Exception> flatMapS = success.flatMap(str -> new Try.Success(Integer.parseInt(str)) )
-    Try<Integer, Exception> flatMapF = success.flatMap(str -> new Try.Failure(exc) )
+    Try<Integer, Exception> transformS = success.transformS(str -> Integer.parseInt(str))
+    Try<Integer, Exception> map = success.map(str -> Integer.parseInt(str))
+    Try<String, Exception> transformF = success.transformF(ex -> new Exception(ex))
+    Try<Integer, Exception> transform = success.transform(str -> Integer.parseInt(str), ex -> new Exception(ex))
+    Try<Integer, Exception> flatMapS = success.flatMap(str -> new Try.Success(Integer.parseInt(str)))
+    Try<Integer, Exception> flatMapF = success.flatMap(str -> new Try.Failure(exc))
 
     then:
     transformS.success
@@ -322,12 +330,12 @@ class TryTest extends Specification {
     Try<String, Exception> failure = new Try.Failure<>(new SourceException(""))
 
     when:
-    Try<Integer, Exception> transformS = failure.transformS(str -> Integer.parseInt(str) )
-    Try<Integer, Exception> map = failure.map(str -> Integer.parseInt(str) )
-    Try<String, Exception> transformF = failure.transformF(ex -> new Exception(ex) )
-    Try<Integer, Exception> transform = failure.transform(str -> Integer.parseInt(str), ex -> new Exception(ex) )
-    Try<Integer, Exception> flatMapS = failure.flatMap(str -> new Try.Success(Integer.parseInt(str)) )
-    Try<Integer, Exception> flatMapF = failure.flatMap(str -> new Try.Failure(new SourceException("not returned")) )
+    Try<Integer, Exception> transformS = failure.transformS(str -> Integer.parseInt(str))
+    Try<Integer, Exception> map = failure.map(str -> Integer.parseInt(str))
+    Try<String, Exception> transformF = failure.transformF(ex -> new Exception(ex))
+    Try<Integer, Exception> transform = failure.transform(str -> Integer.parseInt(str), ex -> new Exception(ex))
+    Try<Integer, Exception> flatMapS = failure.flatMap(str -> new Try.Success(Integer.parseInt(str)))
+    Try<Integer, Exception> flatMapF = failure.flatMap(str -> new Try.Failure(new SourceException("not returned")))
 
     then:
     transformS.failure
@@ -404,7 +412,7 @@ class TryTest extends Specification {
     Try<Stream<Integer>, SourceException> success = new Try.Success(Stream.of(1, 2, 3))
 
     when:
-    List<Try<Integer, SourceException>> converted = success.convert(d -> d.map(r -> Try.Success.of(r)).toList(), e -> [Try.Failure.of(e)] )
+    List<Try<Integer, SourceException>> converted = success.convert(d -> d.map(r -> Try.Success.of(r)).toList(), e -> [Try.Failure.of(e)])
 
     then:
     converted.size() == 3
@@ -419,7 +427,7 @@ class TryTest extends Specification {
     Try<Stream<Integer>, SourceException> failure = new Try.Failure<>(exception)
 
     when:
-    List<Try<Integer, SourceException>> converted = failure.convert(d -> d.map(r -> Try.Success.of(r)).toList(), e -> [Try.Failure.of(e)] )
+    List<Try<Integer, SourceException>> converted = failure.convert(d -> d.map(r -> Try.Success.of(r)).toList(), e -> [Try.Failure.of(e)])
 
     then:
     converted.size() == 1

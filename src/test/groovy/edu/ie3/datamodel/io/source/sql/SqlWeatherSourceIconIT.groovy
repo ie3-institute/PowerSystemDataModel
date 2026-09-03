@@ -57,7 +57,7 @@ class SqlWeatherSourceIconIT extends Specification implements TestContainerHelpe
 
     then:
     optTimeBasedValue != null
-    WeatherSourceTestHelper.equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue )
+    WeatherSourceTestHelper.equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
   }
 
   def "A NativeSqlWeatherSource can read multiple timeseries values for multiple coordinates"() {

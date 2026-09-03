@@ -158,7 +158,9 @@ class DefaultDirectoryHierarchyTest extends Specification {
     def basePath = basePathString(gridName)
     def dfh = new DefaultDirectoryHierarchy(tmpDirectory, gridName)
     dfh.createDirs()
-    def globalDirectory = dfh.subDirectories.entrySet().find { entry -> entry.key.toString().endsWith("global") }.key
+    def globalDirectory = dfh.subDirectories.entrySet().find { entry ->
+      entry.key.toString().endsWith("global")
+    }.key
     Files.delete(globalDirectory)
 
     when:
@@ -175,7 +177,9 @@ class DefaultDirectoryHierarchyTest extends Specification {
     def basePath = basePathString(gridName)
     def dfh = new DefaultDirectoryHierarchy(tmpDirectory, gridName)
     dfh.createDirs()
-    def globalDirectory = dfh.subDirectories.entrySet().find { entry -> entry.key.toString().endsWith("global") }.key
+    def globalDirectory = dfh.subDirectories.entrySet().find { entry ->
+      entry.key.toString().endsWith("global")
+    }.key
     Files.delete(globalDirectory)
     Files.createFile(globalDirectory)
 
@@ -193,7 +197,9 @@ class DefaultDirectoryHierarchyTest extends Specification {
     def basePath = basePathString(gridName)
     def dfh = new DefaultDirectoryHierarchy(tmpDirectory, gridName)
     dfh.createDirs(true)
-    def thermalDirectory = dfh.subDirectories.entrySet().find { entry -> entry.key.toString().endsWith("input" + File.separator + "thermal") }.key
+    def thermalDirectory = dfh.subDirectories.entrySet().find { entry ->
+      entry.key.toString().endsWith("input" + File.separator + "thermal")
+    }.key
     Files.delete(thermalDirectory)
     Files.createFile(thermalDirectory)
 

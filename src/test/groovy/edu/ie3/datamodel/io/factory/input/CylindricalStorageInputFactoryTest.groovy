@@ -15,7 +15,7 @@ import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 
-class CylindricalStorageInputFactoryTest  extends Specification implements FactoryTestHelper {
+class CylindricalStorageInputFactoryTest extends Specification implements FactoryTestHelper {
   def "A CylindricalStorageInputFactory should contain exactly the expected class for parsing"() {
     given:
     def inputFactory = new CylindricalStorageInputFactory()
@@ -29,13 +29,13 @@ class CylindricalStorageInputFactoryTest  extends Specification implements Facto
     given: "a system participant input type factory and model data"
     def inputFactory = new CylindricalStorageInputFactory()
     Map<String, String> parameter = [
-      "uuid"               : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id"                 : "TestID",
-      "storagevolumelvl"   : "3",
-      "inlettemp"          : "4",
-      "returntemp"         : "5",
-      "c"                  : "6",
-      "pThermalMax"        : "7"
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id" : "TestID",
+      "storagevolumelvl" : "3",
+      "inlettemp" : "4",
+      "returntemp" : "5",
+      "c" : "6",
+      "pThermalMax" : "7"
     ]
     def inputClass = CylindricalStorageInput
     def thermalBusInput = Mock(ThermalBusInput)

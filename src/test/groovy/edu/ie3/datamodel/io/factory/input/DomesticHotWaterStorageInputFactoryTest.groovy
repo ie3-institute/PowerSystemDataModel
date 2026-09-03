@@ -29,13 +29,13 @@ class DomesticHotWaterStorageInputFactoryTest extends Specification implements F
     given: "a system participant input type factory and model data"
     def inputFactory = new DomesticHotWaterStorageInputFactory()
     Map<String, String> parameter = [
-      "uuid"               : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id"                 : "TestID",
-      "storagevolumelvl"   : "3",
-      "inlettemp"          : "4",
-      "returntemp"         : "5",
-      "c"                  : "6",
-      "pThermalMax"        : "7"
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id" : "TestID",
+      "storagevolumelvl" : "3",
+      "inlettemp" : "4",
+      "returntemp" : "5",
+      "c" : "6",
+      "pThermalMax" : "7"
     ]
     def inputClass = DomesticHotWaterStorageInput
     def thermalBusInput = Mock(ThermalBusInput)
