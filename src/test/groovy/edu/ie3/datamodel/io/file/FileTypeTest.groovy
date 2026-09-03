@@ -15,9 +15,9 @@ class FileTypeTest extends Specification {
     FileType.getFileType(fileName) == expected
 
     where:
-    fileName      || expected
-    "data.csv"    || FileType.CSV
-    "model.json"  || FileType.JSON
+    fileName || expected
+    "data.csv" || FileType.CSV
+    "model.json" || FileType.JSON
   }
 
   def "getFileType throws ParsingException on unknown ending"() {

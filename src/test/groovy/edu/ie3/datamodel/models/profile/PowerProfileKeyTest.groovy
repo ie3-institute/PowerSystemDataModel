@@ -137,8 +137,8 @@ class PowerProfileKeyTest extends Specification {
     PowerProfileKey.Type.parse(type) == expected
 
     where:
-    type     || expected
-    "lpts"   || PowerProfileKey.Type.TS
+    type || expected
+    "lpts" || PowerProfileKey.Type.TS
     "markov" || PowerProfileKey.Type.MARKOV
   }
 
