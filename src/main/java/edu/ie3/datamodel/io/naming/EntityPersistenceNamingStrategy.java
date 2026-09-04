@@ -56,11 +56,11 @@ public class EntityPersistenceNamingStrategy {
   protected final Pattern individualTimeSeriesPattern;
 
   /**
-   * Regex to match the naming convention of a file for a repetitive load profile time series. The
-   * profile is accessible via the named capturing group "profile", the uuid by the group "uuid"
+   * Regex to match the naming convention of a load profile source file. The profile type is
+   * accessible via the named capturing group "type", the profile by the group "profile"
    */
   private static final String LOAD_PROFILE_TIME_SERIES =
-      "lpts_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})";
+      "(?<type>lpts|markov)_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})";
 
   /**
    * Pattern to identify load profile time series in this instance of the naming strategy (takes
@@ -162,7 +162,7 @@ public class EntityPersistenceNamingStrategy {
       throw new IllegalArgumentException(
           "Cannot extract meta information on load profile time series from '" + fileName + "'.");
 
-    return new LoadProfileMetaInformation(matcher.group("profile"));
+    return new LoadProfileMetaInformation(matcher.group("profile"), matcher.group("type"));
   }
 
   /**
