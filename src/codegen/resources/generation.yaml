@@ -49,6 +49,139 @@ datamodel:
           javaDoc: "@param uuid of the input entity\n
                   @param id of the asset"
 
+    EmInput:
+      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.AssetInput}."
+      inherits: [HasEm]
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, controlStrategy, controllingEm]
+          superArgs: [uuid, id, operator, operationTime]
+          javaDoc: "Constructor for an operated energy management system.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param operator of the asset\n
+                   @param operationTime time for which the entity is operated\n
+                   @param controlStrategy the control strategy\n
+                   @param controllingEm The {@link EmInput} controlling this em unit. Null, if not applicable."
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, controlStrategy, controllingEm, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime]
+          javaDoc: "Constructor for an operated energy management system.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param operator of the asset\n
+                   @param operationTime time for which the entity is operated\n
+                   @param controlStrategy the control strategy\n
+                   @param controllingEm The {@link EmInput} controlling this em unit. Null, if not applicable.\n
+                   @param additionalInformation That were provided by the source"
+        - name: minimal
+          components: [uuid, id, controlStrategy, controllingEm]
+          superArgs: [uuid, id]
+          javaDoc: "Constructor for an operated energy management system.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param controlStrategy the control strategy\n
+                   @param controllingEm The {@link EmInput} controlling this em unit. Null, if not applicable."
+
+    IdCoordinateInput:
+      inherits: [InputEntity]
+      sealed: true
+      constructors:
+        - name: full
+          components: [id, point]
+        - name: lat_lon
+          components: [id, lat, lon]
+          javaDoc: "Constructor for an {@link IdCoordinateInput}.\n
+                 \n
+                 @param id of the pair\n
+                 @param lat of the pair\n
+                 @param lon of the pair"
+          additionalComponents:
+            - name: lat
+              type: double
+            - name: lon
+              type: double
+          constructorModifications:
+            point:
+              expression: buildPoint(lat, lon)
+              className: GeoUtils
+        - name: empty
+          components: []
+          javaDoc: "Constructor needed for differencing between different sources."
+          private: true
+          constructorModifications:
+            id:
+              expression: -1
+            point:
+              expression: DEFAULT_GEO_POSITION
+              className: NodeInput
+      methodOverrides:
+        - name: getAdditionalInformation
+          type: StringMap
+          expression: of()
+          className: Map
+      fieldNameGetters: [id, point]
+      equals: false
+      hashCode: false
+      toString: false
+      copy: false
+      nestedClasses: [CosmoIdCoordinateInput, IconIdCoordinateInput, SqlIdCoordinateInput]
+
+    MeasurementUnitInput:
+      classJavaDoc: "Model of a measuring unit attached to a certain {@link NodeInput}."
+      inherits: [HasNodes]
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, node, vMag, vAng, p, q]
+          superArgs: [uuid, id, operator, operationTime]
+          javaDoc: "Constructor for an operated measurement unit.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param operator of the asset\n
+                   @param operationTime Time for which the entity is operated\n
+                   @param node Grid node, the asset is attached to\n
+                   @param vMag True, if the voltage magnitude is measured\n
+                   @param vAng True, if the voltage angle is measured\n
+                   @param p True, if the nodal residual active power is measured\n
+                   @param q True, if the reactive power is measured"
+        - name: fullWithAdditionalInformation
+          components: [ uuid, id, operator, operationTime, node, vMag, vAng, p, q, additionalInformation ]
+          superArgs: [ uuid, id, operator, operationTime ]
+          javaDoc: "Constructor for an operated measurement unit.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param operator of the asset\n
+                   @param operationTime Time for which the entity is operated\n
+                   @param node Grid node, the asset is attached to\n
+                   @param vMag True, if the voltage magnitude is measured\n
+                   @param vAng True, if the voltage angle is measured\n
+                   @param p True, if the nodal residual active power is measured\n
+                   @param q True, if the reactive power is measured\n
+                   @param additionalInformation That were provided by the source"
+        - name: minimal
+          components: [uuid, id, node, vMag, vAng, p, q]
+          superArgs: [uuid, id]
+          javaDoc: "Constructor for an operated measurement unit.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param node Grid node, the asset is attached to\n
+                   @param vMag True, if the voltage magnitude is measured\n
+                   @param vAng True, if the voltage angle is measured\n
+                   @param p True, if the nodal residual active power is measured\n
+                   @param q True, if the reactive power is measured"
+      methodOverrides:
+        - name: allNodes
+          type: NodeList
+          expression: singletonList(node)
+          className: Collections
+      booleanGetter: [vMag, vAng, p, q]
+
     NodeInput:
       classJavaDoc: "Describes an electrical grid node, that other assets can connect to."
       constructors:
@@ -127,7 +260,494 @@ datamodel:
           type: OperatorInput
           expression: new OperatorInput(UUID.randomUUID(), "NO_OPERATOR_ASSIGNED")
 
+  models.input.connector:
+    ConnectorInput:
+      classJavaDoc: "Describes an asset that connects two {@link NodeInput}s."
+      inherits: [HasNodes]
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices]
+          superArgs: [uuid, id, operator, operationTime]
+          javaDoc: "Constructor for an operated connector.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param nodeA Grid node at one side of the connector\n
+                 @param nodeB Grid node at the other side of the connector\n
+                 @param parallelDevices overall amount of parallel devices to automatically construct (e.g.\n
+                     parallelDevices = 2 will build a total of two entities using the specified parameters)"
+        - name: fullOneConnector
+          components: [uuid, id, operator, operationTime, nodeA, nodeB]
+          superArgs: [uuid, id, operator, operationTime]
+          javaDoc: "Constructor for an operated connector with no parallel devices (parallelDevices=1).\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param nodeA Grid node at one side of the connector\n
+                 @param nodeB Grid node at the other side of the connector\n"
+          constructorModifications:
+            parallelDevices:
+              expression: 1
+        - name: minimal
+          components: [uuid, id, nodeA, nodeB, parallelDevices]
+          superArgs: [uuid, id]
+          javaDoc: "Constructor for an operated connector.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param nodeA Grid node at one side of the connector\n
+                 @param nodeB Grid node at the other side of the connector\n
+                 @param parallelDevices overall amount of parallel devices to automatically construct (e.g.\n
+                     parallelDevices = 2 will build a total of two entities using the specified parameters)"
+        - name: minimalOneConnector
+          components: [uuid, id, nodeA, nodeB]
+          superArgs: [uuid, id]
+          javaDoc: "Constructor for an operated connector with no parallel devices (parallelDevices=1).\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param nodeA Grid node at one side of the connector\n
+                 @param nodeB Grid node at the other side of the connector\n"
+          constructorModifications:
+            parallelDevices:
+              expression: 1
+      methodOverrides:
+        - name: allNodes
+          type: NodeList
+          expression: of(getNodeA(), getNodeB())
+          className: List
+
+    LineInput:
+      classJavaDoc: "Describes an electrical grid line that connects two {@link NodeInput}s."
+      inherits: [HasType]
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, type, length, geoPosition, olmCharacteristic]
+          superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices]
+          javaDoc: "Constructor for an operated line.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param nodeA Grid node at one side of the line\n
+                 @param nodeB Grid node at the other side of the line\n
+                 @param parallelDevices overall amount of parallel lines to automatically construct (e.g.\n
+                     parallelDevices = 2 will build a total of two lines using the specified parameters)\n
+                 @param type of line\n
+                 @param length of this line\n
+                 @param geoPosition Coordinates of this line\n
+                 @param olmCharacteristic Description of an optional weather dependent operation curve"
+          constructorModifications:
+            geoPosition:
+              expression: buildSafeLineString(geoPosition)
+              className: GeoUtils
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, type, length, geoPosition, olmCharacteristic, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices]
+          javaDoc: "Constructor for an operated line.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param nodeA Grid node at one side of the line\n
+                 @param nodeB Grid node at the other side of the line\n
+                 @param parallelDevices overall amount of parallel lines to automatically construct (e.g.\n
+                     parallelDevices = 2 will build a total of two lines using the specified parameters)\n
+                 @param type of line\n
+                 @param length of this line\n
+                 @param geoPosition Coordinates of this line\n
+                 @param olmCharacteristic Description of an optional weather dependent operation curve\n
+                 @param additionalInformation That were provided by the source"
+          constructorModifications:
+            geoPosition:
+              expression: buildSafeLineString(geoPosition)
+              className: GeoUtils
+        - name: minimal
+          components: [uuid, id, nodeA, nodeB, parallelDevices, type, length, geoPosition, olmCharacteristic]
+          superArgs: [uuid, id, nodeA, nodeB, parallelDevices]
+          javaDoc: "Constructor for an operated line.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param nodeA Grid node at one side of the line\n
+                 @param nodeB Grid node at the other side of the line\n
+                 @param parallelDevices overall amount of parallel lines to automatically construct (e.g.\n
+                     parallelDevices = 2 will build a total of two lines using the specified parameters)\n
+                 @param type of line\n
+                 @param length of this line\n
+                 @param geoPosition Coordinates of this line\n
+                 @param olmCharacteristic Description of an optional weather dependent operation curve"
+          constructorModifications:
+            geoPosition:
+              expression: buildSafeLineString(geoPosition)
+              className: GeoUtils
+
+    SwitchInput:
+      classJavaDoc: "Describes an electrical grid switch between two {@link NodeInput}s."
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, nodeA, nodeB, closed]
+          superArgs: [uuid, id, operator, operationTime, nodeA, nodeB]
+          javaDoc: "Constructor for an operated switch.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param operator of the asset\n
+                   @param operationTime Time for which the entity is operated\n
+                   @param nodeA Grid node at one side of the switch\n
+                   @param nodeB Grid node at the other side of the switch\n
+                   @param closed Is the switching state 'closed'?"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, nodeA, nodeB, closed, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime, nodeA, nodeB]
+          javaDoc: "Constructor for an operated switch.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param operator of the asset\n
+                   @param operationTime Time for which the entity is operated\n
+                   @param nodeA Grid node at one side of the switch\n
+                   @param nodeB Grid node at the other side of the switch\n
+                   @param closed Is the switching state 'closed'?\n
+                   @param additionalInformation Of the model"
+        - name: minimal
+          components: [uuid, id, nodeA, nodeB, closed]
+          superArgs: [uuid, id, nodeA, nodeB]
+          javaDoc: "Constructor for an operated switch.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param nodeA Grid node at one side of the switch\n
+                   @param nodeB Grid node at the other side of the switch\n
+                   @param closed Is the switching state 'closed'?"
+
+    TransformerInput:
+      classJavaDoc: "Describes an electrical grid transformer, is \"located\" in the inferior subnet."
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap]
+          superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices]
+          javaDoc: "Constructor for an operated transformer.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param nodeA Grid node at the high voltage winding\n
+                 @param nodeB Grid node at the low voltage winding\n
+                 @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.\n
+                     parallelDevices = 2 will build a total of two transformers using the specified parameters)\n
+                 @param tapPos Tap Position of this transformer\n
+                 @param autoTap True, if the tap position of the transformer is adapted automatically"
+        - name: minimal
+          components: [uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap]
+          superArgs: [uuid, id, nodeA, nodeB, parallelDevices]
+          javaDoc: "Constructor for an operated transformer.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param nodeA Grid node at the high voltage winding\n
+                 @param nodeB Grid node at the low voltage winding\n
+                 @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.\n
+                     parallelDevices = 2 will build a total of two transformers using the specified parameters)\n
+                 @param tapPos Tap Position of this transformer\n
+                 @param autoTap True, if the tap position of the transformer is adapted automatically"
+
+    Transformer2WInput:
+      classJavaDoc: "Describes a two winding transformer, that is connected to two {@link NodeInput}s."
+      inherits: [HasType]
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, type, tapPos, autoTap]
+          superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap]
+          javaDoc: "Constructor for an operated two winding transformer.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param operator of the asset\n
+                   @param operationTime Time for which the entity is operated\n
+                   @param nodeA higher voltage node\n
+                   @param nodeB lower voltage node\n
+                   @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.\n
+                       parallelDevices = 2 will build a total of two transformers using the specified parameters)\n
+                   @param type of 2W transformer\n
+                   @param tapPos Tap position of this transformer\n
+                   @param autoTap True, if the tap position of the transformer is adapted automatically"
+          constructorChecks:
+            - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB)
+              className: ConnectorValidationUtils
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, type, tapPos, autoTap, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap]
+          javaDoc: "Constructor for an operated two winding transformer.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param operator of the asset\n
+                   @param operationTime Time for which the entity is operated\n
+                   @param nodeA higher voltage node\n
+                   @param nodeB lower voltage node\n
+                   @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.\n
+                       parallelDevices = 2 will build a total of two transformers using the specified parameters)\n
+                   @param type of 2W transformer\n
+                   @param tapPos Tap position of this transformer\n
+                   @param autoTap True, if the tap position of the transformer is adapted automatically\n
+                   @param additionalInformation Of the input"
+          constructorChecks:
+            - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB)
+              className: ConnectorValidationUtils
+        - name: minimal
+          components: [uuid, id, nodeA, nodeB, parallelDevices, type, tapPos, autoTap]
+          superArgs: [uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap]
+          javaDoc: "Constructor for an operated two winding transformer.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param nodeA higher voltage node\n
+                   @param nodeB lower voltage node\n
+                   @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.\n
+                       parallelDevices = 2 will build a total of two transformers using the specified parameters)\n
+                   @param type of 2W transformer\n
+                   @param tapPos Tap position of this transformer\n
+                   @param autoTap True, if the tap position of the transformer is adapted automatically"
+          constructorChecks:
+            - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB)
+              className: ConnectorValidationUtils
+
+    Transformer3WInput:
+      classJavaDoc: "Describes a three winding transformer, that is connected to three {@link NodeInput}s."
+      inherits: [HasType]
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, nodeA, nodeB, nodeC, parallelDevices, type, tapPos, autoTap]
+          superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap]
+          javaDoc: "Constructor for an operated two winding transformer.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param operator of the asset\n
+                   @param operationTime Time for which the entity is operated\n
+                   @param nodeA The higher voltage node\n
+                   @param nodeB The middle voltage node\n
+                   @param nodeC The lower voltage node\n
+                   @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.\n
+                       parallelDevices = 2 will build a total of two transformers using the specified parameters)\n
+                   @param type of 2W transformer\n
+                   @param tapPos Tap position of this transformer\n
+                   @param autoTap True, if the tap position of the transformer is adapted automatically"
+          constructorModifications:
+            nodeInternal:
+              expression: new NodeInput(UUID.randomUUID(), "internal_node_" + id, operator, operationTime, $T.getQuantity(1d, $T.PU), false, null, nodeA.getVoltLvl(), nodeA.getSubnet())
+              className: Quantities
+              unitClass: PowerSystemUnits
+              insert: true
+          constructorChecks:
+            - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC)
+              className: ConnectorValidationUtils
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, nodeA, nodeB, nodeC, parallelDevices, type, tapPos, autoTap, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap]
+          javaDoc: "Constructor for an operated two winding transformer.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param operator of the asset\n
+                   @param operationTime Time for which the entity is operated\n
+                   @param nodeA The higher voltage node\n
+                   @param nodeB The middle voltage node\n
+                   @param nodeC The lower voltage node\n
+                   @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.\n
+                       parallelDevices = 2 will build a total of two transformers using the specified parameters)\n
+                   @param type of 2W transformer\n
+                   @param tapPos Tap position of this transformer\n
+                   @param autoTap True, if the tap position of the transformer is adapted automatically\n
+                   @param additionalInformation Of the input"
+          constructorModifications:
+            nodeInternal:
+              expression: new NodeInput(UUID.randomUUID(), "internal_node_" + id, operator, operationTime, $T.getQuantity(1d, $T.PU), false, null, nodeA.getVoltLvl(), nodeA.getSubnet())
+              className: Quantities
+              unitClass: PowerSystemUnits
+              insert: true
+          constructorChecks:
+            - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC)
+              className: ConnectorValidationUtils
+        - name: minimal
+          components: [uuid, id, nodeA, nodeB, nodeC, parallelDevices, type, tapPos, autoTap]
+          superArgs: [uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap]
+          javaDoc: "Constructor for an operated two winding transformer.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param nodeA The higher voltage node\n
+                   @param nodeB The middle voltage node\n
+                   @param nodeC The lower voltage node\n
+                   @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.\n
+                       parallelDevices = 2 will build a total of two transformers using the specified parameters)\n
+                   @param type of 2W transformer\n
+                   @param tapPos Tap position of this transformer\n
+                   @param autoTap True, if the tap position of the transformer is adapted automatically"
+          constructorModifications:
+            nodeInternal:
+              expression: new NodeInput(UUID.randomUUID(), "internal_node_" + id, nodeA.getOperator(), nodeA.getOperationTime(), $T.getQuantity(1d, $T.PU), false, null, nodeA.getVoltLvl(), nodeA.getSubnet())
+              className: Quantities
+              unitClass: PowerSystemUnits
+              insert: true
+          constructorChecks:
+            - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC)
+              className: ConnectorValidationUtils
+        - name: fullWithInternalNode
+          components: [uuid, id, operator, operationTime, nodeA, nodeB, nodeC, parallelDevices, type, tapPos, autoTap, nodeInternal]
+          superArgs: [uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap]
+          javaDoc: "Constructor for an operated two winding transformer.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param operator of the asset\n
+                   @param operationTime Time for which the entity is operated\n
+                   @param nodeA The higher voltage node\n
+                   @param nodeB The middle voltage node\n
+                   @param nodeC The lower voltage node\n
+                   @param parallelDevices overall amount of parallel transformers to automatically construct (e.g.\n
+                       parallelDevices = 2 will build a total of two transformers using the specified parameters)\n
+                   @param type of 2W transformer\n
+                   @param tapPos Tap position of this transformer\n
+                   @param autoTap True, if the tap position of the transformer is adapted automatically"
+          constructorChecks:
+            - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC)
+              className: ConnectorValidationUtils
+      copyBuilderAdditionalMethods:
+        - name: internalSlack
+          isAbstract: false
+          annotation: false
+          parameters:
+            - name: internalNodeIsSlack
+              type: bool
+          expression: this.nodeInternal = this.nodeInternal.copy().slack(internalNodeIsSlack).build()
+      methodOverrides:
+        - name: allNodes
+          type: NodeList
+          expression: of(getNodeA(), getNodeB(), nodeC)
+          className: List
+
   models.input.connector.type:
+    CableTypeInput:
+      classJavaDoc: "Represents detailed cable construction data at the type/catalog level. This class contains the\n
+                   complete specification of a cable type including conductors, insulation layers, screens, armor,\n
+                   and jacket elements, as well as electrical and thermal parameters."
+      constructors:
+        - name: full
+          components: [uuid, id, coreNumber, conductor, isolation, screen, filler, armor, jack, limitTemperature, frequency, skinEffectCoefficient, proximityEffectCoefficient, electricalCapacitance, tanDelta, circulatingLossFactor, eddyCurrentLossFactor]
+          superArgs: [uuid, id]
+          javaDoc: "Represents detailed cable construction data at the type/catalog level. This class contains the\n
+                 complete specification of a cable type including conductors, insulation layers, screens, armor,\n
+                 and jacket elements, as well as electrical and thermal parameters.\n
+                 \n
+                 @param uuid Unique identifier for this cable type\n
+                 @param id Human-readable identifier/name for this cable type (e.g., \"NA2XS2Y 1x120 RM/25 12/20\n
+                     kV\")\n
+                 @param coreNumber Number of cores/conductors in the cable (e.g., 1 for single-core, 3 for\n
+                     three-phase)\n
+                 @param conductor The innermost conductor/core\n
+                 @param isolation List of insulation layers (from inner to outer)\n
+                 @param screen Optional cable screen layer\n
+                 @param filler List of filler layers (from inner to outer)\n
+                 @param armor List of armor layers (from inner to outer)\n
+                 @param jack List of jacket/outer sheath layers (from inner to outer)\n
+                 @param limitTemperature Maximum permissible operating temperature (°C)\n
+                 @param frequency Rated frequency\n
+                 @param skinEffectCoefficient Skin effect coefficient\n
+                 @param proximityEffectCoefficient Proximity effect coefficient\n
+                 @param electricalCapacitance Capacitance per unit length\n
+                 @param tanDelta Dielectric loss factor tan(δ)\n
+                 @param circulatingLossFactor Circulating loss factor\n
+                 @param eddyCurrentLossFactor Eddy current loss factor"
+          constructorModifications:
+            isolation:
+              expression: copyOf(isolation)
+              className: List
+            filler:
+              expression: copyOf(filler)
+              className: List
+            armor:
+              expression: copyOf(armor)
+              className: List
+            jack:
+              expression: copyOf(jack)
+              className: List
+
+    LayerInput:
+      classJavaDoc: "Represents a concentric layer of a cable, including insulation, filler, armor, and jacket layers."
+      constructors:
+        - name: full
+          components: [uuid, id, material, innerDiameter, outerDiameter, thermalResistivity, thermalCapacitance, area]
+          superArgs: [uuid, id]
+          javaDoc: "Constructor of a cable layer.\n
+                 \n
+                 @param uuid UUID of this layer\n
+                 @param id Name/designation of this layer\n
+                 @param material Material of this layer\n
+                 @param innerDiameter Inner diameter of this layer\n
+                 @param outerDiameter Outer diameter of this layer\n
+                 @param thermalResistivity Thermal resistivity of the material\n
+                 @param thermalCapacitance Thermal capacitance of the material\n
+                 @param area Real cross-sectional area (if different from geometry)"
+        - name: withoutArea
+          components: [uuid, id, material, innerDiameter, outerDiameter, thermalResistivity, thermalCapacitance]
+          superArgs: [uuid, id]
+          javaDoc: "Constructor of a cable layer.\n
+                 \n
+                 @param uuid UUID of this layer\n
+                 @param id Name/designation of this layer\n
+                 @param material Material of this layer\n
+                 @param innerDiameter Inner diameter of this layer\n
+                 @param outerDiameter Outer diameter of this layer\n
+                 @param thermalResistivity Thermal resistivity of the material\n
+                 @param thermalCapacitance Thermal capacitance of the material"
+          constructorModifications:
+            area:
+              expression: null
+        - name: fullWithAdditionalInformation
+          components: [ uuid, id, material, innerDiameter, outerDiameter, thermalResistivity, thermalCapacitance, area, additionalInformation]
+          superArgs: [ uuid, id ]
+          javaDoc: "Constructor of a cable layer.\n
+                 \n
+                 @param uuid UUID of this layer\n
+                 @param id Name/designation of this layer\n
+                 @param material Material of this layer\n
+                 @param innerDiameter Inner diameter of this layer\n
+                 @param outerDiameter Outer diameter of this layer\n
+                 @param thermalResistivity Thermal resistivity of the material\n
+                 @param thermalCapacitance Thermal capacitance of the material\n
+                 @param area Real cross-sectional area (if different from geometry)\n
+                 @param additionalInformation That were provided by the source"
+        - name: withoutAreaWithAdditionalInformation
+          components: [ uuid, id, material, innerDiameter, outerDiameter, thermalResistivity, thermalCapacitance, additionalInformation]
+          superArgs: [ uuid, id ]
+          javaDoc: "Constructor of a cable layer.\n
+                 \n
+                 @param uuid UUID of this layer\n
+                 @param id Name/designation of this layer\n
+                 @param material Material of this layer\n
+                 @param innerDiameter Inner diameter of this layer\n
+                 @param outerDiameter Outer diameter of this layer\n
+                 @param thermalResistivity Thermal resistivity of the material\n
+                 @param thermalCapacitance Thermal capacitance of the material\n
+                 @param additionalInformation That were provided by the source"
+          constructorModifications:
+            area:
+              expression: null
+      fieldNameGetters: [material, innerDiameter, outerDiameter, thermalResistivity, thermalCapacitance, area]
+      methodInserts:
+        - name: name
+          type: String
+          expression: getId()
+
     LineTypeInput:
       classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.connector.LineInput}."
       constructors:
@@ -152,8 +772,94 @@ datamodel:
                  @param r Specific resistance for this type of line (typically in Ohm/km)\n
                  @param x Specific reactance for this type of line (typically in Ohm/km)\n
                  @param iMax Maximum thermal current for this type of line (typically in A)\n
-                 @param vRated Rated voltage for this type of line"
+                 @param vRated Rated voltage for this type of line\n
+                 @param additionalInformation That were provided by the source"
       nonCapitalizedGetters: [iMax, vRated]
+
+    ScreenLayerInput:
+      classJavaDoc: "Represents a concentric layer of a cable, including insulation, filler, armor, and jacket layers."
+      constructors:
+        - name: full
+          components: [uuid, id, material, innerDiameter, outerDiameter, thermalResistivity, thermalCapacitance, area, wiresNumber, wireDiameter, lengthOfLay, electricalResistivity]
+          superArgs: [uuid, id]
+          javaDoc: "Constructor for a screen layer.\n
+                 \n
+                 @param uuid UUID of the screen layer\n
+                 @param id Name/designation of this screen layer\n
+                 @param material Material of the screen\n
+                 @param innerDiameter Inner diameter of the screen layer\n
+                 @param outerDiameter Outer diameter of the screen layer\n
+                 @param thermalResistivity Thermal resistivity of the material\n
+                 @param thermalCapacitance Thermal capacitance of the material\n
+                 @param area Optional real cross-sectional area (e.g. if different from geometry)\n
+                 @param wiresNumber Number of individual wires in the screen\n
+                 @param wireDiameter Diameter of an individual wire in the screen\n
+                 @param lengthOfLay Optional length of lay (pitch) of the screen winding\n
+                 @param electricalResistivity Electrical resistivity specific to the screen material"
+        - name: withoutOptionals
+          components: [uuid, id, material, innerDiameter, outerDiameter, thermalResistivity, thermalCapacitance, wiresNumber, wireDiameter, electricalResistivity]
+          superArgs: [uuid, id]
+          javaDoc: "Constructor for a screen layer.\n
+                 \n
+                 @param uuid UUID of the screen layer\n
+                 @param id Name/designation of this screen layer\n
+                 @param material Material of the screen\n
+                 @param innerDiameter Inner diameter of the screen layer\n
+                 @param outerDiameter Outer diameter of the screen layer\n
+                 @param thermalResistivity Thermal resistivity of the material\n
+                 @param thermalCapacitance Thermal capacitance of the material\n
+                 @param wiresNumber Number of individual wires in the screen\n
+                 @param wireDiameter Diameter of an individual wire in the screen\n
+                 @param electricalResistivity Electrical resistivity specific to the screen material"
+          constructorModifications:
+            area:
+              expression: null
+            lengthOfLay:
+              expression: null
+        - name: fullWithAdditionalInformation
+          components: [ uuid, id, material, innerDiameter, outerDiameter, thermalResistivity, thermalCapacitance, area, wiresNumber, wireDiameter, lengthOfLay, electricalResistivity, additionalInformation]
+          superArgs: [ uuid, id ]
+          javaDoc: "Constructor for a screen layer.\n
+                 \n
+                 @param uuid UUID of the screen layer\n
+                 @param id Name/designation of this screen layer\n
+                 @param material Material of the screen\n
+                 @param innerDiameter Inner diameter of the screen layer\n
+                 @param outerDiameter Outer diameter of the screen layer\n
+                 @param thermalResistivity Thermal resistivity of the material\n
+                 @param thermalCapacitance Thermal capacitance of the material\n
+                 @param area Optional real cross-sectional area (e.g. if different from geometry)\n
+                 @param wiresNumber Number of individual wires in the screen\n
+                 @param wireDiameter Diameter of an individual wire in the screen\n
+                 @param lengthOfLay Optional length of lay (pitch) of the screen winding\n
+                 @param electricalResistivity Electrical resistivity specific to the screen material
+                 @param additionalInformation That were provided by the source"
+        - name: withoutOptionalsWithAdditionalInformation
+          components: [ uuid, id, material, innerDiameter, outerDiameter, thermalResistivity, thermalCapacitance, wiresNumber, wireDiameter, electricalResistivity, additionalInformation]
+          superArgs: [ uuid, id ]
+          javaDoc: "Constructor for a screen layer.\n
+                 \n
+                 @param uuid UUID of the screen layer\n
+                 @param id Name/designation of this screen layer\n
+                 @param material Material of the screen\n
+                 @param innerDiameter Inner diameter of the screen layer\n
+                 @param outerDiameter Outer diameter of the screen layer\n
+                 @param thermalResistivity Thermal resistivity of the material\n
+                 @param thermalCapacitance Thermal capacitance of the material\n
+                 @param wiresNumber Number of individual wires in the screen\n
+                 @param wireDiameter Diameter of an individual wire in the screen\n
+                 @param electricalResistivity Electrical resistivity specific to the screen material
+                 @param additionalInformation That were provided by the source"
+          constructorModifications:
+            area:
+              expression: null
+            lengthOfLay:
+              expression: null
+      fieldNameGetters: [material, innerDiameter, outerDiameter, thermalResistivity, thermalCapacitance, area, wiresNumber, wireDiameter, lengthOfLay, electricalResistivity]
+      methodInserts:
+        - name: name
+          type: String
+          expression: getId()
 
     Transformer2WTypeInput:
       classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput}."
@@ -194,7 +900,7 @@ datamodel:
                  @param tapNeutr Neutral tap position\n
                  @param tapMin Minimum available tap position\n
                  @param tapMax Maximum available tap position\n
-                 @param additionalInformation Of the input"
+                 @param additionalInformation That were provided by the source"
       nonCapitalizedGetters: [rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi]
 
     Transformer3WTypeInput:
@@ -251,6 +957,720 @@ datamodel:
                  @param additionalInformation Of the input"
       nonCapitalizedGetters: [sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi]
 
+  models.input.system:
+    SystemParticipantInput:
+      classJavaDoc: "Describes a system asset that is connected to a node."
+      inherits: [HasNodes, HasEm]
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          superArgs: [uuid, id, operator, operationTime]
+          javaDoc: "Constructor for an operated system participant.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node that the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable."
+        - name: minimal
+          components: [uuid, id, node, qCharacteristics, controllingEm]
+          superArgs: [uuid, id]
+          javaDoc: "Constructor for an operated system participant.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param node that the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable."
+      methodOverrides:
+        - name: allNodes
+          type: NodeList
+          expression: singletonList(node)
+          className: Collections
+      methodInserts:
+        - name: sRated
+          type: Power
+          isAbstract: true
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: true
+          javaDoc: "Scales the input entity in a way that tries to preserve proportions that are related to\n
+                 power. This means that capacity, consumption etc. are scaled with the same factor. Related\n
+                 properties associated with the input type (if applicable) are scaled as well.\n
+                 \n
+                 @param factor The factor to scale with\n
+                 @return A copy builder with scaled relevant properties"
+          parameters:
+            - name: factor
+              type: double
+      nonCapitalizedGetters: [qCharacteristics]
+
+    AcInput:
+      classJavaDoc: "Describes an air condition."
+      inherits: [HasType, HasThermalBus]
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, node, thermalBus, qCharacteristics, controllingEm, type]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated air condition.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node the asset is connected to\n
+                 @param thermalBus The thermal bus, this model is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of AC"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, node, thermalBus, qCharacteristics, controllingEm, type, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated air condition.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node the asset is connected to\n
+                 @param thermalBus The thermal bus, this model is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of AC\n
+                 @param additionalInformation That were provided by the source"
+        - name: minimal
+          components: [uuid, id, node, thermalBus, qCharacteristics, controllingEm, type]
+          superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated air condition.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param node the asset is connected to\n
+                 @param thermalBus The thermal bus, this model is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of AC"
+      methodOverrides:
+        - name: sRated
+          type: Power
+          expression: this.type.getsRated()
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: type(type.copy().scale(factor).build())
+      nonCapitalizedGetters: [qCharacteristics]
+
+    BmInput:
+      classJavaDoc: "Describes a biomass plant."
+      inherits: [HasType]
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type, costControlled, feedInTariff]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated biomass plant.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of BM\n
+                 @param costControlled Does this plant increase the output power if the revenues exceed the\n
+                     energy generation costs?\n
+                 @param feedInTariff Granted feed in tariff (typically in €/MWh)"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type, costControlled, feedInTariff, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated biomass plant.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of BM\n
+                 @param costControlled Does this plant increase the output power if the revenues exceed the\n
+                     energy generation costs?\n
+                 @param feedInTariff Granted feed in tariff (typically in €/MWh)\n
+                 @param additionalInformation That were provided by the source"
+        - name: minimal
+          components: [uuid, id, node, qCharacteristics, controllingEm, type, costControlled, feedInTariff]
+          superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated biomass plant.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of BM\n
+                 @param costControlled Does this plant increase the output power if the revenues exceed the\n
+                     energy generation costs?\n
+                 @param feedInTariff Granted feed in tariff (typically in €/MWh)"
+      methodOverrides:
+        - name: sRated
+          type: Power
+          expression: this.type.getsRated()
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: this.type = this.type.copy().scale(factor).build()
+      nonCapitalizedGetters: [qCharacteristics]
+
+    ChpInput:
+      classJavaDoc: "Describes a combined heat and power plant."
+      inherits: [HasType, HasThermalBus, HasThermalStorage]
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, node, thermalBus, qCharacteristics, controllingEm, type, thermalStorage]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated combined heat and power plant.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node the asset is connected to\n
+                 @param thermalBus The thermal bus, this model is connected to (normally equal to the thermal\n
+                     bus of the provided thermal storage!)\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of CHP\n
+                 @param thermalStorage Thermal storage model"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, node, thermalBus, qCharacteristics, controllingEm, type, thermalStorage, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated combined heat and power plant.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node the asset is connected to\n
+                 @param thermalBus The thermal bus, this model is connected to (normally equal to the thermal\n
+                     bus of the provided thermal storage!)\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of CHP\n
+                 @param thermalStorage Thermal storage model\n
+                 @param additionalInformation That were provided by the source"
+        - name: minimal
+          components: [uuid, id, node, thermalBus, qCharacteristics, controllingEm, type, thermalStorage]
+          superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated combined heat and power plant.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param node the asset is connected to\n
+                 @param thermalBus The thermal bus, this model is connected to (normally equal to the thermal\n
+                     bus of the provided thermal storage!)\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of CHP\n
+                 @param thermalStorage Thermal storage model"
+      methodOverrides:
+        - name: sRated
+          type: Power
+          expression: this.type.getsRated()
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: this.type = this.type.copy().scale(factor).build()
+      nonCapitalizedGetters: [qCharacteristics]
+
+    EvcsInput:
+      classJavaDoc: "Describes an electric vehicle charging station."
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type, chargingPoints, cosPhiRated, locationType, v2gSupport]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "@param uuid Unique identifier\n
+                 @param id Human readable identifier\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node that the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type type of the charging points available to this charging station\n
+                 @param chargingPoints number of charging points available at this charging station\n
+                 @param cosPhiRated rated cos phi\n
+                 @param locationType the location type\n
+                 @param v2gSupport whether charging station supports vehicle to grid"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type, chargingPoints, cosPhiRated, locationType, v2gSupport, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "@param uuid Unique identifier\n
+                 @param id Human readable identifier\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node that the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type type of the charging points available to this charging station\n
+                 @param chargingPoints number of charging points available at this charging station\n
+                 @param cosPhiRated rated cos phi\n
+                 @param locationType the location type\n
+                 @param v2gSupport whether charging station supports vehicle to grid\n
+                 @param additionalInformation That were provided by the source"
+        - name: minimal
+          components: [uuid, id, node, qCharacteristics, controllingEm, type, chargingPoints, cosPhiRated, locationType, v2gSupport]
+          superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+          javaDoc: "@param uuid Unique identifier\n
+                 @param id Human readable identifier\n
+                 @param node that the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type type of the charging points available to this charging station\n
+                 @param chargingPoints number of charging points available at this charging station\n
+                 @param cosPhiRated rated cos phi\n
+                 @param locationType the location type\n
+                 @param v2gSupport whether charging station supports vehicle to grid"
+      methodOverrides:
+        - name: sRated
+          type: Power
+          expression: this.type.getsRated()
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: type(type.copy().scale(factor).build())
+      nonCapitalizedGetters: [qCharacteristics]
+
+    EvInput:
+      classJavaDoc: "Describes an electric vehicle."
+      inherits: [HasType]
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated electric vehicle.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of EV"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated electric vehicle.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of EV\n
+                 @param additionalInformation That were provided by the source"
+        - name: minimal
+          components: [uuid, id, node, qCharacteristics, controllingEm, type]
+          superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated electric vehicle.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of EV"
+      methodOverrides:
+        - name: sRated
+          type: Power
+          expression: this.type.getsRated()
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: type(type.copy().scale(factor).build())
+      nonCapitalizedGetters: [qCharacteristics]
+
+    FixedFeedInInput:
+      classJavaDoc: "Dummy class to represent a constant feed in regardless of its type."
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, sRated, cosPhiRated]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated feed in.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param sRated Rated apparent power\n
+                 @param cosPhiRated Power factor"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, sRated, cosPhiRated, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated feed in.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param sRated Rated apparent power\n
+                 @param cosPhiRated Power factor\n
+                 @param additionalInformation That were provided by the source"
+        - name: minimal
+          components: [uuid, id, node, qCharacteristics, controllingEm, sRated, cosPhiRated]
+          superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated feed in.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param sRated Rated apparent power\n
+                 @param cosPhiRated Power factor"
+      methodOverrides:
+        - name: sRated
+          type: Power
+          expression: sRated
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: sRated(sRated.multiply(factor))
+      nonCapitalizedGetters: [qCharacteristics, sRated]
+
+    HpInput:
+      classJavaDoc: "Describes a heat pump."
+      inherits: [HasType, HasThermalBus]
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, node, thermalBus, qCharacteristics, controllingEm, type]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated, always on heat pump.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node the asset is connected to\n
+                 @param thermalBus The thermal bus, this model is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of HP"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, node, thermalBus, qCharacteristics, controllingEm, type, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated, always on heat pump.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node the asset is connected to\n
+                 @param thermalBus The thermal bus, this model is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of HP\n
+                 @param additionalInformation That were provided by the source"
+        - name: minimal
+          components: [uuid, id, node, thermalBus, qCharacteristics, controllingEm, type]
+          superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated, always on heat pump.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param node the asset is connected to\n
+                 @param thermalBus The thermal bus, this model is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of HP"
+      methodOverrides:
+        - name: sRated
+          type: Power
+          expression: this.type.getsRated()
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: type(type.copy().scale(factor).build())
+      nonCapitalizedGetters: [qCharacteristics]
+
+    LoadInput:
+      classJavaDoc: "Describes a load."
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, loadProfile, eConsAnnual, sRated, cosPhiRated]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated load.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param loadProfile Key of the load profile to use for this model\n
+                 @param eConsAnnual Annually consumed energy (typically in kWh)\n
+                 @param sRated Rated apparent power (in kVA)\n
+                 @param cosPhiRated Rated power factor"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, loadProfile, eConsAnnual, sRated, cosPhiRated, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated load.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param loadProfile Key of the load profile to use for this model\n
+                 @param eConsAnnual Annually consumed energy (typically in kWh)\n
+                 @param sRated Rated apparent power (in kVA)\n
+                 @param cosPhiRated Rated power factor\n
+                 @param additionalInformation That were provided by the source"
+        - name: minimal
+          components: [uuid, id, node, qCharacteristics, controllingEm, loadProfile, eConsAnnual, sRated, cosPhiRated]
+          superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated load.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param loadProfile Key of the load profile to use for this model\n
+                 @param eConsAnnual Annually consumed energy (typically in kWh)\n
+                 @param sRated Rated apparent power (in kVA)\n
+                 @param cosPhiRated Rated power factor"
+      methodOverrides:
+        - name: sRated
+          type: Power
+          expression: sRated
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: eConsAnnual(eConsAnnual.multiply(factor)); sRated(sRated.multiply(factor))
+      nonCapitalizedGetters: [eConsAnnual, qCharacteristics, sRated]
+
+    PvInput:
+      classJavaDoc: "Describes a photovoltaic plant."
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, albedo, azimuth, etaConv, elevationAngle, kG, kT, sRated, cosPhiRated]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated photovoltaic plant.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param albedo Albedo value (typically a value between 0 and 1)\n
+                 @param azimuth Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)\n
+                 @param etaConv Efficiency of converter (typically in %)\n
+                 @param elevationAngle Tilted inclination from horizontal (typically in °)\n
+                 @param kG Generator correction factor merging different technical influences\n
+                 @param kT Generator correction factor merging different technical influences\n
+                 @param sRated Rated apparent power (typically in kVA)\n
+                 @param cosPhiRated Power factor"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, albedo, azimuth, etaConv, elevationAngle, kG, kT, sRated, cosPhiRated, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated photovoltaic plant.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param albedo Albedo value (typically a value between 0 and 1)\n
+                 @param azimuth Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)\n
+                 @param etaConv Efficiency of converter (typically in %)\n
+                 @param elevationAngle Tilted inclination from horizontal (typically in °)\n
+                 @param kG Generator correction factor merging different technical influences\n
+                 @param kT Generator correction factor merging different technical influences\n
+                 @param sRated Rated apparent power (typically in kVA)\n
+                 @param cosPhiRated Power factor\n
+                 @param additionalInformation That were provided by the source"
+        - name: minimal
+          components: [uuid, id, node, qCharacteristics, controllingEm, albedo, azimuth, etaConv, elevationAngle, kG, kT, sRated, cosPhiRated]
+          superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated photovoltaic plant.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param albedo Albedo value (typically a value between 0 and 1)\n
+                 @param azimuth Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)\n
+                 @param etaConv Efficiency of converter (typically in %)\n
+                 @param elevationAngle Tilted inclination from horizontal (typically in °)\n
+                 @param kG Generator correction factor merging different technical influences\n
+                 @param kT Generator correction factor merging different technical influences\n
+                 @param sRated Rated apparent power (typically in kVA)\n
+                 @param cosPhiRated Power factor"
+      methodOverrides:
+        - name: sRated
+          type: Power
+          expression: sRated
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: this.sRated = this.sRated.multiply(factor)
+      nonCapitalizedGetters: [qCharacteristics, sRated, kG, kT]
+
+    StorageInput:
+      classJavaDoc: "Describes a battery storage."
+      inherits: [HasType]
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated photovoltaic plant.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of storage"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated photovoltaic plant.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of storage\n
+                 @param additionalInformation That were provided by the source"
+        - name: minimal
+          components: [uuid, id, node, qCharacteristics, controllingEm, type]
+          superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated photovoltaic plant.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of storage"
+      methodOverrides:
+        - name: sRated
+          type: Power
+          expression: this.type.getsRated()
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: type(type.copy().scale(factor).build())
+      nonCapitalizedGetters: [qCharacteristics]
+
+    WecInput:
+      classJavaDoc: "Describes a Wind Energy Converter."
+      inherits: [HasType]
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated wind energy converter.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of this WEC"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm, type, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated wind energy converter.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of this WEC\n
+                 @param additionalInformation That were provided by the source"
+        - name: minimal
+          components: [uuid, id, node, qCharacteristics, controllingEm, type]
+          superArgs: [uuid, id, node, qCharacteristics, controllingEm]
+          javaDoc: "Constructor for an operated wind energy converter.\n
+                 \n
+                 @param uuid of the input entity\n
+                 @param id of the asset\n
+                 @param node the asset is connected to\n
+                 @param qCharacteristics Description of a reactive power characteristic\n
+                 @param controllingEm The {@link EmInput} controlling this system participant. Null, if not applicable.\n
+                 @param type of this WEC"
+      methodOverrides:
+        - name: sRated
+          type: Power
+          expression: this.type.getsRated()
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: type(type.copy().scale(factor).build())
+      nonCapitalizedGetters: [qCharacteristics]
+
   models.input.system.type:
     SystemParticipantTypeInput:
       classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput}."
@@ -277,3 +1697,559 @@ datamodel:
             - name: factor
               type: double
       nonCapitalizedGetters: [sRated]
+
+    AcTypeInput:
+      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.system.AcInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, capex, opex, sRated, cosPhiRated, pThermal]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of AC\n
+                 @param capex Capital expense for this type of AC (typically in €)\n
+                 @param opex Operating expense for this type of AC (typically in €)\n
+                 @param cosPhiRated Power factor for this type of AC\n
+                 @param sRated Rated apparent power\n
+                 @param pThermal Thermal output of the air condition, when sRated * cosPhiRated is consumed\n
+                     electrically"
+        - name: full
+          components: [uuid, id, capex, opex, sRated, cosPhiRated, pThermal, additionalInformation]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of AC\n
+                 @param capex Capital expense for this type of AC (typically in €)\n
+                 @param opex Operating expense for this type of AC (typically in €)\n
+                 @param cosPhiRated Power factor for this type of AC\n
+                 @param sRated Rated apparent power\n
+                 @param pThermal Thermal output of the air condition, when sRated * cosPhiRated is consumed\n
+                     electrically\n
+                 @param additionalInformation That were provided by the source"
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); pThermal(getpThermal().multiply(factor))
+      nonCapitalizedGetters: [pThermal, sRated]
+
+    BmTypeInput:
+      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.system.BmInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, capex, opex, activePowerGradient, sRated, cosPhiRated, etaConv]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of BM\n
+                 @param capex Capital expense for this type of BM (typically in €)\n
+                 @param opex Operating expense for this type of BM (typically in €)\n
+                 @param cosPhiRated Power factor for this type of BM\n
+                 @param activePowerGradient Maximum permissible gradient of active power change\n
+                 @param sRated Rated apparent power for this type of BM (typically in kVA)\n
+                 @param etaConv Efficiency of converter for this type of BM (typically in %)"
+        - name: full
+          components: [uuid, id, capex, opex, activePowerGradient, sRated, cosPhiRated, etaConv, additionalInformation]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of BM\n
+                 @param capex Capital expense for this type of BM (typically in €)\n
+                 @param opex Operating expense for this type of BM (typically in €)\n
+                 @param cosPhiRated Power factor for this type of BM\n
+                 @param activePowerGradient Maximum permissible gradient of active power change\n
+                 @param sRated Rated apparent power for this type of BM (typically in kVA)\n
+                 @param etaConv Efficiency of converter for this type of BM (typically in %)\n
+                 @param additionalInformation That were provided by the source"
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor))
+      nonCapitalizedGetters: [sRated]
+
+    ChpTypeInput:
+      classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.ChpInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, capex, opex, etaEl, etaThermal, sRated, cosPhiRated, pThermal, pOwn]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of CHP\n
+                 @param capex Capital expense for this type of CHP (typically in €)\n
+                 @param opex Operating expense for this type of CHP (typically in €)\n
+                 @param etaEl Electrical efficiency\n
+                 @param etaThermal Thermal efficiency\n
+                 @param sRated Rated electrical apparent power\n
+                 @param cosPhiRated Power factor for this type of CHP\n
+                 @param pThermal Rated thermal power\n
+                 @param pOwn Internal consumption"
+        - name: full
+          components: [uuid, id, capex, opex, etaEl, etaThermal, sRated, cosPhiRated, pThermal, pOwn, additionalInformation]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of CHP\n
+                 @param capex Capital expense for this type of CHP (typically in €)\n
+                 @param opex Operating expense for this type of CHP (typically in €)\n
+                 @param etaEl Electrical efficiency\n
+                 @param etaThermal Thermal efficiency\n
+                 @param sRated Rated electrical apparent power\n
+                 @param cosPhiRated Power factor for this type of CHP\n
+                 @param pThermal Rated thermal power\n
+                 @param pOwn Internal consumption\n
+                 @param additionalInformation That were provided by the source"
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); pThermal(getpThermal().multiply(factor)); pOwn(getpOwn().multiply(factor))
+      nonCapitalizedGetters: [pOwn, pThermal, sRated]
+
+    EvTypeInput:
+      classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.EvInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, capex, opex, eStorage, eCons, sRated, cosPhiRated, sRatedDC]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of EV\n
+                 @param capex Capital expense for this type of EV (typically in €)\n
+                 @param opex Operating expense for this type of EV (typically in €)\n
+                 @param eStorage Energy capacity of the storage\n
+                 @param eCons Consumed electric energy per driven distance\n
+                 @param sRated Rated apparent power for this type of EV (typically in kVA)\n
+                 @param cosPhiRated Power factor for this type of EV\n
+                 @param sRatedDC power for DC (typically in kW)"
+        - name: full
+          components: [uuid, id, capex, opex, eStorage, eCons, sRated, cosPhiRated, sRatedDC, additionalInformation]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of EV\n
+                 @param capex Capital expense for this type of EV (typically in €)\n
+                 @param opex Operating expense for this type of EV (typically in €)\n
+                 @param eStorage Energy capacity of the storage\n
+                 @param eCons Consumed electric energy per driven distance\n
+                 @param sRated Rated apparent power for this type of EV (typically in kVA)\n
+                 @param cosPhiRated Power factor for this type of EV\n
+                 @param sRatedDC power for DC (typically in kW)\n
+                 @param additionalInformation That were provided by the source"
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); eStorage(geteStorage().multiply(factor)); eCons(geteCons().multiply(factor)); sRatedDC(getsRatedDC().multiply(factor))
+      nonCapitalizedGetters: [eStorage, eCons, sRated, sRatedDC]
+
+    HpTypeInput:
+      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.system.HpInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, capex, opex, sRated, cosPhiRated, pThermal]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of HP\n
+                 @param capex Capital expense for this type of HP (typically in €)\n
+                 @param opex Operating expense for this type of HP (typically in €)\n
+                 @param cosPhiRated Power factor for this type of HP\n
+                 @param sRated Rated apparent power\n
+                 @param pThermal Thermal output of the heat pump, when sRated * cosPhiRated is consumed\n
+                     electrically"
+        - name: full
+          components: [uuid, id, capex, opex, sRated, cosPhiRated, pThermal, additionalInformation]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of HP\n
+                 @param capex Capital expense for this type of HP (typically in €)\n
+                 @param opex Operating expense for this type of HP (typically in €)\n
+                 @param cosPhiRated Power factor for this type of HP\n
+                 @param sRated Rated apparent power\n
+                 @param pThermal Thermal output of the heat pump, when sRated * cosPhiRated is consumed\n
+                     electrically\n
+                 @param additionalInformation That were provided by the source"
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); pThermal(getpThermal().multiply(factor))
+      nonCapitalizedGetters: [pThermal, sRated]
+
+    StorageTypeInput:
+      classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.StorageInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, capex, opex, eStorage, sRated, cosPhiRated, pMax, activePowerGradient, eta]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of Storage\n
+                 @param capex capital expense for this type of Storage (typically in €)\n
+                 @param opex operating expense for this type of Storage (typically in €/MWh)\n
+                 @param eStorage stored energy capacity\n
+                 @param sRated Rated apparent power of integrated inverter\n
+                 @param cosPhiRated power factor for integrated inverter\n
+                 @param pMax maximum permissible active power of the integrated inverter\n
+                 @param activePowerGradient maximum permissible gradient of active power change\n
+                 @param eta efficiency of the charging and discharging process"
+        - name: full
+          components: [uuid, id, capex, opex, eStorage, sRated, cosPhiRated, pMax, activePowerGradient, eta, additionalInformation]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of Storage\n
+                 @param capex capital expense for this type of Storage (typically in €)\n
+                 @param opex operating expense for this type of Storage (typically in €/MWh)\n
+                 @param eStorage stored energy capacity\n
+                 @param sRated Rated apparent power of integrated inverter\n
+                 @param cosPhiRated power factor for integrated inverter\n
+                 @param pMax maximum permissible active power of the integrated inverter\n
+                 @param activePowerGradient maximum permissible gradient of active power change\n
+                 @param eta efficiency of the charging and discharging process\n
+                 @param additionalInformation That were provided by the source"
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); eStorage(geteStorage().multiply(factor)); pMax(getpMax().multiply(factor))
+      nonCapitalizedGetters: [eStorage, pMax, sRated]
+
+    WecTypeInput:
+      classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.WecInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, capex, opex, sRated, cosPhiRated, cpCharacteristic, etaConv, rotorArea, hubHeight]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of WEC\n
+                 @param capex Captial expense for this type of WEC (typically in €)\n
+                 @param opex Operating expense for this type of WEC (typically in €)\n
+                 @param sRated Rated apparent power for this type of WEC (typically in kVA)\n
+                 @param cosPhiRated Power factor for this type of WEC\n
+                 @param cpCharacteristic Betz curve of this type\n
+                 @param etaConv Efficiency of converter for this type of WEC (typically in %)\n
+                 @param rotorArea Swept Area of blades for this type of WEC (typically in m²)\n
+                 @param hubHeight Height from ground to center of rotor for this type of WEC (typically in m)"
+        - name: full
+          components: [uuid, id, capex, opex, sRated, cosPhiRated, cpCharacteristic, etaConv, rotorArea, hubHeight, additionalInformation]
+          superArgs: [uuid, id, capex, opex, sRated, cosPhiRated]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type of WEC\n
+                 @param capex Captial expense for this type of WEC (typically in €)\n
+                 @param opex Operating expense for this type of WEC (typically in €)\n
+                 @param sRated Rated apparent power for this type of WEC (typically in kVA)\n
+                 @param cosPhiRated Power factor for this type of WEC\n
+                 @param cpCharacteristic Betz curve of this type\n
+                 @param etaConv Efficiency of converter for this type of WEC (typically in %)\n
+                 @param rotorArea Swept Area of blades for this type of WEC (typically in m²)\n
+                 @param hubHeight Height from ground to center of rotor for this type of WEC (typically in m)\n
+                 @param additionalInformation That were provided by the source"
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); rotorArea(getRotorArea().multiply(factor))
+      nonCapitalizedGetters: [sRated]
+
+  models.input.thermal:
+    ThermalInput:
+      classJavaDoc: "Abstract class as a common super class of all thermal input models."
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime]
+          superArgs: [uuid, id, operator, operationTime]
+          javaDoc: "Constructor for a thermal input model.\n
+                 \n
+                 @param uuid Unique identifier\n
+                 @param id Human readable identifier\n
+                 @param operator Reference to the operator\n
+                 @param operationTime Time frame, within the asset is in operation"
+        - name: minimal
+          components: [uuid, id]
+          superArgs: [uuid, id]
+          javaDoc: "Constructor for a thermal input model.\n
+                 \n
+                 @param uuid Unique identifier\n
+                 @param id Human readable identifier"
+
+    ThermalUnitInput:
+      classJavaDoc: "Abstract class for grouping all common properties to thermal models."
+      inherits: [HasThermalBus]
+      constructors:
+        - name: minimal
+          components: [uuid, id, thermalBus]
+          superArgs: [uuid, id]
+          javaDoc: "@param uuid Unique identifier of a certain thermal input\n
+                 @param id Identifier of the thermal unit\n
+                 @param thermalBus thermal bus, a thermal unit is connected to"
+        - name: full
+          components: [uuid, id, operator, operationTime, thermalBus]
+          superArgs: [uuid, id, operator, operationTime]
+          javaDoc: "@param uuid Unique identifier of a certain thermal input\n
+                 @param id Identifier of the thermal unit\n
+                 @param operator operator of the asset\n
+                 @param operationTime operation time of the asset\n
+                 @param thermalBus thermal bus, a thermal unit is connected to"
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: true
+          parameters:
+            - name: factor
+              type: double
+
+    ThermalStorageInput:
+      classJavaDoc: "Common properties to all thermal storage devices."
+      constructors:
+        - name: minimal
+          components: [uuid, id, thermalBus]
+          superArgs: [uuid, id, thermalBus]
+          javaDoc: "@param uuid Unique identifier of a certain thermal storage input model\n
+                 @param id Identifier of the thermal unit\n
+                 @param thermalBus Thermal bus, a thermal unit is connected to"
+        - name: full
+          components: [uuid, id, operator, operationTime, thermalBus]
+          superArgs: [uuid, id, operator, operationTime, thermalBus]
+          javaDoc: "@param uuid Unique identifier of a certain thermal storage input model\n
+                 @param id Identifier of the thermal unit\n
+                 @param operator operator of the asset\n
+                 @param operationTime operation time of the asset\n
+                 @param thermalBus Thermal bus, a thermal unit is connected to"
+
+    AbstractStorageInput:
+      classJavaDoc: "Thermal storage with cylindrical shape."
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+          superArgs: [uuid, id, operator, operationTime, thermalBus]
+          javaDoc: "@param uuid Unique identifier of a cylindrical storage\n
+                 @param id Identifier of the thermal unit\n
+                 @param operator operator of the asset\n
+                 @param operationTime operation time of the asset\n
+                 @param thermalBus Thermal bus, a thermal unit is connected to\n
+                 @param storageVolumeLvl Available storage volume\n
+                 @param inletTemp Temperature of the inlet\n
+                 @param returnTemp Temperature of the outlet\n
+                 @param c Specific heat capacity of the storage medium\n
+                 @param pThermalMax Maximum thermal power of the storage"
+        - name: minimal
+          components: [uuid, id, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+          superArgs: [uuid, id, thermalBus]
+          javaDoc: "@param uuid Unique identifier of a cylindrical storage\n
+                 @param id Identifier of the thermal unit\n
+                 @param thermalBus Thermal bus, a thermal unit is connected to\n
+                 @param storageVolumeLvl Available storage volume\n
+                 @param inletTemp Temperature of the inlet\n
+                 @param returnTemp Temperature of the outlet\n
+                 @param c Specific heat capacity of the storage medium\n
+                 @param pThermalMax Maximum thermal power of the storage"
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: storageVolumeLvl(storageVolumeLvl.multiply(factor)); pThermalMax(pThermalMax.multiply(factor))
+      nonCapitalizedGetters: [pThermalMax]
+
+    CylindricalStorageInput:
+      classJavaDoc: "Thermal storage with cylindrical shape."
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+          superArgs: [uuid, id, operator, operationTime, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+          javaDoc: "@param uuid Unique identifier of a cylindrical storage\n
+                 @param id Identifier of the thermal unit\n
+                 @param operator operator of the asset\n
+                 @param operationTime operation time of the asset\n
+                 @param thermalBus Thermal bus, a thermal unit is connected to\n
+                 @param storageVolumeLvl Available storage volume\n
+                 @param inletTemp Temperature of the inlet\n
+                 @param returnTemp Temperature of the outlet\n
+                 @param c Specific heat capacity of the storage medium\n
+                 @param pThermalMax Maximum thermal power of the storage"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+          javaDoc: "@param uuid Unique identifier of a cylindrical storage\n
+                 @param id Identifier of the thermal unit\n
+                 @param operator operator of the asset\n
+                 @param operationTime operation time of the asset\n
+                 @param thermalBus Thermal bus, a thermal unit is connected to\n
+                 @param storageVolumeLvl Available storage volume\n
+                 @param inletTemp Temperature of the inlet\n
+                 @param returnTemp Temperature of the outlet\n
+                 @param c Specific heat capacity of the storage medium\n
+                 @param pThermalMax Maximum thermal power of the storage\n
+                 @param additionalInformation That were provided by the source"
+        - name: minimal
+          components: [uuid, id, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+          superArgs: [uuid, id, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+          javaDoc: "@param uuid Unique identifier of a cylindrical storage\n
+                 @param id Identifier of the thermal unit\n
+                 @param thermalBus Thermal bus, a thermal unit is connected to\n
+                 @param storageVolumeLvl Available storage volume\n
+                 @param inletTemp Temperature of the inlet\n
+                 @param returnTemp Temperature of the outlet\n
+                 @param c Specific heat capacity of the storage medium\n
+                 @param pThermalMax Maximum thermal power of the storage"
+      nonCapitalizedGetters: [pThermalMax]
+
+    DomesticHotWaterStorageInput:
+      classJavaDoc: "Thermal storage with cylindrical shape for domestic hot water."
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+          superArgs: [uuid, id, operator, operationTime, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+          javaDoc: "Constructor for DomesticHotWaterStorageInput.\n
+                 \n
+                 @param uuid Unique identifier of a certain domestic hot water storage\n
+                 @param id Identifier of the thermal unit\n
+                 @param operator operator of the asset\n
+                 @param operationTime operation time of the asset\n
+                 @param thermalBus Thermal bus, a thermal unit is connected to\n
+                 @param storageVolumeLvl Available storage volume\n
+                 @param inletTemp Temperature of the inlet\n
+                 @param returnTemp Temperature of the outlet\n
+                 @param c Specific heat capacity of the storage medium\n
+                 @param pThermalMax Maximum thermal power of the storage"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+          javaDoc: "Constructor for DomesticHotWaterStorageInput.\n
+                 \n
+                 @param uuid Unique identifier of a certain domestic hot water storage\n
+                 @param id Identifier of the thermal unit\n
+                 @param operator operator of the asset\n
+                 @param operationTime operation time of the asset\n
+                 @param thermalBus Thermal bus, a thermal unit is connected to\n
+                 @param storageVolumeLvl Available storage volume\n
+                 @param inletTemp Temperature of the inlet\n
+                 @param returnTemp Temperature of the outlet\n
+                 @param c Specific heat capacity of the storage medium\n
+                 @param pThermalMax Maximum thermal power of the storage\n
+                 @param additionalInformation That were provided by the source"
+        - name: minimal
+          components: [uuid, id, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+          superArgs: [uuid, id, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax]
+          javaDoc: "Constructor for DomesticHotWaterStorageInput.\n
+                 \n
+                 @param uuid Unique identifier of a certain domestic hot water storage\n
+                 @param id Identifier of the thermal unit\n
+                 @param thermalBus Thermal bus, a thermal unit is connected to\n
+                 @param storageVolumeLvl Available storage volume\n
+                 @param inletTemp Temperature of the inlet\n
+                 @param returnTemp Temperature of the outlet\n
+                 @param c Specific heat capacity of the storage medium\n
+                 @param pThermalMax Maximum thermal power of the storage"
+      nonCapitalizedGetters: [pThermalMax]
+
+    ThermalBusInput:
+      classJavaDoc: "A thermal bus, to which different {@link ThermalUnitInput} units may be connected."
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime]
+          superArgs: [uuid, id, operator, operationTime]
+          javaDoc: "Constructor for an operated thermal bus.\n
+                 \n
+                 @param uuid Unique identifier of a certain thermal bus\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime]
+          javaDoc: "Constructor for an operated thermal bus.\n
+                 \n
+                 @param uuid Unique identifier of a certain thermal bus\n
+                 @param id of the asset\n
+                 @param operator of the asset\n
+                 @param operationTime Time for which the entity is operated\n
+                 @param additionalInformation Of the input"
+        - name: minimal
+          components: [uuid, id]
+          superArgs: [uuid, id]
+          javaDoc: "Constructor for an operated, always on thermal bus.\n
+                 \n
+                 @param uuid Unique identifier of a certain thermal bus\n
+                 @param id of the asset"
+
+    ThermalSinkInput:
+      classJavaDoc: "Common properties to all thermal sinks."
+      constructors:
+        - name: minimal
+          components: [ uuid, id, thermalBus ]
+          superArgs: [ uuid, id, thermalBus ]
+          javaDoc: "@param uuid Unique identifier of a thermal sink input model\n
+                 @param id Identifier of the thermal unit\n
+                 @param thermalBus Thermal bus, a thermal unit is connected to"
+        - name: full
+          components: [ uuid, id, operator, operationTime, thermalBus ]
+          superArgs: [ uuid, id, operator, operationTime, thermalBus ]
+          javaDoc: "@param uuid Unique identifier of a thermal sink input model\n
+                 @param id Identifier of the thermal unit\n
+                 @param operator operator of the asset\n
+                 @param operationTime operation time of the asset\n
+                 @param thermalBus Thermal bus, a thermal unit is connected to"
+
+    ThermalHouseInput:
+      classJavaDoc: "Quite simple thermal model of a house to serve as a heat sink."
+      constructors:
+        - name: minimal
+          components: [uuid, id, thermalBus, ethLosses, ethCapa, targetTemperature, upperTemperatureLimit, lowerTemperatureLimit, housingType, numberOfInhabitants]
+          superArgs: [uuid, id, thermalBus]
+          javaDoc: "@param uuid Unique identifier of a thermal house model\n
+                 @param id Identifier of the model\n
+                 @param thermalBus Thermal bus, the model is connected to\n
+                 @param ethLosses Thermal, transitional losses of the included thermal house model\n
+                 @param ethCapa Thermal capacity of the included thermal house model\n
+                 @param targetTemperature Desired target temperature of the thermal house model\n
+                 @param upperTemperatureLimit Upper boundary temperature of the thermal house model\n
+                 @param lowerTemperatureLimit Lower boundary temperature of the thermal house model\n
+                 @param housingType Type of the building: either house or flat\n
+                 @param numberOfInhabitants Number of inhabitants living in this house"
+        - name: full
+          components: [uuid, id, operator, operationTime, thermalBus, ethLosses, ethCapa, targetTemperature, upperTemperatureLimit, lowerTemperatureLimit, housingType, numberOfInhabitants]
+          superArgs: [uuid, id, operator, operationTime, thermalBus]
+          javaDoc: "@param uuid Unique identifier of a thermal house model\n
+                 @param id Identifier of the model\n
+                 @param operator operator of the asset\n
+                 @param operationTime operation time of the asset\n
+                 @param thermalBus Thermal bus, the model is connected to\n
+                 @param ethLosses Thermal, transitional losses of the included thermal house model\n
+                 @param ethCapa Thermal capacity of the included thermal house model\n
+                 @param targetTemperature Desired target temperature of the thermal house model\n
+                 @param upperTemperatureLimit Upper boundary temperature of the thermal house model\n
+                 @param lowerTemperatureLimit Lower boundary temperature of the thermal house model\n
+                 @param housingType Type of the building: either house or flat\n
+                 @param numberOfInhabitants Number of inhabitants living in this house"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, thermalBus, ethLosses, ethCapa, targetTemperature, upperTemperatureLimit, lowerTemperatureLimit, housingType, numberOfInhabitants, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime, thermalBus]
+          javaDoc: "@param uuid Unique identifier of a thermal house model\n
+                 @param id Identifier of the model\n
+                 @param operator operator of the asset\n
+                 @param operationTime operation time of the asset\n
+                 @param thermalBus Thermal bus, the model is connected to\n
+                 @param ethLosses Thermal, transitional losses of the included thermal house model\n
+                 @param ethCapa Thermal capacity of the included thermal house model\n
+                 @param targetTemperature Desired target temperature of the thermal house model\n
+                 @param upperTemperatureLimit Upper boundary temperature of the thermal house model\n
+                 @param lowerTemperatureLimit Lower boundary temperature of the thermal house model\n
+                 @param housingType Type of the building: either house or flat\n
+                 @param numberOfInhabitants Number of inhabitants living in this house\n
+                 @param additionalInformation Of the input"
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: false
+          parameters:
+            - name: factor
+              type: double
+          expression: ethLosses(ethLosses.multiply(factor)); ethCapa(ethCapa.multiply(factor)); numberOfInhabitants(numberOfInhabitants * factor)
+          comment: "scale losses as well as capacity and number of inhabitants to keep equal\n
+                  // the time needed to heat a scaled house"

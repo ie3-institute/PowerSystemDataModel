@@ -71,12 +71,12 @@ public interface HelperMethods {
   }
 
   /**
-   * Check if the class is a quantity.
+   * Check if we should use an {@code equals()} call.
    *
    * @param type of the field
-   * @return true, if the type is a quantity
+   * @return true, if an {@code equals()} call should be used
    */
-  default boolean isQuantity(String type) {
+  default boolean useEquals(String type) {
     String cn;
 
     if (resolveType(type) instanceof ParameterizedTypeName ptn) {
@@ -97,7 +97,7 @@ public interface HelperMethods {
    * @return the name of the getter method
    */
   default String defaultGetterName(String name, String type, GenerationConfig genConfig) {
-    if (genConfig.fieldNameGetters) {
+    if (genConfig.fieldNameGetters.contains(name)) {
       // if we should use the field name directly
       return name;
     }

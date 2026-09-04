@@ -154,7 +154,15 @@ public class ResolverUtils {
                 classes.put(name, ClassName.get("edu.ie3.datamodel.models.input.connector", name)));
 
     // model.input.conector.type package
-    Stream.of("LineTypeInput", "Transformer2WTypeInput", "Transformer3WTypeInput")
+    Stream.of(
+            "CableMaterial",
+            "CableTypeInput",
+            "ConductorInput",
+            "LayerInput",
+            "LineTypeInput",
+            "ScreenLayerInput",
+            "Transformer2WTypeInput",
+            "Transformer3WTypeInput")
         .forEach(
             name ->
                 classes.put(
@@ -246,8 +254,10 @@ public class ResolverUtils {
             "ElectricPotential",
             "ElectricResistance",
             "ElectricConductance",
+            "ElectricCapacitance",
             "Power",
             "Energy",
+            "Frequency",
             "Angle",
             "Area",
             "Volume",
