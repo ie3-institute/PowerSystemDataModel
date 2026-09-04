@@ -111,7 +111,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
     this.cosPhiRated = cosPhiRated;
   }
 
-  public ComparableQuantity<Power> getSRated() {
+  public ComparableQuantity<Power> getsRated() {
     return sRated;
   }
 
@@ -151,7 +151,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
         + ", node="
         + getNode().getUuid()
         + ", qCharacteristics="
-        + getQCharacteristics()
+        + getqCharacteristics()
         + ", controllingEm="
         + getControllingEm().map(e -> e.getUuid().toString()).orElse("")
         + ", sRated="
@@ -185,7 +185,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Power> getSRated() {
+    protected ComparableQuantity<Power> getsRated() {
       return sRated;
     }
 
@@ -200,7 +200,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
 
     @Override
     public FixedFeedInInputCopyBuilder scale(double factor) {
-      return sRated(sRated.multiply(factor));
+      sRated(sRated.multiply(factor));
       return thisInstance();
     }
 
@@ -212,7 +212,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
           getOperator(),
           getOperationTime(),
           getNode(),
-          getQCharacteristics(),
+          getqCharacteristics(),
           getControllingEm(),
           sRated,
           cosPhiRated,

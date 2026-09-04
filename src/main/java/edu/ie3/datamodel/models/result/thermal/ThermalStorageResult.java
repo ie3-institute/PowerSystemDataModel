@@ -19,7 +19,7 @@ import tech.units.indriya.ComparableQuantity;
  */
 public abstract class ThermalStorageResult extends ThermalSinkResult {
   /** Currently stored energy. */
-  private final ComparableQuantity<Energy> energy;
+  private ComparableQuantity<Energy> energy;
 
   /**
    * Constructs the result with

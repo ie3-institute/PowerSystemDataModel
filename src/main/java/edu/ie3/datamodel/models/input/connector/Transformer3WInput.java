@@ -311,7 +311,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
     }
 
     public Transformer3WInputCopyBuilder internalSlack(boolean internalNodeIsSlack) {
-      return this.nodeInternal = this.nodeInternal.copy().slack(internalNodeIsSlack).build();
+      this.nodeInternal = this.nodeInternal.copy().slack(internalNodeIsSlack).build();
       return thisInstance();
     }
 

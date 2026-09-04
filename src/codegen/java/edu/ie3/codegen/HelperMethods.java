@@ -372,7 +372,7 @@ public interface HelperMethods {
     String expression = modification.expression;
     String prefix = "";
 
-    if (modification instanceof GenerationConfig.MethodFields mf && mf.explicitReturn) {
+    if (modification instanceof GenerationConfig.MethodFields mf && mf.addReturn) {
       prefix = "return ";
     }
 

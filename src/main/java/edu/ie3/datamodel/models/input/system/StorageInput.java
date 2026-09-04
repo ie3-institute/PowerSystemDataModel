@@ -136,7 +136,7 @@ public class StorageInput extends SystemParticipantInput implements HasType {
         + ", node="
         + getNode().getUuid()
         + ", qCharacteristics="
-        + getQCharacteristics()
+        + getqCharacteristics()
         + ", controllingEm="
         + getControllingEm().map(e -> e.getUuid().toString()).orElse("")
         + ", type="
@@ -171,7 +171,7 @@ public class StorageInput extends SystemParticipantInput implements HasType {
 
     @Override
     public StorageInputCopyBuilder scale(double factor) {
-      return type(type.copy().scale(factor).build());
+      type(type.copy().scale(factor).build());
       return thisInstance();
     }
 
@@ -183,7 +183,7 @@ public class StorageInput extends SystemParticipantInput implements HasType {
           getOperator(),
           getOperationTime(),
           getNode(),
-          getQCharacteristics(),
+          getqCharacteristics(),
           getControllingEm(),
           type,
           getAdditionalInformation());

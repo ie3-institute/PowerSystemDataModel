@@ -107,7 +107,7 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
     return c;
   }
 
-  public ComparableQuantity<Power> getPThermalMax() {
+  public ComparableQuantity<Power> getpThermalMax() {
     return pThermalMax;
   }
 
@@ -222,13 +222,13 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Power> getPThermalMax() {
+    protected ComparableQuantity<Power> getpThermalMax() {
       return pThermalMax;
     }
 
     @Override
     public B scale(double factor) {
-      return storageVolumeLvl(storageVolumeLvl.multiply(factor));
+      storageVolumeLvl(storageVolumeLvl.multiply(factor));
       pThermalMax(pThermalMax.multiply(factor));
       return thisInstance();
     }

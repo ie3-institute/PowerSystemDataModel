@@ -177,7 +177,7 @@ public class BmInput extends SystemParticipantInput implements HasType {
         + ", node="
         + getNode().getUuid()
         + ", qCharacteristics="
-        + getQCharacteristics()
+        + getqCharacteristics()
         + ", controllingEm="
         + getControllingEm().map(e -> e.getUuid().toString()).orElse("")
         + ", type="
@@ -240,7 +240,7 @@ public class BmInput extends SystemParticipantInput implements HasType {
 
     @Override
     public BmInputCopyBuilder scale(double factor) {
-      return this.type = this.type.copy().scale(factor).build();
+      this.type = this.type.copy().scale(factor).build();
       return thisInstance();
     }
 
@@ -252,7 +252,7 @@ public class BmInput extends SystemParticipantInput implements HasType {
           getOperator(),
           getOperationTime(),
           getNode(),
-          getQCharacteristics(),
+          getqCharacteristics(),
           getControllingEm(),
           type,
           costControlled,

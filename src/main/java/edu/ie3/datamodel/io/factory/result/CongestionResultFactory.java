@@ -11,7 +11,7 @@ import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.result.CongestionResult;
-import edu.ie3.datamodel.models.result.CongestionResult.InputModelType;
+import edu.ie3.datamodel.models.result.InputModelType;
 import edu.ie3.datamodel.utils.Try;
 import java.time.ZonedDateTime;
 import java.util.UUID;

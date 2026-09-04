@@ -155,7 +155,7 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
         + ", c="
         + getC()
         + ", pThermalMax="
-        + getPThermalMax()
+        + getpThermalMax()
         + ", additionalInformation="
         + getAdditionalInformation()
         + "}";
@@ -184,7 +184,7 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
           getInletTemp(),
           getReturnTemp(),
           getC(),
-          getPThermalMax(),
+          getpThermalMax(),
           getAdditionalInformation());
     }
 

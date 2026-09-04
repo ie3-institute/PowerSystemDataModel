@@ -154,7 +154,7 @@ public class AcInput extends SystemParticipantInput implements HasType, HasTherm
         + ", node="
         + getNode().getUuid()
         + ", qCharacteristics="
-        + getQCharacteristics()
+        + getqCharacteristics()
         + ", controllingEm="
         + getControllingEm().map(e -> e.getUuid().toString()).orElse("")
         + ", type="
@@ -203,7 +203,7 @@ public class AcInput extends SystemParticipantInput implements HasType, HasTherm
 
     @Override
     public AcInputCopyBuilder scale(double factor) {
-      return type(type.copy().scale(factor).build());
+      type(type.copy().scale(factor).build());
       return thisInstance();
     }
 
@@ -216,7 +216,7 @@ public class AcInput extends SystemParticipantInput implements HasType, HasTherm
           getOperationTime(),
           getNode(),
           thermalBus,
-          getQCharacteristics(),
+          getqCharacteristics(),
           getControllingEm(),
           type,
           getAdditionalInformation());

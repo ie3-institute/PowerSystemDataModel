@@ -49,4 +49,10 @@ public sealed class IdCoordinateInput implements InputEntity {
   public Map<String, String> getAdditionalInformation() {
     return Map.of();
   }
+
+  public static final class CosmoIdCoordinateInput extends IdCoordinateInput {}
+
+  public static final class IconIdCoordinateInput extends IdCoordinateInput {}
+
+  public static final class SqlIdCoordinateInput extends IdCoordinateInput {}
 }

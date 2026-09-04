@@ -339,7 +339,7 @@ public class ThermalHouseInput extends ThermalSinkInput {
     public ThermalHouseInputCopyBuilder scale(double factor) {
       // scale losses as well as capacity and number of inhabitants to keep equal
       // the time needed to heat a scaled house
-      return ethLosses(ethLosses.multiply(factor));
+      ethLosses(ethLosses.multiply(factor));
       ethCapa(ethCapa.multiply(factor));
       numberOfInhabitants(numberOfInhabitants * factor);
       return thisInstance();

@@ -145,11 +145,11 @@ public class LoadInput extends SystemParticipantInput {
     return loadProfile;
   }
 
-  public ComparableQuantity<Energy> getEConsAnnual() {
+  public ComparableQuantity<Energy> geteConsAnnual() {
     return eConsAnnual;
   }
 
-  public ComparableQuantity<Power> getSRated() {
+  public ComparableQuantity<Power> getsRated() {
     return sRated;
   }
 
@@ -192,7 +192,7 @@ public class LoadInput extends SystemParticipantInput {
         + ", node="
         + getNode().getUuid()
         + ", qCharacteristics="
-        + getQCharacteristics()
+        + getqCharacteristics()
         + ", controllingEm="
         + getControllingEm().map(e -> e.getUuid().toString()).orElse("")
         + ", loadProfile="
@@ -245,7 +245,7 @@ public class LoadInput extends SystemParticipantInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Energy> getEConsAnnual() {
+    protected ComparableQuantity<Energy> geteConsAnnual() {
       return eConsAnnual;
     }
 
@@ -254,7 +254,7 @@ public class LoadInput extends SystemParticipantInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Power> getSRated() {
+    protected ComparableQuantity<Power> getsRated() {
       return sRated;
     }
 
@@ -269,7 +269,7 @@ public class LoadInput extends SystemParticipantInput {
 
     @Override
     public LoadInputCopyBuilder scale(double factor) {
-      return eConsAnnual(eConsAnnual.multiply(factor));
+      eConsAnnual(eConsAnnual.multiply(factor));
       sRated(sRated.multiply(factor));
       return thisInstance();
     }
@@ -282,7 +282,7 @@ public class LoadInput extends SystemParticipantInput {
           getOperator(),
           getOperationTime(),
           getNode(),
-          getQCharacteristics(),
+          getqCharacteristics(),
           getControllingEm(),
           loadProfile,
           eConsAnnual,

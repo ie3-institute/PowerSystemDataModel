@@ -84,15 +84,15 @@ public class EvTypeInput extends SystemParticipantTypeInput {
     setAdditionalInformation(additionalInformation);
   }
 
-  public ComparableQuantity<Energy> getEStorage() {
+  public ComparableQuantity<Energy> geteStorage() {
     return eStorage;
   }
 
-  public ComparableQuantity<SpecificEnergy> getECons() {
+  public ComparableQuantity<SpecificEnergy> geteCons() {
     return eCons;
   }
 
-  public ComparableQuantity<Power> getSRatedDC() {
+  public ComparableQuantity<Power> getsRatedDC() {
     return sRatedDC;
   }
 
@@ -123,7 +123,7 @@ public class EvTypeInput extends SystemParticipantTypeInput {
         + ", opex="
         + getOpex()
         + ", sRated="
-        + getSRated()
+        + getsRated()
         + ", cosPhiRated="
         + getCosPhiRated()
         + ", eStorage="
@@ -162,7 +162,7 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Energy> getEStorage() {
+    protected ComparableQuantity<Energy> geteStorage() {
       return eStorage;
     }
 
@@ -171,7 +171,7 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<SpecificEnergy> getECons() {
+    protected ComparableQuantity<SpecificEnergy> geteCons() {
       return eCons;
     }
 
@@ -180,13 +180,13 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Power> getSRatedDC() {
+    protected ComparableQuantity<Power> getsRatedDC() {
       return sRatedDC;
     }
 
     @Override
     public EvTypeInputCopyBuilder scale(double factor) {
-      return capex(getCapex().multiply(factor));
+      capex(getCapex().multiply(factor));
       sRated(getsRated().multiply(factor));
       eStorage(geteStorage().multiply(factor));
       eCons(geteCons().multiply(factor));
@@ -203,7 +203,7 @@ public class EvTypeInput extends SystemParticipantTypeInput {
           getOpex(),
           eStorage,
           eCons,
-          getSRated(),
+          getsRated(),
           getCosPhiRated(),
           sRatedDC,
           getAdditionalInformation());

@@ -58,7 +58,7 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
     return opex;
   }
 
-  public ComparableQuantity<Power> getSRated() {
+  public ComparableQuantity<Power> getsRated() {
     return sRated;
   }
 
@@ -147,7 +147,7 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Power> getSRated() {
+    protected ComparableQuantity<Power> getsRated() {
       return sRated;
     }
 
@@ -166,18 +166,9 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
      * properties associated with the input type (if applicable) are scaled as well.
      *
      * @param factor The factor to scale with
-     * @return A copy builder with scaled relevant propertiesScales the input entity in a way that
-     *     tries to preserve proportions that are related to power. This means that capacity,
-     *     consumption etc. are scaled with the same factor. Related properties associated with the
-     *     input type (if applicable) are scaled as well.
-     * @param factor The factor to scale with
      * @return A copy builder with scaled relevant properties
      */
-    @Override
-    public B scale(double factor) {
-      return null;
-      return thisInstance();
-    }
+    public abstract B scale(double factor);
 
     @Override
     public abstract SystemParticipantTypeInput build();

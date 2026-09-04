@@ -94,11 +94,11 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     setAdditionalInformation(additionalInformation);
   }
 
-  public ComparableQuantity<Energy> getEStorage() {
+  public ComparableQuantity<Energy> geteStorage() {
     return eStorage;
   }
 
-  public ComparableQuantity<Power> getPMax() {
+  public ComparableQuantity<Power> getpMax() {
     return pMax;
   }
 
@@ -138,7 +138,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
         + ", opex="
         + getOpex()
         + ", sRated="
-        + getSRated()
+        + getsRated()
         + ", cosPhiRated="
         + getCosPhiRated()
         + ", eStorage="
@@ -182,7 +182,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Energy> getEStorage() {
+    protected ComparableQuantity<Energy> geteStorage() {
       return eStorage;
     }
 
@@ -191,7 +191,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Power> getPMax() {
+    protected ComparableQuantity<Power> getpMax() {
       return pMax;
     }
 
@@ -216,7 +216,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
 
     @Override
     public StorageTypeInputCopyBuilder scale(double factor) {
-      return capex(getCapex().multiply(factor));
+      capex(getCapex().multiply(factor));
       sRated(getsRated().multiply(factor));
       eStorage(geteStorage().multiply(factor));
       pMax(getpMax().multiply(factor));
@@ -231,7 +231,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
           getCapex(),
           getOpex(),
           eStorage,
-          getSRated(),
+          getsRated(),
           getCosPhiRated(),
           pMax,
           activePowerGradient,

@@ -119,7 +119,7 @@ public final class GenerationConfig implements HelperMethods {
     @JsonProperty("abstract")
     public boolean isAbstract = false;
 
-    public boolean explicitReturn = true;
+    public boolean addReturn = true;
     public boolean annotation = true;
     public String comment = "";
     public List<ModelDefinition.Parameter> parameters = new ArrayList<>();

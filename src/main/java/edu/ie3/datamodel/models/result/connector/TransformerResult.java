@@ -18,7 +18,7 @@ import tech.units.indriya.ComparableQuantity;
  */
 public class TransformerResult extends ConnectorResult {
   /** Current tapping position if a transformer has a tap changer. */
-  private final int tapPos;
+  private int tapPos;
 
   /**
    * Standard constructor for a transformer result.

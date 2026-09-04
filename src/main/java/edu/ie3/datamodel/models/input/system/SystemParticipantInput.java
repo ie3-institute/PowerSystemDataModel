@@ -87,7 +87,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     return node;
   }
 
-  public ReactivePowerCharacteristic getQCharacteristics() {
+  public ReactivePowerCharacteristic getqCharacteristics() {
     return qCharacteristics;
   }
 
@@ -100,10 +100,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     return Collections.singletonList(node);
   }
 
-  @Override
-  public ComparableQuantity<Power> sRated() {
-    return null;
-  }
+  public abstract ComparableQuantity<Power> sRated();
 
   @Override
   public boolean equals(Object o) {
@@ -175,7 +172,7 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
       return thisInstance();
     }
 
-    protected ReactivePowerCharacteristic getQCharacteristics() {
+    protected ReactivePowerCharacteristic getqCharacteristics() {
       return qCharacteristics;
     }
 
@@ -194,18 +191,9 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
      * properties associated with the input type (if applicable) are scaled as well.
      *
      * @param factor The factor to scale with
-     * @return A copy builder with scaled relevant propertiesScales the input entity in a way that
-     *     tries to preserve proportions that are related to power. This means that capacity,
-     *     consumption etc. are scaled with the same factor. Related properties associated with the
-     *     input type (if applicable) are scaled as well.
-     * @param factor The factor to scale with
      * @return A copy builder with scaled relevant properties
      */
-    @Override
-    public B scale(double factor) {
-      return null;
-      return thisInstance();
-    }
+    public abstract B scale(double factor);
 
     @Override
     public abstract SystemParticipantInput build();

@@ -111,11 +111,11 @@ public class LineTypeInput extends AssetTypeInput {
     return x;
   }
 
-  public ComparableQuantity<ElectricCurrent> getIMax() {
+  public ComparableQuantity<ElectricCurrent> getiMax() {
     return iMax;
   }
 
-  public ComparableQuantity<ElectricPotential> getVRated() {
+  public ComparableQuantity<ElectricPotential> getvRated() {
     return vRated;
   }
 
@@ -231,7 +231,7 @@ public class LineTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<ElectricCurrent> getIMax() {
+    protected ComparableQuantity<ElectricCurrent> getiMax() {
       return iMax;
     }
 
@@ -240,7 +240,7 @@ public class LineTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<ElectricPotential> getVRated() {
+    protected ComparableQuantity<ElectricPotential> getvRated() {
       return vRated;
     }
 

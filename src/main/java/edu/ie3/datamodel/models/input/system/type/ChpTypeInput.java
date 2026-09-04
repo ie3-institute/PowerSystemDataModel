@@ -100,11 +100,11 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
     return etaThermal;
   }
 
-  public ComparableQuantity<Power> getPThermal() {
+  public ComparableQuantity<Power> getpThermal() {
     return pThermal;
   }
 
-  public ComparableQuantity<Power> getPOwn() {
+  public ComparableQuantity<Power> getpOwn() {
     return pOwn;
   }
 
@@ -136,7 +136,7 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
         + ", opex="
         + getOpex()
         + ", sRated="
-        + getSRated()
+        + getsRated()
         + ", cosPhiRated="
         + getCosPhiRated()
         + ", etaEl="
@@ -198,7 +198,7 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Power> getPThermal() {
+    protected ComparableQuantity<Power> getpThermal() {
       return pThermal;
     }
 
@@ -207,13 +207,13 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Power> getPOwn() {
+    protected ComparableQuantity<Power> getpOwn() {
       return pOwn;
     }
 
     @Override
     public ChpTypeInputCopyBuilder scale(double factor) {
-      return capex(getCapex().multiply(factor));
+      capex(getCapex().multiply(factor));
       sRated(getsRated().multiply(factor));
       pThermal(getpThermal().multiply(factor));
       pOwn(getpOwn().multiply(factor));
@@ -229,7 +229,7 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
           getOpex(),
           etaEl,
           etaThermal,
-          getSRated(),
+          getsRated(),
           getCosPhiRated(),
           pThermal,
           pOwn,

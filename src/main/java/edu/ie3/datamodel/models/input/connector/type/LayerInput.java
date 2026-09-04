@@ -179,7 +179,6 @@ public class LayerInput extends AssetTypeInput {
     return Optional.ofNullable(area);
   }
 
-  @Override
   public String name() {
     return getId();
   }

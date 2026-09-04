@@ -68,7 +68,7 @@ public class AcTypeInput extends SystemParticipantTypeInput {
     setAdditionalInformation(additionalInformation);
   }
 
-  public ComparableQuantity<Power> getPThermal() {
+  public ComparableQuantity<Power> getpThermal() {
     return pThermal;
   }
 
@@ -97,7 +97,7 @@ public class AcTypeInput extends SystemParticipantTypeInput {
         + ", opex="
         + getOpex()
         + ", sRated="
-        + getSRated()
+        + getsRated()
         + ", cosPhiRated="
         + getCosPhiRated()
         + ", pThermal="
@@ -126,13 +126,13 @@ public class AcTypeInput extends SystemParticipantTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Power> getPThermal() {
+    protected ComparableQuantity<Power> getpThermal() {
       return pThermal;
     }
 
     @Override
     public AcTypeInputCopyBuilder scale(double factor) {
-      return capex(getCapex().multiply(factor));
+      capex(getCapex().multiply(factor));
       sRated(getsRated().multiply(factor));
       pThermal(getpThermal().multiply(factor));
       return thisInstance();
@@ -145,7 +145,7 @@ public class AcTypeInput extends SystemParticipantTypeInput {
           getId(),
           getCapex(),
           getOpex(),
-          getSRated(),
+          getsRated(),
           getCosPhiRated(),
           pThermal,
           getAdditionalInformation());

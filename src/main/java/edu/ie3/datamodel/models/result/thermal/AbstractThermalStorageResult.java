@@ -17,7 +17,7 @@ import tech.units.indriya.ComparableQuantity;
 /** Abstract class representing the common results of different types of thermal storages. */
 public abstract class AbstractThermalStorageResult extends ThermalStorageResult {
   /** Fill level of the storage. */
-  private final ComparableQuantity<Dimensionless> fillLevel;
+  private ComparableQuantity<Dimensionless> fillLevel;
 
   /**
    * Constructs the result with

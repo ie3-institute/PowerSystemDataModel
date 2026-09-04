@@ -142,8 +142,12 @@ public class ConductorInput extends AssetInput {
     return thermalCapacitance;
   }
 
-  public Optional<ComparableQuantity<Area>> getArea() {
+  public Optional<ComparableQuantity<Area>> area() {
     return Optional.ofNullable(area);
+  }
+
+  public String name() {
+    return getId();
   }
 
   @Override
@@ -296,7 +300,7 @@ public class ConductorInput extends AssetInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Area> getArea() {
+    protected ComparableQuantity<Area> area() {
       return area;
     }
 

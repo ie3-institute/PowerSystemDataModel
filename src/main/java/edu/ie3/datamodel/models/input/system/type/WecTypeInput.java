@@ -139,7 +139,7 @@ public class WecTypeInput extends SystemParticipantTypeInput {
         + ", opex="
         + getOpex()
         + ", sRated="
-        + getSRated()
+        + getsRated()
         + ", cosPhiRated="
         + getCosPhiRated()
         + ", cpCharacteristic="
@@ -216,7 +216,7 @@ public class WecTypeInput extends SystemParticipantTypeInput {
 
     @Override
     public WecTypeInputCopyBuilder scale(double factor) {
-      return capex(getCapex().multiply(factor));
+      capex(getCapex().multiply(factor));
       sRated(getsRated().multiply(factor));
       rotorArea(getRotorArea().multiply(factor));
       return thisInstance();
@@ -229,7 +229,7 @@ public class WecTypeInput extends SystemParticipantTypeInput {
           getId(),
           getCapex(),
           getOpex(),
-          getSRated(),
+          getsRated(),
           getCosPhiRated(),
           cpCharacteristic,
           etaConv,

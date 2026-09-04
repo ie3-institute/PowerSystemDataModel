@@ -109,7 +109,7 @@ public class BmTypeInput extends SystemParticipantTypeInput {
         + ", opex="
         + getOpex()
         + ", sRated="
-        + getSRated()
+        + getsRated()
         + ", cosPhiRated="
         + getCosPhiRated()
         + ", activePowerGradient="
@@ -159,7 +159,7 @@ public class BmTypeInput extends SystemParticipantTypeInput {
 
     @Override
     public BmTypeInputCopyBuilder scale(double factor) {
-      return capex(getCapex().multiply(factor));
+      capex(getCapex().multiply(factor));
       sRated(getsRated().multiply(factor));
       return thisInstance();
     }
@@ -172,7 +172,7 @@ public class BmTypeInput extends SystemParticipantTypeInput {
           getCapex(),
           getOpex(),
           activePowerGradient,
-          getSRated(),
+          getsRated(),
           getCosPhiRated(),
           etaConv,
           getAdditionalInformation());

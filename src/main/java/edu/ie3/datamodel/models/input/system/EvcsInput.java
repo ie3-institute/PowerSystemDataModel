@@ -199,7 +199,7 @@ public class EvcsInput extends SystemParticipantInput {
         + ", node="
         + getNode().getUuid()
         + ", qCharacteristics="
-        + getQCharacteristics()
+        + getqCharacteristics()
         + ", controllingEm="
         + getControllingEm().map(e -> e.getUuid().toString()).orElse("")
         + ", type="
@@ -290,7 +290,7 @@ public class EvcsInput extends SystemParticipantInput {
 
     @Override
     public EvcsInputCopyBuilder scale(double factor) {
-      return type(type.copy().scale(factor).build());
+      type(type.copy().scale(factor).build());
       return thisInstance();
     }
 
@@ -302,7 +302,7 @@ public class EvcsInput extends SystemParticipantInput {
           getOperator(),
           getOperationTime(),
           getNode(),
-          getQCharacteristics(),
+          getqCharacteristics(),
           getControllingEm(),
           type,
           chargingPoints,

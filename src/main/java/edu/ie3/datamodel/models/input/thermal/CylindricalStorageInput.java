@@ -149,7 +149,7 @@ public class CylindricalStorageInput extends AbstractStorageInput {
         + ", c="
         + getC()
         + ", pThermalMax="
-        + getPThermalMax()
+        + getpThermalMax()
         + ", additionalInformation="
         + getAdditionalInformation()
         + "}";
@@ -178,7 +178,7 @@ public class CylindricalStorageInput extends AbstractStorageInput {
           getInletTemp(),
           getReturnTemp(),
           getC(),
-          getPThermalMax(),
+          getpThermalMax(),
           getAdditionalInformation());
     }
 

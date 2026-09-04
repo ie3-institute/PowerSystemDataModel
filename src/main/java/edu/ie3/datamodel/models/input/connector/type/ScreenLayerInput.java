@@ -248,7 +248,6 @@ public class ScreenLayerInput extends AssetTypeInput {
     return electricalResistivity;
   }
 
-  @Override
   public String name() {
     return getId();
   }

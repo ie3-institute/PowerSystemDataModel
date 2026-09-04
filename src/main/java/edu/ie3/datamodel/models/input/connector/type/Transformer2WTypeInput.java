@@ -160,39 +160,39 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     setAdditionalInformation(additionalInformation);
   }
 
-  public ComparableQuantity<ElectricResistance> getRSc() {
+  public ComparableQuantity<ElectricResistance> getrSc() {
     return rSc;
   }
 
-  public ComparableQuantity<ElectricResistance> getXSc() {
+  public ComparableQuantity<ElectricResistance> getxSc() {
     return xSc;
   }
 
-  public ComparableQuantity<Power> getSRated() {
+  public ComparableQuantity<Power> getsRated() {
     return sRated;
   }
 
-  public ComparableQuantity<ElectricPotential> getVRatedA() {
+  public ComparableQuantity<ElectricPotential> getvRatedA() {
     return vRatedA;
   }
 
-  public ComparableQuantity<ElectricPotential> getVRatedB() {
+  public ComparableQuantity<ElectricPotential> getvRatedB() {
     return vRatedB;
   }
 
-  public ComparableQuantity<ElectricConductance> getGM() {
+  public ComparableQuantity<ElectricConductance> getgM() {
     return gM;
   }
 
-  public ComparableQuantity<ElectricConductance> getBM() {
+  public ComparableQuantity<ElectricConductance> getbM() {
     return bM;
   }
 
-  public ComparableQuantity<Dimensionless> getDV() {
+  public ComparableQuantity<Dimensionless> getdV() {
     return dV;
   }
 
-  public ComparableQuantity<Angle> getDPhi() {
+  public ComparableQuantity<Angle> getdPhi() {
     return dPhi;
   }
 
@@ -344,7 +344,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<ElectricResistance> getRSc() {
+    protected ComparableQuantity<ElectricResistance> getrSc() {
       return rSc;
     }
 
@@ -353,7 +353,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<ElectricResistance> getXSc() {
+    protected ComparableQuantity<ElectricResistance> getxSc() {
       return xSc;
     }
 
@@ -362,7 +362,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Power> getSRated() {
+    protected ComparableQuantity<Power> getsRated() {
       return sRated;
     }
 
@@ -372,7 +372,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<ElectricPotential> getVRatedA() {
+    protected ComparableQuantity<ElectricPotential> getvRatedA() {
       return vRatedA;
     }
 
@@ -382,7 +382,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<ElectricPotential> getVRatedB() {
+    protected ComparableQuantity<ElectricPotential> getvRatedB() {
       return vRatedB;
     }
 
@@ -391,7 +391,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<ElectricConductance> getGM() {
+    protected ComparableQuantity<ElectricConductance> getgM() {
       return gM;
     }
 
@@ -400,7 +400,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<ElectricConductance> getBM() {
+    protected ComparableQuantity<ElectricConductance> getbM() {
       return bM;
     }
 
@@ -409,7 +409,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Dimensionless> getDV() {
+    protected ComparableQuantity<Dimensionless> getdV() {
       return dV;
     }
 
@@ -418,7 +418,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Angle> getDPhi() {
+    protected ComparableQuantity<Angle> getdPhi() {
       return dPhi;
     }
 

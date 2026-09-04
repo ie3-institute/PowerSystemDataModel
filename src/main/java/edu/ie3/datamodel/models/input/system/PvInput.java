@@ -201,15 +201,15 @@ public class PvInput extends SystemParticipantInput {
     return elevationAngle;
   }
 
-  public double getKG() {
+  public double getkG() {
     return kG;
   }
 
-  public double getKT() {
+  public double getkT() {
     return kT;
   }
 
-  public ComparableQuantity<Power> getSRated() {
+  public ComparableQuantity<Power> getsRated() {
     return sRated;
   }
 
@@ -257,7 +257,7 @@ public class PvInput extends SystemParticipantInput {
         + ", node="
         + getNode().getUuid()
         + ", qCharacteristics="
-        + getQCharacteristics()
+        + getqCharacteristics()
         + ", controllingEm="
         + getControllingEm().map(e -> e.getUuid().toString()).orElse("")
         + ", albedo="
@@ -357,7 +357,7 @@ public class PvInput extends SystemParticipantInput {
       return thisInstance();
     }
 
-    protected double getKG() {
+    protected double getkG() {
       return kG;
     }
 
@@ -366,7 +366,7 @@ public class PvInput extends SystemParticipantInput {
       return thisInstance();
     }
 
-    protected double getKT() {
+    protected double getkT() {
       return kT;
     }
 
@@ -375,7 +375,7 @@ public class PvInput extends SystemParticipantInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Power> getSRated() {
+    protected ComparableQuantity<Power> getsRated() {
       return sRated;
     }
 
@@ -390,7 +390,7 @@ public class PvInput extends SystemParticipantInput {
 
     @Override
     public PvInputCopyBuilder scale(double factor) {
-      return this.sRated = this.sRated.multiply(factor);
+      this.sRated = this.sRated.multiply(factor);
       return thisInstance();
     }
 
@@ -402,7 +402,7 @@ public class PvInput extends SystemParticipantInput {
           getOperator(),
           getOperationTime(),
           getNode(),
-          getQCharacteristics(),
+          getqCharacteristics(),
           getControllingEm(),
           albedo,
           azimuth,

@@ -178,7 +178,7 @@ public class ChpInput extends SystemParticipantInput
         + ", node="
         + getNode().getUuid()
         + ", qCharacteristics="
-        + getQCharacteristics()
+        + getqCharacteristics()
         + ", controllingEm="
         + getControllingEm().map(e -> e.getUuid().toString()).orElse("")
         + ", thermalBus="
@@ -241,7 +241,7 @@ public class ChpInput extends SystemParticipantInput
 
     @Override
     public ChpInputCopyBuilder scale(double factor) {
-      return this.type = this.type.copy().scale(factor).build();
+      this.type = this.type.copy().scale(factor).build();
       return thisInstance();
     }
 
@@ -254,7 +254,7 @@ public class ChpInput extends SystemParticipantInput
           getOperationTime(),
           getNode(),
           thermalBus,
-          getQCharacteristics(),
+          getqCharacteristics(),
           getControllingEm(),
           type,
           thermalStorage,

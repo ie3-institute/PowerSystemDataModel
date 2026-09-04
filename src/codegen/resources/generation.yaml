@@ -128,7 +128,7 @@ datamodel:
       hashCode: false
       toString: false
       copy: false
-      nestedClasses: [CosmoIdCoordinateInput, IconIdCoordinateInput, SqlIdCoordinateInput]
+      nested: [CosmoIdCoordinateInput, IconIdCoordinateInput, SqlIdCoordinateInput]
 
     MeasurementUnitInput:
       classJavaDoc: "Model of a measuring unit attached to a certain {@link NodeInput}."
@@ -235,7 +235,7 @@ datamodel:
           expression: buildPoint(51.4843281, 7.4116482)
           className: GeoUtils
           javaDoc: "Use this default value if geoPosition is unknown."
-      nonCapitalizedGetters: [vTarget]
+      nonCapitalized: [vTarget]
 
     OperatorInput:
       classJavaDoc: "Describes an operator, that operates assets."
@@ -547,6 +547,7 @@ datamodel:
               className: Quantities
               unitClass: PowerSystemUnits
               insert: true
+              addReturn: false
           constructorChecks:
             - expression: connectsNodesToCorrectVoltageSides(nodeA, nodeB, nodeC)
               className: ConnectorValidationUtils
@@ -623,12 +624,13 @@ datamodel:
               className: ConnectorValidationUtils
       copyBuilderAdditionalMethods:
         - name: internalSlack
-          isAbstract: false
+          abstract: false
           annotation: false
           parameters:
             - name: internalNodeIsSlack
               type: bool
           expression: this.nodeInternal = this.nodeInternal.copy().slack(internalNodeIsSlack).build()
+          addReturn: false
       methodOverrides:
         - name: allNodes
           type: NodeList
@@ -706,7 +708,12 @@ datamodel:
         - name: fullWithAdditionalInformation
           components: [uuid, id, operator, operationTime, material, crossSection, diameter, isCompacted, thermalResistivity, thermalCapacitance, area, additionalInformation]
           superArgs: [uuid, id, operator, operationTime]
-      fieldNameGetters: [material, crossSection, diameter, isCompacted, thermalResistivity, thermalCapacitance]
+      fieldNameGetters: [material, crossSection, diameter, isCompacted, thermalResistivity, thermalCapacitance, area]
+      methodInserts:
+        - name: name
+          type: String
+          expression: getId()
+          annotation: false
 
     LayerInput:
       classJavaDoc: "Represents a concentric layer of a cable, including insulation, filler, armor, and jacket layers."
@@ -774,6 +781,7 @@ datamodel:
         - name: name
           type: String
           expression: getId()
+          annotation: false
 
     LineTypeInput:
       classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.connector.LineInput}."
@@ -801,7 +809,7 @@ datamodel:
                  @param iMax Maximum thermal current for this type of line (typically in A)\n
                  @param vRated Rated voltage for this type of line\n
                  @param additionalInformation That were provided by the source"
-      nonCapitalizedGetters: [iMax, vRated]
+      nonCapitalized: [iMax, vRated]
 
     ScreenLayerInput:
       classJavaDoc: "Represents a concentric layer of a cable, including insulation, filler, armor, and jacket layers."
@@ -887,6 +895,7 @@ datamodel:
         - name: name
           type: String
           expression: getId()
+          annotation: false
 
     Transformer2WTypeInput:
       classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput}."
@@ -928,7 +937,7 @@ datamodel:
                  @param tapMin Minimum available tap position\n
                  @param tapMax Maximum available tap position\n
                  @param additionalInformation That were provided by the source"
-      nonCapitalizedGetters: [rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi]
+      nonCapitalized: [rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi]
 
     Transformer3WTypeInput:
       classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer3WInput}."
@@ -982,7 +991,7 @@ datamodel:
                  @param tapMin Minimum available tap position\n
                  @param tapMax Maximum available tap position\n
                  @param additionalInformation That were provided by the source"
-      nonCapitalizedGetters: [sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi]
+      nonCapitalized: [sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi]
 
   models.input.system:
     SystemParticipantInput:
@@ -1019,10 +1028,10 @@ datamodel:
       methodInserts:
         - name: sRated
           type: Power
-          isAbstract: true
+          abstract: true
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: true
+          abstract: true
           javaDoc: "Scales the input entity in a way that tries to preserve proportions that are related to\n
                  power. This means that capacity, consumption etc. are scaled with the same factor. Related\n
                  properties associated with the input type (if applicable) are scaled as well.\n
@@ -1032,7 +1041,7 @@ datamodel:
           parameters:
             - name: factor
               type: double
-      nonCapitalizedGetters: [qCharacteristics]
+      nonCapitalized: [qCharacteristics]
 
     AcInput:
       classJavaDoc: "Describes an air condition."
@@ -1085,12 +1094,13 @@ datamodel:
           expression: this.type.getsRated()
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: false
+          abstract: false
           parameters:
             - name: factor
               type: double
           expression: type(type.copy().scale(factor).build())
-      nonCapitalizedGetters: [qCharacteristics]
+          addReturn: false
+      nonCapitalized: [qCharacteristics]
 
     BmInput:
       classJavaDoc: "Describes a biomass plant."
@@ -1149,12 +1159,13 @@ datamodel:
           expression: this.type.getsRated()
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: false
+          abstract: false
           parameters:
             - name: factor
               type: double
           expression: this.type = this.type.copy().scale(factor).build()
-      nonCapitalizedGetters: [qCharacteristics]
+          addReturn: false
+      nonCapitalized: [qCharacteristics]
 
     ChpInput:
       classJavaDoc: "Describes a combined heat and power plant."
@@ -1213,12 +1224,13 @@ datamodel:
           expression: this.type.getsRated()
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: false
+          abstract: false
           parameters:
             - name: factor
               type: double
           expression: this.type = this.type.copy().scale(factor).build()
-      nonCapitalizedGetters: [qCharacteristics]
+          addReturn: false
+      nonCapitalized: [qCharacteristics]
 
     EvcsInput:
       classJavaDoc: "Describes an electric vehicle charging station."
@@ -1273,12 +1285,13 @@ datamodel:
           expression: this.type.getsRated()
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: false
+          abstract: false
           parameters:
             - name: factor
               type: double
           expression: type(type.copy().scale(factor).build())
-      nonCapitalizedGetters: [qCharacteristics]
+          addReturn: false
+      nonCapitalized: [qCharacteristics]
 
     EvInput:
       classJavaDoc: "Describes an electric vehicle."
@@ -1328,12 +1341,13 @@ datamodel:
           expression: this.type.getsRated()
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: false
+          abstract: false
           parameters:
             - name: factor
               type: double
           expression: type(type.copy().scale(factor).build())
-      nonCapitalizedGetters: [qCharacteristics]
+          addReturn: false
+      nonCapitalized: [qCharacteristics]
 
     FixedFeedInInput:
       classJavaDoc: "Dummy class to represent a constant feed in regardless of its type."
@@ -1385,12 +1399,13 @@ datamodel:
           expression: sRated
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: false
+          abstract: false
           parameters:
             - name: factor
               type: double
           expression: sRated(sRated.multiply(factor))
-      nonCapitalizedGetters: [qCharacteristics, sRated]
+          addReturn: false
+      nonCapitalized: [qCharacteristics, sRated]
 
     HpInput:
       classJavaDoc: "Describes a heat pump."
@@ -1443,12 +1458,13 @@ datamodel:
           expression: this.type.getsRated()
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: false
+          abstract: false
           parameters:
             - name: factor
               type: double
           expression: type(type.copy().scale(factor).build())
-      nonCapitalizedGetters: [qCharacteristics]
+          addReturn: false
+      nonCapitalized: [qCharacteristics]
 
     LoadInput:
       classJavaDoc: "Describes a load."
@@ -1506,12 +1522,14 @@ datamodel:
           expression: sRated
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: false
+          abstract: false
           parameters:
             - name: factor
               type: double
-          expression: eConsAnnual(eConsAnnual.multiply(factor)); sRated(sRated.multiply(factor))
-      nonCapitalizedGetters: [eConsAnnual, qCharacteristics, sRated]
+          expression: "eConsAnnual(eConsAnnual.multiply(factor));\n
+                    sRated(sRated.multiply(factor))"
+          addReturn: false
+      nonCapitalized: [eConsAnnual, qCharacteristics, sRated]
 
     PvInput:
       classJavaDoc: "Describes a photovoltaic plant."
@@ -1581,12 +1599,13 @@ datamodel:
           expression: sRated
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: false
+          abstract: false
           parameters:
             - name: factor
               type: double
           expression: this.sRated = this.sRated.multiply(factor)
-      nonCapitalizedGetters: [qCharacteristics, sRated, kG, kT]
+          addReturn: false
+      nonCapitalized: [qCharacteristics, sRated, kG, kT]
 
     StorageInput:
       classJavaDoc: "Describes a battery storage."
@@ -1636,12 +1655,13 @@ datamodel:
           expression: this.type.getsRated()
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: false
+          abstract: false
           parameters:
             - name: factor
               type: double
           expression: type(type.copy().scale(factor).build())
-      nonCapitalizedGetters: [qCharacteristics]
+          addReturn: false
+      nonCapitalized: [qCharacteristics]
 
     WecInput:
       classJavaDoc: "Describes a Wind Energy Converter."
@@ -1691,12 +1711,13 @@ datamodel:
           expression: this.type.getsRated()
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: false
+          abstract: false
           parameters:
             - name: factor
               type: double
           expression: type(type.copy().scale(factor).build())
-      nonCapitalizedGetters: [qCharacteristics]
+          addReturn: false
+      nonCapitalized: [qCharacteristics]
 
   models.input.system.type:
     SystemParticipantTypeInput:
@@ -1713,7 +1734,7 @@ datamodel:
                @param cosPhiRated Power factor for this type of system participant"
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: true
+          abstract: true
           javaDoc: "Scales the input entity in a way that tries to preserve proportions that are related to\n
                  power. This means that capacity, consumption etc. are scaled with the same factor. Related\n
                  properties associated with the input type (if applicable) are scaled as well.\n
@@ -1723,7 +1744,8 @@ datamodel:
           parameters:
             - name: factor
               type: double
-      nonCapitalizedGetters: [sRated]
+          annotation: false
+      nonCapitalized: [sRated]
 
     AcTypeInput:
       classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.system.AcInput}."
@@ -1753,12 +1775,15 @@ datamodel:
                  @param additionalInformation That were provided by the source"
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: false
+          abstract: false
           parameters:
             - name: factor
               type: double
-          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); pThermal(getpThermal().multiply(factor))
-      nonCapitalizedGetters: [pThermal, sRated]
+          expression: "capex(getCapex().multiply(factor));\n
+                    sRated(getsRated().multiply(factor));\n
+                    pThermal(getpThermal().multiply(factor))"
+          addReturn: false
+      nonCapitalized: [pThermal, sRated]
 
     BmTypeInput:
       classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.system.BmInput}."
@@ -1788,12 +1813,14 @@ datamodel:
                  @param additionalInformation That were provided by the source"
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: false
+          abstract: false
           parameters:
             - name: factor
               type: double
-          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor))
-      nonCapitalizedGetters: [sRated]
+          expression: "capex(getCapex().multiply(factor));\n
+                    sRated(getsRated().multiply(factor))"
+          addReturn: false
+      nonCapitalized: [sRated]
 
     ChpTypeInput:
       classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.ChpInput}."
@@ -1827,12 +1854,16 @@ datamodel:
                  @param additionalInformation That were provided by the source"
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: false
+          abstract: false
           parameters:
             - name: factor
               type: double
-          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); pThermal(getpThermal().multiply(factor)); pOwn(getpOwn().multiply(factor))
-      nonCapitalizedGetters: [pOwn, pThermal, sRated]
+          expression: "capex(getCapex().multiply(factor));\n
+                    sRated(getsRated().multiply(factor));\n
+                    pThermal(getpThermal().multiply(factor));\n
+                    pOwn(getpOwn().multiply(factor))"
+          addReturn: false
+      nonCapitalized: [pOwn, pThermal, sRated]
 
     EvTypeInput:
       classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.EvInput}."
@@ -1864,12 +1895,17 @@ datamodel:
                  @param additionalInformation That were provided by the source"
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: false
+          abstract: false
           parameters:
             - name: factor
               type: double
-          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); eStorage(geteStorage().multiply(factor)); eCons(geteCons().multiply(factor)); sRatedDC(getsRatedDC().multiply(factor))
-      nonCapitalizedGetters: [eStorage, eCons, sRated, sRatedDC]
+          expression: "capex(getCapex().multiply(factor));\n
+                    sRated(getsRated().multiply(factor));\n
+                    eStorage(geteStorage().multiply(factor));\n
+                    eCons(geteCons().multiply(factor));\n
+                    sRatedDC(getsRatedDC().multiply(factor))"
+          addReturn: false
+      nonCapitalized: [eStorage, eCons, sRated, sRatedDC]
 
     HpTypeInput:
       classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.system.HpInput}."
@@ -1899,12 +1935,15 @@ datamodel:
                  @param additionalInformation That were provided by the source"
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: false
+          abstract: false
           parameters:
             - name: factor
               type: double
-          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); pThermal(getpThermal().multiply(factor))
-      nonCapitalizedGetters: [pThermal, sRated]
+          expression: "capex(getCapex().multiply(factor));\n
+                    sRated(getsRated().multiply(factor));\n
+                    pThermal(getpThermal().multiply(factor))"
+          addReturn: false
+      nonCapitalized: [pThermal, sRated]
 
     StorageTypeInput:
       classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.StorageInput}."
@@ -1938,12 +1977,16 @@ datamodel:
                  @param additionalInformation That were provided by the source"
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: false
+          abstract: false
           parameters:
             - name: factor
               type: double
-          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); eStorage(geteStorage().multiply(factor)); pMax(getpMax().multiply(factor))
-      nonCapitalizedGetters: [eStorage, pMax, sRated]
+          expression: "capex(getCapex().multiply(factor));\n
+                    sRated(getsRated().multiply(factor));\n
+                    eStorage(geteStorage().multiply(factor));\n
+                    pMax(getpMax().multiply(factor))"
+          addReturn: false
+      nonCapitalized: [eStorage, pMax, sRated]
 
     WecTypeInput:
       classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.WecInput}."
@@ -1977,12 +2020,15 @@ datamodel:
                  @param additionalInformation That were provided by the source"
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: false
+          abstract: false
           parameters:
             - name: factor
               type: double
-          expression: capex(getCapex().multiply(factor)); sRated(getsRated().multiply(factor)); rotorArea(getRotorArea().multiply(factor))
-      nonCapitalizedGetters: [sRated]
+          expression: "capex(getCapex().multiply(factor));\n
+                    sRated(getsRated().multiply(factor));\n
+                    rotorArea(getRotorArea().multiply(factor))"
+          addReturn: false
+      nonCapitalized: [sRated]
 
   models.input.thermal:
     ThermalInput:
@@ -2025,7 +2071,7 @@ datamodel:
                  @param thermalBus thermal bus, a thermal unit is connected to"
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: true
+          abstract: true
           parameters:
             - name: factor
               type: double
@@ -2077,12 +2123,13 @@ datamodel:
                  @param pThermalMax Maximum thermal power of the storage"
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: false
+          abstract: false
           parameters:
             - name: factor
               type: double
           expression: storageVolumeLvl(storageVolumeLvl.multiply(factor)); pThermalMax(pThermalMax.multiply(factor))
-      nonCapitalizedGetters: [pThermalMax]
+          addReturn: false
+      nonCapitalized: [pThermalMax]
 
     CylindricalStorageInput:
       classJavaDoc: "Thermal storage with cylindrical shape."
@@ -2125,7 +2172,7 @@ datamodel:
                  @param returnTemp Temperature of the outlet\n
                  @param c Specific heat capacity of the storage medium\n
                  @param pThermalMax Maximum thermal power of the storage"
-      nonCapitalizedGetters: [pThermalMax]
+      nonCapitalized: [pThermalMax]
 
     DomesticHotWaterStorageInput:
       classJavaDoc: "Thermal storage with cylindrical shape for domestic hot water."
@@ -2174,7 +2221,7 @@ datamodel:
                  @param returnTemp Temperature of the outlet\n
                  @param c Specific heat capacity of the storage medium\n
                  @param pThermalMax Maximum thermal power of the storage"
-      nonCapitalizedGetters: [pThermalMax]
+      nonCapitalized: [pThermalMax]
 
     ThermalBusInput:
       classJavaDoc: "A thermal bus, to which different {@link ThermalUnitInput} units may be connected."
@@ -2273,11 +2320,14 @@ datamodel:
                  @param additionalInformation Of the input"
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: false
+          abstract: false
           parameters:
             - name: factor
               type: double
-          expression: ethLosses(ethLosses.multiply(factor)); ethCapa(ethCapa.multiply(factor)); numberOfInhabitants(numberOfInhabitants * factor)
+          expression: "ethLosses(ethLosses.multiply(factor));\n
+                    ethCapa(ethCapa.multiply(factor));\n
+                    numberOfInhabitants(numberOfInhabitants * factor)"
+          addReturn: false
           comment: "scale losses as well as capacity and number of inhabitants to keep equal\n
                   // the time needed to heat a scaled house"
 
@@ -2391,7 +2441,7 @@ datamodel:
                  @param iBMag electric current magnitude @ port B, normally provided in Ampere\n
                  @param iBAng electric current angle @ Port B in degree\n
                  @param tapPos Current position of the tap changer"
-      setters: [iAMag, iAAng, iBMag, iBAng]
+      setters: [iAMag, iAAng, iBMag, iBAng, tapPos]
       nonCapitalized: [iAMag, iAAng, iBMag, iBAng]
 
     Transformer2WResult:
@@ -2746,7 +2796,7 @@ datamodel:
                  @param inputModel uuid of the input model that produces the result\n
                  @param energy Currently stored energy\n
                  @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage"
-      setters: [qDot]
+      setters: [qDot, energy]
       nonCapitalized: [qDot]
 
     AbstractThermalStorageResult:
@@ -2762,7 +2812,7 @@ datamodel:
                  @param energy Currently stored energy\n
                  @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage\n
                  @param fillLevel Fill level of the storage"
-      setters: [qDot]
+      setters: [qDot, fillLevel]
       nonCapitalized: [qDot]
 
     CylindricalStorageResult:
@@ -3088,7 +3138,7 @@ datamodel:
           type: double
           annotation: false
           private: true
-          explicitReturn: false
+          addReturn: false
           parameters:
             - name: day
               type: DayOfWeek
@@ -3171,7 +3221,7 @@ datamodel:
                     \n
                     return values.get(key)"
           className: BdewSeason
-          explicitReturn: false
+          addReturn: false
         - name: getMaxValue
           type: double
           parameters:
@@ -3187,7 +3237,7 @@ datamodel:
                     \n
                     return stream.max().orElse(0.0)"
           className: DoubleStream
-          explicitReturn: false
+          addReturn: false
 
     Bdew2025:
       static: true
@@ -3214,7 +3264,7 @@ datamodel:
                     \n
                     return values.get(key)"
 
-          explicitReturn: false
+          addReturn: false
         - name: getMaxValue
           type: double
           parameters:
@@ -3230,4 +3280,4 @@ datamodel:
                     \n
                     return stream.max().orElse(0.0)"
           className: DoubleStream
-          explicitReturn: false
+          addReturn: false

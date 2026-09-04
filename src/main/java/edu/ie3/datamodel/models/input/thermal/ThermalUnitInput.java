@@ -99,11 +99,7 @@ public abstract class ThermalUnitInput extends ThermalInput implements HasTherma
       return thermalBus;
     }
 
-    @Override
-    public B scale(double factor) {
-      return null;
-      return thisInstance();
-    }
+    public abstract B scale(double factor);
 
     @Override
     public abstract ThermalUnitInput build();
