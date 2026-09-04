@@ -10,6 +10,7 @@ import static edu.ie3.codegen.ResolverUtils.resolveType;
 
 import com.palantir.javapoet.*;
 import java.util.*;
+import javax.lang.model.element.Modifier;
 
 /** Interface containing some helper methods. */
 public interface HelperMethods {
@@ -71,12 +72,12 @@ public interface HelperMethods {
   }
 
   /**
-   * Check if we should use an {@code equals()} call.
+   * Check if the class is a quantity.
    *
    * @param type of the field
-   * @return true, if an {@code equals()} call should be used
+   * @return true, if the type is a quantity
    */
-  default boolean useEquals(String type) {
+  default boolean isQuantity(String type) {
     String cn;
 
     if (resolveType(type) instanceof ParameterizedTypeName ptn) {
@@ -97,20 +98,20 @@ public interface HelperMethods {
    * @return the name of the getter method
    */
   default String defaultGetterName(String name, String type, GenerationConfig genConfig) {
-    if (genConfig.fieldNameGetters.contains(name)) {
+    if (genConfig.fieldNameGetters) {
       // if we should use the field name directly
       return name;
     }
 
     // a list with getters that should not be capitalized
-    List<String> nonCapitalizedGetters = genConfig.nonCapitalizedGetters;
+    List<String> nonCapitalized = genConfig.nonCapitalized;
 
     // a list of boolean getters that should use `get` instead of `is`
     List<String> booleanGetter = genConfig.booleanGetter;
 
     String methodName;
 
-    if (nonCapitalizedGetters.contains(name)) {
+    if (nonCapitalized.contains(name)) {
       methodName = name;
     } else {
       methodName = capitalize(name);
@@ -138,6 +139,27 @@ public interface HelperMethods {
   }
 
   /**
+   * Method for getting the default setter name.
+   *
+   * @param component definition to use
+   * @param genConfig generation config to use
+   * @return the name of the setter method
+   */
+  default String defaultSetterName(
+      ModelDefinition.ComponentDefinition component, GenerationConfig genConfig) {
+    String methodName;
+    String name = component.name;
+
+    if (genConfig.nonCapitalized.contains(name)) {
+      methodName = name;
+    } else {
+      methodName = capitalize(name);
+    }
+
+    return "set" + methodName;
+  }
+
+  /**
    * Method for capitalizing the first character of a string.
    *
    * @param value to be capitalized
@@ -153,8 +175,10 @@ public interface HelperMethods {
    * @param component definition to use
    * @return true, if the component should not be used
    */
-  default boolean excludeFromMethods(ModelDefinition.ComponentDefinition component) {
-    return "additionalInformation".equals(component.name);
+  default boolean excludeFromMethods(
+      ModelDefinition.ComponentDefinition component, List<String> excludeFromMethods) {
+    return "additionalInformation".equals(component.name)
+        || excludeFromMethods.contains(component.name);
   }
 
   /**
@@ -259,6 +283,34 @@ public interface HelperMethods {
     return result;
   }
 
+  default MethodSpec.Builder enrichBuilder(
+      MethodSpec.Builder builder, GenerationConfig.MethodFields insert) {
+    // add the parameters to the method
+    for (ModelDefinition.Parameter parameter : insert.parameters) {
+      builder.addParameter(resolveType(parameter.type), parameter.name);
+    }
+
+    // add Javadoc if present
+    if (!insert.javaDoc.isBlank()) {
+      builder.addJavadoc(insert.javaDoc);
+    }
+
+    if (insert.isAbstract) {
+      // if the method should be abstract, we need to add the modifier
+      builder.addModifiers(Modifier.ABSTRACT);
+
+    } else {
+      if (insert.annotation) {
+        // add an annotation if needed
+        builder.addAnnotation(Override.class);
+      }
+
+      addStatement(builder, insert);
+    }
+
+    return builder;
+  }
+
   /**
    * Adds a statement to a method builder.
    *
@@ -292,6 +344,11 @@ public interface HelperMethods {
         builder.addStatement("this.$L = $T." + modification.expression, componentName, className);
       }
 
+    } else if (modification.usableUnitClass()) {
+      builder.addStatement(
+          "this.$L = " + modification.expression,
+          componentName,
+          resolveClassName(modification.unitClass));
     } else {
       builder.addStatement("this.$L = " + modification.expression, componentName);
     }
@@ -311,24 +368,33 @@ public interface HelperMethods {
         builder.addJavadoc(sf.javaDoc);
       }
     }
+    String expression;
 
-    if (modification.usableClassName()) {
+    if (modification instanceof GenerationConfig.MethodFields mf && mf.explicitReturn) {
+      expression = "return " + modification.expression;
+    } else {
+      expression = modification.expression;
+    }
+
+    if (expression.contains("\n")) {
+      if (modification.usableClassName()) {
+        builder.addStatement(expression, resolveClassName(modification.className));
+      } else {
+        builder.addStatement(expression);
+      }
+
+    } else if (modification.usableClassName()) {
       ClassName className = resolveClassName(modification.className);
 
-      if (modification instanceof GenerationConfig.ConstructorModification m && m.insert) {
-        if (m.usableUnitClass()) {
-          builder.addStatement(modification.expression, className, resolveClassName(m.unitClass));
-
-        } else {
-          builder.addStatement(modification.expression, className);
-        }
+      if (modification.usableUnitClass()) {
+        builder.addStatement(expression, className, resolveClassName(modification.unitClass));
 
       } else {
-        builder.addStatement("$T." + modification.expression, className);
+        builder.addStatement(expression, className);
       }
 
     } else {
-      builder.addStatement(modification.expression);
+      builder.addStatement(expression);
     }
   }
 }
