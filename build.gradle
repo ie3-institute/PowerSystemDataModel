@@ -4,7 +4,7 @@ plugins {
   id 'maven-publish'
   id 'signing'
   id 'pmd' // code check, working on source code
-  id 'com.diffplug.spotless' version '8.10.0' //code format
+  id 'com.diffplug.spotless' version '8.10.1' //code format
   id 'com.github.spotbugs' version '6.5.11' // code check, working on byte code
   id 'de.undercouch.download' version '5.7.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
@@ -67,8 +67,8 @@ dependencies {
   implementation 'org.locationtech.jts.io:jts-io-common:1.20.0'
 
   // parsing json
-  implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.0'
-  implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.15.2'
+  implementation 'tools.jackson.core:jackson-databind:3.2.2'
+  implementation 'tools.jackson.datatype:jackson-datatype-jdk8:3.2.2'
 
   // Graphs
   implementation 'org.jgrapht:jgrapht-core:1.5.3'
@@ -110,7 +110,7 @@ dependencies {
 
   // model generation
   codegenImplementation 'com.palantir.javapoet:javapoet:0.19.0'
-  codegenImplementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.0'
+  codegenImplementation 'tools.jackson.dataformat:jackson-dataformat-yaml:3.2.2'
 }
 
 tasks.withType(JavaCompile).configureEach {
