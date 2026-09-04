@@ -67,8 +67,8 @@ dependencies {
   implementation 'org.locationtech.jts.io:jts-io-common:1.20.0'
 
   // parsing json
-  implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.0'
-  implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.15.2'
+  implementation 'tools.jackson.core:jackson-databind:3.2.2'
+  implementation 'tools.jackson.datatype:jackson-datatype-jdk8:3.2.2'
 
   // Graphs
   implementation 'org.jgrapht:jgrapht-core:1.5.3'
@@ -108,11 +108,9 @@ dependencies {
   implementation 'commons-codec:commons-codec:1.22.1' // needed by commons-compress
   implementation 'org.apache.commons:commons-compress:1.28.0' // I/O functionalities
 
-  implementation 'tools.jackson.core:jackson-databind:3.2.2'
-
   // model generation
   codegenImplementation 'com.palantir.javapoet:javapoet:0.19.0'
-  codegenImplementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.0'
+  codegenImplementation 'tools.jackson.dataformat:jackson-dataformat-yaml:3.2.2'
 }
 
 tasks.withType(JavaCompile).configureEach {
