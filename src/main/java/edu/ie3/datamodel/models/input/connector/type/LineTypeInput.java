@@ -1,11 +1,10 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.input.connector.type;
 
-import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.util.quantities.interfaces.SpecificConductance;
 import edu.ie3.util.quantities.interfaces.SpecificResistance;
@@ -16,24 +15,24 @@ import javax.measure.quantity.ElectricCurrent;
 import javax.measure.quantity.ElectricPotential;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes the type of {@link edu.ie3.datamodel.models.input.connector.LineInput} */
+/** Describes the type of {@link edu.ie3.datamodel.models.input.connector.LineInput}. */
 public class LineTypeInput extends AssetTypeInput {
-  /** Specific phase-to-ground susceptance for this type of line (typically in µS/km) */
+  /** Specific phase-to-ground susceptance for this type of line (typically in µS/km). */
   private final ComparableQuantity<SpecificConductance> b;
 
-  /** Specific phase-to-ground conductance for this type of line (typically in µS/km) */
+  /** Specific phase-to-ground conductance for this type of line (typically in µS/km). */
   private final ComparableQuantity<SpecificConductance> g;
 
-  /** Specific resistance for this type of line (typically in Ohm/km) */
+  /** Specific resistance for this type of line (typically in Ohm/km). */
   private final ComparableQuantity<SpecificResistance> r;
 
-  /** Specific reactance for this type of line (typically in Ohm/km) */
+  /** Specific reactance for this type of line (typically in Ohm/km). */
   private final ComparableQuantity<SpecificResistance> x;
 
-  /** Maximum thermal current for this type of line (typically in A) */
+  /** Maximum thermal current for this type of line (typically in A). */
   private final ComparableQuantity<ElectricCurrent> iMax;
 
-  /** Rated voltage for this type of line (typically in V) */
+  /** Rated voltage for this type of line (typically in V). */
   private final ComparableQuantity<ElectricPotential> vRated;
 
   /**
@@ -56,12 +55,12 @@ public class LineTypeInput extends AssetTypeInput {
       ComparableQuantity<ElectricCurrent> iMax,
       ComparableQuantity<ElectricPotential> vRated) {
     super(uuid, id);
-    this.r = r.to(StandardUnits.RESISTANCE_PER_LENGTH);
-    this.x = x.to(StandardUnits.REACTANCE_PER_LENGTH);
-    this.b = b.to(StandardUnits.SUSCEPTANCE_PER_LENGTH);
-    this.g = g.to(StandardUnits.CONDUCTANCE_PER_LENGTH);
-    this.iMax = iMax.to(StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-    this.vRated = vRated.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    this.b = b;
+    this.g = g;
+    this.r = r;
+    this.x = x;
+    this.iMax = iMax;
+    this.vRated = vRated;
   }
 
   /**
@@ -86,12 +85,12 @@ public class LineTypeInput extends AssetTypeInput {
       ComparableQuantity<ElectricPotential> vRated,
       Map<String, String> additionalInformation) {
     super(uuid, id);
-    this.r = r.to(StandardUnits.RESISTANCE_PER_LENGTH);
-    this.x = x.to(StandardUnits.REACTANCE_PER_LENGTH);
-    this.b = b.to(StandardUnits.SUSCEPTANCE_PER_LENGTH);
-    this.g = g.to(StandardUnits.CONDUCTANCE_PER_LENGTH);
-    this.iMax = iMax.to(StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-    this.vRated = vRated.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    this.b = b;
+    this.g = g;
+    this.r = r;
+    this.x = x;
+    this.iMax = iMax;
+    this.vRated = vRated;
     setAdditionalInformation(additionalInformation);
   }
 
@@ -117,11 +116,6 @@ public class LineTypeInput extends AssetTypeInput {
 
   public ComparableQuantity<ElectricPotential> getvRated() {
     return vRated;
-  }
-
-  @Override
-  public LineTypeInputCopyBuilder copy() {
-    return new LineTypeInputCopyBuilder(this);
   }
 
   @Override
@@ -163,21 +157,26 @@ public class LineTypeInput extends AssetTypeInput {
         + vRated
         + ", additionalInformation="
         + getAdditionalInformation()
-        + '}';
+        + "}";
   }
 
-  /**
-   * Abstract class for all builder that build child entities of abstract class {@link
-   * LineTypeInput}
-   */
-  public static final class LineTypeInputCopyBuilder
-      extends AssetTypeInput.AssetTypeInputCopyBuilder<LineTypeInputCopyBuilder> {
+  @Override
+  public LineTypeInputCopyBuilder copy() {
+    return new LineTypeInputCopyBuilder(this);
+  }
 
+  public static class LineTypeInputCopyBuilder
+      extends AssetTypeInputCopyBuilder<LineTypeInputCopyBuilder> {
     private ComparableQuantity<SpecificConductance> b;
+
     private ComparableQuantity<SpecificConductance> g;
+
     private ComparableQuantity<SpecificResistance> r;
+
     private ComparableQuantity<SpecificResistance> x;
+
     private ComparableQuantity<ElectricCurrent> iMax;
+
     private ComparableQuantity<ElectricPotential> vRated;
 
     protected LineTypeInputCopyBuilder(LineTypeInput entity) {
@@ -190,10 +189,13 @@ public class LineTypeInput extends AssetTypeInput {
       this.vRated = entity.vRated;
     }
 
-    /** Setter */
     public LineTypeInputCopyBuilder b(ComparableQuantity<SpecificConductance> b) {
       this.b = b;
       return thisInstance();
+    }
+
+    protected ComparableQuantity<SpecificConductance> getB() {
+      return b;
     }
 
     public LineTypeInputCopyBuilder g(ComparableQuantity<SpecificConductance> g) {
@@ -201,9 +203,17 @@ public class LineTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
+    protected ComparableQuantity<SpecificConductance> getG() {
+      return g;
+    }
+
     public LineTypeInputCopyBuilder r(ComparableQuantity<SpecificResistance> r) {
       this.r = r;
       return thisInstance();
+    }
+
+    protected ComparableQuantity<SpecificResistance> getR() {
+      return r;
     }
 
     public LineTypeInputCopyBuilder x(ComparableQuantity<SpecificResistance> x) {
@@ -211,9 +221,17 @@ public class LineTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
+    protected ComparableQuantity<SpecificResistance> getX() {
+      return x;
+    }
+
     public LineTypeInputCopyBuilder iMax(ComparableQuantity<ElectricCurrent> iMax) {
       this.iMax = iMax;
       return thisInstance();
+    }
+
+    protected ComparableQuantity<ElectricCurrent> getiMax() {
+      return iMax;
     }
 
     public LineTypeInputCopyBuilder vRated(ComparableQuantity<ElectricPotential> vRated) {
@@ -221,9 +239,14 @@ public class LineTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
+    protected ComparableQuantity<ElectricPotential> getvRated() {
+      return vRated;
+    }
+
     @Override
     public LineTypeInput build() {
-      return new LineTypeInput(getUuid(), getId(), b, g, r, x, iMax, vRated);
+      return new LineTypeInput(
+          getUuid(), getId(), b, g, r, x, iMax, vRated, getAdditionalInformation());
     }
 
     @Override

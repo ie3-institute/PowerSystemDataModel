@@ -1,0 +1,430 @@
+version: 1.0
+datamodel:
+  models:
+    UniqueEntity:
+      name: UniqueEntity
+      components:
+        - name: uuid
+          type: UUID
+
+  models.input:
+    UniqueInputEntity:
+      name: UniqueInputEntity
+      extends: UniqueEntity
+      components:
+        - name: additionalInformation
+          type: StringMap
+          keys: [additionalInformation]
+          required: false
+
+    AssetInput:
+      name: AssetInput
+      extends: UniqueInputEntity
+      components:
+        - name: id
+          type: String
+          javaDoc: "Name or ID of the asset."
+        - name: operator
+          type: OperatorInput
+          required: true # TODO: Change this to false
+          nested: true
+          javaDoc: "The operator of this asset."
+        - name: operationTime
+          type: OperationTime
+          keys: [operatesFrom, operatesUntil]
+          required: true # TODO: Change this to false
+          javaDoc: "Time for which the entity is operated."
+
+    NodeInput:
+      name: NodeInput
+      abstract: false
+      extends: AssetInput
+      components:
+        - name: vTarget
+          type: Dimensionless
+          javaDoc: "Target voltage magnitude of the node with regard to its rated voltage (typically in p.u.)."
+        - name: slack
+          type: bool
+          javaDoc: "Is this node a slack node?"
+        - name: geoPosition
+          type: Point
+          javaDoc: "The coordinates of this node, especially relevant for geo-dependant systems, that are connected to this node."
+        - name: voltLvl
+          type: VoltageLevel
+          keys: [voltLvl, vRated]
+          javaDoc: "Voltage level of this node."
+        - name: subnet
+          type: int
+          javaDoc: "Subgrid of this node."
+
+    OperatorInput:
+      name: OperatorInput
+      abstract: false
+      extends: UniqueInputEntity
+      components:
+        - name: id
+          type: String
+          javaDoc: "The id (=name) of this operator."
+
+    AssetTypeInput:
+      name: AssetTypeInput
+      extends: UniqueInputEntity
+      components:
+        - name: id
+          type: String
+          required: true
+          javaDoc: "Name or ID of the asset."
+
+  models.input.connector.type:
+    CableTypeInput:
+      name: CableTypeInput
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: coreNumber
+          type: int
+        - name: conductor
+          type: ConductorInput
+        - name: isolation
+          type: LayerList
+        - name: screen
+          type: ScreenLayerInput
+          required: false
+        - name: filler
+          type: LayerList
+        - name: armor
+          type: LayerList
+        - name: jack
+          type: LayerList
+        - name: limitTemperature
+          type: Temperature
+        - name: frequency
+          type: Frequency
+        - name: skinEffectCoefficient
+          type: double
+        - name: proximityEffectCoefficient
+          type: double
+        - name: electricalCapacitance
+          type: ElectricCapacitance
+        - name: tanDelta
+          type: double
+        - name: circulatingLossFactor
+          type: double
+        - name: eddyCurrentLossFactor
+          type: double
+
+    ConductorInput:
+      name: ConductorInput
+      extends: AssetInput
+      abstract: false
+      components:
+        - name: material
+          type: CableMaterial
+        - name: crossSection
+          type: Area
+        - name: diameter
+          type: Length
+        - name: isCompacted
+          type: bool
+        - name: thermalResistivity
+          type: ThermalResistivity
+        - name: thermalCapacitance
+          type: ThermalCapacitance
+        - name: area
+          type: Area
+
+    LayerInput:
+      name: LayerInput
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: material
+          type: CableMaterial
+        - name: innerDiameter
+          type: Length
+        - name: outerDiameter
+          type: Length
+        - name: thermalResistivity
+          type: ThermalResistivity
+        - name: thermalCapacitance
+          type: ThermalCapacitance
+        - name: area
+          type: Area
+          required: false
+
+    LineTypeInput:
+      name: LineTypeInput
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: b
+          type: SpecificConductance
+          javaDoc: "Specific phase-to-ground susceptance for this type of line (typically in µS/km)."
+        - name: g
+          type: SpecificConductance
+          javaDoc: "Specific phase-to-ground conductance for this type of line (typically in µS/km)."
+        - name: r
+          type: SpecificResistance
+          javaDoc: "Specific resistance for this type of line (typically in Ohm/km)."
+        - name: x
+          type: SpecificResistance
+          javaDoc: "Specific reactance for this type of line (typically in Ohm/km)."
+        - name: iMax
+          type: ElectricCurrent
+          javaDoc: "Maximum thermal current for this type of line (typically in A)."
+        - name: vRated
+          type: ElectricPotential
+          javaDoc: "Rated voltage for this type of line (typically in V)."
+
+    ScreenLayerInput:
+      name: ScreenLayerInput
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: material
+          type: CableMaterial
+        - name: innerDiameter
+          type: Length
+        - name: outerDiameter
+          type: Length
+        - name: thermalResistivity
+          type: ThermalResistivity
+        - name: thermalCapacitance
+          type: ThermalCapacitance
+        - name: area
+          type: Area
+          required: false
+        - name: wiresNumber
+          type: int
+        - name: wireDiameter
+          type: Length
+        - name: lengthOfLay
+          type: Length
+          required: false
+        - name: electricalResistivity
+          type: ElectricalResistivity
+
+    Transformer2WTypeInput:
+      name: Transformer2WTypeInput
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: rSc
+          type: ElectricResistance
+          javaDoc: "Short circuit resistance (typically in Ohm)."
+        - name: xSc
+          type: ElectricResistance
+          javaDoc: "Short circuit reactance (typically in Ohm)."
+        - name: sRated
+          type: Power
+          javaDoc: "Rated apparent power (typically in kVA)."
+        - name: vRatedA
+          type: ElectricPotential
+          javaDoc: "Rated voltage of the high voltage winding (typically in kV)."
+        - name: vRatedB
+          type: ElectricPotential
+          javaDoc: "Rated voltage of the low voltage winding (typically in kV)."
+        - name: gM
+          type: ElectricConductance
+          javaDoc: "Phase-to-ground conductance (typically in nS)."
+        - name: bM
+          type: ElectricConductance
+          javaDoc: "Phase-to-ground susceptance (typically in nS)."
+        - name: dV
+          type: Percent
+          javaDoc: "Voltage magnitude deviation per tap position (typically in %)."
+        - name: dPhi
+          type: DegreeGeom
+          javaDoc: "Voltage angle deviation per tap position (typically in °)."
+        - name: tapSide
+          type: bool
+          javaDoc: "Selection of winding, where the tap changer is installed. Low voltage, if true."
+        - name: tapNeutr
+          type: int
+          javaDoc: "Neutral tap position."
+        - name: tapMin
+          type: int
+          javaDoc: "Minimum available tap position."
+        - name: tapMax
+          type: int
+          javaDoc: "Maximum available tap position."
+
+    Transformer3WTypeInput:
+      name: Transformer3WTypeInput
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: sRatedA
+          type: Power
+          javaDoc: "Rated apparent power of the high voltage winding (typically in kVA)."
+        - name: sRatedB
+          type: Power
+          javaDoc: "Rated apparent power of the medium voltage winding (typically in kVA)."
+        - name: sRatedC
+          type: Power
+          javaDoc: "Rated apparent power of the low voltage windings (typically in kVA)."
+        - name: vRatedA
+          type: ElectricPotential
+          javaDoc: "Rated voltage of the high voltage winding (typically in kV)."
+        - name: vRatedB
+          type: ElectricPotential
+          javaDoc: "Rated voltage of the medium voltage winding (typically in kV)."
+        - name: vRatedC
+          type: ElectricPotential
+          javaDoc: "Rated voltage of the low voltage winding (typically in kV)."
+        - name: rScA
+          type: ElectricResistance
+          javaDoc: "Short-circuit resistance of the high voltage winding (typically in Ohm)."
+        - name: rScB
+          type: ElectricResistance
+          javaDoc: "Short-circuit resistance of the medium voltage winding (typically in Ohm)."
+        - name: rScC
+          type: ElectricResistance
+          javaDoc: "Short-circuit resistance of the low voltage winding (typically in Ohm)."
+        - name: xScA
+          type: ElectricResistance
+          javaDoc: "Short-circuit reactance of the high voltage winding (typically in Ohm)."
+        - name: xScB
+          type: ElectricResistance
+          javaDoc: "Short-circuit reactance of the medium voltage winding (typically in Ohm)."
+        - name: xScC
+          type: ElectricResistance
+          javaDoc: "Short-circuit reactance of the low voltage winding (typically in Ohm)."
+        - name: gM
+          type: ElectricConductance
+          javaDoc: "Phase-to-ground conductance (typically in nS)."
+        - name: bM
+          type: ElectricConductance
+          javaDoc: "Phase-to-ground susceptance (typically in nS)."
+        - name: dV
+          type: Percent
+          javaDoc: "Voltage magnitude deviation per tap position (typically in %)."
+        - name: dPhi
+          type: DegreeGeom
+          javaDoc: "Voltage angle deviation per tap position (typically in °)."
+        - name: tapNeutr
+          type: int
+          javaDoc: "Neutral tap position."
+        - name: tapMin
+          type: int
+          javaDoc: "Minimum available tap position."
+        - name: tapMax
+          type: int
+          javaDoc: "Maximum available tap position."
+
+  models.input.system.type:
+    SystemParticipantTypeInput:
+      name: SystemParticipantTypeInput
+      extends: AssetTypeInput
+      components:
+        - name: capex
+          type: Currency
+          javaDoc: "Capital expense for this type of system participant (typically in €)."
+        - name: opex
+          type: EnergyPrice
+          javaDoc: "Operating expense for this type of system participant (typically in €/MWh)."
+        - name: sRated
+          type: Power
+          javaDoc: "Rated apparent power of the type (in kVA)."
+        - name: cosPhiRated
+          type: double
+          javaDoc: "Power factor for this type of system participant."
+
+    AcTypeInput:
+      name: AcTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: pThermal
+          type: Power
+          javaDoc: "Thermal output of the air condition (typically in kW), when sRated * cosPhiRated is consumed."
+
+    BmTypeInput:
+      name: BmTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: activePowerGradient
+          type: DimensionlessRate
+          javaDoc: "Permissible load gradient (typically in %/h)."
+        - name: etaConv
+          type: Dimensionless
+          javaDoc: "Efficiency of converter for this type of BM (typically in %)."
+
+    ChpTypeInput:
+      name: ChpTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: etaEl
+          type: Dimensionless
+          javaDoc: "Electrical efficiency (typically in %)."
+        - name: etaThermal
+          type: Dimensionless
+          javaDoc: "Thermal efficiency (typically in %)."
+        - name: pThermal
+          type: Power
+          javaDoc: "Rated thermal power (typically in kW)."
+        - name: pOwn
+          type: Power
+          javaDoc: "Internal consumption (typically in kW)."
+
+    EvTypeInput:
+      name: EvTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: eStorage
+          type: Energy
+          javaDoc: "Energy capacity of the storage (typically in kWh)."
+        - name: eCons
+          type: SpecificEnergy
+          javaDoc: "Consumed electric energy per driven distance (typically in kWh/km)."
+        - name: sRatedDC
+          type: Power
+          javaDoc: "Power for DC (typically in kW)."
+
+    HpTypeInput:
+      name: HpTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: pThermal
+          type: Power
+          javaDoc: "Thermal output of the heat pump (typically in kW), when sRated * cosPhiRated is consumed."
+
+    StorageTypeInput:
+      name: StorageTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: eStorage
+          type: Energy
+          javaDoc: "."
+        - name: pMax
+          type: Power
+          javaDoc: "."
+        - name: activePowerGradient
+          type: DimensionlessRate
+          javaDoc: "."
+        - name: eta
+          type: Dimensionless
+          javaDoc: "."
+
+    WecTypeInput:
+      name: WecTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: cpCharacteristic
+          type: WecCharacteristicInput
+          javaDoc: "."
+        - name: etaConv
+          type: Dimensionless
+          javaDoc: "."
+        - name: rotorArea
+          type: Area
+          javaDoc: "."
+        - name: hubHeight
+          type: Length
+          javaDoc: "."

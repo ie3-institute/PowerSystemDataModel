@@ -1,11 +1,10 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.input.system.type;
 
-import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.DimensionlessRate;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
@@ -16,13 +15,12 @@ import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes the type of {@link edu.ie3.datamodel.models.input.system.BmInput} */
+/** Describes the type of {@link edu.ie3.datamodel.models.input.system.BmInput}. */
 public class BmTypeInput extends SystemParticipantTypeInput {
-
-  /** Permissible load gradient (typically in %/h) */
+  /** Permissible load gradient (typically in %/h). */
   private final ComparableQuantity<DimensionlessRate> activePowerGradient;
 
-  /** Efficiency of converter for this type of BM (typically in %) */
+  /** Efficiency of converter for this type of BM (typically in %). */
   private final ComparableQuantity<Dimensionless> etaConv;
 
   /**
@@ -44,9 +42,9 @@ public class BmTypeInput extends SystemParticipantTypeInput {
       ComparableQuantity<Power> sRated,
       double cosPhiRated,
       ComparableQuantity<Dimensionless> etaConv) {
-    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
-    this.activePowerGradient = activePowerGradient.to(StandardUnits.ACTIVE_POWER_GRADIENT);
-    this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
+    super(uuid, id, capex, opex, sRated, cosPhiRated);
+    this.activePowerGradient = activePowerGradient;
+    this.etaConv = etaConv;
   }
 
   /**
@@ -58,7 +56,7 @@ public class BmTypeInput extends SystemParticipantTypeInput {
    * @param activePowerGradient Maximum permissible gradient of active power change
    * @param sRated Rated apparent power for this type of BM (typically in kVA)
    * @param etaConv Efficiency of converter for this type of BM (typically in %)
-   * @param additionalInformation Of the input
+   * @param additionalInformation That were provided by the source
    */
   public BmTypeInput(
       UUID uuid,
@@ -70,9 +68,9 @@ public class BmTypeInput extends SystemParticipantTypeInput {
       double cosPhiRated,
       ComparableQuantity<Dimensionless> etaConv,
       Map<String, String> additionalInformation) {
-    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
-    this.activePowerGradient = activePowerGradient.to(StandardUnits.ACTIVE_POWER_GRADIENT);
-    this.etaConv = etaConv.to(StandardUnits.EFFICIENCY);
+    super(uuid, id, capex, opex, sRated, cosPhiRated);
+    this.activePowerGradient = activePowerGradient;
+    this.etaConv = etaConv;
     setAdditionalInformation(additionalInformation);
   }
 
@@ -82,11 +80,6 @@ public class BmTypeInput extends SystemParticipantTypeInput {
 
   public ComparableQuantity<Dimensionless> getEtaConv() {
     return etaConv;
-  }
-
-  @Override
-  public BmTypeInputCopyBuilder copy() {
-    return new BmTypeInputCopyBuilder(this);
   }
 
   @Override
@@ -117,52 +110,53 @@ public class BmTypeInput extends SystemParticipantTypeInput {
         + getsRated()
         + ", cosPhiRated="
         + getCosPhiRated()
-        + "loadGradient="
+        + ", activePowerGradient="
         + activePowerGradient
         + ", etaConv="
         + etaConv
         + ", additionalInformation="
         + getAdditionalInformation()
-        + '}';
+        + "}";
   }
 
-  /**
-   * A builder pattern based approach to create copies of {@link BmTypeInput} entities with altered
-   * field values. For detailed field descriptions refer to Javadocs of {@link BmTypeInput}
-   */
+  @Override
+  public BmTypeInputCopyBuilder copy() {
+    return new BmTypeInputCopyBuilder(this);
+  }
+
   public static class BmTypeInputCopyBuilder
       extends SystemParticipantTypeInputCopyBuilder<BmTypeInputCopyBuilder> {
-
     private ComparableQuantity<DimensionlessRate> activePowerGradient;
+
     private ComparableQuantity<Dimensionless> etaConv;
 
-    private BmTypeInputCopyBuilder(BmTypeInput entity) {
+    protected BmTypeInputCopyBuilder(BmTypeInput entity) {
       super(entity);
-      this.activePowerGradient = entity.getActivePowerGradient();
-      this.etaConv = entity.getEtaConv();
+      this.activePowerGradient = entity.activePowerGradient;
+      this.etaConv = entity.etaConv;
     }
 
-    public BmTypeInputCopyBuilder setActivePowerGradient(
+    public BmTypeInputCopyBuilder activePowerGradient(
         ComparableQuantity<DimensionlessRate> activePowerGradient) {
       this.activePowerGradient = activePowerGradient;
       return thisInstance();
     }
 
-    public BmTypeInputCopyBuilder setEtaConv(ComparableQuantity<Dimensionless> etaConv) {
+    protected ComparableQuantity<DimensionlessRate> getActivePowerGradient() {
+      return activePowerGradient;
+    }
+
+    public BmTypeInputCopyBuilder etaConv(ComparableQuantity<Dimensionless> etaConv) {
       this.etaConv = etaConv;
       return thisInstance();
     }
 
-    public ComparableQuantity<DimensionlessRate> getActivePowerGradient() {
-      return activePowerGradient;
-    }
-
-    public ComparableQuantity<Dimensionless> getEtaConv() {
+    protected ComparableQuantity<Dimensionless> getEtaConv() {
       return etaConv;
     }
 
     @Override
-    public BmTypeInputCopyBuilder scale(Double factor) {
+    public BmTypeInputCopyBuilder scale(double factor) {
       capex(getCapex().multiply(factor));
       sRated(getsRated().multiply(factor));
       return thisInstance();
@@ -178,7 +172,8 @@ public class BmTypeInput extends SystemParticipantTypeInput {
           activePowerGradient,
           getsRated(),
           getCosPhiRated(),
-          etaConv);
+          etaConv,
+          getAdditionalInformation());
     }
 
     @Override

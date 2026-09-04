@@ -20,8 +20,8 @@ class StorageTypeInputTest extends Specification {
 
     when:
     def alteredUnit = storageTypeInput.copy()
-        .seteStorage(Quantities.getQuantity(90, ENERGY_IN))
-        .setpMax(Quantities.getQuantity(15, ACTIVE_POWER_IN))
+        .eStorage(Quantities.getQuantity(90, ENERGY_IN))
+        .pMax(Quantities.getQuantity(15, ACTIVE_POWER_IN))
         .build()
 
     then:
