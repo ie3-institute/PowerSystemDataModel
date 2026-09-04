@@ -390,7 +390,7 @@ public interface HelperMethods {
         builder.addStatement(expression, className, resolveClassName(modification.unitClass));
 
       } else {
-        builder.addStatement(expression, className);
+        builder.addStatement("$T." + expression, className);
       }
 
     } else {
