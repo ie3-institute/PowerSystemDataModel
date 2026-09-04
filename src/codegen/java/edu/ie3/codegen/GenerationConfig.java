@@ -53,7 +53,7 @@ public final class GenerationConfig implements HelperMethods {
 
   public List<String> nonCapitalized = new ArrayList<>();
 
-  public boolean fieldNameGetters = false;
+  public List<String> fieldNameGetters = new ArrayList<>();
 
   public List<String> setters = new ArrayList<>();
 

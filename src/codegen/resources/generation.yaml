@@ -2267,7 +2267,7 @@ datamodel:
                  \n
                  @param time Date and time when the result is produced.\n
                  @param inputModel The UUID of the input model that produces the result."
-      setters: true
+      setters: [time, inputModel]
 
     NodeResult:
       classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.NodeInput}."
@@ -2281,7 +2281,7 @@ datamodel:
                  @param inputModel uuid of the input model that produces the result\n
                  @param vMag voltage magnitude @ this node in p.u.\n
                  @param vAng voltage angle @ this node in degree"
-      setters: true
+      setters: [vMag, vAng]
       nonCapitalized: [vMag, vAng]
 
     CongestionResult:
@@ -2299,7 +2299,7 @@ datamodel:
                  @param value the actual value in percent\n
                  @param min minimum value in percent\n
                  @param max maximal value in percent"
-      setters: true
+      setters: [type, subgrid, value, min, max]
 
   results.connector:
     ConnectorResult:
@@ -2316,7 +2316,7 @@ datamodel:
                  @param iAAng electric current angle @ Port A in degree\n
                  @param iBMag electric current magnitude @ port B, normally provided in Ampere\n
                  @param iBAng electric current angle @ Port B in degree"
-      setters: true
+      setters: [iAMag, iAAng, iBMag, iBAng]
       nonCapitalized: [iAMag, iAAng, iBMag, iBAng]
 
     LineResult:
@@ -2333,7 +2333,7 @@ datamodel:
                  @param iAAng electric current angle @ Port A in degree\n
                  @param iBMag electric current magnitude @ port B, normally provided in Ampere\n
                  @param iBAng electric current angle @ Port B in degree"
-      setters: true
+      setters: [iAMag, iAAng, iBMag, iBAng]
       nonCapitalized: [iAMag, iAAng, iBMag, iBAng]
 
     SwitchResult:
@@ -2347,7 +2347,7 @@ datamodel:
                  @param time date and time when the result is produced\n
                  @param inputModel uuid of the input model that produces the result\n
                  @param closed true if switch is closed, false if switch is open"
-      setters: true
+      setters: [closed]
       booleanGetter: [closed]
 
     TransformerResult:
@@ -2366,7 +2366,7 @@ datamodel:
                  @param iBMag electric current magnitude @ port B, normally provided in Ampere\n
                  @param iBAng electric current angle @ Port B in degree\n
                  @param tapPos Current position of the tap changer"
-      setters: true
+      setters: [iAMag, iAAng, iBMag, iBAng]
       nonCapitalized: [iAMag, iAAng, iBMag, iBAng]
 
     Transformer2WResult:
@@ -2406,7 +2406,7 @@ datamodel:
                  @param iCMag electric current magnitude @ port C, normally provided in Ampere\n
                  @param iCAng electric current angle @ Port C in degree\n
                  @param tapPos the current position of the transformers tap changer"
-      setters: true
+      setters: [iAMag, iAAng, iBMag, iBAng, iCMag, iCAng]
       nonCapitalized: [iAMag, iAAng, iBMag, iBAng, iCMag, iCAng]
 
   result.system:
@@ -2422,7 +2422,7 @@ datamodel:
                  @param inputModel uuid of the input model that produces the result\n
                  @param p active power output normally provided in MW\n
                  @param q reactive power output normally provided in MVAr"
-      setters: true
+      setters: [p, q]
 
     SystemParticipantWithHeatResult:
       classJavaDoc: "Abstract class that holds values common to result entities having heat result."
@@ -2437,7 +2437,7 @@ datamodel:
                  @param p active power output normally provided in MW\n
                  @param q reactive power output normally provided in MVAr\n
                  @param qDot thermal power output normally provided in MW"
-      setters: true
+      setters: [qDot]
       nonCapitalized: [qDot]
 
     ElectricalEnergyStorageResult:
@@ -2453,7 +2453,7 @@ datamodel:
                  @param p active power output normally provided in MW\n
                  @param q reactive power output normally provided in MVAr\n
                  @param soc state of Charge (SoC) in %"
-      setters: true
+      setters: [p, q, soc]
 
     FlexOptionsResult:
       classJavaDoc: "A result depicting flexibility options of a model (system participant or EM agent)."
@@ -2721,7 +2721,7 @@ datamodel:
                  @param inputModel uuid of the input model that produces the result\n
                  @param energy Currently stored energy\n
                  @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage"
-      setters: true
+      setters: [qDot]
       nonCapitalized: [qDot]
 
     AbstractThermalStorageResult:
@@ -2737,7 +2737,7 @@ datamodel:
                  @param energy Currently stored energy\n
                  @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage\n
                  @param fillLevel Fill level of the storage"
-      setters: true
+      setters: [qDot]
       nonCapitalized: [qDot]
 
     CylindricalStorageResult:
@@ -2770,7 +2770,7 @@ datamodel:
                  @param inputModel uuid of the input model that produces the result\n
                  @param qDot thermal heat demand of the sink\n
                  @param indoorTemperature Indoor room temperature"
-      setters: true
+      setters: [qDot, indoorTemperature]
       nonCapitalized: [qDot]
 
   models.value:
