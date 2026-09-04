@@ -14,20 +14,19 @@ import tech.units.indriya.ComparableQuantity;
 
 /** A result depicting flexibility options of a model (system participant or EM agent). */
 public abstract class FlexOptionsResult extends ResultEntity {
-
   /**
    * Minimum active power to which the operating point of the model can be reduced (might be
    * negative, thus feed-in) at the given point in simulation time. This equates to the lower bound
    * of possible power flexibility provision.
    */
-  protected final ComparableQuantity<Power> pMin;
+  private final ComparableQuantity<Power> pMin;
 
   /**
    * Maximum active power to which the operating point of the model can be increased (might be
    * negative, thus feed-in) at the given point in simulation time. This equates to upper bound of
    * possible power flexibility provision.
    */
-  protected final ComparableQuantity<Power> pMax;
+  private final ComparableQuantity<Power> pMax;
 
   /**
    * Standard constructor for a flex options result entity.
@@ -57,14 +56,28 @@ public abstract class FlexOptionsResult extends ResultEntity {
 
   @Override
   public boolean equals(Object o) {
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) return true;
+    if (!(o instanceof FlexOptionsResult that)) return false;
     if (!super.equals(o)) return false;
-    FlexOptionsResult that = (FlexOptionsResult) o;
-    return Objects.equals(pMin, that.pMin) && Objects.equals(pMax, that.pMax);
+    return pMin.equals(that.pMin) && pMax.equals(that.pMax);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), pMin, pMax);
+  }
+
+  @Override
+  public String toString() {
+    return "FlexOptionsResult{"
+        + "time="
+        + getTime()
+        + ", inputModel="
+        + getInputModel()
+        + ", pMin="
+        + pMin
+        + ", pMax="
+        + pMax
+        + "}";
   }
 }

@@ -1,11 +1,10 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.result.system;
 
-import edu.ie3.datamodel.models.StandardUnits;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -13,12 +12,20 @@ import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Represents everything, that is capable of storing electric energy */
+/** Abstract class that holds values common to result entities having heat result. */
 public abstract class ElectricalEnergyStorageResult extends SystemParticipantResult {
+  /** State of Charge (SoC) in %. */
+  private ComparableQuantity<Dimensionless> soc;
 
-  /** State of Charge (SoC) in % */
-  private final ComparableQuantity<Dimensionless> soc;
-
+  /**
+   * Standard constructor for a system participant result.
+   *
+   * @param time date and time when the result is produced
+   * @param inputModel uuid of the input model that produces the result
+   * @param p active power output normally provided in MW
+   * @param q reactive power output normally provided in MVAr
+   * @param soc state of Charge (SoC) in %
+   */
   protected ElectricalEnergyStorageResult(
       ZonedDateTime time,
       UUID inputModel,
@@ -26,11 +33,15 @@ public abstract class ElectricalEnergyStorageResult extends SystemParticipantRes
       ComparableQuantity<Power> q,
       ComparableQuantity<Dimensionless> soc) {
     super(time, inputModel, p, q);
-    this.soc = soc.to(StandardUnits.SOC);
+    this.soc = soc;
   }
 
   public ComparableQuantity<Dimensionless> getSoc() {
     return soc;
+  }
+
+  public void setSoc(ComparableQuantity<Dimensionless> soc) {
+    this.soc = soc;
   }
 
   @Override
@@ -57,8 +68,8 @@ public abstract class ElectricalEnergyStorageResult extends SystemParticipantRes
         + getP()
         + ", q="
         + getQ()
-        + "soc="
+        + ", soc="
         + soc
-        + '}';
+        + "}";
   }
 }

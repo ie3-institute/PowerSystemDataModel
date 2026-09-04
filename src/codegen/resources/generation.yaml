@@ -1,0 +1,803 @@
+version: 1.0
+datamodel:
+  models:
+    UniqueEntity:
+      classJavaDoc: "Supplies every subclass with a generated UUID, making it unique."
+      inherits: [ Entity, Uniqueness, Serializable ]
+      constructors:
+        - name: minimal
+          components: [ ]
+        - name: full
+          components: [ uuid ]
+
+  models.input:
+    UniqueInputEntity:
+      classJavaDoc: "Functionless class to describe that all subclasses are unique input classes."
+      inherits: [InputEntity]
+      constructors:
+        - name: minimal
+          components: [uuid]
+          superArgs: [uuid]
+
+    AssetInput:
+      classJavaDoc: "Describes a grid asset under the assumption that every asset could be operable."
+      inherits: [Operable]
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime]
+          superArgs: [uuid]
+          javaDoc: "Constructor for an asset with timely limited operation and specific operator.\n
+                   \n
+                   @param uuid Unique identifier\n
+                   @param id Human-readable identifier\n
+                   @param operator Operator of the asset\n
+                   @param operationTime Operation time limitation"
+        - name: minimal
+          components: [uuid, id]
+          superArgs: [uuid]
+          javaDoc: "Constructor for an asset with timely unlimited operation and unassigned operator.\n
+                   \n
+                   @param uuid Unique identifier\n
+                   @param id Human-readable identifier"
+
+    AssetTypeInput:
+      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.AssetInput}."
+      constructors:
+        - name: full
+          components: [uuid, id]
+          superArgs: [uuid]
+          javaDoc: "@param uuid of the input entity\n
+                  @param id of the asset"
+
+    NodeInput:
+      classJavaDoc: "Describes an electrical grid node, that other assets can connect to."
+      constructors:
+        - name: full
+          components: [uuid, id, operator, operationTime, vTarget, slack, geoPosition, voltLvl, subnet]
+          superArgs: [uuid, id, operator, operationTime]
+          javaDoc: "Constructor for an operated node.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param operator of the asset\n
+                   @param operationTime Time for which the entity is operated\n
+                   @param vTarget Target voltage magnitude of the node with regard to its rated voltage\n
+                   @param slack Is this node a slack node?\n
+                   @param geoPosition Coordinates of this node, especially relevant for geo-dependant systems,
+                       that are connected to this node\n
+                   @param voltLvl Voltage level of this node\n
+                   @param subnet of this node"
+        - name: fullWithAdditionalInformation
+          components: [ uuid, id, operator, operationTime, vTarget, slack, geoPosition, voltLvl, subnet, additionalInformation ]
+          superArgs: [ uuid, id, operator, operationTime ]
+          javaDoc: "Constructor for an operated node.\n
+                  \n
+                  @param uuid of the input entity\n
+                  @param id of the asset\n
+                  @param operator of the asset\n
+                  @param operationTime Time for which the entity is operated\n
+                  @param vTarget Target voltage magnitude of the node with regard to its rated voltage\n
+                  @param slack Is this node a slack node?\n
+                  @param geoPosition Coordinates of this node, especially relevant for geo-dependant systems,
+                      that are connected to this node\n
+                  @param voltLvl Voltage level of this node\n
+                  @param subnet of this node\n
+                  @param additionalInformation That were provided by the source"
+        - name: minimal
+          components: [ uuid, id, vTarget, slack, geoPosition, voltLvl, subnet ]
+          superArgs: [ uuid, id ]
+          javaDoc: "Constructor for an operated node.\n
+                   \n
+                   @param uuid of the input entity\n
+                   @param id of the asset\n
+                   @param vTarget Target voltage magnitude of the node with regard to its rated voltage\n
+                   @param slack Is this node a slack node?\n
+                   @param geoPosition Coordinates of this node, especially relevant for geo-dependant systems,
+                       that are connected to this node\n
+                   @param voltLvl Voltage level of this node\n
+                   @param subnet of this node"
+      staticFields:
+        - name: DEFAULT_GEO_POSITION
+          type: Point
+          expression: buildPoint(51.4843281, 7.4116482)
+          className: GeoUtils
+          javaDoc: "Use this default value if geoPosition is unknown."
+      nonCapitalized: [vTarget]
+
+    OperatorInput:
+      classJavaDoc: "Describes an operator, that operates assets."
+      constructors:
+        - name: minimal
+          components: [uuid, id]
+          superArgs: [uuid]
+          javaDoc: "Constructor for an Operator.\n
+                   \n
+                   @param uuid Unique identifier\n
+                   @param id Human readable identifier"
+        - name: withAdditionalInformation
+          components: [uuid, id, additionalInformation]
+          superArgs: [uuid]
+          javaDoc: "Constructor for an Operator.\n
+                   \n
+                   @param uuid Unique identifier\n
+                   @param id Human readable identifier\n
+                   @param additionalInformation That were provided by the source"
+      staticFields:
+        - name: NO_OPERATOR_ASSIGNED
+          type: OperatorInput
+          expression: new OperatorInput(UUID.randomUUID(), "NO_OPERATOR_ASSIGNED")
+
+  models.input.connector.type:
+    LineTypeInput:
+      classJavaDoc: "Describes the type of {@link edu.ie3.datamodel.models.input.connector.LineInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, b, g, r, x, iMax, vRated]
+          superArgs: [uuid, id]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type\n
+                 @param b Specific phase-to-ground susceptance for this type of line (typically in µS/km)\n
+                 @param g Specific phase-to-ground conductance for this type of line (typically in µS/km)\n
+                 @param r Specific resistance for this type of line (typically in Ohm/km)\n
+                 @param x Specific reactance for this type of line (typically in Ohm/km)\n
+                 @param iMax Maximum thermal current for this type of line (typically in A)\n
+                 @param vRated Rated voltage for this type of line"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, b, g, r, x, iMax, vRated, additionalInformation]
+          superArgs: [uuid, id]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type\n
+                 @param b Specific phase-to-ground susceptance for this type of line (typically in µS/km)\n
+                 @param g Specific phase-to-ground conductance for this type of line (typically in µS/km)\n
+                 @param r Specific resistance for this type of line (typically in Ohm/km)\n
+                 @param x Specific reactance for this type of line (typically in Ohm/km)\n
+                 @param iMax Maximum thermal current for this type of line (typically in A)\n
+                 @param vRated Rated voltage for this type of line"
+      nonCapitalized: [iMax, vRated]
+
+    Transformer2WTypeInput:
+      classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide, tapNeutr, tapMin, tapMax]
+          superArgs: [uuid, id]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of the type\n
+                 @param rSc Short circuit resistance\n
+                 @param xSc Short circuit reactance\n
+                 @param sRated Rated apparent power (typically in kVA)\n
+                 @param vRatedA Rated voltage of the high voltage winding\n
+                 @param vRatedB Rated voltage of the low voltage winding\n
+                 @param gM Phase-to-ground conductance\n
+                 @param bM Phase-to-ground susceptance\n
+                 @param dV Voltage magnitude deviation per tap position\n
+                 @param dPhi Voltage angle deviation per tap position\n
+                 @param tapSide Selection of winding, where the tap changer is installed. Low voltage, if true\n
+                 @param tapNeutr Neutral tap position\n
+                 @param tapMin Minimum available tap position\n
+                 @param tapMax Maximum available tap position"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide, tapNeutr, tapMin, tapMax, additionalInformation]
+          superArgs: [uuid, id]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of the type\n
+                 @param rSc Short circuit resistance\n
+                 @param xSc Short circuit reactance\n
+                 @param sRated Rated apparent power (typically in kVA)\n
+                 @param vRatedA Rated voltage of the high voltage winding\n
+                 @param vRatedB Rated voltage of the low voltage winding\n
+                 @param gM Phase-to-ground conductance\n
+                 @param bM Phase-to-ground susceptance\n
+                 @param dV Voltage magnitude deviation per tap position\n
+                 @param dPhi Voltage angle deviation per tap position\n
+                 @param tapSide Selection of winding, where the tap changer is installed. Low voltage, if true\n
+                 @param tapNeutr Neutral tap position\n
+                 @param tapMin Minimum available tap position\n
+                 @param tapMax Maximum available tap position\n
+                 @param additionalInformation Of the input"
+      nonCapitalized: [rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi]
+
+    Transformer3WTypeInput:
+      classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer3WInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi, tapNeutr, tapMin, tapMax]
+          superArgs: [uuid, id]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type\n
+                 @param sRatedA Rated apparent power of the high voltage winding\n
+                 @param sRatedB Rated apparent power of the medium voltage winding\n
+                 @param sRatedC Rated apparent power of the low voltage winding\n
+                 @param vRatedA Rated voltage magnitude of the high voltage winding\n
+                 @param vRatedB Rated voltage magnitude of the medium voltage winding\n
+                 @param vRatedC Rated voltage magnitude of the low voltage winding\n
+                 @param rScA Short-circuit resistance of the high voltage winding\n
+                 @param rScB Short-circuit resistance of the medium voltage winding\n
+                 @param rScC Short-circuit resistance of the low voltage winding\n
+                 @param xScA Short-circuit reactance of the high voltage winding\n
+                 @param xScB Short-circuit reactance of the medium voltage winding\n
+                 @param xScC Short-circuit reactance of the low voltage winding\n
+                 @param gM Phase-to-ground conductance\n
+                 @param bM Phase-to-ground susceptance\n
+                 @param dV Voltage magnitude deviation per tap position\n
+                 @param dPhi Voltage angle deviation per tap position\n
+                 @param tapNeutr Neutral tap position\n
+                 @param tapMin Minimum available tap position\n
+                 @param tapMax Maximum available tap position"
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi, tapNeutr, tapMin, tapMax, additionalInformation]
+          superArgs: [uuid, id]
+          javaDoc: "@param uuid of the input entity\n
+                 @param id of this type\n
+                 @param sRatedA Rated apparent power of the high voltage winding\n
+                 @param sRatedB Rated apparent power of the medium voltage winding\n
+                 @param sRatedC Rated apparent power of the low voltage winding\n
+                 @param vRatedA Rated voltage magnitude of the high voltage winding\n
+                 @param vRatedB Rated voltage magnitude of the medium voltage winding\n
+                 @param vRatedC Rated voltage magnitude of the low voltage winding\n
+                 @param rScA Short-circuit resistance of the high voltage winding\n
+                 @param rScB Short-circuit resistance of the medium voltage winding\n
+                 @param rScC Short-circuit resistance of the low voltage winding\n
+                 @param xScA Short-circuit reactance of the high voltage winding\n
+                 @param xScB Short-circuit reactance of the medium voltage winding\n
+                 @param xScC Short-circuit reactance of the low voltage winding\n
+                 @param gM Phase-to-ground conductance\n
+                 @param bM Phase-to-ground susceptance\n
+                 @param dV Voltage magnitude deviation per tap position\n
+                 @param dPhi Voltage angle deviation per tap position\n
+                 @param tapNeutr Neutral tap position\n
+                 @param tapMin Minimum available tap position\n
+                 @param tapMax Maximum available tap position\n
+                 @param additionalInformation Of the input"
+      nonCapitalized: [sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi]
+
+  models.input.system.type:
+    SystemParticipantTypeInput:
+      classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput}."
+      constructors:
+        - name: full
+          components: [uuid, id, capex, opex, sRated, cosPhiRated]
+          superArgs: [uuid, id]
+          javaDoc: "@param uuid of the input entity\n
+               @param id of this type of system participant\n
+               @param capex Captial expense for this type of system participant (typically in €)\n
+               @param opex Operating expense for this type of system participant (typically in €/MWh)\n
+               @param sRated Rated apparent power\n
+               @param cosPhiRated Power factor for this type of system participant"
+      copyBuilderAdditionalMethods:
+        - name: scale
+          isAbstract: true
+          javaDoc: "Scales the input entity in a way that tries to preserve proportions that are related to\n
+                 power. This means that capacity, consumption etc. are scaled with the same factor. Related\n
+                 properties associated with the input type (if applicable) are scaled as well.\n
+                 \n
+                 @param factor The factor to scale with\n
+                 @return A copy builder with scaled relevant properties"
+          parameters:
+            - name: factor
+              type: double
+      nonCapitalized: [sRated]
+
+  results:
+    ResultEntity:
+      inherits: [Entity]
+      classJavaDoc: "Abstract class to hold all mappings common to all result models."
+      constructors:
+        - name: full
+          components: [time, inputModel]
+          javaDoc: "Standard constructor for a result entity.\n
+                 \n
+                 @param time Date and time when the result is produced.\n
+                 @param inputModel The UUID of the input model that produces the result."
+      setters: true
+
+    NodeResult:
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.NodeInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, vMag, vAng]
+          superArgs: [time, inputModel]
+          javaDoc: "Standard constructor for a node result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param vMag voltage magnitude @ this node in p.u.\n
+                 @param vAng voltage angle @ this node in degree"
+      setters: true
+      nonCapitalized: [vMag, vAng]
+
+    CongestionResult:
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.NodeInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, type, subgrid, value, min, max]
+          superArgs: [time, inputModel]
+          javaDoc: "Standard constructor for a congestion result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel identifier of the input model\n
+                 @param type of the input model\n
+                 @param subgrid the subgrid\n
+                 @param value the actual value in percent\n
+                 @param min minimum value in percent\n
+                 @param max maximal value in percent"
+      setters: true
+
+  results.connector:
+    ConnectorResult:
+      classJavaDoc: "Abstract class to hold most 'ElectricCurrent and Angle'-mappings common to all connectors."
+      constructors:
+        - name: full
+          components: [time, inputModel, iAMag, iAAng, iBMag, iBAng]
+          superArgs: [time, inputModel]
+          javaDoc: "Standard constructor for a connector result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param iAMag electric current magnitude @ port A, normally provided in Ampere\n
+                 @param iAAng electric current angle @ Port A in degree\n
+                 @param iBMag electric current magnitude @ port B, normally provided in Ampere\n
+                 @param iBAng electric current angle @ Port B in degree"
+      setters: true
+      nonCapitalized: [iAMag, iAAng, iBMag, iBAng]
+
+    LineResult:
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.connector.LineInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, iAMag, iAAng, iBMag, iBAng]
+          superArgs: [time, inputModel, iAMag, iAAng, iBMag, iBAng]
+          javaDoc: "Standard constructor for a line result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param iAMag electric current magnitude @ port A, normally provided in Ampere\n
+                 @param iAAng electric current angle @ Port A in degree\n
+                 @param iBMag electric current magnitude @ port B, normally provided in Ampere\n
+                 @param iBAng electric current angle @ Port B in degree"
+      setters: true
+      nonCapitalized: [iAMag, iAAng, iBMag, iBAng]
+
+    SwitchResult:
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.connector.LineInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, closed]
+          superArgs: [time, inputModel]
+          javaDoc: "Standard constructor for a switch result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param closed true if switch is closed, false if switch is open"
+      setters: true
+      booleanGetter: [closed]
+
+    TransformerResult:
+      classJavaDoc: "Abstract class that adds a tap changer position attribute to the {@link ConnectorResult} which\n
+                  actually creates a transformer representation."
+      constructors:
+        - name: full
+          components: [time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos]
+          superArgs: [time, inputModel, iAMag, iAAng, iBMag, iBAng]
+          javaDoc: "Standard constructor for a transformer result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param iAMag electric current magnitude @ port A, normally provided in Ampere\n
+                 @param iAAng electric current angle @ Port A in degree\n
+                 @param iBMag electric current magnitude @ port B, normally provided in Ampere\n
+                 @param iBAng electric current angle @ Port B in degree\n
+                 @param tapPos Current position of the tap changer"
+      setters: true
+      nonCapitalized: [iAMag, iAAng, iBMag, iBAng]
+
+    Transformer2WResult:
+      classJavaDoc: "Represents calculation results of a {@link\n
+                  edu.ie3.datamodel.models.input.connector.Transformer2WInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos]
+          superArgs: [time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos]
+          javaDoc: "Standard constructor for a two-winding transformer result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param iAMag electric current magnitude @ port A, normally provided in Ampere\n
+                 @param iAAng electric current angle @ Port A in degree\n
+                 @param iBMag electric current magnitude @ port B, normally provided in Ampere\n
+                 @param iBAng electric current angle @ Port B in degree\n
+                 @param tapPos Current position of the tap changer"
+      nonCapitalized: [iAMag, iAAng, iBMag, iBAng]
+      copy: false
+
+    Transformer3WResult:
+      classJavaDoc: "Represents calculation results of a {@link\n
+                  edu.ie3.datamodel.models.input.connector.Transformer3WInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos]
+          superArgs: [time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos]
+          javaDoc: "Standard constructor for a three-winding transformer result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param iAMag electric current magnitude @ port A, normally provided in Ampere\n
+                 @param iAAng electric current angle @ Port A in degree\n
+                 @param iBMag electric current magnitude @ port B, normally provided in Ampere\n
+                 @param iBAng electric current angle @ Port B in degree\n
+                 @param iCMag electric current magnitude @ port C, normally provided in Ampere\n
+                 @param iCAng electric current angle @ Port C in degree\n
+                 @param tapPos the current position of the transformers tap changer"
+      setters: true
+      nonCapitalized: [iAMag, iAAng, iBMag, iBAng, iCMag, iCAng]
+
+  result.system:
+    SystemParticipantResult:
+      classJavaDoc: "Abstract class that holds values common to all other result entities."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q]
+          superArgs: [time, inputModel]
+          javaDoc: "Standard constructor for a system participant result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr"
+      setters: true
+
+    SystemParticipantWithHeatResult:
+      classJavaDoc: "Abstract class that holds values common to result entities having heat result."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q, qDot]
+          superArgs: [time, inputModel, p, q]
+          javaDoc: "Standard constructor for a system participant with heat result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr\n
+                 @param qDot thermal power output normally provided in MW"
+      setters: true
+      nonCapitalized: [qDot]
+
+    ElectricalEnergyStorageResult:
+      classJavaDoc: "Abstract class that holds values common to result entities having heat result."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q, soc]
+          superArgs: [time, inputModel, p, q]
+          javaDoc: "Standard constructor for a system participant result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr\n
+                 @param soc state of Charge (SoC) in %"
+      setters: true
+
+    FlexOptionsResult:
+      classJavaDoc: "A result depicting flexibility options of a model (system participant or EM agent)."
+      constructors:
+        - name: full
+          components: [time, inputModel, pMin, pMax]
+          superArgs: [time, inputModel]
+          javaDoc: "Standard constructor for a flex options result entity.\n
+                 \n
+                 @param time Date and time when the result is produced.\n
+                 @param inputModel The UUID of the input model that produces the result.\n
+                 @param pMin The minimum active power of the model at the given point in simulation time.\n
+                 @param pMax The maximum active power of the model at the given point in simulation time."
+      copy: false
+      nonCapitalized: [pMin, pMax]
+
+    AcResult:
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.AcInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q, qDot]
+          superArgs: [time, inputModel, p, q, qDot]
+          javaDoc: "Standard constructor for an air cooling result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr\n
+                 @param qDot thermal power output normally provided in MW"
+      copy: false
+      nonCapitalized: [qDot]
+
+    BmResult:
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.BmInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q]
+          superArgs: [time, inputModel, p, q]
+          javaDoc: "Standard constructor for a biomass plant result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr"
+      copy: false
+
+    ChpResult:
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.ChpInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q, qDot]
+          superArgs: [time, inputModel, p, q, qDot]
+          javaDoc: "Standard constructor for a chp result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr\n
+                 @param qDot thermal power output normally provided in MW"
+      copy: false
+      nonCapitalized: [qDot]
+
+    EmResult:
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.EmInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q]
+          superArgs: [time, inputModel, p, q]
+          javaDoc: "Standard constructor for an em result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr"
+      copy: false
+
+    EnergyBoundariesFlexOptionsResult:
+      classJavaDoc: "An energy boundaries flexibility options result of a model (system participant or EM agent)."
+      constructors:
+        - name: full
+          components: [time, inputModel, eState, eMin, eMax, pMin, pMax]
+          superArgs: [time, inputModel, pMin, pMax]
+          javaDoc: "Standard constructor for a power limit flex options result entity.\n
+                 \n
+                 @param time Date and time when the result is produced.\n
+                 @param inputModel The UUID of the input model that produces the result.\n
+                 @param eState State of energy of the model at the given point in simulation time.\n
+                 @param eMin Minimum state of energy of the model at the given point in simulation time.\n
+                 @param eMax Maximum state of energy of the model at the given point in simulation time.\n
+                 @param pMin The minimum active power of the model at the given point in simulation time.\n
+                 @param pMax The maximum active power of the model at the given point in simulation time."
+      copy: false
+      nonCapitalized: [pMin, pMax, eState, eMin, eMax]
+
+    EvcsResult:
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.EvcsInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q]
+          superArgs: [time, inputModel, p, q]
+          javaDoc: "Standard constructor for an electric vehicle change station result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr"
+      copy: false
+
+    EvResult:
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.EvInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q, soc]
+          superArgs: [time, inputModel, p, q, soc]
+          javaDoc: "Standard constructor for an electric vehicle change station result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr\n
+                 @param soc the current state of charge of the electric vehicle"
+      copy: false
+
+    FixedFeedInResult:
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.FixedFeedInInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q]
+          superArgs: [time, inputModel, p, q]
+          javaDoc: "Standard constructor for a fixed feed in result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr"
+      copy: false
+
+    HpResult:
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.HpInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q, qDot]
+          superArgs: [time, inputModel, p, q, qDot]
+          javaDoc: "Standard constructor for an air cooling result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr\n
+                 @param qDot thermal power output normally provided in MW"
+      copy: false
+      nonCapitalized: [qDot]
+
+    LoadResult:
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.LoadInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q]
+          superArgs: [time, inputModel, p, q]
+          javaDoc: "Standard constructor for a load result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr"
+      copy: false
+
+    PowerLimitFlexOptionsResult:
+      classJavaDoc: "A power limit flexibility options result of a model (system participant or EM agent)."
+      constructors:
+        - name: full
+          components: [time, inputModel, pRef, pMin, pMax]
+          superArgs: [time, inputModel, pMin, pMax]
+          javaDoc: "Standard constructor for a power limit flex options result entity.\n
+                  \n
+                  @param time Date and time when the result is produced.\n
+                  @param inputModel The UUID of the input model that produces the result.\n
+                  @param pRef The active power that was suggested for regular usage by the model."
+      copy: false
+      nonCapitalized: [pRef, pMin, pMax]
+
+    PvResult:
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.PvInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q]
+          superArgs: [time, inputModel, p, q]
+          javaDoc: "Standard constructor for a photovoltaic plant result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr"
+      copy: false
+
+    StorageResult:
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.StorageInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q, soc]
+          superArgs: [time, inputModel, p, q, soc]
+          javaDoc: "Standard constructor for a storage input result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr\n
+                 @param soc the current state of charge of the electric vehicle"
+      copy: false
+
+    WecResult:
+      classJavaDoc: "Represents calculation results of a {@link edu.ie3.datamodel.models.input.system.WecInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, p, q]
+          superArgs: [time, inputModel, p, q]
+          javaDoc: "Standard constructor for a wind energy converter result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param p active power output normally provided in MW\n
+                 @param q reactive power output normally provided in MVAr"
+      copy: false
+
+  result.thermal:
+    ThermalUnitResult:
+      classJavaDoc: "Representation of a result with regard to a thermal unit."
+      constructors:
+        - name: full
+          components: [time, inputModel, qDot]
+          superArgs: [time, inputModel]
+          javaDoc: "Constructor for the thermal result with\n
+                 \n
+                 @param time The time, the result is related to\n
+                 @param inputModel The input model's UUID, the result is related to\n
+                 @param qDot Average thermal power exchanged with the unit"
+      copy: false
+      nonCapitalized: [qDot]
+
+    ThermalSinkResult:
+      classJavaDoc: "Represents calculation results of a {@link\n
+                  edu.ie3.datamodel.models.input.thermal.ThermalSinkInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, qDot]
+          superArgs: [time, inputModel, qDot]
+          javaDoc: "Standard constructor which includes auto generation of the resulting output models uuid.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param qDot thermal heat demand of the sink"
+      copy: false
+      nonCapitalized: [qDot]
+
+    ThermalStorageResult:
+      classJavaDoc: "Represents calculation results of a {@link\n
+                  edu.ie3.datamodel.models.input.thermal.ThermalStorageInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, energy, qDot]
+          superArgs: [time, inputModel, qDot]
+          javaDoc: "Constructs the result with\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param energy Currently stored energy\n
+                 @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage"
+      setters: true
+      nonCapitalized: [qDot]
+
+    AbstractThermalStorageResult:
+      classJavaDoc: "Abstract class representing the common results of different types of thermal storages."
+      constructors:
+        - name: full
+          components: [time, inputModel, energy, qDot, fillLevel]
+          superArgs: [time, inputModel, energy, qDot]
+          javaDoc: "Constructs the result with\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param energy Currently stored energy\n
+                 @param qDot Heat power flowing into (&gt; 0) or coming from (&lt; 0) the storage\n
+                 @param fillLevel Fill level of the storage"
+      setters: true
+      nonCapitalized: [qDot]
+
+    CylindricalStorageResult:
+      classJavaDoc: "Represents the results of Cylindrical Storage."
+      constructors:
+        - name: full
+          components: [time, inputModel, energy, qDot, fillLevel]
+          superArgs: [time, inputModel, energy, qDot, fillLevel]
+      copy: false
+      nonCapitalized: [qDot]
+
+    DomesticHotWaterStorageResult:
+      classJavaDoc: "Represents the results of Domestic Hot Water Storage."
+      constructors:
+        - name: full
+          components: [time, inputModel, energy, qDot, fillLevel]
+          superArgs: [time, inputModel, energy, qDot, fillLevel]
+      copy: false
+      nonCapitalized: [qDot]
+
+    ThermalHouseResult:
+      classJavaDoc: "Represents the results of {@link edu.ie3.datamodel.models.input.thermal.ThermalHouseInput}."
+      constructors:
+        - name: full
+          components: [time, inputModel, qDot, indoorTemperature]
+          superArgs: [time, inputModel, qDot]
+          javaDoc: "Standard constructor for thermal house result.\n
+                 \n
+                 @param time date and time when the result is produced\n
+                 @param inputModel uuid of the input model that produces the result\n
+                 @param qDot thermal heat demand of the sink\n
+                 @param indoorTemperature Indoor room temperature"
+      setters: true
+      nonCapitalized: [qDot]
+
+
+
+
+
+
+

@@ -1,11 +1,10 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.result.thermal;
 
-import edu.ie3.datamodel.models.StandardUnits;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -13,13 +12,13 @@ import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
 import tech.units.indriya.ComparableQuantity;
 
-/** Represents the results of {@link edu.ie3.datamodel.models.input.thermal.ThermalHouseInput} */
+/** Represents the results of {@link edu.ie3.datamodel.models.input.thermal.ThermalHouseInput}. */
 public class ThermalHouseResult extends ThermalSinkResult {
-  /** Indoor room temperature of the house */
+  /** Indoor room temperature of the house. */
   private ComparableQuantity<Temperature> indoorTemperature;
 
   /**
-   * Standard constructor which includes auto generation of the resulting output models uuid.
+   * Standard constructor for thermal house result.
    *
    * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
@@ -32,7 +31,7 @@ public class ThermalHouseResult extends ThermalSinkResult {
       ComparableQuantity<Power> qDot,
       ComparableQuantity<Temperature> indoorTemperature) {
     super(time, inputModel, qDot);
-    this.indoorTemperature = indoorTemperature.to(StandardUnits.TEMPERATURE);
+    this.indoorTemperature = indoorTemperature;
   }
 
   public ComparableQuantity<Temperature> getIndoorTemperature() {
@@ -40,15 +39,14 @@ public class ThermalHouseResult extends ThermalSinkResult {
   }
 
   public void setIndoorTemperature(ComparableQuantity<Temperature> indoorTemperature) {
-    this.indoorTemperature = indoorTemperature.to(StandardUnits.TEMPERATURE);
+    this.indoorTemperature = indoorTemperature;
   }
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof ThermalHouseResult that)) return false;
     if (!super.equals(o)) return false;
-    ThermalHouseResult that = (ThermalHouseResult) o;
     return indoorTemperature.equals(that.indoorTemperature);
   }
 
@@ -68,6 +66,6 @@ public class ThermalHouseResult extends ThermalSinkResult {
         + getqDot()
         + ", indoorTemperature="
         + indoorTemperature
-        + '}';
+        + "}";
   }
 }

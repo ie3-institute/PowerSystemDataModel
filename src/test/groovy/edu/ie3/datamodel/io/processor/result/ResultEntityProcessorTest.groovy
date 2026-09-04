@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.processor.result
 import edu.ie3.datamodel.exceptions.EntityProcessorException
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.CongestionResult
+import edu.ie3.datamodel.models.result.InputModelType
 import edu.ie3.datamodel.models.result.NodeResult
 import edu.ie3.datamodel.models.result.ResultEntity
 import edu.ie3.datamodel.models.result.connector.LineResult
@@ -316,7 +317,7 @@ class ResultEntityProcessorTest extends Specification {
     def validResult = new CongestionResult(
         ZonedDateTime.parse("2020-01-30T17:26:44Z"),
         inputModel,
-        CongestionResult.InputModelType.LINE,
+        InputModelType.LINE,
         3,
         Quantities.getQuantity(110, Units.PERCENT),
         Quantities.getQuantity(0, Units.PERCENT),

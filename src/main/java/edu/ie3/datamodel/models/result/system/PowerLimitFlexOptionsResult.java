@@ -13,7 +13,6 @@ import tech.units.indriya.ComparableQuantity;
 
 /** A power limit flexibility options result of a model (system participant or EM agent). */
 public class PowerLimitFlexOptionsResult extends FlexOptionsResult {
-
   /**
    * Active power (might be negative, thus feed-in) that was suggested for regular usage by the
    * model.
@@ -42,34 +41,31 @@ public class PowerLimitFlexOptionsResult extends FlexOptionsResult {
   }
 
   @Override
-  public String toString() {
-    return "PowerLimitFlexOptionsResult{"
-        + "time="
-        + getTime()
-        + ", inputModel="
-        + getInputModel()
-        + ", pRef="
-        + getpRef()
-        + ", pMin="
-        + getpMin()
-        + ", pMax="
-        + getpMax()
-        + '}';
-  }
-
-  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof PowerLimitFlexOptionsResult that)) return false;
     if (!super.equals(o)) return false;
-
-    PowerLimitFlexOptionsResult that = (PowerLimitFlexOptionsResult) o;
-
     return pRef.equals(that.pRef);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), pRef);
+  }
+
+  @Override
+  public String toString() {
+    return "PowerLimitFlexOptionsResult{"
+        + "time="
+        + getTime()
+        + ", inputModel="
+        + getInputModel()
+        + ", pMin="
+        + getpMin()
+        + ", pMax="
+        + getpMax()
+        + ", pRef="
+        + pRef
+        + "}";
   }
 }
