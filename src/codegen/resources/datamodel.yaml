@@ -1,0 +1,526 @@
+version: 1.0
+datamodel:
+  models:
+    UniqueEntity:
+      name: UniqueEntity
+      components:
+        - name: uuid
+          type: UUID
+
+  models.input:
+    UniqueInputEntity:
+      name: UniqueInputEntity
+      extends: UniqueEntity
+      components:
+        - name: additionalInformation
+          type: StringMap
+          keys: [additionalInformation]
+          required: false
+
+    AssetInput:
+      name: AssetInput
+      extends: UniqueInputEntity
+      components:
+        - name: id
+          type: String
+          javaDoc: "Name or ID of the asset."
+        - name: operator
+          type: OperatorInput
+          required: true # TODO: Change this to false
+          nested: true
+          javaDoc: "The operator of this asset."
+        - name: operationTime
+          type: OperationTime
+          keys: [operatesFrom, operatesUntil]
+          required: true # TODO: Change this to false
+          javaDoc: "Time for which the entity is operated."
+
+    NodeInput:
+      name: NodeInput
+      abstract: false
+      extends: AssetInput
+      components:
+        - name: vTarget
+          type: Dimensionless
+          javaDoc: "Target voltage magnitude of the node with regard to its rated voltage (typically in p.u.)."
+        - name: slack
+          type: bool
+          javaDoc: "Is this node a slack node?"
+        - name: geoPosition
+          type: Point
+          javaDoc: "The coordinates of this node, especially relevant for geo-dependant systems, that are connected to this node."
+        - name: voltLvl
+          type: VoltageLevel
+          keys: [voltLvl, vRated]
+          javaDoc: "Voltage level of this node."
+        - name: subnet
+          type: int
+          javaDoc: "Subgrid of this node."
+
+    OperatorInput:
+      name: OperatorInput
+      abstract: false
+      extends: UniqueInputEntity
+      components:
+        - name: id
+          type: String
+          javaDoc: "The id (=name) of this operator."
+
+    AssetTypeInput:
+      name: AssetTypeInput
+      extends: UniqueInputEntity
+      components:
+        - name: id
+          type: String
+          required: true
+          javaDoc: "Name or ID of the asset."
+
+  models.input.connector.type:
+    LineTypeInput:
+      name: LineTypeInput
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: b
+          type: SpecificConductance
+          javaDoc: "Specific phase-to-ground susceptance for this type of line (typically in µS/km)."
+        - name: g
+          type: SpecificConductance
+          javaDoc: "Specific phase-to-ground conductance for this type of line (typically in µS/km)."
+        - name: r
+          type: SpecificResistance
+          javaDoc: "Specific resistance for this type of line (typically in Ohm/km)."
+        - name: x
+          type: SpecificResistance
+          javaDoc: "Specific reactance for this type of line (typically in Ohm/km)."
+        - name: iMax
+          type: ElectricCurrent
+          javaDoc: "Maximum thermal current for this type of line (typically in A)."
+        - name: vRated
+          type: ElectricPotential
+          javaDoc: "Rated voltage for this type of line (typically in V)."
+
+    Transformer2WTypeInput:
+      name: Transformer2WTypeInput
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: rSc
+          type: ElectricResistance
+          javaDoc: "Short circuit resistance (typically in Ohm)."
+        - name: xSc
+          type: ElectricResistance
+          javaDoc: "Short circuit reactance (typically in Ohm)."
+        - name: sRated
+          type: Power
+          javaDoc: "Rated apparent power (typically in kVA)."
+        - name: vRatedA
+          type: ElectricPotential
+          javaDoc: "Rated voltage of the high voltage winding (typically in kV)."
+        - name: vRatedB
+          type: ElectricPotential
+          javaDoc: "Rated voltage of the low voltage winding (typically in kV)."
+        - name: gM
+          type: ElectricConductance
+          javaDoc: "Phase-to-ground conductance (typically in nS)."
+        - name: bM
+          type: ElectricConductance
+          javaDoc: "Phase-to-ground susceptance (typically in nS)."
+        - name: dV
+          type: Percent
+          javaDoc: "Voltage magnitude deviation per tap position (typically in %)."
+        - name: dPhi
+          type: DegreeGeom
+          javaDoc: "Voltage angle deviation per tap position (typically in °)."
+        - name: tapSide
+          type: bool
+          javaDoc: "Selection of winding, where the tap changer is installed. Low voltage, if true."
+        - name: tapNeutr
+          type: int
+          javaDoc: "Neutral tap position."
+        - name: tapMin
+          type: int
+          javaDoc: "Minimum available tap position."
+        - name: tapMax
+          type: int
+          javaDoc: "Maximum available tap position."
+
+    Transformer3WTypeInput:
+      name: Transformer3WTypeInput
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: sRatedA
+          type: Power
+          javaDoc: "Rated apparent power of the high voltage winding (typically in kVA)."
+        - name: sRatedB
+          type: Power
+          javaDoc: "Rated apparent power of the medium voltage winding (typically in kVA)."
+        - name: sRatedC
+          type: Power
+          javaDoc: "Rated apparent power of the low voltage windings (typically in kVA)."
+        - name: vRatedA
+          type: ElectricPotential
+          javaDoc: "Rated voltage of the high voltage winding (typically in kV)."
+        - name: vRatedB
+          type: ElectricPotential
+          javaDoc: "Rated voltage of the medium voltage winding (typically in kV)."
+        - name: vRatedC
+          type: ElectricPotential
+          javaDoc: "Rated voltage of the low voltage winding (typically in kV)."
+        - name: rScA
+          type: ElectricResistance
+          javaDoc: "Short-circuit resistance of the high voltage winding (typically in Ohm)."
+        - name: rScB
+          type: ElectricResistance
+          javaDoc: "Short-circuit resistance of the medium voltage winding (typically in Ohm)."
+        - name: rScC
+          type: ElectricResistance
+          javaDoc: "Short-circuit resistance of the low voltage winding (typically in Ohm)."
+        - name: xScA
+          type: ElectricResistance
+          javaDoc: "Short-circuit reactance of the high voltage winding (typically in Ohm)."
+        - name: xScB
+          type: ElectricResistance
+          javaDoc: "Short-circuit reactance of the medium voltage winding (typically in Ohm)."
+        - name: xScC
+          type: ElectricResistance
+          javaDoc: "Short-circuit reactance of the low voltage winding (typically in Ohm)."
+        - name: gM
+          type: ElectricConductance
+          javaDoc: "Phase-to-ground conductance (typically in nS)."
+        - name: bM
+          type: ElectricConductance
+          javaDoc: "Phase-to-ground susceptance (typically in nS)."
+        - name: dV
+          type: Percent
+          javaDoc: "Voltage magnitude deviation per tap position (typically in %)."
+        - name: dPhi
+          type: DegreeGeom
+          javaDoc: "Voltage angle deviation per tap position (typically in °)."
+        - name: tapNeutr
+          type: int
+          javaDoc: "Neutral tap position."
+        - name: tapMin
+          type: int
+          javaDoc: "Minimum available tap position."
+        - name: tapMax
+          type: int
+          javaDoc: "Maximum available tap position."
+
+  models.input.system.type:
+    SystemParticipantTypeInput:
+      name: SystemParticipantTypeInput
+      extends: AssetTypeInput
+      components:
+        - name: capex
+          type: Currency
+          javaDoc: "Capital expense for this type of system participant (typically in €)."
+        - name: opex
+          type: EnergyPrice
+          javaDoc: "Operating expense for this type of system participant (typically in €/MWh)."
+        - name: sRated
+          type: Power
+          javaDoc: "Rated apparent power of the type (in kVA)."
+        - name: cosPhiRated
+          type: double
+          javaDoc: "Power factor for this type of system participant."
+
+  models.value:
+    CoordinateValue:
+      name: CoordinateValue
+      abstract: false
+      components:
+        - name: id
+          type: int
+        - name: coordinate
+          type: Point
+
+    EnergyPriceValue:
+      name: EnergyPriceValue
+      abstract: false
+      components:
+        - name: price
+          type: EnergyPrice
+          required: false
+          javaDoc: "Price of energy (typically in €/MWh)."
+
+    TemperatureValue:
+      name: TemperatureValue
+      abstract: false
+      components:
+        - name: temperature
+          type: Temperature
+          required: false
+          javaDoc: "Temperature (typically in K)."
+
+    GroundTemperatureValue:
+      name: GroundTemperatureValue
+      extends: TemperatureValue
+      abstract: false
+
+    PValue:
+      name: PValue
+      abstract: false
+      components:
+        - name: p
+          type: Power
+          required: false
+          javaDoc: "Active power."
+
+    SValue:
+      name: SValue
+      extends: PValue
+      abstract: false
+      components:
+        - name: q
+          type: Power
+          required: false
+          javaDoc: "Reactive power."
+
+    HeatAndPValue:
+      name: HeatAndPValue
+      extends: PValue
+      abstract: false
+      components:
+        - name: heatDemand
+          type: Power
+          required: false
+          javaDoc: "Heat demand as power."
+
+    HeatAndSValue:
+      name: HeatAndSValue
+      extends: SValue
+      abstract: false
+      components:
+        - name: heatDemand
+          type: Power
+          required: false
+          javaDoc: "Heat demand as power."
+
+    HeatDemandValue:
+      name: HeatDemandValue
+      abstract: false
+      components:
+        - name: heatDemand
+          type: Power
+          required: false
+          javaDoc: "Heat demand as power."
+
+    SolarIrradianceValue:
+      name: SolarIrradianceValue
+      abstract: false
+      components:
+        - name: directIrradiance
+          type: Irradiance
+          required: false
+          javaDoc: "Direct sun irradiance (typically in W/m²)."
+        - name: diffuseIrradiance
+          type: Irradiance
+          required: false
+          javaDoc: "Diffuse sun irradiance (typically in W/m²)."
+
+    VoltageValue:
+      name: VoltageValue
+      abstract: false
+      components:
+        - name: magnitude
+          type: Dimensionless
+          required: false
+          javaDoc: "Magnitude of the voltage in p.u."
+        - name: angle
+          type: Angle
+          required: false
+          javaDoc: "Angle of the voltage in degree."
+
+    WeatherValue:
+      name: WeatherValue
+      abstract: false
+      components:
+        - name: coordinate
+          type: Point
+          javaDoc: "The coordinate of this weather value set."
+        - name: solarIrradiance
+          type: SolarIrradianceValue
+          javaDoc: "Solar irradiance values for this coordinate."
+        - name: temperature
+          type: TemperatureValue
+          javaDoc: "Temperature value for this coordinate."
+        - name: wind
+          type: WindValue
+          javaDoc: "Wind values for this coordinate."
+        - name: groundTemperatureLevel1
+          type: GroundTemperatureValue
+          required: false
+          javaDoc: "Ground temperature value for this coordinate."
+        - name: groundTemperatureLevel2
+          type: GroundTemperatureValue
+          required: false
+          javaDoc: "Ground temperature value for this coordinate."
+
+    WindValue:
+      name: WindValue
+      abstract: false
+      components:
+        - name: direction
+          type: Angle
+          required: false
+          javaDoc: "Wind direction as an angle from north (typically in rad)."
+        - name: velocity
+          type: Speed
+          required: false
+          javaDoc: "Wind velocity (typically in m/s)."
+
+  models.value.load:
+    RandomLoadValues:
+      name: RandomLoadValues
+      abstract: false
+      components:
+        - name: kSa
+          type: double
+          javaDoc: "Shape parameter for a Saturday."
+        - name: kSu
+          type: double
+          javaDoc: "Shape parameter for a Sunday."
+        - name: kWd
+          type: double
+          javaDoc: "Shape parameter for a working day."
+        - name: mySa
+          type: double
+          javaDoc: "Shape parameter for a Saturday."
+        - name: mySu
+          type: double
+          javaDoc: "Shape parameter for a Sunday."
+        - name: myWd
+          type: double
+          javaDoc: "Shape parameter for a working day."
+        - name: sigmaSa
+          type: double
+          javaDoc: "Shape parameter for a Saturday."
+        - name: sigmaSu
+          type: double
+          javaDoc: "Shape parameter for a Sunday."
+        - name: sigmaWd
+          type: double
+          javaDoc: "Shape parameter for a working day."
+        - name: gevWd
+          type: GeneralizedExtremeValueDistribution
+          transient: true
+        - name: gevSa
+          type: GeneralizedExtremeValueDistribution
+          transient: true
+        - name: gevSu
+          type: GeneralizedExtremeValueDistribution
+          transient: true
+
+    BdewLoadValues:
+      name: BdewLoadValues
+      nested:
+        - name: Bdew1999
+          extends: BdewLoadValues
+          abstract: false
+          components:
+            - name: suSa
+              type: double
+            - name: suSu
+              type: double
+            - name: suWd
+              type: double
+            - name: trSa
+              type: double
+            - name: trSu
+              type: double
+            - name: trWd
+              type: double
+            - name: wiSa
+              type: double
+            - name: wiSu
+              type: double
+            - name: wiWd
+              type: double
+        - name: Bdew2025
+          extends: BdewLoadValues
+          abstract: false
+          components:
+            - name: janSa
+              type: double
+            - name: janSu
+              type: double
+            - name: janWd
+              type: double
+            - name: febSa
+              type: double
+            - name: febSu
+              type: double
+            - name: febWd
+              type: double
+            - name: marSa
+              type: double
+            - name: marSu
+              type: double
+            - name: marWd
+              type: double
+            - name: aprSa
+              type: double
+            - name: aprSu
+              type: double
+            - name: aprWd
+              type: double
+            - name: maySa
+              type: double
+            - name: maySu
+              type: double
+            - name: mayWd
+              type: double
+            - name: junSa
+              type: double
+            - name: junSu
+              type: double
+            - name: junWd
+              type: double
+            - name: julSa
+              type: double
+            - name: julSu
+              type: double
+            - name: julWd
+              type: double
+            - name: augSa
+              type: double
+            - name: augSu
+              type: double
+            - name: augWd
+              type: double
+            - name: sepSa
+              type: double
+            - name: sepSu
+              type: double
+            - name: sepWd
+              type: double
+            - name: octSa
+              type: double
+            - name: octSu
+              type: double
+            - name: octWd
+              type: double
+            - name: novSa
+              type: double
+            - name: novSu
+              type: double
+            - name: novWd
+              type: double
+            - name: decSa
+              type: double
+            - name: decSu
+              type: double
+            - name: decWd
+              type: double
+
+
+
+
+
+
+
+
+
+

@@ -1,19 +1,19 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.value;
 
-import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.utils.QuantityUtils;
 import java.util.Objects;
 import java.util.Optional;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes a triple based on active and reactive electrical power, as well as heat power */
+/** Describes a triple based on active and reactive electrical power, as well as heat power. */
 public class HeatAndSValue extends SValue {
-  /** Heat demand as power */
+  /** Heat demand as power. */
   private final ComparableQuantity<Power> heatDemand;
 
   /**
@@ -26,7 +26,7 @@ public class HeatAndSValue extends SValue {
       ComparableQuantity<Power> q,
       ComparableQuantity<Power> heatDemand) {
     super(p, q);
-    this.heatDemand = heatDemand == null ? null : heatDemand.to(StandardUnits.HEAT_DEMAND_PROFILE);
+    this.heatDemand = heatDemand;
   }
 
   public Optional<ComparableQuantity<Power>> getHeatDemand() {
@@ -36,10 +36,9 @@ public class HeatAndSValue extends SValue {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof HeatAndSValue that)) return false;
     if (!super.equals(o)) return false;
-    HeatAndSValue that = (HeatAndSValue) o;
-    return Objects.equals(heatDemand, that.heatDemand);
+    return QuantityUtils.equals(heatDemand, that.heatDemand);
   }
 
   @Override
@@ -49,6 +48,6 @@ public class HeatAndSValue extends SValue {
 
   @Override
   public String toString() {
-    return "HeatAndSValue{" + "p=" + getP() + ", q=" + getQ() + ", heatDemand=" + heatDemand + '}';
+    return "HeatAndSValue{" + "p=" + getP() + ", q=" + getQ() + ", heatDemand=" + heatDemand + "}";
   }
 }

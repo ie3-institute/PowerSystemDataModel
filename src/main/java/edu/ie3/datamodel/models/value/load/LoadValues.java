@@ -9,7 +9,6 @@ import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.value.PValue;
 import edu.ie3.datamodel.models.value.Value;
 import java.time.ZonedDateTime;
-import java.util.Optional;
 
 /** Interface for load values. */
 public interface LoadValues extends Value {
@@ -21,12 +20,4 @@ public interface LoadValues extends Value {
    * @return a new {@link PValue}
    */
   PValue getValue(ZonedDateTime time, PowerProfileKey loadProfile);
-
-  /** Returns the {@link Scheme} of the underlying values. */
-  default Optional<Scheme> getScheme() {
-    return Optional.empty();
-  }
-
-  /** Scheme for the values that makes up the {@link LoadValues}. */
-  interface Scheme {}
 }

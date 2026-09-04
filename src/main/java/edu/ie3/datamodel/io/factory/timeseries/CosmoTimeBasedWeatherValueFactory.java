@@ -57,8 +57,8 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
             temperature,
             windDirection,
             windVelocity,
-            groundTemperatureLevel1,
-            groundTemperatureLevel2);
+            groundTemperatureLevel1.orElse(null),
+            groundTemperatureLevel2.orElse(null));
 
     return new TimeBasedValue<>(time, weatherValue);
   }

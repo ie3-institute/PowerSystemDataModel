@@ -1,57 +1,62 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.input.connector.type;
 
-import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
+import edu.ie3.datamodel.utils.QuantityUtils;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.quantity.*;
+import javax.measure.quantity.Angle;
+import javax.measure.quantity.Dimensionless;
+import javax.measure.quantity.ElectricConductance;
+import javax.measure.quantity.ElectricPotential;
+import javax.measure.quantity.ElectricResistance;
+import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput} */
+/** Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput}. */
 public class Transformer2WTypeInput extends AssetTypeInput {
-  /** Short circuit resistance (typically in Ohm) */
+  /** Short circuit resistance (typically in Ohm). */
   private final ComparableQuantity<ElectricResistance> rSc;
 
-  /** Short circuit reactance (typically in Ohm) */
+  /** Short circuit reactance (typically in Ohm). */
   private final ComparableQuantity<ElectricResistance> xSc;
 
-  /** Rated apparent power (typically in kVA) */
+  /** Rated apparent power (typically in kVA). */
   private final ComparableQuantity<Power> sRated;
 
-  /** Rated voltage of the high voltage winding (typically in kV) */
+  /** Rated voltage of the high voltage winding (typically in kV). */
   private final ComparableQuantity<ElectricPotential> vRatedA;
 
-  /** Rated voltage of the low voltage winding (typically in kV) */
+  /** Rated voltage of the low voltage winding (typically in kV). */
   private final ComparableQuantity<ElectricPotential> vRatedB;
 
-  /** Phase-to-ground conductance (typically in nS) */
+  /** Phase-to-ground conductance (typically in nS). */
   private final ComparableQuantity<ElectricConductance> gM;
 
-  /** Phase-to-ground susceptance (typically in nS) */
+  /** Phase-to-ground susceptance (typically in nS). */
   private final ComparableQuantity<ElectricConductance> bM;
 
-  /** Voltage magnitude deviation per tap position (typically in %) */
+  /** Voltage magnitude deviation per tap position (typically in %). */
   private final ComparableQuantity<Dimensionless> dV;
 
-  /** Voltage angle deviation per tap position (typically in °) */
+  /** Voltage angle deviation per tap position (typically in °). */
   private final ComparableQuantity<Angle> dPhi;
 
-  /** Selection of winding, where the tap changer is installed. Low voltage, if true */
+  /** Selection of winding, where the tap changer is installed. Low voltage, if true. */
   private final boolean tapSide;
 
-  /** Neutral tap position */
+  /** Neutral tap position. */
   private final int tapNeutr;
 
-  /** Minimum available tap position */
+  /** Minimum available tap position. */
   private final int tapMin;
 
-  /** Maximum available tap position */
+  /** Maximum available tap position. */
   private final int tapMax;
 
   /**
@@ -88,15 +93,15 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       int tapMin,
       int tapMax) {
     super(uuid, id);
-    this.rSc = rSc.to(StandardUnits.RESISTANCE);
-    this.xSc = xSc.to(StandardUnits.REACTANCE);
-    this.sRated = sRated.to(StandardUnits.S_RATED);
-    this.vRatedA = vRatedA.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-    this.vRatedB = vRatedB.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-    this.gM = gM.to(StandardUnits.CONDUCTANCE);
-    this.bM = bM.to(StandardUnits.SUSCEPTANCE);
-    this.dV = dV.to(StandardUnits.DV_TAP);
-    this.dPhi = dPhi.to(StandardUnits.DPHI_TAP);
+    this.rSc = rSc;
+    this.xSc = xSc;
+    this.sRated = sRated;
+    this.vRatedA = vRatedA;
+    this.vRatedB = vRatedB;
+    this.gM = gM;
+    this.bM = bM;
+    this.dV = dV;
+    this.dPhi = dPhi;
     this.tapSide = tapSide;
     this.tapNeutr = tapNeutr;
     this.tapMin = tapMin;
@@ -139,15 +144,15 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       int tapMax,
       Map<String, String> additionalInformation) {
     super(uuid, id);
-    this.rSc = rSc.to(StandardUnits.RESISTANCE);
-    this.xSc = xSc.to(StandardUnits.REACTANCE);
-    this.sRated = sRated.to(StandardUnits.S_RATED);
-    this.vRatedA = vRatedA.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-    this.vRatedB = vRatedB.to(StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-    this.gM = gM.to(StandardUnits.CONDUCTANCE);
-    this.bM = bM.to(StandardUnits.SUSCEPTANCE);
-    this.dV = dV.to(StandardUnits.DV_TAP);
-    this.dPhi = dPhi.to(StandardUnits.DPHI_TAP);
+    this.rSc = rSc;
+    this.xSc = xSc;
+    this.sRated = sRated;
+    this.vRatedA = vRatedA;
+    this.vRatedB = vRatedB;
+    this.gM = gM;
+    this.bM = bM;
+    this.dV = dV;
+    this.dPhi = dPhi;
     this.tapSide = tapSide;
     this.tapNeutr = tapNeutr;
     this.tapMin = tapMin;
@@ -208,28 +213,23 @@ public class Transformer2WTypeInput extends AssetTypeInput {
   }
 
   @Override
-  public Transformer2WTypeInputCopyBuilder copy() {
-    return new Transformer2WTypeInputCopyBuilder(this);
-  }
-
-  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof Transformer2WTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    return tapSide == that.tapSide
+    return QuantityUtils.equals(rSc, that.rSc)
+        && QuantityUtils.equals(xSc, that.xSc)
+        && QuantityUtils.equals(sRated, that.sRated)
+        && QuantityUtils.equals(vRatedA, that.vRatedA)
+        && QuantityUtils.equals(vRatedB, that.vRatedB)
+        && QuantityUtils.equals(gM, that.gM)
+        && QuantityUtils.equals(bM, that.bM)
+        && QuantityUtils.equals(dV, that.dV)
+        && QuantityUtils.equals(dPhi, that.dPhi)
+        && tapSide == that.tapSide
         && tapNeutr == that.tapNeutr
         && tapMin == that.tapMin
-        && tapMax == that.tapMax
-        && rSc.equals(that.rSc)
-        && xSc.equals(that.xSc)
-        && sRated.equals(that.sRated)
-        && vRatedA.equals(that.vRatedA)
-        && vRatedB.equals(that.vRatedB)
-        && gM.equals(that.gM)
-        && bM.equals(that.bM)
-        && dV.equals(that.dV)
-        && dPhi.equals(that.dPhi);
+        && tapMax == that.tapMax;
   }
 
   @Override
@@ -286,31 +286,43 @@ public class Transformer2WTypeInput extends AssetTypeInput {
         + tapMax
         + ", additionalInformation="
         + getAdditionalInformation()
-        + '}';
+        + "}";
   }
 
-  /**
-   * Abstract class for all builder that build child entities of abstract class {@link
-   * Transformer2WTypeInput}
-   */
-  public static final class Transformer2WTypeInputCopyBuilder
-      extends AssetTypeInput.AssetTypeInputCopyBuilder<Transformer2WTypeInputCopyBuilder> {
+  @Override
+  public Transformer2WTypeInputCopyBuilder copy() {
+    return new Transformer2WTypeInputCopyBuilder(this);
+  }
 
+  public static class Transformer2WTypeInputCopyBuilder
+      extends AssetTypeInputCopyBuilder<Transformer2WTypeInputCopyBuilder> {
     private ComparableQuantity<ElectricResistance> rSc;
+
     private ComparableQuantity<ElectricResistance> xSc;
+
     private ComparableQuantity<Power> sRated;
+
     private ComparableQuantity<ElectricPotential> vRatedA;
+
     private ComparableQuantity<ElectricPotential> vRatedB;
+
     private ComparableQuantity<ElectricConductance> gM;
+
     private ComparableQuantity<ElectricConductance> bM;
+
     private ComparableQuantity<Dimensionless> dV;
+
     private ComparableQuantity<Angle> dPhi;
+
     private boolean tapSide;
+
     private int tapNeutr;
+
     private int tapMin;
+
     private int tapMax;
 
-    private Transformer2WTypeInputCopyBuilder(Transformer2WTypeInput entity) {
+    protected Transformer2WTypeInputCopyBuilder(Transformer2WTypeInput entity) {
       super(entity);
       this.rSc = entity.rSc;
       this.xSc = entity.xSc;
@@ -327,10 +339,13 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       this.tapMax = entity.tapMax;
     }
 
-    /** Setter */
     public Transformer2WTypeInputCopyBuilder rSc(ComparableQuantity<ElectricResistance> rSc) {
       this.rSc = rSc;
       return thisInstance();
+    }
+
+    protected ComparableQuantity<ElectricResistance> getrSc() {
+      return rSc;
     }
 
     public Transformer2WTypeInputCopyBuilder xSc(ComparableQuantity<ElectricResistance> xSc) {
@@ -338,9 +353,17 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
+    protected ComparableQuantity<ElectricResistance> getxSc() {
+      return xSc;
+    }
+
     public Transformer2WTypeInputCopyBuilder sRated(ComparableQuantity<Power> sRated) {
       this.sRated = sRated;
       return thisInstance();
+    }
+
+    protected ComparableQuantity<Power> getsRated() {
+      return sRated;
     }
 
     public Transformer2WTypeInputCopyBuilder vRatedA(
@@ -349,10 +372,18 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
+    protected ComparableQuantity<ElectricPotential> getvRatedA() {
+      return vRatedA;
+    }
+
     public Transformer2WTypeInputCopyBuilder vRatedB(
         ComparableQuantity<ElectricPotential> vRatedB) {
       this.vRatedB = vRatedB;
       return thisInstance();
+    }
+
+    protected ComparableQuantity<ElectricPotential> getvRatedB() {
+      return vRatedB;
     }
 
     public Transformer2WTypeInputCopyBuilder gM(ComparableQuantity<ElectricConductance> gM) {
@@ -360,9 +391,17 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
+    protected ComparableQuantity<ElectricConductance> getgM() {
+      return gM;
+    }
+
     public Transformer2WTypeInputCopyBuilder bM(ComparableQuantity<ElectricConductance> bM) {
       this.bM = bM;
       return thisInstance();
+    }
+
+    protected ComparableQuantity<ElectricConductance> getbM() {
+      return bM;
     }
 
     public Transformer2WTypeInputCopyBuilder dV(ComparableQuantity<Dimensionless> dV) {
@@ -370,9 +409,17 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
+    protected ComparableQuantity<Dimensionless> getdV() {
+      return dV;
+    }
+
     public Transformer2WTypeInputCopyBuilder dPhi(ComparableQuantity<Angle> dPhi) {
       this.dPhi = dPhi;
       return thisInstance();
+    }
+
+    protected ComparableQuantity<Angle> getdPhi() {
+      return dPhi;
     }
 
     public Transformer2WTypeInputCopyBuilder tapSide(boolean tapSide) {
@@ -380,9 +427,17 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
+    protected boolean isTapSide() {
+      return tapSide;
+    }
+
     public Transformer2WTypeInputCopyBuilder tapNeutr(int tapNeutr) {
       this.tapNeutr = tapNeutr;
       return thisInstance();
+    }
+
+    protected int getTapNeutr() {
+      return tapNeutr;
     }
 
     public Transformer2WTypeInputCopyBuilder tapMin(int tapMin) {
@@ -390,16 +445,38 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
+    protected int getTapMin() {
+      return tapMin;
+    }
+
     public Transformer2WTypeInputCopyBuilder tapMax(int tapMax) {
       this.tapMax = tapMax;
       return thisInstance();
     }
 
+    protected int getTapMax() {
+      return tapMax;
+    }
+
     @Override
     public Transformer2WTypeInput build() {
       return new Transformer2WTypeInput(
-          getUuid(), getId(), rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide,
-          tapNeutr, tapMin, tapMax);
+          getUuid(),
+          getId(),
+          rSc,
+          xSc,
+          sRated,
+          vRatedA,
+          vRatedB,
+          gM,
+          bM,
+          dV,
+          dPhi,
+          tapSide,
+          tapNeutr,
+          tapMin,
+          tapMax,
+          getAdditionalInformation());
     }
 
     @Override

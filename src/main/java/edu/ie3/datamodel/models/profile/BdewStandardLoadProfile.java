@@ -5,6 +5,13 @@
 */
 package edu.ie3.datamodel.models.profile;
 
+import static java.lang.Math.pow;
+import static java.lang.Math.round;
+import static tech.units.indriya.unit.Units.WATT;
+
+import edu.ie3.datamodel.models.value.PValue;
+import tech.units.indriya.quantity.Quantities;
+
 /**
  * German standard electricity load profiles, defined by the bdew (Bundesverband der Energie- und
  * Wasserwirtschaft; engl.Federal Association of the Energy and Water Industry). For more details
@@ -42,5 +49,34 @@ public enum BdewStandardLoadProfile implements StandardLoadProfile {
   @Override
   public String toString() {
     return "BdewLoadProfile{" + "key='" + key + '\'' + '}';
+  }
+
+  /**
+   * Calculates the dynamization factor for given day of year. Cf. <a
+   * href="https://www.bdew.de/media/documents/2000131_Anwendung-repraesentativen_Lastprofile-Step-by-step.pdf">
+   * Anwendung der repräsentativen Lastprofile - Step by step</a> page 19
+   *
+   * @param load load value
+   * @param t day of year (1-366)
+   * @return dynamization factor
+   */
+  public static PValue dynamization(PowerProfileKey powerProfileKey, double load, int t) {
+    double value;
+
+    if (powerProfileKey.equalsAny(H0, H25, P25, S25)) {
+      value = dynamization(load, t);
+    } else {
+      value = load;
+    }
+
+    return new PValue(Quantities.getQuantity(value, WATT));
+  }
+
+  public static double dynamization(double load, int t) {
+    /* For the residential average profile, a dynamization has to be taken into account */
+    double factor =
+        (-3.92e-10 * pow(t, 4) + 3.2e-7 * pow(t, 3) - 7.02e-5 * pow(t, 2) + 2.1e-3 * t + 1.24);
+    double rndFactor = round(factor * 1e4) / 1e4; // round to 4 decimal places
+    return round(load * rndFactor * 1e1) / 1e1; // rounded to 1 decimal place
   }
 }
