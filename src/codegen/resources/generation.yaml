@@ -681,6 +681,8 @@ datamodel:
               expression: copyOf(jack)
               className: List
 
+    # TODO: ConductorInput
+
     LayerInput:
       classJavaDoc: "Represents a concentric layer of a cable, including insulation, filler, armor, and jacket layers."
       constructors:

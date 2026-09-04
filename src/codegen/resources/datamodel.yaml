@@ -120,6 +120,91 @@ datamodel:
           type: String
           javaDoc: "The id (=name) of this operator."
 
+  models.input.connector:
+    ConnectorInput:
+      name: ConnectorInput
+      extends: AssetInput
+      components:
+        - name: nodeA
+          type: NodeInput
+          nested: true
+          javaDoc: "Grid node at one side of the connector."
+        - name: nodeB
+          type: NodeInput
+          nested: true
+          javaDoc: "Grid node at the other side of the connector."
+        - name: parallelDevices
+          type: int
+          javaDoc: "Amount of parallel devices."
+
+    LineInput:
+      name: LineInput
+      extends: ConnectorInput
+      abstract: false
+      components:
+        - name: type
+          type: LineTypeInput
+          nested: true
+          javaDoc: "Type of this line, containing default values for lines of this kind."
+        - name: length
+          type: Length
+          javaDoc: "Length of this line."
+        - name: geoPosition
+          type: LineString
+          javaDoc: "Coordinates of this line."
+        - name: olmCharacteristic
+          type: OlmCharacteristicInput
+          javaDoc: "Description of an optional weather dependent operation curve."
+
+    SwitchInput:
+      name: SwitchInput
+      extends: ConnectorInput
+      abstract: false
+      unsupported: [parallelDevices]
+      components:
+        - name: closed
+          type: bool
+          javaDoc: "Is the switching state 'closed'?"
+
+    TransformerInput:
+      name: TransformerInput
+      extends: ConnectorInput
+      components:
+        - name: tapPos
+          type: int
+          javaDoc: "Tap position of this transformer."
+        - name: autoTap
+          type: bool
+          javaDoc: "True, if the tap position of the transformer is adapted automatically."
+
+    Transformer2WInput:
+      name: Transformer2WInput
+      extends: TransformerInput
+      abstract: false
+      components:
+        - name: type
+          type: Transformer2WTypeInput
+          nested: true
+          javaDoc: "Type of this 2W transformer, containing default values for transformers of this kind."
+
+    Transformer3WInput:
+      name: Transformer3WInput
+      extends: TransformerInput
+      abstract: false
+      components:
+        - name: type
+          type: Transformer3WTypeInput
+          nested: true
+          javaDoc: "Type of this 3W transformer, containing default values for transformers of this kind."
+        - name: nodeC
+          type: NodeInput
+          nested: true
+          javaDoc: "The lower voltage node."
+        - name: nodeInternal
+          type: NodeInput
+          nested: true
+          javaDoc: "Internal node of the transformers T equivalent circuit."
+
   models.input.connector.type:
     CableTypeInput:
       name: CableTypeInput
