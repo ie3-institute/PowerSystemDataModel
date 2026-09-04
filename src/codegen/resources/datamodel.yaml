@@ -836,7 +836,7 @@ datamodel:
           type: double
           javaDoc: "Number of people living in the building, double to allow proper scaling."
 
-  result:
+  models.result:
     ResultEntity:
       name: ResultEntity
       components:
@@ -875,7 +875,7 @@ datamodel:
         - name: max
           type: Dimensionless
 
-  result.connector:
+  models.result.connector:
     ConnectorResult:
       name: ConnectorResult
       extends: ResultEntity
@@ -931,7 +931,7 @@ datamodel:
         - name: iCAng
           type: Angle
 
-  results.system:
+  models.results.system:
     SystemParticipantResult:
       name: SystemParticipantResult
       extends: ResultEntity
@@ -1059,7 +1059,7 @@ datamodel:
       extends: SystemParticipantResult
       abstract: false
 
-  result.thermal:
+  models.result.thermal:
     ThermalUnitResult:
       name: ThermalUnitResult
       extends: ResultEntity

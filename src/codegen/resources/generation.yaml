@@ -2256,7 +2256,7 @@ datamodel:
           comment: "scale losses as well as capacity and number of inhabitants to keep equal\n
                   // the time needed to heat a scaled house"
 
-  results:
+  models.results:
     ResultEntity:
       inherits: [Entity]
       classJavaDoc: "Abstract class to hold all mappings common to all result models."
@@ -2301,7 +2301,7 @@ datamodel:
                  @param max maximal value in percent"
       setters: [type, subgrid, value, min, max]
 
-  results.connector:
+  models.results.connector:
     ConnectorResult:
       classJavaDoc: "Abstract class to hold most 'ElectricCurrent and Angle'-mappings common to all connectors."
       constructors:
@@ -2409,7 +2409,7 @@ datamodel:
       setters: [iAMag, iAAng, iBMag, iBAng, iCMag, iCAng]
       nonCapitalized: [iAMag, iAAng, iBMag, iBAng, iCMag, iCAng]
 
-  result.system:
+  models.result.system:
     SystemParticipantResult:
       classJavaDoc: "Abstract class that holds values common to all other result entities."
       constructors:
@@ -2678,7 +2678,7 @@ datamodel:
                  @param q reactive power output normally provided in MVAr"
       copy: false
 
-  result.thermal:
+  models.result.thermal:
     ThermalUnitResult:
       classJavaDoc: "Representation of a result with regard to a thermal unit."
       constructors:

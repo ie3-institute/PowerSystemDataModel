@@ -387,7 +387,8 @@ public interface HelperMethods {
       ClassName className = resolveClassName(modification.className);
 
       if (modification.usableUnitClass()) {
-        builder.addStatement(prefix + expression, className, resolveClassName(modification.unitClass));
+        builder.addStatement(
+            prefix + expression, className, resolveClassName(modification.unitClass));
 
       } else {
         builder.addStatement(prefix + "$T." + expression, className);
