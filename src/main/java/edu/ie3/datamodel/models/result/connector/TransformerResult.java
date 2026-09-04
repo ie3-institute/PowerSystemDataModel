@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -16,13 +16,12 @@ import tech.units.indriya.ComparableQuantity;
  * Abstract class that adds a tap changer position attribute to the {@link ConnectorResult} which
  * actually creates a transformer representation.
  */
-public abstract class TransformerResult extends ConnectorResult {
-
-  /** Current tapping position if a transformer has a tap changer */
-  private int tapPos;
+public class TransformerResult extends ConnectorResult {
+  /** Current tapping position if a transformer has a tap changer. */
+  private final int tapPos;
 
   /**
-   * Standard constructor with automatic uuid generation.
+   * Standard constructor for a transformer result.
    *
    * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
@@ -30,9 +29,9 @@ public abstract class TransformerResult extends ConnectorResult {
    * @param iAAng electric current angle @ Port A in degree
    * @param iBMag electric current magnitude @ port B, normally provided in Ampere
    * @param iBAng electric current angle @ Port B in degree
-   * @param tapPos the current position of the transformers tap changer
+   * @param tapPos Current position of the tap changer
    */
-  protected TransformerResult(
+  public TransformerResult(
       ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<ElectricCurrent> iAMag,
@@ -55,9 +54,8 @@ public abstract class TransformerResult extends ConnectorResult {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof TransformerResult that)) return false;
     if (!super.equals(o)) return false;
-    TransformerResult that = (TransformerResult) o;
     return tapPos == that.tapPos;
   }
 
@@ -83,6 +81,6 @@ public abstract class TransformerResult extends ConnectorResult {
         + getiBAng()
         + ", tapPos="
         + tapPos
-        + '}';
+        + "}";
   }
 }

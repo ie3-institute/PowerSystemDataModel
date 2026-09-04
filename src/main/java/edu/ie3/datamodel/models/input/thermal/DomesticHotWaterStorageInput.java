@@ -1,5 +1,5 @@
 /*
- * © 2024. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -9,22 +9,23 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
 import tech.units.indriya.ComparableQuantity;
 
+/** Thermal storage with cylindrical shape for domestic hot water. */
 public class DomesticHotWaterStorageInput extends AbstractStorageInput {
-
   /**
-   * Constructor for DomesticHotWaterStorageInput
+   * Constructor for DomesticHotWaterStorageInput.
    *
    * @param uuid Unique identifier of a certain domestic hot water storage
    * @param id Identifier of the thermal unit
    * @param operator operator of the asset
    * @param operationTime operation time of the asset
-   * @param bus Thermal bus, a thermal unit is connected to
+   * @param thermalBus Thermal bus, a thermal unit is connected to
    * @param storageVolumeLvl Available storage volume
    * @param inletTemp Temperature of the inlet
    * @param returnTemp Temperature of the outlet
@@ -36,7 +37,7 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
       String id,
       OperatorInput operator,
       OperationTime operationTime,
-      ThermalBusInput bus,
+      ThermalBusInput thermalBus,
       ComparableQuantity<Volume> storageVolumeLvl,
       ComparableQuantity<Temperature> inletTemp,
       ComparableQuantity<Temperature> returnTemp,
@@ -47,7 +48,7 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
         id,
         operator,
         operationTime,
-        bus,
+        thermalBus,
         storageVolumeLvl,
         inletTemp,
         returnTemp,
@@ -56,13 +57,13 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
   }
 
   /**
-   * Constructor for DomesticHotWaterStorageInput
+   * Constructor for DomesticHotWaterStorageInput.
    *
    * @param uuid Unique identifier of a certain domestic hot water storage
    * @param id Identifier of the thermal unit
    * @param operator operator of the asset
    * @param operationTime operation time of the asset
-   * @param bus Thermal bus, a thermal unit is connected to
+   * @param thermalBus Thermal bus, a thermal unit is connected to
    * @param storageVolumeLvl Available storage volume
    * @param inletTemp Temperature of the inlet
    * @param returnTemp Temperature of the outlet
@@ -75,7 +76,7 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
       String id,
       OperatorInput operator,
       OperationTime operationTime,
-      ThermalBusInput bus,
+      ThermalBusInput thermalBus,
       ComparableQuantity<Volume> storageVolumeLvl,
       ComparableQuantity<Temperature> inletTemp,
       ComparableQuantity<Temperature> returnTemp,
@@ -87,7 +88,7 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
         id,
         operator,
         operationTime,
-        bus,
+        thermalBus,
         storageVolumeLvl,
         inletTemp,
         returnTemp,
@@ -97,11 +98,11 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
   }
 
   /**
-   * Alternative constructor for DomesticHotWaterStorageInput
+   * Constructor for DomesticHotWaterStorageInput.
    *
-   * @param uuid Unique identifier of domestic hot water storage
+   * @param uuid Unique identifier of a certain domestic hot water storage
    * @param id Identifier of the thermal unit
-   * @param bus Thermal bus, a thermal unit is connected to
+   * @param thermalBus Thermal bus, a thermal unit is connected to
    * @param storageVolumeLvl Available storage volume
    * @param inletTemp Temperature of the inlet
    * @param returnTemp Temperature of the outlet
@@ -111,18 +112,25 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
   public DomesticHotWaterStorageInput(
       UUID uuid,
       String id,
-      ThermalBusInput bus,
+      ThermalBusInput thermalBus,
       ComparableQuantity<Volume> storageVolumeLvl,
       ComparableQuantity<Temperature> inletTemp,
       ComparableQuantity<Temperature> returnTemp,
       ComparableQuantity<SpecificHeatCapacity> c,
       ComparableQuantity<Power> pThermalMax) {
-    super(uuid, id, bus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax);
+    super(uuid, id, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax);
   }
 
   @Override
-  public DomesticHotWaterStorageInputCopyBuilder copy() {
-    return new DomesticHotWaterStorageInputCopyBuilder(this);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof DomesticHotWaterStorageInput that)) return false;
+    return super.equals(o);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode());
   }
 
   @Override
@@ -136,7 +144,7 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
         + getOperator().getUuid()
         + ", operationTime="
         + getOperationTime()
-        + ", bus="
+        + ", thermalBus="
         + getThermalBus().getUuid()
         + ", storageVolumeLvl="
         + getStorageVolumeLvl()
@@ -147,15 +155,19 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
         + ", c="
         + getC()
         + ", pThermalMax="
-        + getpThermalMax()
+        + getPThermalMax()
         + ", additionalInformation="
         + getAdditionalInformation()
-        + '}';
+        + "}";
+  }
+
+  @Override
+  public DomesticHotWaterStorageInputCopyBuilder copy() {
+    return new DomesticHotWaterStorageInputCopyBuilder(this);
   }
 
   public static class DomesticHotWaterStorageInputCopyBuilder
       extends AbstractStorageInputCopyBuilder<DomesticHotWaterStorageInputCopyBuilder> {
-
     protected DomesticHotWaterStorageInputCopyBuilder(DomesticHotWaterStorageInput entity) {
       super(entity);
     }
@@ -172,7 +184,8 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
           getInletTemp(),
           getReturnTemp(),
           getC(),
-          getpThermalMax());
+          getPThermalMax(),
+          getAdditionalInformation());
     }
 
     @Override

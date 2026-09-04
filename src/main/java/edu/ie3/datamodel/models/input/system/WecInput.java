@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -18,14 +18,13 @@ import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes a Wind Energy Converter */
+/** Describes a Wind Energy Converter. */
 public class WecInput extends SystemParticipantInput implements HasType {
-
-  /** Type of this WEC, containing default values for WEC assets of this kind */
+  /** Type of this WEC, containing default values for WEC assets of this kind. */
   private final WecTypeInput type;
 
   /**
-   * Constructor for an operated wind energy converter
+   * Constructor for an operated wind energy converter.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -33,7 +32,8 @@ public class WecInput extends SystemParticipantInput implements HasType {
    * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param controllingEm The {@link EmInput} controlling this system participant. Null, if not
+   *     applicable.
    * @param type of this WEC
    */
   public WecInput(
@@ -43,14 +43,14 @@ public class WecInput extends SystemParticipantInput implements HasType {
       OperationTime operationTime,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
+      EmInput controllingEm,
       WecTypeInput type) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    super(uuid, id, operator, operationTime, node, qCharacteristics, controllingEm);
     this.type = type;
   }
 
   /**
-   * Constructor for an operated wind energy converter
+   * Constructor for an operated wind energy converter.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -58,7 +58,8 @@ public class WecInput extends SystemParticipantInput implements HasType {
    * @param operationTime Time for which the entity is operated
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param controllingEm The {@link EmInput} controlling this system participant. Null, if not
+   *     applicable.
    * @param type of this WEC
    * @param additionalInformation That were provided by the source
    */
@@ -69,22 +70,23 @@ public class WecInput extends SystemParticipantInput implements HasType {
       OperationTime operationTime,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
+      EmInput controllingEm,
       WecTypeInput type,
       Map<String, String> additionalInformation) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    super(uuid, id, operator, operationTime, node, qCharacteristics, controllingEm);
     this.type = type;
     setAdditionalInformation(additionalInformation);
   }
 
   /**
-   * Constructor for an operated, always on wind energy converter
+   * Constructor for an operated wind energy converter.
    *
    * @param uuid of the input entity
    * @param id of the asset
    * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param controllingEm The {@link EmInput} controlling this system participant. Null, if not
+   *     applicable.
    * @param type of this WEC
    */
   public WecInput(
@@ -92,13 +94,12 @@ public class WecInput extends SystemParticipantInput implements HasType {
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
+      EmInput controllingEm,
       WecTypeInput type) {
-    super(uuid, id, node, qCharacteristics, em);
+    super(uuid, id, node, qCharacteristics, controllingEm);
     this.type = type;
   }
 
-  @Override
   public WecTypeInput getType() {
     return type;
   }
@@ -108,16 +109,12 @@ public class WecInput extends SystemParticipantInput implements HasType {
     return this.type.getsRated();
   }
 
-  public WecInputCopyBuilder copy() {
-    return new WecInputCopyBuilder(this);
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof WecInput wecInput)) return false;
+    if (!(o instanceof WecInput that)) return false;
     if (!super.equals(o)) return false;
-    return Objects.equals(type, wecInput.type);
+    return Objects.equals(type, that.type);
   }
 
   @Override
@@ -138,37 +135,43 @@ public class WecInput extends SystemParticipantInput implements HasType {
         + getOperationTime()
         + ", node="
         + getNode().getUuid()
-        + ", qCharacteristics='"
-        + getqCharacteristics()
-        + "', em="
-        + getControllingEm()
+        + ", qCharacteristics="
+        + getQCharacteristics()
+        + ", controllingEm="
+        + getControllingEm().map(e -> e.getUuid().toString()).orElse("")
         + ", type="
         + type.getUuid()
         + ", additionalInformation="
         + getAdditionalInformation()
-        + '}';
+        + "}";
   }
 
-  /**
-   * A builder pattern based approach to create copies of {@link WecInput} entities with altered
-   * field values. For detailed field descriptions refer to java docs of {@link WecInput}
-   *
-   * @version 0.1
-   * @since 05.06.20
-   */
+  @Override
+  public WecInputCopyBuilder copy() {
+    return new WecInputCopyBuilder(this);
+  }
+
   public static class WecInputCopyBuilder
       extends SystemParticipantInputCopyBuilder<WecInputCopyBuilder> {
-
     private WecTypeInput type;
 
-    private WecInputCopyBuilder(WecInput entity) {
+    protected WecInputCopyBuilder(WecInput entity) {
       super(entity);
-      this.type = entity.getType();
+      this.type = entity.type;
+    }
+
+    public WecInputCopyBuilder type(WecTypeInput type) {
+      this.type = type;
+      return thisInstance();
+    }
+
+    protected WecTypeInput getType() {
+      return type;
     }
 
     @Override
-    public WecInputCopyBuilder scale(Double factor) {
-      type(type.copy().scale(factor).build());
+    public WecInputCopyBuilder scale(double factor) {
+      return type(type.copy().scale(factor).build());
       return thisInstance();
     }
 
@@ -180,14 +183,10 @@ public class WecInput extends SystemParticipantInput implements HasType {
           getOperator(),
           getOperationTime(),
           getNode(),
-          getqCharacteristics(),
-          getEm(),
-          type);
-    }
-
-    public WecInputCopyBuilder type(WecTypeInput type) {
-      this.type = type;
-      return thisInstance();
+          getQCharacteristics(),
+          getControllingEm(),
+          type,
+          getAdditionalInformation());
     }
 
     @Override

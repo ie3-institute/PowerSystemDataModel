@@ -134,7 +134,7 @@ public class NodeInput extends AssetInput {
     this.subnet = subnet;
   }
 
-  public ComparableQuantity<Dimensionless> getvTarget() {
+  public ComparableQuantity<Dimensionless> getVTarget() {
     return vTarget;
   }
 
@@ -227,7 +227,7 @@ public class NodeInput extends AssetInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Dimensionless> getvTarget() {
+    protected ComparableQuantity<Dimensionless> getVTarget() {
       return vTarget;
     }
 

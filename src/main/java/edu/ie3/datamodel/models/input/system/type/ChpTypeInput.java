@@ -1,11 +1,11 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.input.system.type;
 
-import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.utils.QuantityUtils;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Map;
@@ -15,18 +15,18 @@ import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes the type of a {@link edu.ie3.datamodel.models.input.system.ChpInput} */
+/** Describes the type of a {@link edu.ie3.datamodel.models.input.system.ChpInput}. */
 public class ChpTypeInput extends SystemParticipantTypeInput {
-  /** Electrical efficiency (typically in %) */
+  /** Electrical efficiency (typically in %). */
   private final ComparableQuantity<Dimensionless> etaEl;
 
-  /** Thermal efficiency (typically in %) */
+  /** Thermal efficiency (typically in %). */
   private final ComparableQuantity<Dimensionless> etaThermal;
 
-  /** Rated thermal power (typically in kW) */
+  /** Rated thermal power (typically in kW). */
   private final ComparableQuantity<Power> pThermal;
 
-  /** Internal consumption (typically in kW) */
+  /** Internal consumption (typically in kW). */
   private final ComparableQuantity<Power> pOwn;
 
   /**
@@ -52,11 +52,11 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
       double cosPhiRated,
       ComparableQuantity<Power> pThermal,
       ComparableQuantity<Power> pOwn) {
-    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
-    this.etaEl = etaEl.to(StandardUnits.EFFICIENCY);
-    this.etaThermal = etaThermal.to(StandardUnits.EFFICIENCY);
-    this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
-    this.pOwn = pOwn.to(StandardUnits.ACTIVE_POWER_IN);
+    super(uuid, id, capex, opex, sRated, cosPhiRated);
+    this.etaEl = etaEl;
+    this.etaThermal = etaThermal;
+    this.pThermal = pThermal;
+    this.pOwn = pOwn;
   }
 
   /**
@@ -70,7 +70,7 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
    * @param cosPhiRated Power factor for this type of CHP
    * @param pThermal Rated thermal power
    * @param pOwn Internal consumption
-   * @param additionalInformation Of the input
+   * @param additionalInformation That were provided by the source
    */
   public ChpTypeInput(
       UUID uuid,
@@ -84,11 +84,11 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
       ComparableQuantity<Power> pThermal,
       ComparableQuantity<Power> pOwn,
       Map<String, String> additionalInformation) {
-    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
-    this.etaEl = etaEl.to(StandardUnits.EFFICIENCY);
-    this.etaThermal = etaThermal.to(StandardUnits.EFFICIENCY);
-    this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
-    this.pOwn = pOwn.to(StandardUnits.ACTIVE_POWER_IN);
+    super(uuid, id, capex, opex, sRated, cosPhiRated);
+    this.etaEl = etaEl;
+    this.etaThermal = etaThermal;
+    this.pThermal = pThermal;
+    this.pOwn = pOwn;
     setAdditionalInformation(additionalInformation);
   }
 
@@ -100,17 +100,12 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
     return etaThermal;
   }
 
-  public ComparableQuantity<Power> getpThermal() {
+  public ComparableQuantity<Power> getPThermal() {
     return pThermal;
   }
 
-  public ComparableQuantity<Power> getpOwn() {
+  public ComparableQuantity<Power> getPOwn() {
     return pOwn;
-  }
-
-  @Override
-  public ChpTypeInputCopyBuilder copy() {
-    return new ChpTypeInputCopyBuilder(this);
   }
 
   @Override
@@ -118,10 +113,10 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
     if (this == o) return true;
     if (!(o instanceof ChpTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    return etaEl.equals(that.etaEl)
-        && etaThermal.equals(that.etaThermal)
-        && pThermal.equals(that.pThermal)
-        && pOwn.equals(that.pOwn);
+    return QuantityUtils.equals(etaEl, that.etaEl)
+        && QuantityUtils.equals(etaThermal, that.etaThermal)
+        && QuantityUtils.equals(pThermal, that.pThermal)
+        && QuantityUtils.equals(pOwn, that.pOwn);
   }
 
   @Override
@@ -136,15 +131,15 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
         + getUuid()
         + ", id="
         + getId()
-        + "capex="
+        + ", capex="
         + getCapex()
         + ", opex="
         + getOpex()
         + ", sRated="
-        + getsRated()
+        + getSRated()
         + ", cosPhiRated="
         + getCosPhiRated()
-        + "etaEl="
+        + ", etaEl="
         + etaEl
         + ", etaThermal="
         + etaThermal
@@ -154,27 +149,30 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
         + pOwn
         + ", additionalInformation="
         + getAdditionalInformation()
-        + '}';
+        + "}";
   }
 
-  /**
-   * A builder pattern based approach to create copies of {@link ChpTypeInput} entities with altered
-   * field values. For detailed field descriptions refer to Javadocs of {@link ChpTypeInput}
-   */
-  public static class ChpTypeInputCopyBuilder
-      extends SystemParticipantTypeInputCopyBuilder<ChpTypeInput.ChpTypeInputCopyBuilder> {
+  @Override
+  public ChpTypeInputCopyBuilder copy() {
+    return new ChpTypeInputCopyBuilder(this);
+  }
 
+  public static class ChpTypeInputCopyBuilder
+      extends SystemParticipantTypeInputCopyBuilder<ChpTypeInputCopyBuilder> {
     private ComparableQuantity<Dimensionless> etaEl;
+
     private ComparableQuantity<Dimensionless> etaThermal;
+
     private ComparableQuantity<Power> pThermal;
+
     private ComparableQuantity<Power> pOwn;
 
-    private ChpTypeInputCopyBuilder(ChpTypeInput entity) {
+    protected ChpTypeInputCopyBuilder(ChpTypeInput entity) {
       super(entity);
-      this.etaEl = entity.getEtaEl();
-      this.etaThermal = entity.getEtaThermal();
-      this.pThermal = entity.getpThermal();
-      this.pOwn = entity.getpOwn();
+      this.etaEl = entity.etaEl;
+      this.etaThermal = entity.etaThermal;
+      this.pThermal = entity.pThermal;
+      this.pOwn = entity.pOwn;
     }
 
     public ChpTypeInputCopyBuilder etaEl(ComparableQuantity<Dimensionless> etaEl) {
@@ -182,9 +180,17 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
       return thisInstance();
     }
 
+    protected ComparableQuantity<Dimensionless> getEtaEl() {
+      return etaEl;
+    }
+
     public ChpTypeInputCopyBuilder etaThermal(ComparableQuantity<Dimensionless> etaThermal) {
       this.etaThermal = etaThermal;
       return thisInstance();
+    }
+
+    protected ComparableQuantity<Dimensionless> getEtaThermal() {
+      return etaThermal;
     }
 
     public ChpTypeInputCopyBuilder pThermal(ComparableQuantity<Power> pThermal) {
@@ -192,30 +198,22 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
       return thisInstance();
     }
 
+    protected ComparableQuantity<Power> getPThermal() {
+      return pThermal;
+    }
+
     public ChpTypeInputCopyBuilder pOwn(ComparableQuantity<Power> pOwn) {
       this.pOwn = pOwn;
       return thisInstance();
     }
 
-    public ComparableQuantity<Dimensionless> getEtaEl() {
-      return etaEl;
-    }
-
-    public ComparableQuantity<Dimensionless> getEtaThermal() {
-      return etaThermal;
-    }
-
-    public ComparableQuantity<Power> getpThermal() {
-      return pThermal;
-    }
-
-    public ComparableQuantity<Power> getpOwn() {
+    protected ComparableQuantity<Power> getPOwn() {
       return pOwn;
     }
 
     @Override
-    public ChpTypeInput.ChpTypeInputCopyBuilder scale(double factor) {
-      capex(getCapex().multiply(factor));
+    public ChpTypeInputCopyBuilder scale(double factor) {
+      return capex(getCapex().multiply(factor));
       sRated(getsRated().multiply(factor));
       pThermal(getpThermal().multiply(factor));
       pOwn(getpOwn().multiply(factor));
@@ -231,14 +229,15 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
           getOpex(),
           etaEl,
           etaThermal,
-          getsRated(),
+          getSRated(),
           getCosPhiRated(),
           pThermal,
-          pOwn);
+          pOwn,
+          getAdditionalInformation());
     }
 
     @Override
-    protected ChpTypeInput.ChpTypeInputCopyBuilder thisInstance() {
+    protected ChpTypeInputCopyBuilder thisInstance() {
       return this;
     }
   }

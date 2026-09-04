@@ -1,11 +1,11 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.input.system.type;
 
-import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.utils.QuantityUtils;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.DimensionlessRate;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
@@ -15,21 +15,20 @@ import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
-import javax.measure.quantity.Time;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes the type of {@link edu.ie3.datamodel.models.input.system.StorageInput} */
+/** Describes the type of a {@link edu.ie3.datamodel.models.input.system.StorageInput}. */
 public class StorageTypeInput extends SystemParticipantTypeInput {
-  /** Energy capacity (typically in kWh) */
+  /** . */
   private final ComparableQuantity<Energy> eStorage;
 
-  /** Maximum permissible active power (typically in kW) */
+  /** . */
   private final ComparableQuantity<Power> pMax;
 
-  /** Maximum permissible gradient of active power change (typically % / h) */
+  /** . */
   private final ComparableQuantity<DimensionlessRate> activePowerGradient;
 
-  /** Efficiency of the charging and discharging process (typically in %) */
+  /** . */
   private final ComparableQuantity<Dimensionless> eta;
 
   /**
@@ -55,11 +54,11 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
       ComparableQuantity<Power> pMax,
       ComparableQuantity<DimensionlessRate> activePowerGradient,
       ComparableQuantity<Dimensionless> eta) {
-    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
-    this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
-    this.pMax = pMax.to(StandardUnits.ACTIVE_POWER_IN);
-    this.activePowerGradient = activePowerGradient.to(StandardUnits.ACTIVE_POWER_GRADIENT);
-    this.eta = eta.to(StandardUnits.EFFICIENCY);
+    super(uuid, id, capex, opex, sRated, cosPhiRated);
+    this.eStorage = eStorage;
+    this.pMax = pMax;
+    this.activePowerGradient = activePowerGradient;
+    this.eta = eta;
   }
 
   /**
@@ -73,7 +72,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
    * @param pMax maximum permissible active power of the integrated inverter
    * @param activePowerGradient maximum permissible gradient of active power change
    * @param eta efficiency of the charging and discharging process
-   * @param additionalInformation Of the input
+   * @param additionalInformation That were provided by the source
    */
   public StorageTypeInput(
       UUID uuid,
@@ -87,23 +86,19 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
       ComparableQuantity<DimensionlessRate> activePowerGradient,
       ComparableQuantity<Dimensionless> eta,
       Map<String, String> additionalInformation) {
-    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
-    this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
-    this.pMax = pMax.to(StandardUnits.ACTIVE_POWER_IN);
-    this.activePowerGradient = activePowerGradient.to(StandardUnits.ACTIVE_POWER_GRADIENT);
-    this.eta = eta.to(StandardUnits.EFFICIENCY);
+    super(uuid, id, capex, opex, sRated, cosPhiRated);
+    this.eStorage = eStorage;
+    this.pMax = pMax;
+    this.activePowerGradient = activePowerGradient;
+    this.eta = eta;
     setAdditionalInformation(additionalInformation);
   }
 
-  public ComparableQuantity<Dimensionless> getEta() {
-    return eta;
-  }
-
-  public ComparableQuantity<Energy> geteStorage() {
+  public ComparableQuantity<Energy> getEStorage() {
     return eStorage;
   }
 
-  public ComparableQuantity<Power> getpMax() {
+  public ComparableQuantity<Power> getPMax() {
     return pMax;
   }
 
@@ -111,9 +106,8 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     return activePowerGradient;
   }
 
-  @Override
-  public StorageTypeInputCopyBuilder copy() {
-    return new StorageTypeInputCopyBuilder(this);
+  public ComparableQuantity<Dimensionless> getEta() {
+    return eta;
   }
 
   @Override
@@ -121,10 +115,10 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     if (this == o) return true;
     if (!(o instanceof StorageTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    return eStorage.equals(that.eStorage)
-        && pMax.equals(that.pMax)
-        && activePowerGradient.equals(that.activePowerGradient)
-        && eta.equals(that.eta);
+    return QuantityUtils.equals(eStorage, that.eStorage)
+        && QuantityUtils.equals(pMax, that.pMax)
+        && QuantityUtils.equals(activePowerGradient, that.activePowerGradient)
+        && QuantityUtils.equals(eta, that.eta);
   }
 
   @Override
@@ -139,121 +133,93 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
         + getUuid()
         + ", id="
         + getId()
-        + "capex="
+        + ", capex="
         + getCapex()
         + ", opex="
         + getOpex()
         + ", sRated="
-        + getsRated()
+        + getSRated()
         + ", cosPhiRated="
         + getCosPhiRated()
-        + "eStorage="
+        + ", eStorage="
         + eStorage
         + ", pMax="
         + pMax
-        + ", cpRate="
+        + ", activePowerGradient="
         + activePowerGradient
         + ", eta="
         + eta
         + ", additionalInformation="
         + getAdditionalInformation()
-        + '}';
+        + "}";
   }
 
-  /**
-   * A builder pattern based approach to create copies of {@link StorageTypeInput} entities with
-   * altered field values. For detailed field descriptions refer to java docs of {@link
-   * StorageTypeInput}
-   */
+  @Override
+  public StorageTypeInputCopyBuilder copy() {
+    return new StorageTypeInputCopyBuilder(this);
+  }
+
   public static class StorageTypeInputCopyBuilder
-      extends SystemParticipantTypeInputCopyBuilder<StorageTypeInput.StorageTypeInputCopyBuilder> {
-
+      extends SystemParticipantTypeInputCopyBuilder<StorageTypeInputCopyBuilder> {
     private ComparableQuantity<Energy> eStorage;
-    private ComparableQuantity<Power> pMax;
-    private ComparableQuantity<DimensionlessRate> activePowerGradient;
-    private ComparableQuantity<Dimensionless> eta;
-    private ComparableQuantity<Dimensionless> dod;
-    private ComparableQuantity<Time> lifeTime;
-    private int lifeCycle;
 
-    private StorageTypeInputCopyBuilder(StorageTypeInput entity) {
+    private ComparableQuantity<Power> pMax;
+
+    private ComparableQuantity<DimensionlessRate> activePowerGradient;
+
+    private ComparableQuantity<Dimensionless> eta;
+
+    protected StorageTypeInputCopyBuilder(StorageTypeInput entity) {
       super(entity);
-      this.eStorage = entity.geteStorage();
-      this.pMax = entity.getpMax();
-      this.activePowerGradient = entity.getActivePowerGradient();
-      this.eta = entity.getEta();
+      this.eStorage = entity.eStorage;
+      this.pMax = entity.pMax;
+      this.activePowerGradient = entity.activePowerGradient;
+      this.eta = entity.eta;
     }
 
-    public StorageTypeInputCopyBuilder seteStorage(ComparableQuantity<Energy> eStorage) {
+    public StorageTypeInputCopyBuilder eStorage(ComparableQuantity<Energy> eStorage) {
       this.eStorage = eStorage;
       return thisInstance();
     }
 
-    public StorageTypeInputCopyBuilder setpMax(ComparableQuantity<Power> pMax) {
+    protected ComparableQuantity<Energy> getEStorage() {
+      return eStorage;
+    }
+
+    public StorageTypeInputCopyBuilder pMax(ComparableQuantity<Power> pMax) {
       this.pMax = pMax;
       return thisInstance();
     }
 
-    public StorageTypeInputCopyBuilder setActivePowerGradient(
+    protected ComparableQuantity<Power> getPMax() {
+      return pMax;
+    }
+
+    public StorageTypeInputCopyBuilder activePowerGradient(
         ComparableQuantity<DimensionlessRate> activePowerGradient) {
       this.activePowerGradient = activePowerGradient;
       return thisInstance();
     }
 
-    public StorageTypeInputCopyBuilder setEta(ComparableQuantity<Dimensionless> eta) {
+    protected ComparableQuantity<DimensionlessRate> getActivePowerGradient() {
+      return activePowerGradient;
+    }
+
+    public StorageTypeInputCopyBuilder eta(ComparableQuantity<Dimensionless> eta) {
       this.eta = eta;
       return thisInstance();
     }
 
-    public StorageTypeInputCopyBuilder setDod(ComparableQuantity<Dimensionless> dod) {
-      this.dod = dod;
-      return thisInstance();
-    }
-
-    public StorageTypeInputCopyBuilder setLifeTime(ComparableQuantity<Time> lifeTime) {
-      this.lifeTime = lifeTime;
-      return thisInstance();
-    }
-
-    public StorageTypeInputCopyBuilder setLifeCycle(int lifeCycle) {
-      this.lifeCycle = lifeCycle;
-      return thisInstance();
-    }
-
-    public ComparableQuantity<Energy> geteStorage() {
-      return eStorage;
-    }
-
-    public ComparableQuantity<Power> getpMax() {
-      return pMax;
-    }
-
-    public ComparableQuantity<DimensionlessRate> getActivePowerGradient() {
-      return activePowerGradient;
-    }
-
-    public ComparableQuantity<Dimensionless> getEta() {
+    protected ComparableQuantity<Dimensionless> getEta() {
       return eta;
     }
 
-    public ComparableQuantity<Dimensionless> getDod() {
-      return dod;
-    }
-
-    public ComparableQuantity<Time> getLifeTime() {
-      return lifeTime;
-    }
-
-    public int getLifeCycle() {
-      return lifeCycle;
-    }
-
     @Override
-    public StorageTypeInput.StorageTypeInputCopyBuilder scale(double factor) {
-      capex(getCapex().multiply(factor));
+    public StorageTypeInputCopyBuilder scale(double factor) {
+      return capex(getCapex().multiply(factor));
       sRated(getsRated().multiply(factor));
-      seteStorage(geteStorage().multiply(factor));
-      setpMax(getpMax().multiply(factor));
+      eStorage(geteStorage().multiply(factor));
+      pMax(getpMax().multiply(factor));
       return thisInstance();
     }
 
@@ -265,15 +231,16 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
           getCapex(),
           getOpex(),
           eStorage,
-          getsRated(),
+          getSRated(),
           getCosPhiRated(),
           pMax,
           activePowerGradient,
-          eta);
+          eta,
+          getAdditionalInformation());
     }
 
     @Override
-    protected StorageTypeInput.StorageTypeInputCopyBuilder thisInstance() {
+    protected StorageTypeInputCopyBuilder thisInstance() {
       return this;
     }
   }

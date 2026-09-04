@@ -1,58 +1,57 @@
 /*
- * © 2024. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.value.load;
 
-import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATT;
-
 import de.lmu.ifi.dbs.elki.math.statistics.distribution.GeneralizedExtremeValueDistribution;
-import de.lmu.ifi.dbs.elki.utilities.random.RandomFactory;
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.value.PValue;
+import edu.ie3.util.quantities.PowerSystemUnits;
 import java.time.DayOfWeek;
 import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
 import tech.units.indriya.quantity.Quantities;
 
 /**
  * Data model to describe the parameters of a probability density function to draw random power
  * consumptions. This model represents a generalized extreme value distribution (GEV), that has been
  * sampled for each quarter-hour of a day, subdivided into workdays, Saturdays and Sundays. In
- * general the GEV is described by the three parameters "location", "scale" and "shape"
+ * general the GEV is described by the three parameters "location", "scale" and "shape".
  */
-public class RandomLoadValues implements LoadValues {
-  /** Shape parameter for a Saturday */
+public class RandomLoadValues implements LoadValues, RandomNumberProvider {
+  /** Shape parameter for a Saturday. */
   private final double kSa;
 
-  /** Shape parameter for a Sunday */
+  /** Shape parameter for a Sunday. */
   private final double kSu;
 
-  /** Shape parameter for a working day */
+  /** Shape parameter for a working day. */
   private final double kWd;
 
-  /** Location parameter for a Saturday */
+  /** Shape parameter for a Saturday. */
   private final double mySa;
 
-  /** Location parameter for a Sunday */
+  /** Shape parameter for a Sunday. */
   private final double mySu;
 
-  /** Location parameter for a working day */
+  /** Shape parameter for a working day. */
   private final double myWd;
 
-  /** Scale parameter for a Saturday */
+  /** Shape parameter for a Saturday. */
   private final double sigmaSa;
 
-  /** Scale parameter for a Sunday */
+  /** Shape parameter for a Sunday. */
   private final double sigmaSu;
 
-  /** Scale parameter for a working day */
+  /** Shape parameter for a working day. */
   private final double sigmaWd;
 
   private final transient GeneralizedExtremeValueDistribution gevWd;
+
   private final transient GeneralizedExtremeValueDistribution gevSa;
+
   private final transient GeneralizedExtremeValueDistribution gevSu;
 
   /**
@@ -76,35 +75,74 @@ public class RandomLoadValues implements LoadValues {
       double sigmaSa,
       double sigmaSu,
       double sigmaWd) {
-    this.kWd = kWd;
     this.kSa = kSa;
     this.kSu = kSu;
-    this.myWd = myWd;
+    this.kWd = kWd;
     this.mySa = mySa;
     this.mySu = mySu;
-    this.sigmaWd = sigmaWd;
+    this.myWd = myWd;
     this.sigmaSa = sigmaSa;
     this.sigmaSu = sigmaSu;
-
-    final RandomFactory factory = RandomFactory.get(ThreadLocalRandom.current().nextLong());
-
+    this.sigmaWd = sigmaWd;
     this.gevWd = new GeneralizedExtremeValueDistribution(myWd, sigmaWd, kWd, factory.getRandom());
-
     this.gevSa = new GeneralizedExtremeValueDistribution(mySa, sigmaSa, kSa, factory.getRandom());
     this.gevSu = new GeneralizedExtremeValueDistribution(mySu, sigmaSu, kSu, factory.getRandom());
   }
 
-  @Override
-  public PValue getValue(ZonedDateTime time, PowerProfileKey powerProfileKey) {
-    return new PValue(Quantities.getQuantity(getValue(time.getDayOfWeek()), KILOWATT));
+  public double getKSa() {
+    return kSa;
   }
 
-  /**
-   * Method to get the next random double value.
-   *
-   * @param day of the week
-   * @return a suitable random double
-   */
+  public double getKSu() {
+    return kSu;
+  }
+
+  public double getKWd() {
+    return kWd;
+  }
+
+  public double getMySa() {
+    return mySa;
+  }
+
+  public double getMySu() {
+    return mySu;
+  }
+
+  public double getMyWd() {
+    return myWd;
+  }
+
+  public double getSigmaSa() {
+    return sigmaSa;
+  }
+
+  public double getSigmaSu() {
+    return sigmaSu;
+  }
+
+  public double getSigmaWd() {
+    return sigmaWd;
+  }
+
+  public GeneralizedExtremeValueDistribution getGevWd() {
+    return gevWd;
+  }
+
+  public GeneralizedExtremeValueDistribution getGevSa() {
+    return gevSa;
+  }
+
+  public GeneralizedExtremeValueDistribution getGevSu() {
+    return gevSu;
+  }
+
+  @Override
+  public PValue getValue(ZonedDateTime time, PowerProfileKey powerProfileKey) {
+    return new PValue(
+        Quantities.getQuantity(getValue(time.getDayOfWeek()), PowerSystemUnits.KILOWATT));
+  }
+
   private double getValue(DayOfWeek day) {
     double randomValue =
         switch (day) {
@@ -119,62 +157,24 @@ public class RandomLoadValues implements LoadValues {
     return randomValue;
   }
 
-  public double getMyWd() {
-    return myWd;
-  }
-
-  public double getMySa() {
-    return mySa;
-  }
-
-  public double getMySu() {
-    return mySu;
-  }
-
-  public double getSigmaWd() {
-    return sigmaWd;
-  }
-
-  public double getSigmaSa() {
-    return sigmaSa;
-  }
-
-  public double getSigmaSu() {
-    return sigmaSu;
-  }
-
-  public double getkWd() {
-    return kWd;
-  }
-
-  public double getkSa() {
-    return kSa;
-  }
-
-  public double getkSu() {
-    return kSu;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof RandomLoadValues that)) return false;
-    if (!super.equals(o)) return false;
-    return Objects.equals(kSa, that.kSa)
-        && Objects.equals(kSu, that.kSu)
-        && Objects.equals(kWd, that.kWd)
-        && Objects.equals(mySa, that.mySa)
-        && Objects.equals(mySu, that.mySu)
-        && Objects.equals(myWd, that.myWd)
-        && Objects.equals(sigmaSa, that.sigmaSa)
-        && Objects.equals(sigmaSu, that.sigmaSu)
-        && Objects.equals(sigmaWd, that.sigmaWd);
+    return kSa == that.kSa
+        && kSu == that.kSu
+        && kWd == that.kWd
+        && mySa == that.mySa
+        && mySu == that.mySu
+        && myWd == that.myWd
+        && sigmaSa == that.sigmaSa
+        && sigmaSu == that.sigmaSu
+        && sigmaWd == that.sigmaWd;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), kSa, kSu, kWd, mySa, mySu, myWd, sigmaSa, sigmaSu, sigmaWd);
+    return Objects.hash(kSa, kSu, kWd, mySa, mySu, myWd, sigmaSa, sigmaSu, sigmaWd);
   }
 
   @Override
@@ -198,6 +198,6 @@ public class RandomLoadValues implements LoadValues {
         + sigmaSu
         + ", sigmaWd="
         + sigmaWd
-        + '}';
+        + "}";
   }
 }

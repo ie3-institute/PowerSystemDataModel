@@ -1,28 +1,31 @@
 /*
- * © 2024. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.result;
 
-import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.utils.QuantityUtils;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 
+/** Represents calculation results of a {@link edu.ie3.datamodel.models.input.NodeInput}. */
 public class CongestionResult extends ResultEntity {
-  /** Values */
-  private final Integer subgrid;
+  private int subgrid;
 
-  private final InputModelType type;
-  private final ComparableQuantity<Dimensionless> value;
-  private final ComparableQuantity<Dimensionless> min;
-  private final ComparableQuantity<Dimensionless> max;
+  private InputModelType type;
+
+  private ComparableQuantity<Dimensionless> value;
+
+  private ComparableQuantity<Dimensionless> min;
+
+  private ComparableQuantity<Dimensionless> max;
 
   /**
-   * Standard constructor which includes auto generation of the resulting output models uuid.
+   * Standard constructor for a congestion result.
    *
    * @param time date and time when the result is produced
    * @param inputModel identifier of the input model
@@ -48,12 +51,12 @@ public class CongestionResult extends ResultEntity {
     this.max = max;
   }
 
-  public InputModelType getType() {
-    return type;
-  }
-
   public int getSubgrid() {
     return subgrid;
+  }
+
+  public InputModelType getType() {
+    return type;
   }
 
   public ComparableQuantity<Dimensionless> getValue() {
@@ -68,65 +71,60 @@ public class CongestionResult extends ResultEntity {
     return max;
   }
 
+  public void setSubgrid(int subgrid) {
+    this.subgrid = subgrid;
+  }
+
+  public void setType(InputModelType type) {
+    this.type = type;
+  }
+
+  public void setValue(ComparableQuantity<Dimensionless> value) {
+    this.value = value;
+  }
+
+  public void setMin(ComparableQuantity<Dimensionless> min) {
+    this.min = min;
+  }
+
+  public void setMax(ComparableQuantity<Dimensionless> max) {
+    this.max = max;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    CongestionResult that = (CongestionResult) o;
-    return getTime().equals(that.getTime())
-        && getInputModel().equals(that.getInputModel())
-        && type.equals(that.type)
-        && Objects.equals(subgrid, that.subgrid)
-        && value.equals(that.value)
-        && min.equals(that.min)
-        && max.equals(that.max);
+    if (!(o instanceof CongestionResult that)) return false;
+    if (!super.equals(o)) return false;
+    return subgrid == that.subgrid
+        && Objects.equals(type, that.type)
+        && QuantityUtils.equals(value, that.value)
+        && QuantityUtils.equals(min, that.min)
+        && QuantityUtils.equals(max, that.max);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getTime(), type, subgrid, value, min, max);
+    return Objects.hash(super.hashCode(), subgrid, type, value, min, max);
   }
 
   @Override
   public String toString() {
-    return "InputResultEntity{time="
+    return "CongestionResult{"
+        + "time="
         + getTime()
         + ", inputModel="
         + getInputModel()
-        + ", type="
-        + type
         + ", subgrid="
         + subgrid
+        + ", type="
+        + type
         + ", value="
         + value
         + ", min="
         + min
         + ", max="
         + max
-        + '}';
-  }
-
-  public enum InputModelType {
-    NODE("node"),
-    LINE("line"),
-    TRANSFORMER_2W("transformer_2w"),
-    TRANSFORMER_3W("transformer_3w");
-
-    public final String type;
-
-    InputModelType(String type) {
-      this.type = type;
-    }
-
-    public static InputModelType parse(String inputModelType) throws ParsingException {
-      return switch (inputModelType) {
-        case "node" -> NODE;
-        case "line" -> LINE;
-        case "transformer_2w" -> TRANSFORMER_2W;
-        case "transformer_3w" -> TRANSFORMER_3W;
-        default ->
-            throw new ParsingException("InputModelType '" + inputModelType + "' cannot be parsed!");
-      };
-    }
+        + "}";
   }
 }

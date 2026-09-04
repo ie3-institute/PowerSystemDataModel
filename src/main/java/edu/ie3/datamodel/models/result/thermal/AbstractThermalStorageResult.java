@@ -1,11 +1,11 @@
 /*
- * © 2024. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.result.thermal;
 
-import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.utils.QuantityUtils;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -14,10 +14,10 @@ import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Abstract class representing the common results of different types of thermal storages */
+/** Abstract class representing the common results of different types of thermal storages. */
 public abstract class AbstractThermalStorageResult extends ThermalStorageResult {
-  /** Fill level of the storage */
-  private ComparableQuantity<Dimensionless> fillLevel;
+  /** Fill level of the storage. */
+  private final ComparableQuantity<Dimensionless> fillLevel;
 
   /**
    * Constructs the result with
@@ -35,7 +35,7 @@ public abstract class AbstractThermalStorageResult extends ThermalStorageResult 
       ComparableQuantity<Power> qDot,
       ComparableQuantity<Dimensionless> fillLevel) {
     super(time, inputModel, energy, qDot);
-    this.fillLevel = fillLevel.to(StandardUnits.FILL_LEVEL);
+    this.fillLevel = fillLevel;
   }
 
   public ComparableQuantity<Dimensionless> getFillLevel() {
@@ -43,16 +43,15 @@ public abstract class AbstractThermalStorageResult extends ThermalStorageResult 
   }
 
   public void setFillLevel(ComparableQuantity<Dimensionless> fillLevel) {
-    this.fillLevel = fillLevel.to(StandardUnits.FILL_LEVEL);
+    this.fillLevel = fillLevel;
   }
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof AbstractThermalStorageResult that)) return false;
     if (!super.equals(o)) return false;
-    AbstractThermalStorageResult that = (AbstractThermalStorageResult) o;
-    return fillLevel.equals(that.fillLevel);
+    return QuantityUtils.equals(fillLevel, that.fillLevel);
   }
 
   @Override
@@ -62,8 +61,7 @@ public abstract class AbstractThermalStorageResult extends ThermalStorageResult 
 
   @Override
   public String toString() {
-    return getClass().getSimpleName()
-        + "{"
+    return "AbstractThermalStorageResult{"
         + "time="
         + getTime()
         + ", inputModel="
@@ -74,6 +72,6 @@ public abstract class AbstractThermalStorageResult extends ThermalStorageResult 
         + getEnergy()
         + ", fillLevel="
         + fillLevel
-        + '}';
+        + "}";
   }
 }

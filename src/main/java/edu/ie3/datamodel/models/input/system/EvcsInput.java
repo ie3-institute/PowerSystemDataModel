@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -18,21 +18,21 @@ import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
+/** Describes an electric vehicle charging station. */
 public class EvcsInput extends SystemParticipantInput {
-
-  /** type of all installed charging points */
+  /** Type of all installed charging points. */
   private final ChargingPointType type;
 
-  /** no of installed charging points */
+  /** Number of installed charging points. */
   private final int chargingPoints;
 
-  /** Rated power factor */
+  /** Rated power factor. */
   private final double cosPhiRated;
 
-  /** Evcs location type */
+  /** Evcs location type. */
   private final EvcsLocationType locationType;
 
-  /** Whether charging station supports vehicle to grid */
+  /** Whether charging station supports vehicle to grid. */
   private final boolean v2gSupport;
 
   /**
@@ -42,7 +42,8 @@ public class EvcsInput extends SystemParticipantInput {
    * @param operationTime Time for which the entity is operated
    * @param node that the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param controllingEm The {@link EmInput} controlling this system participant. Null, if not
+   *     applicable.
    * @param type type of the charging points available to this charging station
    * @param chargingPoints number of charging points available at this charging station
    * @param cosPhiRated rated cos phi
@@ -56,13 +57,13 @@ public class EvcsInput extends SystemParticipantInput {
       OperationTime operationTime,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
+      EmInput controllingEm,
       ChargingPointType type,
       int chargingPoints,
       double cosPhiRated,
       EvcsLocationType locationType,
       boolean v2gSupport) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    super(uuid, id, operator, operationTime, node, qCharacteristics, controllingEm);
     this.type = type;
     this.chargingPoints = chargingPoints;
     this.cosPhiRated = cosPhiRated;
@@ -77,7 +78,8 @@ public class EvcsInput extends SystemParticipantInput {
    * @param operationTime Time for which the entity is operated
    * @param node that the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param controllingEm The {@link EmInput} controlling this system participant. Null, if not
+   *     applicable.
    * @param type type of the charging points available to this charging station
    * @param chargingPoints number of charging points available at this charging station
    * @param cosPhiRated rated cos phi
@@ -92,14 +94,14 @@ public class EvcsInput extends SystemParticipantInput {
       OperationTime operationTime,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
+      EmInput controllingEm,
       ChargingPointType type,
       int chargingPoints,
       double cosPhiRated,
       EvcsLocationType locationType,
       boolean v2gSupport,
       Map<String, String> additionalInformation) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    super(uuid, id, operator, operationTime, node, qCharacteristics, controllingEm);
     this.type = type;
     this.chargingPoints = chargingPoints;
     this.cosPhiRated = cosPhiRated;
@@ -111,49 +113,10 @@ public class EvcsInput extends SystemParticipantInput {
   /**
    * @param uuid Unique identifier
    * @param id Human readable identifier
-   * @param operator of the asset
-   * @param operationTime Time for which the entity is operated
    * @param node that the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
-   * @param type type of the charging points available to this charging station
-   * @param cosPhiRated rated cos phi
-   * @param locationType the location type
-   * @param v2gSupport whether charging station supports vehicle to grid
-   */
-  public EvcsInput(
-      UUID uuid,
-      String id,
-      OperatorInput operator,
-      OperationTime operationTime,
-      NodeInput node,
-      ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
-      ChargingPointType type,
-      double cosPhiRated,
-      EvcsLocationType locationType,
-      boolean v2gSupport) {
-    this(
-        uuid,
-        id,
-        operator,
-        operationTime,
-        node,
-        qCharacteristics,
-        em,
-        type,
-        1,
-        cosPhiRated,
-        locationType,
-        v2gSupport);
-  }
-
-  /**
-   * @param uuid Unique identifier
-   * @param id Human readable identifier
-   * @param node that the asset is connected to
-   * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param controllingEm The {@link EmInput} controlling this system participant. Null, if not
+   *     applicable.
    * @param type type of the charging points available to this charging station
    * @param chargingPoints number of charging points available at this charging station
    * @param cosPhiRated rated cos phi
@@ -165,42 +128,18 @@ public class EvcsInput extends SystemParticipantInput {
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
+      EmInput controllingEm,
       ChargingPointType type,
       int chargingPoints,
       double cosPhiRated,
       EvcsLocationType locationType,
       boolean v2gSupport) {
-    super(uuid, id, node, qCharacteristics, em);
+    super(uuid, id, node, qCharacteristics, controllingEm);
     this.type = type;
     this.chargingPoints = chargingPoints;
     this.cosPhiRated = cosPhiRated;
     this.locationType = locationType;
     this.v2gSupport = v2gSupport;
-  }
-
-  /**
-   * @param uuid Unique identifier
-   * @param id Human readable identifier
-   * @param node that the asset is connected to
-   * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
-   * @param type type of the charging points available to this charging station
-   * @param cosPhiRated rated cos phi
-   * @param locationType the location type
-   * @param v2gSupport whether charging station supports vehicle to grid
-   */
-  public EvcsInput(
-      UUID uuid,
-      String id,
-      NodeInput node,
-      ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
-      ChargingPointType type,
-      double cosPhiRated,
-      EvcsLocationType locationType,
-      boolean v2gSupport) {
-    this(uuid, id, node, qCharacteristics, em, type, 1, cosPhiRated, locationType, v2gSupport);
   }
 
   public ChargingPointType getType() {
@@ -219,35 +158,31 @@ public class EvcsInput extends SystemParticipantInput {
     return locationType;
   }
 
-  public boolean getV2gSupport() {
+  public boolean isV2gSupport() {
     return v2gSupport;
   }
 
   @Override
   public ComparableQuantity<Power> sRated() {
-    return this.type.sRated();
-  }
-
-  @Override
-  public EvcsInputCopyBuilder copy() {
-    return new EvcsInputCopyBuilder(this);
+    return this.type.getsRated();
   }
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof EvcsInput evcsInput)) return false;
+    if (!(o instanceof EvcsInput that)) return false;
     if (!super.equals(o)) return false;
-    return chargingPoints == evcsInput.chargingPoints
-        && Double.compare(evcsInput.cosPhiRated, cosPhiRated) == 0
-        && type.equals(evcsInput.type)
-        && locationType.equals(evcsInput.locationType)
-        && v2gSupport == evcsInput.v2gSupport;
+    return Objects.equals(type, that.type)
+        && chargingPoints == that.chargingPoints
+        && cosPhiRated == that.cosPhiRated
+        && Objects.equals(locationType, that.locationType)
+        && v2gSupport == that.v2gSupport;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), type, chargingPoints, cosPhiRated, locationType);
+    return Objects.hash(
+        super.hashCode(), type, chargingPoints, cosPhiRated, locationType, v2gSupport);
   }
 
   @Override
@@ -263,10 +198,10 @@ public class EvcsInput extends SystemParticipantInput {
         + getOperationTime()
         + ", node="
         + getNode().getUuid()
-        + ", qCharacteristics='"
-        + getqCharacteristics()
-        + "', em="
-        + getControllingEm()
+        + ", qCharacteristics="
+        + getQCharacteristics()
+        + ", controllingEm="
+        + getControllingEm().map(e -> e.getUuid().toString()).orElse("")
         + ", type="
         + type
         + ", chargingPoints="
@@ -276,29 +211,30 @@ public class EvcsInput extends SystemParticipantInput {
         + ", locationType="
         + locationType
         + ", v2gSupport="
-        + getV2gSupport()
+        + v2gSupport
         + ", additionalInformation="
         + getAdditionalInformation()
-        + '}';
+        + "}";
   }
 
-  /**
-   * A builder pattern based approach to create copies of {@link EvcsInput} entities with altered
-   * field values. For detailed field descriptions refer to java docs of {@link EvcsInput}
-   *
-   * @version 0.1
-   * @since 05.06.20
-   */
+  @Override
+  public EvcsInputCopyBuilder copy() {
+    return new EvcsInputCopyBuilder(this);
+  }
+
   public static class EvcsInputCopyBuilder
       extends SystemParticipantInputCopyBuilder<EvcsInputCopyBuilder> {
-
     private ChargingPointType type;
+
     private int chargingPoints;
+
     private double cosPhiRated;
+
     private EvcsLocationType locationType;
+
     private boolean v2gSupport;
 
-    public EvcsInputCopyBuilder(EvcsInput entity) {
+    protected EvcsInputCopyBuilder(EvcsInput entity) {
       super(entity);
       this.type = entity.type;
       this.chargingPoints = entity.chargingPoints;
@@ -312,9 +248,17 @@ public class EvcsInput extends SystemParticipantInput {
       return thisInstance();
     }
 
-    public EvcsInputCopyBuilder chargingPoints(int noChargingPoints) {
-      this.chargingPoints = noChargingPoints;
+    protected ChargingPointType getType() {
+      return type;
+    }
+
+    public EvcsInputCopyBuilder chargingPoints(int chargingPoints) {
+      this.chargingPoints = chargingPoints;
       return thisInstance();
+    }
+
+    protected int getChargingPoints() {
+      return chargingPoints;
     }
 
     public EvcsInputCopyBuilder cosPhiRated(double cosPhiRated) {
@@ -322,9 +266,17 @@ public class EvcsInput extends SystemParticipantInput {
       return thisInstance();
     }
 
+    protected double getCosPhiRated() {
+      return cosPhiRated;
+    }
+
     public EvcsInputCopyBuilder locationType(EvcsLocationType locationType) {
       this.locationType = locationType;
       return thisInstance();
+    }
+
+    protected EvcsLocationType getLocationType() {
+      return locationType;
     }
 
     public EvcsInputCopyBuilder v2gSupport(boolean v2gSupport) {
@@ -332,9 +284,13 @@ public class EvcsInput extends SystemParticipantInput {
       return thisInstance();
     }
 
+    protected boolean isV2gSupport() {
+      return v2gSupport;
+    }
+
     @Override
-    public EvcsInputCopyBuilder scale(Double factor) {
-      type(type.copy().scale(factor).build());
+    public EvcsInputCopyBuilder scale(double factor) {
+      return type(type.copy().scale(factor).build());
       return thisInstance();
     }
 
@@ -346,13 +302,14 @@ public class EvcsInput extends SystemParticipantInput {
           getOperator(),
           getOperationTime(),
           getNode(),
-          getqCharacteristics(),
-          getEm(),
+          getQCharacteristics(),
+          getControllingEm(),
           type,
           chargingPoints,
           cosPhiRated,
           locationType,
-          v2gSupport);
+          v2gSupport,
+          getAdditionalInformation());
     }
 
     @Override

@@ -73,6 +73,7 @@ public class LineTypeInput extends AssetTypeInput {
    * @param x Specific reactance for this type of line (typically in Ohm/km)
    * @param iMax Maximum thermal current for this type of line (typically in A)
    * @param vRated Rated voltage for this type of line
+   * @param additionalInformation That were provided by the source
    */
   public LineTypeInput(
       UUID uuid,
@@ -110,11 +111,11 @@ public class LineTypeInput extends AssetTypeInput {
     return x;
   }
 
-  public ComparableQuantity<ElectricCurrent> getiMax() {
+  public ComparableQuantity<ElectricCurrent> getIMax() {
     return iMax;
   }
 
-  public ComparableQuantity<ElectricPotential> getvRated() {
+  public ComparableQuantity<ElectricPotential> getVRated() {
     return vRated;
   }
 
@@ -230,7 +231,7 @@ public class LineTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<ElectricCurrent> getiMax() {
+    protected ComparableQuantity<ElectricCurrent> getIMax() {
       return iMax;
     }
 
@@ -239,7 +240,7 @@ public class LineTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<ElectricPotential> getvRated() {
+    protected ComparableQuantity<ElectricPotential> getVRated() {
       return vRated;
     }
 

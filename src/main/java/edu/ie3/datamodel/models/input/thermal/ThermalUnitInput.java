@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -21,7 +21,7 @@ public abstract class ThermalUnitInput extends ThermalInput implements HasTherma
    * @param id Identifier of the thermal unit
    * @param thermalBus thermal bus, a thermal unit is connected to
    */
-  ThermalUnitInput(UUID uuid, String id, ThermalBusInput thermalBus) {
+  protected ThermalUnitInput(UUID uuid, String id, ThermalBusInput thermalBus) {
     super(uuid, id);
     this.thermalBus = thermalBus;
   }
@@ -33,7 +33,7 @@ public abstract class ThermalUnitInput extends ThermalInput implements HasTherma
    * @param operationTime operation time of the asset
    * @param thermalBus thermal bus, a thermal unit is connected to
    */
-  ThermalUnitInput(
+  protected ThermalUnitInput(
       UUID uuid,
       String id,
       OperatorInput operator,
@@ -43,20 +43,16 @@ public abstract class ThermalUnitInput extends ThermalInput implements HasTherma
     this.thermalBus = thermalBus;
   }
 
-  @Override
   public ThermalBusInput getThermalBus() {
     return thermalBus;
   }
-
-  @Override
-  public abstract ThermalUnitInputCopyBuilder<?> copy();
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof ThermalUnitInput that)) return false;
     if (!super.equals(o)) return false;
-    return thermalBus.equals(that.thermalBus);
+    return Objects.equals(thermalBus, that.thermalBus);
   }
 
   @Override
@@ -75,23 +71,23 @@ public abstract class ThermalUnitInput extends ThermalInput implements HasTherma
         + getOperator().getUuid()
         + ", operationTime="
         + getOperationTime()
-        + ", bus="
+        + ", thermalBus="
         + thermalBus.getUuid()
-        + '}';
+        + ", additionalInformation="
+        + getAdditionalInformation()
+        + "}";
   }
 
-  /**
-   * Abstract class for all builders that build child entities of abstract class {@link
-   * ThermalUnitInput}
-   */
-  public abstract static class ThermalUnitInputCopyBuilder<B extends ThermalUnitInputCopyBuilder<B>>
-      extends AssetInputCopyBuilder<B> {
+  @Override
+  public abstract ThermalUnitInputCopyBuilder<?> copy();
 
+  public abstract static class ThermalUnitInputCopyBuilder<B extends ThermalUnitInputCopyBuilder<B>>
+      extends ThermalInputCopyBuilder<B> {
     private ThermalBusInput thermalBus;
 
     protected ThermalUnitInputCopyBuilder(ThermalUnitInput entity) {
       super(entity);
-      this.thermalBus = entity.getThermalBus();
+      this.thermalBus = entity.thermalBus;
     }
 
     public B thermalBus(ThermalBusInput thermalBus) {
@@ -103,7 +99,11 @@ public abstract class ThermalUnitInput extends ThermalInput implements HasTherma
       return thermalBus;
     }
 
-    public abstract B scale(Double factor);
+    @Override
+    public B scale(double factor) {
+      return null;
+      return thisInstance();
+    }
 
     @Override
     public abstract ThermalUnitInput build();

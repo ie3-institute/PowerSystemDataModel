@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -20,16 +20,16 @@ import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes an air condition */
+/** Describes an air condition. */
 public class AcInput extends SystemParticipantInput implements HasType, HasThermalBus {
-  /** Type of this air condition, containing default values for air condition of this kind */
+  /** Type of this air condition, containing default values for air condition of this kind. */
   private final AcTypeInput type;
 
-  /** The thermal bus, this model is connected to */
+  /** The thermal bus, this model is connected to. */
   private final ThermalBusInput thermalBus;
 
   /**
-   * Constructor for an operated air condition
+   * Constructor for an operated air condition.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -38,7 +38,8 @@ public class AcInput extends SystemParticipantInput implements HasType, HasTherm
    * @param node the asset is connected to
    * @param thermalBus The thermal bus, this model is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param controllingEm The {@link EmInput} controlling this system participant. Null, if not
+   *     applicable.
    * @param type of AC
    */
   public AcInput(
@@ -49,15 +50,15 @@ public class AcInput extends SystemParticipantInput implements HasType, HasTherm
       NodeInput node,
       ThermalBusInput thermalBus,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
+      EmInput controllingEm,
       AcTypeInput type) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    super(uuid, id, operator, operationTime, node, qCharacteristics, controllingEm);
     this.thermalBus = thermalBus;
     this.type = type;
   }
 
   /**
-   * Constructor for an operated air condition
+   * Constructor for an operated air condition.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -66,7 +67,8 @@ public class AcInput extends SystemParticipantInput implements HasType, HasTherm
    * @param node the asset is connected to
    * @param thermalBus The thermal bus, this model is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param controllingEm The {@link EmInput} controlling this system participant. Null, if not
+   *     applicable.
    * @param type of AC
    * @param additionalInformation That were provided by the source
    */
@@ -78,24 +80,25 @@ public class AcInput extends SystemParticipantInput implements HasType, HasTherm
       NodeInput node,
       ThermalBusInput thermalBus,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
+      EmInput controllingEm,
       AcTypeInput type,
       Map<String, String> additionalInformation) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    super(uuid, id, operator, operationTime, node, qCharacteristics, controllingEm);
     this.thermalBus = thermalBus;
     this.type = type;
     setAdditionalInformation(additionalInformation);
   }
 
   /**
-   * Constructor for an operated, always on air condition
+   * Constructor for an operated air condition.
    *
    * @param uuid of the input entity
    * @param id of the asset
    * @param node the asset is connected to
    * @param thermalBus The thermal bus, this model is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param controllingEm The {@link EmInput} controlling this system participant. Null, if not
+   *     applicable.
    * @param type of AC
    */
   public AcInput(
@@ -104,19 +107,17 @@ public class AcInput extends SystemParticipantInput implements HasType, HasTherm
       NodeInput node,
       ThermalBusInput thermalBus,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
+      EmInput controllingEm,
       AcTypeInput type) {
-    super(uuid, id, node, qCharacteristics, em);
+    super(uuid, id, node, qCharacteristics, controllingEm);
     this.thermalBus = thermalBus;
     this.type = type;
   }
 
-  @Override
   public AcTypeInput getType() {
     return type;
   }
 
-  @Override
   public ThermalBusInput getThermalBus() {
     return thermalBus;
   }
@@ -126,16 +127,12 @@ public class AcInput extends SystemParticipantInput implements HasType, HasTherm
     return this.type.getsRated();
   }
 
-  public AcInputCopyBuilder copy() {
-    return new AcInputCopyBuilder(this);
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof AcInput acInput)) return false;
+    if (!(o instanceof AcInput that)) return false;
     if (!super.equals(o)) return false;
-    return type.equals(acInput.type) && thermalBus.equals(acInput.thermalBus);
+    return Objects.equals(type, that.type) && Objects.equals(thermalBus, that.thermalBus);
   }
 
   @Override
@@ -156,36 +153,34 @@ public class AcInput extends SystemParticipantInput implements HasType, HasTherm
         + getOperationTime()
         + ", node="
         + getNode().getUuid()
-        + ", qCharacteristics='"
-        + getqCharacteristics()
-        + "', em="
-        + getControllingEm()
+        + ", qCharacteristics="
+        + getQCharacteristics()
+        + ", controllingEm="
+        + getControllingEm().map(e -> e.getUuid().toString()).orElse("")
         + ", type="
         + type.getUuid()
         + ", thermalBus="
         + thermalBus.getUuid()
         + ", additionalInformation="
         + getAdditionalInformation()
-        + '}';
+        + "}";
   }
 
-  /**
-   * A builder pattern based approach to create copies of {@link AcInput} entities with altered
-   * field values. For detailed field descriptions refer to Javadocs of {@link AcInput}
-   *
-   * @version 0.1
-   * @since 05.06.20
-   */
+  @Override
+  public AcInputCopyBuilder copy() {
+    return new AcInputCopyBuilder(this);
+  }
+
   public static class AcInputCopyBuilder
       extends SystemParticipantInputCopyBuilder<AcInputCopyBuilder> {
-
     private AcTypeInput type;
+
     private ThermalBusInput thermalBus;
 
-    private AcInputCopyBuilder(AcInput entity) {
+    protected AcInputCopyBuilder(AcInput entity) {
       super(entity);
-      this.type = entity.getType();
-      this.thermalBus = entity.getThermalBus();
+      this.type = entity.type;
+      this.thermalBus = entity.thermalBus;
     }
 
     public AcInputCopyBuilder type(AcTypeInput type) {
@@ -193,14 +188,22 @@ public class AcInput extends SystemParticipantInput implements HasType, HasTherm
       return thisInstance();
     }
 
+    protected AcTypeInput getType() {
+      return type;
+    }
+
     public AcInputCopyBuilder thermalBus(ThermalBusInput thermalBus) {
       this.thermalBus = thermalBus;
       return thisInstance();
     }
 
+    protected ThermalBusInput getThermalBus() {
+      return thermalBus;
+    }
+
     @Override
-    public AcInputCopyBuilder scale(Double factor) {
-      type(type.copy().scale(factor).build());
+    public AcInputCopyBuilder scale(double factor) {
+      return type(type.copy().scale(factor).build());
       return thisInstance();
     }
 
@@ -213,9 +216,10 @@ public class AcInput extends SystemParticipantInput implements HasType, HasTherm
           getOperationTime(),
           getNode(),
           thermalBus,
-          getqCharacteristics(),
-          getEm(),
-          type);
+          getQCharacteristics(),
+          getControllingEm(),
+          type,
+          getAdditionalInformation());
     }
 
     @Override

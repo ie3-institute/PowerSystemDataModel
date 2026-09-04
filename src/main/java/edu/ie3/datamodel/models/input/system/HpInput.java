@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -20,16 +20,16 @@ import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes a heat pump */
+/** Describes a heat pump. */
 public class HpInput extends SystemParticipantInput implements HasType, HasThermalBus {
-  /** Type of this heat pump, containing default values for heat pump of this kind */
+  /** Type of this heat pump, containing default values for heat pump of this kind. */
   private final HpTypeInput type;
 
-  /** The thermal bus, this model is connected to */
+  /** The thermal bus, this model is connected to. */
   private final ThermalBusInput thermalBus;
 
   /**
-   * Constructor for an operated heat pump
+   * Constructor for an operated, always on heat pump.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -38,7 +38,8 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
    * @param node the asset is connected to
    * @param thermalBus The thermal bus, this model is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param controllingEm The {@link EmInput} controlling this system participant. Null, if not
+   *     applicable.
    * @param type of HP
    */
   public HpInput(
@@ -49,15 +50,15 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
       NodeInput node,
       ThermalBusInput thermalBus,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
+      EmInput controllingEm,
       HpTypeInput type) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    super(uuid, id, operator, operationTime, node, qCharacteristics, controllingEm);
     this.thermalBus = thermalBus;
     this.type = type;
   }
 
   /**
-   * Constructor for an operated, always on heat pump
+   * Constructor for an operated, always on heat pump.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -66,7 +67,8 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
    * @param node the asset is connected to
    * @param thermalBus The thermal bus, this model is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param controllingEm The {@link EmInput} controlling this system participant. Null, if not
+   *     applicable.
    * @param type of HP
    * @param additionalInformation That were provided by the source
    */
@@ -78,24 +80,25 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
       NodeInput node,
       ThermalBusInput thermalBus,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
+      EmInput controllingEm,
       HpTypeInput type,
       Map<String, String> additionalInformation) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    super(uuid, id, operator, operationTime, node, qCharacteristics, controllingEm);
     this.thermalBus = thermalBus;
     this.type = type;
     setAdditionalInformation(additionalInformation);
   }
 
   /**
-   * Constructor for an operated, always on heat pump
+   * Constructor for an operated, always on heat pump.
    *
    * @param uuid of the input entity
    * @param id of the asset
    * @param node the asset is connected to
    * @param thermalBus The thermal bus, this model is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param controllingEm The {@link EmInput} controlling this system participant. Null, if not
+   *     applicable.
    * @param type of HP
    */
   public HpInput(
@@ -104,19 +107,17 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
       NodeInput node,
       ThermalBusInput thermalBus,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
+      EmInput controllingEm,
       HpTypeInput type) {
-    super(uuid, id, node, qCharacteristics, em);
+    super(uuid, id, node, qCharacteristics, controllingEm);
     this.thermalBus = thermalBus;
     this.type = type;
   }
 
-  @Override
   public HpTypeInput getType() {
     return type;
   }
 
-  @Override
   public ThermalBusInput getThermalBus() {
     return thermalBus;
   }
@@ -126,16 +127,12 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
     return this.type.getsRated();
   }
 
-  public HpInputCopyBuilder copy() {
-    return new HpInputCopyBuilder(this);
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof HpInput hpInput)) return false;
+    if (!(o instanceof HpInput that)) return false;
     if (!super.equals(o)) return false;
-    return type.equals(hpInput.type) && thermalBus.equals(hpInput.thermalBus);
+    return Objects.equals(type, that.type) && Objects.equals(thermalBus, that.thermalBus);
   }
 
   @Override
@@ -156,36 +153,34 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
         + getOperationTime()
         + ", node="
         + getNode().getUuid()
-        + ", qCharacteristics='"
-        + getqCharacteristics()
-        + "', em="
-        + getControllingEm()
+        + ", qCharacteristics="
+        + getQCharacteristics()
+        + ", controllingEm="
+        + getControllingEm().map(e -> e.getUuid().toString()).orElse("")
         + ", type="
         + type.getUuid()
         + ", thermalBus="
         + thermalBus.getUuid()
         + ", additionalInformation="
         + getAdditionalInformation()
-        + '}';
+        + "}";
   }
 
-  /**
-   * A builder pattern based approach to create copies of {@link HpInput} entities with altered
-   * field values. For detailed field descriptions refer to java docs of {@link HpInput}
-   *
-   * @version 0.1
-   * @since 05.06.20
-   */
+  @Override
+  public HpInputCopyBuilder copy() {
+    return new HpInputCopyBuilder(this);
+  }
+
   public static class HpInputCopyBuilder
       extends SystemParticipantInputCopyBuilder<HpInputCopyBuilder> {
-
     private HpTypeInput type;
+
     private ThermalBusInput thermalBus;
 
-    private HpInputCopyBuilder(HpInput entity) {
+    protected HpInputCopyBuilder(HpInput entity) {
       super(entity);
-      this.type = entity.getType();
-      this.thermalBus = entity.getThermalBus();
+      this.type = entity.type;
+      this.thermalBus = entity.thermalBus;
     }
 
     public HpInputCopyBuilder type(HpTypeInput type) {
@@ -193,14 +188,22 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
       return thisInstance();
     }
 
+    protected HpTypeInput getType() {
+      return type;
+    }
+
     public HpInputCopyBuilder thermalBus(ThermalBusInput thermalBus) {
       this.thermalBus = thermalBus;
       return thisInstance();
     }
 
+    protected ThermalBusInput getThermalBus() {
+      return thermalBus;
+    }
+
     @Override
-    public HpInputCopyBuilder scale(Double factor) {
-      type(type.copy().scale(factor).build());
+    public HpInputCopyBuilder scale(double factor) {
+      return type(type.copy().scale(factor).build());
       return thisInstance();
     }
 
@@ -213,9 +216,10 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
           getOperationTime(),
           getNode(),
           thermalBus,
-          getqCharacteristics(),
-          getEm(),
-          type);
+          getQCharacteristics(),
+          getControllingEm(),
+          type,
+          getAdditionalInformation());
     }
 
     @Override

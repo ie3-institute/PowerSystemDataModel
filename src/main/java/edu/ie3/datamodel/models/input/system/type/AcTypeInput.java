@@ -1,11 +1,11 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.input.system.type;
 
-import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.utils.QuantityUtils;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Map;
@@ -14,10 +14,10 @@ import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes the type of {@link edu.ie3.datamodel.models.input.system.AcInput} */
+/** Describes the type of {@link edu.ie3.datamodel.models.input.system.AcInput}. */
 public class AcTypeInput extends SystemParticipantTypeInput {
   /**
-   * Thermal output of the air condition (typically in kW), when sRated * cosPhiRated is consumed
+   * Thermal output of the air condition (typically in kW), when sRated * cosPhiRated is consumed.
    */
   private final ComparableQuantity<Power> pThermal;
 
@@ -39,8 +39,8 @@ public class AcTypeInput extends SystemParticipantTypeInput {
       ComparableQuantity<Power> sRated,
       double cosPhiRated,
       ComparableQuantity<Power> pThermal) {
-    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
-    this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
+    super(uuid, id, capex, opex, sRated, cosPhiRated);
+    this.pThermal = pThermal;
   }
 
   /**
@@ -52,7 +52,7 @@ public class AcTypeInput extends SystemParticipantTypeInput {
    * @param sRated Rated apparent power
    * @param pThermal Thermal output of the air condition, when sRated * cosPhiRated is consumed
    *     electrically
-   * @param additionalInformation Of the input
+   * @param additionalInformation That were provided by the source
    */
   public AcTypeInput(
       UUID uuid,
@@ -63,18 +63,13 @@ public class AcTypeInput extends SystemParticipantTypeInput {
       double cosPhiRated,
       ComparableQuantity<Power> pThermal,
       Map<String, String> additionalInformation) {
-    super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
-    this.pThermal = pThermal.to(StandardUnits.ACTIVE_POWER_IN);
+    super(uuid, id, capex, opex, sRated, cosPhiRated);
+    this.pThermal = pThermal;
     setAdditionalInformation(additionalInformation);
   }
 
-  public ComparableQuantity<Power> getpThermal() {
+  public ComparableQuantity<Power> getPThermal() {
     return pThermal;
-  }
-
-  @Override
-  public AcTypeInputCopyBuilder copy() {
-    return new AcTypeInputCopyBuilder(this);
   }
 
   @Override
@@ -82,7 +77,7 @@ public class AcTypeInput extends SystemParticipantTypeInput {
     if (this == o) return true;
     if (!(o instanceof AcTypeInput that)) return false;
     if (!super.equals(o)) return false;
-    return pThermal.equals(that.pThermal);
+    return QuantityUtils.equals(pThermal, that.pThermal);
   }
 
   @Override
@@ -97,33 +92,33 @@ public class AcTypeInput extends SystemParticipantTypeInput {
         + getUuid()
         + ", id="
         + getId()
-        + "capex="
+        + ", capex="
         + getCapex()
         + ", opex="
         + getOpex()
         + ", sRated="
-        + getsRated()
+        + getSRated()
         + ", cosPhiRated="
         + getCosPhiRated()
-        + "pThermal="
+        + ", pThermal="
         + pThermal
         + ", additionalInformation="
         + getAdditionalInformation()
-        + '}';
+        + "}";
   }
 
-  /**
-   * A builder pattern based approach to create copies of {@link AcTypeInput} entities with altered
-   * field values. For detailed field descriptions refer to Javadocs of {@link AcTypeInput}
-   */
-  public static class AcTypeInputCopyBuilder
-      extends SystemParticipantTypeInputCopyBuilder<AcTypeInput.AcTypeInputCopyBuilder> {
+  @Override
+  public AcTypeInputCopyBuilder copy() {
+    return new AcTypeInputCopyBuilder(this);
+  }
 
+  public static class AcTypeInputCopyBuilder
+      extends SystemParticipantTypeInputCopyBuilder<AcTypeInputCopyBuilder> {
     private ComparableQuantity<Power> pThermal;
 
-    private AcTypeInputCopyBuilder(AcTypeInput entity) {
+    protected AcTypeInputCopyBuilder(AcTypeInput entity) {
       super(entity);
-      this.pThermal = entity.getpThermal();
+      this.pThermal = entity.pThermal;
     }
 
     public AcTypeInputCopyBuilder pThermal(ComparableQuantity<Power> pThermal) {
@@ -131,13 +126,13 @@ public class AcTypeInput extends SystemParticipantTypeInput {
       return thisInstance();
     }
 
-    public ComparableQuantity<Power> getpThermal() {
+    protected ComparableQuantity<Power> getPThermal() {
       return pThermal;
     }
 
     @Override
-    public AcTypeInput.AcTypeInputCopyBuilder scale(double factor) {
-      capex(getCapex().multiply(factor));
+    public AcTypeInputCopyBuilder scale(double factor) {
+      return capex(getCapex().multiply(factor));
       sRated(getsRated().multiply(factor));
       pThermal(getpThermal().multiply(factor));
       return thisInstance();
@@ -146,11 +141,18 @@ public class AcTypeInput extends SystemParticipantTypeInput {
     @Override
     public AcTypeInput build() {
       return new AcTypeInput(
-          getUuid(), getId(), getCapex(), getOpex(), getsRated(), getCosPhiRated(), pThermal);
+          getUuid(),
+          getId(),
+          getCapex(),
+          getOpex(),
+          getSRated(),
+          getCosPhiRated(),
+          pThermal,
+          getAdditionalInformation());
     }
 
     @Override
-    protected AcTypeInput.AcTypeInputCopyBuilder thisInstance() {
+    protected AcTypeInputCopyBuilder thisInstance() {
       return this;
     }
   }

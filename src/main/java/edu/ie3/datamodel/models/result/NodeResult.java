@@ -1,10 +1,11 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.result;
 
+import edu.ie3.datamodel.utils.QuantityUtils;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -12,17 +13,16 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 
-/** Represents calculation results of a {@link edu.ie3.datamodel.models.input.NodeInput} */
+/** Represents calculation results of a {@link edu.ie3.datamodel.models.input.NodeInput}. */
 public class NodeResult extends ResultEntity {
-
   /** Voltage magnitude @ this node in p.u. */
   private ComparableQuantity<Dimensionless> vMag;
 
-  /** Voltage angle @ this node in degree */
+  /** Voltage angle @ this node in degree. */
   private ComparableQuantity<Angle> vAng;
 
   /**
-   * Standard constructor which includes auto generation of the resulting output models uuid.
+   * Standard constructor for a node result.
    *
    * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
@@ -43,12 +43,12 @@ public class NodeResult extends ResultEntity {
     return vMag;
   }
 
-  public void setvMag(ComparableQuantity<Dimensionless> vMag) {
-    this.vMag = vMag;
-  }
-
   public ComparableQuantity<Angle> getvAng() {
     return vAng;
+  }
+
+  public void setvMag(ComparableQuantity<Dimensionless> vMag) {
+    this.vMag = vMag;
   }
 
   public void setvAng(ComparableQuantity<Angle> vAng) {
@@ -58,10 +58,9 @@ public class NodeResult extends ResultEntity {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof NodeResult that)) return false;
     if (!super.equals(o)) return false;
-    NodeResult that = (NodeResult) o;
-    return vMag.equals(that.vMag) && vAng.equals(that.vAng);
+    return QuantityUtils.equals(vMag, that.vMag) && QuantityUtils.equals(vAng, that.vAng);
   }
 
   @Override
@@ -80,6 +79,6 @@ public class NodeResult extends ResultEntity {
         + vMag
         + ", vAng="
         + vAng
-        + '}';
+        + "}";
   }
 }

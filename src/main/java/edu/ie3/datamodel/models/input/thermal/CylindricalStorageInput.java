@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -9,21 +9,21 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
 import tech.units.indriya.ComparableQuantity;
 
-/** Thermal storage with cylindrical shape */
+/** Thermal storage with cylindrical shape. */
 public class CylindricalStorageInput extends AbstractStorageInput {
-
   /**
-   * @param uuid Unique identifier of a certain cylindrical storage
+   * @param uuid Unique identifier of a cylindrical storage
    * @param id Identifier of the thermal unit
    * @param operator operator of the asset
    * @param operationTime operation time of the asset
-   * @param bus Thermal bus, a thermal unit is connected to
+   * @param thermalBus Thermal bus, a thermal unit is connected to
    * @param storageVolumeLvl Available storage volume
    * @param inletTemp Temperature of the inlet
    * @param returnTemp Temperature of the outlet
@@ -35,7 +35,7 @@ public class CylindricalStorageInput extends AbstractStorageInput {
       String id,
       OperatorInput operator,
       OperationTime operationTime,
-      ThermalBusInput bus,
+      ThermalBusInput thermalBus,
       ComparableQuantity<Volume> storageVolumeLvl,
       ComparableQuantity<Temperature> inletTemp,
       ComparableQuantity<Temperature> returnTemp,
@@ -46,7 +46,7 @@ public class CylindricalStorageInput extends AbstractStorageInput {
         id,
         operator,
         operationTime,
-        bus,
+        thermalBus,
         storageVolumeLvl,
         inletTemp,
         returnTemp,
@@ -55,11 +55,11 @@ public class CylindricalStorageInput extends AbstractStorageInput {
   }
 
   /**
-   * @param uuid Unique identifier of a certain cylindrical storage
+   * @param uuid Unique identifier of a cylindrical storage
    * @param id Identifier of the thermal unit
    * @param operator operator of the asset
    * @param operationTime operation time of the asset
-   * @param bus Thermal bus, a thermal unit is connected to
+   * @param thermalBus Thermal bus, a thermal unit is connected to
    * @param storageVolumeLvl Available storage volume
    * @param inletTemp Temperature of the inlet
    * @param returnTemp Temperature of the outlet
@@ -72,7 +72,7 @@ public class CylindricalStorageInput extends AbstractStorageInput {
       String id,
       OperatorInput operator,
       OperationTime operationTime,
-      ThermalBusInput bus,
+      ThermalBusInput thermalBus,
       ComparableQuantity<Volume> storageVolumeLvl,
       ComparableQuantity<Temperature> inletTemp,
       ComparableQuantity<Temperature> returnTemp,
@@ -84,7 +84,7 @@ public class CylindricalStorageInput extends AbstractStorageInput {
         id,
         operator,
         operationTime,
-        bus,
+        thermalBus,
         storageVolumeLvl,
         inletTemp,
         returnTemp,
@@ -96,7 +96,7 @@ public class CylindricalStorageInput extends AbstractStorageInput {
   /**
    * @param uuid Unique identifier of a cylindrical storage
    * @param id Identifier of the thermal unit
-   * @param bus Thermal bus, a thermal unit is connected to
+   * @param thermalBus Thermal bus, a thermal unit is connected to
    * @param storageVolumeLvl Available storage volume
    * @param inletTemp Temperature of the inlet
    * @param returnTemp Temperature of the outlet
@@ -106,18 +106,25 @@ public class CylindricalStorageInput extends AbstractStorageInput {
   public CylindricalStorageInput(
       UUID uuid,
       String id,
-      ThermalBusInput bus,
+      ThermalBusInput thermalBus,
       ComparableQuantity<Volume> storageVolumeLvl,
       ComparableQuantity<Temperature> inletTemp,
       ComparableQuantity<Temperature> returnTemp,
       ComparableQuantity<SpecificHeatCapacity> c,
       ComparableQuantity<Power> pThermalMax) {
-    super(uuid, id, bus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax);
+    super(uuid, id, thermalBus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax);
   }
 
   @Override
-  public CylindricalStorageInputCopyBuilder copy() {
-    return new CylindricalStorageInputCopyBuilder(this);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof CylindricalStorageInput that)) return false;
+    return super.equals(o);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode());
   }
 
   @Override
@@ -131,7 +138,7 @@ public class CylindricalStorageInput extends AbstractStorageInput {
         + getOperator().getUuid()
         + ", operationTime="
         + getOperationTime()
-        + ", bus="
+        + ", thermalBus="
         + getThermalBus().getUuid()
         + ", storageVolumeLvl="
         + getStorageVolumeLvl()
@@ -142,20 +149,19 @@ public class CylindricalStorageInput extends AbstractStorageInput {
         + ", c="
         + getC()
         + ", pThermalMax="
-        + getpThermalMax()
+        + getPThermalMax()
         + ", additionalInformation="
         + getAdditionalInformation()
-        + '}';
+        + "}";
   }
 
-  /**
-   * A builder pattern based approach to create copies of {@link CylindricalStorageInput} entities
-   * with altered field values. For detailed field descriptions refer to java docs of {@link
-   * CylindricalStorageInput}
-   */
+  @Override
+  public CylindricalStorageInputCopyBuilder copy() {
+    return new CylindricalStorageInputCopyBuilder(this);
+  }
+
   public static class CylindricalStorageInputCopyBuilder
       extends AbstractStorageInputCopyBuilder<CylindricalStorageInputCopyBuilder> {
-
     protected CylindricalStorageInputCopyBuilder(CylindricalStorageInput entity) {
       super(entity);
     }
@@ -172,7 +178,8 @@ public class CylindricalStorageInput extends AbstractStorageInput {
           getInletTemp(),
           getReturnTemp(),
           getC(),
-          getpThermalMax());
+          getPThermalMax(),
+          getAdditionalInformation());
     }
 
     @Override

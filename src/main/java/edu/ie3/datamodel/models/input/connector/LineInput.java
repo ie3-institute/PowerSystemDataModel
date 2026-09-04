@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -7,11 +7,11 @@ package edu.ie3.datamodel.models.input.connector;
 
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput;
+import edu.ie3.datamodel.utils.QuantityUtils;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.Map;
 import java.util.Objects;
@@ -20,26 +20,22 @@ import javax.measure.quantity.Length;
 import org.locationtech.jts.geom.LineString;
 import tech.units.indriya.ComparableQuantity;
 
-/**
- * Describes an electrical grid line that connects two {@link
- * edu.ie3.datamodel.models.input.NodeInput}s
- */
+/** Describes an electrical grid line that connects two {@link NodeInput}s. */
 public class LineInput extends ConnectorInput implements HasType {
-
-  /** Type of this line, containing default values for lines of this kind */
+  /** Type of this line, containing default values for lines of this kind. */
   private final LineTypeInput type;
 
-  /** Length of this line */
+  /** Length of this line. */
   private final ComparableQuantity<Length> length;
 
-  /** Coordinates of this line */
+  /** Coordinates of this line. */
   private final LineString geoPosition;
 
-  /** Description of an optional weather dependent operation curve */
+  /** Description of an optional weather dependent operation curve. */
   private final OlmCharacteristicInput olmCharacteristic;
 
   /**
-   * Constructor for an operated line
+   * Constructor for an operated line.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -68,13 +64,13 @@ public class LineInput extends ConnectorInput implements HasType {
       OlmCharacteristicInput olmCharacteristic) {
     super(uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices);
     this.type = type;
-    this.length = length.to(StandardUnits.LINE_LENGTH);
+    this.length = length;
     this.geoPosition = GeoUtils.buildSafeLineString(geoPosition);
     this.olmCharacteristic = olmCharacteristic;
   }
 
   /**
-   * Constructor for an operated line
+   * Constructor for an operated line.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -105,14 +101,14 @@ public class LineInput extends ConnectorInput implements HasType {
       Map<String, String> additionalInformation) {
     super(uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices);
     this.type = type;
-    this.length = length.to(StandardUnits.LINE_LENGTH);
+    this.length = length;
     this.geoPosition = GeoUtils.buildSafeLineString(geoPosition);
     this.olmCharacteristic = olmCharacteristic;
     setAdditionalInformation(additionalInformation);
   }
 
   /**
-   * Constructor for an operated, always on line
+   * Constructor for an operated line.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -137,12 +133,11 @@ public class LineInput extends ConnectorInput implements HasType {
       OlmCharacteristicInput olmCharacteristic) {
     super(uuid, id, nodeA, nodeB, parallelDevices);
     this.type = type;
-    this.length = length.to(StandardUnits.LINE_LENGTH);
+    this.length = length;
     this.geoPosition = GeoUtils.buildSafeLineString(geoPosition);
     this.olmCharacteristic = olmCharacteristic;
   }
 
-  @Override
   public LineTypeInput getType() {
     return type;
   }
@@ -160,19 +155,14 @@ public class LineInput extends ConnectorInput implements HasType {
   }
 
   @Override
-  public LineInputCopyBuilder copy() {
-    return new LineInputCopyBuilder(this);
-  }
-
-  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof LineInput lineInput)) return false;
+    if (!(o instanceof LineInput that)) return false;
     if (!super.equals(o)) return false;
-    return type.equals(lineInput.type)
-        && length.equals(lineInput.length)
-        && geoPosition.equals(lineInput.geoPosition)
-        && olmCharacteristic.equals(lineInput.olmCharacteristic);
+    return Objects.equals(type, that.type)
+        && QuantityUtils.equals(length, that.length)
+        && Objects.equals(geoPosition, that.geoPosition)
+        && Objects.equals(olmCharacteristic, that.olmCharacteristic);
   }
 
   @Override
@@ -195,7 +185,7 @@ public class LineInput extends ConnectorInput implements HasType {
         + getNodeA().getUuid()
         + ", nodeB="
         + getNodeB().getUuid()
-        + ", noOfParallelDevices="
+        + ", parallelDevices="
         + getParallelDevices()
         + ", type="
         + type.getUuid()
@@ -207,28 +197,65 @@ public class LineInput extends ConnectorInput implements HasType {
         + olmCharacteristic
         + ", additionalInformation="
         + getAdditionalInformation()
-        + '}';
+        + "}";
   }
 
-  /**
-   * A builder pattern based approach to create copies of {@link LineInput} entities with altered
-   * field values. For detailed field descriptions refer to Javadocs of {@link LineInput}
-   *
-   * @version 0.1
-   * @since 05.06.20
-   */
+  @Override
+  public LineInputCopyBuilder copy() {
+    return new LineInputCopyBuilder(this);
+  }
+
   public static class LineInputCopyBuilder extends ConnectorInputCopyBuilder<LineInputCopyBuilder> {
     private LineTypeInput type;
+
     private ComparableQuantity<Length> length;
+
     private LineString geoPosition;
+
     private OlmCharacteristicInput olmCharacteristic;
 
-    private LineInputCopyBuilder(LineInput entity) {
+    protected LineInputCopyBuilder(LineInput entity) {
       super(entity);
-      this.type = entity.getType();
-      this.length = entity.getLength();
-      this.geoPosition = entity.getGeoPosition();
-      this.olmCharacteristic = entity.getOlmCharacteristic();
+      this.type = entity.type;
+      this.length = entity.length;
+      this.geoPosition = entity.geoPosition;
+      this.olmCharacteristic = entity.olmCharacteristic;
+    }
+
+    public LineInputCopyBuilder type(LineTypeInput type) {
+      this.type = type;
+      return thisInstance();
+    }
+
+    protected LineTypeInput getType() {
+      return type;
+    }
+
+    public LineInputCopyBuilder length(ComparableQuantity<Length> length) {
+      this.length = length;
+      return thisInstance();
+    }
+
+    protected ComparableQuantity<Length> getLength() {
+      return length;
+    }
+
+    public LineInputCopyBuilder geoPosition(LineString geoPosition) {
+      this.geoPosition = geoPosition;
+      return thisInstance();
+    }
+
+    protected LineString getGeoPosition() {
+      return geoPosition;
+    }
+
+    public LineInputCopyBuilder olmCharacteristic(OlmCharacteristicInput olmCharacteristic) {
+      this.olmCharacteristic = olmCharacteristic;
+      return thisInstance();
+    }
+
+    protected OlmCharacteristicInput getOlmCharacteristic() {
+      return olmCharacteristic;
     }
 
     @Override
@@ -244,27 +271,8 @@ public class LineInput extends ConnectorInput implements HasType {
           type,
           length,
           geoPosition,
-          olmCharacteristic);
-    }
-
-    public LineInputCopyBuilder geoPosition(LineString geoPosition) {
-      this.geoPosition = geoPosition;
-      return thisInstance();
-    }
-
-    public LineInputCopyBuilder type(LineTypeInput type) {
-      this.type = type;
-      return thisInstance();
-    }
-
-    public LineInputCopyBuilder length(ComparableQuantity<Length> length) {
-      this.length = length;
-      return thisInstance();
-    }
-
-    public LineInputCopyBuilder olmCharacteristic(OlmCharacteristicInput olmCharacteristic) {
-      this.olmCharacteristic = olmCharacteristic;
-      return thisInstance();
+          olmCharacteristic,
+          getAdditionalInformation());
     }
 
     @Override

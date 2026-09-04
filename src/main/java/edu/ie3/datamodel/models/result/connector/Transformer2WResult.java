@@ -1,11 +1,12 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.result.connector;
 
 import java.time.ZonedDateTime;
+import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
@@ -13,12 +14,11 @@ import tech.units.indriya.ComparableQuantity;
 
 /**
  * Represents calculation results of a {@link
- * edu.ie3.datamodel.models.input.connector.Transformer2WInput}
+ * edu.ie3.datamodel.models.input.connector.Transformer2WInput}.
  */
 public class Transformer2WResult extends TransformerResult {
-
   /**
-   * Standard constructor with automatic uuid generation.
+   * Standard constructor for a two-winding transformer result.
    *
    * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
@@ -40,6 +40,18 @@ public class Transformer2WResult extends TransformerResult {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Transformer2WResult that)) return false;
+    return super.equals(o);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode());
+  }
+
+  @Override
   public String toString() {
     return "Transformer2WResult{"
         + "time="
@@ -56,6 +68,6 @@ public class Transformer2WResult extends TransformerResult {
         + getiBAng()
         + ", tapPos="
         + getTapPos()
-        + '}';
+        + "}";
   }
 }

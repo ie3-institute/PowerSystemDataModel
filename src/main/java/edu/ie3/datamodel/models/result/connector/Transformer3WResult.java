@@ -1,10 +1,11 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.result.connector;
 
+import edu.ie3.datamodel.utils.QuantityUtils;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -12,15 +13,18 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.ElectricCurrent;
 import tech.units.indriya.ComparableQuantity;
 
+/**
+ * Represents calculation results of a {@link
+ * edu.ie3.datamodel.models.input.connector.Transformer3WInput}.
+ */
 public class Transformer3WResult extends TransformerResult {
-
-  /** Electric current magnitude @ port C, normally provided in Ampere */
   private ComparableQuantity<ElectricCurrent> iCMag;
 
-  /** Electric current angle @ Port C in degree ° */
   private ComparableQuantity<Angle> iCAng;
 
   /**
+   * Standard constructor for a three-winding transformer result.
+   *
    * @param time date and time when the result is produced
    * @param inputModel uuid of the input model that produces the result
    * @param iAMag electric current magnitude @ port A, normally provided in Ampere
@@ -50,12 +54,12 @@ public class Transformer3WResult extends TransformerResult {
     return iCMag;
   }
 
-  public void setiCMag(ComparableQuantity<ElectricCurrent> iCMag) {
-    this.iCMag = iCMag;
-  }
-
   public ComparableQuantity<Angle> getiCAng() {
     return iCAng;
+  }
+
+  public void setiCMag(ComparableQuantity<ElectricCurrent> iCMag) {
+    this.iCMag = iCMag;
   }
 
   public void setiCAng(ComparableQuantity<Angle> iCAng) {
@@ -65,10 +69,9 @@ public class Transformer3WResult extends TransformerResult {
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o instanceof Transformer3WResult that)) return false;
     if (!super.equals(o)) return false;
-    Transformer3WResult that = (Transformer3WResult) o;
-    return iCMag.equals(that.iCMag) && iCAng.equals(that.iCAng);
+    return QuantityUtils.equals(iCMag, that.iCMag) && QuantityUtils.equals(iCAng, that.iCAng);
   }
 
   @Override
@@ -97,6 +100,6 @@ public class Transformer3WResult extends TransformerResult {
         + iCMag
         + ", iCAng="
         + iCAng
-        + '}';
+        + "}";
   }
 }

@@ -1,5 +1,5 @@
 /*
- * © 2025. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -13,7 +13,6 @@ import tech.units.indriya.ComparableQuantity;
  * temperature at a specific depth in the ground.
  */
 public class GroundTemperatureValue extends TemperatureValue {
-
   /**
    * Constructs a new GroundTemperatureValue.
    *
@@ -25,6 +24,6 @@ public class GroundTemperatureValue extends TemperatureValue {
 
   @Override
   public String toString() {
-    return "GroundTemperatureValue{" + "temperature=" + getTemperature().orElse(null) + '}';
+    return "GroundTemperatureValue{" + "temperature=" + getTemperature() + "}";
   }
 }

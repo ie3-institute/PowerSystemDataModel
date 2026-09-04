@@ -1,31 +1,27 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.input.connector;
-
-import static edu.ie3.datamodel.utils.validation.ConnectorValidationUtils.connectsNodesToCorrectVoltageSides;
 
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
+import edu.ie3.datamodel.utils.validation.ConnectorValidationUtils;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Describes a two winding transformer, that is connected to two {@link
- * edu.ie3.datamodel.models.input.NodeInput}s
- */
+/** Describes a two winding transformer, that is connected to two {@link NodeInput}s. */
 public class Transformer2WInput extends TransformerInput implements HasType {
-  /** Type of this 2W transformer, containing default values for transformers of this kind */
+  /** Type of this 2W transformer, containing default values for transformers of this kind. */
   private final Transformer2WTypeInput type;
 
   /**
-   * Constructor for an operated two winding transformer
+   * Constructor for an operated two winding transformer.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -50,13 +46,13 @@ public class Transformer2WInput extends TransformerInput implements HasType {
       Transformer2WTypeInput type,
       int tapPos,
       boolean autoTap) {
-    super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
-    connectsNodesToCorrectVoltageSides(nodeA, nodeB);
+    super(uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     this.type = type;
+    ConnectorValidationUtils.connectsNodesToCorrectVoltageSides(nodeA, nodeB);
   }
 
   /**
-   * Constructor for an operated two winding transformer
+   * Constructor for an operated two winding transformer.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -83,14 +79,14 @@ public class Transformer2WInput extends TransformerInput implements HasType {
       int tapPos,
       boolean autoTap,
       Map<String, String> additionalInformation) {
-    super(uuid, operationTime, operator, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
-    connectsNodesToCorrectVoltageSides(nodeA, nodeB);
+    super(uuid, id, operator, operationTime, nodeA, nodeB, parallelDevices, tapPos, autoTap);
     this.type = type;
+    ConnectorValidationUtils.connectsNodesToCorrectVoltageSides(nodeA, nodeB);
     setAdditionalInformation(additionalInformation);
   }
 
   /**
-   * Constructor for an operated, always on two winding transformer
+   * Constructor for an operated two winding transformer.
    *
    * @param uuid of the input entity
    * @param id of the asset
@@ -112,16 +108,10 @@ public class Transformer2WInput extends TransformerInput implements HasType {
       int tapPos,
       boolean autoTap) {
     super(uuid, id, nodeA, nodeB, parallelDevices, tapPos, autoTap);
-    connectsNodesToCorrectVoltageSides(nodeA, nodeB);
     this.type = type;
+    ConnectorValidationUtils.connectsNodesToCorrectVoltageSides(nodeA, nodeB);
   }
 
-  @Override
-  public Transformer2WInputCopyBuilder copy() {
-    return new Transformer2WInputCopyBuilder(this);
-  }
-
-  @Override
   public Transformer2WTypeInput getType() {
     return type;
   }
@@ -131,7 +121,7 @@ public class Transformer2WInput extends TransformerInput implements HasType {
     if (this == o) return true;
     if (!(o instanceof Transformer2WInput that)) return false;
     if (!super.equals(o)) return false;
-    return type.equals(that.type);
+    return Objects.equals(type, that.type);
   }
 
   @Override
@@ -154,31 +144,40 @@ public class Transformer2WInput extends TransformerInput implements HasType {
         + getNodeA().getUuid()
         + ", nodeB="
         + getNodeB().getUuid()
-        + ", noOfParallelDevices="
+        + ", parallelDevices="
         + getParallelDevices()
+        + ", tapPos="
+        + getTapPos()
+        + ", autoTap="
+        + isAutoTap()
         + ", type="
         + type.getUuid()
         + ", additionalInformation="
         + getAdditionalInformation()
-        + '}';
+        + "}";
   }
 
-  /**
-   * A builder pattern based approach to create copies of {@link Transformer2WInput} entities with
-   * altered field values. For detailed field descriptions refer to java docs of {@link
-   * Transformer2WInput}
-   *
-   * @version 0.1
-   * @since 05.06.20
-   */
+  @Override
+  public Transformer2WInputCopyBuilder copy() {
+    return new Transformer2WInputCopyBuilder(this);
+  }
+
   public static class Transformer2WInputCopyBuilder
       extends TransformerInputCopyBuilder<Transformer2WInputCopyBuilder> {
-
     private Transformer2WTypeInput type;
 
-    private Transformer2WInputCopyBuilder(Transformer2WInput entity) {
+    protected Transformer2WInputCopyBuilder(Transformer2WInput entity) {
       super(entity);
-      this.type = entity.getType();
+      this.type = entity.type;
+    }
+
+    public Transformer2WInputCopyBuilder type(Transformer2WTypeInput type) {
+      this.type = type;
+      return thisInstance();
+    }
+
+    protected Transformer2WTypeInput getType() {
+      return type;
     }
 
     @Override
@@ -193,12 +192,8 @@ public class Transformer2WInput extends TransformerInput implements HasType {
           getParallelDevices(),
           type,
           getTapPos(),
-          isAutoTap());
-    }
-
-    public Transformer2WInputCopyBuilder type(Transformer2WTypeInput type) {
-      this.type = type;
-      return thisInstance();
+          isAutoTap(),
+          getAdditionalInformation());
     }
 
     @Override

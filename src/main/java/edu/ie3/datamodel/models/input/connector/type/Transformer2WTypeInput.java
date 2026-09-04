@@ -124,7 +124,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
    * @param tapNeutr Neutral tap position
    * @param tapMin Minimum available tap position
    * @param tapMax Maximum available tap position
-   * @param additionalInformation Of the input
+   * @param additionalInformation That were provided by the source
    */
   public Transformer2WTypeInput(
       UUID uuid,
@@ -160,39 +160,39 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     setAdditionalInformation(additionalInformation);
   }
 
-  public ComparableQuantity<ElectricResistance> getrSc() {
+  public ComparableQuantity<ElectricResistance> getRSc() {
     return rSc;
   }
 
-  public ComparableQuantity<ElectricResistance> getxSc() {
+  public ComparableQuantity<ElectricResistance> getXSc() {
     return xSc;
   }
 
-  public ComparableQuantity<Power> getsRated() {
+  public ComparableQuantity<Power> getSRated() {
     return sRated;
   }
 
-  public ComparableQuantity<ElectricPotential> getvRatedA() {
+  public ComparableQuantity<ElectricPotential> getVRatedA() {
     return vRatedA;
   }
 
-  public ComparableQuantity<ElectricPotential> getvRatedB() {
+  public ComparableQuantity<ElectricPotential> getVRatedB() {
     return vRatedB;
   }
 
-  public ComparableQuantity<ElectricConductance> getgM() {
+  public ComparableQuantity<ElectricConductance> getGM() {
     return gM;
   }
 
-  public ComparableQuantity<ElectricConductance> getbM() {
+  public ComparableQuantity<ElectricConductance> getBM() {
     return bM;
   }
 
-  public ComparableQuantity<Dimensionless> getdV() {
+  public ComparableQuantity<Dimensionless> getDV() {
     return dV;
   }
 
-  public ComparableQuantity<Angle> getdPhi() {
+  public ComparableQuantity<Angle> getDPhi() {
     return dPhi;
   }
 
@@ -344,7 +344,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<ElectricResistance> getrSc() {
+    protected ComparableQuantity<ElectricResistance> getRSc() {
       return rSc;
     }
 
@@ -353,7 +353,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<ElectricResistance> getxSc() {
+    protected ComparableQuantity<ElectricResistance> getXSc() {
       return xSc;
     }
 
@@ -362,7 +362,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Power> getsRated() {
+    protected ComparableQuantity<Power> getSRated() {
       return sRated;
     }
 
@@ -372,7 +372,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<ElectricPotential> getvRatedA() {
+    protected ComparableQuantity<ElectricPotential> getVRatedA() {
       return vRatedA;
     }
 
@@ -382,7 +382,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<ElectricPotential> getvRatedB() {
+    protected ComparableQuantity<ElectricPotential> getVRatedB() {
       return vRatedB;
     }
 
@@ -391,7 +391,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<ElectricConductance> getgM() {
+    protected ComparableQuantity<ElectricConductance> getGM() {
       return gM;
     }
 
@@ -400,7 +400,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<ElectricConductance> getbM() {
+    protected ComparableQuantity<ElectricConductance> getBM() {
       return bM;
     }
 
@@ -409,7 +409,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Dimensionless> getdV() {
+    protected ComparableQuantity<Dimensionless> getDV() {
       return dV;
     }
 
@@ -418,7 +418,7 @@ public class Transformer2WTypeInput extends AssetTypeInput {
       return thisInstance();
     }
 
-    protected ComparableQuantity<Angle> getdPhi() {
+    protected ComparableQuantity<Angle> getDPhi() {
       return dPhi;
     }
 

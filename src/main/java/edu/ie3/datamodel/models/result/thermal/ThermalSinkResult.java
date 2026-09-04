@@ -1,21 +1,21 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.result.thermal;
 
 import java.time.ZonedDateTime;
+import java.util.Objects;
 import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /**
  * Represents calculation results of a {@link
- * edu.ie3.datamodel.models.input.thermal.ThermalSinkInput}
+ * edu.ie3.datamodel.models.input.thermal.ThermalSinkInput}.
  */
 public abstract class ThermalSinkResult extends ThermalUnitResult {
-
   /**
    * Standard constructor which includes auto generation of the resulting output models uuid.
    *
@@ -25,5 +25,29 @@ public abstract class ThermalSinkResult extends ThermalUnitResult {
    */
   protected ThermalSinkResult(ZonedDateTime time, UUID inputModel, ComparableQuantity<Power> qDot) {
     super(time, inputModel, qDot);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof ThermalSinkResult that)) return false;
+    return super.equals(o);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode());
+  }
+
+  @Override
+  public String toString() {
+    return "ThermalSinkResult{"
+        + "time="
+        + getTime()
+        + ", inputModel="
+        + getInputModel()
+        + ", qDot="
+        + getqDot()
+        + "}";
   }
 }
