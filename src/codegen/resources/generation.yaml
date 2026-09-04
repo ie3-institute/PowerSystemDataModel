@@ -681,7 +681,32 @@ datamodel:
               expression: copyOf(jack)
               className: List
 
-    # TODO: ConductorInput
+    ConductorInput:
+      classJavaDoc: "Represents the conducting core of a cable with its specific geometric and thermal properties.\n
+                 Unlike {@link LayerInput} layers, the conductor has no inner diameter and includes compaction\n
+                 information."
+      constructors:
+        - name: minimal
+          components: [uuid, id, material, crossSection, diameter, isCompacted, thermalResistivity, thermalCapacitance, area]
+          superArgs: [uuid, id]
+          javaDoc: "Constructor for the conductor of a cable.\n
+                 \n
+                 @param uuid UUID of the ConductorInput\n
+                 @param id Human-readable id\n
+                 @param material Material of the conductor (e.g., copper or aluminium)\n
+                 @param crossSection Real nominal cross-sectional area (electrically effective)\n
+                 @param diameter Geometric outer diameter of the conductor\n
+                 @param isCompacted Whether the conductor is compacted\n
+                 @param thermalResistivity Thermal resistivity of the conductor material\n
+                 @param thermalCapacitance Thermal capacitance of the conductor material\n
+                 @param area Optional real cross-sectional area (if different from geometric calculation)"
+        - name: full
+          components: [uuid, id, operator, operationTime, material, crossSection, diameter, isCompacted, thermalResistivity, thermalCapacitance, area]
+          superArgs: [uuid, id, operator, operationTime]
+        - name: fullWithAdditionalInformation
+          components: [uuid, id, operator, operationTime, material, crossSection, diameter, isCompacted, thermalResistivity, thermalCapacitance, area, additionalInformation]
+          superArgs: [uuid, id, operator, operationTime]
+      fieldNameGetters: [material, crossSection, diameter, isCompacted, thermalResistivity, thermalCapacitance]
 
     LayerInput:
       classJavaDoc: "Represents a concentric layer of a cable, including insulation, filler, armor, and jacket layers."

@@ -163,7 +163,7 @@ final class ModelGenerator implements HelperMethods {
     typeBuilder.addMethods(methodGenerator.getOtherMethods());
 
     // check if we need to add a copy method and copy builder
-    if (genConfig.copy && !genConfig.setters.isEmpty()) {
+    if (genConfig.copy && genConfig.setters.isEmpty()) {
       CopyBuilderGenerator copyBuilderGenerator =
           new CopyBuilderGenerator(packageName, model, genConfig, models);
 

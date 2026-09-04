@@ -262,6 +262,7 @@ datamodel:
           type: ThermalCapacitance
         - name: area
           type: Area
+          required: false
 
     LayerInput:
       name: LayerInput
