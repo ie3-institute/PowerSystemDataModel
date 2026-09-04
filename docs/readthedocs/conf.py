@@ -37,7 +37,8 @@ master_doc = 'index'
 extensions = [
     'sphinx.ext.intersphinx',
     'myst_parser',
-    'sphinxcontrib.bibtex'
+    'sphinxcontrib.bibtex',
+    'sphinx.ext.mathjax'
 ]
 
 bibtex_bibfiles = ["_static/bibliography/bibtex.bib"]
