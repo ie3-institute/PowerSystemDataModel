@@ -5,14 +5,18 @@
 */
 package edu.ie3.datamodel.utils.validation;
 
-import edu.ie3.datamodel.exceptions.*;
-import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.exceptions.InvalidEntityException;
+import edu.ie3.datamodel.exceptions.UnsafeEntityException;
+import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.exceptions.VoltageLevelException;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
+import edu.ie3.datamodel.utils.SquantsBuilder;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import java.util.ArrayList;
 import java.util.List;
+import squants.Each;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
@@ -58,15 +62,12 @@ public class NodeValidationUtils extends ValidationUtils {
 
     exceptions.add(
         Try.ofVoid(
-            node.getvTarget()
-                .isLessThanOrEqualTo(
-                    Quantities.getQuantity(0, StandardUnits.TARGET_VOLTAGE_MAGNITUDE)),
+            node.getvTarget().$less$eq(SquantsBuilder.build(0, Each::apply)),
             () ->
                 new InvalidEntityException("Target voltage (p.u.) is not a positive value", node)));
     exceptions.add(
         Try.ofVoid(
-            node.getvTarget()
-                .isGreaterThan(Quantities.getQuantity(2, StandardUnits.TARGET_VOLTAGE_MAGNITUDE)),
+            node.getvTarget().$greater(SquantsBuilder.build(2, Each::apply)),
             () -> new UnsafeEntityException("Target voltage (p.u.) might be too high", node)));
     exceptions.add(
         Try.ofVoid(

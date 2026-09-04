@@ -6,20 +6,18 @@
 package edu.ie3.datamodel.models.input;
 
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.util.geo.GeoUtils;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.quantity.Dimensionless;
 import org.locationtech.jts.geom.Point;
-import tech.units.indriya.ComparableQuantity;
+import squants.Dimensionless;
 
 /** Describes an electrical grid node, that other assets can connect to */
 public class NodeInput extends AssetInput {
   /** Target voltage magnitude of the node with regard to its rated voltage (typically in p.u.) */
-  private final ComparableQuantity<Dimensionless> vTarget;
+  private final Dimensionless vTarget;
 
   /** Is this node a slack node? */
   private final boolean slack;
@@ -58,13 +56,13 @@ public class NodeInput extends AssetInput {
       String id,
       OperatorInput operator,
       OperationTime operationTime,
-      ComparableQuantity<Dimensionless> vTarget,
+      Dimensionless vTarget,
       boolean slack,
       Point geoPosition,
       VoltageLevel voltLvl,
       int subnet) {
     super(uuid, id, operator, operationTime);
-    this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
+    this.vTarget = vTarget;
     this.slack = slack;
     this.geoPosition = geoPosition;
     this.voltLvl = voltLvl;
@@ -91,14 +89,14 @@ public class NodeInput extends AssetInput {
       String id,
       OperatorInput operator,
       OperationTime operationTime,
-      ComparableQuantity<Dimensionless> vTarget,
+      Dimensionless vTarget,
       boolean slack,
       Point geoPosition,
       VoltageLevel voltLvl,
       int subnet,
       Map<String, String> additionalInformation) {
     super(uuid, id, operator, operationTime);
-    this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
+    this.vTarget = vTarget;
     this.slack = slack;
     this.geoPosition = geoPosition;
     this.voltLvl = voltLvl;
@@ -121,20 +119,20 @@ public class NodeInput extends AssetInput {
   public NodeInput(
       UUID uuid,
       String id,
-      ComparableQuantity<Dimensionless> vTarget,
+      Dimensionless vTarget,
       boolean slack,
       Point geoPosition,
       VoltageLevel voltLvl,
       int subnet) {
     super(uuid, id);
-    this.vTarget = vTarget.to(StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
+    this.vTarget = vTarget;
     this.slack = slack;
     this.geoPosition = geoPosition;
     this.voltLvl = voltLvl;
     this.subnet = subnet;
   }
 
-  public ComparableQuantity<Dimensionless> getvTarget() {
+  public Dimensionless getvTarget() {
     return vTarget;
   }
 
@@ -189,7 +187,7 @@ public class NodeInput extends AssetInput {
         + ", operationTime="
         + getOperationTime()
         + ", vTarget="
-        + vTarget
+        + vTarget.toEach()
         + ", slack="
         + slack
         + ", geoPosition="
@@ -212,7 +210,7 @@ public class NodeInput extends AssetInput {
    */
   public static class NodeInputCopyBuilder extends AssetInputCopyBuilder<NodeInputCopyBuilder> {
 
-    private ComparableQuantity<Dimensionless> vTarget;
+    private Dimensionless vTarget;
     private boolean slack;
     private Point geoPosition;
     private VoltageLevel voltLvl;
@@ -242,7 +240,7 @@ public class NodeInput extends AssetInput {
           subnet);
     }
 
-    public NodeInputCopyBuilder vTarget(ComparableQuantity<Dimensionless> vTarget) {
+    public NodeInputCopyBuilder vTarget(Dimensionless vTarget) {
       this.vTarget = vTarget;
       return thisInstance();
     }

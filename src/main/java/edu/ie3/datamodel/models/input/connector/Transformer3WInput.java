@@ -6,15 +6,18 @@
 package edu.ie3.datamodel.models.input.connector;
 
 import static edu.ie3.datamodel.utils.validation.ConnectorValidationUtils.connectsNodesToCorrectVoltageSides;
-import static edu.ie3.util.quantities.PowerSystemUnits.PU;
 
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
-import java.util.*;
-import tech.units.indriya.quantity.Quantities;
+import edu.ie3.datamodel.utils.SquantsBuilder;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+import squants.Each;
 
 /**
  * Describes a three winding transformer, that is connected to three {@link
@@ -174,7 +177,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
             "internal_node_" + id,
             operator,
             operationTime,
-            Quantities.getQuantity(1d, PU),
+            SquantsBuilder.build(1d, Each::apply),
             internalNodeAsSlack,
             null,
             nodeA.getVoltLvl(),
@@ -216,7 +219,7 @@ public class Transformer3WInput extends TransformerInput implements HasType {
             "internal_node_" + id,
             getOperator(),
             getOperationTime(),
-            Quantities.getQuantity(1d, PU),
+            SquantsBuilder.build(1d, Each::apply),
             false,
             null,
             nodeA.getVoltLvl(),
