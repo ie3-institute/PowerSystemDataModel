@@ -9,7 +9,10 @@ import com.palantir.javapoet.ClassName;
 import com.palantir.javapoet.ParameterizedTypeName;
 import com.palantir.javapoet.TypeName;
 import java.io.Serializable;
+import java.time.DayOfWeek;
+import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
 /** Utility class for resolving types and classes. */
@@ -91,7 +94,20 @@ public class ResolverUtils {
 
   static void registerJavaClasses() {
     Stream.of(
-            Serializable.class, String.class, Collections.class, UUID.class, List.class, Map.class)
+            Serializable.class,
+            String.class,
+            Double.class,
+            Collections.class,
+            Optional.class,
+            UUID.class,
+            Math.class,
+            List.class,
+            Map.class,
+            HashMap.class,
+            DayOfWeek.class,
+            Stream.class,
+            DoubleStream.class,
+            ZonedDateTime.class)
         .forEach(ResolverUtils::add);
   }
 
@@ -102,6 +118,13 @@ public class ResolverUtils {
     classes.put("GeoUtils", ClassName.get("edu.ie3.util.geo", "GeoUtils"));
     classes.put("Quantities", ClassName.get("tech.units.indriya.quantity", "Quantities"));
     classes.put("PowerSystemUnits", ClassName.get("edu.ie3.util.quantities", "PowerSystemUnits"));
+    classes.put(
+        "GeneralizedExtremeValueDistribution",
+        ClassName.get(
+            "de.lmu.ifi.dbs.elki.math.statistics.distribution",
+            "GeneralizedExtremeValueDistribution"));
+    classes.put(
+        "RandomFactory", ClassName.get("de.lmu.ifi.dbs.elki.utilities.random", "RandomFactory"));
 
     // validations
     classes.put(
@@ -236,6 +259,55 @@ public class ResolverUtils {
         .forEach(
             name ->
                 classes.put(name, ClassName.get("edu.ie3.datamodel.models.input.thermal", name)));
+
+    // results
+    Stream.of("InputModelType", "ResultEntity")
+        .forEach(name -> classes.put(name, ClassName.get("edu.ie3.datamodel.models.result", name)));
+
+    // connector results
+    Stream.of("ConnectorResult", "TransformerResult")
+        .forEach(
+            name ->
+                classes.put(
+                    name, ClassName.get("edu.ie3.datamodel.models.result.connector", name)));
+
+    // system results
+    Stream.of(
+            "SystemParticipantResult",
+            "ElectricalEnergyStorageResult",
+            "SystemParticipantWithHeatResult",
+            "FlexOptionsResult")
+        .forEach(
+            name ->
+                classes.put(name, ClassName.get("edu.ie3.datamodel.models.result.system", name)));
+
+    // thermal results
+    Stream.of(
+            "ThermalUnitResult",
+            "ThermalSinkResult",
+            "ThermalStorageResult",
+            "AbstractThermalStorageResult")
+        .forEach(
+            name ->
+                classes.put(name, ClassName.get("edu.ie3.datamodel.models.result.thermal", name)));
+
+    // values
+    Stream.of(
+            "Value",
+            "TemperatureValue",
+            "PValue",
+            "SValue",
+            "SolarIrradianceValue",
+            "TemperatureValue",
+            "WindValue",
+            "GroundTemperatureValue",
+            "WeatherValue")
+        .forEach(name -> classes.put(name, ClassName.get("edu.ie3.datamodel.models.value", name)));
+
+    // load values
+    Stream.of("LoadValues", "RandomNumberProvider", "BdewLoadValues", "BdewSeason")
+        .forEach(
+            name -> classes.put(name, ClassName.get("edu.ie3.datamodel.models.value.load", name)));
   }
 
   static void registerQuantities() {
@@ -296,6 +368,10 @@ public class ResolverUtils {
               classes.put(name, ClassName.get("edu.ie3.util.quantities.interfaces", name));
               customTypes.put(name, new CustomType("ComparableQuantity", List.of(name)));
             });
+
+    classes.put(
+        "BdewStandardLoadProfile",
+        ClassName.get("edu.ie3.datamodel.models.profile", "BdewStandardLoadProfile"));
   }
 
   static void registerOtherClasses() {
@@ -305,6 +381,7 @@ public class ResolverUtils {
 
   static void registerCustomTypes() {
     customTypes.put("StringMap", new CustomType("Map", List.of("String", "String")));
+    customTypes.put("StringDoubleMap", new CustomType("Map", List.of("String", "Double")));
     customTypes.put("NodeList", new CustomType("List", List.of("NodeInput")));
 
     Stream.of("DegreeGeom")
@@ -316,12 +393,16 @@ public class ResolverUtils {
             name ->
                 customTypes.put(
                     name, new CustomType("ComparableQuantity", List.of("Dimensionless"))));
+
+    customTypes.put(
+        "OptionalDimensionless", CustomType.withType("Optional", List.of("Dimensionless")));
   }
 
   static void addDefaultExpressions() {
     defaultExpressions.put("UUID", "UUID.randomUUID()");
     defaultExpressions.put("Map", "new HashMap<>()");
     defaultExpressions.put("StringMap", "new HashMap<>()");
+    defaultExpressions.put("StringDoubleMap", "new HashMap<>()");
     defaultExpressions.put("List", "new ArrayList<>()");
     defaultExpressions.put("OperatorInput", "OperatorInput.NO_OPERATOR_ASSIGNED");
     defaultExpressions.put("OperationTime", "OperationTime.notLimited()");

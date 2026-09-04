@@ -8,8 +8,8 @@ package edu.ie3.codegen;
 import static edu.ie3.codegen.ResolverUtils.resolveClassName;
 import static edu.ie3.codegen.ResolverUtils.resolveType;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.dataformat.yaml.YAMLFactory;
 import com.palantir.javapoet.*;
 import java.io.IOException;
 import java.nio.file.Path;
