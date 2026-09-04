@@ -91,7 +91,7 @@ class LineInputTest extends Specification {
         ", operationTime=OperationTime{startDate=2020-03-24T15:11:31Z, endDate=2020-03-25T15:11:31Z, isLimited=true}" +
         ", nodeA=4ca90220-74c2-4369-9afa-a18bf068840d" +
         ", nodeB=47d29df0-ba2d-4d23-8e75-c82229c5c758" +
-        ", noOfParallelDevices=2" +
+        ", parallelDevices=2" +
         ", type=3bed3eb3-9790-4874-89b5-a5434d408088" +
         ", length=0.003 km" +
         ", geoPosition=LINESTRING (7.411111 51.492528, 7.414116 51.484136)" +

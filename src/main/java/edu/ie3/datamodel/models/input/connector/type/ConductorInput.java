@@ -10,14 +10,12 @@ import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
-import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
-import org.jspecify.annotations.NonNull;
 import tech.units.indriya.ComparableQuantity;
 
 /**
@@ -25,15 +23,39 @@ import tech.units.indriya.ComparableQuantity;
  * Unlike {@link LayerInput} layers, the conductor has no inner diameter and includes compaction
  * information.
  */
-public class ConductorInput extends AssetInput implements Serializable {
-
+public class ConductorInput extends AssetInput {
   private final CableMaterial material;
+
   private final ComparableQuantity<Area> crossSection;
+
   private final ComparableQuantity<Length> diameter;
+
   private final boolean isCompacted;
+
   private final ComparableQuantity<ThermalResistivity> thermalResistivity;
+
   private final ComparableQuantity<ThermalCapacitance> thermalCapacitance;
+
   private final ComparableQuantity<Area> area;
+
+  public ConductorInput(
+      UUID uuid,
+      String id,
+      CableMaterial material,
+      ComparableQuantity<Area> crossSection,
+      ComparableQuantity<Length> diameter,
+      boolean isCompacted,
+      ComparableQuantity<ThermalResistivity> thermalResistivity,
+      ComparableQuantity<ThermalCapacitance> thermalCapacitance) {
+    super(uuid, id);
+    this.material = material;
+    this.crossSection = crossSection;
+    this.diameter = diameter;
+    this.isCompacted = isCompacted;
+    this.thermalResistivity = thermalResistivity;
+    this.thermalCapacitance = thermalCapacitance;
+    this.area = null;
+  }
 
   /**
    * Constructor for the conductor of a cable.
@@ -58,19 +80,35 @@ public class ConductorInput extends AssetInput implements Serializable {
       ComparableQuantity<ThermalResistivity> thermalResistivity,
       ComparableQuantity<ThermalCapacitance> thermalCapacitance,
       ComparableQuantity<Area> area) {
-    this(
-        uuid,
-        id,
-        OperatorInput.NO_OPERATOR_ASSIGNED,
-        OperationTime.notLimited(),
-        material,
-        crossSection,
-        diameter,
-        isCompacted,
-        thermalResistivity,
-        thermalCapacitance,
-        area,
-        null);
+    super(uuid, id);
+    this.material = material;
+    this.crossSection = crossSection;
+    this.diameter = diameter;
+    this.isCompacted = isCompacted;
+    this.thermalResistivity = thermalResistivity;
+    this.thermalCapacitance = thermalCapacitance;
+    this.area = area;
+  }
+
+  public ConductorInput(
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime,
+      CableMaterial material,
+      ComparableQuantity<Area> crossSection,
+      ComparableQuantity<Length> diameter,
+      boolean isCompacted,
+      ComparableQuantity<ThermalResistivity> thermalResistivity,
+      ComparableQuantity<ThermalCapacitance> thermalCapacitance) {
+    super(uuid, id, operator, operationTime);
+    this.material = material;
+    this.crossSection = crossSection;
+    this.diameter = diameter;
+    this.isCompacted = isCompacted;
+    this.thermalResistivity = thermalResistivity;
+    this.thermalCapacitance = thermalCapacitance;
+    this.area = null;
   }
 
   public ConductorInput(
@@ -85,19 +123,14 @@ public class ConductorInput extends AssetInput implements Serializable {
       ComparableQuantity<ThermalResistivity> thermalResistivity,
       ComparableQuantity<ThermalCapacitance> thermalCapacitance,
       ComparableQuantity<Area> area) {
-    this(
-        uuid,
-        id,
-        operator,
-        operationTime,
-        material,
-        crossSection,
-        diameter,
-        isCompacted,
-        thermalResistivity,
-        thermalCapacitance,
-        area,
-        null);
+    super(uuid, id, operator, operationTime);
+    this.material = material;
+    this.crossSection = crossSection;
+    this.diameter = diameter;
+    this.isCompacted = isCompacted;
+    this.thermalResistivity = thermalResistivity;
+    this.thermalCapacitance = thermalCapacitance;
+    this.area = area;
   }
 
   public ConductorInput(
@@ -124,22 +157,6 @@ public class ConductorInput extends AssetInput implements Serializable {
     setAdditionalInformation(additionalInformation);
   }
 
-  public ComparableQuantity<ThermalCapacitance> thermalCapacitance() {
-    return thermalCapacitance;
-  }
-
-  public Optional<ComparableQuantity<Area>> area() {
-    return Optional.ofNullable(area);
-  }
-
-  public Optional<ComparableQuantity<Area>> areaOptional() {
-    return area();
-  }
-
-  public String name() {
-    return getId();
-  }
-
   public CableMaterial material() {
     return material;
   }
@@ -160,43 +177,30 @@ public class ConductorInput extends AssetInput implements Serializable {
     return thermalResistivity;
   }
 
-  @Override
-  public @NonNull String toString() {
-    return "ConductorInput{"
-        + "uuid="
-        + getUuid()
-        + ", id="
-        + getId()
-        + ", material="
-        + material
-        + ", crossSection="
-        + crossSection
-        + ", diameter="
-        + diameter
-        + ", isCompacted="
-        + isCompacted
-        + ", thermalResistivity="
-        + thermalResistivity
-        + ", thermalCapacitance="
-        + thermalCapacitance
-        + ", area="
-        + area()
-        + '}';
+  public ComparableQuantity<ThermalCapacitance> thermalCapacitance() {
+    return thermalCapacitance;
+  }
+
+  public Optional<ComparableQuantity<Area>> area() {
+    return Optional.ofNullable(area);
+  }
+
+  public String name() {
+    return getId();
   }
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o instanceof ConductorInput)) return false;
+    if (!(o instanceof ConductorInput that)) return false;
     if (!super.equals(o)) return false;
-    ConductorInput that = (ConductorInput) o;
-    return isCompacted == that.isCompacted
-        && material == that.material
+    return Objects.equals(material, that.material)
         && crossSection.equals(that.crossSection)
         && diameter.equals(that.diameter)
+        && isCompacted == that.isCompacted
         && thermalResistivity.equals(that.thermalResistivity)
         && thermalCapacitance.equals(that.thermalCapacitance)
-        && Objects.equals(area, that.area);
+        && area.equals(that.area);
   }
 
   @Override
@@ -213,19 +217,54 @@ public class ConductorInput extends AssetInput implements Serializable {
   }
 
   @Override
-  public AssetInputCopyBuilder<?> copy() {
+  public String toString() {
+    return "ConductorInput{"
+        + "uuid="
+        + getUuid()
+        + ", id="
+        + getId()
+        + ", operator="
+        + getOperator().getUuid()
+        + ", operationTime="
+        + getOperationTime()
+        + ", material="
+        + material
+        + ", crossSection="
+        + crossSection
+        + ", diameter="
+        + diameter
+        + ", isCompacted="
+        + isCompacted
+        + ", thermalResistivity="
+        + thermalResistivity
+        + ", thermalCapacitance="
+        + thermalCapacitance
+        + ", area="
+        + area
+        + ", additionalInformation="
+        + getAdditionalInformation()
+        + "}";
+  }
+
+  @Override
+  public ConductorInputCopyBuilder copy() {
     return new ConductorInputCopyBuilder(this);
   }
 
   public static class ConductorInputCopyBuilder
       extends AssetInputCopyBuilder<ConductorInputCopyBuilder> {
-
     private CableMaterial material;
+
     private ComparableQuantity<Area> crossSection;
+
     private ComparableQuantity<Length> diameter;
+
     private boolean isCompacted;
+
     private ComparableQuantity<ThermalResistivity> thermalResistivity;
+
     private ComparableQuantity<ThermalCapacitance> thermalCapacitance;
+
     private ComparableQuantity<Area> area;
 
     protected ConductorInputCopyBuilder(ConductorInput entity) {
@@ -244,9 +283,17 @@ public class ConductorInput extends AssetInput implements Serializable {
       return thisInstance();
     }
 
+    protected CableMaterial material() {
+      return material;
+    }
+
     public ConductorInputCopyBuilder crossSection(ComparableQuantity<Area> crossSection) {
       this.crossSection = crossSection;
       return thisInstance();
+    }
+
+    protected ComparableQuantity<Area> crossSection() {
+      return crossSection;
     }
 
     public ConductorInputCopyBuilder diameter(ComparableQuantity<Length> diameter) {
@@ -254,19 +301,37 @@ public class ConductorInput extends AssetInput implements Serializable {
       return thisInstance();
     }
 
+    protected ComparableQuantity<Length> diameter() {
+      return diameter;
+    }
+
     public ConductorInputCopyBuilder isCompacted(boolean isCompacted) {
       this.isCompacted = isCompacted;
       return thisInstance();
     }
 
-    public ConductorInputCopyBuilder thermalResistivity(ComparableQuantity<ThermalResistivity> tr) {
-      this.thermalResistivity = tr;
+    protected boolean isCompacted() {
+      return isCompacted;
+    }
+
+    public ConductorInputCopyBuilder thermalResistivity(
+        ComparableQuantity<ThermalResistivity> thermalResistivity) {
+      this.thermalResistivity = thermalResistivity;
       return thisInstance();
     }
 
-    public ConductorInputCopyBuilder thermalCapacitance(ComparableQuantity<ThermalCapacitance> tc) {
-      this.thermalCapacitance = tc;
+    protected ComparableQuantity<ThermalResistivity> thermalResistivity() {
+      return thermalResistivity;
+    }
+
+    public ConductorInputCopyBuilder thermalCapacitance(
+        ComparableQuantity<ThermalCapacitance> thermalCapacitance) {
+      this.thermalCapacitance = thermalCapacitance;
       return thisInstance();
+    }
+
+    protected ComparableQuantity<ThermalCapacitance> thermalCapacitance() {
+      return thermalCapacitance;
     }
 
     public ConductorInputCopyBuilder area(ComparableQuantity<Area> area) {
@@ -274,10 +339,14 @@ public class ConductorInput extends AssetInput implements Serializable {
       return thisInstance();
     }
 
+    protected ComparableQuantity<Area> area() {
+      return area;
+    }
+
     @Override
     public ConductorInput build() {
       return new ConductorInput(
-          super.getUuid(),
+          getUuid(),
           getId(),
           getOperator(),
           getOperationTime(),
@@ -287,7 +356,8 @@ public class ConductorInput extends AssetInput implements Serializable {
           isCompacted,
           thermalResistivity,
           thermalCapacitance,
-          area);
+          area,
+          getAdditionalInformation());
     }
 
     @Override

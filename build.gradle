@@ -46,6 +46,7 @@ apply from: scriptsLocation + 'sonarqube.gradle'
 apply from: scriptsLocation + 'vcs.gradle'
 apply from: scriptsLocation + 'semVer.gradle'
 apply from: scriptsLocation + 'branchName.gradle' // checks naming scheme of branches
+apply from: scriptsLocation + 'codegen.gradle'
 
 repositories {
   mavenCentral() // searches in Sonatype's repository 'Maven Central'
@@ -66,8 +67,8 @@ dependencies {
   implementation 'org.locationtech.jts.io:jts-io-common:1.20.0'
 
   // parsing json
-  implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.2'
-  implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.22.2'
+  implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.0'
+  implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.15.2'
 
   // Graphs
   implementation 'org.jgrapht:jgrapht-core:1.5.3'
@@ -108,6 +109,10 @@ dependencies {
   implementation 'org.apache.commons:commons-compress:1.28.0' // I/O functionalities
 
   implementation 'tools.jackson.core:jackson-databind:3.2.2'
+
+  // model generation
+  codegenImplementation 'com.palantir.javapoet:javapoet:0.19.0'
+  codegenImplementation 'tools.jackson.dataformat:jackson-dataformat-yaml:3.2.2'
 }
 
 tasks.withType(JavaCompile).configureEach {

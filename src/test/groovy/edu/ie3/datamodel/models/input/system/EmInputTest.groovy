@@ -52,9 +52,9 @@ class EmInputTest extends Specification {
     emInputToString == "EmInput{" +
         "uuid=" +
         SystemParticipantTestData.emInput.uuid +
-        ", id='" +
+        ", id=" +
         SystemParticipantTestData.emInput.id +
-        "', operator=" +
+        ", operator=" +
         SystemParticipantTestData.emInput.operator.uuid +
         ", operationTime=" +
         SystemParticipantTestData.emInput.operationTime +
@@ -78,7 +78,7 @@ class EmInputTest extends Specification {
         )
 
     when:
-    def alteredUnit = emInput.copy().controlStrategy(newStrat).parentEm(givenParentEm).build()
+    def alteredUnit = emInput.copy().controlStrategy(newStrat).controllingEm(givenParentEm).build()
 
     then:
     alteredUnit.with {

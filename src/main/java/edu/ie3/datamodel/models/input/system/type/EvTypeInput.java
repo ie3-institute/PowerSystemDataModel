@@ -188,7 +188,7 @@ public class EvTypeInput extends SystemParticipantTypeInput {
     }
 
     @Override
-    public EvTypeInput.EvTypeInputCopyBuilder scale(Double factor) {
+    public EvTypeInput.EvTypeInputCopyBuilder scale(double factor) {
       capex(getCapex().multiply(factor));
       sRated(getsRated().multiply(factor));
       seteStorage(geteStorage().multiply(factor));
