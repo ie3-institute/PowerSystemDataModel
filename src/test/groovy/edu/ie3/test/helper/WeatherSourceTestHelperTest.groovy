@@ -51,8 +51,8 @@ class WeatherSourceTestHelperTest extends Specification {
         solar,
         tempVal,
         wind,
-        Optional.of(ground1),
-        Optional.of(ground2)
+        ground1,
+        ground2
         )
   }
 
@@ -87,8 +87,8 @@ class WeatherSourceTestHelperTest extends Specification {
           ),
       baseWeather.temperature,
       baseWeather.wind,
-      baseWeather.groundTemperatureLevel1,
-      baseWeather.groundTemperatureLevel2
+      baseWeather.groundTemperatureLevel1.orElse(null),
+      baseWeather.groundTemperatureLevel2.orElse(null)
       )
     }
 
@@ -113,8 +113,8 @@ class WeatherSourceTestHelperTest extends Specification {
         baseWeather.solarIrradiance,
         baseWeather.temperature,
         baseWeather.wind,
-        Optional.of(groundDiff),
-        baseWeather.groundTemperatureLevel2
+        groundDiff,
+        baseWeather.groundTemperatureLevel2.orElse(null)
         )
 
     def weatherMissingGround = new WeatherValue(
@@ -122,8 +122,8 @@ class WeatherSourceTestHelperTest extends Specification {
         baseWeather.solarIrradiance,
         baseWeather.temperature,
         baseWeather.wind,
-        Optional.empty(),
-        baseWeather.groundTemperatureLevel2
+        null,
+        baseWeather.groundTemperatureLevel2.orElse(null)
         )
 
     def tbvDiff = new TimeBasedValue(time, weatherDiffGround)

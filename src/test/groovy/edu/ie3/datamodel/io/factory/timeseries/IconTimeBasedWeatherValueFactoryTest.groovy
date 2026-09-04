@@ -185,9 +185,7 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
         Quantities.getQuantity(4d, StandardUnits.SOLAR_IRRADIANCE),
         Quantities.getQuantity(3d, StandardUnits.TEMPERATURE),
         Quantities.getQuantity(2d, StandardUnits.WIND_DIRECTION),
-        Quantities.getQuantity(1d, StandardUnits.WIND_VELOCITY),
-        Optional.empty(),
-        Optional.empty()))
+        Quantities.getQuantity(1d, StandardUnits.WIND_VELOCITY)))
 
     when:
     def model = factory.buildModel(data)

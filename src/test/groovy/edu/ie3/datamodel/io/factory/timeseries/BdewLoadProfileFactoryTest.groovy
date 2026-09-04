@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
+import edu.ie3.datamodel.io.naming.ModelFields
 import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
@@ -73,12 +74,61 @@ class BdewLoadProfileFactoryTest extends Specification {
 
   def "A BDEWLoadProfileFactory returns the correct fields"() {
     given:
-    def expectedScheme1999 = (BdewLoadValues.BdewKey.toMap(BdewLoadValues.BdewScheme.BDEW1999).values() + "quarterHour") as Set
+    def expectedScheme1999 = [
+      "suSa",
+      "suSu",
+      "suWd",
+      "trSa",
+      "trSu",
+      "trWd",
+      "wiSa",
+      "wiSu",
+      "wiWd",
+      "quarterHour"
+    ] as Set
 
-    def expectedScheme2025 = (BdewLoadValues.BdewKey.toMap(BdewLoadValues.BdewScheme.BDEW2025).values() + "quarterHour") as Set
+    def expectedScheme2025 = [
+      "janSa",
+      "janSu",
+      "janWd",
+      "febSa",
+      "febSu",
+      "febWd",
+      "marSa",
+      "marSu",
+      "marWd",
+      "aprSa",
+      "aprSu",
+      "aprWd",
+      "maySa",
+      "maySu",
+      "mayWd",
+      "junSa",
+      "junSu",
+      "junWd",
+      "julSa",
+      "julSu",
+      "julWd",
+      "augSa",
+      "augSu",
+      "augWd",
+      "sepSa",
+      "sepSu",
+      "sepWd",
+      "octSa",
+      "octSu",
+      "octWd",
+      "novSa",
+      "novSu",
+      "novWd",
+      "decSa",
+      "decSu",
+      "decWd",
+      "quarterHour"
+    ] as Set
 
     when:
-    def actual = factory.getFields(BdewLoadValues)
+    def actual = ModelFields.getValueSchemes(BdewLoadValues)
 
     then:
     actual.size() == 2
@@ -86,7 +136,7 @@ class BdewLoadProfileFactoryTest extends Specification {
     actual.last() == expectedScheme2025
   }
 
-  def "A BDEWLoadProfileFactory refuses to build from invalid data"() {
+  def "A BDEWLoadProfileFactory refuses to build Bdew1999 scheme from invalid data"() {
     given:
     def actualFields = CollectionUtils.newSet("Sa", "Su", "Wd")
 
@@ -97,8 +147,8 @@ class BdewLoadProfileFactoryTest extends Specification {
     actual.failure
     actual.exception.get().message == "The provided fields [Sa, Su, Wd] are invalid for instance of 'BdewLoadValues'. \n" +
         "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'BdewLoadValues' are possible (NOT case-sensitive!):\n" +
-        "0: [quarterHour, SuSa, SuSu, SuWd, TrSa, TrSu, TrWd, WiSa, WiSu, WiWd] or [quarter_hour, su_sa, su_su, su_wd, tr_sa, tr_su, tr_wd, wi_sa, wi_su, wi_wd]\n" +
-        "1: [AprSa, AprSu, AprWd, AugSa, AugSu, AugWd, DecSa, DecSu, DecWd, FebSa, FebSu, FebWd, JanSa, JanSu, JanWd, JulSa, JulSu, JulWd, JunSa, JunSu, JunWd, MarSa, MarSu, MarWd, MaySa, MaySu, MayWd, NovSa, NovSu, NovWd, OctSa, OctSu, OctWd, quarterHour, SepSa, SepSu, SepWd] or [apr_sa, apr_su, apr_wd, aug_sa, aug_su, aug_wd, dec_sa, dec_su, dec_wd, feb_sa, feb_su, feb_wd, jan_sa, jan_su, jan_wd, jul_sa, jul_su, jul_wd, jun_sa, jun_su, jun_wd, mar_sa, mar_su, mar_wd, may_sa, may_su, may_wd, nov_sa, nov_su, nov_wd, oct_sa, oct_su, oct_wd, quarter_hour, sep_sa, sep_su, sep_wd]\n"
+        "0: [quarterHour, suSa, suSu, suWd, trSa, trSu, trWd, wiSa, wiSu, wiWd] or [quarter_hour, su_sa, su_su, su_wd, tr_sa, tr_su, tr_wd, wi_sa, wi_su, wi_wd]\n" +
+        "1: [aprSa, aprSu, aprWd, augSa, augSu, augWd, decSa, decSu, decWd, febSa, febSu, febWd, janSa, janSu, janWd, julSa, julSu, julWd, junSa, junSu, junWd, marSa, marSu, marWd, maySa, maySu, mayWd, novSa, novSu, novWd, octSa, octSu, octWd, quarterHour, sepSa, sepSu, sepWd] or [apr_sa, apr_su, apr_wd, aug_sa, aug_su, aug_wd, dec_sa, dec_su, dec_wd, feb_sa, feb_su, feb_wd, jan_sa, jan_su, jan_wd, jul_sa, jul_su, jul_wd, jun_sa, jun_su, jun_wd, mar_sa, mar_su, mar_wd, may_sa, may_su, may_wd, nov_sa, nov_su, nov_wd, oct_sa, oct_su, oct_wd, quarter_hour, sep_sa, sep_su, sep_wd]\n"
   }
 
   def "A BDEWLoadProfileFactory builds model from valid data"() {
@@ -120,8 +170,7 @@ class BdewLoadProfileFactoryTest extends Specification {
     def entry = factory.buildModel(new LoadProfileData<>(data, BdewLoadValues))
 
     then:
-    entry.value.class == BdewLoadValues
-    entry.value.scheme.get() == BdewLoadValues.BdewScheme.BDEW1999
+    entry.value.class == BdewLoadValues.Bdew1999
   }
 
   def "A BDEWLoadProfileFactory builds time series from entries"() {

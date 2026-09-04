@@ -5,8 +5,6 @@
  */
 package edu.ie3.datamodel.io.processor.timeseries
 
-import static edu.ie3.datamodel.models.value.load.BdewLoadValues.BdewScheme.*
-
 import edu.ie3.datamodel.exceptions.EntityProcessorException
 import edu.ie3.datamodel.io.processor.GetterMethod
 import edu.ie3.datamodel.io.processor.Processor
@@ -19,8 +17,6 @@ import edu.ie3.datamodel.models.value.*
 import edu.ie3.datamodel.models.value.load.BdewLoadValues
 import edu.ie3.test.common.TimeSeriesTestData
 import spock.lang.Specification
-
-import java.lang.reflect.Method
 
 class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestData {
   def "A TimeSeriesProcessor is instantiated correctly"() {
@@ -55,7 +51,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
     then:
     EntityProcessorException thrown = thrown(EntityProcessorException)
-    thrown.message.startsWith("Cannot register time series combination 'TimeSeriesProcessorKey{timeSeriesClass=class edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries, entryClass=class edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue, valueClass=class edu.ie3.datamodel.models.timeseries.IntValue, scheme=Optional.empty}' with entity processor 'TimeSeriesProcessor'. Eligible combinations:")
+    thrown.message.startsWith("Cannot register time series combination 'TimeSeriesProcessorKey{timeSeriesClass=class edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries, entryClass=class edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue, valueClass=class edu.ie3.datamodel.models.timeseries.IntValue}' with entity processor 'TimeSeriesProcessor'. Eligible combinations:")
   }
 
   def "A TimeSeriesProcessor throws an Exception, when the simple handle method is called"() {
@@ -216,7 +212,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
   def "A TimeSeriesProcessors handles a complete LoadProfileTimeSeries correctly"() {
     given:
-    TimeSeriesProcessor<BdewLoadProfileTimeSeries, LoadProfileEntry, BdewLoadValues, PValue> processor = new TimeSeriesProcessor<>(BdewLoadProfileTimeSeries, LoadProfileEntry, BdewLoadValues, BDEW1999)
+    TimeSeriesProcessor<BdewLoadProfileTimeSeries, LoadProfileEntry, BdewLoadValues, PValue> processor = new TimeSeriesProcessor<>(BdewLoadProfileTimeSeries, LoadProfileEntry, BdewLoadValues.Bdew1999)
 
     when:
     Set<Map<String, String>> actual = processor.handleTimeSeries(loadProfileTimeSeries)

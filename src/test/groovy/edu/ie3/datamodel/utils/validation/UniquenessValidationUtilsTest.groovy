@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.utils.validation
 
-import static edu.ie3.datamodel.models.result.CongestionResult.InputModelType.NODE
+import static edu.ie3.datamodel.models.result.InputModelType.NODE
 import static edu.ie3.datamodel.utils.validation.DummyAssetInput.valid
 import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.*
 import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
@@ -130,9 +130,9 @@ class UniquenessValidationUtilsTest extends Specification {
     Quantity<Angle> vAng = Quantities.getQuantity(45, StandardUnits.VOLTAGE_ANGLE)
 
     Set<ResultEntity> notUniqueResults = [
+      new NodeResult(time, uuid1, Quantities.getQuantity(0.94, PU), vAng),
       new NodeResult(time, uuid1, vMag, vAng),
-      new NodeResult(time, uuid1, vMag, vAng),
-      new NodeResult(time.plusHours(1), uuid2, vMag, vAng),
+      new NodeResult(time.plusHours(1), uuid1, vMag, vAng),
       new NodeResult(time.plusHours(1), uuid2, vMag, vAng)
     ]
 
