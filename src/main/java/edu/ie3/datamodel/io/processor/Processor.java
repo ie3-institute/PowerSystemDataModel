@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
+import edu.ie3.datamodel.io.factory.typeinput.CableTypeInputFactory;
 import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
 import edu.ie3.datamodel.models.OperationTime;
@@ -34,6 +35,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.geojson.GeoJsonWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
 
 /**
  * Basic sketch and skeleton for a processors including all functions that apply for all needed
@@ -259,7 +261,7 @@ public abstract class Processor<T> {
                                   return edu.ie3.datamodel.io.factory.typeinput
                                       .CableTypeInputFactory.OBJECT_MAPPER
                                       .writeValueAsString(screenLayer);
-                                } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+                                } catch (JacksonException e) {
                                   throw new EntityProcessorException(
                                       "Failed to serialize ScreenLayerInput inside Optional", e);
                                 }
@@ -331,10 +333,9 @@ public abstract class Processor<T> {
       case "List" -> {
         try {
           String jsonString =
-              edu.ie3.datamodel.io.factory.typeinput.CableTypeInputFactory.OBJECT_MAPPER
-                  .writeValueAsString(methodReturnObject);
+              CableTypeInputFactory.OBJECT_MAPPER.writeValueAsString(methodReturnObject);
           resultStringBuilder.append(jsonString);
-        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+        } catch (JacksonException e) {
           throw new EntityProcessorException(
               "Failed to serialize List to JSON string for field: " + fieldName, e);
         }
@@ -342,10 +343,9 @@ public abstract class Processor<T> {
       case "ConductorInput" -> {
         try {
           String jsonString =
-              edu.ie3.datamodel.io.factory.typeinput.CableTypeInputFactory.OBJECT_MAPPER
-                  .writeValueAsString(methodReturnObject);
+              CableTypeInputFactory.OBJECT_MAPPER.writeValueAsString(methodReturnObject);
           resultStringBuilder.append(jsonString);
-        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+        } catch (JacksonException e) {
           throw new EntityProcessorException(
               "Failed to serialize ConductorInput to JSON string for field: " + fieldName, e);
         }

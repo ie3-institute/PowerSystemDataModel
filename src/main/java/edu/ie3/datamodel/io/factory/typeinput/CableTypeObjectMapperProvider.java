@@ -5,29 +5,27 @@
 */
 package edu.ie3.datamodel.io.factory.typeinput;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import edu.ie3.datamodel.models.input.connector.type.ConductorInput;
 import edu.ie3.datamodel.models.input.connector.type.LayerInput;
 import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput;
 import edu.ie3.util.quantities.PowerSystemUnits;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.JsonToken;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.ValueSerializer;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
 
 public final class CableTypeObjectMapperProvider {
 
@@ -44,6 +42,7 @@ public final class CableTypeObjectMapperProvider {
   private static final String FIELD_OUTER_DIAMETER_ALT = "outer_diameter";
   private static final String FIELD_WIRE_DIAMETER = "wireDiameter";
   private static final String FIELD_WIRE_DIAMETER_ALT = "wire_diameter";
+  private static final String FIELD_LENGTH_OF_LAY = "lengthOfLay";
 
   private static final String FIELD_ELECTRICAL_RESISTIVITY = "electricalResistivity";
   private static final String FIELD_ELECTRICAL_RESISTIVITY_ALT = "electrical_resistivity";
@@ -68,7 +67,8 @@ public final class CableTypeObjectMapperProvider {
           FIELD_OUTER_DIAMETER,
           FIELD_OUTER_DIAMETER_ALT,
           FIELD_WIRE_DIAMETER,
-          FIELD_WIRE_DIAMETER_ALT);
+          FIELD_WIRE_DIAMETER_ALT,
+          FIELD_LENGTH_OF_LAY);
 
   private static final Set<String> ELECTRICAL_RESISTIVITY_FIELDS =
       Set.of(FIELD_ELECTRICAL_RESISTIVITY, FIELD_ELECTRICAL_RESISTIVITY_ALT);
@@ -96,46 +96,94 @@ public final class CableTypeObjectMapperProvider {
   }
 
   // Helper methods
-  private static BigDecimal toBigDecimalFromQuantity(ComparableQuantity<?> quantity) {
-    double d = quantity.getValue().doubleValue();
-    String ds = Double.toString(d);
-    if (ds.indexOf('E') >= 0 || ds.indexOf('e') >= 0) {
-      return new BigDecimal(ds);
-    } else {
-      return BigDecimal.valueOf(d).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros();
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  private static BigDecimal toBigDecimalFromQuantity(
+      ComparableQuantity<?> quantity, String fieldName) {
+    if (quantity == null) return null;
+    javax.measure.Unit<?> unit = unitForField(fieldName);
+    // Localized raw cast: required because ComparableQuantity.to(Unit) is generic and
+    // cannot be expressed with an unknown quantity type at compile time. The cast is
+    // intentionally narrowly scoped and suppressed above.
+    ComparableQuantity<?> quantityInFieldUnit =
+        unit == null ? quantity : ((ComparableQuantity) quantity).to(unit);
+
+    Number n = (Number) quantityInFieldUnit.getValue();
+    if (n == null) throw new RuntimeException("Cannot serialize quantity without numeric value");
+
+    String ns = n.toString();
+    // Preserve exponential representation if present
+    if (ns.indexOf('E') >= 0 || ns.indexOf('e') >= 0) {
+      return new BigDecimal(ns);
     }
+
+    BigDecimal bd;
+    if (n instanceof BigDecimal) {
+      bd = (BigDecimal) n;
+    } else if (n instanceof Long
+        || n instanceof Integer
+        || n instanceof Short
+        || n instanceof Byte) {
+      bd = BigDecimal.valueOf(n.longValue());
+    } else if (n instanceof Double || n instanceof Float) {
+      // Construct from string to avoid binary double artifacts
+      bd = new BigDecimal(ns);
+    } else {
+      bd = new BigDecimal(ns);
+    }
+
+    return bd.setScale(10, RoundingMode.HALF_UP).stripTrailingZeros();
+  }
+
+  private static void writeCommonHeader(
+      JsonGenerator gen, String uuid, String name, String material) {
+    gen.writeName(FIELD_UUID);
+    gen.writeString(uuid);
+    gen.writeName(FIELD_NAME);
+    gen.writeString(name);
+    gen.writeName(FIELD_MATERIAL);
+    gen.writeString(material);
+  }
+
+  private static void writeAdditionalInformationObject(
+      JsonGenerator gen, Map<String, String> additional) {
+    gen.writeName(FIELD_ADDITIONAL_INFORMATION);
+    gen.writeStartObject();
+    if (additional != null) {
+      for (Map.Entry<String, String> e : additional.entrySet()) {
+        gen.writeName(e.getKey());
+        gen.writeString(e.getValue());
+      }
+    }
+    gen.writeEndObject();
   }
 
   private static void writeQuantityNumberField(
-      JsonGenerator gen, String fieldName, ComparableQuantity<?> value) throws IOException {
-    if (value == null) gen.writeNullField(fieldName);
-    else gen.writeNumberField(fieldName, toBigDecimalFromQuantity(value));
+      JsonGenerator gen, String fieldName, ComparableQuantity<?> value) {
+    if (value == null) {
+      gen.writeName(fieldName);
+      gen.writeNull();
+    } else {
+      gen.writeName(fieldName);
+      gen.writeNumber(toBigDecimalFromQuantity(value, fieldName));
+    }
   }
 
-  private static void writeOptionalQuantityNumberField(
-      JsonGenerator gen, String fieldName, Optional<? extends ComparableQuantity<?>> opt)
-      throws IOException {
-    if (opt.isEmpty()) gen.writeNullField(fieldName);
-    else gen.writeNumberField(fieldName, toBigDecimalFromQuantity(opt.get()));
-  }
-
+  @SuppressWarnings("unchecked")
   public static ObjectMapper createObjectMapper() {
-    ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.registerModule(new Jdk8Module());
-    objectMapper.configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true);
+    JsonMapper objectMapper =
+        JsonMapper.builder().enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS).build();
 
     SimpleModule strictModule = new SimpleModule("StrictFieldUnitModule");
 
-    JsonDeserializer<ComparableQuantity<?>> quantityDeserializer =
-        new JsonDeserializer<>() {
+    ValueDeserializer<ComparableQuantity<?>> quantityDeserializer =
+        new ValueDeserializer<>() {
           @Override
-          public ComparableQuantity<?> deserialize(JsonParser p, DeserializationContext ctxt)
-              throws IOException {
+          public ComparableQuantity<?> deserialize(JsonParser p, DeserializationContext ctxt) {
             String currentField = p.currentName();
             javax.measure.Unit<?> unit = unitForField(currentField);
 
             if (unit == null) {
-              throw new IOException(
+              throw new RuntimeException(
                   "Strict unit enforcement failed: Unknown target unit context for property field '"
                       + currentField
                       + "'");
@@ -148,7 +196,7 @@ public final class CableTypeObjectMapperProvider {
               return Quantities.getQuantity(bd.doubleValue(), unit);
             }
 
-            String text = p.getText();
+            String text = p.getString();
             boolean isNullish = text == null;
             if (!isNullish) {
               text = text.trim();
@@ -161,138 +209,134 @@ public final class CableTypeObjectMapperProvider {
           }
         };
 
-    JsonSerializer<ComparableQuantity<?>> quantitySerializer =
-        new JsonSerializer<>() {
+    ValueSerializer<ComparableQuantity<?>> quantitySerializer =
+        new ValueSerializer<>() {
           @Override
           public void serialize(
-              ComparableQuantity<?> value, JsonGenerator gen, SerializerProvider serializers)
-              throws IOException {
-            if (value == null) {
-              gen.writeNull();
-            } else {
-              gen.writeNumber(toBigDecimalFromQuantity(value));
+              ComparableQuantity<?> value, JsonGenerator gen, SerializationContext serializers) {
+            try {
+              if (value == null) {
+                gen.writeNull();
+              } else {
+                gen.writeNumber(toBigDecimalFromQuantity(value, null));
+              }
+            } catch (Exception e) {
+              throw new RuntimeException(e);
             }
           }
         };
 
-    strictModule.addDeserializer(
-        (Class<ComparableQuantity<?>>) (Class<?>) ComparableQuantity.class, quantityDeserializer);
+    @SuppressWarnings("unchecked")
+    Class<ComparableQuantity<?>> comparableQuantityClass =
+        (Class<ComparableQuantity<?>>) (Class<?>) ComparableQuantity.class;
 
-    strictModule.addSerializer(
-        (Class<ComparableQuantity<?>>) (Class<?>) ComparableQuantity.class, quantitySerializer);
+    strictModule.addDeserializer(comparableQuantityClass, quantityDeserializer);
+    strictModule.addSerializer(comparableQuantityClass, quantitySerializer);
 
-    JsonSerializer<ConductorInput> conductorSerializer =
-        new JsonSerializer<>() {
+    ValueSerializer<ConductorInput> conductorSerializer =
+        new ValueSerializer<>() {
           @Override
           public void serialize(
-              ConductorInput value, JsonGenerator gen, SerializerProvider serializers)
-              throws IOException {
-            if (value == null) {
-              gen.writeNull();
-              return;
-            }
-
-            gen.writeStartObject();
-            gen.writeStringField(FIELD_UUID, value.getUuid().toString());
-            gen.writeStringField(FIELD_NAME, value.name());
-            gen.writeStringField(FIELD_MATERIAL, value.material().name());
-            writeQuantityNumberField(gen, FIELD_CROSS_SECTION, value.crossSection());
-            writeQuantityNumberField(gen, FIELD_DIAMETER, value.diameter());
-            gen.writeBooleanField("isCompacted", value.isCompacted());
-            writeQuantityNumberField(gen, FIELD_THERMAL_RESISTIVITY, value.thermalResistivity());
-            writeQuantityNumberField(gen, FIELD_THERMAL_CAPACITANCE, value.thermalCapacitance());
-            writeOptionalQuantityNumberField(gen, FIELD_AREA, value.area());
-
-            gen.writeObjectFieldStart(FIELD_ADDITIONAL_INFORMATION);
-            if (value.getAdditionalInformation() != null) {
-              for (Map.Entry<String, String> e : value.getAdditionalInformation().entrySet()) {
-                gen.writeStringField(e.getKey(), e.getValue());
+              ConductorInput value, JsonGenerator gen, SerializationContext serializers) {
+            try {
+              if (value == null) {
+                gen.writeNull();
+                return;
               }
-            }
-            gen.writeEndObject();
 
-            gen.writeEndObject();
+              gen.writeStartObject();
+              writeCommonHeader(
+                  gen, value.getUuid().toString(), value.name(), value.material().name());
+              writeQuantityNumberField(gen, FIELD_CROSS_SECTION, value.crossSection());
+              writeQuantityNumberField(gen, FIELD_DIAMETER, value.diameter());
+              gen.writeName("isCompacted");
+              gen.writeBoolean(value.isCompacted());
+              writeQuantityNumberField(gen, FIELD_THERMAL_RESISTIVITY, value.thermalResistivity());
+              writeQuantityNumberField(gen, FIELD_THERMAL_CAPACITANCE, value.thermalCapacitance());
+              writeQuantityNumberField(gen, FIELD_AREA, value.area().orElse(null));
+
+              writeAdditionalInformationObject(gen, value.getAdditionalInformation());
+
+              gen.writeEndObject();
+            } catch (Exception e) {
+              throw new RuntimeException(e);
+            }
           }
         };
 
     strictModule.addSerializer(ConductorInput.class, conductorSerializer);
 
-    JsonSerializer<LayerInput> layerSerializer =
-        new JsonSerializer<>() {
+    ValueSerializer<LayerInput> layerSerializer =
+        new ValueSerializer<>() {
           @Override
-          public void serialize(LayerInput value, JsonGenerator gen, SerializerProvider serializers)
-              throws IOException {
-            if (value == null) {
-              gen.writeNull();
-              return;
-            }
-
-            gen.writeStartObject();
-            gen.writeStringField(FIELD_UUID, value.getUuid().toString());
-            gen.writeStringField(FIELD_NAME, value.name());
-            gen.writeStringField(FIELD_MATERIAL, value.material().name());
-            writeQuantityNumberField(gen, FIELD_INNER_DIAMETER, value.innerDiameter());
-            writeQuantityNumberField(gen, FIELD_OUTER_DIAMETER, value.outerDiameter());
-            writeQuantityNumberField(gen, FIELD_THERMAL_RESISTIVITY, value.thermalResistivity());
-            writeQuantityNumberField(gen, FIELD_THERMAL_CAPACITANCE, value.thermalCapacitance());
-            writeOptionalQuantityNumberField(gen, FIELD_AREA, value.area());
-
-            gen.writeObjectFieldStart(FIELD_ADDITIONAL_INFORMATION);
-            if (value.getAdditionalInformation() != null) {
-              for (Map.Entry<String, String> e : value.getAdditionalInformation().entrySet()) {
-                gen.writeStringField(e.getKey(), e.getValue());
+          public void serialize(
+              LayerInput value, JsonGenerator gen, SerializationContext serializers) {
+            try {
+              if (value == null) {
+                gen.writeNull();
+                return;
               }
-            }
-            gen.writeEndObject();
 
-            gen.writeEndObject();
+              gen.writeStartObject();
+              writeCommonHeader(
+                  gen, value.getUuid().toString(), value.name(), value.material().name());
+              writeQuantityNumberField(gen, FIELD_INNER_DIAMETER, value.innerDiameter());
+              writeQuantityNumberField(gen, FIELD_OUTER_DIAMETER, value.outerDiameter());
+              writeQuantityNumberField(gen, FIELD_THERMAL_RESISTIVITY, value.thermalResistivity());
+              writeQuantityNumberField(gen, FIELD_THERMAL_CAPACITANCE, value.thermalCapacitance());
+              writeQuantityNumberField(gen, FIELD_AREA, value.area().orElse(null));
+
+              writeAdditionalInformationObject(gen, value.getAdditionalInformation());
+
+              gen.writeEndObject();
+            } catch (Exception e) {
+              throw new RuntimeException(e);
+            }
           }
         };
 
     strictModule.addSerializer(LayerInput.class, layerSerializer);
 
-    JsonSerializer<ScreenLayerInput> screenLayerSerializer =
-        new JsonSerializer<>() {
+    ValueSerializer<ScreenLayerInput> screenLayerSerializer =
+        new ValueSerializer<>() {
           @Override
           public void serialize(
-              ScreenLayerInput value, JsonGenerator gen, SerializerProvider serializers)
-              throws IOException {
-            if (value == null) {
-              gen.writeNull();
-              return;
-            }
-
-            gen.writeStartObject();
-            gen.writeStringField(FIELD_UUID, value.getUuid().toString());
-            gen.writeStringField(FIELD_NAME, value.name());
-            gen.writeStringField(FIELD_MATERIAL, value.material().name());
-            writeQuantityNumberField(gen, FIELD_INNER_DIAMETER, value.innerDiameter());
-            writeQuantityNumberField(gen, FIELD_OUTER_DIAMETER, value.outerDiameter());
-            writeQuantityNumberField(gen, FIELD_THERMAL_RESISTIVITY, value.thermalResistivity());
-            writeQuantityNumberField(gen, FIELD_THERMAL_CAPACITANCE, value.thermalCapacitance());
-            writeOptionalQuantityNumberField(gen, FIELD_AREA, value.area());
-
-            gen.writeNumberField("wiresNumber", value.wiresNumber());
-            writeQuantityNumberField(gen, FIELD_WIRE_DIAMETER, value.wireDiameter());
-            writeOptionalQuantityNumberField(gen, "lengthOfLay", value.lengthOfLay());
-            writeQuantityNumberField(
-                gen, FIELD_ELECTRICAL_RESISTIVITY, value.electricalResistivity());
-
-            gen.writeObjectFieldStart(FIELD_ADDITIONAL_INFORMATION);
-            if (value.getAdditionalInformation() != null) {
-              for (Map.Entry<String, String> e : value.getAdditionalInformation().entrySet()) {
-                gen.writeStringField(e.getKey(), e.getValue());
+              ScreenLayerInput value, JsonGenerator gen, SerializationContext serializers) {
+            try {
+              if (value == null) {
+                gen.writeNull();
+                return;
               }
-            }
-            gen.writeEndObject();
 
-            gen.writeEndObject();
+              gen.writeStartObject();
+              writeCommonHeader(
+                  gen, value.getUuid().toString(), value.name(), value.material().name());
+              writeQuantityNumberField(gen, FIELD_INNER_DIAMETER, value.innerDiameter());
+              writeQuantityNumberField(gen, FIELD_OUTER_DIAMETER, value.outerDiameter());
+              writeQuantityNumberField(gen, FIELD_THERMAL_RESISTIVITY, value.thermalResistivity());
+              writeQuantityNumberField(gen, FIELD_THERMAL_CAPACITANCE, value.thermalCapacitance());
+              writeQuantityNumberField(gen, FIELD_AREA, value.area().orElse(null));
+
+              gen.writeName("wiresNumber");
+              gen.writeNumber(value.wiresNumber());
+              writeQuantityNumberField(gen, FIELD_WIRE_DIAMETER, value.wireDiameter());
+              writeQuantityNumberField(gen, FIELD_LENGTH_OF_LAY, value.lengthOfLay().orElse(null));
+              writeQuantityNumberField(
+                  gen, FIELD_ELECTRICAL_RESISTIVITY, value.electricalResistivity());
+
+              writeAdditionalInformationObject(gen, value.getAdditionalInformation());
+
+              gen.writeEndObject();
+            } catch (Exception e) {
+              throw new RuntimeException(e);
+            }
           }
         };
 
     strictModule.addSerializer(ScreenLayerInput.class, screenLayerSerializer);
 
-    objectMapper.registerModule(strictModule);
+    objectMapper = objectMapper.rebuild().addModule(strictModule).build();
+
     return objectMapper;
   }
 

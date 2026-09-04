@@ -22,7 +22,7 @@ import tech.units.indriya.unit.Units;
 
 public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableTypeInput> {
 
-  public static final com.fasterxml.jackson.databind.ObjectMapper OBJECT_MAPPER =
+  public static final tools.jackson.databind.ObjectMapper OBJECT_MAPPER =
       CableTypeObjectMapperProvider.OBJECT_MAPPER;
 
   private final CableTypeParser parser;

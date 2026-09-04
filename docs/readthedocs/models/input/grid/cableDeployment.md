@@ -27,7 +27,7 @@ This model is represented by the Java class `edu.ie3.datamodel.models.input.conn
     
   * - layoutFormation
     - –
-    - textual description of the cable layout (e.g., "TREFOIL")
+    - textual description of the cable layout (e.g., "trefoil-touching")
      
   * - depthCables
     - Metre

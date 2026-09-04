@@ -9,6 +9,7 @@ import edu.ie3.datamodel.exceptions.FileException;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.*;
+import edu.ie3.datamodel.models.input.connector.CableDeploymentInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
@@ -205,6 +206,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
         Constants.INPUT_SUB_TREE.resolve("grid"),
         true,
         Stream.of(
+                CableDeploymentInput.class,
                 LineInput.class,
                 SwitchInput.class,
                 Transformer2WInput.class,

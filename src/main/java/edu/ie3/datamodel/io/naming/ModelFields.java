@@ -14,6 +14,7 @@ import edu.ie3.datamodel.io.naming.timeseries.TimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.*;
+import edu.ie3.datamodel.models.input.connector.CableDeploymentInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
@@ -340,6 +341,11 @@ public final class ModelFields extends FieldNamingStrategy {
     addMandatory(SwitchInput.class, NODE_A, NODE_B, CLOSED);
 
     addMandatory(LineInput.class, LENGTH, GEO_POSITION, OLM_CHARACTERISTIC);
+
+    register(
+        CableDeploymentInput.class,
+        newSet(UUID, "lineUuid"),
+        newSet(LAYOUT_FORMATION, DEPTH_CABLES, DISTANCE_CABLES));
 
     Stream.of(LineInput.class, Transformer2WInput.class, Transformer3WInput.class)
         .forEach(c -> addMandatory(c, NODE_A, NODE_B, PARALLEL_DEVICES, TYPE));

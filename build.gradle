@@ -67,6 +67,8 @@ dependencies {
 
   // parsing json
   implementation 'tools.jackson.core:jackson-databind:3.2.2'
+  implementation 'tools.jackson.core:jackson-core:3.2.2'
+  implementation 'com.fasterxml.jackson.core:jackson-annotations:2.20.0'
 
   // Graphs
   implementation 'org.jgrapht:jgrapht-core:1.5.3'
