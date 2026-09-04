@@ -121,4 +121,32 @@ class PowerProfileKeyTest extends Specification {
     "" || PowerProfileKey.NO_KEY_ASSIGNED
     null || PowerProfileKey.NO_KEY_ASSIGNED
   }
+
+  def "Power profile keys with same value but different type are distinct"() {
+    given:
+    def timeSeriesKey = new PowerProfileKey("demo", PowerProfileKey.Type.TS)
+    def markovKey = new PowerProfileKey("demo", PowerProfileKey.Type.MARKOV)
+
+    expect:
+    timeSeriesKey != markovKey
+    timeSeriesKey.hashCode() != markovKey.hashCode()
+  }
+
+  def "Power profile key type is parsed correctly from file prefix"() {
+    expect:
+    PowerProfileKey.Type.parse(type) == expected
+
+    where:
+    type || expected
+    "lpts" || PowerProfileKey.Type.TS
+    "markov" || PowerProfileKey.Type.MARKOV
+  }
+
+  def "Power profile key type parsing rejects unsupported file prefix"() {
+    when:
+    PowerProfileKey.Type.parse("unsupported")
+
+    then:
+    thrown(IllegalArgumentException)
+  }
 }
