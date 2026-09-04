@@ -3101,7 +3101,6 @@ datamodel:
             - name: powerProfileKey
               type: PowerProfileKey
           expression: "dynamization(powerProfileKey, getPower(time), time.getDayOfYear()); // leap years are ignored"
-          explicitReturn: false
           className: BdewStandardLoadProfile
         - name: getPower
           type: double
@@ -3147,6 +3146,7 @@ datamodel:
                     \n
                     return values.get(key)"
           className: BdewSeason
+          explicitReturn: false
         - name: getMaxValue
           type: double
           parameters:
@@ -3162,6 +3162,7 @@ datamodel:
                     \n
                     return stream.max().orElse(0.0)"
           className: DoubleStream
+          explicitReturn: false
 
     Bdew2025:
       static: true
@@ -3187,6 +3188,8 @@ datamodel:
                     }\n
                     \n
                     return values.get(key)"
+
+          explicitReturn: false
         - name: getMaxValue
           type: double
           parameters:
@@ -3202,3 +3205,4 @@ datamodel:
                     \n
                     return stream.max().orElse(0.0)"
           className: DoubleStream
+          explicitReturn: false
