@@ -17,10 +17,8 @@ Retrieved via `getThermalProperties()`. Returns a `ThermalProperties` container 
    :header-rows: 1
    
   * - Material
-    - Thermal Resistivity
-      [$\mathrm{K}\cdot\mathrm{m}/\mathrm{W}$]
-    - Thermal Capacitance
-      [$\mathrm{J}/(\mathrm{m}^3\cdot\mathrm{K})$]
+    - Thermal Resistivity<br/>[$\mathrm{K}\cdot\mathrm{m}/\mathrm{W}$]
+    - Thermal Capacitance<br/>[$\mathrm{J}/(\mathrm{m}^3\cdot\mathrm{K})$]
     - source 
     - Notes
   
@@ -103,12 +101,10 @@ Electrical parameters define the conductive aspects of the materials, heavily ut
    :header-rows: 1
    
   * - Material
-    - Electrical Resistivity
-      [$\Omega\cdot\mathrm{m}$]
-    - Temp. Coefficient
-      [$1/\mathrm{K}$]
+    - Electrical Resistivity<br/>[$\Omega\cdot\mathrm{m}$]
+    - Temp. Coefficient<br/>[$1/\mathrm{K}$]
     - source
-  
+
   * - `Copper`
     - $1.7241 \times 10^{-8}$
     - $3.93 \times 10^{-3}$
