@@ -3100,7 +3100,7 @@ datamodel:
               type: ZonedDateTime
             - name: powerProfileKey
               type: PowerProfileKey
-          expression: "return $T.dynamization(powerProfileKey, getPower(time), time.getDayOfYear()); // leap years are ignored"
+          expression: "dynamization(powerProfileKey, getPower(time), time.getDayOfYear()); // leap years are ignored"
           explicitReturn: false
           className: BdewStandardLoadProfile
         - name: getPower

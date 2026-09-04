@@ -368,33 +368,33 @@ public interface HelperMethods {
         builder.addJavadoc(sf.javaDoc);
       }
     }
-    String expression;
+
+    String expression = modification.expression;
+    String prefix = "";
 
     if (modification instanceof GenerationConfig.MethodFields mf && mf.explicitReturn) {
-      expression = "return " + modification.expression;
-    } else {
-      expression = modification.expression;
+      prefix = "return ";
     }
 
-    if (expression.contains("\n")) {
+    if (expression != null && expression.contains("\n")) {
       if (modification.usableClassName()) {
-        builder.addStatement(expression, resolveClassName(modification.className));
+        builder.addStatement(prefix + expression, resolveClassName(modification.className));
       } else {
-        builder.addStatement(expression);
+        builder.addStatement(prefix + expression);
       }
 
     } else if (modification.usableClassName()) {
       ClassName className = resolveClassName(modification.className);
 
       if (modification.usableUnitClass()) {
-        builder.addStatement(expression, className, resolveClassName(modification.unitClass));
+        builder.addStatement(prefix + expression, className, resolveClassName(modification.unitClass));
 
       } else {
-        builder.addStatement("$T." + expression, className);
+        builder.addStatement(prefix + "$T." + expression, className);
       }
 
     } else {
-      builder.addStatement(expression);
+      builder.addStatement(prefix + expression);
     }
   }
 }

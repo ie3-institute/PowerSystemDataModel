@@ -383,6 +383,7 @@ public class ResolverUtils {
     customTypes.put("StringMap", new CustomType("Map", List.of("String", "String")));
     customTypes.put("StringDoubleMap", new CustomType("Map", List.of("String", "Double")));
     customTypes.put("NodeList", new CustomType("List", List.of("NodeInput")));
+    customTypes.put("LayerList", new CustomType("List", List.of("LayerInput")));
 
     Stream.of("DegreeGeom")
         .forEach(
