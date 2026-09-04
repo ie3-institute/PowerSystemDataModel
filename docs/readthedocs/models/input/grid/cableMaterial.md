@@ -17,8 +17,10 @@ Retrieved via `getThermalProperties()`. Returns a `ThermalProperties` container 
    :header-rows: 1
    
   * - Material
-    - Thermal Resistivity [$\mathrm{K}\cdot\mathrm{m}/\mathrm{W}$]
-    - Thermal Capacitance [$\mathrm{J}/(\mathrm{m}^3\cdot\mathrm{K})$]
+    - Thermal Resistivity
+      [$\mathrm{K}\cdot\mathrm{m}/\mathrm{W}$]
+    - Thermal Capacitance
+      [$\mathrm{J}/(\mathrm{m}^3\cdot\mathrm{K})$]
     - source 
     - Notes
   
@@ -26,13 +28,15 @@ Retrieved via `getThermalProperties()`. Returns a `ThermalProperties` container 
     - 1/384 
     - 3,449,600.0
     - {cite:cts}`wiki:thermal_conductivity_resistivity`, {cite:cts}`wiki:Copper` 
-    - $c = 385\ \mathrm{J/(kg\cdot K)},\ \rho = 8.96\ \mathrm{g/cm^3} \Rightarrow 3449600\ \mathrm{J/(m^3\cdot K)}$
+    - $c = 385\ \mathrm{J/(kg\cdot K)},\ \rho = 8.96\ \mathrm{g/cm^3}$
+      $\Rightarrow\ 3{,}449{,}600\ \mathrm{J/(m^3\cdot K)}$
     
   * - `Aluminium`
     - 1/237
     - 2,420,913.3 
     - {cite:cts}`wiki:thermal_conductivity_resistivity`, {cite:cts}`wiki:Aluminium` 
-    - $c = 897\ \mathrm{J/(kg\cdot K)},\ \rho = 2.6989\ \mathrm{g/cm^3} \Rightarrow 2420913.3\ \mathrm{J/(m^3\cdot K)}$
+    - $c = 897\ \mathrm{J/(kg\cdot K)},\ \rho = 2.6989\ \mathrm{g/cm^3}$
+      $\Rightarrow\ 2{,}420{,}913.3\ \mathrm{J/(m^3\cdot K)}$
     
   * - `XLPE (Cross-linked polyethylene)`
     - 3.5
@@ -68,7 +72,8 @@ Retrieved via `getThermalProperties()`. Returns a `ThermalProperties` container 
     - 1/35
     - 1,463,892.0
     - Th. Res.: {cite:cts}`wiki:thermal_conductivities`; Th. Capa.: {cite:cts}`wiki:specific_heat_capacities` 
-    - $c = 129\ \mathrm{J/(kg\cdot K)},\ \rho = 11.348\ \mathrm{g/cm^3} \Rightarrow 1{,}463{,}892.0\ \mathrm{J/(m^3\cdot K)}$
+    - $c = 129\ \mathrm{J/(kg\cdot K)},\ \rho = 11.348\ \mathrm{g/cm^3}$
+      $\Rightarrow\ 1{,}463{,}892.0\ \mathrm{J/(m^3\cdot K)}$
     
   * - `Steel`
     - 1/45
@@ -98,8 +103,10 @@ Electrical parameters define the conductive aspects of the materials, heavily ut
    :header-rows: 1
    
   * - Material
-    - Electrical Resistivity [$\Omega \cdot m$]
-    - Temp. Coefficient [$1/K$]
+    - Electrical Resistivity
+      [$\Omega\cdot\mathrm{m}$]
+    - Temp. Coefficient
+      [$1/\mathrm{K}$]
     - source
   
   * - `Copper`
