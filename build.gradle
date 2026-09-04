@@ -68,7 +68,6 @@ dependencies {
 
   // parsing json
   implementation 'tools.jackson.core:jackson-databind:3.2.2'
-  implementation 'tools.jackson.datatype:jackson-datatype-jdk8:3.2.2'
 
   // Graphs
   implementation 'org.jgrapht:jgrapht-core:1.5.3'

@@ -189,6 +189,54 @@ public class FieldNamingStrategy {
   public static final String COORDINATE_TYPE = "coordinateType";
   public static final String PRICE = "price";
 
+  // load values
+  public static final String SU_SA = "suSa";
+  public static final String SU_SU = "suSu";
+  public static final String SU_WD = "suWd";
+  public static final String TR_SA = "trSa";
+  public static final String TR_SU = "trSu";
+  public static final String TR_WD = "trWd";
+  public static final String WI_SA = "wiSa";
+  public static final String WI_SU = "wiSu";
+  public static final String WI_WD = "wiWd";
+
+  public static final String JAN_SA = "janSa";
+  public static final String JAN_SU = "janSu";
+  public static final String JAN_WD = "janWd";
+  public static final String FEB_SA = "febSa";
+  public static final String FEB_SU = "febSu";
+  public static final String FEB_WD = "febWd";
+  public static final String MAR_SA = "marSa";
+  public static final String MAR_SU = "marSu";
+  public static final String MAR_WD = "marWd";
+  public static final String APR_SA = "aprSa";
+  public static final String APR_SU = "aprSu";
+  public static final String APR_WD = "aprWd";
+  public static final String MAY_SA = "maySa";
+  public static final String MAY_SU = "maySu";
+  public static final String MAY_WD = "mayWd";
+  public static final String JUN_SA = "junSa";
+  public static final String JUN_SU = "junSu";
+  public static final String JUN_WD = "junWd";
+  public static final String JUL_SA = "julSa";
+  public static final String JUL_SU = "julSu";
+  public static final String JUL_WD = "julWd";
+  public static final String AUG_SA = "augSa";
+  public static final String AUG_SU = "augSu";
+  public static final String AUG_WD = "augWd";
+  public static final String SEP_SA = "sepSa";
+  public static final String SEP_SU = "sepSu";
+  public static final String SEP_WD = "sepWd";
+  public static final String OCT_SA = "octSa";
+  public static final String OCT_SU = "octSu";
+  public static final String OCT_WD = "octWd";
+  public static final String NOV_SA = "novSa";
+  public static final String NOV_SU = "novSu";
+  public static final String NOV_WD = "novWd";
+  public static final String DEC_SA = "decSa";
+  public static final String DEC_SU = "decSu";
+  public static final String DEC_WD = "decWd";
+
   // voltage
   public static final String VOLT_LVL = "voltLvl";
   public static final String V_ANG = "vAng";
