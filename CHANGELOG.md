@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Switched trait `WeatherSourceTestHelper` to class and more code clean up [#1657](https://github.com/ie3-institute/PowerSystemDataModel/issues/1657)
 - Removed graphic related code [#1655](https://github.com/ie3-institute/PowerSystemDataModel/issues/1655)
 - Minor clean up [#1667](https://github.com/ie3-institute/PowerSystemDataModel/issues/1667)
+- Clean up of `jackson` dependencies [#1724](https://github.com/ie3-institute/PowerSystemDataModel/issues/1724)
 
 
 ## [9.1.0] - 2026-06-04
