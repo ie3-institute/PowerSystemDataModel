@@ -107,24 +107,25 @@ public final class CableTypeObjectMapperProvider {
     ComparableQuantity<?> quantityInFieldUnit =
         unit == null ? quantity : ((ComparableQuantity) quantity).to(unit);
 
-    Number n = (Number) quantityInFieldUnit.getValue();
-    if (n == null) throw new RuntimeException("Cannot serialize quantity without numeric value");
+    Object valueObj = quantityInFieldUnit.getValue();
+    if (valueObj == null)
+      throw new IllegalArgumentException("Cannot serialize quantity without numeric value");
 
-    String ns = n.toString();
+    String ns = valueObj.toString();
     // Preserve exponential representation if present
     if (ns.indexOf('E') >= 0 || ns.indexOf('e') >= 0) {
       return new BigDecimal(ns);
     }
 
     BigDecimal bd;
-    if (n instanceof BigDecimal) {
-      bd = (BigDecimal) n;
-    } else if (n instanceof Long
-        || n instanceof Integer
-        || n instanceof Short
-        || n instanceof Byte) {
-      bd = BigDecimal.valueOf(n.longValue());
-    } else if (n instanceof Double || n instanceof Float) {
+    if (valueObj instanceof BigDecimal bigDecimal) {
+      bd = bigDecimal;
+    } else if (valueObj instanceof Long
+        || valueObj instanceof Integer
+        || valueObj instanceof Short
+        || valueObj instanceof Byte) {
+      bd = BigDecimal.valueOf(((Number) valueObj).longValue());
+    } else if (valueObj instanceof Double || valueObj instanceof Float) {
       // Construct from string to avoid binary double artifacts
       bd = new BigDecimal(ns);
     } else {
@@ -183,7 +184,7 @@ public final class CableTypeObjectMapperProvider {
             javax.measure.Unit<?> unit = unitForField(currentField);
 
             if (unit == null) {
-              throw new RuntimeException(
+              throw new IllegalArgumentException(
                   "Strict unit enforcement failed: Unknown target unit context for property field '"
                       + currentField
                       + "'");
@@ -221,7 +222,7 @@ public final class CableTypeObjectMapperProvider {
                 gen.writeNumber(toBigDecimalFromQuantity(value, null));
               }
             } catch (Exception e) {
-              throw new RuntimeException(e);
+              throw new IllegalStateException(e);
             }
           }
         };
@@ -259,7 +260,7 @@ public final class CableTypeObjectMapperProvider {
 
               gen.writeEndObject();
             } catch (Exception e) {
-              throw new RuntimeException(e);
+              throw new IllegalStateException(e);
             }
           }
         };
@@ -290,7 +291,7 @@ public final class CableTypeObjectMapperProvider {
 
               gen.writeEndObject();
             } catch (Exception e) {
-              throw new RuntimeException(e);
+              throw new IllegalStateException(e);
             }
           }
         };
@@ -328,7 +329,7 @@ public final class CableTypeObjectMapperProvider {
 
               gen.writeEndObject();
             } catch (Exception e) {
-              throw new RuntimeException(e);
+              throw new IllegalStateException(e);
             }
           }
         };
