@@ -343,7 +343,14 @@ public class ContainerUtils {
             .filter(measurement -> measurement.getNode().getSubnet() == subnet)
             .collect(Collectors.toSet());
 
-    return new RawGridElements(nodes, lines, transformer2w, transformer3w, switches, measurements);
+    /* Filter cable deployments for the lines that are part of this subnet */
+    Map<UUID, List<CableDeploymentInput>> cableDeploymentsByLine =
+        input.getCableDeploymentsByLine().entrySet().stream()
+            .filter(entry -> lines.stream().anyMatch(line -> line.getUuid().equals(entry.getKey())))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+    return new RawGridElements(
+        nodes, lines, transformer2w, transformer3w, switches, measurements, cableDeploymentsByLine);
   }
 
   /**
@@ -445,13 +452,15 @@ public class ContainerUtils {
    * @param rawGrid Container model of raw grid elements
    * @param systemParticipants Container model of system participants
    * @param energyManagementUnits Container model of energy system units
+   * @param rawGridTypes Container model of raw grid types
    * @return An immutable, directed graph of sub grid topologies.
    */
   public static SubGridTopologyGraph buildSubGridTopologyGraph(
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
-      EnergyManagementUnits energyManagementUnits)
+      EnergyManagementUnits energyManagementUnits,
+      RawGridTypes rawGridTypes)
       throws InvalidGridException {
     /* Collect the different subnets. Through the validation of lines, it is ensured, that no galvanically connected
      * grid has more than one subnet number assigned */
@@ -460,7 +469,12 @@ public class ContainerUtils {
     /* Build the single sub grid models */
     HashMap<Integer, SubGridContainer> subGrids =
         buildSubGridContainers(
-            gridName, subnetNumbers, rawGrid, systemParticipants, energyManagementUnits);
+            gridName,
+            subnetNumbers,
+            rawGrid,
+            systemParticipants,
+            energyManagementUnits,
+            rawGridTypes);
 
     /* Build the graph structure denoting the topology of the grid */
     return buildSubGridTopologyGraph(subGrids, rawGrid);
@@ -484,6 +498,7 @@ public class ContainerUtils {
    * @param rawGrid Container model with all raw grid elements
    * @param systemParticipants Container model with all system participant inputs
    * @param energyManagementUnits Container model with all energy management unit inputs
+   * @param rawGridTypes Container model with all type inputs of grid elements
    * @return A mapping from subnet number to container model with sub grid elements
    */
   private static HashMap<Integer, SubGridContainer> buildSubGridContainers(
@@ -491,7 +506,8 @@ public class ContainerUtils {
       SortedSet<Integer> subnetNumbers,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
-      EnergyManagementUnits energyManagementUnits)
+      EnergyManagementUnits energyManagementUnits,
+      RawGridTypes rawGridTypes)
       throws InvalidGridException {
     HashMap<Integer, SubGridContainer> subGrids = new HashMap<>(subnetNumbers.size());
     for (int subnetNumber : subnetNumbers) {
@@ -506,7 +522,8 @@ public class ContainerUtils {
               subnetNumber,
               rawGridElements,
               systemParticipantElements,
-              energyManagementUnits));
+              energyManagementUnits,
+              rawGridTypes));
     }
     return subGrids;
   }
@@ -697,6 +714,12 @@ public class ContainerUtils {
         new EnergyManagementUnits(
             subGridContainers.stream().map(GridContainer::getEmUnits).collect(Collectors.toSet()));
 
+    RawGridTypes rawGridTypes =
+        new RawGridTypes(
+            subGridContainers.stream()
+                .map(GridContainer::getRawGridTypes)
+                .collect(Collectors.toSet()));
+
     Map<Integer, SubGridContainer> subGridMapping =
         subGridContainers.stream()
             .collect(Collectors.toMap(SubGridContainer::getSubnet, Function.identity()));
@@ -704,7 +727,12 @@ public class ContainerUtils {
     SubGridTopologyGraph subGridTopologyGraph = buildSubGridTopologyGraph(subGridMapping, rawGrid);
 
     return new JointGridContainer(
-        gridName, rawGrid, systemParticipants, energyManagementUnits, subGridTopologyGraph);
+        gridName,
+        rawGrid,
+        systemParticipants,
+        energyManagementUnits,
+        rawGridTypes,
+        subGridTopologyGraph);
   }
 
   /**
@@ -833,6 +861,15 @@ public class ContainerUtils {
                         oldToNewTrafo3WANodes.values().stream())))
             .collect(Collectors.toSet());
 
+    /* Filter cable deployments for the lines that remain in this subgrid */
+    Map<UUID, List<CableDeploymentInput>> cableDeploymentsByLine =
+        subGridContainer.getRawGrid().getCableDeploymentsByLine().entrySet().stream()
+            .filter(
+                entry ->
+                    subGridContainer.getRawGrid().getLines().stream()
+                        .anyMatch(line -> line.getUuid().equals(entry.getKey())))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
     return new SubGridContainer(
         subGridContainer.getGridName(),
         subGridContainer.getSubnet(),
@@ -843,8 +880,10 @@ public class ContainerUtils {
             // HashSet$KeySet is not serializable, thus create new set
             new HashSet<>(newTrafos3wToInternalNode.keySet()),
             subGridContainer.getRawGrid().getSwitches(),
-            subGridContainer.getRawGrid().getMeasurementUnits()),
+            subGridContainer.getRawGrid().getMeasurementUnits(),
+            cableDeploymentsByLine),
         subGridContainer.getSystemParticipants(),
-        subGridContainer.getEmUnits());
+        subGridContainer.getEmUnits(),
+        subGridContainer.getRawGridTypes());
   }
 }

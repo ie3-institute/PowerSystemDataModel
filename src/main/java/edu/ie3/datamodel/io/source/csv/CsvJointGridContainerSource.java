@@ -13,20 +13,15 @@ import edu.ie3.datamodel.io.naming.DefaultDirectoryHierarchy;
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.*;
+import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
-import edu.ie3.datamodel.models.input.container.EnergyManagementUnits;
-import edu.ie3.datamodel.models.input.container.JointGridContainer;
-import edu.ie3.datamodel.models.input.container.RawGridElements;
-import edu.ie3.datamodel.models.input.container.SystemParticipants;
+import edu.ie3.datamodel.models.input.container.*;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /** Convenience class for cases where all used data comes from CSV sources */
 public class CsvJointGridContainerSource {
@@ -91,6 +86,20 @@ public class CsvJointGridContainerSource {
             () -> new EnergyManagementUnits(new HashSet<>(emSource.getEmUnits(operators).values())),
             SourceException.class);
 
+    Try<RawGridTypes, SourceException> rawGridTypes =
+        Try.of(
+            () -> {
+              Set<AssetTypeInput> types = new HashSet<>();
+
+              types.addAll(typeSource.getCableTypes(true).values());
+              types.addAll(typeSource.getLineTypes().values());
+              types.addAll(typeSource.getTransformer2WTypes().values());
+              types.addAll(typeSource.getTransformer3WTypes().values());
+
+              return new RawGridTypes(new ArrayList<>(types));
+            },
+            SourceException.class);
+
     List<? extends Exception> exceptions = Try.getExceptions(rawGridElements, systemParticipants);
 
     if (!exceptions.isEmpty()) {
@@ -102,7 +111,8 @@ public class CsvJointGridContainerSource {
           gridName,
           rawGridElements.getOrThrow(),
           systemParticipants.getOrThrow(),
-          emUnits.getOrThrow());
+          emUnits.getOrThrow(),
+          rawGridTypes.getOrThrow());
     }
   }
 }

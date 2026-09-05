@@ -214,17 +214,50 @@ public class SqlSink {
       throws SQLException {
     try {
       String[] headerElements = processorProvider.getHeaderElements(cls);
-      String query =
-          basicInsertQueryValuesGrid(
-              schemaName, databaseNamingStrategy.getEntityName(cls).orElseThrow(), headerElements);
-      query =
-          query
-              + createInsertQueryBodyIgnoreConflict(
-                  entities, headerElements, identifier, ignoreConflict);
+      String query;
+      String queryBody;
+      if (AssetTypeInput.class.isAssignableFrom(cls)) {
+        query =
+            basicInsertQueryType(
+                schemaName,
+                databaseNamingStrategy.getEntityName(cls).orElseThrow(),
+                headerElements);
+
+        Set<LinkedHashMap<String, String>> entityFieldData =
+            processorProvider.handleEntities(entities);
+        String suffix = ignoreConflict ? "\nON CONFLICT (uuid) DO NOTHING;" : ";\n";
+
+        queryBody =
+            entityFieldData.stream()
+                .map(
+                    data ->
+                        writeOneLine(
+                            Arrays.stream(headerElements).map(sqlEntityFieldData(data)::get)))
+                .collect(Collectors.joining(",\n", "", suffix));
+      } else {
+        query =
+            basicInsertQueryValuesGrid(
+                schemaName,
+                databaseNamingStrategy.getEntityName(cls).orElseThrow(),
+                headerElements);
+        queryBody =
+            createInsertQueryBodyIgnoreConflict(
+                entities, headerElements, identifier, ignoreConflict);
+      }
+      query = query + queryBody;
       connector.executeUpdate(query);
     } catch (ProcessorProviderException e) {
       log.error("Exception occurred during processor request: ", e);
     }
+  }
+
+  /** Provides the insert, column names and the VALUES statement for types. */
+  private String basicInsertQueryType(
+      String schemaName, String tableName, String[] headerElements) {
+    return basicInsertQuery(schemaName, tableName)
+        + " "
+        + writeOneLine(Arrays.stream(StringUtils.camelCaseToSnakeCase(headerElements)))
+        + "\nVALUES\n";
   }
 
   /** Persist one time series. */

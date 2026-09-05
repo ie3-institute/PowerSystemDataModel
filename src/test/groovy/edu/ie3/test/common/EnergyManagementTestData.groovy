@@ -7,6 +7,7 @@ package edu.ie3.test.common
 
 import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.container.EnergyManagementUnits
+import edu.ie3.datamodel.models.input.container.RawGridTypes
 
 class EnergyManagementTestData {
   public static final String emControlStrategy = "PRIORITIZED"

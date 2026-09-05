@@ -13,9 +13,6 @@ import edu.ie3.datamodel.models.input.AssetTypeInput;
  * Internal API for building {@link AssetTypeInput}s. This additional abstraction layer is necessary
  * to create generic reader for {@link AssetTypeInput}s only and furthermore removes code
  * duplicates.
- *
- * @version 0.1
- * @since 11.02.20
  */
 abstract class AssetTypeInputEntityFactory<T extends AssetTypeInput>
     extends UniqueEntityFactory<T, EntityData> {

@@ -21,24 +21,33 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
   /** Accumulated energy management units */
   protected final EnergyManagementUnits emUnits;
 
+  /** Accumulated grid type elements (cableTypes, lineTypes, transformerTypes) */
+  protected final RawGridTypes rawGridTypes;
+
   protected GridContainer(
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
-      EnergyManagementUnits emUnits) {
+      EnergyManagementUnits emUnits,
+      RawGridTypes rawGridTypes) {
     this.gridName = gridName;
 
     this.rawGrid = rawGrid;
     this.systemParticipants = systemParticipants;
     this.emUnits = emUnits;
+    this.rawGridTypes = rawGridTypes;
   }
 
   @Override
   public List<UniqueInputEntity> allEntitiesAsList() {
     List<UniqueInputEntity> allEntities = new LinkedList<>();
     allEntities.addAll(rawGrid.allEntitiesAsList());
+    rawGrid.getCableDeploymentsByLine().values().stream()
+        .flatMap(java.util.Collection::stream)
+        .forEach(allEntities::add);
     allEntities.addAll(systemParticipants.allEntitiesAsList());
     allEntities.addAll(emUnits.allEntitiesAsList());
+    allEntities.addAll(rawGridTypes.allEntitiesAsList());
     return Collections.unmodifiableList(allEntities);
   }
 
@@ -62,6 +71,10 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     return emUnits;
   }
 
+  public RawGridTypes getRawGridTypes() {
+    return rawGridTypes;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -69,12 +82,13 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     return gridName.equals(that.gridName)
         && rawGrid.equals(that.rawGrid)
         && systemParticipants.equals(that.systemParticipants)
-        && emUnits.equals(that.emUnits);
+        && emUnits.equals(that.emUnits)
+        && rawGridTypes.equals(that.rawGridTypes);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(gridName, rawGrid, systemParticipants, emUnits);
+    return Objects.hash(gridName, rawGrid, systemParticipants, emUnits, rawGridTypes);
   }
 
   @Override
@@ -95,6 +109,7 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     private RawGridElements rawGrid;
     private SystemParticipants systemParticipants;
     private EnergyManagementUnits emUnits;
+    private RawGridTypes rawGridTypes;
 
     /**
      * Constructor for {@link GridContainerCopyBuilder}.
@@ -106,6 +121,7 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
       this.rawGrid = gridContainer.getRawGrid();
       this.systemParticipants = gridContainer.getSystemParticipants();
       this.emUnits = gridContainer.getEmUnits();
+      this.rawGridTypes = gridContainer.getRawGridTypes();
     }
 
     /** Returns grid name */
@@ -126,6 +142,11 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     /** Returns {@link EnergyManagementUnits} */
     public EnergyManagementUnits getEmUnits() {
       return emUnits;
+    }
+
+    /** Returns {@link RawGridTypes} */
+    public RawGridTypes getRawGridTypes() {
+      return rawGridTypes;
     }
 
     /**
@@ -169,6 +190,17 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
      */
     public B emUnits(EnergyManagementUnits emUnits) {
       this.emUnits = emUnits;
+      return thisInstance();
+    }
+
+    /**
+     * Method to alter the {@link RawGridTypes}s.
+     *
+     * @param rawGridTypes altered type elements of the grid
+     * @return this instance of {@link GridContainerCopyBuilder}
+     */
+    public B rawGridTypes(RawGridTypes rawGridTypes) {
+      this.rawGridTypes = rawGridTypes;
       return thisInstance();
     }
 

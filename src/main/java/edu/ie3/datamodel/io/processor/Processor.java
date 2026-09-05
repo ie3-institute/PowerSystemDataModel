@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
+import edu.ie3.datamodel.io.factory.typeinput.CableTypeInputFactory;
 import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
 import edu.ie3.datamodel.models.OperationTime;
@@ -13,6 +14,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
+import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
@@ -33,6 +35,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.geojson.GeoJsonWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
 
 /**
  * Basic sketch and skeleton for a processors including all functions that apply for all needed
@@ -241,9 +244,6 @@ public abstract class Processor<T> {
       case "Quantity", "ComparableQuantity" ->
           resultStringBuilder.append(handleQuantity((Quantity<?>) methodReturnObject, fieldName));
       case "Optional" ->
-          // only quantity optionals are expected here!
-          // if optional and present, unpack value and call this method again, if not present return
-          // an empty string as by convention null == missing value == "" when persisting data
           resultStringBuilder.append(
               ((Optional<?>) methodReturnObject)
                   .map(
@@ -252,15 +252,32 @@ public abstract class Processor<T> {
                           return Try.of(
                               () -> handleQuantity(quantity, fieldName),
                               EntityProcessorException.class);
-                        } else if (o instanceof UniqueEntity entity) {
-                          return Try.of(entity::getUuid, EntityProcessorException.class);
-                        } else {
-                          return Failure.of(
-                              new EntityProcessorException(
-                                  "Handling of "
-                                      + o.getClass().getSimpleName()
-                                      + ".class instance wrapped into Optional is currently not supported by entity processors!"));
                         }
+
+                        if (o instanceof ScreenLayerInput screenLayer) {
+                          return Try.of(
+                              () -> {
+                                try {
+                                  return edu.ie3.datamodel.io.factory.typeinput
+                                      .CableTypeInputFactory.OBJECT_MAPPER
+                                      .writeValueAsString(screenLayer);
+                                } catch (JacksonException e) {
+                                  throw new EntityProcessorException(
+                                      "Failed to serialize ScreenLayerInput inside Optional", e);
+                                }
+                              },
+                              EntityProcessorException.class);
+                        }
+
+                        if (o instanceof UniqueEntity entity) {
+                          return Try.of(entity::getUuid, EntityProcessorException.class);
+                        }
+
+                        return Failure.of(
+                            new EntityProcessorException(
+                                "Handling of "
+                                    + o.getClass().getSimpleName()
+                                    + ".class instance wrapped into Optional is currently not supported by entity processors!"));
                       })
                   .orElse(Success.of("")) // (in case of empty optional)
                   .getOrThrow());
@@ -313,6 +330,26 @@ public abstract class Processor<T> {
           resultStringBuilder.append(((CongestionResult.InputModelType) methodReturnObject).type);
       case "PowerProfileKey" ->
           resultStringBuilder.append(((PowerProfileKey) methodReturnObject).getValue());
+      case "List" -> {
+        try {
+          String jsonString =
+              CableTypeInputFactory.OBJECT_MAPPER.writeValueAsString(methodReturnObject);
+          resultStringBuilder.append(jsonString);
+        } catch (JacksonException e) {
+          throw new EntityProcessorException(
+              "Failed to serialize List to JSON string for field: " + fieldName, e);
+        }
+      }
+      case "ConductorInput" -> {
+        try {
+          String jsonString =
+              CableTypeInputFactory.OBJECT_MAPPER.writeValueAsString(methodReturnObject);
+          resultStringBuilder.append(jsonString);
+        } catch (JacksonException e) {
+          throw new EntityProcessorException(
+              "Failed to serialize ConductorInput to JSON string for field: " + fieldName, e);
+        }
+      }
       default ->
           throw new EntityProcessorException(
               "Unable to process value for attribute/field '"

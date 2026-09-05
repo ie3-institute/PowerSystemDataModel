@@ -11,6 +11,7 @@ import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.*;
+import edu.ie3.datamodel.models.input.connector.CableDeploymentInput;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
@@ -209,6 +210,8 @@ public class EntityPersistenceNamingStrategy {
    * @return The entity name
    */
   public Optional<String> getInputEntityName(Class<? extends InputEntity> cls) {
+    if (CableDeploymentInput.class.isAssignableFrom(cls))
+      return Optional.of(addPrefixAndSuffix(camelCaseToSnakeCase(cls.getSimpleName())));
     if (AssetTypeInput.class.isAssignableFrom(cls))
       return getTypeEntityName(cls.asSubclass(AssetTypeInput.class));
     if (AssetInput.class.isAssignableFrom(cls))

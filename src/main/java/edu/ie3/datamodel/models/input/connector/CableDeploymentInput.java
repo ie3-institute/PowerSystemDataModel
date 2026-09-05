@@ -5,24 +5,29 @@
 */
 package edu.ie3.datamodel.models.input.connector;
 
+import edu.ie3.datamodel.models.input.UniqueInputEntity;
+import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import javax.measure.quantity.Length;
 import org.jspecify.annotations.NonNull;
 import tech.units.indriya.ComparableQuantity;
 
 /**
- * Represents the installation environment and deployment parameters of a cable. This data describes
- * the concrete installation level of a cable and is associated with some LineInput.
+ * Describes the installation environment and deployment parameters of a cable. This entity is a
+ * unique input entity and can be persisted independently (e.g. to CSV). It is associated with a
+ * Line via lineUuid.
  */
-public class CableDeploymentInput {
+public class CableDeploymentInput extends UniqueInputEntity {
 
+  private final UUID lineUuid;
   private final String layoutFormation;
   private final ComparableQuantity<Length> depthCables;
   private final ComparableQuantity<Length> distanceCables;
 
   /**
-   * Constructor for the cable deployment.
-   *
+   * @param uuid unique identifier of this cable deployment
+   * @param lineUuid uuid of the connected line
    * @param layoutFormation Layout formation type (e.g., "TREFOIL", "FLAT").
    * @param depthCables Laying depth of the cables from ground level to cable center. We keep the
    *     negative sign for easier integration with Coordinates, thus depthCables must be negative or
@@ -30,58 +35,135 @@ public class CableDeploymentInput {
    * @param distanceCables Distance between cable phases/cores from center to center.
    */
   public CableDeploymentInput(
+      UUID uuid,
+      UUID lineUuid,
       String layoutFormation,
       ComparableQuantity<Length> depthCables,
       ComparableQuantity<Length> distanceCables) {
+    super(uuid);
+    this.lineUuid = lineUuid;
     this.layoutFormation = layoutFormation;
     this.depthCables = depthCables;
     this.distanceCables = distanceCables;
   }
 
-  public String layoutFormation() {
+  public CableDeploymentInput(
+      UUID uuid,
+      UUID lineUuid,
+      String layoutFormation,
+      ComparableQuantity<Length> depthCables,
+      ComparableQuantity<Length> distanceCables,
+      Map<String, String> additionalInformation) {
+    super(uuid);
+    this.lineUuid = lineUuid;
+    this.layoutFormation = layoutFormation;
+    this.depthCables = depthCables;
+    this.distanceCables = distanceCables;
+    setAdditionalInformation(additionalInformation);
+  }
+
+  public UUID getLineUuid() {
+    return lineUuid;
+  }
+
+  public String getLayoutFormation() {
     return layoutFormation;
   }
 
-  public ComparableQuantity<Length> depthCables() {
+  public ComparableQuantity<Length> getDepthCables() {
     return depthCables;
   }
 
-  public ComparableQuantity<Length> distanceCables() {
+  public ComparableQuantity<Length> getDistanceCables() {
     return distanceCables;
+  }
+
+  public CableDeploymentInputCopyBuilder copy() {
+    return new CableDeploymentInputCopyBuilder(this);
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
+    if (this == o) return true;
+    if (!(o instanceof CableDeploymentInput that)) return false;
+    if (!super.equals(o)) return false;
+    return Objects.equals(lineUuid, that.lineUuid)
+        && Objects.equals(layoutFormation, that.layoutFormation)
+        && Objects.equals(depthCables, that.depthCables)
+        && Objects.equals(distanceCables, that.distanceCables);
+  }
 
-    if (!(o instanceof CableDeploymentInput)) {
-      return false;
-    }
-
-    CableDeploymentInput that = (CableDeploymentInput) o;
-
-    return layoutFormation.equals(that.layoutFormation)
-        && depthCables.equals(that.depthCables)
-        && distanceCables.equals(that.distanceCables);
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), lineUuid, layoutFormation, depthCables, distanceCables);
   }
 
   @Override
   public @NonNull String toString() {
     return "CableDeploymentInput{"
-        + "layoutFormation='"
+        + "uuid="
+        + getUuid()
+        + ", lineUuid="
+        + lineUuid
+        + ", layoutFormation='"
         + layoutFormation
         + '\''
         + ", depthCables="
         + depthCables
         + ", distanceCables="
         + distanceCables
+        + ", additionalInformation="
+        + getAdditionalInformation()
         + '}';
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(layoutFormation, depthCables, distanceCables);
+  public static class CableDeploymentInputCopyBuilder
+      extends edu.ie3.datamodel.models.UniqueEntity.UniqueEntityCopyBuilder<
+          CableDeploymentInputCopyBuilder> {
+
+    private UUID lineUuid;
+    private String layoutFormation;
+    private ComparableQuantity<Length> depthCables;
+    private ComparableQuantity<Length> distanceCables;
+
+    private CableDeploymentInputCopyBuilder(CableDeploymentInput entity) {
+      super(entity);
+      this.lineUuid = entity.getLineUuid();
+      this.layoutFormation = entity.getLayoutFormation();
+      this.depthCables = entity.getDepthCables();
+      this.distanceCables = entity.getDistanceCables();
+    }
+
+    @Override
+    public CableDeploymentInput build() {
+      return new CableDeploymentInput(
+          getUuid(), lineUuid, layoutFormation, depthCables, distanceCables);
+    }
+
+    public CableDeploymentInputCopyBuilder lineUuid(UUID lineUuid) {
+      this.lineUuid = lineUuid;
+      return thisInstance();
+    }
+
+    public CableDeploymentInputCopyBuilder layoutFormation(String layoutFormation) {
+      this.layoutFormation = layoutFormation;
+      return thisInstance();
+    }
+
+    public CableDeploymentInputCopyBuilder depthCables(ComparableQuantity<Length> depthCables) {
+      this.depthCables = depthCables;
+      return thisInstance();
+    }
+
+    public CableDeploymentInputCopyBuilder distanceCables(
+        ComparableQuantity<Length> distanceCables) {
+      this.distanceCables = distanceCables;
+      return thisInstance();
+    }
+
+    @Override
+    protected CableDeploymentInputCopyBuilder thisInstance() {
+      return this;
+    }
   }
 }

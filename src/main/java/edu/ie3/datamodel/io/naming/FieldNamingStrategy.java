@@ -93,6 +93,23 @@ public class FieldNamingStrategy {
   public static final String ELECTRICAL_CAPACITANCE = "electricalCapacitance";
   public static final String THERMAL_RESISTIVITY = "thermalResistivity";
   public static final String THERMAL_CAPACITANCE = "thermalCapacitance";
+  public static final String CORE_NUMBER = "coreNumber";
+  public static final String CONDUCTOR_STRING = "conductor";
+  public static final String ISOLATION_STRING = "isolation";
+  public static final String SCREEN_STRING = "screen";
+  public static final String FILLER_STRING = "filler";
+  public static final String ARMOR_STRING = "armor";
+  public static final String JACK_STRING = "jack";
+  public static final String LIMIT_TEMP = "limitTemperature";
+  public static final String SKIN_EFF_COEFF = "skinEffectCoefficient";
+  public static final String PROX_EFF_COEFF = "proximityEffectCoefficient";
+  public static final String ELECTR_CAPACITANCE = "electricalCapacitance";
+  public static final String TAN_DELTA = "tanDelta";
+  public static final String CIRCULATING_LOSS_FACTOR = "circulatingLossFactor";
+  public static final String EDDY_CURRENT_LOSS_FACTOR = "eddyCurrentLossFactor";
+  public static final String LAYOUT_FORMATION = "layoutFormation";
+  public static final String DEPTH_CABLES = "depthCables";
+  public static final String DISTANCE_CABLES = "distanceCables";
 
   // efficiency
   public static final String ETA = "eta";

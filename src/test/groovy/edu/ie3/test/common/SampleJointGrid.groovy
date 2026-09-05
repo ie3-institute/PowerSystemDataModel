@@ -13,11 +13,16 @@ import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
+import edu.ie3.datamodel.models.input.connector.type.CableMaterial
+import edu.ie3.datamodel.models.input.connector.type.CableTypeInput
+import edu.ie3.datamodel.models.input.connector.type.ConductorInput
+import edu.ie3.datamodel.models.input.connector.type.LayerInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.container.EnergyManagementUnits
 import edu.ie3.datamodel.models.input.container.JointGridContainer
 import edu.ie3.datamodel.models.input.container.RawGridElements
+import edu.ie3.datamodel.models.input.container.RawGridTypes
 import edu.ie3.datamodel.models.input.container.SystemParticipants
 import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
@@ -35,19 +40,19 @@ import java.util.stream.Collectors
 /**
  * //ToDo: Class Description
  *
- * @version 0.1* @since 08.06.20
  */
 class SampleJointGrid extends SystemParticipantTestData {
 
   static JointGridContainer grid() throws ParseException, ParsingException {
 
     RawGridElements rawGridElements = jointSampleRawGridElements()
-
+    RawGridTypes rawGridTypes = jointSampleRawGridTypes()
     return new JointGridContainer(
         "sampleGrid",
         rawGridElements,
         systemParticipants(rawGridElements),
-        new EnergyManagementUnits(Collections.singleton(emInput)))
+        new EnergyManagementUnits(Collections.singleton(emInput)),
+        rawGridTypes)
   }
 
   private static SystemParticipants systemParticipants(RawGridElements rawGridElements)
@@ -56,7 +61,9 @@ class SampleJointGrid extends SystemParticipantTestData {
     // set the participant node to nodeA
     NodeInput participantNode =
         rawGridElements.getNodes().stream()
-        .filter({ node -> node.getId().equalsIgnoreCase("nodeA") })
+        .filter({ node ->
+          node.getId().equalsIgnoreCase("nodeA")
+        })
         .collect(Collectors.toList())
         .get(0)
 
@@ -144,6 +151,56 @@ class SampleJointGrid extends SystemParticipantTestData {
         Collections.emptySet(),
         Collections.emptySet(),
         Collections.emptySet())
+  }
+
+
+  public static final CableTypeInput cableTypeInput = new CableTypeInput(
+  UUID.fromString("a93fcf78-f9ff-41e6-a90f-ae08679d8fd8"),
+  "test cable type input",
+  1,
+  new ConductorInput(
+      UUID.randomUUID(),
+      "conductor",
+      CableMaterial.COPPER,
+      Quantities.getQuantity(400.0e-6, SQUARE_METRE),
+      Quantities.getQuantity(0.0225, METRE),
+      false,
+      Quantities.getQuantity(1.0 / 384.0, KELVIN_METRE_PER_WATT),
+      Quantities.getQuantity(
+          3449600.0, JOULE_PER_CUBIC_METRE_KELVIN),
+      null),
+  [
+    new LayerInput(
+        UUID.randomUUID(),
+        "Main insulation",
+        CableMaterial.XLPE,
+        Quantities.getQuantity(0.0225, METRE),
+        Quantities.getQuantity(0.027, METRE),
+        Quantities.getQuantity(3.5, KELVIN_METRE_PER_WATT),
+        Quantities.getQuantity(2.4, JOULE_PER_CUBIC_METRE_KELVIN),
+        null)
+  ],
+  null,
+  new ArrayList<>(),
+  new ArrayList<>(),
+  new ArrayList<>(),
+  Quantities.getQuantity(90.0, CELSIUS),
+  Quantities.getQuantity(50.0, HERTZ),
+  1.0,
+  1.0,
+  Quantities.getQuantity(350e-9, FARAD),
+  0.1,
+  0.0,
+  0.0)
+
+  private static RawGridTypes jointSampleRawGridTypes() throws ParseException {
+
+    return new RawGridTypes(
+        Set.of(mv_lineType, lv_lineType),
+        Set.of(cableTypeInput),
+        Set.of(transformerType_MV_HV_110KV, transformerType_LV_MV_10KV),
+        Collections.emptySet(),
+        )
   }
 
   private static final GeoJsonReader geoJsonReader = new GeoJsonReader()

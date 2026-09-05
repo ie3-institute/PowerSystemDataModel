@@ -8,22 +8,22 @@ package edu.ie3.datamodel.io.source;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.input.OperatorInputFactory;
-import edu.ie3.datamodel.io.factory.typeinput.LineTypeInputFactory;
-import edu.ie3.datamodel.io.factory.typeinput.SystemParticipantTypeInputFactory;
-import edu.ie3.datamodel.io.factory.typeinput.Transformer2WTypeInputFactory;
-import edu.ie3.datamodel.io.factory.typeinput.Transformer3WTypeInputFactory;
+import edu.ie3.datamodel.io.factory.typeinput.*;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.system.type.*;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Interface that provides the capability to build entities of type {@link
- * SystemParticipantTypeInput} and {@link OperatorInput} from different data sources e.g. .csv files
- * or databases
+ * SystemParticipantTypeInput} and {@link OperatorInput} from different data sources e.g. '.csv'
+ * files or databases
  */
 public class TypeSource extends EntitySource {
   private static final String SUB_DIRECTORY = "/type";
@@ -32,6 +32,7 @@ public class TypeSource extends EntitySource {
   private final OperatorInputFactory operatorInputFactory;
   private final Transformer2WTypeInputFactory transformer2WTypeInputFactory;
   private final LineTypeInputFactory lineTypeInputFactory;
+  private final CableTypeInputFactory cableTypeInputFactory;
   private final Transformer3WTypeInputFactory transformer3WTypeInputFactory;
   private final SystemParticipantTypeInputFactory systemParticipantTypeInputFactory;
 
@@ -43,6 +44,7 @@ public class TypeSource extends EntitySource {
     this.operatorInputFactory = new OperatorInputFactory();
     this.transformer2WTypeInputFactory = new Transformer2WTypeInputFactory();
     this.lineTypeInputFactory = new LineTypeInputFactory();
+    this.cableTypeInputFactory = new CableTypeInputFactory();
     this.transformer3WTypeInputFactory = new Transformer3WTypeInputFactory();
     this.systemParticipantTypeInputFactory = new SystemParticipantTypeInputFactory();
   }
@@ -85,6 +87,14 @@ public class TypeSource extends EntitySource {
    */
   public static Map<UUID, Transformer2WTypeInput> getStandardTransformer2WTypes()
       throws SourceException {
+    String resourcePath = SUB_DIRECTORY + "/transformer_2_w_type_input.csv";
+
+    if (Transformer2WTypeInput.class.getResource(resourcePath) == null) {
+      log.error("Built-in 2W transformer type resource '{}' is missing.", resourcePath);
+      throw new SourceException(
+          "Built-in 2W transformer type resource '" + resourcePath + "' is missing.");
+    }
+
     return new TypeSource(getBuildInSource(Transformer2WTypeInput.class, SUB_DIRECTORY))
         .getTransformer2WTypes(false);
   }
@@ -147,6 +157,13 @@ public class TypeSource extends EntitySource {
    * @return a map of UUID to object- and uuid-unique {@link LineTypeInput} entities
    */
   public static Map<UUID, LineTypeInput> getStandardLineTypes() throws SourceException {
+    String resourcePath = SUB_DIRECTORY + "/line_type_input.csv";
+
+    if (LineTypeInput.class.getResource(resourcePath) == null) {
+      log.error("Built-in line type resource '{}' is missing.", resourcePath);
+      throw new SourceException("Built-in line type resource '" + resourcePath + "' is missing.");
+    }
+
     return new TypeSource(getBuildInSource(LineTypeInput.class, SUB_DIRECTORY)).getLineTypes(false);
   }
 
@@ -165,8 +182,73 @@ public class TypeSource extends EntitySource {
     Map<UUID, LineTypeInput> types =
         getEntities(LineTypeInput.class, dataSource, lineTypeInputFactory);
 
+    Map<UUID, CableTypeInput> cableTypes = getCableTypes(true);
+
+    Map<UUID, LineTypeInput> resolved =
+        types.entrySet().stream()
+            .collect(
+                Collectors.toMap(
+                    Map.Entry::getKey,
+                    entry -> {
+                      LineTypeInput lineType = entry.getValue();
+
+                      String cableUuidStr = lineType.getAdditionalInformation().get("cable_type");
+
+                      if (cableUuidStr != null && !cableUuidStr.isBlank()) {
+                        UUID cableUuid = UUID.fromString(cableUuidStr);
+                        CableTypeInput cableType = cableTypes.get(cableUuid);
+
+                        if (cableType != null) {
+                          return lineType.copy().cableType(Optional.of(cableType)).build();
+                        }
+                      }
+
+                      return lineType;
+                    }));
+
     if (withBuildIn) {
       Map<UUID, LineTypeInput> allTypes = getStandardLineTypes();
+      allTypes.putAll(resolved);
+      return allTypes;
+    }
+
+    return resolved;
+  }
+
+  /**
+   * Returns a set of build in {@link CableTypeInput} instances within a map by UUID.
+   *
+   * @return a map of UUID to object- and uuid-unique {@link CableTypeInput} entities
+   */
+  public static Map<UUID, CableTypeInput> getStandardCableTypes() throws SourceException {
+    String resourcePath = SUB_DIRECTORY + "/cable_type_input.csv";
+
+    if (CableTypeInput.class.getResource(resourcePath) == null) {
+      log.error("Built-in cable type resource '{}' is missing.", resourcePath);
+      throw new SourceException("Built-in cable type resource '" + resourcePath + "' is missing.");
+    }
+
+    return new TypeSource(getBuildInSource(CableTypeInput.class, SUB_DIRECTORY))
+        .getCableTypes(false);
+  }
+
+  /**
+   * Returns a set of {@link CableTypeInput} instances within a map by UUID.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * UUID} uniqueness of the provided {@link CableTypeInput} which has to be checked manually, as
+   * {@link CableTypeInput#equals(Object)} is NOT restricted on the uuid of {@link CableTypeInput}.
+   *
+   * @param withBuildIn if true the cable line types will be included if their uuid is not
+   *     overwritten by the source
+   * @return a map of UUID to object- and uuid-unique {@link CableTypeInput} entities
+   */
+  public Map<UUID, CableTypeInput> getCableTypes(boolean withBuildIn) throws SourceException {
+    Map<UUID, CableTypeInput> types =
+        getEntities(CableTypeInput.class, dataSource, cableTypeInputFactory);
+
+    if (withBuildIn) {
+      Map<UUID, CableTypeInput> allTypes = getStandardCableTypes();
       allTypes.putAll(types);
       return allTypes;
     }
@@ -195,6 +277,14 @@ public class TypeSource extends EntitySource {
    */
   public static Map<UUID, Transformer3WTypeInput> getStandardTransformer3WTypes()
       throws SourceException {
+    String resourcePath = SUB_DIRECTORY + "/transformer_3_w_type_input.csv";
+
+    if (Transformer3WTypeInput.class.getResource(resourcePath) == null) {
+      log.error("Built-in 3W transformer type resource '{}' is missing.", resourcePath);
+      throw new SourceException(
+          "Built-in 3W transformer type resource '" + resourcePath + "' is missing.");
+    }
+
     return new TypeSource(getBuildInSource(Transformer3WTypeInput.class, SUB_DIRECTORY))
         .getTransformer3WTypes(false);
   }
