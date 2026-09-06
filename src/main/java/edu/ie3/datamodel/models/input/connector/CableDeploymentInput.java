@@ -125,6 +125,7 @@ public class CableDeploymentInput extends UniqueInputEntity {
     private String layoutFormation;
     private ComparableQuantity<Length> depthCables;
     private ComparableQuantity<Length> distanceCables;
+    private Map<String, String> additionalInformation;
 
     private CableDeploymentInputCopyBuilder(CableDeploymentInput entity) {
       super(entity);
@@ -132,12 +133,13 @@ public class CableDeploymentInput extends UniqueInputEntity {
       this.layoutFormation = entity.getLayoutFormation();
       this.depthCables = entity.getDepthCables();
       this.distanceCables = entity.getDistanceCables();
+      this.additionalInformation = entity.getAdditionalInformation();
     }
 
     @Override
     public CableDeploymentInput build() {
       return new CableDeploymentInput(
-          getUuid(), lineUuid, layoutFormation, depthCables, distanceCables);
+          getUuid(), lineUuid, layoutFormation, depthCables, distanceCables, additionalInformation);
     }
 
     public CableDeploymentInputCopyBuilder lineUuid(UUID lineUuid) {
