@@ -51,13 +51,12 @@ class ModelFieldsTest extends Specification {
     mandatoryFields == [
       [
         FieldNamingStrategy.UUID,
-        "lineUuid"
+        FieldNamingStrategy.LINE_UUID,
+        FieldNamingStrategy.LAYOUT_FORMATION,
+        FieldNamingStrategy.DEPTH_CABLES,
+        FieldNamingStrategy.DISTANCE_CABLES
       ] as Set
     ]
-    optionalFields == [
-      FieldNamingStrategy.LAYOUT_FORMATION,
-      FieldNamingStrategy.DEPTH_CABLES,
-      FieldNamingStrategy.DISTANCE_CABLES
-    ] as Set
+    optionalFields == [] as Set
   }
 }

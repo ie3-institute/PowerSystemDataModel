@@ -55,6 +55,7 @@ public class FieldNamingStrategy {
   public static final String NODE_A = "nodeA";
   public static final String NODE_B = "nodeB";
   public static final String NODE_C = "nodeC";
+  public static final String LINE_UUID = "lineUuid";
 
   /**
    * Attribute that _can_, but does not _have to_ be present for the creation of {@link

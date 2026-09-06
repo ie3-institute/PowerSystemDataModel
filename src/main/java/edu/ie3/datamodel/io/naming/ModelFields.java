@@ -344,7 +344,7 @@ public final class ModelFields extends FieldNamingStrategy {
 
     register(
         CableDeploymentInput.class,
-        newSet(UUID, "lineUuid", LAYOUT_FORMATION, DEPTH_CABLES, DISTANCE_CABLES),
+        newSet(UUID, LINE_UUID, LAYOUT_FORMATION, DEPTH_CABLES, DISTANCE_CABLES),
         Set.of());
 
     Stream.of(LineInput.class, Transformer2WInput.class, Transformer3WInput.class)
