@@ -7,7 +7,6 @@ package edu.ie3.datamodel.utils.validation
 
 import static edu.ie3.datamodel.models.StandardUnits.*
 import static edu.ie3.util.quantities.PowerSystemUnits.*
-import static tech.units.indriya.unit.Units.*
 
 import edu.ie3.datamodel.exceptions.FailedValidationException
 import edu.ie3.datamodel.exceptions.InvalidEntityException

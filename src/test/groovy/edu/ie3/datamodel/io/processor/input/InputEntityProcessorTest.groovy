@@ -7,16 +7,14 @@ package edu.ie3.datamodel.io.processor.input
 
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
+import edu.ie3.datamodel.io.factory.typeinput.CableTypeInputFactory
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.*
-import edu.ie3.datamodel.models.input.connector.type.CableTypeInput
-import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
-import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
-import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
+import edu.ie3.datamodel.models.input.connector.type.*
 import edu.ie3.datamodel.models.input.system.*
 import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
@@ -475,26 +473,26 @@ class InputEntityProcessorTest extends Specification {
     }
 
     def conductorJson = actual.get("conductor")
-    def mapper = edu.ie3.datamodel.io.factory.typeinput.CableTypeInputFactory.OBJECT_MAPPER
+    def mapper = CableTypeInputFactory.OBJECT_MAPPER
     def conductorNode = mapper.readTree(conductorJson)
-    assert conductorNode.get("uuid").asText() == type.getConductor().getUuid().toString()
-    assert conductorNode.get("name").asText() == "conductor"
-    assert conductorNode.get("material").asText() == "COPPER"
+    assert conductorNode.get("uuid").asString() == type.getConductor().getUuid().toString()
+    assert conductorNode.get("name").asString() == "conductor"
+    assert conductorNode.get("material").asString() == "COPPER"
 
     def csNode = conductorNode.get("crossSection")
     assert csNode != null
-    assert csNode.isNumber() || (csNode.isTextual() && Math.abs(Double.parseDouble(csNode.asText()) - 4.0E-4) < 1e-12)
+    assert csNode.isNumber() || (csNode.asString() && Math.abs(Double.parseDouble(csNode.asString()) - 4.0E-4) < 1e-12)
 
     def diaNode = conductorNode.get("diameter")
     assert diaNode != null
-    assert diaNode.isNumber() || (diaNode.isTextual() && Math.abs(Double.parseDouble(diaNode.asText()) - 0.0225) < 1e-12)
+    assert diaNode.isNumber() || (diaNode.asString() && Math.abs(Double.parseDouble(diaNode.asString()) - 0.0225) < 1e-12)
 
     def isolationJson = actual.get("isolation")
     def isolationNode = mapper.readTree(isolationJson)
     assert isolationNode.isArray()
     def firstIsolation = isolationNode.get(0)
-    assert firstIsolation.get("uuid").asText() == type.getIsolation().get(0).getUuid().toString()
-    assert firstIsolation.get("name").asText() == "Main insulation"
+    assert firstIsolation.get("uuid").asString() == type.getIsolation().get(0).getUuid().toString()
+    assert firstIsolation.get("name").asString() == "Main insulation"
   }
 
   def "The InputEntityProcessor should serialize a provided EvTypeInput correctly"() {

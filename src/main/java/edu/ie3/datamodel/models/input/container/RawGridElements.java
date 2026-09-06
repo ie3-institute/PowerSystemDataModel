@@ -98,13 +98,13 @@ public class RawGridElements implements InputContainer<AssetInput> {
         rawGridElements.stream()
             .flatMap(rawElements -> rawElements.getMeasurementUnits().stream())
             .collect(Collectors.toSet());
-    java.util.Map<UUID, List<CableDeploymentInput>> merged = new java.util.HashMap<>();
+    Map<UUID, List<CableDeploymentInput>> merged = new HashMap<>();
     rawGridElements.stream()
         .flatMap(e -> e.getCableDeploymentsByLine().entrySet().stream())
         .forEach(
             entry ->
                 merged
-                    .computeIfAbsent(entry.getKey(), k -> new java.util.ArrayList<>())
+                    .computeIfAbsent(entry.getKey(), k -> new ArrayList<>())
                     .addAll(entry.getValue()));
 
     Map<UUID, List<CableDeploymentInput>> tmp = new HashMap<>();

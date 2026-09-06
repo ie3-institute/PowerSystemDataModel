@@ -5,35 +5,7 @@
 */
 package edu.ie3.datamodel.utils.validation;
 
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.B;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.B_M;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.D_PHI;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.ELECTRICAL_CAPACITANCE;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.FREQUENCY;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.G;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.G_M;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.I_MAX;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.LENGTH;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.LIMIT_TEMPERATURE;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.R;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.R_SC;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.R_SC_A;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.R_SC_B;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.R_SC_C;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.S_RATED;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.S_RATED_A;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.S_RATED_B;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.S_RATED_C;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.THERMAL_CAPACITANCE;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.THERMAL_RESISTIVITY;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.V_RATED;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.V_RATED_A;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.V_RATED_B;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.V_RATED_C;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.X_SC;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.X_SC_A;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.X_SC_B;
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.X_SC_C;
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.*;
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
