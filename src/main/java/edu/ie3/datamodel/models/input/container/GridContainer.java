@@ -6,7 +6,10 @@
 package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.models.input.UniqueInputEntity;
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 public abstract class GridContainer implements InputContainer<UniqueInputEntity> {
   /** Name of this grid */

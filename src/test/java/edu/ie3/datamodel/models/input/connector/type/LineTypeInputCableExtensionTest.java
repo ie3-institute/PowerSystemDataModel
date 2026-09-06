@@ -9,10 +9,6 @@ import static edu.ie3.util.quantities.PowerSystemUnits.JOULE_PER_CUBIC_METRE_KEL
 import static edu.ie3.util.quantities.PowerSystemUnits.KELVIN_METRE_PER_WATT;
 import static org.junit.jupiter.api.Assertions.*;
 import static tech.units.indriya.unit.Units.*;
-import static tech.units.indriya.unit.Units.CELSIUS;
-import static tech.units.indriya.unit.Units.FARAD;
-import static tech.units.indriya.unit.Units.HERTZ;
-import static tech.units.indriya.unit.Units.METRE;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.PowerSystemUnits;

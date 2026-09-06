@@ -6,6 +6,7 @@
 package edu.ie3.test.common
 
 import static edu.ie3.util.quantities.PowerSystemUnits.*
+import static tech.units.indriya.unit.Units.*
 
 import edu.ie3.datamodel.exceptions.ParsingException
 import edu.ie3.datamodel.models.OperationTime
@@ -13,17 +14,8 @@ import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
-import edu.ie3.datamodel.models.input.connector.type.CableMaterial
-import edu.ie3.datamodel.models.input.connector.type.CableTypeInput
-import edu.ie3.datamodel.models.input.connector.type.ConductorInput
-import edu.ie3.datamodel.models.input.connector.type.LayerInput
-import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
-import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
-import edu.ie3.datamodel.models.input.container.EnergyManagementUnits
-import edu.ie3.datamodel.models.input.container.JointGridContainer
-import edu.ie3.datamodel.models.input.container.RawGridElements
-import edu.ie3.datamodel.models.input.container.RawGridTypes
-import edu.ie3.datamodel.models.input.container.SystemParticipants
+import edu.ie3.datamodel.models.input.connector.type.*
+import edu.ie3.datamodel.models.input.container.*
 import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.StorageInput

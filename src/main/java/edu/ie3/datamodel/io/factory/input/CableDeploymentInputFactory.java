@@ -24,15 +24,12 @@ public class CableDeploymentInputFactory
   @Override
   protected CableDeploymentInput buildModel(EntityData data) {
     UUID uuid = data.getUUID(FieldNamingStrategy.UUID);
-    UUID lineUuid = data.getUUID("lineUuid");
-    String layoutFormation =
-        data.getFieldOptional(FieldNamingStrategy.LAYOUT_FORMATION).orElse(null);
+    UUID lineUuid = data.getUUID(FieldNamingStrategy.LINE_UUID);
+    String layoutFormation = data.getField(FieldNamingStrategy.LAYOUT_FORMATION);
     ComparableQuantity<Length> depthCables =
-        data.getQuantityOptional(FieldNamingStrategy.DEPTH_CABLES, StandardUnits.LINE_LENGTH)
-            .orElse(null);
+        data.getQuantity(FieldNamingStrategy.DEPTH_CABLES, StandardUnits.LINE_LENGTH);
     ComparableQuantity<Length> distanceCables =
-        data.getQuantityOptional(FieldNamingStrategy.DISTANCE_CABLES, StandardUnits.LINE_LENGTH)
-            .orElse(null);
+        data.getQuantity(FieldNamingStrategy.DISTANCE_CABLES, StandardUnits.LINE_LENGTH);
 
     return new CableDeploymentInput(
         uuid, lineUuid, layoutFormation, depthCables, distanceCables, data.getFieldsToValues());

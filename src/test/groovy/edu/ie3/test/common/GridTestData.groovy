@@ -6,9 +6,7 @@
 package edu.ie3.test.common
 
 import static edu.ie3.datamodel.models.StandardUnits.*
-import static edu.ie3.util.quantities.PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN
-import static edu.ie3.util.quantities.PowerSystemUnits.KELVIN_METRE_PER_WATT
-import static edu.ie3.util.quantities.PowerSystemUnits.OHM_PER_KILOMETRE
+import static edu.ie3.util.quantities.PowerSystemUnits.*
 
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.EmInput
@@ -19,13 +17,7 @@ import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
-import edu.ie3.datamodel.models.input.connector.type.CableMaterial
-import edu.ie3.datamodel.models.input.connector.type.CableTypeInput
-import edu.ie3.datamodel.models.input.connector.type.ConductorInput
-import edu.ie3.datamodel.models.input.connector.type.LayerInput
-import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
-import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
-import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
+import edu.ie3.datamodel.models.input.connector.type.*
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.util.TimeUtil
