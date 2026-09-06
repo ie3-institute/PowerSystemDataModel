@@ -247,11 +247,10 @@ public class ConnectorValidationUtils extends ValidationUtils {
         () -> checkCableDepth(deployment, line),
         () -> {
           if (deployment.getDistanceCables() == null) {
-            throw new InvalidEntityException("Distance between cables must be provided", line);
+            throw new InvalidEntityException("Distance between cables must be provided", deployment);
           }
           detectZeroOrNegativeQuantities(
-              quantities("distanceCables", deployment.getDistanceCables()), line);
-        });
+              quantities("distanceCables", deployment.getDistanceCables()), deployment);
   }
 
   private static void checkCableDepth(CableDeploymentInput deployment, LineInput line)
