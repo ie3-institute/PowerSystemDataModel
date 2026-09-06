@@ -80,10 +80,10 @@ VALUES
      0.0435122656,
      0.0);
 
-INSERT INTO public.line_type_input (uuid, id, v_rated, i_max, r, x, b, g, cable_type,grid_uuid)
+INSERT INTO public.line_type_input (uuid, id, v_rated, i_max, r, x, b, g, cable_type)
 VALUES
-    ('3bed3eb3-9790-4874-89b5-a5434d408088', 'lineType_AtoB', 20.0, 300.0, 0.437, 0.356, 0.00322, 0.0, 'b8152c3f-d12f-4857-9746-a30aef6aee08','8e6bd444-4580-11ee-be56-0242ac120002');
+    ('3bed3eb3-9790-4874-89b5-a5434d408088', 'lineType_AtoB', 20.0, 300.0, 0.437, 0.356, 0.00322, 0.0, 'b8152c3f-d12f-4857-9746-a30aef6aee08');
 
-INSERT INTO public.transformer_2_w_type_input (uuid,b_m,d_phi,d_v,g_m,id,r_sc,s_rated,tap_max,tap_min,tap_neutr,tap_side,v_rated_a,v_rated_b,x_sc,grid_uuid)
+INSERT INTO public.transformer_2_w_type_input (uuid,b_m,d_phi,d_v,g_m,id,r_sc,s_rated,tap_max,tap_min,tap_neutr,tap_side,v_rated_a,v_rated_b,x_sc)
 VALUES
-    ('202069a7-bcf8-422c-837c-273575220c8a',0.0,0.0,1.5,0.0,'HS-MS_1',45.375,20000.0,10,-10,0,false,110.0,20.0,102.759,'8e6bd444-4580-11ee-be56-0242ac120002');
+    ('202069a7-bcf8-422c-837c-273575220c8a',0.0,0.0,1.5,0.0,'HS-MS_1',45.375,20000.0,10,-10,0,false,110.0,20.0,102.759);
