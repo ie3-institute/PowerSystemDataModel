@@ -244,6 +244,9 @@ public abstract class Processor<T> {
       case "Quantity", "ComparableQuantity" ->
           resultStringBuilder.append(handleQuantity((Quantity<?>) methodReturnObject, fieldName));
       case "Optional" ->
+          // only quantity optionals are expected here!
+          // if optional and present, unpack value and call this method again, if not present return
+          // an empty string as by convention null == missing value == "" when persisting data
           resultStringBuilder.append(
               ((Optional<?>) methodReturnObject)
                   .map(
@@ -272,7 +275,6 @@ public abstract class Processor<T> {
                         if (o instanceof UniqueEntity entity) {
                           return Try.of(entity::getUuid, EntityProcessorException.class);
                         }
-
                         return Failure.of(
                             new EntityProcessorException(
                                 "Handling of "

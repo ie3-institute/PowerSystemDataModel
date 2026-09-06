@@ -16,7 +16,8 @@ CREATE TABLE public.cable_type_input
     electrical_capacitance double precision NOT NULL,
     tan_delta double precision NOT NULL,
     circulating_loss_factor double precision NOT NULL,
-    eddy_current_loss_factor double precision NOT NULL
+    eddy_current_loss_factor double precision NOT NULL,
+    grid_uuid UUID NOT NULL REFERENCES grids(uuid)
 )   WITHOUT OIDS
 	TABLESPACE pg_default;
 CREATE INDEX idx_cable_type_conductor_material ON public.cable_type_input USING gin ((conductor->'material'));
@@ -32,7 +33,8 @@ CREATE TABLE public.line_type_input
     x double precision NOT NULL,
     b double precision NOT NULL,
     g double precision NOT NULL,
-    cable_type UUID REFERENCES public.cable_type_input(uuid)
+    cable_type UUID REFERENCES public.cable_type_input(uuid),
+    grid_uuid UUID NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -53,7 +55,8 @@ CREATE TABLE public.transformer_2_w_type_input
     tap_neutr int NOT NULL,
     tap_side bool NOT NULL,
     v_rated_a double precision NOT NULL,
-    v_rated_b double precision NOT NULL
+    v_rated_b double precision NOT NULL,
+    grid_uuid UUID NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
@@ -69,7 +72,8 @@ CREATE TABLE public.storage_type_input
     e_storage double precision NOT NULL,
     p_max double precision NOT NULL,
     active_power_gradient double precision NOT NULL,
-    eta double precision NOT NULL
+    eta double precision NOT NULL,
+    grid_uuid UUID NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;
