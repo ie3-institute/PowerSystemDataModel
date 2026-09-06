@@ -195,11 +195,19 @@ public class TypeSource extends EntitySource {
                       String cableUuidStr = lineType.getAdditionalInformation().get("cable_type");
 
                       if (cableUuidStr != null && !cableUuidStr.isBlank()) {
-                        UUID cableUuid = UUID.fromString(cableUuidStr);
-                        CableTypeInput cableType = cableTypes.get(cableUuid);
+                        try {
+                          UUID cableUuid = UUID.fromString(cableUuidStr.trim());
+                          CableTypeInput cableType = cableTypes.get(cableUuid);
 
-                        if (cableType != null) {
-                          return lineType.copy().cableType(Optional.of(cableType)).build();
+                          if (cableType != null) {
+                            return lineType.copy().cableType(Optional.of(cableType)).build();
+                          }
+                        } catch (IllegalArgumentException e) {
+                          log.warn(
+                              "Ignoring invalid cable_type UUID '{}' for line type {}",
+                              cableUuidStr,
+                              lineType.getUuid(),
+                              e);
                         }
                       }
 
