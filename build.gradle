@@ -68,7 +68,6 @@ dependencies {
 
   // parsing json
   implementation 'tools.jackson.core:jackson-databind:3.2.2'
-  implementation 'tools.jackson.datatype:jackson-datatype-jdk8:3.2.2'
 
   // Graphs
   implementation 'org.jgrapht:jgrapht-core:1.5.3'
@@ -84,7 +83,7 @@ dependencies {
   testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
   testImplementation "org.spockframework:spock-core:2.4-groovy-5.0"
   testImplementation 'org.objenesis:objenesis:3.6' // Mock creation with constructor parameters
-  testImplementation 'net.bytebuddy:byte-buddy:1.18.12' // Mocks of classes
+  testImplementation 'net.bytebuddy:byte-buddy:1.18.13' // Mocks of classes
 
   // testcontainers (docker framework for testing)
   testImplementation "org.testcontainers:testcontainers:$testcontainersVersion"
