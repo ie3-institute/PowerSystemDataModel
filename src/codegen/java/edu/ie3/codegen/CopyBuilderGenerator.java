@@ -24,6 +24,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
   private final ClassName builderClass;
   private final TypeVariableName builderTypeVariable = TypeVariableName.get("B");
   private final boolean hasParent;
+  private ModelDefinition parent;
   private ClassName parentBuilderClass;
 
   public CopyBuilderGenerator(
@@ -41,7 +42,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
     this.hasParent = model.extendsName != null && !model.extendsName.isBlank();
 
     if (hasParent) {
-      ModelDefinition parent = getParent(model.extendsName, models);
+      this.parent = getParent(model.extendsName, models);
       this.parentBuilderClass = copyBuilderClassName(parent);
     }
   }
@@ -173,8 +174,13 @@ public final class CopyBuilderGenerator implements HelperMethods {
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
 
     if (hasParent) {
-      TypeName parentBuilderType = ParameterizedTypeName.get(parentBuilderClass, builderClass);
-      builder.superclass(parentBuilderType);
+
+      if (parent.isAbstract) {
+        TypeName parentBuilderType = ParameterizedTypeName.get(parentBuilderClass, builderClass);
+        builder.superclass(parentBuilderType);
+      } else {
+        builder.superclass(parentBuilderClass);
+      }
     }
 
     // add the private fields to the copy builder

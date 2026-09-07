@@ -102,7 +102,7 @@ datamodel:
           expression: buildPoint(51.4843281, 7.4116482)
           className: GeoUtils
           javaDoc: "Use this default value if geoPosition is unknown."
-      nonCapitalizedGetters: [vTarget]
+      nonCapitalized: [vTarget]
 
     OperatorInput:
       classJavaDoc: "Describes an operator, that operates assets."
@@ -152,8 +152,9 @@ datamodel:
                  @param r Specific resistance for this type of line (typically in Ohm/km)\n
                  @param x Specific reactance for this type of line (typically in Ohm/km)\n
                  @param iMax Maximum thermal current for this type of line (typically in A)\n
-                 @param vRated Rated voltage for this type of line"
-      nonCapitalizedGetters: [iMax, vRated]
+                 @param vRated Rated voltage for this type of line\n
+                 @param additionalInformation That were provided by the source"
+      nonCapitalized: [iMax, vRated]
 
     Transformer2WTypeInput:
       classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput}."
@@ -194,8 +195,8 @@ datamodel:
                  @param tapNeutr Neutral tap position\n
                  @param tapMin Minimum available tap position\n
                  @param tapMax Maximum available tap position\n
-                 @param additionalInformation Of the input"
-      nonCapitalizedGetters: [rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi]
+                 @param additionalInformation That were provided by the source"
+      nonCapitalized: [rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi]
 
     Transformer3WTypeInput:
       classJavaDoc: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer3WInput}."
@@ -248,8 +249,8 @@ datamodel:
                  @param tapNeutr Neutral tap position\n
                  @param tapMin Minimum available tap position\n
                  @param tapMax Maximum available tap position\n
-                 @param additionalInformation Of the input"
-      nonCapitalizedGetters: [sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi]
+                 @param additionalInformation That were provided by the source"
+      nonCapitalized: [sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi]
 
   models.input.system.type:
     SystemParticipantTypeInput:
@@ -266,7 +267,7 @@ datamodel:
                @param cosPhiRated Power factor for this type of system participant"
       copyBuilderAdditionalMethods:
         - name: scale
-          isAbstract: true
+          abstract: true
           javaDoc: "Scales the input entity in a way that tries to preserve proportions that are related to\n
                  power. This means that capacity, consumption etc. are scaled with the same factor. Related\n
                  properties associated with the input type (if applicable) are scaled as well.\n
@@ -276,4 +277,5 @@ datamodel:
           parameters:
             - name: factor
               type: double
-      nonCapitalizedGetters: [sRated]
+          annotation: false
+      nonCapitalized: [sRated]

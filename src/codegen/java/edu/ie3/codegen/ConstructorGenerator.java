@@ -9,10 +9,7 @@ import static edu.ie3.codegen.ResolverUtils.resolveType;
 
 import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.MethodSpec;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import javax.lang.model.element.Modifier;
 
 /** Class for generating constructors. */
@@ -44,30 +41,32 @@ public final class ConstructorGenerator implements HelperMethods {
    * @return a constructor method.
    */
   private MethodSpec generateConstructor(GenerationConfig.ConstructorDefinition constructor) {
-
     List<String> components = constructor.components;
+    String[] ordered = components.toArray(String[]::new);
 
     // looking for all visible components
     Map<String, ModelDefinition.ComponentDefinition> visibleComponents =
         visibleComponents(model, models);
 
-    List<ModelDefinition.ComponentDefinition> parameters = new ArrayList<>();
+    Map<String, ModelDefinition.ComponentDefinition> parameters = new HashMap<>();
 
     if (constructor.additionalComponents.isEmpty()) {
       // since no modification to the parameters was given, we only use the visible components
       // if a field is not initialized by either a component or a default expression, then an
       // exception will be thrown
-      parameters.addAll(
-          resolveParameters(components, visibleComponents, model.name + "." + constructor.name));
+      resolveParameters(components, visibleComponents, model.name + "." + constructor.name)
+          .forEach(c -> parameters.put(c.name, c));
     } else {
+      List<String> additional = constructor.additionalComponents.stream().map(c -> c.name).toList();
+
       // only add the specified components, all other fields need to be initialized by the
       // additional components and
       // a constructor modification
       visibleComponents.values().stream()
-          .filter(c -> components.contains(c.name))
-          .forEach(parameters::add);
+          .filter(c -> components.contains(c.name) && !additional.contains(c.name))
+          .forEach(c -> parameters.put(c.name, c));
 
-      parameters.addAll(constructor.additionalComponents);
+      constructor.additionalComponents.forEach(c -> parameters.put(c.name, c));
     }
 
     List<ModelDefinition.ComponentDefinition> orderedComponents = new ArrayList<>();
@@ -92,7 +91,8 @@ public final class ConstructorGenerator implements HelperMethods {
     }
 
     // add the components with their type to the parameter list
-    for (ModelDefinition.ComponentDefinition parameter : parameters) {
+    for (String parameterName : ordered) {
+      ModelDefinition.ComponentDefinition parameter = parameters.get(parameterName);
       builder.addParameter(resolveType(parameter.type), parameter.name);
 
       if (model.components.contains(parameter)) {
@@ -129,7 +129,7 @@ public final class ConstructorGenerator implements HelperMethods {
       String componentName = localField.name;
 
       boolean isConstructorParameter =
-          parameters.stream().anyMatch(parameter -> parameter.name.equals(componentName));
+          parameters.values().stream().anyMatch(parameter -> parameter.name.equals(componentName));
 
       if (!isConstructorParameter) {
         // if a parameter cannot be initialized by the provided constructor arguments, we try to use
@@ -170,7 +170,14 @@ public final class ConstructorGenerator implements HelperMethods {
     constructor.constructorChecks.forEach(c -> addStatement(builder, c));
 
     boolean hasAdditionalInfoParam =
-        parameters.stream().anyMatch(p -> "additionalInformation".equals(p.name));
+        parameters.values().stream().anyMatch(p -> "additionalInformation".equals(p.name));
+
+    if (!constructor.valuesMap.isBlank()) {
+      for (ModelDefinition.ComponentDefinition localField : orderedComponents) {
+        builder.addStatement(
+            "$L.put($S, $L)", constructor.valuesMap, localField.name, localField.name);
+      }
+    }
 
     if (hasAdditionalInfoParam) {
       // if the constructor contains additional information, we call the setter

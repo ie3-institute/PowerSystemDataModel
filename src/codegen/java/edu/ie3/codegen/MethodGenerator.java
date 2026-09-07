@@ -80,49 +80,64 @@ public class MethodGenerator implements HelperMethods {
     return methodSpecs;
   }
 
+  public List<MethodSpec> getSetters() {
+    List<MethodSpec> methodSpecs = new ArrayList<>();
+
+    for (ModelDefinition.ComponentDefinition component : model.components) {
+      if (excludeFromMethods(component, genConfig.excludeFromMethods)) {
+        continue;
+      }
+
+      String name = component.name;
+      String setter = defaultSetterName(component, genConfig);
+
+      var builder =
+          MethodSpec.methodBuilder(setter)
+              .addModifiers(Modifier.PUBLIC)
+              .returns(TypeName.VOID)
+              .addParameter(resolveType(component.type), name)
+              .addStatement("this.$L = $L", name, name);
+
+      methodSpecs.add(builder.build());
+    }
+
+    return methodSpecs;
+  }
+
   public List<MethodSpec> getOtherMethods() {
     List<MethodSpec> methods = new ArrayList<>();
 
     for (GenerationConfig.MethodOverride override : genConfig.methodOverrides) {
-      var methodBuilder =
-          MethodSpec.methodBuilder(override.name)
-              .returns(resolveType(override.type))
-              .addAnnotation(Override.class)
-              .addModifiers(Modifier.PUBLIC);
+      override.annotation = true;
 
-      if (override.className != null && !override.className.isBlank()) {
-        methodBuilder.addStatement(
-            "return $T." + override.expression, resolveClassName(override.className));
+      var methodBuilder =
+          MethodSpec.methodBuilder(override.name).returns(resolveType(override.type));
+
+      if (override.isProtected) {
+        methodBuilder.addModifiers(Modifier.PROTECTED);
       } else {
-        methodBuilder.addStatement("return " + override.expression);
+        methodBuilder.addModifiers(Modifier.PUBLIC);
       }
 
-      methods.add(methodBuilder.build());
+      methods.add(enrichBuilder(methodBuilder, override).build());
     }
 
     for (GenerationConfig.MethodInsert insert : genConfig.methodInserts) {
-      var methodBuilder =
-          MethodSpec.methodBuilder(insert.name)
-              .returns(resolveType(insert.type))
-              .addModifiers(Modifier.PUBLIC);
+      var methodBuilder = MethodSpec.methodBuilder(insert.name).returns(resolveType(insert.type));
 
-      if (!insert.javaDoc.isBlank()) {
-        methodBuilder.addJavadoc(insert.javaDoc);
+      if (insert.isStatic) {
+        methodBuilder.addModifiers(Modifier.STATIC);
       }
 
-      if (insert.isAbstract) {
-        methodBuilder.addModifiers(Modifier.ABSTRACT);
-
+      if (insert.isPrivate && !insert.isProtected) {
+        methodBuilder.addModifiers(Modifier.PRIVATE);
+      } else if (insert.isProtected) {
+        methodBuilder.addModifiers(Modifier.PROTECTED);
       } else {
-        if (insert.className != null && !insert.className.isBlank()) {
-          methodBuilder.addStatement(
-              "return $T." + insert.expression, resolveClassName(insert.className));
-        } else {
-          methodBuilder.addStatement("return " + insert.expression);
-        }
+        methodBuilder.addModifiers(Modifier.PUBLIC);
       }
 
-      methods.add(methodBuilder.build());
+      methods.add(enrichBuilder(methodBuilder, insert).build());
     }
 
     if (genConfig.equals) {
@@ -152,7 +167,7 @@ public class MethodGenerator implements HelperMethods {
 
     List<ModelDefinition.ComponentDefinition> filteredComponents = new ArrayList<>();
     for (ModelDefinition.ComponentDefinition component : model.components) {
-      if (excludeFromMethods(component)) {
+      if (excludeFromMethods(component, genConfig.excludeFromMethods)) {
         continue;
       }
       filteredComponents.add(component);
@@ -215,7 +230,7 @@ public class MethodGenerator implements HelperMethods {
     }
 
     for (ModelDefinition.ComponentDefinition component : model.components) {
-      if (excludeFromMethods(component)) {
+      if (excludeFromMethods(component, genConfig.excludeFromMethods)) {
         continue;
       }
 
@@ -247,7 +262,7 @@ public class MethodGenerator implements HelperMethods {
 
     int index = 0;
     for (ModelDefinition.ComponentDefinition component : allComponents) {
-      if (excludeFromMethods(component)) {
+      if (excludeFromMethods(component, genConfig.excludeFromMethods)) {
         continue;
       }
 
