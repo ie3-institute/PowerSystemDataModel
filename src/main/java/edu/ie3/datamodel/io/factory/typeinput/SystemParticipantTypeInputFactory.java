@@ -149,10 +149,7 @@ public class SystemParticipantTypeInputFactory
       cpCharacteristic = new WecCharacteristicInput(cpCharacteristicValue);
     } catch (ParsingException e) {
       throw new FactoryException(
-          "Cannot parse the following Betz characteristic: '"
-              + cpCharacteristicValue
-              + "'",
-          e);
+          "Cannot parse the following Betz characteristic: '" + cpCharacteristicValue + "'", e);
     }
 
     return new WecTypeInput(
