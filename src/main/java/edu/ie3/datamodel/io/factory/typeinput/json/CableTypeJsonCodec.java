@@ -13,7 +13,6 @@ import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import java.io.StringWriter;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -157,7 +156,7 @@ public final class CableTypeJsonCodec {
     if (value == null)
       throw new IllegalArgumentException("Cannot serialize quantity without numeric value");
     BigDecimal decimal = new BigDecimal(value.toString());
-    return decimal.setScale(10, RoundingMode.HALF_UP).stripTrailingZeros();
+    return decimal.stripTrailingZeros();
   }
 
   private Unit<?> unitForField(String fieldName) {
