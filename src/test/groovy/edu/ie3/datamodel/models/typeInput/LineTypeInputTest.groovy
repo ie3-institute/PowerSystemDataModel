@@ -41,4 +41,35 @@ class LineTypeInputTest extends Specification {
       vRated == Quantities.getQuantity(30d, Units.VOLT)
     }
   }
+  def "A LineTypeInput copy method should work as expected also for optional parameter"(){
+    given:
+
+    def lineTypeInput = GridTestData.lineTypeInputCtoD
+    def cableTypeInput = GridTestData.cableTypeInput
+
+    when:
+    def alteredUnit = lineTypeInput.copy()
+        .id("lineTypeInput_copy")
+        .b(Quantities.getQuantity(0.1d, PowerSystemUnits.MICRO_SIEMENS_PER_KILOMETRE))
+        .g(Quantities.getQuantity(0.1d, PowerSystemUnits.MICRO_SIEMENS_PER_KILOMETRE))
+        .r(Quantities.getQuantity(0.5d, PowerSystemUnits.OHM_PER_KILOMETRE))
+        .x(Quantities.getQuantity(0.4d, PowerSystemUnits.OHM_PER_KILOMETRE))
+        .iMax(Quantities.getQuantity(310d, Units.AMPERE))
+        .vRated(Quantities.getQuantity(30d, Units.VOLT))
+        .cableType(Optional.of(cableTypeInput))
+        .build()
+
+    then:
+    alteredUnit.with {
+      uuid == lineTypeInput.uuid
+      id == "lineTypeInput_copy"
+      b == Quantities.getQuantity(0.1d, PowerSystemUnits.MICRO_SIEMENS_PER_KILOMETRE)
+      g == Quantities.getQuantity(0.1d, PowerSystemUnits.MICRO_SIEMENS_PER_KILOMETRE)
+      r == Quantities.getQuantity(0.5d, PowerSystemUnits.OHM_PER_KILOMETRE)
+      x == Quantities.getQuantity(0.4d, PowerSystemUnits.OHM_PER_KILOMETRE)
+      iMax == Quantities.getQuantity(310d, Units.AMPERE)
+      vRated == Quantities.getQuantity(30d, Units.VOLT)
+      cableType == Optional.of(cableTypeInput)
+    }
+  }
 }

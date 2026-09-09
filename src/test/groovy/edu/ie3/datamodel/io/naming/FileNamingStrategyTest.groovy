@@ -12,10 +12,7 @@ import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
-import edu.ie3.datamodel.models.input.connector.LineInput
-import edu.ie3.datamodel.models.input.connector.SwitchInput
-import edu.ie3.datamodel.models.input.connector.Transformer2WInput
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput
+import edu.ie3.datamodel.models.input.connector.*
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
@@ -123,6 +120,7 @@ class FileNamingStrategyTest extends Specification {
     StorageInput || Path.of("test_grid", "input", "participants")
     HpInput || Path.of("test_grid", "input", "participants")
     AcInput || Path.of("test_grid", "input", "participants")
+    CableDeploymentInput || Path.of("test_grid", "input", "grid")
     LineInput || Path.of("test_grid", "input", "grid")
     SwitchInput || Path.of("test_grid", "input", "grid")
     NodeInput || Path.of("test_grid", "input", "grid")
@@ -246,6 +244,7 @@ class FileNamingStrategyTest extends Specification {
     MeasurementUnitInput || Path.of("test_grid", "input", "grid", "measurement_unit_input")
     Transformer2WInput || Path.of("test_grid", "input", "grid", "transformer_2_w_input")
     Transformer3WInput || Path.of("test_grid", "input", "grid", "transformer_3_w_input")
+    CableDeploymentInput || Path.of("test_grid", "input", "grid", "cable_deployment_input")
     CylindricalStorageInput || Path.of("test_grid", "input", "thermal", "cylindrical_storage_input")
     ThermalHouseInput || Path.of("test_grid", "input", "thermal", "thermal_house_input")
   }
@@ -464,6 +463,7 @@ class FileNamingStrategyTest extends Specification {
     MeasurementUnitInput || Optional.empty()
     Transformer2WInput || Optional.empty()
     Transformer3WInput || Optional.empty()
+    CableDeploymentInput || Optional.empty()
     CylindricalStorageInput || Optional.empty()
     ThermalHouseInput || Optional.empty()
   }
@@ -596,6 +596,7 @@ class FileNamingStrategyTest extends Specification {
     MeasurementUnitInput || Path.of("measurement_unit_input")
     Transformer2WInput || Path.of("transformer_2_w_input")
     Transformer3WInput || Path.of("transformer_3_w_input")
+    CableDeploymentInput || Path.of("cable_deployment_input")
     CylindricalStorageInput || Path.of("cylindrical_storage_input")
     ThermalHouseInput || Path.of("thermal_house_input")
   }

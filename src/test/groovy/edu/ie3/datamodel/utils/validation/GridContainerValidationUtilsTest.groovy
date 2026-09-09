@@ -5,13 +5,17 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import static tech.units.indriya.unit.Units.METRE
+
 import edu.ie3.datamodel.exceptions.InvalidGridException
 import edu.ie3.datamodel.models.OperationTime
+import edu.ie3.datamodel.models.input.connector.CableDeploymentInput
 import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData as GTD
 import spock.lang.Shared
 import spock.lang.Specification
+import tech.units.indriya.quantity.Quantities
 
 import java.time.ZonedDateTime
 
@@ -123,5 +127,40 @@ class GridContainerValidationUtilsTest extends Specification {
 
     then:
     actual.exception.get().message == "The grid contains unconnected elements for time "+start+": [47d29df0-ba2d-4d23-8e75-c82229c5c758]"
+  }
+
+  def "The GridContainerValidationUtils validates cable deployments and their line references"() {
+    given:
+    def line = GTD.lineAtoB
+    def deployment = new CableDeploymentInput(
+        UUID.randomUUID(),
+        line.uuid,
+        layoutFormation,
+        Quantities.getQuantity(-0.5d, METRE),
+        Quantities.getQuantity(0.1d, METRE))
+    def rawGrid = new RawGridElements(
+        [line.nodeA, line.nodeB] as Set,
+        [line] as Set,
+        [] as Set,
+        [] as Set,
+        [] as Set,
+        [] as Set,
+        [(lineUuid): [deployment]])
+
+    when:
+    def results = GridContainerValidationUtils.checkRawGridElements(rawGrid)
+
+    then:
+    results.findAll {
+      it.failure
+    }.any {
+      it.exception.get().message.contains(expectedMessage)
+    } == failureExpected
+
+    where:
+    lineUuid || layoutFormation || failureExpected || expectedMessage
+    GTD.lineAtoB.uuid || "TREFOIL" || false || "Cable deployment"
+    GTD.lineAtoB.uuid || "" || true || "Layout formation cannot be empty"
+    UUID.randomUUID() || "TREFOIL" || true || "Cable deployment references unknown line"
   }
 }

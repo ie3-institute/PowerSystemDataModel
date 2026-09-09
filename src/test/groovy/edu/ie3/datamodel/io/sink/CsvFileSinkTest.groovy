@@ -22,6 +22,7 @@ import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
+import edu.ie3.datamodel.models.input.connector.type.CableTypeInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.system.EvcsInput
@@ -127,6 +128,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
           new InputEntityProcessor(LineInput),
           new InputEntityProcessor(ThermalBusInput),
           new InputEntityProcessor(LineTypeInput),
+          new InputEntityProcessor(CableTypeInput),
           new InputEntityProcessor(LoadInput),
           new InputEntityProcessor(EmInput)
         ], [] as Map),
@@ -339,6 +341,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     then:
     testBaseFolderPath.resolve("line_input.csv").toFile().exists()
     testBaseFolderPath.resolve("line_type_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("cable_type_input.csv").toFile().exists()
     testBaseFolderPath.resolve("load_input.csv").toFile().exists()
     testBaseFolderPath.resolve("node_input.csv").toFile().exists()
     testBaseFolderPath.resolve("operator_input.csv").toFile().exists()

@@ -6,7 +6,7 @@ Representation of a cable type.
 
 ### Type Model
 
-Type model of a cable. 
+Type model of a cable.
 
 ```{list-table}
    :widths: auto
@@ -31,7 +31,7 @@ Type model of a cable.
 
    * - conductor
      - ConductorInput
-     - Layer model that represents the attributes and geometry of the conductor.  
+     - Layer model that represents the attributes and geometry of the conductor.
 
    * - isolation
      - List of LayerInput
@@ -45,7 +45,7 @@ Type model of a cable.
      - List of LayerInput
      - List of filler layers (from inner to outer)
 
-   * - armor 
+   * - armor
      - List of LayerInput
      - List of armor layers (from inner to outer)
      
@@ -59,14 +59,14 @@ Type model of a cable.
         
    * - frequency
      - Hz
-     - Rated frequency of the system     
+     - Rated frequency of the system
 
    * - skin effect coefficient
      - -
      - Skin effect coefficient
 
    * - proximity effect coefficient
-     - 
+     -
      - Proximity effect coefficient
    
    * - electrical capacitance
@@ -79,7 +79,7 @@ Type model of a cable.
    
    * - circulatingLossFactor
      - -
-     - Circulating loss factor 
+     - Circulating loss factor
      
    * - eddyCurrentLossFactor
      - -
@@ -94,7 +94,7 @@ Cables are modeled as a series of concentric layers. These layers—which includ
 
 #### LayerInput Attributes
 
-The following table details the attributes required to define a single cable 
+The following table details the attributes required to define a single cable
 
 ```{list-table}
    :widths: auto
@@ -122,7 +122,7 @@ The following table details the attributes required to define a single cable
   - Outer diameter of the layer
     
 * - thermalResistivity
-  - (K·m/W) 
+  - (K·m/W)
   - Thermal resistivity of the material
     
 * - thermalCapacitance
@@ -150,8 +150,7 @@ Some standard cables type parameter and geometries.
    :widths: auto
    :class: wrapping
    :header-rows: 1
-   
-   
+
 * - uuid
   - id
   - core_number
@@ -192,6 +191,44 @@ Some standard cables type parameter and geometries.
 
 ```
 
+## Canonical JSON field units
+
+The cable type JSON fields are written and expected in the following canonical, unitless numeric formats (the numeric value corresponds to the stated unit):
+
+```{list-table}
+   :widths: auto
+   :class: wrapping
+   :header-rows: 1
+
+ * - Field
+   - Unit (persisted numeric interpretation)
+   - Notes
+
+ * - diameter, innerDiameter, outerDiameter, wireDiameter, lengthOfLay
+   - millimetre (mm)
+   - Length fields are serialized as millimetres
+
+ * - crossSection, area
+   - square millimetre (mm²)
+   - Areas and cross sections are serialized as mm²
+
+ * - electricalResistivity
+   - ohm metre (Ω·m)
+   - Electrical resistivity
+
+ * - thermalResistivity
+   - kelvin metre per watt (K·m/W)
+   - Thermal resistivity
+
+ * - thermalCapacitance
+   - joule per cubic metre kelvin (J/(m³·K))
+   - Volumetric thermal capacitance
+
+ * - other numeric top-level fields (limitTemperature, frequency, skinEffectCoefficient, proximityEffectCoefficient, electricalCapacitance, tanDelta, circulatingLossFactor, eddyCurrentLossFactor)
+   - keep units as documented in the Type Model table
+   - e.g., limitTemperature: °C, frequency: Hz, electricalCapacitance: F/m
+
+```
 
 ## Caveats
 

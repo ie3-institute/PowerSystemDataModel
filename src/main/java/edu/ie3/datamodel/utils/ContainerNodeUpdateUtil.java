@@ -10,7 +10,7 @@ import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.container.*;
-import edu.ie3.datamodel.models.input.system.*;
+import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.locationtech.jts.geom.Point;
@@ -74,7 +74,8 @@ public class ContainerNodeUpdateUtil {
         grid.getGridName(),
         updatedEntities.rawGridElements(),
         updatedEntities.systemParticipants(),
-        grid.getEmUnits());
+        grid.getEmUnits(),
+        grid.getRawGridTypes());
   }
 
   /**
@@ -108,7 +109,8 @@ public class ContainerNodeUpdateUtil {
         grid.getSubnet(),
         updatedEntities.rawGridElements(),
         updatedEntities.systemParticipants(),
-        grid.getEmUnits());
+        grid.getEmUnits(),
+        grid.getRawGridTypes());
   }
 
   /**
