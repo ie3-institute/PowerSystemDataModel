@@ -7,7 +7,6 @@ package edu.ie3.datamodel.io.processor.input
 
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
-import edu.ie3.datamodel.io.factory.typeinput.CableTypeInputFactory
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
@@ -23,6 +22,7 @@ import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.test.common.TypeTestData
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
+import tools.jackson.databind.json.JsonMapper
 
 import java.time.ZonedDateTime
 
@@ -473,7 +473,7 @@ class InputEntityProcessorTest extends Specification {
     }
 
     def conductorJson = actual.get("conductor")
-    def mapper = CableTypeInputFactory.OBJECT_MAPPER
+    def mapper = JsonMapper.builder().build()
     def conductorNode = mapper.readTree(conductorJson)
     assert conductorNode.get("uuid").asString() == type.getConductor().getUuid().toString()
     assert conductorNode.get("name").asString() == "conductor"
@@ -481,11 +481,13 @@ class InputEntityProcessorTest extends Specification {
 
     def csNode = conductorNode.get("crossSection")
     assert csNode != null
-    assert csNode.isNumber() || (csNode.asString() && Math.abs(Double.parseDouble(csNode.asString()) - 4.0E-4) < 1e-12)
+    assert csNode.isNumber()
+    assert Math.abs(csNode.asDouble() - 400.0) < 1e-12
 
     def diaNode = conductorNode.get("diameter")
     assert diaNode != null
-    assert diaNode.isNumber() || (diaNode.asString() && Math.abs(Double.parseDouble(diaNode.asString()) - 0.0225) < 1e-12)
+    assert diaNode.isNumber()
+    assert Math.abs(diaNode.asDouble() - 22.5) < 1e-12
 
     def isolationJson = actual.get("isolation")
     def isolationNode = mapper.readTree(isolationJson)

@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
-import edu.ie3.datamodel.io.factory.typeinput.CableTypeInputFactory;
+import edu.ie3.datamodel.io.factory.typeinput.json.CableTypeJsonCodec;
 import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
 import edu.ie3.datamodel.models.OperationTime;
@@ -14,6 +14,8 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
+import edu.ie3.datamodel.models.input.connector.type.ConductorInput;
+import edu.ie3.datamodel.models.input.connector.type.LayerInput;
 import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
 import edu.ie3.datamodel.models.profile.LoadProfile;
@@ -36,6 +38,7 @@ import org.locationtech.jts.io.geojson.GeoJsonWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Basic sketch and skeleton for a processors including all functions that apply for all needed
@@ -69,6 +72,8 @@ public abstract class Processor<T> {
   protected static final String ADDITIONAL_INFORMATION = "additionalInformation";
 
   private static final GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
+  private static final CableTypeJsonCodec CABLE_JSON_CODEC = new CableTypeJsonCodec();
+  private static final JsonMapper JSON_MAPPER = JsonMapper.builder().build();
 
   private static final String OPERATION_TIME_FIELD_NAME = OperationTime.class.getSimpleName();
   private static final String OPERATES_FROM = FieldNamingStrategy.OPERATES_FROM;
@@ -261,9 +266,7 @@ public abstract class Processor<T> {
                           return Try.of(
                               () -> {
                                 try {
-                                  return edu.ie3.datamodel.io.factory.typeinput
-                                      .CableTypeInputFactory.OBJECT_MAPPER
-                                      .writeValueAsString(screenLayer);
+                                  return CABLE_JSON_CODEC.writeScreenLayer(screenLayer);
                                 } catch (JacksonException e) {
                                   throw new EntityProcessorException(
                                       "Failed to serialize ScreenLayerInput inside Optional", e);
@@ -334,8 +337,14 @@ public abstract class Processor<T> {
           resultStringBuilder.append(((PowerProfileKey) methodReturnObject).getValue());
       case "List" -> {
         try {
-          String jsonString =
-              CableTypeInputFactory.OBJECT_MAPPER.writeValueAsString(methodReturnObject);
+          String jsonString;
+          if (methodReturnObject instanceof List<?> list
+              && list.stream().allMatch(LayerInput.class::isInstance)) {
+            jsonString =
+                CABLE_JSON_CODEC.writeLayers(list.stream().map(LayerInput.class::cast).toList());
+          } else {
+            jsonString = JSON_MAPPER.writeValueAsString(methodReturnObject);
+          }
           resultStringBuilder.append(jsonString);
         } catch (JacksonException e) {
           throw new EntityProcessorException(
@@ -344,8 +353,7 @@ public abstract class Processor<T> {
       }
       case "ConductorInput" -> {
         try {
-          String jsonString =
-              CableTypeInputFactory.OBJECT_MAPPER.writeValueAsString(methodReturnObject);
+          String jsonString = CABLE_JSON_CODEC.writeConductor((ConductorInput) methodReturnObject);
           resultStringBuilder.append(jsonString);
         } catch (JacksonException e) {
           throw new EntityProcessorException(

@@ -21,16 +21,14 @@ import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Temperature;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.unit.Units;
+import tools.jackson.databind.json.JsonMapper;
 
 public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableTypeInput> {
-
-  public static final tools.jackson.databind.ObjectMapper OBJECT_MAPPER =
-      CableTypeObjectMapperProvider.OBJECT_MAPPER;
 
   private final CableTypeParser parser;
 
   public CableTypeInputFactory() {
-    this(new CableTypeParser(CableTypeObjectMapperProvider.OBJECT_MAPPER));
+    this(new CableTypeParser(JsonMapper.builder().build()));
   }
 
   public CableTypeInputFactory(CableTypeParser parser) {

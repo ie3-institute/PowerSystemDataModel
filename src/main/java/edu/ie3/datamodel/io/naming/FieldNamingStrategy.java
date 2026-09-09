@@ -57,6 +57,26 @@ public class FieldNamingStrategy {
   public static final String NODE_C = "nodeC";
   public static final String LINE_UUID = "lineUuid";
 
+  // cable types data
+  public static final String NAME = "name";
+  public static final String MATERIAL = "material";
+  public static final String AREA = "area";
+  public static final String THERMAL_RESISTIVITY = "thermalResistivity";
+  public static final String THERMAL_CAPACITANCE = "thermalCapacitance";
+  public static final String WIRES_NUMBER = "wiresNumber";
+  public static final String LENGTH_OF_LAY = "lengthOfLay";
+  public static final String IS_COMPACTED = "isCompacted";
+  public static final String LAYER = "LayerInput";
+  public static final String SCREEN_LAYER = "ScreenLayerInput";
+  public static final String CONDUCTOR = "ConductorInput";
+  public static final String DIAMETER = "diameter";
+  public static final String INNER_DIAMETER = "innerDiameter";
+  public static final String OUTER_DIAMETER = "outerDiameter";
+  public static final String WIRE_DIAMETER = "wireDiameter";
+  public static final String ELECTRICAL_RESISTIVITY = "electricalResistivity";
+  public static final String CROSS_SECTION = "crossSection";
+  public static final String ADDITIONAL_INFORMATION = "additionalInformation";
+
   /**
    * Attribute that _can_, but does not _have to_ be present for the creation of {@link
    * ConnectorInput}s.
@@ -92,8 +112,6 @@ public class FieldNamingStrategy {
   public static final String LIMIT_TEMPERATURE = "limitTemperature";
   public static final String FREQUENCY = "frequency";
   public static final String ELECTRICAL_CAPACITANCE = "electricalCapacitance";
-  public static final String THERMAL_RESISTIVITY = "thermalResistivity";
-  public static final String THERMAL_CAPACITANCE = "thermalCapacitance";
   public static final String CORE_NUMBER = "coreNumber";
   public static final String CONDUCTOR_STRING = "conductor";
   public static final String ISOLATION_STRING = "isolation";
