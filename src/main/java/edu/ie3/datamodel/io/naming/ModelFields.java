@@ -338,6 +338,8 @@ public final class ModelFields extends FieldNamingStrategy {
 
     addMandatory(LineInput.class, LENGTH, GEO_POSITION, OLM_CHARACTERISTIC);
 
+    registerOptional(LineTypeInput.class, newSet(CABLE_TYPE));
+
     register(
         CableDeploymentInput.class,
         newSet(UUID, LINE_UUID, LAYOUT_FORMATION, DEPTH_CABLES, DISTANCE_CABLES),

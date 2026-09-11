@@ -59,6 +59,7 @@ public class FieldNamingStrategy {
 
   // cable types data
   public static final String NAME = "name";
+  public static final String CABLE_TYPE = "cableType";
   public static final String MATERIAL = "material";
   public static final String AREA = "area";
   public static final String THERMAL_RESISTIVITY = "thermalResistivity";
