@@ -27,7 +27,7 @@ final class ModelGenerator implements HelperMethods {
    */
   public static void main(String[] args) throws IOException {
     Path resources = Path.of(".", "src", "codegen", "resources");
-    Path modelsFile = resources.resolve("datamodel.yaml");
+    Path modelsFile = Path.of(".", "src", "main", "resources").resolve("datamodel.yaml");
     Path generationConfig = resources.resolve("generation.yaml");
     Path outputDirectory = Path.of(".", "src", "main", "java");
 
