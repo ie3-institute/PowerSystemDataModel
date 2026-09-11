@@ -162,7 +162,7 @@ public class BmTypeInput extends SystemParticipantTypeInput {
     }
 
     @Override
-    public BmTypeInputCopyBuilder scale(Double factor) {
+    public BmTypeInputCopyBuilder scale(double factor) {
       capex(getCapex().multiply(factor));
       sRated(getsRated().multiply(factor));
       return thisInstance();

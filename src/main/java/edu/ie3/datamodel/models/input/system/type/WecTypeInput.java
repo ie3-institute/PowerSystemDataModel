@@ -217,7 +217,7 @@ public class WecTypeInput extends SystemParticipantTypeInput {
     }
 
     @Override
-    public WecTypeInput.WecTypeInputCopyBuilder scale(Double factor) {
+    public WecTypeInput.WecTypeInputCopyBuilder scale(double factor) {
       capex(getCapex().multiply(factor));
       sRated(getsRated().multiply(factor));
       setRotorArea(getRotorArea().multiply(factor));

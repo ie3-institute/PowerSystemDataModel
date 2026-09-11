@@ -214,7 +214,7 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
     }
 
     @Override
-    public ChpTypeInput.ChpTypeInputCopyBuilder scale(Double factor) {
+    public ChpTypeInput.ChpTypeInputCopyBuilder scale(double factor) {
       capex(getCapex().multiply(factor));
       sRated(getsRated().multiply(factor));
       pThermal(getpThermal().multiply(factor));
