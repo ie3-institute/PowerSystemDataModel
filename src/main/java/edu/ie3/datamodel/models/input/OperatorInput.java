@@ -1,5 +1,5 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -9,17 +9,16 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-/** Describes an operator, that operates assets */
+/** Describes an operator, that operates assets. */
 public class OperatorInput extends UniqueInputEntity {
-
   public static final OperatorInput NO_OPERATOR_ASSIGNED =
       new OperatorInput(UUID.randomUUID(), "NO_OPERATOR_ASSIGNED");
 
-  /** The id (=name) of this operator */
+  /** The id (=name) of this operator. */
   private final String id;
 
   /**
-   * Constructor for an Operator
+   * Constructor for an Operator.
    *
    * @param uuid Unique identifier
    * @param id Human readable identifier
@@ -30,7 +29,7 @@ public class OperatorInput extends UniqueInputEntity {
   }
 
   /**
-   * Constructor for an Operator
+   * Constructor for an Operator.
    *
    * @param uuid Unique identifier
    * @param id Human readable identifier
@@ -44,10 +43,6 @@ public class OperatorInput extends UniqueInputEntity {
 
   public String getId() {
     return id;
-  }
-
-  public OperatorInputCopyBuilder copy() {
-    return new OperatorInputCopyBuilder(this);
   }
 
   @Override
@@ -68,40 +63,39 @@ public class OperatorInput extends UniqueInputEntity {
     return "OperatorInput{"
         + "uuid="
         + getUuid()
-        + ", id='"
+        + ", id="
         + id
-        + '\''
         + ", additionalInformation="
         + getAdditionalInformation()
-        + '}';
+        + "}";
   }
 
-  /**
-   * A builder pattern based approach to create copies of {@link OperatorInput} entities with
-   * altered field values. For detailed field descriptions refer to java docs of {@link
-   * OperatorInput}
-   *
-   * @version 0.1
-   * @since 05.06.20
-   */
-  public static class OperatorInputCopyBuilder
-      extends UniqueEntityCopyBuilder<OperatorInputCopyBuilder> {
+  @Override
+  public OperatorInputCopyBuilder copy() {
+    return new OperatorInputCopyBuilder(this);
+  }
 
+  public static class OperatorInputCopyBuilder
+      extends UniqueInputEntityCopyBuilder<OperatorInputCopyBuilder> {
     private String id;
 
-    private OperatorInputCopyBuilder(OperatorInput entity) {
+    protected OperatorInputCopyBuilder(OperatorInput entity) {
       super(entity);
-      this.id = entity.getId();
-    }
-
-    @Override
-    public OperatorInput build() {
-      return new OperatorInput(getUuid(), id);
+      this.id = entity.id;
     }
 
     public OperatorInputCopyBuilder id(String id) {
       this.id = id;
       return thisInstance();
+    }
+
+    protected String getId() {
+      return id;
+    }
+
+    @Override
+    public OperatorInput build() {
+      return new OperatorInput(getUuid(), id, getAdditionalInformation());
     }
 
     @Override
