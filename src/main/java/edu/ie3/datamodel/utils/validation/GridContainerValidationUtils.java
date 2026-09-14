@@ -150,6 +150,33 @@ public class GridContainerValidationUtils extends ValidationUtils {
               exceptions.add(MeasurementUnitValidationUtils.check(measurement));
             });
 
+    /* Checking cable deployments */
+    rawGridElements
+        .getCableDeploymentsByLine()
+        .forEach(
+            (lineUuid, deployments) -> {
+              // try to find the referenced line
+              Optional<LineInput> maybeLine =
+                  rawGridElements.getLines().stream()
+                      .filter(l -> l.getUuid().equals(lineUuid))
+                      .findFirst();
+
+              for (CableDeploymentInput deployment : deployments) {
+                if (maybeLine.isEmpty()) {
+                  exceptions.add(
+                      Try.ofVoid(
+                          true,
+                          () ->
+                              new InvalidEntityException(
+                                  "Cable deployment references unknown line with uuid " + lineUuid,
+                                  deployment)));
+                } else {
+                  exceptions.addAll(
+                      ConnectorValidationUtils.checkCableDeployment(deployment, maybeLine.get()));
+                }
+              }
+            });
+
     exceptions.addAll(checkConnectivity(rawGridElements));
 
     return exceptions;

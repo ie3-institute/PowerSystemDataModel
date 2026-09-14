@@ -35,7 +35,8 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
       "r": "5",
       "x": "6",
       "imax": "7",
-      "vrated": "8"
+      "vrated": "8",
+      "cabletype": "",
     ]
     def typeInputClass = LineTypeInput
 
@@ -54,6 +55,7 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
       x == getQuant(parameter["x"], StandardUnits.REACTANCE_PER_LENGTH)
       iMax == getQuant(parameter["imax"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
       vRated == getQuant(parameter["vrated"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
+      !cableType.present
     }
   }
 }
