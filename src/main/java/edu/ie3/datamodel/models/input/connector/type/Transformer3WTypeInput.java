@@ -78,27 +78,27 @@ public class Transformer3WTypeInput extends AssetTypeInput {
   private final int tapMax;
 
   /**
-   * @param uuid of the input entity
-   * @param id of this type
-   * @param sRatedA Rated apparent power of the high voltage winding
-   * @param sRatedB Rated apparent power of the medium voltage winding
-   * @param sRatedC Rated apparent power of the low voltage winding
-   * @param vRatedA Rated voltage magnitude of the high voltage winding
-   * @param vRatedB Rated voltage magnitude of the medium voltage winding
-   * @param vRatedC Rated voltage magnitude of the low voltage winding
-   * @param rScA Short-circuit resistance of the high voltage winding
-   * @param rScB Short-circuit resistance of the medium voltage winding
-   * @param rScC Short-circuit resistance of the low voltage winding
-   * @param xScA Short-circuit reactance of the high voltage winding
-   * @param xScB Short-circuit reactance of the medium voltage winding
-   * @param xScC Short-circuit reactance of the low voltage winding
-   * @param gM Phase-to-ground conductance
-   * @param bM Phase-to-ground susceptance
-   * @param dV Voltage magnitude deviation per tap position
-   * @param dPhi Voltage angle deviation per tap position
-   * @param tapNeutr Neutral tap position
-   * @param tapMin Minimum available tap position
-   * @param tapMax Maximum available tap position
+   * @param uuid Unique identifier for an entity.
+   * @param id Name or ID of the asset.
+   * @param sRatedA Rated apparent power of the high voltage winding (typically in kVA).
+   * @param sRatedB Rated apparent power of the medium voltage winding (typically in kVA).
+   * @param sRatedC Rated apparent power of the low voltage windings (typically in kVA).
+   * @param vRatedA Rated voltage of the high voltage winding (typically in kV).
+   * @param vRatedB Rated voltage of the medium voltage winding (typically in kV).
+   * @param vRatedC Rated voltage of the low voltage winding (typically in kV).
+   * @param rScA Short-circuit resistance of the high voltage winding (typically in Ohm).
+   * @param rScB Short-circuit resistance of the medium voltage winding (typically in Ohm).
+   * @param rScC Short-circuit resistance of the low voltage winding (typically in Ohm).
+   * @param xScA Short-circuit reactance of the high voltage winding (typically in Ohm).
+   * @param xScB Short-circuit reactance of the medium voltage winding (typically in Ohm).
+   * @param xScC Short-circuit reactance of the low voltage winding (typically in Ohm).
+   * @param gM Phase-to-ground conductance (typically in nS).
+   * @param bM Phase-to-ground susceptance (typically in nS).
+   * @param dV Voltage magnitude deviation per tap position (typically in %).
+   * @param dPhi Voltage angle deviation per tap position (typically in °).
+   * @param tapNeutr Neutral tap position.
+   * @param tapMin Minimum available tap position.
+   * @param tapMax Maximum available tap position.
    */
   public Transformer3WTypeInput(
       UUID uuid,
@@ -145,28 +145,28 @@ public class Transformer3WTypeInput extends AssetTypeInput {
   }
 
   /**
-   * @param uuid of the input entity
-   * @param id of this type
-   * @param sRatedA Rated apparent power of the high voltage winding
-   * @param sRatedB Rated apparent power of the medium voltage winding
-   * @param sRatedC Rated apparent power of the low voltage winding
-   * @param vRatedA Rated voltage magnitude of the high voltage winding
-   * @param vRatedB Rated voltage magnitude of the medium voltage winding
-   * @param vRatedC Rated voltage magnitude of the low voltage winding
-   * @param rScA Short-circuit resistance of the high voltage winding
-   * @param rScB Short-circuit resistance of the medium voltage winding
-   * @param rScC Short-circuit resistance of the low voltage winding
-   * @param xScA Short-circuit reactance of the high voltage winding
-   * @param xScB Short-circuit reactance of the medium voltage winding
-   * @param xScC Short-circuit reactance of the low voltage winding
-   * @param gM Phase-to-ground conductance
-   * @param bM Phase-to-ground susceptance
-   * @param dV Voltage magnitude deviation per tap position
-   * @param dPhi Voltage angle deviation per tap position
-   * @param tapNeutr Neutral tap position
-   * @param tapMin Minimum available tap position
-   * @param tapMax Maximum available tap position
-   * @param additionalInformation That were provided by the source
+   * @param uuid Unique identifier for an entity.
+   * @param id Name or ID of the asset.
+   * @param sRatedA Rated apparent power of the high voltage winding (typically in kVA).
+   * @param sRatedB Rated apparent power of the medium voltage winding (typically in kVA).
+   * @param sRatedC Rated apparent power of the low voltage windings (typically in kVA).
+   * @param vRatedA Rated voltage of the high voltage winding (typically in kV).
+   * @param vRatedB Rated voltage of the medium voltage winding (typically in kV).
+   * @param vRatedC Rated voltage of the low voltage winding (typically in kV).
+   * @param rScA Short-circuit resistance of the high voltage winding (typically in Ohm).
+   * @param rScB Short-circuit resistance of the medium voltage winding (typically in Ohm).
+   * @param rScC Short-circuit resistance of the low voltage winding (typically in Ohm).
+   * @param xScA Short-circuit reactance of the high voltage winding (typically in Ohm).
+   * @param xScB Short-circuit reactance of the medium voltage winding (typically in Ohm).
+   * @param xScC Short-circuit reactance of the low voltage winding (typically in Ohm).
+   * @param gM Phase-to-ground conductance (typically in nS).
+   * @param bM Phase-to-ground susceptance (typically in nS).
+   * @param dV Voltage magnitude deviation per tap position (typically in %).
+   * @param dPhi Voltage angle deviation per tap position (typically in °).
+   * @param tapNeutr Neutral tap position.
+   * @param tapMin Minimum available tap position.
+   * @param tapMax Maximum available tap position.
+   * @param additionalInformation
    */
   public Transformer3WTypeInput(
       UUID uuid,

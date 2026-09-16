@@ -14,8 +14,8 @@ public abstract class AssetTypeInput extends UniqueInputEntity {
   private final String id;
 
   /**
-   * @param uuid of the input entity
-   * @param id of the asset
+   * @param uuid Unique identifier for an entity.
+   * @param id Name or ID of the asset.
    */
   protected AssetTypeInput(UUID uuid, String id) {
     super(uuid);

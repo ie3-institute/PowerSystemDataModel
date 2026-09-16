@@ -16,13 +16,15 @@ public class MethodGenerator implements HelperMethods {
 
   private final ModelDefinition model;
   private final GenerationConfig genConfig;
-  private final Map<String, ModelDefinition> models;
+  private final Map<String, ModelDefinition.ComponentDefinition> allComponents;
 
   public MethodGenerator(
-      ModelDefinition model, GenerationConfig genConfig, Map<String, ModelDefinition> models) {
+      ModelDefinition model,
+      GenerationConfig genConfig,
+      Map<String, ModelDefinition.ComponentDefinition> allComponents) {
     this.model = model;
     this.genConfig = genConfig;
-    this.models = models;
+    this.allComponents = allComponents;
   }
 
   public List<MethodSpec> getGetters() {
@@ -30,30 +32,26 @@ public class MethodGenerator implements HelperMethods {
 
     if (genConfig.getters) {
       for (ModelDefinition.ComponentDefinition component : model.components) {
-        if (!genConfig.noGetters.contains(component.name)) {
+        String getter = defaultGetterName(component, genConfig);
+        TypeName returnType = resolveType(component.type);
 
-          String getter = defaultGetterName(component, genConfig);
-          TypeName returnType = resolveType(component.type);
+        var builder = MethodSpec.methodBuilder(getter).addModifiers(Modifier.PUBLIC);
 
-          var builder = MethodSpec.methodBuilder(getter).addModifiers(Modifier.PUBLIC);
+        if (isMap(component)) {
+          builder.addStatement("return $T.unmodifiableMap($L)", Collections.class, component.name);
+        } else if (!component.required && !ResolverUtils.hasDefaultExpression(component.type)) {
+          returnType = ParameterizedTypeName.get(ClassName.get(Optional.class), returnType.box());
 
-          if (isMap(component)) {
-            builder.addStatement(
-                "return $T.unmodifiableMap($L)", Collections.class, component.name);
-          } else if (!component.required) {
-            returnType = ParameterizedTypeName.get(ClassName.get(Optional.class), returnType.box());
-
-            builder.addStatement("return $T.ofNullable($L)", Optional.class, component.name);
-          } else {
-            builder.addStatement("return $L", component.name);
-          }
-
-          methodSpecs.add(builder.returns(returnType).build());
+          builder.addStatement("return $T.ofNullable($L)", Optional.class, component.name);
+        } else {
+          builder.addStatement("return $L", component.name);
         }
+
+        methodSpecs.add(builder.returns(returnType).build());
       }
     }
 
-    if (model.components.stream().anyMatch(s -> s.name.equals("additionalInformation"))) {
+    if (model.components.stream().anyMatch(s -> s.name.equals(ADDITIONAL_INFORMATION))) {
       // type Map<String,String>
       TypeName mapStringString =
           ParameterizedTypeName.get(
@@ -63,7 +61,7 @@ public class MethodGenerator implements HelperMethods {
           MethodSpec.methodBuilder("setAdditionalInformation")
               .addModifiers(Modifier.PROTECTED)
               .returns(void.class)
-              .addParameter(mapStringString, "additionalInformation");
+              .addParameter(mapStringString, ADDITIONAL_INFORMATION);
 
       // if (additionalInformation == null) return;
       builder
@@ -107,35 +105,10 @@ public class MethodGenerator implements HelperMethods {
   public List<MethodSpec> getOtherMethods() {
     List<MethodSpec> methods = new ArrayList<>();
 
-    for (GenerationConfig.MethodOverride override : genConfig.methodOverrides) {
-      override.annotation = true;
-
-      var methodBuilder =
-          MethodSpec.methodBuilder(override.name).returns(resolveType(override.type));
-
-      if (override.isProtected) {
-        methodBuilder.addModifiers(Modifier.PROTECTED);
-      } else {
-        methodBuilder.addModifiers(Modifier.PUBLIC);
-      }
-
-      methods.add(enrichBuilder(methodBuilder, override).build());
-    }
-
-    for (GenerationConfig.MethodInsert insert : genConfig.methodInserts) {
+    for (GenerationConfig.MethodDefinition insert : genConfig.methods) {
       var methodBuilder = MethodSpec.methodBuilder(insert.name).returns(resolveType(insert.type));
 
-      if (insert.isStatic) {
-        methodBuilder.addModifiers(Modifier.STATIC);
-      }
-
-      if (insert.isPrivate && !insert.isProtected) {
-        methodBuilder.addModifiers(Modifier.PRIVATE);
-      } else if (insert.isProtected) {
-        methodBuilder.addModifiers(Modifier.PROTECTED);
-      } else {
-        methodBuilder.addModifiers(Modifier.PUBLIC);
-      }
+      insert.modifiers.forEach(m -> methodBuilder.addModifiers(modifiers.get(m)));
 
       methods.add(enrichBuilder(methodBuilder, insert).build());
     }
@@ -256,12 +229,11 @@ public class MethodGenerator implements HelperMethods {
     builder.addCode("return $S\n", model.name + "{");
 
     List<String> components = model.components.stream().map(c -> c.name).toList();
-    Collection<ModelDefinition.ComponentDefinition> allComponents =
-        visibleComponents(model, models).values();
-    List<String> allComponentNames = allComponents.stream().map(c -> c.name).toList();
+    Collection<ModelDefinition.ComponentDefinition> all = allComponents.values();
+    List<String> allComponentNames = all.stream().map(c -> c.name).toList();
 
     int index = 0;
-    for (ModelDefinition.ComponentDefinition component : allComponents) {
+    for (ModelDefinition.ComponentDefinition component : all) {
       if (excludeFromMethods(component, genConfig.excludeFromMethods)) {
         continue;
       }
@@ -274,7 +246,7 @@ public class MethodGenerator implements HelperMethods {
       index++;
     }
 
-    if (allComponentNames.contains("additionalInformation")) {
+    if (allComponentNames.contains(ADDITIONAL_INFORMATION)) {
       builder.addStatement(
           "    + \", additionalInformation=\" + getAdditionalInformation()\n+ \"}\"");
     } else {

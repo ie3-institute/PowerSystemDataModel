@@ -16,6 +16,9 @@ import java.util.UUID;
 public abstract class UniqueInputEntity extends UniqueEntity implements InputEntity {
   private final Map<String, String> additionalInformation;
 
+  /**
+   * @param uuid Unique identifier for an entity.
+   */
   protected UniqueInputEntity(UUID uuid) {
     super(uuid);
     this.additionalInformation = new HashMap<>();

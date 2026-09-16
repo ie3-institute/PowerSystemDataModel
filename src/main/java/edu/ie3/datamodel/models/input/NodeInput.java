@@ -40,18 +40,17 @@ public class NodeInput extends AssetInput {
   private final int subnet;
 
   /**
-   * Constructor for an operated node.
-   *
-   * @param uuid of the input entity
-   * @param id of the asset
-   * @param operator of the asset
-   * @param operationTime Time for which the entity is operated
-   * @param vTarget Target voltage magnitude of the node with regard to its rated voltage
+   * @param uuid Unique identifier for an entity.
+   * @param id Name or ID of the asset.
+   * @param operator The operator of this asset.
+   * @param operationTime Time for which the entity is operated.
+   * @param vTarget Target voltage magnitude of the node with regard to its rated voltage (typically
+   *     in p.u.).
    * @param slack Is this node a slack node?
-   * @param geoPosition Coordinates of this node, especially relevant for geo-dependant systems,
-   *     that are connected to this node
-   * @param voltLvl Voltage level of this node
-   * @param subnet of this node
+   * @param geoPosition The coordinates of this node, especially relevant for geo-dependant systems,
+   *     that are connected to this node.
+   * @param voltLvl Voltage level of this node.
+   * @param subnet Subgrid of this node.
    */
   public NodeInput(
       UUID uuid,
@@ -72,19 +71,18 @@ public class NodeInput extends AssetInput {
   }
 
   /**
-   * Constructor for an operated node.
-   *
-   * @param uuid of the input entity
-   * @param id of the asset
-   * @param operator of the asset
-   * @param operationTime Time for which the entity is operated
-   * @param vTarget Target voltage magnitude of the node with regard to its rated voltage
+   * @param uuid Unique identifier for an entity.
+   * @param id Name or ID of the asset.
+   * @param operator The operator of this asset.
+   * @param operationTime Time for which the entity is operated.
+   * @param vTarget Target voltage magnitude of the node with regard to its rated voltage (typically
+   *     in p.u.).
    * @param slack Is this node a slack node?
-   * @param geoPosition Coordinates of this node, especially relevant for geo-dependant systems,
-   *     that are connected to this node
-   * @param voltLvl Voltage level of this node
-   * @param subnet of this node
-   * @param additionalInformation That were provided by the source
+   * @param geoPosition The coordinates of this node, especially relevant for geo-dependant systems,
+   *     that are connected to this node.
+   * @param voltLvl Voltage level of this node.
+   * @param subnet Subgrid of this node.
+   * @param additionalInformation
    */
   public NodeInput(
       UUID uuid,
@@ -107,16 +105,15 @@ public class NodeInput extends AssetInput {
   }
 
   /**
-   * Constructor for an operated node.
-   *
-   * @param uuid of the input entity
-   * @param id of the asset
-   * @param vTarget Target voltage magnitude of the node with regard to its rated voltage
+   * @param uuid Unique identifier for an entity.
+   * @param id Name or ID of the asset.
+   * @param vTarget Target voltage magnitude of the node with regard to its rated voltage (typically
+   *     in p.u.).
    * @param slack Is this node a slack node?
-   * @param geoPosition Coordinates of this node, especially relevant for geo-dependant systems,
-   *     that are connected to this node
-   * @param voltLvl Voltage level of this node
-   * @param subnet of this node
+   * @param geoPosition The coordinates of this node, especially relevant for geo-dependant systems,
+   *     that are connected to this node.
+   * @param voltLvl Voltage level of this node.
+   * @param subnet Subgrid of this node.
    */
   public NodeInput(
       UUID uuid,

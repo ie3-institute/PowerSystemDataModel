@@ -11,12 +11,12 @@ import java.util.UUID;
 
 /** Supplies every subclass with a generated UUID, making it unique. */
 public abstract class UniqueEntity implements Entity, Uniqueness, Serializable {
+  /** Unique identifier for an entity. */
   private final UUID uuid;
 
-  protected UniqueEntity() {
-    this.uuid = UUID.randomUUID();
-  }
-
+  /**
+   * @param uuid Unique identifier for an entity.
+   */
   protected UniqueEntity(UUID uuid) {
     this.uuid = uuid;
   }

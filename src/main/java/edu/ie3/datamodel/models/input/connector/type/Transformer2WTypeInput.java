@@ -60,71 +60,22 @@ public class Transformer2WTypeInput extends AssetTypeInput {
   private final int tapMax;
 
   /**
-   * @param uuid of the input entity
-   * @param id of the type
-   * @param rSc Short circuit resistance
-   * @param xSc Short circuit reactance
-   * @param sRated Rated apparent power (typically in kVA)
-   * @param vRatedA Rated voltage of the high voltage winding
-   * @param vRatedB Rated voltage of the low voltage winding
-   * @param gM Phase-to-ground conductance
-   * @param bM Phase-to-ground susceptance
-   * @param dV Voltage magnitude deviation per tap position
-   * @param dPhi Voltage angle deviation per tap position
-   * @param tapSide Selection of winding, where the tap changer is installed. Low voltage, if true
-   * @param tapNeutr Neutral tap position
-   * @param tapMin Minimum available tap position
-   * @param tapMax Maximum available tap position
-   */
-  public Transformer2WTypeInput(
-      UUID uuid,
-      String id,
-      ComparableQuantity<ElectricResistance> rSc,
-      ComparableQuantity<ElectricResistance> xSc,
-      ComparableQuantity<Power> sRated,
-      ComparableQuantity<ElectricPotential> vRatedA,
-      ComparableQuantity<ElectricPotential> vRatedB,
-      ComparableQuantity<ElectricConductance> gM,
-      ComparableQuantity<ElectricConductance> bM,
-      ComparableQuantity<Dimensionless> dV,
-      ComparableQuantity<Angle> dPhi,
-      boolean tapSide,
-      int tapNeutr,
-      int tapMin,
-      int tapMax) {
-    super(uuid, id);
-    this.rSc = rSc;
-    this.xSc = xSc;
-    this.sRated = sRated;
-    this.vRatedA = vRatedA;
-    this.vRatedB = vRatedB;
-    this.gM = gM;
-    this.bM = bM;
-    this.dV = dV;
-    this.dPhi = dPhi;
-    this.tapSide = tapSide;
-    this.tapNeutr = tapNeutr;
-    this.tapMin = tapMin;
-    this.tapMax = tapMax;
-  }
-
-  /**
-   * @param uuid of the input entity
-   * @param id of the type
-   * @param rSc Short circuit resistance
-   * @param xSc Short circuit reactance
-   * @param sRated Rated apparent power (typically in kVA)
-   * @param vRatedA Rated voltage of the high voltage winding
-   * @param vRatedB Rated voltage of the low voltage winding
-   * @param gM Phase-to-ground conductance
-   * @param bM Phase-to-ground susceptance
-   * @param dV Voltage magnitude deviation per tap position
-   * @param dPhi Voltage angle deviation per tap position
-   * @param tapSide Selection of winding, where the tap changer is installed. Low voltage, if true
-   * @param tapNeutr Neutral tap position
-   * @param tapMin Minimum available tap position
-   * @param tapMax Maximum available tap position
-   * @param additionalInformation That were provided by the source
+   * @param uuid Unique identifier for an entity.
+   * @param id Name or ID of the asset.
+   * @param rSc Short circuit resistance (typically in Ohm).
+   * @param xSc Short circuit reactance (typically in Ohm).
+   * @param sRated Rated apparent power (typically in kVA).
+   * @param vRatedA Rated voltage of the high voltage winding (typically in kV).
+   * @param vRatedB Rated voltage of the low voltage winding (typically in kV).
+   * @param gM Phase-to-ground conductance (typically in nS).
+   * @param bM Phase-to-ground susceptance (typically in nS).
+   * @param dV Voltage magnitude deviation per tap position (typically in %).
+   * @param dPhi Voltage angle deviation per tap position (typically in °).
+   * @param tapSide Selection of winding, where the tap changer is installed. Low voltage, if true.
+   * @param tapNeutr Neutral tap position.
+   * @param tapMin Minimum available tap position.
+   * @param tapMax Maximum available tap position.
+   * @param additionalInformation
    */
   public Transformer2WTypeInput(
       UUID uuid,
@@ -158,6 +109,55 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     this.tapMin = tapMin;
     this.tapMax = tapMax;
     setAdditionalInformation(additionalInformation);
+  }
+
+  /**
+   * @param uuid Unique identifier for an entity.
+   * @param id Name or ID of the asset.
+   * @param rSc Short circuit resistance (typically in Ohm).
+   * @param xSc Short circuit reactance (typically in Ohm).
+   * @param sRated Rated apparent power (typically in kVA).
+   * @param vRatedA Rated voltage of the high voltage winding (typically in kV).
+   * @param vRatedB Rated voltage of the low voltage winding (typically in kV).
+   * @param gM Phase-to-ground conductance (typically in nS).
+   * @param bM Phase-to-ground susceptance (typically in nS).
+   * @param dV Voltage magnitude deviation per tap position (typically in %).
+   * @param dPhi Voltage angle deviation per tap position (typically in °).
+   * @param tapSide Selection of winding, where the tap changer is installed. Low voltage, if true.
+   * @param tapNeutr Neutral tap position.
+   * @param tapMin Minimum available tap position.
+   * @param tapMax Maximum available tap position.
+   */
+  public Transformer2WTypeInput(
+      UUID uuid,
+      String id,
+      ComparableQuantity<ElectricResistance> rSc,
+      ComparableQuantity<ElectricResistance> xSc,
+      ComparableQuantity<Power> sRated,
+      ComparableQuantity<ElectricPotential> vRatedA,
+      ComparableQuantity<ElectricPotential> vRatedB,
+      ComparableQuantity<ElectricConductance> gM,
+      ComparableQuantity<ElectricConductance> bM,
+      ComparableQuantity<Dimensionless> dV,
+      ComparableQuantity<Angle> dPhi,
+      boolean tapSide,
+      int tapNeutr,
+      int tapMin,
+      int tapMax) {
+    super(uuid, id);
+    this.rSc = rSc;
+    this.xSc = xSc;
+    this.sRated = sRated;
+    this.vRatedA = vRatedA;
+    this.vRatedB = vRatedB;
+    this.gM = gM;
+    this.bM = bM;
+    this.dV = dV;
+    this.dPhi = dPhi;
+    this.tapSide = tapSide;
+    this.tapNeutr = tapNeutr;
+    this.tapMin = tapMin;
+    this.tapMax = tapMax;
   }
 
   public ComparableQuantity<ElectricResistance> getrSc() {

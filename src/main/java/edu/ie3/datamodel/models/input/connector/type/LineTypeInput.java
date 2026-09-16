@@ -37,43 +37,15 @@ public class LineTypeInput extends AssetTypeInput {
   private final ComparableQuantity<ElectricPotential> vRated;
 
   /**
-   * @param uuid of the input entity
-   * @param id of this type
-   * @param b Specific phase-to-ground susceptance for this type of line (typically in µS/km)
-   * @param g Specific phase-to-ground conductance for this type of line (typically in µS/km)
-   * @param r Specific resistance for this type of line (typically in Ohm/km)
-   * @param x Specific reactance for this type of line (typically in Ohm/km)
-   * @param iMax Maximum thermal current for this type of line (typically in A)
-   * @param vRated Rated voltage for this type of line
-   */
-  public LineTypeInput(
-      UUID uuid,
-      String id,
-      ComparableQuantity<SpecificConductance> b,
-      ComparableQuantity<SpecificConductance> g,
-      ComparableQuantity<SpecificResistance> r,
-      ComparableQuantity<SpecificResistance> x,
-      ComparableQuantity<ElectricCurrent> iMax,
-      ComparableQuantity<ElectricPotential> vRated) {
-    super(uuid, id);
-    this.b = b;
-    this.g = g;
-    this.r = r;
-    this.x = x;
-    this.iMax = iMax;
-    this.vRated = vRated;
-  }
-
-  /**
-   * @param uuid of the input entity
-   * @param id of this type
-   * @param b Specific phase-to-ground susceptance for this type of line (typically in µS/km)
-   * @param g Specific phase-to-ground conductance for this type of line (typically in µS/km)
-   * @param r Specific resistance for this type of line (typically in Ohm/km)
-   * @param x Specific reactance for this type of line (typically in Ohm/km)
-   * @param iMax Maximum thermal current for this type of line (typically in A)
-   * @param vRated Rated voltage for this type of line
-   * @param additionalInformation That were provided by the source
+   * @param uuid Unique identifier for an entity.
+   * @param id Name or ID of the asset.
+   * @param b Specific phase-to-ground susceptance for this type of line (typically in µS/km).
+   * @param g Specific phase-to-ground conductance for this type of line (typically in µS/km).
+   * @param r Specific resistance for this type of line (typically in Ohm/km).
+   * @param x Specific reactance for this type of line (typically in Ohm/km).
+   * @param iMax Maximum thermal current for this type of line (typically in A).
+   * @param vRated Rated voltage for this type of line (typically in V).
+   * @param additionalInformation
    */
   public LineTypeInput(
       UUID uuid,
@@ -93,6 +65,34 @@ public class LineTypeInput extends AssetTypeInput {
     this.iMax = iMax;
     this.vRated = vRated;
     setAdditionalInformation(additionalInformation);
+  }
+
+  /**
+   * @param uuid Unique identifier for an entity.
+   * @param id Name or ID of the asset.
+   * @param b Specific phase-to-ground susceptance for this type of line (typically in µS/km).
+   * @param g Specific phase-to-ground conductance for this type of line (typically in µS/km).
+   * @param r Specific resistance for this type of line (typically in Ohm/km).
+   * @param x Specific reactance for this type of line (typically in Ohm/km).
+   * @param iMax Maximum thermal current for this type of line (typically in A).
+   * @param vRated Rated voltage for this type of line (typically in V).
+   */
+  public LineTypeInput(
+      UUID uuid,
+      String id,
+      ComparableQuantity<SpecificConductance> b,
+      ComparableQuantity<SpecificConductance> g,
+      ComparableQuantity<SpecificResistance> r,
+      ComparableQuantity<SpecificResistance> x,
+      ComparableQuantity<ElectricCurrent> iMax,
+      ComparableQuantity<ElectricPotential> vRated) {
+    super(uuid, id);
+    this.b = b;
+    this.g = g;
+    this.r = r;
+    this.x = x;
+    this.iMax = iMax;
+    this.vRated = vRated;
   }
 
   public ComparableQuantity<SpecificConductance> getB() {

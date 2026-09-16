@@ -5,8 +5,7 @@
 */
 package edu.ie3.codegen;
 
-import static edu.ie3.codegen.ResolverUtils.resolveClassName;
-import static edu.ie3.codegen.ResolverUtils.resolveType;
+import static edu.ie3.codegen.ResolverUtils.*;
 
 import com.palantir.javapoet.*;
 import java.io.IOException;
@@ -68,13 +67,16 @@ final class ModelGenerator implements HelperMethods {
     for (ModelDefinition model : models.values()) {
       String name = model.name;
 
+      Map<String, ModelDefinition.ComponentDefinition> allComponents =
+          HelperMethods.visibleComponents(model, models);
+
       // only generate a model, if a generation config is defined
       if (!generationConfigs.containsKey(name)) {
         System.out.println("No configuration present for: " + name + " Skipping generation.");
       } else {
         String packageName = modelToPackage.get(name);
 
-        TypeSpec cl = generate(packageName, model, models, generationConfigs);
+        TypeSpec cl = generate(packageName, model, allComponents, models, generationConfigs);
 
         // build the class file and write to it
         JavaFile.builder(packageName, cl)
@@ -90,21 +92,26 @@ final class ModelGenerator implements HelperMethods {
    *
    * @param packageName name of the package
    * @param model to generate
-   * @param models all available models
+   * @param allComponents all available components
    * @param generationConfigs all available generation configs
    */
   private static TypeSpec generate(
       String packageName,
       ModelDefinition model,
+      Map<String, ModelDefinition.ComponentDefinition> allComponents,
       Map<String, ModelDefinition> models,
       Map<String, GenerationConfig> generationConfigs) {
     GenerationConfig genConfig = generationConfigs.get(model.name);
 
+    if (genConfig == null) {
+      genConfig = new GenerationConfig();
+    }
+
     TypeSpec.Builder typeBuilder = TypeSpec.classBuilder(model.name);
 
     // check if we can add Javadoc to the class.
-    if (!genConfig.classJavaDoc.isBlank()) {
-      typeBuilder.addJavadoc(genConfig.classJavaDoc);
+    if (!model.description.isBlank()) {
+      typeBuilder.addJavadoc(model.description);
     }
 
     if (model.isAbstract) {
@@ -112,27 +119,7 @@ final class ModelGenerator implements HelperMethods {
       typeBuilder.addModifiers(Modifier.ABSTRACT);
     }
 
-    if (genConfig.isSealed) {
-      // if the model is sealed, we add the modifier
-      typeBuilder.addModifiers(Modifier.SEALED);
-    }
-
-    if (genConfig.isStatic) {
-      // if the model is static, we add the modifier
-      typeBuilder.addModifiers(Modifier.STATIC);
-    }
-
-    if (genConfig.isFinal) {
-      // if the model is final, we add the modifier
-      typeBuilder.addModifiers(Modifier.FINAL);
-    }
-
-    if (genConfig.isPrivate) {
-      // if the model is private, we add the modifier
-      typeBuilder.addModifiers(Modifier.PRIVATE);
-    } else {
-      typeBuilder.addModifiers(Modifier.PUBLIC);
-    }
+    genConfig.modifiers.forEach(m -> typeBuilder.addModifiers(modifiers.get(m)));
 
     if (model.extendsName != null && !model.extendsName.isBlank()) {
       // if the class extends another model, we add the super class
@@ -145,48 +132,38 @@ final class ModelGenerator implements HelperMethods {
     }
 
     // add all the fields
-    typeBuilder.addFields(getStaticFields(genConfig));
-    typeBuilder.addFields(getFields(model, genConfig.publicFields, genConfig.setters));
+    typeBuilder.addFields(getFields(model, genConfig.setters));
     typeBuilder.addFields(getAdditionalFields(genConfig));
 
-    MethodGenerator methodGenerator = new MethodGenerator(model, genConfig, models);
-    ConstructorGenerator constructorGenerator = new ConstructorGenerator(model, genConfig, models);
+    MethodGenerator methodGenerator = new MethodGenerator(model, genConfig, allComponents);
+    ConstructorGenerator constructorGenerator =
+        new ConstructorGenerator(model, genConfig, allComponents);
 
     // add all the methods
     typeBuilder.addMethods(constructorGenerator.getConstructors());
     typeBuilder.addMethods(methodGenerator.getGetters());
 
-    if (!genConfig.setters.isEmpty()) {
+    if (genConfig.setters) {
       typeBuilder.addMethods(methodGenerator.getSetters());
     }
 
     typeBuilder.addMethods(methodGenerator.getOtherMethods());
 
     // check if we need to add a copy method and copy builder
-    if (genConfig.copy && genConfig.setters.isEmpty()) {
+    if (genConfig.copy && !genConfig.setters) {
       CopyBuilderGenerator copyBuilderGenerator =
-          new CopyBuilderGenerator(packageName, model, genConfig, models);
+          new CopyBuilderGenerator(packageName, model, genConfig, models, allComponents);
 
       // add the method and the copy builder
       typeBuilder.addMethod(copyBuilderGenerator.generateCopyMethod());
       typeBuilder.addType(copyBuilderGenerator.generateCopyBuilder());
     }
 
-    // insert all nested classes
-    for (String nestedClass : genConfig.nested) {
-      TypeSpec nested =
-          TypeSpec.classBuilder(nestedClass)
-              .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-              .superclass(resolveClassName(model.name))
-              .build();
-
-      typeBuilder.addType(nested);
-    }
-
     for (ModelDefinition nested : model.nested) {
       if (generationConfigs.containsKey(nested.name)) {
         typeBuilder.addType(
-            generate(packageName + "." + model.name, nested, models, generationConfigs));
+            generate(
+                packageName + "." + model.name, nested, allComponents, models, generationConfigs));
       }
     }
 
@@ -194,69 +171,25 @@ final class ModelGenerator implements HelperMethods {
   }
 
   /**
-   * Method for getting all the static fields.
+   * Method for getting all the additional fields.
    *
    * @param genConfig generation config to use
    * @return a list of static field definitions
    */
-  private static List<FieldSpec> getStaticFields(GenerationConfig genConfig) {
-    return genConfig.staticFields.stream()
-        .map(
-            staticField -> {
-              FieldSpec.Builder builder =
-                  FieldSpec.builder(
-                      resolveType(staticField.type),
-                      staticField.name,
-                      Modifier.PUBLIC,
-                      Modifier.STATIC,
-                      Modifier.FINAL);
-
-              if (!staticField.javaDoc.isBlank()) {
-                builder.addJavadoc(staticField.javaDoc);
-              }
-
-              if (staticField.className != null) {
-                builder.initializer(
-                    "$T.$L", resolveClassName(staticField.className), staticField.expression);
-              } else {
-                builder.initializer("$L", staticField.expression);
-              }
-
-              return builder.build();
-            })
-        .toList();
-  }
-
   private static List<FieldSpec> getAdditionalFields(GenerationConfig genConfig) {
-    return genConfig.additionalFields.stream()
+    return genConfig.fields.stream()
         .map(
             field -> {
-              FieldSpec.Builder builder =
-                  FieldSpec.builder(resolveType(field.type), field.name, Modifier.FINAL);
+              FieldSpec.Builder builder = FieldSpec.builder(resolveType(field.type), field.name);
 
-              if (!field.javaDoc.isBlank()) {
-                builder.addJavadoc(field.javaDoc);
+              if (!field.description.isBlank()) {
+                builder.addJavadoc(field.description);
               }
 
-              if (field.isProtected) {
-                builder.addModifiers(Modifier.PROTECTED);
-              } else {
-                builder.addModifiers(Modifier.PRIVATE);
-              }
+              field.modifiers.forEach(m -> builder.addModifiers(modifiers.get(m)));
 
-              if (field.isTransient) {
-                builder.addModifiers(Modifier.TRANSIENT);
-              }
-
-              if (field.usableClassName()) {
-                if (field.insert) {
-                  builder.initializer(field.expression, resolveClassName(field.className));
-                } else {
-                  builder.initializer("$T.$L", resolveClassName(field.className), field.expression);
-                }
-              } else {
-                builder.initializer("$L", field.expression);
-              }
+              var modified = modifyExpression(field.expression);
+              builder.initializer(modified.expression(), modified.args());
 
               return builder.build();
             })
@@ -269,27 +202,20 @@ final class ModelGenerator implements HelperMethods {
    * @param model definition to use
    * @return a list of private field definitions
    */
-  private static List<FieldSpec> getFields(
-      ModelDefinition model, List<String> publicFields, List<String> setters) {
+  private static List<FieldSpec> getFields(ModelDefinition model, boolean setter) {
     return model.components.stream()
         .map(
             component -> {
               var builder = FieldSpec.builder(resolveType(component.type), component.name);
 
-              String name = component.name;
-
-              if (publicFields.contains(name)) {
-                builder.addModifiers(Modifier.PUBLIC);
+              if (setter) {
+                builder.addModifiers(Modifier.PRIVATE);
               } else {
-                if (setters.contains(name)) {
-                  builder.addModifiers(Modifier.PRIVATE);
-                } else {
-                  builder.addModifiers(Modifier.PRIVATE, Modifier.FINAL);
-                }
+                builder.addModifiers(Modifier.PRIVATE, Modifier.FINAL);
               }
 
-              if (!component.javaDoc.isBlank()) {
-                builder.addJavadoc(component.javaDoc);
+              if (!component.description.isBlank()) {
+                builder.addJavadoc(component.description);
               }
 
               if (component.isTransient) {

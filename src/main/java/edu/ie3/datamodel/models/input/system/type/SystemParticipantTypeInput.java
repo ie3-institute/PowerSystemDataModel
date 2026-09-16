@@ -14,7 +14,6 @@ import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes the type of a {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput}. */
 public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   /** Capital expense for this type of system participant (typically in €). */
   private final ComparableQuantity<Currency> capex;
@@ -29,12 +28,12 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   private final double cosPhiRated;
 
   /**
-   * @param uuid of the input entity
-   * @param id of this type of system participant
-   * @param capex Captial expense for this type of system participant (typically in €)
-   * @param opex Operating expense for this type of system participant (typically in €/MWh)
-   * @param sRated Rated apparent power
-   * @param cosPhiRated Power factor for this type of system participant
+   * @param uuid Unique identifier for an entity.
+   * @param id Name or ID of the asset.
+   * @param capex Capital expense for this type of system participant (typically in €).
+   * @param opex Operating expense for this type of system participant (typically in €/MWh).
+   * @param sRated Rated apparent power of the type (in kVA).
+   * @param cosPhiRated Power factor for this type of system participant.
    */
   protected SystemParticipantTypeInput(
       UUID uuid,

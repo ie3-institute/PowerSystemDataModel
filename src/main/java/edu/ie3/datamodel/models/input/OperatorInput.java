@@ -18,10 +18,8 @@ public class OperatorInput extends UniqueInputEntity {
   private final String id;
 
   /**
-   * Constructor for an Operator.
-   *
-   * @param uuid Unique identifier
-   * @param id Human readable identifier
+   * @param uuid Unique identifier for an entity.
+   * @param id The id (=name) of this operator.
    */
   public OperatorInput(UUID uuid, String id) {
     super(uuid);
@@ -29,11 +27,9 @@ public class OperatorInput extends UniqueInputEntity {
   }
 
   /**
-   * Constructor for an Operator.
-   *
-   * @param uuid Unique identifier
-   * @param id Human readable identifier
-   * @param additionalInformation That were provided by the source
+   * @param uuid Unique identifier for an entity.
+   * @param id The id (=name) of this operator.
+   * @param additionalInformation
    */
   public OperatorInput(UUID uuid, String id, Map<String, String> additionalInformation) {
     super(uuid);

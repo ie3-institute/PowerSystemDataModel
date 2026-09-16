@@ -12,6 +12,8 @@ import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
@@ -23,6 +25,7 @@ public class ResolverUtils {
   private static final Map<String, ClassName> classes = new HashMap<>();
   private static final Map<String, String> defaultExpressions = new HashMap<>();
   private static final Map<String, CustomType> customTypes = new HashMap<>();
+  private static Pattern pattern;
 
   /**
    * Method for resolving the class name.
@@ -44,8 +47,44 @@ public class ResolverUtils {
    * @param type of the component
    * @return an option for a default expression
    */
-  public static Optional<String> getDefaultExpression(String type) {
-    return Optional.ofNullable(defaultExpressions.get(type));
+  public static String getDefaultExpression(String type) {
+    return defaultExpressions.getOrDefault(type, "null");
+  }
+
+  /**
+   * Checks if a default expression is known for this type.
+   *
+   * @param type given type
+   * @return true if a default expression is known
+   */
+  public static boolean hasDefaultExpression(String type) {
+    return defaultExpressions.containsKey(type);
+  }
+
+  /**
+   * Modifies the given expression. Needed for importing used classes.
+   *
+   * @param expression to modify
+   * @return the modified expression
+   */
+  public static ModifiedExpression modifyExpression(String expression) {
+    StringBuilder builder = new StringBuilder();
+    List<TypeName> types = new ArrayList<>();
+
+    Matcher m = pattern.matcher(expression);
+    int idx = 0;
+    while (m.find()) {
+      builder.append(expression, idx, m.start());
+
+      types.add(resolveType(m.group(1)));
+
+      builder.append("$T");
+      idx = m.end();
+    }
+
+    builder.append(expression.substring(idx));
+
+    return new ModifiedExpression(builder.toString(), types.toArray(TypeName[]::new));
   }
 
   /**
@@ -75,8 +114,25 @@ public class ResolverUtils {
     };
   }
 
+  public record ModifiedExpression(String expression, Object[] args) {}
+
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   // helper method for registering class names and types
+
+  /** Returns a pattern that contains all classes. */
+  private static Pattern buildPattern() {
+    Set<String> keys = new HashSet<>();
+    keys.addAll(classes.keySet());
+    keys.addAll(customTypes.keySet());
+
+    // create a pattern with all known classes
+    String regex =
+        "(?<![\\w$.])("
+            + keys.stream().map(Pattern::quote).reduce((a, b) -> a + "|" + b).orElse("")
+            + ")(?![\\w$])";
+
+    return Pattern.compile(regex);
+  }
 
   private static void add(Class<?> clazz) {
     classes.put(clazz.getSimpleName(), ClassName.get(clazz));
@@ -90,6 +146,8 @@ public class ResolverUtils {
     registerQuantities();
     registerCustomTypes();
     addDefaultExpressions();
+
+    pattern = buildPattern();
   }
 
   static void registerJavaClasses() {

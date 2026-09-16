@@ -10,6 +10,7 @@ import static edu.ie3.codegen.ResolverUtils.resolveType;
 import com.palantir.javapoet.CodeBlock;
 import com.palantir.javapoet.MethodSpec;
 import java.util.*;
+import java.util.function.Function;
 import javax.lang.model.element.Modifier;
 
 /** Class for generating constructors. */
@@ -17,18 +18,61 @@ public final class ConstructorGenerator implements HelperMethods {
 
   private final ModelDefinition model;
   private final GenerationConfig genConfig;
-  private final Map<String, ModelDefinition> models;
+  private final Map<String, ModelDefinition.ComponentDefinition> allComponents;
+
+  private final List<String> ownComponents = new ArrayList<>();
+  public final List<String> fullConstructor;
+  private final Set<List<String>> allConstructors = new HashSet<>();
 
   public ConstructorGenerator(
-      ModelDefinition model, GenerationConfig genConfig, Map<String, ModelDefinition> models) {
+      ModelDefinition model,
+      GenerationConfig genConfig,
+      Map<String, ModelDefinition.ComponentDefinition> allComponents) {
     this.model = model;
     this.genConfig = genConfig;
-    this.models = models;
+    this.allComponents = allComponents;
+
+    model.components.forEach(c -> this.ownComponents.add(c.name));
+
+    List<String> components = new ArrayList<>(allComponents.keySet());
+
+    if (model.isAbstract) {
+      components.remove(ADDITIONAL_INFORMATION);
+    }
+
+    this.fullConstructor = new ArrayList<>(components);
+
+    allConstructors.add(fullConstructor);
+
+    List<String> minParams = new ArrayList<>();
+    List<String> withoutAdditionalInformation = new ArrayList<>(components);
+    withoutAdditionalInformation.remove(ADDITIONAL_INFORMATION);
+
+    for (String name : components) {
+      if (allComponents.get(name).required) {
+        minParams.add(name);
+      }
+    }
+
+    allConstructors.add(minParams);
+    allConstructors.add(withoutAdditionalInformation);
   }
 
   /** Returns all constructors that should be added to the generated class. */
   public List<MethodSpec> getConstructors() {
-    return genConfig.constructors.stream().map(this::generateConstructor).toList();
+    List<MethodSpec> constructors = new ArrayList<>();
+
+    // add default constructors
+    for (List<String> components : allConstructors) {
+      constructors.add(generateConstructor(components));
+    }
+
+    // add additional constructors
+    for (GenerationConfig.ConstructorDefinition def : genConfig.constructors) {
+      constructors.add(generateConstructor(def));
+    }
+
+    return constructors;
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -37,154 +81,198 @@ public final class ConstructorGenerator implements HelperMethods {
   /**
    * Generates a constructor base on the given definition.
    *
-   * @param constructor definition to use.
+   * @param componentNames names of the components to use.
    * @return a constructor method.
    */
-  private MethodSpec generateConstructor(GenerationConfig.ConstructorDefinition constructor) {
-    List<String> components = constructor.components;
-    String[] ordered = components.toArray(String[]::new);
+  private MethodSpec generateConstructor(SequencedCollection<String> componentNames) {
+    // creates the builder
+    MethodSpec.Builder builder = MethodSpec.constructorBuilder();
 
-    // looking for all visible components
-    Map<String, ModelDefinition.ComponentDefinition> visibleComponents =
-        visibleComponents(model, models);
-
-    Map<String, ModelDefinition.ComponentDefinition> parameters = new HashMap<>();
-
-    if (constructor.additionalComponents.isEmpty()) {
-      // since no modification to the parameters was given, we only use the visible components
-      // if a field is not initialized by either a component or a default expression, then an
-      // exception will be thrown
-      resolveParameters(components, visibleComponents, model.name + "." + constructor.name)
-          .forEach(c -> parameters.put(c.name, c));
-    } else {
-      List<String> additional = constructor.additionalComponents.stream().map(c -> c.name).toList();
-
-      // only add the specified components, all other fields need to be initialized by the
-      // additional components and
-      // a constructor modification
-      visibleComponents.values().stream()
-          .filter(c -> components.contains(c.name) && !additional.contains(c.name))
-          .forEach(c -> parameters.put(c.name, c));
-
-      constructor.additionalComponents.forEach(c -> parameters.put(c.name, c));
-    }
-
-    List<ModelDefinition.ComponentDefinition> orderedComponents = new ArrayList<>();
-
-    Modifier modifier;
+    // to have a modifiable list
+    List<String> orderedComponents = new ArrayList<>(componentNames);
 
     // selects the modifier of the constructor
-    if (constructor.isPrivate) {
-      modifier = Modifier.PRIVATE;
-    } else if (!model.isAbstract) {
-      modifier = Modifier.PUBLIC;
+    if (model.isAbstract) {
+      builder.addModifiers(Modifier.PROTECTED);
     } else {
-      modifier = Modifier.PROTECTED;
+      builder.addModifiers(Modifier.PUBLIC);
     }
 
-    // creates the builder
-    MethodSpec.Builder builder = MethodSpec.constructorBuilder().addModifiers(modifier);
+    // stores the ordered components that are used for this constructor
+    List<CodeBlock> orderedSuperArgs = new ArrayList<>();
+    List<CodeBlock> initStatements = new ArrayList<>();
 
-    // add Javadoc if present
-    if (!constructor.javaDoc.isBlank()) {
-      builder.addJavadoc(constructor.javaDoc);
+    // Javadoc builder
+    StringBuilder javaDocBuilder = new StringBuilder();
+
+    for (String name : orderedComponents) {
+      ModelDefinition.ComponentDefinition def = allComponents.get(name);
+
+      // adds the parameter and the initialization
+      addParameter(builder, def);
+      addStatement(orderedSuperArgs, initStatements, name);
+
+      // extends the Javadoc
+      javaDocBuilder
+          .append(" @param ")
+          .append(def.name)
+          .append(" ")
+          .append(def.description)
+          .append("\n");
     }
 
-    // add the components with their type to the parameter list
-    for (String parameterName : ordered) {
-      ModelDefinition.ComponentDefinition parameter = parameters.get(parameterName);
-      builder.addParameter(resolveType(parameter.type), parameter.name);
+    // adds everything to the builder
+    addMissingStatement(initStatements, orderedComponents, allComponents::get);
+    addCode(builder, orderedSuperArgs, initStatements);
 
-      if (model.components.contains(parameter)) {
-        orderedComponents.add(parameter);
-      }
-    }
-
-    // check if we need a super block
-    CodeBlock superArgs;
-    if (model.extendsName != null && constructor.superArgs != null) {
-      List<CodeBlock> argBlocks = new ArrayList<>();
-      for (String arg : constructor.superArgs) {
-        argBlocks.add(CodeBlock.of("$L", arg));
-      }
-      superArgs = CodeBlock.join(argBlocks, ", ");
-      builder.addStatement("super($L)", superArgs);
-    } else if (model.extendsName != null) {
-      // no superCall specified -> require explicit mapping or throw
-      throw new IllegalArgumentException(
-          "Model "
-              + model.name
-              + " requires a superCall config for constructor "
-              + constructor.name);
-    }
-
-    for (ModelDefinition.ComponentDefinition componentDefinition : model.components) {
-      if (!orderedComponents.contains(componentDefinition)) {
-        orderedComponents.add(componentDefinition);
-      }
-    }
-
-    // initializing all necessary fields
-    for (ModelDefinition.ComponentDefinition localField : orderedComponents) {
-      String componentName = localField.name;
-
-      boolean isConstructorParameter =
-          parameters.values().stream().anyMatch(parameter -> parameter.name.equals(componentName));
-
-      if (!isConstructorParameter) {
-        // if a parameter cannot be initialized by the provided constructor arguments, we try to use
-        // a default expression
-        Optional<String> defaultExpression = ResolverUtils.getDefaultExpression(localField.type);
-
-        if (defaultExpression.isPresent() && !defaultExpression.get().isBlank()) {
-          // add the default expression
-          builder.addStatement("this.$L = $L", componentName, defaultExpression.get());
-
-        } else if (!componentName.equals("additionalInformation")
-            && !constructor.constructorModifications.containsKey(componentName)) {
-          // if no default expression was defined and no modification was defined, an exception is
-          // thrown
-          throw new IllegalArgumentException(
-              "Constructor '"
-                  + constructor.name
-                  + "' of "
-                  + model.name
-                  + " does not initialize local field '"
-                  + componentName
-                  + "'.");
-        } else {
-          // since we have a modification, we will insert it here
-          addStatement(
-              builder, componentName, constructor.constructorModifications.get(componentName));
-        }
-
-      } else {
-        // if we have a modification, we will insert it here, else we initialized the field with the
-        // provided value
-        addStatement(
-            builder, componentName, constructor.constructorModifications.get(componentName));
-      }
-    }
-
-    // we add all defined constructor checks
-    constructor.constructorChecks.forEach(c -> addStatement(builder, c));
-
-    boolean hasAdditionalInfoParam =
-        parameters.values().stream().anyMatch(p -> "additionalInformation".equals(p.name));
-
-    if (!constructor.valuesMap.isBlank()) {
-      for (ModelDefinition.ComponentDefinition localField : orderedComponents) {
-        builder.addStatement(
-            "$L.put($S, $L)", constructor.valuesMap, localField.name, localField.name);
-      }
-    }
-
-    if (hasAdditionalInfoParam) {
-      // if the constructor contains additional information, we call the setter
-      builder.addStatement("setAdditionalInformation(additionalInformation)");
-    }
+    // add Javadoc
+    builder.addJavadoc(javaDocBuilder.toString());
 
     // we build the constructor and return it
     return builder.build();
+  }
+
+  /**
+   * Method for generating additional constructors.
+   *
+   * @param def the definition to use
+   * @return a constructor method.
+   */
+  private MethodSpec generateConstructor(GenerationConfig.ConstructorDefinition def) {
+    List<String> orderedComponents = new ArrayList<>();
+    Map<String, ModelDefinition.Parameter> parameters = new HashMap<>();
+
+    def.parameters.forEach(
+        c -> {
+          orderedComponents.add(c.name);
+          parameters.put(c.name, c);
+        });
+
+    // creates the builder
+    MethodSpec.Builder builder = MethodSpec.constructorBuilder();
+
+    // selects the modifier of the constructor
+    if (def.isPrivate) {
+      builder.addModifiers(Modifier.PRIVATE);
+    } else if (model.isAbstract) {
+      builder.addModifiers(Modifier.PROTECTED);
+    } else {
+      builder.addModifiers(Modifier.PUBLIC);
+    }
+
+    // stores the ordered components that are used for this constructor
+    List<CodeBlock> orderedSuperArgs = new ArrayList<>();
+    List<CodeBlock> initStatements = new ArrayList<>();
+
+    // Javadoc builder
+    StringBuilder javaDocBuilder = new StringBuilder();
+
+    for (String name : orderedComponents) {
+      ModelDefinition.Parameter parameter = parameters.get(name);
+
+      // adds the parameter and the initialization
+      addParameter(builder, parameter);
+
+      if (def.codeBlock.isBlank()) {
+        addStatement(orderedSuperArgs, initStatements, name);
+      } else {
+        // we may need to import additional classes
+        var modified = ResolverUtils.modifyExpression(def.codeBlock);
+        initStatements.add(CodeBlock.of(modified.expression(), modified.args()));
+      }
+
+      // extends the Javadoc
+      javaDocBuilder
+          .append(" @param ")
+          .append(parameter.name)
+          .append(" ")
+          .append(parameter.description)
+          .append("\n");
+    }
+
+    // adds everything to the builder
+    addMissingStatement(initStatements, orderedComponents, parameters::get);
+    addCode(builder, orderedSuperArgs, initStatements);
+
+    // add Javadoc
+    builder.addJavadoc(javaDocBuilder.toString());
+
+    // we build the constructor and return it
+    return builder.build();
+  }
+
+  /**
+   * Method for adding the code blocks to the builder
+   *
+   * @param builder of the constructor
+   * @param orderedSuperArgs super arguments
+   * @param initStatements initialization statements
+   */
+  private void addCode(
+      MethodSpec.Builder builder,
+      List<CodeBlock> orderedSuperArgs,
+      List<CodeBlock> initStatements) {
+    // check if we need to add super args
+    if (!orderedSuperArgs.isEmpty()) {
+      builder.addStatement("super($L)", CodeBlock.join(orderedSuperArgs, ", "));
+    }
+
+    // add field init code
+    initStatements.forEach(c -> builder.addStatement("$L", c));
+  }
+
+  /**
+   * Method for adding a parameter to the constructor.
+   *
+   * @param builder of the constructor
+   * @param def the parameter definition to use
+   */
+  private void addParameter(MethodSpec.Builder builder, ModelDefinition.Parameter def) {
+    // add the component to the constructor
+    builder.addParameter(resolveType(def.type), def.name);
+  }
+
+  /**
+   * Adds a component to the arguments.
+   *
+   * @param superArgs list of super arguments
+   * @param initStatements list of initialization statements
+   * @param name of the field
+   */
+  private void addStatement(
+      List<CodeBlock> superArgs, List<CodeBlock> initStatements, String name) {
+    // initialize the component
+    if (!ownComponents.contains(name) && !name.equals(ADDITIONAL_INFORMATION)) {
+      // we need to add this component to the super args
+      superArgs.add(CodeBlock.of("$L", name));
+    } else {
+
+      if (name.equals(ADDITIONAL_INFORMATION)) {
+        // if the constructor contains additional information, we call the setter
+        initStatements.add(CodeBlock.of("setAdditionalInformation(additionalInformation)"));
+      } else {
+        // init the field
+        initStatements.add(CodeBlock.of("this.$L = " + name, name));
+      }
+    }
+  }
+
+  /**
+   * Method for checking and adding missing initialization statements.
+   *
+   * @param initStatements list of initialization statements
+   * @param orderedComponents list of added components
+   * @param fcn to retrieve a parameter definition
+   */
+  private void addMissingStatement(
+      List<CodeBlock> initStatements,
+      List<String> orderedComponents,
+      Function<String, ModelDefinition.Parameter> fcn) {
+    for (String c : ownComponents) {
+      if (!orderedComponents.contains(c)) {
+        initStatements.add(
+            CodeBlock.of("this.$L = " + ResolverUtils.getDefaultExpression(fcn.apply(c).type), c));
+      }
+    }
   }
 }

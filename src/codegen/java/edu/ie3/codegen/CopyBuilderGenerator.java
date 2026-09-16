@@ -20,7 +20,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
   private final String packageName;
   private final ModelDefinition model;
   private final GenerationConfig genConfig;
-  private final Map<String, ModelDefinition> models;
+  private final Map<String, ModelDefinition.ComponentDefinition> allComponents;
   private final ClassName builderClass;
   private final TypeVariableName builderTypeVariable = TypeVariableName.get("B");
   private final boolean hasParent;
@@ -31,18 +31,19 @@ public final class CopyBuilderGenerator implements HelperMethods {
       String packageName,
       ModelDefinition model,
       GenerationConfig genConfig,
-      Map<String, ModelDefinition> models) {
+      Map<String, ModelDefinition> models,
+      Map<String, ModelDefinition.ComponentDefinition> allComponents) {
     this.packageName = packageName;
     this.model = model;
     this.genConfig = genConfig;
-    this.models = models;
+    this.allComponents = allComponents;
 
     this.builderClass = copyBuilderClassName(model);
 
     this.hasParent = model.extendsName != null && !model.extendsName.isBlank();
 
     if (hasParent) {
-      this.parent = getParent(model.extendsName, models);
+      this.parent = HelperMethods.getParent(model.extendsName, models);
       this.parentBuilderClass = copyBuilderClassName(parent);
     }
   }
@@ -91,53 +92,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.ABSTRACT)
             .addTypeVariable(TypeVariableName.get("B", ownParameterizedBuilder));
 
-    // add the private fields to the copy builder
-    for (ModelDefinition.ComponentDefinition component : model.components) {
-      builder.addField(generateCopyBuilderField(component));
-    }
-
-    // generate the constructor of the copy builder
-    builder.addMethod(generateCopyBuilderConstructor(model));
-
-    // generate getters and setters for the copy builder
-    for (ModelDefinition.ComponentDefinition component : model.components) {
-      builder.addMethod(generateCopyBuilderSetter(component, builderTypeVariable));
-      builder.addMethod(generateCopyBuilderGetter(component));
-    }
-
-    // check if we need to add additional methods
-    for (GenerationConfig.MethodInsert insert : genConfig.copyBuilderAdditionalMethods) {
-      var methodBuilder =
-          MethodSpec.methodBuilder(insert.name)
-              .returns(builderTypeVariable)
-              .addModifiers(Modifier.PUBLIC);
-
-      // add the parameters to the method
-      for (ModelDefinition.Parameter parameter : insert.parameters) {
-        methodBuilder.addParameter(resolveType(parameter.type), parameter.name);
-      }
-
-      // add Javadoc if present
-      if (!insert.javaDoc.isBlank()) {
-        methodBuilder.addJavadoc(insert.javaDoc);
-      }
-
-      if (insert.isAbstract) {
-        // if the method should be abstract, we need to add the modifier
-        methodBuilder.addModifiers(Modifier.ABSTRACT);
-
-      } else {
-        if (insert.annotation) {
-          // add an annotation if needed
-          methodBuilder.addAnnotation(Override.class);
-        }
-
-        addStatement(methodBuilder, insert);
-        methodBuilder.addStatement("return thisInstance()");
-      }
-
-      builder.addMethod(methodBuilder.build());
-    }
+    addCommonElements(builder, builderTypeVariable);
 
     // build the needed methods
     var thisInstanceBuilder =
@@ -174,7 +129,6 @@ public final class CopyBuilderGenerator implements HelperMethods {
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
 
     if (hasParent) {
-
       if (parent.isAbstract) {
         TypeName parentBuilderType = ParameterizedTypeName.get(parentBuilderClass, builderClass);
         builder.superclass(parentBuilderType);
@@ -183,45 +137,7 @@ public final class CopyBuilderGenerator implements HelperMethods {
       }
     }
 
-    // add the private fields to the copy builder
-    for (ModelDefinition.ComponentDefinition component : model.components) {
-      builder.addField(generateCopyBuilderField(component));
-    }
-
-    // generate the constructor of the copy builder
-    builder.addMethod(generateCopyBuilderConstructor(model));
-
-    // generate getters and setters for the copy builder
-    for (ModelDefinition.ComponentDefinition component : model.components) {
-      builder.addMethod(generateCopyBuilderSetter(component, builderClass));
-      builder.addMethod(generateCopyBuilderGetter(component));
-    }
-
-    // check if we need to add additional methods
-    for (GenerationConfig.MethodInsert insert : genConfig.copyBuilderAdditionalMethods) {
-      var methodBuilder =
-          MethodSpec.methodBuilder(insert.name).returns(builderClass).addModifiers(Modifier.PUBLIC);
-
-      if (insert.annotation) {
-        // add an annotation if needed
-        methodBuilder.addAnnotation(Override.class);
-      }
-
-      // add the parameters to the method
-      for (ModelDefinition.Parameter parameter : insert.parameters) {
-        methodBuilder.addParameter(resolveType(parameter.type), parameter.name);
-      }
-
-      // add Javadoc if present
-      if (!insert.comment.isBlank()) {
-        methodBuilder.addComment(insert.comment);
-      }
-
-      addStatement(methodBuilder, insert);
-      methodBuilder.addStatement("return thisInstance()");
-
-      builder.addMethod(methodBuilder.build());
-    }
+    addCommonElements(builder, builderClass);
 
     // add the model constructor call
     builder.addMethod(generateConcreteBuilderBuildMethod(model));
@@ -237,6 +153,60 @@ public final class CopyBuilderGenerator implements HelperMethods {
 
     // build and return the copy builder
     return builder.build();
+  }
+
+  /**
+   * Method for adding the common elements of a copy builder.
+   *
+   * @param builder the builder of the class
+   * @param returnType the return type of the methods
+   */
+  private void addCommonElements(TypeSpec.Builder builder, TypeName returnType) {
+    // add the private fields to the copy builder
+    for (ModelDefinition.ComponentDefinition component : model.components) {
+      builder.addField(generateCopyBuilderField(component));
+    }
+
+    // generate the constructor of the copy builder
+    builder.addMethod(generateCopyBuilderConstructor(model));
+
+    // generate getters and setters for the copy builder
+    for (ModelDefinition.ComponentDefinition component : model.components) {
+      builder.addMethod(generateCopyBuilderSetter(component, returnType));
+      builder.addMethod(generateCopyBuilderGetter(component));
+    }
+
+    // check if we need to add additional methods
+    for (GenerationConfig.MethodDefinition insert : genConfig.copyBuilderMethods) {
+      var methodBuilder =
+          MethodSpec.methodBuilder(insert.name).returns(returnType).addModifiers(Modifier.PUBLIC);
+
+      // add the parameters to the method
+      for (ModelDefinition.Parameter parameter : insert.parameters) {
+        methodBuilder.addParameter(resolveType(parameter.type), parameter.name);
+      }
+
+      // add Javadoc if present
+      if (!insert.description.isBlank()) {
+        methodBuilder.addJavadoc(insert.description);
+      }
+
+      if (insert.modifiers.contains("abstract")) {
+        // if the method should be abstract, we need to add the modifier
+        methodBuilder.addModifiers(Modifier.ABSTRACT);
+
+      } else {
+        if (insert.annotation) {
+          // add an annotation if needed
+          methodBuilder.addAnnotation(Override.class);
+        }
+
+        addStatement(methodBuilder, insert);
+        methodBuilder.addStatement("return thisInstance()");
+      }
+
+      builder.addMethod(methodBuilder.build());
+    }
   }
 
   /**
@@ -335,35 +305,6 @@ public final class CopyBuilderGenerator implements HelperMethods {
   }
 
   /**
-   * Method for selecting the concrete model constructor.
-   *
-   * @param model definition to use
-   * @return the selected constructor
-   */
-  private GenerationConfig.ConstructorDefinition selectCopyConstructor(
-      ModelDefinition model, Map<String, ModelDefinition.ComponentDefinition> visible) {
-    List<String> requiredComponentNames =
-        visible.values().stream()
-            .map(c -> c.name)
-            .filter(name -> !"additionalInformation".equals(name))
-            .filter(name -> !model.unsupported.contains(name))
-            .toList();
-
-    // selecting the constructor
-    return genConfig.constructors.stream()
-        .filter(constructor -> constructor.components.containsAll(requiredComponentNames))
-        .max(java.util.Comparator.comparingInt(constructor -> constructor.components.size()))
-        .orElseThrow(
-            () ->
-                new IllegalArgumentException(
-                    "No constructor of "
-                        + model.name
-                        + " can be used by its CopyBuilder. "
-                        + "Expected a constructor containing at least: "
-                        + requiredComponentNames));
-  }
-
-  /**
    * Method for generating the build method implementation.
    *
    * @param model definition to use
@@ -376,12 +317,6 @@ public final class CopyBuilderGenerator implements HelperMethods {
     // get a list of all components
     List<String> components = model.components.stream().map(c -> c.name).toList();
 
-    // looking for visible components.
-    Map<String, ModelDefinition.ComponentDefinition> visible = visibleComponents(model, models);
-
-    // get the constructor definition
-    GenerationConfig.ConstructorDefinition constructor = selectCopyConstructor(model, visible);
-
     // create the method builder
     MethodSpec.Builder builder =
         MethodSpec.methodBuilder("build")
@@ -392,8 +327,8 @@ public final class CopyBuilderGenerator implements HelperMethods {
     List<CodeBlock> constructorArguments = new ArrayList<>();
 
     // add the constructor arguments
-    for (String parameterName : constructor.components) {
-      ModelDefinition.ComponentDefinition component = visible.get(parameterName);
+    for (String parameterName : allComponents.keySet()) {
+      ModelDefinition.ComponentDefinition component = allComponents.get(parameterName);
 
       if (component == null) {
         // throw exception if the parament is not visible

@@ -3,13 +3,16 @@ datamodel:
   models:
     UniqueEntity:
       name: UniqueEntity
+      description: "Supplies every subclass with a generated UUID, making it unique."
       components:
         - name: uuid
           type: UUID
+          description: "Unique identifier for an entity."
 
   models.input:
     UniqueInputEntity:
       name: UniqueInputEntity
+      description: "Functionless class to describe that all subclasses are unique input classes."
       extends: UniqueEntity
       components:
         - name: additionalInformation
@@ -19,30 +22,32 @@ datamodel:
 
     AssetInput:
       name: AssetInput
+      description: "Describes a grid asset under the assumption that every asset could be operable."
       extends: UniqueInputEntity
       components:
         - name: id
           type: String
-          javaDoc: "Name or ID of the asset."
+          description: "Name or ID of the asset."
         - name: operator
           type: OperatorInput
-          required: true # TODO: Change this to false
+          required: false
           nested: true
-          javaDoc: "The operator of this asset."
+          description: "The operator of this asset."
         - name: operationTime
           type: OperationTime
           keys: [operatesFrom, operatesUntil]
-          required: true # TODO: Change this to false
-          javaDoc: "Time for which the entity is operated."
+          required: false
+          description: "Time for which the entity is operated."
 
     AssetTypeInput:
       name: AssetTypeInput
+      description: "Describes the type of {@link edu.ie3.datamodel.models.input.AssetInput}."
       extends: UniqueInputEntity
       components:
         - name: id
           type: String
           required: true
-          javaDoc: "Name or ID of the asset."
+          description: "Name or ID of the asset."
 
     EmInput:
       name: EmInput
@@ -51,12 +56,12 @@ datamodel:
       components:
         - name: controlStrategy
           type: String
-          javaDoc: "Reference to the control strategy to be used for this model."
+          description: "Reference to the control strategy to be used for this model."
         - name: controllingEm
           type: EmInput
           nested: true
           required: false
-          javaDoc: "Optional UUID of the parent {@link EmInput} that is controlling this em unit. If null, this em
+          description: "Optional UUID of the parent {@link EmInput} that is controlling this em unit. If null, this em
                   unit is not em-controlled."
 
     IdCoordinateInput:
@@ -75,50 +80,52 @@ datamodel:
       components:
         - name: node
           type: NodeInput
-          javaDoc: "Grid node, the asset is attached to."
+          description: "Grid node, the asset is attached to."
         - name: vMag
           type: bool
-          javaDoc: "True, if the voltage magnitude is measured."
+          description: "True, if the voltage magnitude is measured."
         - name: vAng
           type: bool
-          javaDoc: "True, if the voltage angle is measured."
+          description: "True, if the voltage angle is measured."
         - name: p
           type: bool
-          javaDoc: "True, if the nodal residual active power is measured."
+          description: "True, if the nodal residual active power is measured."
         - name: q
           type: bool
-          javaDoc: "True, if the reactive power is measured."
+          description: "True, if the reactive power is measured."
 
     NodeInput:
       name: NodeInput
+      description: "Describes an electrical grid node, that other assets can connect to."
       abstract: false
       extends: AssetInput
       components:
         - name: vTarget
           type: Dimensionless
-          javaDoc: "Target voltage magnitude of the node with regard to its rated voltage (typically in p.u.)."
+          description: "Target voltage magnitude of the node with regard to its rated voltage (typically in p.u.)."
         - name: slack
           type: bool
-          javaDoc: "Is this node a slack node?"
+          description: "Is this node a slack node?"
         - name: geoPosition
           type: Point
-          javaDoc: "The coordinates of this node, especially relevant for geo-dependant systems, that are connected to this node."
+          description: "The coordinates of this node, especially relevant for geo-dependant systems, that are connected to this node."
         - name: voltLvl
           type: VoltageLevel
           keys: [voltLvl, vRated]
-          javaDoc: "Voltage level of this node."
+          description: "Voltage level of this node."
         - name: subnet
           type: int
-          javaDoc: "Subgrid of this node."
+          description: "Subgrid of this node."
 
     OperatorInput:
       name: OperatorInput
+      description: "Describes an operator, that operates assets."
       abstract: false
       extends: UniqueInputEntity
       components:
         - name: id
           type: String
-          javaDoc: "The id (=name) of this operator."
+          description: "The id (=name) of this operator."
 
   models.input.connector:
     ConnectorInput:
@@ -128,14 +135,14 @@ datamodel:
         - name: nodeA
           type: NodeInput
           nested: true
-          javaDoc: "Grid node at one side of the connector."
+          description: "Grid node at one side of the connector."
         - name: nodeB
           type: NodeInput
           nested: true
-          javaDoc: "Grid node at the other side of the connector."
+          description: "Grid node at the other side of the connector."
         - name: parallelDevices
           type: int
-          javaDoc: "Amount of parallel devices."
+          description: "Amount of parallel devices."
 
     LineInput:
       name: LineInput
@@ -145,16 +152,16 @@ datamodel:
         - name: type
           type: LineTypeInput
           nested: true
-          javaDoc: "Type of this line, containing default values for lines of this kind."
+          description: "Type of this line, containing default values for lines of this kind."
         - name: length
           type: Length
-          javaDoc: "Length of this line."
+          description: "Length of this line."
         - name: geoPosition
           type: LineString
-          javaDoc: "Coordinates of this line."
+          description: "Coordinates of this line."
         - name: olmCharacteristic
           type: OlmCharacteristicInput
-          javaDoc: "Description of an optional weather dependent operation curve."
+          description: "Description of an optional weather dependent operation curve."
 
     SwitchInput:
       name: SwitchInput
@@ -164,7 +171,7 @@ datamodel:
       components:
         - name: closed
           type: bool
-          javaDoc: "Is the switching state 'closed'?"
+          description: "Is the switching state 'closed'?"
 
     TransformerInput:
       name: TransformerInput
@@ -172,10 +179,10 @@ datamodel:
       components:
         - name: tapPos
           type: int
-          javaDoc: "Tap position of this transformer."
+          description: "Tap position of this transformer."
         - name: autoTap
           type: bool
-          javaDoc: "True, if the tap position of the transformer is adapted automatically."
+          description: "True, if the tap position of the transformer is adapted automatically."
 
     Transformer2WInput:
       name: Transformer2WInput
@@ -185,7 +192,7 @@ datamodel:
         - name: type
           type: Transformer2WTypeInput
           nested: true
-          javaDoc: "Type of this 2W transformer, containing default values for transformers of this kind."
+          description: "Type of this 2W transformer, containing default values for transformers of this kind."
 
     Transformer3WInput:
       name: Transformer3WInput
@@ -195,15 +202,15 @@ datamodel:
         - name: type
           type: Transformer3WTypeInput
           nested: true
-          javaDoc: "Type of this 3W transformer, containing default values for transformers of this kind."
+          description: "Type of this 3W transformer, containing default values for transformers of this kind."
         - name: nodeC
           type: NodeInput
           nested: true
-          javaDoc: "The lower voltage node."
+          description: "The lower voltage node."
         - name: nodeInternal
           type: NodeInput
           nested: true
-          javaDoc: "Internal node of the transformers T equivalent circuit."
+          description: "Internal node of the transformers T equivalent circuit."
 
   models.input.connector.type:
     CableTypeInput:
@@ -285,27 +292,28 @@ datamodel:
 
     LineTypeInput:
       name: LineTypeInput
+      description: "Describes the type of {@link edu.ie3.datamodel.models.input.connector.LineInput}."
       extends: AssetTypeInput
       abstract: false
       components:
         - name: b
           type: SpecificConductance
-          javaDoc: "Specific phase-to-ground susceptance for this type of line (typically in µS/km)."
+          description: "Specific phase-to-ground susceptance for this type of line (typically in µS/km)."
         - name: g
           type: SpecificConductance
-          javaDoc: "Specific phase-to-ground conductance for this type of line (typically in µS/km)."
+          description: "Specific phase-to-ground conductance for this type of line (typically in µS/km)."
         - name: r
           type: SpecificResistance
-          javaDoc: "Specific resistance for this type of line (typically in Ohm/km)."
+          description: "Specific resistance for this type of line (typically in Ohm/km)."
         - name: x
           type: SpecificResistance
-          javaDoc: "Specific reactance for this type of line (typically in Ohm/km)."
+          description: "Specific reactance for this type of line (typically in Ohm/km)."
         - name: iMax
           type: ElectricCurrent
-          javaDoc: "Maximum thermal current for this type of line (typically in A)."
+          description: "Maximum thermal current for this type of line (typically in A)."
         - name: vRated
           type: ElectricPotential
-          javaDoc: "Rated voltage for this type of line (typically in V)."
+          description: "Rated voltage for this type of line (typically in V)."
 
     ScreenLayerInput:
       name: ScreenLayerInput
@@ -337,129 +345,132 @@ datamodel:
 
     Transformer2WTypeInput:
       name: Transformer2WTypeInput
+      description: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput}."
       extends: AssetTypeInput
       abstract: false
       components:
         - name: rSc
           type: ElectricResistance
-          javaDoc: "Short circuit resistance (typically in Ohm)."
+          description: "Short circuit resistance (typically in Ohm)."
         - name: xSc
           type: ElectricResistance
-          javaDoc: "Short circuit reactance (typically in Ohm)."
+          description: "Short circuit reactance (typically in Ohm)."
         - name: sRated
           type: Power
-          javaDoc: "Rated apparent power (typically in kVA)."
+          description: "Rated apparent power (typically in kVA)."
         - name: vRatedA
           type: ElectricPotential
-          javaDoc: "Rated voltage of the high voltage winding (typically in kV)."
+          description: "Rated voltage of the high voltage winding (typically in kV)."
         - name: vRatedB
           type: ElectricPotential
-          javaDoc: "Rated voltage of the low voltage winding (typically in kV)."
+          description: "Rated voltage of the low voltage winding (typically in kV)."
         - name: gM
           type: ElectricConductance
-          javaDoc: "Phase-to-ground conductance (typically in nS)."
+          description: "Phase-to-ground conductance (typically in nS)."
         - name: bM
           type: ElectricConductance
-          javaDoc: "Phase-to-ground susceptance (typically in nS)."
+          description: "Phase-to-ground susceptance (typically in nS)."
         - name: dV
           type: Percent
-          javaDoc: "Voltage magnitude deviation per tap position (typically in %)."
+          description: "Voltage magnitude deviation per tap position (typically in %)."
         - name: dPhi
           type: DegreeGeom
-          javaDoc: "Voltage angle deviation per tap position (typically in °)."
+          description: "Voltage angle deviation per tap position (typically in °)."
         - name: tapSide
           type: bool
-          javaDoc: "Selection of winding, where the tap changer is installed. Low voltage, if true."
+          description: "Selection of winding, where the tap changer is installed. Low voltage, if true."
         - name: tapNeutr
           type: int
-          javaDoc: "Neutral tap position."
+          description: "Neutral tap position."
         - name: tapMin
           type: int
-          javaDoc: "Minimum available tap position."
+          description: "Minimum available tap position."
         - name: tapMax
           type: int
-          javaDoc: "Maximum available tap position."
+          description: "Maximum available tap position."
 
     Transformer3WTypeInput:
       name: Transformer3WTypeInput
+      description: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer3WInput}."
       extends: AssetTypeInput
       abstract: false
       components:
         - name: sRatedA
           type: Power
-          javaDoc: "Rated apparent power of the high voltage winding (typically in kVA)."
+          description: "Rated apparent power of the high voltage winding (typically in kVA)."
         - name: sRatedB
           type: Power
-          javaDoc: "Rated apparent power of the medium voltage winding (typically in kVA)."
+          description: "Rated apparent power of the medium voltage winding (typically in kVA)."
         - name: sRatedC
           type: Power
-          javaDoc: "Rated apparent power of the low voltage windings (typically in kVA)."
+          description: "Rated apparent power of the low voltage windings (typically in kVA)."
         - name: vRatedA
           type: ElectricPotential
-          javaDoc: "Rated voltage of the high voltage winding (typically in kV)."
+          description: "Rated voltage of the high voltage winding (typically in kV)."
         - name: vRatedB
           type: ElectricPotential
-          javaDoc: "Rated voltage of the medium voltage winding (typically in kV)."
+          description: "Rated voltage of the medium voltage winding (typically in kV)."
         - name: vRatedC
           type: ElectricPotential
-          javaDoc: "Rated voltage of the low voltage winding (typically in kV)."
+          description: "Rated voltage of the low voltage winding (typically in kV)."
         - name: rScA
           type: ElectricResistance
-          javaDoc: "Short-circuit resistance of the high voltage winding (typically in Ohm)."
+          description: "Short-circuit resistance of the high voltage winding (typically in Ohm)."
         - name: rScB
           type: ElectricResistance
-          javaDoc: "Short-circuit resistance of the medium voltage winding (typically in Ohm)."
+          description: "Short-circuit resistance of the medium voltage winding (typically in Ohm)."
         - name: rScC
           type: ElectricResistance
-          javaDoc: "Short-circuit resistance of the low voltage winding (typically in Ohm)."
+          description: "Short-circuit resistance of the low voltage winding (typically in Ohm)."
         - name: xScA
           type: ElectricResistance
-          javaDoc: "Short-circuit reactance of the high voltage winding (typically in Ohm)."
+          description: "Short-circuit reactance of the high voltage winding (typically in Ohm)."
         - name: xScB
           type: ElectricResistance
-          javaDoc: "Short-circuit reactance of the medium voltage winding (typically in Ohm)."
+          description: "Short-circuit reactance of the medium voltage winding (typically in Ohm)."
         - name: xScC
           type: ElectricResistance
-          javaDoc: "Short-circuit reactance of the low voltage winding (typically in Ohm)."
+          description: "Short-circuit reactance of the low voltage winding (typically in Ohm)."
         - name: gM
           type: ElectricConductance
-          javaDoc: "Phase-to-ground conductance (typically in nS)."
+          description: "Phase-to-ground conductance (typically in nS)."
         - name: bM
           type: ElectricConductance
-          javaDoc: "Phase-to-ground susceptance (typically in nS)."
+          description: "Phase-to-ground susceptance (typically in nS)."
         - name: dV
           type: Percent
-          javaDoc: "Voltage magnitude deviation per tap position (typically in %)."
+          description: "Voltage magnitude deviation per tap position (typically in %)."
         - name: dPhi
           type: DegreeGeom
-          javaDoc: "Voltage angle deviation per tap position (typically in °)."
+          description: "Voltage angle deviation per tap position (typically in °)."
         - name: tapNeutr
           type: int
-          javaDoc: "Neutral tap position."
+          description: "Neutral tap position."
         - name: tapMin
           type: int
-          javaDoc: "Minimum available tap position."
+          description: "Minimum available tap position."
         - name: tapMax
           type: int
-          javaDoc: "Maximum available tap position."
+          description: "Maximum available tap position."
 
   models.input.system:
     SystemParticipantInput:
       name: SystemParticipantInput
+      description: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput}."
       extends: AssetInput
       components:
         - name: node
           type: NodeInput
           nested: true
-          javaDoc: "The node that the asset is connected to."
+          description: "The node that the asset is connected to."
         - name: qCharacteristics
           type: ReactivePowerCharacteristic
-          javaDoc: "Description of a reactive power characteristic. For details see further documentation."
+          description: "Description of a reactive power characteristic. For details see further documentation."
         - name: controllingEm
           type: EmInput
           nested: true
           required: false
-          javaDoc: "Optional {@link EmInput} that is controlling this system participant. If null, this system participant is not em-controlled."
+          description: "Optional {@link EmInput} that is controlling this system participant. If null, this system participant is not em-controlled."
 
     AcInput:
       name: AcInput
@@ -469,11 +480,11 @@ datamodel:
         - name: type
           type: AcTypeInput
           nested: true
-          javaDoc: "Type of this air condition, containing default values for air condition of this kind."
+          description: "Type of this air condition, containing default values for air condition of this kind."
         - name: thermalBus
           type: ThermalBusInput
           nested: true
-          javaDoc: "The thermal bus, this model is connected to."
+          description: "The thermal bus, this model is connected to."
 
     BmInput:
       name: BmInput
@@ -483,13 +494,13 @@ datamodel:
         - name: type
           type: BmTypeInput
           nested: true
-          javaDoc: "Type of this BM plant, containing default values for BM plants of this kind."
+          description: "Type of this BM plant, containing default values for BM plants of this kind."
         - name: costControlled
           type: bool
-          javaDoc: "Does this plant increase the output power if the revenues exceed the energy generation costs?"
+          description: "Does this plant increase the output power if the revenues exceed the energy generation costs?"
         - name: feedInTariff
           type: EnergyPrice
-          javaDoc: "Granted feed in tariff (typically in €/MWh)."
+          description: "Granted feed in tariff (typically in €/MWh)."
 
     ChpInput:
       name: ChpInput
@@ -499,15 +510,15 @@ datamodel:
         - name: thermalBus
           type: ThermalBusInput
           nested: true
-          javaDoc: "The thermal bus, this model is connected to."
+          description: "The thermal bus, this model is connected to."
         - name: type
           type: ChpTypeInput
           nested: true
-          javaDoc: "Type of this CHP plant, containing default values for CHP plants of this kind."
+          description: "Type of this CHP plant, containing default values for CHP plants of this kind."
         - name: thermalStorage
           type: ThermalStorageInput
           nested: true
-          javaDoc: "Thermal storage model."
+          description: "Thermal storage model."
 
     EvcsInput:
       name: EvcsInput
@@ -516,19 +527,19 @@ datamodel:
       components:
         - name: type
           type: ChargingPointType
-          javaDoc: "Type of all installed charging points."
+          description: "Type of all installed charging points."
         - name: chargingPoints
           type: int
-          javaDoc: "Number of installed charging points."
+          description: "Number of installed charging points."
         - name: cosPhiRated
           type: double
-          javaDoc: "Rated power factor."
+          description: "Rated power factor."
         - name: locationType
           type: EvcsLocationType
-          javaDoc: "Evcs location type."
+          description: "Evcs location type."
         - name: v2gSupport
           type: bool
-          javaDoc: "Whether charging station supports vehicle to grid."
+          description: "Whether charging station supports vehicle to grid."
 
     EvInput:
       name: EvInput
@@ -538,7 +549,7 @@ datamodel:
         - name: type
           type: EvTypeInput
           nested: true
-          javaDoc: "Type of this EV, containing default values for EVs of this kind."
+          description: "Type of this EV, containing default values for EVs of this kind."
 
     FixedFeedInInput:
       name: FixedFeedInInput
@@ -547,10 +558,10 @@ datamodel:
       components:
         - name: sRated
           type: Power
-          javaDoc: "Rated apparent power (typically in kVA)."
+          description: "Rated apparent power (typically in kVA)."
         - name: cosPhiRated
           type: double
-          javaDoc: "Rated power factor."
+          description: "Rated power factor."
 
     HpInput:
       name: HpInput
@@ -560,11 +571,11 @@ datamodel:
         - name: type
           type: HpTypeInput
           nested: true
-          javaDoc: "Type of this heat pump, containing default values for heat pump of this kind."
+          description: "Type of this heat pump, containing default values for heat pump of this kind."
         - name: thermalBus
           type: ThermalBusInput
           nested: true
-          javaDoc: "The thermal bus, this model is connected to."
+          description: "The thermal bus, this model is connected to."
 
     LoadInput:
       name: LoadInput
@@ -573,18 +584,18 @@ datamodel:
       components:
         - name: loadProfile
           type: PowerProfileKey
-          javaDoc: "Reference to a load profile to use for the model. If you intend to assign specific values,\n
+          description: "Reference to a load profile to use for the model. If you intend to assign specific values,\n
                  create an timeSeries and assign it via an external mapping (e.g. by providing a global time\n
                  series for a specific load profile) to this model."
         - name: eConsAnnual
           type: Energy
-          javaDoc: "Annually consumed energy (typically in kWh)."
+          description: "Annually consumed energy (typically in kWh)."
         - name: sRated
           type: Power
-          javaDoc: "Active Power (typically in kVA)."
+          description: "Active Power (typically in kVA)."
         - name: cosPhiRated
           type: double
-          javaDoc: "Rated power factor."
+          description: "Rated power factor."
 
     PvInput:
       name: PvInput
@@ -593,28 +604,28 @@ datamodel:
       components:
         - name: albedo
           type: double
-          javaDoc: "Albedo value (typically a value between 0 and 1)."
+          description: "Albedo value (typically a value between 0 and 1)."
         - name: azimuth
           type: DegreeGeom
-          javaDoc: "Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)."
+          description: "Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)."
         - name: etaConv
           type: Percent
-          javaDoc: "Efficiency of converter (typically in %)."
+          description: "Efficiency of converter (typically in %)."
         - name: elevationAngle
           type: DegreeGeom
-          javaDoc: "Tilted inclination from horizontal (typically in °)."
+          description: "Tilted inclination from horizontal (typically in °)."
         - name: kG
           type: double
-          javaDoc: "Generator correction factor merging different technical influences."
+          description: "Generator correction factor merging different technical influences."
         - name: kT
           type: double
-          javaDoc: "Temperature correction factor."
+          description: "Temperature correction factor."
         - name: sRated
           type: Power
-          javaDoc: "Rated apparent power (typically in kVA)."
+          description: "Rated apparent power (typically in kVA)."
         - name: cosPhiRated
           type: double
-          javaDoc: "Rated power factor."
+          description: "Rated power factor."
 
     StorageInput:
       name: StorageInput
@@ -624,7 +635,7 @@ datamodel:
         - name: type
           type: StorageTypeInput
           nested: true
-          javaDoc: "Type of this storage, containing default values for storages of this kind."
+          description: "Type of this storage, containing default values for storages of this kind."
 
     WecInput:
       name: WecInput
@@ -634,7 +645,7 @@ datamodel:
         - name: type
           type: WecTypeInput
           nested: true
-          javaDoc: "Type of this WEC, containing default values for WEC assets of this kind."
+          description: "Type of this WEC, containing default values for WEC assets of this kind."
 
   models.input.system.type:
     SystemParticipantTypeInput:
@@ -643,16 +654,16 @@ datamodel:
       components:
         - name: capex
           type: Currency
-          javaDoc: "Capital expense for this type of system participant (typically in €)."
+          description: "Capital expense for this type of system participant (typically in €)."
         - name: opex
           type: EnergyPrice
-          javaDoc: "Operating expense for this type of system participant (typically in €/MWh)."
+          description: "Operating expense for this type of system participant (typically in €/MWh)."
         - name: sRated
           type: Power
-          javaDoc: "Rated apparent power of the type (in kVA)."
+          description: "Rated apparent power of the type (in kVA)."
         - name: cosPhiRated
           type: double
-          javaDoc: "Power factor for this type of system participant."
+          description: "Power factor for this type of system participant."
 
     AcTypeInput:
       name: AcTypeInput
@@ -661,7 +672,7 @@ datamodel:
       components:
         - name: pThermal
           type: Power
-          javaDoc: "Thermal output of the air condition (typically in kW), when sRated * cosPhiRated is consumed."
+          description: "Thermal output of the air condition (typically in kW), when sRated * cosPhiRated is consumed."
 
     BmTypeInput:
       name: BmTypeInput
@@ -670,10 +681,10 @@ datamodel:
       components:
         - name: activePowerGradient
           type: DimensionlessRate
-          javaDoc: "Permissible load gradient (typically in %/h)."
+          description: "Permissible load gradient (typically in %/h)."
         - name: etaConv
           type: Dimensionless
-          javaDoc: "Efficiency of converter for this type of BM (typically in %)."
+          description: "Efficiency of converter for this type of BM (typically in %)."
 
     ChpTypeInput:
       name: ChpTypeInput
@@ -682,16 +693,16 @@ datamodel:
       components:
         - name: etaEl
           type: Dimensionless
-          javaDoc: "Electrical efficiency (typically in %)."
+          description: "Electrical efficiency (typically in %)."
         - name: etaThermal
           type: Dimensionless
-          javaDoc: "Thermal efficiency (typically in %)."
+          description: "Thermal efficiency (typically in %)."
         - name: pThermal
           type: Power
-          javaDoc: "Rated thermal power (typically in kW)."
+          description: "Rated thermal power (typically in kW)."
         - name: pOwn
           type: Power
-          javaDoc: "Internal consumption (typically in kW)."
+          description: "Internal consumption (typically in kW)."
 
     EvTypeInput:
       name: EvTypeInput
@@ -700,13 +711,13 @@ datamodel:
       components:
         - name: eStorage
           type: Energy
-          javaDoc: "Energy capacity of the storage (typically in kWh)."
+          description: "Energy capacity of the storage (typically in kWh)."
         - name: eCons
           type: SpecificEnergy
-          javaDoc: "Consumed electric energy per driven distance (typically in kWh/km)."
+          description: "Consumed electric energy per driven distance (typically in kWh/km)."
         - name: sRatedDC
           type: Power
-          javaDoc: "Power for DC (typically in kW)."
+          description: "Power for DC (typically in kW)."
 
     HpTypeInput:
       name: HpTypeInput
@@ -715,7 +726,7 @@ datamodel:
       components:
         - name: pThermal
           type: Power
-          javaDoc: "Thermal output of the heat pump (typically in kW), when sRated * cosPhiRated is consumed."
+          description: "Thermal output of the heat pump (typically in kW), when sRated * cosPhiRated is consumed."
 
     StorageTypeInput:
       name: StorageTypeInput
@@ -724,16 +735,16 @@ datamodel:
       components:
         - name: eStorage
           type: Energy
-          javaDoc: "."
+          description: "."
         - name: pMax
           type: Power
-          javaDoc: "."
+          description: "."
         - name: activePowerGradient
           type: DimensionlessRate
-          javaDoc: "."
+          description: "."
         - name: eta
           type: Dimensionless
-          javaDoc: "."
+          description: "."
 
     WecTypeInput:
       name: WecTypeInput
@@ -742,16 +753,16 @@ datamodel:
       components:
         - name: cpCharacteristic
           type: WecCharacteristicInput
-          javaDoc: "."
+          description: "."
         - name: etaConv
           type: Dimensionless
-          javaDoc: "."
+          description: "."
         - name: rotorArea
           type: Area
-          javaDoc: "."
+          description: "."
         - name: hubHeight
           type: Length
-          javaDoc: "."
+          description: "."
 
   models.input.thermal:
     ThermalInput:
@@ -765,7 +776,7 @@ datamodel:
         - name: thermalBus
           type: ThermalBusInput
           nested: true
-          javaDoc: "The thermal bus, a thermal unit is connected to."
+          description: "The thermal bus, a thermal unit is connected to."
 
     ThermalStorageInput:
       name: ThermalStorageInput
@@ -777,19 +788,19 @@ datamodel:
       components:
         - name: storageVolumeLvl
           type: Volume
-          javaDoc: "Available storage volume (typically in m³)."
+          description: "Available storage volume (typically in m³)."
         - name: inletTemp
           type: Temperature
-          javaDoc: "Temperature of the inlet (typically in C)."
+          description: "Temperature of the inlet (typically in C)."
         - name: returnTemp
           type: Temperature
-          javaDoc: "Temperature of the outlet (typically in C)."
+          description: "Temperature of the outlet (typically in C)."
         - name: c
           type: SpecificHeatCapacity
-          javaDoc: "Specific heat capacity of the storage medium (typically in kWh/K*m³)."
+          description: "Specific heat capacity of the storage medium (typically in kWh/K*m³)."
         - name: pThermalMax
           type: Power
-          javaDoc: "Maximum permissible thermal power (typically in kW)."
+          description: "Maximum permissible thermal power (typically in kW)."
 
     CylindricalStorageInput:
       name: CylindricalStorageInput
@@ -817,25 +828,25 @@ datamodel:
       components:
         - name: ethLosses
           type: ThermalConductance
-          javaDoc: "Thermal, transitional losses of the included thermal house model (typically in kW/K)."
+          description: "Thermal, transitional losses of the included thermal house model (typically in kW/K)."
         - name: ethCapa
           type: HeatCapacity
-          javaDoc: "Thermal capacity of the included thermal house model (typically in kWh/K)."
+          description: "Thermal capacity of the included thermal house model (typically in kWh/K)."
         - name: targetTemperature
           type: Temperature
-          javaDoc: "Desired target temperature of the thermal house model (typically in °C)."
+          description: "Desired target temperature of the thermal house model (typically in °C)."
         - name: upperTemperatureLimit
           type: Temperature
-          javaDoc: "Upper boundary temperature of the thermal house model (typically in °C)."
+          description: "Upper boundary temperature of the thermal house model (typically in °C)."
         - name: lowerTemperatureLimit
           type: Temperature
-          javaDoc: "Lower boundary temperature of the thermal house model (typically in °C)."
+          description: "Lower boundary temperature of the thermal house model (typically in °C)."
         - name: housingType
           type: String
-          javaDoc: "Type of the building, e.g. house or flat."
+          description: "Type of the building, e.g. house or flat."
         - name: numberOfInhabitants
           type: double
-          javaDoc: "Number of people living in the building, double to allow proper scaling."
+          description: "Number of people living in the building, double to allow proper scaling."
 
   models.result:
     ResultEntity:
@@ -843,10 +854,10 @@ datamodel:
       components:
         - name: time
           type: ZonedDateTime
-          javaDoc: "Date and time of the produced result."
+          description: "Date and time of the produced result."
         - name: inputModel
           type: UUID
-          javaDoc: "Uuid of the input model that produces the result."
+          description: "Uuid of the input model that produces the result."
 
     NodeResult:
       name: NodeResult
@@ -855,10 +866,10 @@ datamodel:
       components:
         - name: vMag
           type: Dimensionless
-          javaDoc: "Voltage magnitude @ this node in p.u."
+          description: "Voltage magnitude @ this node in p.u."
         - name: vAng
           type: Angle
-          javaDoc: "Voltage angle @ this node in degree."
+          description: "Voltage angle @ this node in degree."
 
     CongestionResult:
       name: CongestionResult
@@ -883,16 +894,16 @@ datamodel:
       components:
         - name: iAMag
           type: ElectricCurrent
-          javaDoc: "Electric current magnitude @ port A, normally provided in Ampere."
+          description: "Electric current magnitude @ port A, normally provided in Ampere."
         - name: iAAng
           type: Angle
-          javaDoc: "Electric current angle @ Port A in degree °."
+          description: "Electric current angle @ Port A in degree °."
         - name: iBMag
           type: ElectricCurrent
-          javaDoc: "Electric current magnitude @ port B, normally provided in Ampere."
+          description: "Electric current magnitude @ port B, normally provided in Ampere."
         - name: iBAng
           type: Angle
-          javaDoc: "Electric current angle @ Port B in degree °."
+          description: "Electric current angle @ Port B in degree °."
 
     LineResult:
       name: LineResult
@@ -906,7 +917,7 @@ datamodel:
       components:
         - name: closed
           type: bool
-          javaDoc: "Is the switching state 'closed'?"
+          description: "Is the switching state 'closed'?"
 
     TransformerResult:
       name: TransformerResult
@@ -915,7 +926,7 @@ datamodel:
       components:
         - name: tapPos
           type: int
-          javaDoc: "Current tapping position if a transformer has a tap changer."
+          description: "Current tapping position if a transformer has a tap changer."
 
     Transformer2WResult:
       name: Transformer2WResult
@@ -939,10 +950,10 @@ datamodel:
       components:
         - name: p
           type: Power
-          javaDoc: "Active power output normally provided in MW."
+          description: "Active power output normally provided in MW."
         - name: q
           type: Power
-          javaDoc: "Reactive power output normally provided in MVAr."
+          description: "Reactive power output normally provided in MVAr."
 
     SystemParticipantWithHeatResult:
       name: SystemParticipantWithHeatResult
@@ -950,7 +961,7 @@ datamodel:
       components:
         - name: qDot
           type: Power
-          javaDoc: "The thermal power output normally provided in MW."
+          description: "The thermal power output normally provided in MW."
 
     ElectricalEnergyStorageResult:
       name: ElectricalEnergyStorageResult
@@ -958,7 +969,7 @@ datamodel:
       components:
         - name: soc
           type: Dimensionless
-          javaDoc: "State of Charge (SoC) in %."
+          description: "State of Charge (SoC) in %."
 
     FlexOptionsResult:
       name: FlexOptionsResult
@@ -966,12 +977,12 @@ datamodel:
       components:
         - name: pMin
           type: Power
-          javaDoc: "Minimum active power to which the operating point of the model can be reduced (might be\n
+          description: "Minimum active power to which the operating point of the model can be reduced (might be\n
                  negative, thus feed-in) at the given point in simulation time. This equates to the lower bound\n
                  of possible power flexibility provision."
         - name: pMax
           type: Power
-          javaDoc: "Maximum active power to which the operating point of the model can be increased (might be\n
+          description: "Maximum active power to which the operating point of the model can be increased (might be\n
                   negative, thus feed-in) at the given point in simulation time. This equates to upper bound of\n
                   possible power flexibility provision."
 
@@ -1002,13 +1013,13 @@ datamodel:
       components:
         - name: eState
           type: Energy
-          javaDoc: "State of energy of the model at the given point in simulation time."
+          description: "State of energy of the model at the given point in simulation time."
         - name: eMin
           type: Energy
-          javaDoc: "Minimum state of energy of the model at the given point in simulation time."
+          description: "Minimum state of energy of the model at the given point in simulation time."
         - name: eMax
           type: Energy
-          javaDoc: "Maximum state of energy of the model at the given point in simulation time."
+          description: "Maximum state of energy of the model at the given point in simulation time."
 
     EvcsResult:
       name: EvcsResult
@@ -1042,7 +1053,7 @@ datamodel:
       components:
         - name: pRef
           type: Power
-          javaDoc: "Active power (might be negative, thus feed-in) that was suggested for regular usage by the\n
+          description: "Active power (might be negative, thus feed-in) that was suggested for regular usage by the\n
                   model."
 
     PvResult:
@@ -1067,7 +1078,7 @@ datamodel:
       components:
         - name: qDot
           type: Power
-          javaDoc: "Average thermal power flowing into the thermal unit (+: Power flowing into unit, -: Power\n
+          description: "Average thermal power flowing into the thermal unit (+: Power flowing into unit, -: Power\n
                   flowing from unit)"
 
     ThermalSinkResult:
@@ -1080,7 +1091,7 @@ datamodel:
       components:
         - name: energy
           type: Energy
-          javaDoc: "Currently stored energy."
+          description: "Currently stored energy."
 
     AbstractThermalStorageResult:
       name: AbstractThermalStorageResult
@@ -1088,7 +1099,7 @@ datamodel:
       components:
         - name: fillLevel
           type: Dimensionless
-          javaDoc: "Fill level of the storage."
+          description: "Fill level of the storage."
 
     CylindricalStorageResult:
       name: CylindricalStorageResult
@@ -1107,7 +1118,7 @@ datamodel:
       components:
         - name: indoorTemperature
           type: Temperature
-          javaDoc: "Indoor room temperature of the house."
+          description: "Indoor room temperature of the house."
 
   models.value:
     CoordinateValue:
@@ -1126,7 +1137,7 @@ datamodel:
         - name: price
           type: EnergyPrice
           required: false
-          javaDoc: "Price of energy (typically in €/MWh)."
+          description: "Price of energy (typically in €/MWh)."
 
     TemperatureValue:
       name: TemperatureValue
@@ -1135,7 +1146,7 @@ datamodel:
         - name: temperature
           type: Temperature
           required: false
-          javaDoc: "Temperature (typically in K)."
+          description: "Temperature (typically in K)."
 
     GroundTemperatureValue:
       name: GroundTemperatureValue
@@ -1149,7 +1160,7 @@ datamodel:
         - name: p
           type: Power
           required: false
-          javaDoc: "Active power."
+          description: "Active power."
 
     SValue:
       name: SValue
@@ -1159,7 +1170,7 @@ datamodel:
         - name: q
           type: Power
           required: false
-          javaDoc: "Reactive power."
+          description: "Reactive power."
 
     HeatAndPValue:
       name: HeatAndPValue
@@ -1169,7 +1180,7 @@ datamodel:
         - name: heatDemand
           type: Power
           required: false
-          javaDoc: "Heat demand as power."
+          description: "Heat demand as power."
 
     HeatAndSValue:
       name: HeatAndSValue
@@ -1179,7 +1190,7 @@ datamodel:
         - name: heatDemand
           type: Power
           required: false
-          javaDoc: "Heat demand as power."
+          description: "Heat demand as power."
 
     HeatDemandValue:
       name: HeatDemandValue
@@ -1188,7 +1199,7 @@ datamodel:
         - name: heatDemand
           type: Power
           required: false
-          javaDoc: "Heat demand as power."
+          description: "Heat demand as power."
 
     SolarIrradianceValue:
       name: SolarIrradianceValue
@@ -1197,11 +1208,11 @@ datamodel:
         - name: directIrradiance
           type: Irradiance
           required: false
-          javaDoc: "Direct sun irradiance (typically in W/m²)."
+          description: "Direct sun irradiance (typically in W/m²)."
         - name: diffuseIrradiance
           type: Irradiance
           required: false
-          javaDoc: "Diffuse sun irradiance (typically in W/m²)."
+          description: "Diffuse sun irradiance (typically in W/m²)."
 
     VoltageValue:
       name: VoltageValue
@@ -1210,11 +1221,11 @@ datamodel:
         - name: magnitude
           type: Dimensionless
           required: false
-          javaDoc: "Magnitude of the voltage in p.u."
+          description: "Magnitude of the voltage in p.u."
         - name: angle
           type: Angle
           required: false
-          javaDoc: "Angle of the voltage in degree."
+          description: "Angle of the voltage in degree."
 
     WeatherValue:
       name: WeatherValue
@@ -1222,24 +1233,24 @@ datamodel:
       components:
         - name: coordinate
           type: Point
-          javaDoc: "The coordinate of this weather value set."
+          description: "The coordinate of this weather value set."
         - name: solarIrradiance
           type: SolarIrradianceValue
-          javaDoc: "Solar irradiance values for this coordinate."
+          description: "Solar irradiance values for this coordinate."
         - name: temperature
           type: TemperatureValue
-          javaDoc: "Temperature value for this coordinate."
+          description: "Temperature value for this coordinate."
         - name: wind
           type: WindValue
-          javaDoc: "Wind values for this coordinate."
+          description: "Wind values for this coordinate."
         - name: groundTemperatureLevel1
           type: GroundTemperatureValue
           required: false
-          javaDoc: "Ground temperature value for this coordinate."
+          description: "Ground temperature value for this coordinate."
         - name: groundTemperatureLevel2
           type: GroundTemperatureValue
           required: false
-          javaDoc: "Ground temperature value for this coordinate."
+          description: "Ground temperature value for this coordinate."
 
     WindValue:
       name: WindValue
@@ -1248,11 +1259,11 @@ datamodel:
         - name: direction
           type: Angle
           required: false
-          javaDoc: "Wind direction as an angle from north (typically in rad)."
+          description: "Wind direction as an angle from north (typically in rad)."
         - name: velocity
           type: Speed
           required: false
-          javaDoc: "Wind velocity (typically in m/s)."
+          description: "Wind velocity (typically in m/s)."
 
   models.value.load:
     RandomLoadValues:
@@ -1261,31 +1272,31 @@ datamodel:
       components:
         - name: kSa
           type: double
-          javaDoc: "Shape parameter for a Saturday."
+          description: "Shape parameter for a Saturday."
         - name: kSu
           type: double
-          javaDoc: "Shape parameter for a Sunday."
+          description: "Shape parameter for a Sunday."
         - name: kWd
           type: double
-          javaDoc: "Shape parameter for a working day."
+          description: "Shape parameter for a working day."
         - name: mySa
           type: double
-          javaDoc: "Shape parameter for a Saturday."
+          description: "Shape parameter for a Saturday."
         - name: mySu
           type: double
-          javaDoc: "Shape parameter for a Sunday."
+          description: "Shape parameter for a Sunday."
         - name: myWd
           type: double
-          javaDoc: "Shape parameter for a working day."
+          description: "Shape parameter for a working day."
         - name: sigmaSa
           type: double
-          javaDoc: "Shape parameter for a Saturday."
+          description: "Shape parameter for a Saturday."
         - name: sigmaSu
           type: double
-          javaDoc: "Shape parameter for a Sunday."
+          description: "Shape parameter for a Sunday."
         - name: sigmaWd
           type: double
-          javaDoc: "Shape parameter for a working day."
+          description: "Shape parameter for a working day."
         - name: gevWd
           type: GeneralizedExtremeValueDistribution
           transient: true

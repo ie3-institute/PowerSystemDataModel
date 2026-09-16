@@ -5,15 +5,20 @@
 */
 package edu.ie3.codegen;
 
-import static edu.ie3.codegen.ResolverUtils.resolveClassName;
-import static edu.ie3.codegen.ResolverUtils.resolveType;
+import static edu.ie3.codegen.ResolverUtils.*;
 
 import com.palantir.javapoet.*;
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.lang.model.element.Modifier;
 
 /** Interface containing some helper methods. */
 public interface HelperMethods {
+
+  String ADDITIONAL_INFORMATION = "additionalInformation";
+
+  Map<String, Modifier> modifiers =
+      Arrays.stream(Modifier.values()).collect(Collectors.toMap(Modifier::toString, e -> e));
 
   /**
    * Method for returning the value used in the {@code toString()} method.
@@ -42,7 +47,9 @@ public interface HelperMethods {
             ? componentName
             : defaultGetterName(component, genConfig) + "()";
 
-    if (!component.required && component.nested) {
+    if (!component.required
+        && !ResolverUtils.hasDefaultExpression(component.type)
+        && component.nested) {
       // we need some special calls here
       valueGetterExpression += ".map(e -> e.getUuid().toString()).orElse(\"\")";
       getterName = defaultGetterName(component, genConfig) + "()";
@@ -98,11 +105,6 @@ public interface HelperMethods {
    * @return the name of the getter method
    */
   default String defaultGetterName(String name, String type, GenerationConfig genConfig) {
-    if (genConfig.fieldNameGetters.contains(name)) {
-      // if we should use the field name directly
-      return name;
-    }
-
     // a list with getters that should not be capitalized
     List<String> nonCapitalized = genConfig.nonCapitalized;
 
@@ -198,7 +200,7 @@ public interface HelperMethods {
    * @param models all available models
    * @return a map: model name to definition
    */
-  default Map<String, ModelDefinition.ComponentDefinition> visibleComponents(
+  static Map<String, ModelDefinition.ComponentDefinition> visibleComponents(
       ModelDefinition model, Map<String, ModelDefinition> models) {
 
     LinkedHashMap<String, ModelDefinition.ComponentDefinition> result = new LinkedHashMap<>();
@@ -212,6 +214,10 @@ public interface HelperMethods {
       }
     }
 
+    if (result.containsKey(ADDITIONAL_INFORMATION)) {
+      result.put(ADDITIONAL_INFORMATION, result.remove(ADDITIONAL_INFORMATION));
+    }
+
     return result;
   }
 
@@ -222,7 +228,7 @@ public interface HelperMethods {
    * @param models all available models
    * @return a list of all models in the hierarchy starting with the current model
    */
-  private List<ModelDefinition> hierarchy(
+  private static List<ModelDefinition> hierarchy(
       ModelDefinition model, Map<String, ModelDefinition> models) {
     List<ModelDefinition> hierarchy = new ArrayList<>();
 
@@ -250,7 +256,7 @@ public interface HelperMethods {
    * @param models all available models
    * @return the parent model definition
    */
-  default ModelDefinition getParent(String name, Map<String, ModelDefinition> models) {
+  static ModelDefinition getParent(String name, Map<String, ModelDefinition> models) {
     return models.get(name);
   }
 
@@ -259,43 +265,33 @@ public interface HelperMethods {
    *
    * @param parameterNames names of the parameters
    * @param available all available models
-   * @param context to use
    * @return a list of components
    */
   default List<ModelDefinition.ComponentDefinition> resolveParameters(
-      List<String> parameterNames,
-      Map<String, ModelDefinition.ComponentDefinition> available,
-      String context) {
+      List<String> parameterNames, Map<String, ModelDefinition.ComponentDefinition> available) {
 
     List<ModelDefinition.ComponentDefinition> result = new ArrayList<>();
 
     for (String parameterName : parameterNames) {
-      ModelDefinition.ComponentDefinition parameter = available.get(parameterName);
-
-      if (parameter == null) {
-        throw new IllegalArgumentException(
-            "Unknown parameter '" + parameterName + "' in: " + context);
-      }
-
-      result.add(parameter);
+      result.add(available.get(parameterName));
     }
 
     return result;
   }
 
   default MethodSpec.Builder enrichBuilder(
-      MethodSpec.Builder builder, GenerationConfig.MethodFields insert) {
+      MethodSpec.Builder builder, GenerationConfig.MethodDefinition insert) {
     // add the parameters to the method
     for (ModelDefinition.Parameter parameter : insert.parameters) {
       builder.addParameter(resolveType(parameter.type), parameter.name);
     }
 
     // add Javadoc if present
-    if (!insert.javaDoc.isBlank()) {
-      builder.addJavadoc(insert.javaDoc);
+    if (!insert.description.isBlank()) {
+      builder.addJavadoc(insert.description);
     }
 
-    if (insert.isAbstract) {
+    if (insert.modifiers.contains("abstract")) {
       // if the method should be abstract, we need to add the modifier
       builder.addModifiers(Modifier.ABSTRACT);
 
@@ -315,87 +311,25 @@ public interface HelperMethods {
    * Adds a statement to a method builder.
    *
    * @param builder current builder
-   * @param componentName name of the component
-   * @param modification modification to use
-   */
-  default void addStatement(
-      MethodSpec.Builder builder,
-      String componentName,
-      GenerationConfig.ConstructorModification modification) {
-    if (modification == null) {
-      builder.addStatement("this.$L = $L", componentName, componentName);
-    } else if (modification.usableClassName()) {
-      ClassName className = resolveClassName(modification.className);
-
-      if (modification.insert) {
-
-        if (modification.usableUnitClass()) {
-          builder.addStatement(
-              "this.$L = " + modification.expression,
-              componentName,
-              className,
-              resolveClassName(modification.unitClass));
-
-        } else {
-          builder.addStatement("this.$L = " + modification.expression, componentName, className);
-        }
-
-      } else {
-        builder.addStatement("this.$L = $T." + modification.expression, componentName, className);
-      }
-
-    } else if (modification.usableUnitClass()) {
-      builder.addStatement(
-          "this.$L = " + modification.expression,
-          componentName,
-          resolveClassName(modification.unitClass));
-    } else {
-      builder.addStatement("this.$L = " + modification.expression, componentName);
-    }
-  }
-
-  /**
-   * Adds a statement to a method builder.
-   *
-   * @param builder current builder
    * @param modification modification to use
    */
   default void addStatement(
       MethodSpec.Builder builder, GenerationConfig.BasicExpression modification) {
-    if (modification instanceof GenerationConfig.StandardFields sf) {
+    if (modification instanceof GenerationConfig.StandardOptions sf) {
 
-      if (!sf.javaDoc.isBlank()) {
-        builder.addJavadoc(sf.javaDoc);
+      if (!sf.description.isBlank()) {
+        builder.addJavadoc(sf.description);
       }
     }
 
     String expression = modification.expression;
     String prefix = "";
 
-    if (modification instanceof GenerationConfig.MethodFields mf && mf.addReturn) {
+    if (modification instanceof GenerationConfig.MethodDefinition mf && mf.addReturn) {
       prefix = "return ";
     }
 
-    if (expression != null && expression.contains("\n")) {
-      if (modification.usableClassName()) {
-        builder.addStatement(prefix + expression, resolveClassName(modification.className));
-      } else {
-        builder.addStatement(prefix + expression);
-      }
-
-    } else if (modification.usableClassName()) {
-      ClassName className = resolveClassName(modification.className);
-
-      if (modification.usableUnitClass()) {
-        builder.addStatement(
-            prefix + expression, className, resolveClassName(modification.unitClass));
-
-      } else {
-        builder.addStatement(prefix + "$T." + expression, className);
-      }
-
-    } else {
-      builder.addStatement(prefix + expression);
-    }
+    var modified = modifyExpression(prefix + expression);
+    builder.addStatement(modified.expression(), modified.args());
   }
 }

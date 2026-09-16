@@ -22,31 +22,27 @@ public abstract class AssetInput extends UniqueInputEntity implements Operable {
   private final OperationTime operationTime;
 
   /**
-   * Constructor for an asset with timely limited operation and specific operator.
-   *
-   * @param uuid Unique identifier
-   * @param id Human-readable identifier
-   * @param operator Operator of the asset
-   * @param operationTime Operation time limitation
-   */
-  protected AssetInput(UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
-    super(uuid);
-    this.id = id;
-    this.operator = operator;
-    this.operationTime = operationTime;
-  }
-
-  /**
-   * Constructor for an asset with timely unlimited operation and unassigned operator.
-   *
-   * @param uuid Unique identifier
-   * @param id Human-readable identifier
+   * @param uuid Unique identifier for an entity.
+   * @param id Name or ID of the asset.
    */
   protected AssetInput(UUID uuid, String id) {
     super(uuid);
     this.id = id;
     this.operator = OperatorInput.NO_OPERATOR_ASSIGNED;
     this.operationTime = OperationTime.notLimited();
+  }
+
+  /**
+   * @param uuid Unique identifier for an entity.
+   * @param id Name or ID of the asset.
+   * @param operator The operator of this asset.
+   * @param operationTime Time for which the entity is operated.
+   */
+  protected AssetInput(UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
+    super(uuid);
+    this.id = id;
+    this.operator = operator;
+    this.operationTime = operationTime;
   }
 
   public String getId() {
