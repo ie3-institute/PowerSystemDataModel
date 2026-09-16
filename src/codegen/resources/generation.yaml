@@ -2,14 +2,18 @@ version: 1.0
 datamodel:
   models:
     UniqueEntity:
-      inherits: [ Entity, Uniqueness, Serializable ]
+      inherits: [ Entity, Uniqueness, Serializable, Processable ]
 
   models.input:
     UniqueInputEntity:
       inherits: [InputEntity]
+      toMap: false
 
     AssetInput:
       inherits: [Operable]
+      keyMapper:
+        operatesFrom: operationTime.getStartDate().map(TimeUtil.withDefaults::toString).orElse("")
+        operatesUntil: operationTime.getEndDate().map(TimeUtil.withDefaults::toString).orElse("")
 
     AssetTypeInput:
 
@@ -21,6 +25,9 @@ datamodel:
           description: "Use this default value if geoPosition is unknown."
           modifiers: [public, static, final]
       nonCapitalized: [vTarget]
+      keyMapper:
+        voltLvl: voltLvl.getId()
+        vRated: String.valueOf(voltLvl.getNominalVoltage().to(StandardUnits.RATED_VOLTAGE_MAGNITUDE).getValue().doubleValue())
 
     OperatorInput:
       fields:

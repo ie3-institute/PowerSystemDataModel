@@ -8,9 +8,11 @@ package edu.ie3.codegen;
 import static edu.ie3.codegen.ResolverUtils.*;
 
 import com.palantir.javapoet.*;
+import edu.ie3.util.StringUtils;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.lang.model.element.Modifier;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.dataformat.yaml.YAMLFactory;
@@ -85,6 +87,9 @@ final class ModelGenerator implements HelperMethods {
             .writeTo(outputDirectory);
       }
     }
+
+    // generate field naming strategy
+    generateFieldNamingStrategy(models, outputDirectory);
   }
 
   /**
@@ -225,6 +230,98 @@ final class ModelGenerator implements HelperMethods {
               return builder.build();
             })
         .toList();
+  }
+
+  /**
+   * Method to generate the field naming strategy and adds some.
+   *
+   * @param models to generate
+   * @param outputDirectory directory for the classes
+   * @throws IOException throws an I/O exception if writing a class file fails.
+   */
+  private static void generateFieldNamingStrategy(
+      Map<String, ModelDefinition> models, Path outputDirectory) throws IOException {
+    TreeMap<String, String> names = new TreeMap<>(Comparator.naturalOrder());
+
+    models
+        .values()
+        .forEach(
+            m ->
+                m.components.forEach(
+                    c -> {
+                      if (!c.name.equalsIgnoreCase("additionalInformation")) {
+                        if (c.keys.isEmpty()) {
+                          names.put(c.name, StringUtils.camelCaseToSnakeCase(c.name).toUpperCase());
+                        } else {
+                          c.keys.forEach(
+                              k -> names.put(k, StringUtils.camelCaseToSnakeCase(k).toUpperCase()));
+                        }
+                      }
+                    }));
+
+    var builder =
+        TypeSpec.classBuilder("FieldNamingStrategy")
+            .addModifiers(Modifier.PUBLIC)
+            .superclass(resolveClassName("FieldNamingStrategyAdditions"));
+
+    for (String name : names.keySet()) {
+      FieldSpec field =
+          FieldSpec.builder(
+                  resolveType("String"),
+                  names.get(name),
+                  Modifier.PUBLIC,
+                  Modifier.STATIC,
+                  Modifier.FINAL)
+              .initializer("$S", name)
+              .build();
+      builder.addField(field);
+    }
+
+    List<CodeBlock> registrations = new ArrayList<>();
+
+    for (ModelDefinition model : models.values()) {
+      Collection<ModelDefinition.ComponentDefinition> allComponents =
+          HelperMethods.visibleComponents(model, models).values();
+
+      List<String> mandatory = new ArrayList<>();
+      List<String> optional = new ArrayList<>();
+
+      allComponents.forEach(
+          c -> {
+            if (!c.name.equalsIgnoreCase("additionalInformation")) {
+
+              if (c.required && c.keys.isEmpty()) {
+                mandatory.add(c.name);
+              } else if (c.required) {
+                mandatory.addAll(c.keys);
+              } else if (c.keys.isEmpty()) {
+                optional.add(c.name);
+              } else {
+                optional.addAll(c.keys);
+              }
+            }
+          });
+
+      registrations.add(
+          CodeBlock.of(
+              "ModelFields.register($T.class, $T.newSet($L), CollectionUtils.newSet($L));",
+              resolveClassName(model.name),
+              resolveClassName("CollectionUtils"),
+              mandatory.stream().map(names::get).collect(Collectors.joining(", ")),
+              optional.stream().map(names::get).collect(Collectors.joining(", "))));
+    }
+
+    builder.addMethod(
+        MethodSpec.methodBuilder("registerFields")
+            .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+            .addCode(CodeBlock.join(registrations, " \n"))
+            .build());
+
+    // build the class file and write to it
+    JavaFile.builder("edu.ie3.datamodel.io.naming", builder.build())
+        .skipJavaLangImports(true)
+        .build()
+        .writeTo(outputDirectory);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

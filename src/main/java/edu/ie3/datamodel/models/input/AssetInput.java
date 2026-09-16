@@ -7,7 +7,9 @@ package edu.ie3.datamodel.models.input;
 
 import edu.ie3.datamodel.models.Operable;
 import edu.ie3.datamodel.models.OperationTime;
+import edu.ie3.util.TimeUtil;
 import java.util.Objects;
+import java.util.SequencedMap;
 import java.util.UUID;
 
 /** Describes a grid asset under the assumption that every asset could be operable. */
@@ -55,6 +57,20 @@ public abstract class AssetInput extends UniqueInputEntity implements Operable {
 
   public OperationTime getOperationTime() {
     return operationTime;
+  }
+
+  @Override
+  public SequencedMap<String, String> toMap() {
+    SequencedMap<String, String> map = super.toMap();
+    map.put("id", id);
+    map.put("operator", operator.getUuid().toString());
+    map.put(
+        "operatesFrom",
+        operationTime.getStartDate().map(TimeUtil.withDefaults::toString).orElse(""));
+    map.put(
+        "operatesUntil",
+        operationTime.getEndDate().map(TimeUtil.withDefaults::toString).orElse(""));
+    return map;
   }
 
   @Override

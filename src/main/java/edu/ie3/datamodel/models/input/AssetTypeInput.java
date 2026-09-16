@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.models.input;
 
 import java.util.Objects;
+import java.util.SequencedMap;
 import java.util.UUID;
 
 /** Describes the type of {@link edu.ie3.datamodel.models.input.AssetInput}. */
@@ -24,6 +25,13 @@ public abstract class AssetTypeInput extends UniqueInputEntity {
 
   public String getId() {
     return id;
+  }
+
+  @Override
+  public SequencedMap<String, String> toMap() {
+    SequencedMap<String, String> map = super.toMap();
+    map.put("id", id);
+    return map;
   }
 
   @Override

@@ -10,6 +10,7 @@ import edu.ie3.datamodel.utils.QuantityUtils;
 import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import java.util.Objects;
+import java.util.SequencedMap;
 import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -63,6 +64,16 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
 
   public double getCosPhiRated() {
     return cosPhiRated;
+  }
+
+  @Override
+  public SequencedMap<String, String> toMap() {
+    SequencedMap<String, String> map = super.toMap();
+    map.put("capex", capex.toString());
+    map.put("opex", opex.toString());
+    map.put("sRated", sRated.toString());
+    map.put("cosPhiRated", String.valueOf(cosPhiRated));
+    return map;
   }
 
   @Override

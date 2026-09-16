@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.utils.QuantityUtils;
 import java.util.Map;
 import java.util.Objects;
+import java.util.SequencedMap;
 import java.util.UUID;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
@@ -210,6 +211,26 @@ public class Transformer2WTypeInput extends AssetTypeInput {
 
   public int getTapMax() {
     return tapMax;
+  }
+
+  @Override
+  public SequencedMap<String, String> toMap() {
+    SequencedMap<String, String> map = super.toMap();
+    map.put("rSc", rSc.toString());
+    map.put("xSc", xSc.toString());
+    map.put("sRated", sRated.toString());
+    map.put("vRatedA", vRatedA.toString());
+    map.put("vRatedB", vRatedB.toString());
+    map.put("gM", gM.toString());
+    map.put("bM", bM.toString());
+    map.put("dV", dV.toString());
+    map.put("dPhi", dPhi.toString());
+    map.put("tapSide", String.valueOf(tapSide));
+    map.put("tapNeutr", String.valueOf(tapNeutr));
+    map.put("tapMin", String.valueOf(tapMin));
+    map.put("tapMax", String.valueOf(tapMax));
+    map.putAll(getAdditionalInformation());
+    return map;
   }
 
   @Override

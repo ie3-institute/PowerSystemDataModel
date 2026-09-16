@@ -7,6 +7,7 @@ package edu.ie3.datamodel.models.input;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.SequencedMap;
 import java.util.UUID;
 
 /** Describes an operator, that operates assets. */
@@ -39,6 +40,14 @@ public class OperatorInput extends UniqueInputEntity {
 
   public String getId() {
     return id;
+  }
+
+  @Override
+  public SequencedMap<String, String> toMap() {
+    SequencedMap<String, String> map = super.toMap();
+    map.put("id", id);
+    map.putAll(getAdditionalInformation());
+    return map;
   }
 
   @Override

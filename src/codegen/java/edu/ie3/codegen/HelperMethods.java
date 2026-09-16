@@ -43,7 +43,7 @@ public interface HelperMethods {
 
     String valueGetterExpression = "$L";
     String getterName =
-        components.contains(componentName)
+        components.contains(componentName) || component.nullable
             ? componentName
             : defaultGetterName(component, genConfig) + "()";
 
@@ -59,10 +59,14 @@ public interface HelperMethods {
     }
 
     if (explicitConversion) {
-      valueGetterExpression += ".toString()";
+      if (isPrimitive(component.type)) {
+        valueGetterExpression = "String.valueOf(" + valueGetterExpression + ")";
+      } else {
+        valueGetterExpression += ".toString()";
+      }
     }
 
-    return CodeBlock.of(valueGetterExpression + "\n", getterName);
+    return CodeBlock.of(valueGetterExpression, getterName);
   }
 
   /**

@@ -11,6 +11,7 @@ import edu.ie3.util.quantities.interfaces.SpecificConductance;
 import edu.ie3.util.quantities.interfaces.SpecificResistance;
 import java.util.Map;
 import java.util.Objects;
+import java.util.SequencedMap;
 import java.util.UUID;
 import javax.measure.quantity.ElectricCurrent;
 import javax.measure.quantity.ElectricPotential;
@@ -117,6 +118,19 @@ public class LineTypeInput extends AssetTypeInput {
 
   public ComparableQuantity<ElectricPotential> getvRated() {
     return vRated;
+  }
+
+  @Override
+  public SequencedMap<String, String> toMap() {
+    SequencedMap<String, String> map = super.toMap();
+    map.put("b", b.toString());
+    map.put("g", g.toString());
+    map.put("r", r.toString());
+    map.put("x", x.toString());
+    map.put("iMax", iMax.toString());
+    map.put("vRated", vRated.toString());
+    map.putAll(getAdditionalInformation());
+    return map;
   }
 
   @Override

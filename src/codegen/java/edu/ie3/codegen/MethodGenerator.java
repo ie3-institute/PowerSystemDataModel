@@ -113,6 +113,10 @@ public class MethodGenerator implements HelperMethods {
       methods.add(enrichBuilder(methodBuilder, insert).build());
     }
 
+    if (genConfig.toMap) {
+      methods.add(generateToMap());
+    }
+
     if (genConfig.equals) {
       methods.add(generateEquals());
     }
@@ -126,6 +130,57 @@ public class MethodGenerator implements HelperMethods {
     }
 
     return methods;
+  }
+
+  private MethodSpec generateToMap() {
+    MethodSpec.Builder builder =
+        MethodSpec.methodBuilder("toMap")
+            .addModifiers(Modifier.PUBLIC)
+            .addAnnotation(Override.class)
+            .returns(resolveType("SeqStringMap"));
+
+    // add the initial statement
+    if (model.extendsName == null || model.extendsName.isBlank()) {
+      builder.addStatement(
+          "$T<String, String> map = new $T<>()", SequencedMap.class, LinkedHashMap.class);
+    } else {
+      builder.addStatement("$T<String, String> map = super.toMap()", SequencedMap.class);
+    }
+
+    List<String> components = model.components.stream().map(c -> c.name).toList();
+
+    // add the own fields of the model
+    for (ModelDefinition.ComponentDefinition component : model.components) {
+      if (!component.name.equalsIgnoreCase(ADDITIONAL_INFORMATION)) {
+
+        if (component.keys.isEmpty()) {
+          // add the value
+          builder.addStatement(
+              "map.put($S, $L)", component.name, toString(component, components, genConfig, true));
+        } else {
+          // we need some specialized calls here
+
+          for (String key : component.keys) {
+            String expression = genConfig.keyMapper.get(key);
+
+            if (expression != null && !expression.isBlank()) {
+              var modified = ResolverUtils.modifyExpression(expression);
+              builder.addStatement(
+                  "map.put($S, $L)", key, CodeBlock.of(modified.expression(), modified.args()));
+            }
+          }
+        }
+      }
+    }
+
+    // if the model is a non-abstract class, we need to add the additional information
+    if (!model.isAbstract) {
+      builder.addStatement("map.putAll(getAdditionalInformation())");
+    }
+
+    // add the return statement
+    builder.addStatement("return map");
+    return builder.build();
   }
 
   private MethodSpec generateEquals() {
@@ -241,7 +296,8 @@ public class MethodGenerator implements HelperMethods {
       String prefix = (index == 0) ? component.name + "=" : ", " + component.name + "=";
 
       builder.addCode(
-          CodeBlock.of("    + $S + " + toString(component, components, genConfig, false), prefix));
+          CodeBlock.of("    + $S + " + toString(component, components, genConfig, false), prefix)
+              + "\n");
 
       index++;
     }

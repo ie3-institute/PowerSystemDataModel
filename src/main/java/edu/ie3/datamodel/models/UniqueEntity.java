@@ -5,12 +5,15 @@
 */
 package edu.ie3.datamodel.models;
 
+import edu.ie3.datamodel.io.processor.Processable;
 import java.io.Serializable;
+import java.util.LinkedHashMap;
 import java.util.Objects;
+import java.util.SequencedMap;
 import java.util.UUID;
 
 /** Supplies every subclass with a generated UUID, making it unique. */
-public abstract class UniqueEntity implements Entity, Uniqueness, Serializable {
+public abstract class UniqueEntity implements Entity, Uniqueness, Serializable, Processable {
   /** Unique identifier for an entity. */
   private final UUID uuid;
 
@@ -23,6 +26,13 @@ public abstract class UniqueEntity implements Entity, Uniqueness, Serializable {
 
   public UUID getUuid() {
     return uuid;
+  }
+
+  @Override
+  public SequencedMap<String, String> toMap() {
+    SequencedMap<String, String> map = new LinkedHashMap<>();
+    map.put("uuid", uuid.toString());
+    return map;
   }
 
   @Override

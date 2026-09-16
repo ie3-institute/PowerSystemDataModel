@@ -7,7 +7,9 @@ package edu.ie3.codegen;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class GenerationConfig implements HelperMethods {
 
@@ -25,7 +27,7 @@ public final class GenerationConfig implements HelperMethods {
 
   public boolean toString = true;
 
-  public boolean toMap = false;
+  public boolean toMap = true;
 
   public boolean copy = true;
 
@@ -37,6 +39,8 @@ public final class GenerationConfig implements HelperMethods {
   public List<MethodDefinition> methods = new ArrayList<>();
 
   public List<MethodDefinition> copyBuilderMethods = new ArrayList<>();
+
+  public Map<String, String> keyMapper = new HashMap<>();
 
   public List<String> excludeFromMethods = new ArrayList<>();
 

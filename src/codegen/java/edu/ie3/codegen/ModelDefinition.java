@@ -30,6 +30,7 @@ public final class ModelDefinition implements HelperMethods {
     public List<String> keys = new ArrayList<>();
     public boolean required = true;
     public boolean nested = false;
+    public boolean nullable = false;
 
     @JsonProperty("transient")
     public boolean isTransient = false;

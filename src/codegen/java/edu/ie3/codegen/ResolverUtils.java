@@ -161,6 +161,8 @@ public class ResolverUtils {
             Math.class,
             List.class,
             Map.class,
+            SequencedMap.class,
+            LinkedHashMap.class,
             HashMap.class,
             DayOfWeek.class,
             Stream.class,
@@ -172,6 +174,8 @@ public class ResolverUtils {
   static void registerOwnClasses() {
     Stream.of("CollectionUtils", "QuantityUtils")
         .forEach(name -> classes.put(name, ClassName.get("edu.ie3.datamodel.utils", name)));
+
+    classes.put("TimeUtil", ClassName.get("edu.ie3.util", "TimeUtil"));
 
     classes.put("GeoUtils", ClassName.get("edu.ie3.util.geo", "GeoUtils"));
     classes.put("Quantities", ClassName.get("tech.units.indriya.quantity", "Quantities"));
@@ -192,6 +196,11 @@ public class ResolverUtils {
     // extractor interfaces
     Stream.of("HasEm", "HasLine", "HasNodes", "HasThermalBus", "HasThermalStorage", "HasType")
         .forEach(name -> classes.put(name, ClassName.get("edu.ie3.datamodel.io.extractor", name)));
+
+    classes.put("Processable", ClassName.get("edu.ie3.datamodel.io.processor", "Processable"));
+    classes.put(
+        "FieldNamingStrategyAdditions",
+        ClassName.get("edu.ie3.datamodel.io.naming", "FieldNamingStrategyAdditions"));
 
     // model package
     Stream.of("Entity", "Operable", "OperationTime", "StandardUnits", "UniqueEntity", "Uniqueness")
@@ -319,11 +328,17 @@ public class ResolverUtils {
                 classes.put(name, ClassName.get("edu.ie3.datamodel.models.input.thermal", name)));
 
     // results
-    Stream.of("InputModelType", "ResultEntity")
+    Stream.of("CongestionResult", "InputModelType", "NodeResult", "ResultEntity")
         .forEach(name -> classes.put(name, ClassName.get("edu.ie3.datamodel.models.result", name)));
 
     // connector results
-    Stream.of("ConnectorResult", "TransformerResult")
+    Stream.of(
+            "ConnectorResult",
+            "LineResult",
+            "SwitchResult",
+            "Transformer2WResult",
+            "Transformer3WResult",
+            "TransformerResult")
         .forEach(
             name ->
                 classes.put(
@@ -331,20 +346,37 @@ public class ResolverUtils {
 
     // system results
     Stream.of(
-            "SystemParticipantResult",
+            "AcResult",
+            "BmResult",
+            "ChpResult",
             "ElectricalEnergyStorageResult",
+            "EmResult",
+            "EnergyBoundariesFlexOptionsResult",
+            "EvcsResult",
+            "EvResult",
+            "FixedFeedInResult",
+            "FlexOptionsResult",
+            "HpResult",
+            "LoadResult",
+            "PowerLimitFlexOptionsResult",
+            "PvResult",
+            "StorageResult",
+            "SystemParticipantResult",
             "SystemParticipantWithHeatResult",
-            "FlexOptionsResult")
+            "WecResult")
         .forEach(
             name ->
                 classes.put(name, ClassName.get("edu.ie3.datamodel.models.result.system", name)));
 
     // thermal results
     Stream.of(
-            "ThermalUnitResult",
+            "AbstractThermalStorageResult",
+            "CylindricalStorageResult",
+            "DomesticHotWaterStorageResult",
+            "ThermalHouseResult",
             "ThermalSinkResult",
             "ThermalStorageResult",
-            "AbstractThermalStorageResult")
+            "ThermalUnitResult")
         .forEach(
             name ->
                 classes.put(name, ClassName.get("edu.ie3.datamodel.models.result.thermal", name)));
@@ -361,11 +393,6 @@ public class ResolverUtils {
             "GroundTemperatureValue",
             "WeatherValue")
         .forEach(name -> classes.put(name, ClassName.get("edu.ie3.datamodel.models.value", name)));
-
-    // load values
-    Stream.of("LoadValues", "RandomNumberProvider", "BdewLoadValues", "BdewSeason")
-        .forEach(
-            name -> classes.put(name, ClassName.get("edu.ie3.datamodel.models.value.load", name)));
   }
 
   static void registerQuantities() {
@@ -439,6 +466,7 @@ public class ResolverUtils {
 
   static void registerCustomTypes() {
     customTypes.put("StringMap", new CustomType("Map", List.of("String", "String")));
+    customTypes.put("SeqStringMap", new CustomType("SequencedMap", List.of("String", "String")));
     customTypes.put("StringDoubleMap", new CustomType("Map", List.of("String", "Double")));
     customTypes.put("NodeList", new CustomType("List", List.of("NodeInput")));
     customTypes.put("LayerList", new CustomType("List", List.of("LayerInput")));
@@ -461,6 +489,7 @@ public class ResolverUtils {
     defaultExpressions.put("UUID", "UUID.randomUUID()");
     defaultExpressions.put("Map", "new HashMap<>()");
     defaultExpressions.put("StringMap", "new HashMap<>()");
+    defaultExpressions.put("SeqStringMap", "new LinkedHashMap<>()");
     defaultExpressions.put("StringDoubleMap", "new HashMap<>()");
     defaultExpressions.put("List", "new ArrayList<>()");
     defaultExpressions.put("OperatorInput", "OperatorInput.NO_OPERATOR_ASSIGNED");
