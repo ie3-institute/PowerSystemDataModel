@@ -167,7 +167,7 @@ public class Transformer3WTypeInput extends AssetTypeInput {
    * @param tapNeutr Neutral tap position.
    * @param tapMin Minimum available tap position.
    * @param tapMax Maximum available tap position.
-   * @param additionalInformation
+   * @param additionalInformation Provided by the source.
    */
   public Transformer3WTypeInput(
       UUID uuid,

@@ -17,6 +17,7 @@ datamodel:
       components:
         - name: additionalInformation
           type: StringMap
+          description: "Provided by the source."
           keys: [additionalInformation]
           required: false
 

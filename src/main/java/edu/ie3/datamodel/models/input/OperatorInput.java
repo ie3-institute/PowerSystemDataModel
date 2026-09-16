@@ -30,7 +30,7 @@ public class OperatorInput extends UniqueInputEntity {
   /**
    * @param uuid Unique identifier for an entity.
    * @param id The id (=name) of this operator.
-   * @param additionalInformation
+   * @param additionalInformation Provided by the source.
    */
   public OperatorInput(UUID uuid, String id, Map<String, String> additionalInformation) {
     super(uuid);

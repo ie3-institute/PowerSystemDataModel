@@ -14,6 +14,7 @@ import java.util.UUID;
 
 /** Functionless class to describe that all subclasses are unique input classes. */
 public abstract class UniqueInputEntity extends UniqueEntity implements InputEntity {
+  /** Provided by the source. */
   private final Map<String, String> additionalInformation;
 
   /**

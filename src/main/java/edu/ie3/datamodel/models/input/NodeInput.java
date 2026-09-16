@@ -84,7 +84,7 @@ public class NodeInput extends AssetInput {
    *     that are connected to this node.
    * @param voltLvl Voltage level of this node.
    * @param subnet Subgrid of this node.
-   * @param additionalInformation
+   * @param additionalInformation Provided by the source.
    */
   public NodeInput(
       UUID uuid,
