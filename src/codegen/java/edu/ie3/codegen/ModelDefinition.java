@@ -25,7 +25,7 @@ public final class ModelDefinition implements HelperMethods {
   @JsonProperty("extends")
   public String extendsName;
 
-  /** List of components (fields) of this model */
+  /** List of components (fields) of this model. */
   public List<ComponentDefinition> components = new ArrayList<>();
 
   /** List with nested model definitions. */

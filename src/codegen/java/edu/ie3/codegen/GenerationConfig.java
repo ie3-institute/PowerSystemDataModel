@@ -71,7 +71,7 @@ public final class GenerationConfig implements HelperMethods {
 
   /** Class that contains a definition for additional constructors. */
   public static final class ConstructorDefinition {
-    /** If {@code true} the constructor is private */
+    /** If {@code true} the constructor is private. */
     @JsonProperty("private")
     public boolean isPrivate = false;
 
@@ -99,7 +99,7 @@ public final class GenerationConfig implements HelperMethods {
     /** The expression. It can be multiple lines, if `\n` is used. */
     public String expression;
 
-    /** List of all class modifiers. */
+    /** List of all modifiers. */
     public List<String> modifiers = new ArrayList<>();
   }
 
