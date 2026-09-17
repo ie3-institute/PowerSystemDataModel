@@ -223,10 +223,6 @@ final class ModelGenerator implements HelperMethods {
                 builder.addJavadoc(component.description);
               }
 
-              if (component.isTransient) {
-                builder.addModifiers(Modifier.TRANSIENT);
-              }
-
               return builder.build();
             })
         .toList();

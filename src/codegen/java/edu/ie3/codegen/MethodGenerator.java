@@ -151,12 +151,15 @@ public class MethodGenerator implements HelperMethods {
 
     // add the own fields of the model
     for (ModelDefinition.ComponentDefinition component : model.components) {
-      if (!component.name.equalsIgnoreCase(ADDITIONAL_INFORMATION)) {
+      String name = component.name;
+
+      if (!name.equalsIgnoreCase(ADDITIONAL_INFORMATION)
+          && !genConfig.excludeFromMethods.contains(name)) {
 
         if (component.keys.isEmpty()) {
           // add the value
           builder.addStatement(
-              "map.put($S, $L)", component.name, toString(component, components, genConfig, true));
+              "map.put($S, $L)", name, toString(component, components, genConfig, true));
         } else {
           // we need some specialized calls here
 

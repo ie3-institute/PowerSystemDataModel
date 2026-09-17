@@ -112,9 +112,6 @@ public interface HelperMethods {
     // a list with getters that should not be capitalized
     List<String> nonCapitalized = genConfig.nonCapitalized;
 
-    // a list of boolean getters that should use `get` instead of `is`
-    List<String> booleanGetter = genConfig.booleanGetter;
-
     String methodName;
 
     if (nonCapitalized.contains(name)) {
@@ -124,7 +121,7 @@ public interface HelperMethods {
     }
 
     if (isPrimitive(type)) {
-      if ("bool".equals(type) && !booleanGetter.contains(name)) {
+      if ("bool".equals(type)) {
         return "is" + methodName;
       }
     }
@@ -315,21 +312,18 @@ public interface HelperMethods {
    * Adds a statement to a method builder.
    *
    * @param builder current builder
-   * @param modification modification to use
+   * @param options modification to use
    */
-  default void addStatement(
-      MethodSpec.Builder builder, GenerationConfig.BasicExpression modification) {
-    if (modification instanceof GenerationConfig.StandardOptions sf) {
+  default void addStatement(MethodSpec.Builder builder, GenerationConfig.BasicOptions options) {
 
-      if (!sf.description.isBlank()) {
-        builder.addJavadoc(sf.description);
-      }
+    if (!options.description.isBlank()) {
+      builder.addJavadoc(options.description);
     }
 
-    String expression = modification.expression;
+    String expression = options.expression;
     String prefix = "";
 
-    if (modification instanceof GenerationConfig.MethodDefinition mf && mf.addReturn) {
+    if (options instanceof GenerationConfig.MethodDefinition mf && mf.addReturn) {
       prefix = "return ";
     }
 
