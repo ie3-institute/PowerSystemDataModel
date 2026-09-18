@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.models.input;
 
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.datamodel.utils.QuantityUtils;
 import edu.ie3.util.geo.GeoUtils;
@@ -156,18 +155,9 @@ public class NodeInput extends AssetInput {
   @Override
   public SequencedMap<String, String> toMap() {
     SequencedMap<String, String> map = super.toMap();
-    map.put("vTarget", vTarget.toString());
+    map.put("vTarget", Double.toString(vTarget.getValue().doubleValue()));
     map.put("slack", String.valueOf(slack));
     map.put("geoPosition", geoPosition.toString());
-    map.put("voltLvl", voltLvl.getId());
-    map.put(
-        "vRated",
-        String.valueOf(
-            voltLvl
-                .getNominalVoltage()
-                .to(StandardUnits.RATED_VOLTAGE_MAGNITUDE)
-                .getValue()
-                .doubleValue()));
     map.put("subnet", String.valueOf(subnet));
     map.putAll(getAdditionalInformation());
     return map;

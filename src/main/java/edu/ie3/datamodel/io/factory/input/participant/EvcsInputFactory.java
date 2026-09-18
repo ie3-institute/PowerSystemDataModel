@@ -71,7 +71,7 @@ public class EvcsInputFactory
           e);
     }
 
-    final boolean v2gSupport = data.getBoolean(V_2G_SUPPORT);
+    final boolean v2gSupport = data.getBoolean(V2G_SUPPORT);
 
     return new EvcsInput(
         uuid,

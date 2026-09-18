@@ -317,7 +317,7 @@ public class FieldNamingStrategy extends FieldNamingStrategyAdditions {
 
   public static final String S_RATED_C = "sRatedC";
 
-  public static final String S_RATED_D_C = "sRatedDC";
+  public static final String S_RATED_DC = "sRatedDC";
 
   public static final String SCREEN = "screen";
 
@@ -363,7 +363,7 @@ public class FieldNamingStrategy extends FieldNamingStrategyAdditions {
 
   public static final String UUID = "uuid";
 
-  public static final String V_2G_SUPPORT = "v2gSupport";
+  public static final String V2G_SUPPORT = "v2gSupport";
 
   public static final String V_ANG = "vAng";
 
@@ -833,12 +833,12 @@ public class FieldNamingStrategy extends FieldNamingStrategyAdditions {
             CHARGING_POINTS,
             COS_PHI_RATED,
             LOCATION_TYPE,
-            V_2G_SUPPORT),
+            V2G_SUPPORT),
         CollectionUtils.newSet(OPERATOR, OPERATES_FROM, OPERATES_UNTIL));
     ModelFields.register(
         EvTypeInput.class,
         CollectionUtils.newSet(
-            UUID, ID, CAPEX, OPEX, S_RATED, COS_PHI_RATED, E_STORAGE, E_CONS, S_RATED_D_C),
+            UUID, ID, CAPEX, OPEX, S_RATED, COS_PHI_RATED, E_STORAGE, E_CONS, S_RATED_DC),
         CollectionUtils.newSet());
     ModelFields.register(
         ThermalBusInput.class,

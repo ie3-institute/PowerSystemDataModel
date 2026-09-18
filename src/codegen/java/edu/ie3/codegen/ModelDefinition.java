@@ -55,6 +55,9 @@ public final class ModelDefinition implements HelperMethods {
     /** Type of the parameter. */
     public String type;
 
+    /** Standard unit to apply, if the type is a quantity. */
+    public String unit;
+
     /** Description of the parameter. */
     public String description = "";
   }

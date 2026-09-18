@@ -14,14 +14,17 @@ import javax.lang.model.element.Modifier;
 
 public class MethodGenerator implements HelperMethods {
 
+  private final boolean result;
   private final ModelDefinition model;
   private final GenerationConfig genConfig;
   private final Map<String, ModelDefinition.ComponentDefinition> allComponents;
 
   public MethodGenerator(
+      String packageName,
       ModelDefinition model,
       GenerationConfig genConfig,
       Map<String, ModelDefinition.ComponentDefinition> allComponents) {
+    this.result = packageName.contains("result");
     this.model = model;
     this.genConfig = genConfig;
     this.allComponents = allComponents;
@@ -157,20 +160,36 @@ public class MethodGenerator implements HelperMethods {
           && !genConfig.excludeFromMethods.contains(name)) {
 
         if (component.keys.isEmpty()) {
-          // add the value
-          builder.addStatement(
-              "map.put($S, $L)", name, toString(component, components, genConfig, true));
-        } else {
-          // we need some specialized calls here
 
-          for (String key : component.keys) {
-            String expression = genConfig.keyMapper.get(key);
+          if (isQuantity(component.type)) {
+            // we have a quantity and need to add a bit more handling
 
-            if (expression != null && !expression.isBlank()) {
-              var modified = ResolverUtils.modifyExpression(expression);
-              builder.addStatement(
-                  "map.put($S, $L)", key, CodeBlock.of(modified.expression(), modified.args()));
-            }
+            String expression =
+                component.unit != null
+                    ? "QuantityUtils.toString(" + name + ", " + component.unit + ")"
+                    : "Double.toString(" + name + ".getValue().doubleValue())";
+
+            var modified = ResolverUtils.modifyExpression(expression);
+            builder.addStatement(
+                "map.put($S, $L)", name, CodeBlock.of(modified.expression(), modified.args()));
+
+          } else {
+            // add the value
+            builder.addStatement(
+                "map.put($S, $L)", name, toString(component, components, genConfig, true));
+          }
+        }
+
+      } else {
+        // we need some specialized calls here
+
+        for (String key : component.keys) {
+          String expression = genConfig.keyMapper.get(key);
+
+          if (expression != null && !expression.isBlank()) {
+            var modified = ResolverUtils.modifyExpression(expression);
+            builder.addStatement(
+                "map.put($S, $L)", key, CodeBlock.of(modified.expression(), modified.args()));
           }
         }
       }

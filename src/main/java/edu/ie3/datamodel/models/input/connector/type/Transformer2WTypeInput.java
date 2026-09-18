@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector.type;
 
+import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.utils.QuantityUtils;
 import java.util.Map;
@@ -216,15 +217,15 @@ public class Transformer2WTypeInput extends AssetTypeInput {
   @Override
   public SequencedMap<String, String> toMap() {
     SequencedMap<String, String> map = super.toMap();
-    map.put("rSc", rSc.toString());
-    map.put("xSc", xSc.toString());
-    map.put("sRated", sRated.toString());
-    map.put("vRatedA", vRatedA.toString());
-    map.put("vRatedB", vRatedB.toString());
-    map.put("gM", gM.toString());
-    map.put("bM", bM.toString());
-    map.put("dV", dV.toString());
-    map.put("dPhi", dPhi.toString());
+    map.put("rSc", QuantityUtils.toString(rSc, StandardUnits.RESISTANCE));
+    map.put("xSc", QuantityUtils.toString(xSc, StandardUnits.REACTANCE));
+    map.put("sRated", QuantityUtils.toString(sRated, StandardUnits.S_RATED));
+    map.put("vRatedA", QuantityUtils.toString(vRatedA, StandardUnits.RATED_VOLTAGE_MAGNITUDE));
+    map.put("vRatedB", QuantityUtils.toString(vRatedB, StandardUnits.RATED_VOLTAGE_MAGNITUDE));
+    map.put("gM", QuantityUtils.toString(gM, StandardUnits.CONDUCTANCE));
+    map.put("bM", QuantityUtils.toString(bM, StandardUnits.SUSCEPTANCE));
+    map.put("dV", QuantityUtils.toString(dV, StandardUnits.DV_TAP));
+    map.put("dPhi", QuantityUtils.toString(dPhi, StandardUnits.DPHI_TAP));
     map.put("tapSide", String.valueOf(tapSide));
     map.put("tapNeutr", String.valueOf(tapNeutr));
     map.put("tapMin", String.valueOf(tapMin));

@@ -8,7 +8,6 @@ package edu.ie3.codegen;
 import static edu.ie3.codegen.ResolverUtils.*;
 
 import com.palantir.javapoet.*;
-import edu.ie3.util.StringUtils;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
@@ -140,7 +139,8 @@ final class ModelGenerator implements HelperMethods {
     typeBuilder.addFields(getFields(model, genConfig.setters));
     typeBuilder.addFields(getAdditionalFields(genConfig));
 
-    MethodGenerator methodGenerator = new MethodGenerator(model, genConfig, allComponents);
+    MethodGenerator methodGenerator =
+        new MethodGenerator(packageName, model, genConfig, allComponents);
     ConstructorGenerator constructorGenerator =
         new ConstructorGenerator(model, genConfig, allComponents);
 
@@ -247,10 +247,9 @@ final class ModelGenerator implements HelperMethods {
                     c -> {
                       if (!c.name.equalsIgnoreCase("additionalInformation")) {
                         if (c.keys.isEmpty()) {
-                          names.put(c.name, StringUtils.camelCaseToSnakeCase(c.name).toUpperCase());
+                          names.put(c.name, toUpperCase(c.name));
                         } else {
-                          c.keys.forEach(
-                              k -> names.put(k, StringUtils.camelCaseToSnakeCase(k).toUpperCase()));
+                          c.keys.forEach(k -> names.put(k, toUpperCase(k)));
                         }
                       }
                     }));
@@ -318,6 +317,10 @@ final class ModelGenerator implements HelperMethods {
         .skipJavaLangImports(true)
         .build()
         .writeTo(outputDirectory);
+  }
+
+  private static String toUpperCase(String str) {
+    return str.replaceAll("(?<=[a-z0-9])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])", "_").toUpperCase();
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

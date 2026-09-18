@@ -89,6 +89,10 @@ public interface HelperMethods {
    * @return true, if the type is a quantity
    */
   default boolean isQuantity(String type) {
+    if (isPrimitive(type)) {
+      return false;
+    }
+
     String cn;
 
     if (resolveType(type) instanceof ParameterizedTypeName ptn) {

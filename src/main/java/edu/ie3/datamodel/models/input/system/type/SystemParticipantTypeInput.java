@@ -69,9 +69,9 @@ public abstract class SystemParticipantTypeInput extends AssetTypeInput {
   @Override
   public SequencedMap<String, String> toMap() {
     SequencedMap<String, String> map = super.toMap();
-    map.put("capex", capex.toString());
-    map.put("opex", opex.toString());
-    map.put("sRated", sRated.toString());
+    map.put("capex", Double.toString(capex.getValue().doubleValue()));
+    map.put("opex", Double.toString(opex.getValue().doubleValue()));
+    map.put("sRated", Double.toString(sRated.getValue().doubleValue()));
     map.put("cosPhiRated", String.valueOf(cosPhiRated));
     return map;
   }

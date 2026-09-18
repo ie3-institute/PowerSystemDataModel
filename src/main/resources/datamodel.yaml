@@ -157,6 +157,7 @@ datamodel:
           description: "Type of this line, containing default values for lines of this kind."
         - name: length
           type: Length
+          unit: StandardUnits.LINE_LENGTH
           description: "Length of this line."
         - name: geoPosition
           type: LineString
@@ -237,8 +238,10 @@ datamodel:
           type: LayerList
         - name: limitTemperature
           type: Temperature
+          unit: Units.CELSIUS
         - name: frequency
           type: Frequency
+          unit: Units.HERTZ
         - name: skinEffectCoefficient
           type: double
         - name: proximityEffectCoefficient
@@ -300,21 +303,27 @@ datamodel:
       components:
         - name: b
           type: SpecificConductance
+          unit: StandardUnits.SUSCEPTANCE_PER_LENGTH
           description: "Specific phase-to-ground susceptance for this type of line (typically in µS/km)."
         - name: g
           type: SpecificConductance
+          unit: StandardUnits.CONDUCTANCE_PER_LENGTH
           description: "Specific phase-to-ground conductance for this type of line (typically in µS/km)."
         - name: r
           type: SpecificResistance
+          unit: StandardUnits.RESISTANCE_PER_LENGTH
           description: "Specific resistance for this type of line (typically in Ohm/km)."
         - name: x
           type: SpecificResistance
+          unit: StandardUnits.REACTANCE_PER_LENGTH
           description: "Specific reactance for this type of line (typically in Ohm/km)."
         - name: iMax
           type: ElectricCurrent
+          unit: StandardUnits.ELECTRIC_CURRENT_MAGNITUDE
           description: "Maximum thermal current for this type of line (typically in A)."
         - name: vRated
           type: ElectricPotential
+          unit: StandardUnits.RATED_VOLTAGE_MAGNITUDE
           description: "Rated voltage for this type of line (typically in V)."
 
     ScreenLayerInput:
@@ -353,30 +362,39 @@ datamodel:
       components:
         - name: rSc
           type: ElectricResistance
+          unit: StandardUnits.RESISTANCE
           description: "Short circuit resistance (typically in Ohm)."
         - name: xSc
           type: ElectricResistance
+          unit: StandardUnits.REACTANCE
           description: "Short circuit reactance (typically in Ohm)."
         - name: sRated
           type: Power
+          unit: StandardUnits.S_RATED
           description: "Rated apparent power (typically in kVA)."
         - name: vRatedA
           type: ElectricPotential
+          unit: StandardUnits.RATED_VOLTAGE_MAGNITUDE
           description: "Rated voltage of the high voltage winding (typically in kV)."
         - name: vRatedB
           type: ElectricPotential
+          unit: StandardUnits.RATED_VOLTAGE_MAGNITUDE
           description: "Rated voltage of the low voltage winding (typically in kV)."
         - name: gM
           type: ElectricConductance
+          unit: StandardUnits.CONDUCTANCE
           description: "Phase-to-ground conductance (typically in nS)."
         - name: bM
           type: ElectricConductance
+          unit: StandardUnits.SUSCEPTANCE
           description: "Phase-to-ground susceptance (typically in nS)."
         - name: dV
           type: Percent
+          unit: StandardUnits.DV_TAP
           description: "Voltage magnitude deviation per tap position (typically in %)."
         - name: dPhi
           type: DegreeGeom
+          unit: StandardUnits.DPHI_TAP
           description: "Voltage angle deviation per tap position (typically in °)."
         - name: tapSide
           type: bool
@@ -399,30 +417,39 @@ datamodel:
       components:
         - name: sRatedA
           type: Power
+          unit: StandardUnits.S_RATED
           description: "Rated apparent power of the high voltage winding (typically in kVA)."
         - name: sRatedB
           type: Power
+          unit: StandardUnits.S_RATED
           description: "Rated apparent power of the medium voltage winding (typically in kVA)."
         - name: sRatedC
           type: Power
+          unit: StandardUnits.S_RATED
           description: "Rated apparent power of the low voltage windings (typically in kVA)."
         - name: vRatedA
           type: ElectricPotential
+          unit: StandardUnits.RATED_VOLTAGE_MAGNITUDE
           description: "Rated voltage of the high voltage winding (typically in kV)."
         - name: vRatedB
           type: ElectricPotential
+          unit: StandardUnits.RATED_VOLTAGE_MAGNITUDE
           description: "Rated voltage of the medium voltage winding (typically in kV)."
         - name: vRatedC
           type: ElectricPotential
+          unit: StandardUnits.RATED_VOLTAGE_MAGNITUDE
           description: "Rated voltage of the low voltage winding (typically in kV)."
         - name: rScA
           type: ElectricResistance
+          unit: StandardUnits.RESISTANCE
           description: "Short-circuit resistance of the high voltage winding (typically in Ohm)."
         - name: rScB
           type: ElectricResistance
+          unit: StandardUnits.RESISTANCE
           description: "Short-circuit resistance of the medium voltage winding (typically in Ohm)."
         - name: rScC
           type: ElectricResistance
+          unit: StandardUnits.RESISTANCE
           description: "Short-circuit resistance of the low voltage winding (typically in Ohm)."
         - name: xScA
           type: ElectricResistance
@@ -435,15 +462,19 @@ datamodel:
           description: "Short-circuit reactance of the low voltage winding (typically in Ohm)."
         - name: gM
           type: ElectricConductance
+          unit: StandardUnits.CONDUCTANCE
           description: "Phase-to-ground conductance (typically in nS)."
         - name: bM
           type: ElectricConductance
+          unit: StandardUnits.SUSCEPTANCE
           description: "Phase-to-ground susceptance (typically in nS)."
         - name: dV
           type: Percent
+          unit: StandardUnits.DV_TAP
           description: "Voltage magnitude deviation per tap position (typically in %)."
         - name: dPhi
           type: DegreeGeom
+          unit: StandardUnits.DPHI_TAP
           description: "Voltage angle deviation per tap position (typically in °)."
         - name: tapNeutr
           type: int

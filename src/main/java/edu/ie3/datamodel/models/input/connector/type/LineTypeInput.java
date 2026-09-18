@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector.type;
 
+import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.utils.QuantityUtils;
 import edu.ie3.util.quantities.interfaces.SpecificConductance;
@@ -123,12 +124,12 @@ public class LineTypeInput extends AssetTypeInput {
   @Override
   public SequencedMap<String, String> toMap() {
     SequencedMap<String, String> map = super.toMap();
-    map.put("b", b.toString());
-    map.put("g", g.toString());
-    map.put("r", r.toString());
-    map.put("x", x.toString());
-    map.put("iMax", iMax.toString());
-    map.put("vRated", vRated.toString());
+    map.put("b", QuantityUtils.toString(b, StandardUnits.SUSCEPTANCE_PER_LENGTH));
+    map.put("g", QuantityUtils.toString(g, StandardUnits.CONDUCTANCE_PER_LENGTH));
+    map.put("r", QuantityUtils.toString(r, StandardUnits.RESISTANCE_PER_LENGTH));
+    map.put("x", QuantityUtils.toString(x, StandardUnits.REACTANCE_PER_LENGTH));
+    map.put("iMax", QuantityUtils.toString(iMax, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE));
+    map.put("vRated", QuantityUtils.toString(vRated, StandardUnits.RATED_VOLTAGE_MAGNITUDE));
     map.putAll(getAdditionalInformation());
     return map;
   }

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.models.input.connector.type;
 
+import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.utils.QuantityUtils;
 import java.util.Map;
@@ -294,22 +295,22 @@ public class Transformer3WTypeInput extends AssetTypeInput {
   @Override
   public SequencedMap<String, String> toMap() {
     SequencedMap<String, String> map = super.toMap();
-    map.put("sRatedA", sRatedA.toString());
-    map.put("sRatedB", sRatedB.toString());
-    map.put("sRatedC", sRatedC.toString());
-    map.put("vRatedA", vRatedA.toString());
-    map.put("vRatedB", vRatedB.toString());
-    map.put("vRatedC", vRatedC.toString());
-    map.put("rScA", rScA.toString());
-    map.put("rScB", rScB.toString());
-    map.put("rScC", rScC.toString());
-    map.put("xScA", xScA.toString());
-    map.put("xScB", xScB.toString());
-    map.put("xScC", xScC.toString());
-    map.put("gM", gM.toString());
-    map.put("bM", bM.toString());
-    map.put("dV", dV.toString());
-    map.put("dPhi", dPhi.toString());
+    map.put("sRatedA", QuantityUtils.toString(sRatedA, StandardUnits.S_RATED));
+    map.put("sRatedB", QuantityUtils.toString(sRatedB, StandardUnits.S_RATED));
+    map.put("sRatedC", QuantityUtils.toString(sRatedC, StandardUnits.S_RATED));
+    map.put("vRatedA", QuantityUtils.toString(vRatedA, StandardUnits.RATED_VOLTAGE_MAGNITUDE));
+    map.put("vRatedB", QuantityUtils.toString(vRatedB, StandardUnits.RATED_VOLTAGE_MAGNITUDE));
+    map.put("vRatedC", QuantityUtils.toString(vRatedC, StandardUnits.RATED_VOLTAGE_MAGNITUDE));
+    map.put("rScA", QuantityUtils.toString(rScA, StandardUnits.RESISTANCE));
+    map.put("rScB", QuantityUtils.toString(rScB, StandardUnits.RESISTANCE));
+    map.put("rScC", QuantityUtils.toString(rScC, StandardUnits.RESISTANCE));
+    map.put("xScA", Double.toString(xScA.getValue().doubleValue()));
+    map.put("xScB", Double.toString(xScB.getValue().doubleValue()));
+    map.put("xScC", Double.toString(xScC.getValue().doubleValue()));
+    map.put("gM", QuantityUtils.toString(gM, StandardUnits.CONDUCTANCE));
+    map.put("bM", QuantityUtils.toString(bM, StandardUnits.SUSCEPTANCE));
+    map.put("dV", QuantityUtils.toString(dV, StandardUnits.DV_TAP));
+    map.put("dPhi", QuantityUtils.toString(dPhi, StandardUnits.DPHI_TAP));
     map.put("tapNeutr", String.valueOf(tapNeutr));
     map.put("tapMin", String.valueOf(tapMin));
     map.put("tapMax", String.valueOf(tapMax));

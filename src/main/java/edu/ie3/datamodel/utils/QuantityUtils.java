@@ -7,6 +7,7 @@ package edu.ie3.datamodel.utils;
 
 import java.util.Objects;
 import javax.measure.Quantity;
+import javax.measure.Unit;
 
 public final class QuantityUtils {
 
@@ -31,5 +32,9 @@ public final class QuantityUtils {
     }
 
     return false;
+  }
+
+  public static <Q extends Quantity<Q>> String toString(Quantity<Q> quantity, Unit<Q> unit) {
+    return Double.toString(quantity.to(unit).getValue().doubleValue());
   }
 }

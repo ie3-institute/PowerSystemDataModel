@@ -76,7 +76,7 @@ public class SystemParticipantTypeInputFactory
         data.getQuantity(E_CONS, StandardUnits.ENERGY_PER_DISTANCE);
 
     ComparableQuantity<Power> sRatedDC =
-        data.getQuantity(S_RATED_D_C, StandardUnits.ACTIVE_POWER_IN);
+        data.getQuantity(S_RATED_DC, StandardUnits.ACTIVE_POWER_IN);
 
     return new EvTypeInput(
         uuid, id, capEx, opEx, eStorage, eCons, sRated, cosPhi, sRatedDC, data.getFieldsToValues());
