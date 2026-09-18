@@ -41,8 +41,8 @@ public class PvInputFactory
         data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY);
     final ComparableQuantity<Angle> elevationAngle =
         data.getQuantity(ELEVATION_ANGLE, StandardUnits.SOLAR_ELEVATION_ANGLE);
-    final double kG = data.getDouble(KG);
-    final double kT = data.getDouble(KT);
+    final double kG = data.getDouble(K_G);
+    final double kT = data.getDouble(K_T);
     final ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
     final double cosPhi = data.getDouble(COS_PHI_RATED);
 
