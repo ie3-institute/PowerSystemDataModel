@@ -12,13 +12,7 @@ import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
-import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
-import edu.ie3.datamodel.models.input.connector.type.ConductorInput;
-import edu.ie3.datamodel.models.input.connector.type.LayerInput;
-import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
-import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput;
-import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
-import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
+import edu.ie3.datamodel.models.input.connector.type.*;
 import edu.ie3.datamodel.models.input.container.SubGridContainer;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.geo.GeoUtils;
@@ -152,15 +146,28 @@ public class ConnectorValidationUtils extends ValidationUtils {
       return List.of(isNull);
     }
 
-    return Try.ofVoid(
-        InvalidEntityException.class,
-        () ->
-            detectNegativeQuantities(quantities(B, lineType.getB(), G, lineType.getG()), lineType),
-        () ->
-            detectZeroOrNegativeQuantities(
-                quantities(
-                    V_RATED, lineType.getvRated(), I_MAX, lineType.getiMax(), R, lineType.getR()),
-                lineType));
+    List<Try<Void, InvalidEntityException>> exceptions =
+        new ArrayList<>(
+            Try.ofVoid(
+                InvalidEntityException.class,
+                () ->
+                    detectNegativeQuantities(
+                        quantities(B, lineType.getB(), G, lineType.getG()), lineType),
+                () ->
+                    detectZeroOrNegativeQuantities(
+                        quantities(
+                            V_RATED,
+                            lineType.getvRated(),
+                            I_MAX,
+                            lineType.getiMax(),
+                            R,
+                            lineType.getR()),
+                        lineType)));
+
+    // Also validate cable type if present
+    lineType.getCableType().ifPresent(ct -> exceptions.addAll(checkCableType(ct)));
+
+    return exceptions;
   }
 
   /**
@@ -218,6 +225,45 @@ public class ConnectorValidationUtils extends ValidationUtils {
         .ifPresent(screen -> exceptions.addAll(checkScreenLayer(screen, cableType)));
 
     return exceptions;
+  }
+
+  protected static List<Try<Void, InvalidEntityException>> checkCableDeployment(
+      CableDeploymentInput deployment, LineInput line) {
+    Try<Void, InvalidEntityException> isNull = checkNonNull(deployment, "a cable deployment");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
+    }
+
+    return Try.ofVoid(
+        InvalidEntityException.class,
+        () -> checkCableDeploymentLayoutFormation(deployment, line),
+        () -> checkCableDepth(deployment, line),
+        () -> {
+          if (deployment.getDistanceCables() == null) {
+            throw new InvalidEntityException(
+                "Distance between cables must be provided", deployment);
+          }
+          detectZeroOrNegativeQuantities(
+              quantities("distanceCables", deployment.getDistanceCables()), deployment);
+        });
+  }
+
+  private static void checkCableDepth(CableDeploymentInput deployment, LineInput line)
+      throws InvalidEntityException {
+    if (deployment.getDepthCables() == null) {
+      throw new InvalidEntityException("Cable depth must be provided", line);
+    }
+    if (deployment.getDepthCables().getValue().doubleValue() > 0d) {
+      throw new InvalidEntityException("Cable depth must be less than or equal to 0", line);
+    }
+  }
+
+  private static void checkCableDeploymentLayoutFormation(
+      CableDeploymentInput deployment, LineInput line) throws InvalidEntityException {
+    if (deployment.getLayoutFormation() == null || deployment.getLayoutFormation().isEmpty()) {
+      throw new InvalidEntityException("Layout formation cannot be empty", line);
+    }
   }
 
   /**

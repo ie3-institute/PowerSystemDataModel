@@ -10,16 +10,10 @@ import static edu.ie3.util.quantities.PowerSystemUnits.PU
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
-import edu.ie3.datamodel.models.UniqueEntity
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
-import edu.ie3.datamodel.models.input.connector.LineInput
-import edu.ie3.datamodel.models.input.connector.SwitchInput
-import edu.ie3.datamodel.models.input.connector.Transformer2WInput
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput
-import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
-import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
-import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
+import edu.ie3.datamodel.models.input.connector.*
+import edu.ie3.datamodel.models.input.connector.type.*
 import edu.ie3.datamodel.models.input.system.*
 import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
@@ -28,6 +22,7 @@ import edu.ie3.test.common.SystemParticipantTestData
 import edu.ie3.test.common.TypeTestData
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
+import tools.jackson.databind.json.JsonMapper
 
 import java.time.ZonedDateTime
 
@@ -432,7 +427,8 @@ class InputEntityProcessorTest extends Specification {
       "r" : "0.437",
       "x" : "0.356",
       "iMax" : "300.0",
-      "vRated": "20.0"
+      "vRated" : "20.0",
+      "cableType" : "",
     ]
 
     when:
@@ -440,6 +436,65 @@ class InputEntityProcessorTest extends Specification {
 
     then:
     actual == expected
+  }
+
+  def "The InputEntityProcessor should serialize a provided CableType correctly"() {
+    given:
+    InputEntityProcessor processor = new InputEntityProcessor(CableTypeInput)
+    CableTypeInput type = GridTestData.cableTypeInput
+
+    Map expected = [
+      "uuid" : "994dcc32-d6ec-4d0f-9941-7c25be942aa6",
+      "id" : "test cable type input",
+      "coreNumber" : "1",
+      "limitTemperature" : "90.0",
+      "frequency" : "50.0",
+      "skinEffectCoefficient" : "1.0",
+      "proximityEffectCoefficient": "1.0",
+      "electricalCapacitance" : "3.5E-7",
+      "tanDelta" : "0.1",
+      "circulatingLossFactor" : "0.0",
+      "eddyCurrentLossFactor" : "0.0",
+      "armor" : "[]",
+      "filler" : "[]",
+      "jack" : "[]",
+      "screen" : "",
+      "conductor" : '{"uuid":"' + type.getConductor().getUuid() + '","name":"conductor","material":"COPPER","crossSection":"4.0E-4","diameter":"0.0225","isCompacted":false,"thermalResistivity":"0.0026041667","thermalCapacitance":"3449600.0","area":"1.0","additionalInformation":{}}',
+      "isolation" : '[{"uuid":"' + type.getIsolation().get(0).getUuid() + '","name":"Main insulation","material":"XLPE","innerDiameter":"0.0225","outerDiameter":"0.027","thermalResistivity":"3.5","thermalCapacitance":"2.4","area":"1.0","additionalInformation":{}}]'
+    ]
+
+    when:
+    Map<String, String> actual = processor.handleEntity(type)
+
+    then:
+    expected.each { k, v ->
+      if (k == "conductor" || k == "isolation") return
+        assert actual.get(k).toString() == v.toString()
+    }
+
+    def conductorJson = actual.get("conductor")
+    def mapper = JsonMapper.builder().build()
+    def conductorNode = mapper.readTree(conductorJson)
+    assert conductorNode.get("uuid").asString() == type.getConductor().getUuid().toString()
+    assert conductorNode.get("name").asString() == "conductor"
+    assert conductorNode.get("material").asString() == "COPPER"
+
+    def csNode = conductorNode.get("crossSection")
+    assert csNode != null
+    assert csNode.isNumber()
+    assert Math.abs(csNode.asDouble() - 400.0) < 1e-12
+
+    def diaNode = conductorNode.get("diameter")
+    assert diaNode != null
+    assert diaNode.isNumber()
+    assert Math.abs(diaNode.asDouble() - 22.5) < 1e-12
+
+    def isolationJson = actual.get("isolation")
+    def isolationNode = mapper.readTree(isolationJson)
+    assert isolationNode.isArray()
+    def firstIsolation = isolationNode.get(0)
+    assert firstIsolation.get("uuid").asString() == type.getIsolation().get(0).getUuid().toString()
+    assert firstIsolation.get("name").asString() == "Main insulation"
   }
 
   def "The InputEntityProcessor should serialize a provided EvTypeInput correctly"() {
@@ -602,6 +657,32 @@ class InputEntityProcessorTest extends Specification {
 
     when:
     Map<String, String> actual = processor.handleEntity(nodeWithOutOperator)
+
+    then:
+    actual == expected
+  }
+
+  def "The InputEntityProcessor should serialize a provided CableDeploymentInput correctly"() {
+    given:
+    InputEntityProcessor processor = new InputEntityProcessor(CableDeploymentInput)
+    CableDeploymentInput cd = new CableDeploymentInput(
+        UUID.fromString("11111111-1111-1111-1111-111111111111"),
+        UUID.fromString("22222222-2222-2222-2222-222222222222"),
+        "formationX",
+        Quantities.getQuantity(0.1, StandardUnits.LINE_LENGTH),
+        Quantities.getQuantity(0.2, StandardUnits.LINE_LENGTH)
+        )
+
+    Map expected = [
+      "uuid" : "11111111-1111-1111-1111-111111111111",
+      "lineUuid" : "22222222-2222-2222-2222-222222222222",
+      "layoutFormation" : "formationX",
+      "depthCables" : "0.1",
+      "distanceCables" : "0.2"
+    ]
+
+    when:
+    Map<String, String> actual = processor.handleEntity(cd)
 
     then:
     actual == expected
