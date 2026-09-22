@@ -15,6 +15,7 @@ import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.utils.Try;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -63,8 +64,8 @@ public abstract class FileDataSource implements DataSource {
               })
           .collect(Collectors.toSet());
     } catch (IOException e) {
-      log.error("Unable to determine time series files readers for time series.", e);
-      return Collections.emptySet();
+      throw new UncheckedIOException(
+          "Unable to determine time series file paths in '" + baseDirectory + "'.", e);
     }
   }
 
@@ -73,7 +74,6 @@ public abstract class FileDataSource implements DataSource {
     return getTimeSeriesFilePaths(fileNamingStrategy.getIndividualTimeSeriesPattern())
         .parallelStream()
         .map(filePath -> resolveFileInformation(filePath, "individual time series"))
-        .flatMap(Optional::stream)
         .map(
             fileMeta -> {
               IndividualTimeSeriesMetaInformation metaInformation =
@@ -101,7 +101,6 @@ public abstract class FileDataSource implements DataSource {
     return getTimeSeriesFilePaths(fileNamingStrategy.getLoadProfileTimeSeriesPattern())
         .parallelStream()
         .map(filePath -> resolveFileInformation(filePath, "load profile"))
-        .flatMap(Optional::stream)
         .map(
             fileMeta -> {
               LoadProfileMetaInformation metaInformation =
@@ -118,15 +117,15 @@ public abstract class FileDataSource implements DataSource {
                         .anyMatch(profile -> metaInformation.getProfileKey().equals(profile)));
   }
 
-  private Optional<FileMetaDetails> resolveFileInformation(Path filePath, String metaType) {
+  private FileMetaDetails resolveFileInformation(Path filePath, String metaType) {
     String fileName = filePath.getFileName().toString();
     try {
       FileType fileType = FileType.getFileType(fileName);
       Path pathWithoutEnding = Path.of(FileNamingStrategy.removeFileNameEnding(fileName));
-      return Optional.of(new FileMetaDetails(filePath, pathWithoutEnding, fileType));
+      return new FileMetaDetails(filePath, pathWithoutEnding, fileType);
     } catch (ParsingException e) {
-      log.warn("Unable to load {} meta data for {}", metaType, fileName, e);
-      return Optional.empty();
+      throw new RuntimeException(
+          "Unable to load " + metaType + " meta data for '" + fileName + "'.", e);
     }
   }
 
