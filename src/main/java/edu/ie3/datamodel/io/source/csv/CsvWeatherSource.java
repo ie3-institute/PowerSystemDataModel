@@ -26,7 +26,6 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.datamodel.utils.ExceptionUtils;
-import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import edu.ie3.util.interval.ClosedInterval;
@@ -101,13 +100,18 @@ public class CsvWeatherSource extends WeatherSource {
     if (coordinates.isEmpty())
       throw new NoDataException("No coordinates provided for weather data query.");
 
-    Map<Point, IndividualTimeSeries<WeatherValue>> filteredMap =
-        coordinateToTimeSeries.entrySet().stream()
-            .filter(entry -> coordinates.contains(entry.getKey()))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    Map<Point, IndividualTimeSeries<WeatherValue>> result = new HashMap<>();
 
-    Map<Point, IndividualTimeSeries<WeatherValue>> result =
-        trimMapToInterval(filteredMap, timeInterval);
+    for (Point coordinate : coordinates) {
+      if (coordinateToTimeSeries.containsKey(coordinate)) {
+        IndividualTimeSeries<WeatherValue> ts =
+            coordinateToTimeSeries.get(coordinate).getSubTimeSeries(timeInterval);
+
+        if (!ts.getEntries().isEmpty()) {
+          result.put(coordinate, ts);
+        }
+      }
+    }
 
     return validateAndWarnMissing(result, coordinates, timeInterval);
   }
@@ -175,7 +179,8 @@ public class CsvWeatherSource extends WeatherSource {
     map.forEach(
         (point, timeSeries) -> {
           IndividualTimeSeries<WeatherValue> trimmedSeries =
-              TimeSeriesUtils.trimTimeSeriesToInterval(timeSeries, timeInterval);
+              timeSeries.getSubTimeSeries(timeInterval);
+
           if (!trimmedSeries.getEntries().isEmpty()) {
             trimmed.put(point, trimmedSeries);
           }
@@ -237,7 +242,7 @@ public class CsvWeatherSource extends WeatherSource {
                   // issues
                   // otherwise
                   IndividualTimeSeries<WeatherValue> timeSeries =
-                      new IndividualTimeSeries<>(UUID.randomUUID(), new HashSet<>(timeBasedValues));
+                      new IndividualTimeSeries<>(UUID.randomUUID(), new TreeSet<>(timeBasedValues));
                   if (weatherTimeSeries.containsKey(point)) {
                     IndividualTimeSeries<WeatherValue> mergedTimeSeries =
                         mergeTimeSeries(weatherTimeSeries.get(point), timeSeries);

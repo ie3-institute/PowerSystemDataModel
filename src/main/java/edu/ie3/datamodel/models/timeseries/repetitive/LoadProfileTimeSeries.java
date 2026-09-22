@@ -12,7 +12,6 @@ import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -23,7 +22,7 @@ import tech.units.indriya.ComparableQuantity;
 public class LoadProfileTimeSeries<V extends LoadValues>
     extends RepetitiveTimeSeries<LoadProfileEntry<V>, V, PValue> {
   protected final PowerProfileKey powerProfileKey;
-  protected final Map<Integer, V> valueMapping;
+  protected final NavigableMap<Integer, V> valueMapping;
 
   /**
    * The maximum average power consumption per quarter-hour calculated over all seasons and weekday
@@ -39,12 +38,10 @@ public class LoadProfileTimeSeries<V extends LoadValues>
       Set<LoadProfileEntry<V>> entries,
       ComparableQuantity<Power> maxPower,
       ComparableQuantity<Energy> profileEnergyScaling) {
-    super(entries);
+    super(entries, Comparator.comparingInt(LoadProfileEntry::getQuarterHour));
     this.powerProfileKey = powerProfileKey;
-    this.valueMapping =
-        entries.stream()
-            .collect(
-                Collectors.toMap(LoadProfileEntry::getQuarterHour, LoadProfileEntry::getValue));
+    this.valueMapping = new TreeMap<>(Comparator.naturalOrder());
+    entries.forEach(e -> valueMapping.put(e.getQuarterHour(), e.getValue()));
 
     this.maxPower = maxPower;
     this.profileEnergyScaling = profileEnergyScaling;
@@ -66,15 +63,6 @@ public class LoadProfileTimeSeries<V extends LoadValues>
   /** Returns the {@link PowerProfileKey}. */
   public PowerProfileKey getPowerProfileKey() {
     return powerProfileKey;
-  }
-
-  @Override
-  public Set<LoadProfileEntry<V>> getEntries() {
-    // to ensure that the entries are ordered by their quarter-hour
-    TreeSet<LoadProfileEntry<V>> set =
-        new TreeSet<>(Comparator.comparing(LoadProfileEntry::getQuarterHour));
-    set.addAll(super.getEntries());
-    return set;
   }
 
   /**
