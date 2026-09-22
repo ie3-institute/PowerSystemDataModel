@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.file;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.UncheckedFileException;
 import edu.ie3.datamodel.io.file.FileType;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.*;
@@ -124,7 +125,7 @@ public abstract class FileDataSource implements DataSource {
       Path pathWithoutEnding = Path.of(FileNamingStrategy.removeFileNameEnding(fileName));
       return new FileMetaDetails(filePath, pathWithoutEnding, fileType);
     } catch (ParsingException e) {
-      throw new RuntimeException(
+      throw new UncheckedFileException(
           "Unable to load " + metaType + " meta data for '" + fileName + "'.", e);
     }
   }
