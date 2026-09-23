@@ -6,7 +6,7 @@ Representation of an AC line.
 
 ### Type Model
 
-Type model of a line. Please note that there is also a cable type model that can be used for more detailed modelling using cable layout parameters (e.g., necessary for ampacity calculations) in case the line type represents a cable.
+Type model of a line. Please note that there is also a cable type model that can be used for more detailed modeling using cable layout parameters (e.g., necessary for ampacity calculations) in case the line type represents a cable.
 
 ```{list-table}
    :widths: auto
@@ -48,6 +48,10 @@ Type model of a line. Please note that there is also a cable type model that can
    * - vRated
      - kV
      - Rated voltage
+     
+   * - cableType
+     - UUID
+     - UUID of the cable type if the line type represents a cable and this information is available. [optional]
 
 ```
 

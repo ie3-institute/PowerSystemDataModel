@@ -90,7 +90,6 @@ public class TypeSource extends EntitySource {
     String resourcePath = SUB_DIRECTORY + "/transformer_2_w_type_input.csv";
 
     if (Transformer2WTypeInput.class.getResource(resourcePath) == null) {
-      log.error("Built-in 2W transformer type resource '{}' is missing.", resourcePath);
       throw new SourceException(
           "Built-in 2W transformer type resource '" + resourcePath + "' is missing.");
     }

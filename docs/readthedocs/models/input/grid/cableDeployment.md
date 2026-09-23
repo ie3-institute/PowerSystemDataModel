@@ -39,7 +39,7 @@ This model is represented by the Java class `edu.ie3.datamodel.models.input.conn
      
   * - additionalInformation
     - –
-    - optional map with any additional, string-encoded information
+    - -
 ```
 
 
