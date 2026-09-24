@@ -104,6 +104,7 @@ datamodel:
       components:
         - name: vTarget
           type: Dimensionless
+          unit: StandardUnits.TARGET_VOLTAGE_MAGNITUDE
           description: "Target voltage magnitude of the node with regard to its rated voltage (typically in p.u.)."
         - name: slack
           type: bool

@@ -14,6 +14,8 @@ import java.util.Map;
 /** Class that contains the generation configuration. */
 public final class GenerationConfig implements HelperMethods {
 
+  public String year = "";
+
   /** List of all class modifiers (default: only public). */
   public List<String> modifiers = List.of("public");
 

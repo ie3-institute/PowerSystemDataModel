@@ -2,22 +2,27 @@ version: 1.0
 datamodel:
   models:
     UniqueEntity:
+      year: 2021
       inherits: [ Entity, Uniqueness, Serializable, Processable ]
 
   models.input:
     UniqueInputEntity:
+      year: 2021
       inherits: [InputEntity]
       toMap: false
 
     AssetInput:
+      year: 2021
       inherits: [Operable]
       keyMapper:
         operatesFrom: operationTime.getStartDate().map(TimeUtil.withDefaults::toString).orElse("")
         operatesUntil: operationTime.getEndDate().map(TimeUtil.withDefaults::toString).orElse("")
 
     AssetTypeInput:
+      year: 2021
 
     NodeInput:
+      year: 2021
       fields:
         - name: DEFAULT_GEO_POSITION
           type: Point
@@ -30,6 +35,7 @@ datamodel:
         vRated: String.valueOf(voltLvl.getNominalVoltage().to(StandardUnits.RATED_VOLTAGE_MAGNITUDE).getValue().doubleValue())
 
     OperatorInput:
+      year: 2021
       fields:
         - name: NO_OPERATOR_ASSIGNED
           type: OperatorInput
@@ -38,16 +44,20 @@ datamodel:
 
   models.input.connector.type:
     LineTypeInput:
+      year: 2021
       nonCapitalized: [iMax, vRated]
 
     Transformer2WTypeInput:
+      year: 2021
       nonCapitalized: [rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi]
 
     Transformer3WTypeInput:
+      year: 2021
       nonCapitalized: [sRatedA, sRatedB, sRatedC, vRatedA, vRatedB, vRatedC, rScA, rScB, rScC, xScA, xScB, xScC, gM, bM, dV, dPhi]
 
   models.input.system.type:
     SystemParticipantTypeInput:
+      year: 2021
       copyBuilderMethods:
         - name: scale
           modifiers: [public, abstract]

@@ -196,6 +196,10 @@ A generation configuration is defined with:
      - Type
      - Remarks
 
+   * - year
+     - String
+     - Year that is inserted into the copyright statement at the beginning of a file.
+
    * - modifiers
      - List
      - List of all class modifiers (default: only public).

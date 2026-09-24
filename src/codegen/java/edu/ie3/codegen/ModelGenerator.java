@@ -80,10 +80,24 @@ final class ModelGenerator implements HelperMethods {
         TypeSpec cl = generate(packageName, model, allComponents, models, generationConfigs);
 
         // build the class file and write to it
-        JavaFile.builder(packageName, cl)
-            .skipJavaLangImports(true)
-            .build()
-            .writeTo(outputDirectory);
+        JavaFile.Builder builder = JavaFile.builder(packageName, cl);
+
+        try {
+          String year = generationConfigs.get(model.name).year;
+
+          if (!year.isBlank()) {
+            // add copyright comment
+            builder.addFileComment(
+                "© $S. TU Dortmund University,\n Institute of Energy Systems, Energy Efficiency and Energy Economics,\n Research group Distribution grid planning and operation",
+                year);
+          }
+
+        } catch (Exception e) {
+          throw new IllegalArgumentException(
+              "Exception while adding copyright comment for model: " + model.name, e);
+        }
+
+        builder.skipJavaLangImports(true).build().writeTo(outputDirectory);
       }
     }
 

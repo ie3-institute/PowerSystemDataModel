@@ -1,11 +1,12 @@
 /*
- * © 2026. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.input;
 
 import edu.ie3.datamodel.models.OperationTime;
+import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.datamodel.utils.QuantityUtils;
 import edu.ie3.util.geo.GeoUtils;
@@ -155,7 +156,7 @@ public class NodeInput extends AssetInput {
   @Override
   public SequencedMap<String, String> toMap() {
     SequencedMap<String, String> map = super.toMap();
-    map.put("vTarget", Double.toString(vTarget.getValue().doubleValue()));
+    map.put("vTarget", QuantityUtils.toString(vTarget, StandardUnits.TARGET_VOLTAGE_MAGNITUDE));
     map.put("slack", String.valueOf(slack));
     map.put("geoPosition", geoPosition.toString());
     map.put("subnet", String.valueOf(subnet));
