@@ -16,7 +16,6 @@ import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.utils.Try;
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -53,7 +52,7 @@ public abstract class FileDataSource implements DataSource {
                 "Cannot find a naming strategy for class '" + entityClass.getSimpleName() + "'."));
   }
 
-  protected Set<Path> getTimeSeriesFilePaths(Pattern pattern) {
+  protected Set<Path> getTimeSeriesFilePaths(Pattern pattern) throws SourceException {
     try (Stream<Path> pathStream = Files.walk(baseDirectory)) {
       return pathStream
           .map(baseDirectory::relativize)
@@ -65,13 +64,13 @@ public abstract class FileDataSource implements DataSource {
               })
           .collect(Collectors.toSet());
     } catch (IOException e) {
-      throw new UncheckedIOException(
+      throw new SourceException(
           "Unable to determine time series file paths in '" + baseDirectory + "'.", e);
     }
   }
 
   public Stream<FileIndividualTimeSeriesMetaInformation> getIndividualTimeSeriesMetaInformation(
-      final ColumnScheme... columnSchemes) {
+      final ColumnScheme... columnSchemes) throws SourceException {
     return getTimeSeriesFilePaths(fileNamingStrategy.getIndividualTimeSeriesPattern())
         .parallelStream()
         .map(filePath -> resolveFileInformation(filePath, "individual time series"))
@@ -98,7 +97,7 @@ public abstract class FileDataSource implements DataSource {
    * @return A mapping from profile to the load profile time series meta information
    */
   public Stream<FileLoadProfileMetaInformation> getLoadProfileMetaInformation(
-      LoadProfile... profiles) {
+      LoadProfile... profiles) throws SourceException {
     return getTimeSeriesFilePaths(fileNamingStrategy.getLoadProfileTimeSeriesPattern())
         .parallelStream()
         .map(filePath -> resolveFileInformation(filePath, "load profile"))
