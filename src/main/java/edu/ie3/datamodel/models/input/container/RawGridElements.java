@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.input.container;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
+import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import edu.ie3.datamodel.models.input.connector.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -113,12 +114,12 @@ public class RawGridElements implements InputContainer<AssetInput> {
   }
 
   /**
-   * Create an instance based on a list of {@link AssetInput} entities that are included in {@link
-   * RawGridElements}
+   * Create an instance based on a list of {@link UniqueInputEntity} entities that are included in
+   * {@link RawGridElements}
    *
-   * @param rawGridElements list of grid elements this container instance should created from
+   * @param rawGridElements list of grid elements this container instance should create from
    */
-  public RawGridElements(List<AssetInput> rawGridElements) {
+  public RawGridElements(List<? extends UniqueInputEntity> rawGridElements) {
 
     /* init sets */
     this.nodes =
@@ -151,7 +152,14 @@ public class RawGridElements implements InputContainer<AssetInput> {
             .filter(MeasurementUnitInput.class::isInstance)
             .map(MeasurementUnitInput.class::cast)
             .collect(Collectors.toSet());
-    this.cableDeploymentsByLine = Collections.unmodifiableMap(new HashMap<>());
+    Map<UUID, List<CableDeploymentInput>> deployments = new HashMap<>();
+    rawGridElements.stream()
+        .filter(CableDeploymentInput.class::isInstance)
+        .map(CableDeploymentInput.class::cast)
+        .forEach(d -> deployments.computeIfAbsent(d.getLineUuid(), k -> new ArrayList<>()).add(d));
+    Map<UUID, List<CableDeploymentInput>> tmp = new HashMap<>();
+    deployments.forEach((k, v) -> tmp.put(k, List.copyOf(v)));
+    this.cableDeploymentsByLine = Collections.unmodifiableMap(tmp);
   }
 
   @Override

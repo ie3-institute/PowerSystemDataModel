@@ -16,9 +16,7 @@ import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.system.type.*;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Interface that provides the capability to build entities of type {@link
@@ -31,7 +29,6 @@ public class TypeSource extends EntitySource {
   // factories
   private final OperatorInputFactory operatorInputFactory;
   private final Transformer2WTypeInputFactory transformer2WTypeInputFactory;
-  private final LineTypeInputFactory lineTypeInputFactory;
   private final CableTypeInputFactory cableTypeInputFactory;
   private final Transformer3WTypeInputFactory transformer3WTypeInputFactory;
   private final SystemParticipantTypeInputFactory systemParticipantTypeInputFactory;
@@ -43,7 +40,6 @@ public class TypeSource extends EntitySource {
 
     this.operatorInputFactory = new OperatorInputFactory();
     this.transformer2WTypeInputFactory = new Transformer2WTypeInputFactory();
-    this.lineTypeInputFactory = new LineTypeInputFactory();
     this.cableTypeInputFactory = new CableTypeInputFactory();
     this.transformer3WTypeInputFactory = new Transformer3WTypeInputFactory();
     this.systemParticipantTypeInputFactory = new SystemParticipantTypeInputFactory();
@@ -87,13 +83,6 @@ public class TypeSource extends EntitySource {
    */
   public static Map<UUID, Transformer2WTypeInput> getStandardTransformer2WTypes()
       throws SourceException {
-    String resourcePath = SUB_DIRECTORY + "/transformer_2_w_type_input.csv";
-
-    if (Transformer2WTypeInput.class.getResource(resourcePath) == null) {
-      throw new SourceException(
-          "Built-in 2W transformer type resource '" + resourcePath + "' is missing.");
-    }
-
     return new TypeSource(getBuildInSource(Transformer2WTypeInput.class, SUB_DIRECTORY))
         .getTransformer2WTypes(false);
   }
@@ -156,13 +145,6 @@ public class TypeSource extends EntitySource {
    * @return a map of UUID to object- and uuid-unique {@link LineTypeInput} entities
    */
   public static Map<UUID, LineTypeInput> getStandardLineTypes() throws SourceException {
-    String resourcePath = SUB_DIRECTORY + "/line_type_input.csv";
-
-    if (LineTypeInput.class.getResource(resourcePath) == null) {
-      log.error("Built-in line type resource '{}' is missing.", resourcePath);
-      throw new SourceException("Built-in line type resource '" + resourcePath + "' is missing.");
-    }
-
     return new TypeSource(getBuildInSource(LineTypeInput.class, SUB_DIRECTORY)).getLineTypes(false);
   }
 
@@ -178,48 +160,18 @@ public class TypeSource extends EntitySource {
    * @return a map of UUID to object- and uuid-unique {@link LineTypeInput} entities
    */
   private Map<UUID, LineTypeInput> getLineTypes(boolean withBuildIn) throws SourceException {
-    Map<UUID, LineTypeInput> types =
-        getEntities(LineTypeInput.class, dataSource, lineTypeInputFactory);
-
     Map<UUID, CableTypeInput> cableTypes = getCableTypes(true);
 
-    Map<UUID, LineTypeInput> resolved =
-        types.entrySet().stream()
-            .collect(
-                Collectors.toMap(
-                    Map.Entry::getKey,
-                    entry -> {
-                      LineTypeInput lineType = entry.getValue();
-
-                      String cableUuidStr = lineType.getAdditionalInformation().get("cable_type");
-
-                      if (cableUuidStr != null && !cableUuidStr.isBlank()) {
-                        try {
-                          UUID cableUuid = UUID.fromString(cableUuidStr.trim());
-                          CableTypeInput cableType = cableTypes.get(cableUuid);
-
-                          if (cableType != null) {
-                            return lineType.copy().cableType(Optional.of(cableType)).build();
-                          }
-                        } catch (IllegalArgumentException e) {
-                          log.warn(
-                              "Ignoring invalid cable_type UUID '{}' for line type {}",
-                              cableUuidStr,
-                              lineType.getUuid(),
-                              e);
-                        }
-                      }
-
-                      return lineType;
-                    }));
+    Map<UUID, LineTypeInput> lineTypes =
+        getEntities(LineTypeInput.class, dataSource, new LineTypeInputFactory(cableTypes));
 
     if (withBuildIn) {
       Map<UUID, LineTypeInput> allTypes = getStandardLineTypes();
-      allTypes.putAll(resolved);
+      allTypes.putAll(lineTypes);
       return allTypes;
     }
 
-    return resolved;
+    return lineTypes;
   }
 
   /**
@@ -228,13 +180,6 @@ public class TypeSource extends EntitySource {
    * @return a map of UUID to object- and uuid-unique {@link CableTypeInput} entities
    */
   public static Map<UUID, CableTypeInput> getStandardCableTypes() throws SourceException {
-    String resourcePath = SUB_DIRECTORY + "/cable_type_input.csv";
-
-    if (CableTypeInput.class.getResource(resourcePath) == null) {
-      log.error("Built-in cable type resource '{}' is missing.", resourcePath);
-      throw new SourceException("Built-in cable type resource '" + resourcePath + "' is missing.");
-    }
-
     return new TypeSource(getBuildInSource(CableTypeInput.class, SUB_DIRECTORY))
         .getCableTypes(false);
   }
@@ -284,14 +229,6 @@ public class TypeSource extends EntitySource {
    */
   public static Map<UUID, Transformer3WTypeInput> getStandardTransformer3WTypes()
       throws SourceException {
-    String resourcePath = SUB_DIRECTORY + "/transformer_3_w_type_input.csv";
-
-    if (Transformer3WTypeInput.class.getResource(resourcePath) == null) {
-      log.error("Built-in 3W transformer type resource '{}' is missing.", resourcePath);
-      throw new SourceException(
-          "Built-in 3W transformer type resource '" + resourcePath + "' is missing.");
-    }
-
     return new TypeSource(getBuildInSource(Transformer3WTypeInput.class, SUB_DIRECTORY))
         .getTransformer3WTypes(false);
   }

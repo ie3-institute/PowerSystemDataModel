@@ -36,10 +36,6 @@ This model is represented by the Java class `edu.ie3.datamodel.models.input.conn
   * - distanceCables
     - Metre
     - distance between cables 
-     
-  * - additionalInformation
-    - –
-    - -
 ```
 
 

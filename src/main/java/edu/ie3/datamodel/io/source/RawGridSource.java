@@ -147,7 +147,7 @@ public class RawGridSource extends AssetEntitySource {
         Try.of(() -> getSwitches(operators, nodes), SourceException.class);
     Try<Set<MeasurementUnitInput>, SourceException> measurementUnits =
         Try.of(() -> getMeasurementUnits(operators, nodes), SourceException.class);
-    Try<java.util.Map<UUID, CableDeploymentInput>, SourceException> deploymentMap =
+    Try<Map<UUID, CableDeploymentInput>, SourceException> deploymentMap =
         Try.of(
             () -> getEntities(CableDeploymentInput.class, dataSource, cableDeploymentInputFactory),
             SourceException.class);

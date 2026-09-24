@@ -5,10 +5,15 @@
  */
 package edu.ie3.datamodel.models.input.container
 
+import static edu.ie3.util.quantities.PowerSystemUnits.METRE
+
 import edu.ie3.datamodel.models.input.AssetInput
+import edu.ie3.datamodel.models.input.UniqueInputEntity
+import edu.ie3.datamodel.models.input.connector.CableDeploymentInput
 import edu.ie3.test.common.ComplexTopology
 import edu.ie3.test.common.GridTestData
 import spock.lang.Specification
+import tech.units.indriya.quantity.Quantities
 
 
 class RawGridElementsTest extends Specification {
@@ -73,5 +78,36 @@ class RawGridElementsTest extends Specification {
 
     then:
     thrown(UnsupportedOperationException)
+  }
+  def "The List constructor should extract CableDeploymentInput instances and group them by line UUID"() {
+    given:
+    def baseGrid = ComplexTopology.grid.rawGrid
+    def lineUuid = UUID.randomUUID()
+    def deployment1 = new CableDeploymentInput(
+        UUID.randomUUID(),
+        lineUuid,
+        "TREFOIL",
+        Quantities.getQuantity(-0.8, METRE),
+        Quantities.getQuantity(0.05, METRE))
+    def deployment2 = new CableDeploymentInput(
+        UUID.randomUUID(),
+        lineUuid,
+        "FLAT",
+        Quantities.getQuantity(-1.0, METRE),
+        Quantities.getQuantity(0.1, METRE))
+
+    def entities = new ArrayList<UniqueInputEntity>(baseGrid.allEntitiesAsList())
+    entities.add(deployment1)
+    entities.add(deployment2)
+
+    when:
+    def rawGrid = new RawGridElements(entities)
+
+    then:
+    rawGrid.cableDeploymentsByLine.size() == 1
+    rawGrid.cableDeploymentsByLine.containsKey(lineUuid)
+    rawGrid.cableDeploymentsByLine.get(lineUuid).size() == 2
+    rawGrid.cableDeploymentsByLine.get(lineUuid).contains(deployment1)
+    rawGrid.cableDeploymentsByLine.get(lineUuid).contains(deployment2)
   }
 }
