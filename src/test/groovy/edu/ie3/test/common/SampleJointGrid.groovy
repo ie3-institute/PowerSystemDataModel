@@ -38,13 +38,11 @@ class SampleJointGrid extends SystemParticipantTestData {
   static JointGridContainer grid() throws ParseException, ParsingException {
 
     RawGridElements rawGridElements = jointSampleRawGridElements()
-    RawGridTypes rawGridTypes = jointSampleRawGridTypes()
     return new JointGridContainer(
         "sampleGrid",
         rawGridElements,
         systemParticipants(rawGridElements),
-        new EnergyManagementUnits(Collections.singleton(emInput)),
-        rawGridTypes)
+        new EnergyManagementUnits(Collections.singleton(emInput)))
   }
 
   private static SystemParticipants systemParticipants(RawGridElements rawGridElements)
@@ -185,16 +183,6 @@ class SampleJointGrid extends SystemParticipantTestData {
   0.0,
   0.0)
 
-  private static RawGridTypes jointSampleRawGridTypes() throws ParseException {
-
-    return new RawGridTypes(
-        Set.of(mv_lineType, lv_lineType),
-        Set.of(cableTypeInput),
-        Set.of(transformerType_MV_HV_110KV, transformerType_LV_MV_10KV),
-        Collections.emptySet(),
-        )
-  }
-
   private static final GeoJsonReader geoJsonReader = new GeoJsonReader()
 
   // LV
@@ -246,7 +234,8 @@ class SampleJointGrid extends SystemParticipantTestData {
   Quantities.getQuantity(0.253899991512299, OHM_PER_KILOMETRE),
   Quantities.getQuantity(0.0691149979829788, OHM_PER_KILOMETRE),
   Quantities.getQuantity(265, AMPERE),
-  Quantities.getQuantity(0.4, KILOVOLT))
+  Quantities.getQuantity(0.4, KILOVOLT),
+  Optional.of(cableTypeInput))
 
   public static final LineInput lineAB =
   new LineInput(

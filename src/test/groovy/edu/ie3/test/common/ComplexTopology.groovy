@@ -6,7 +6,6 @@
 package edu.ie3.test.common
 
 import static edu.ie3.test.common.EnergyManagementTestData.emptyEnergyManagementUnits
-import static edu.ie3.test.common.RawGridTypesTestData.emptyRawGridTypes
 import static edu.ie3.test.common.SystemParticipantTestData.emptySystemParticipants
 
 import edu.ie3.datamodel.graph.SubGridGate
@@ -46,8 +45,7 @@ class ComplexTopology extends GridTestData {
   gridName,
   rawGrid,
   emptySystemParticipants,
-  emptyEnergyManagementUnits,
-  emptyRawGridTypes)
+  emptyEnergyManagementUnits)
 
   public static final HashMap<Integer, SubGridContainer> expectedSubGrids = new HashMap<>()
 
@@ -66,7 +64,6 @@ class ComplexTopology extends GridTestData {
                 [] as Set),
             emptySystemParticipants,
             emptyEnergyManagementUnits,
-            emptyRawGridTypes,
             )
         )
     expectedSubGrids.put(2, new SubGridContainer(
@@ -81,7 +78,6 @@ class ComplexTopology extends GridTestData {
                 [] as Set),
             emptySystemParticipants,
             emptyEnergyManagementUnits,
-            emptyRawGridTypes,
             )
         )
     expectedSubGrids.put(3, new SubGridContainer(
@@ -96,7 +92,6 @@ class ComplexTopology extends GridTestData {
                 [] as Set),
             emptySystemParticipants,
             emptyEnergyManagementUnits,
-            emptyRawGridTypes,
             )
         )
     expectedSubGrids.put(4, new SubGridContainer(
@@ -111,7 +106,6 @@ class ComplexTopology extends GridTestData {
                 [] as Set),
             emptySystemParticipants,
             emptyEnergyManagementUnits,
-            emptyRawGridTypes,
             )
         )
     expectedSubGrids.put(5, new SubGridContainer(
@@ -129,7 +123,6 @@ class ComplexTopology extends GridTestData {
                 [] as Set),
             emptySystemParticipants,
             emptyEnergyManagementUnits,
-            emptyRawGridTypes,
             )
         )
     expectedSubGrids.put(6, new SubGridContainer(
@@ -147,7 +140,6 @@ class ComplexTopology extends GridTestData {
                 [] as Set),
             emptySystemParticipants,
             emptyEnergyManagementUnits,
-            emptyRawGridTypes,
             )
         )
 

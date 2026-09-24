@@ -74,8 +74,7 @@ public class ContainerNodeUpdateUtil {
         grid.getGridName(),
         updatedEntities.rawGridElements(),
         updatedEntities.systemParticipants(),
-        grid.getEmUnits(),
-        grid.getRawGridTypes());
+        grid.getEmUnits());
   }
 
   /**
@@ -109,8 +108,7 @@ public class ContainerNodeUpdateUtil {
         grid.getSubnet(),
         updatedEntities.rawGridElements(),
         updatedEntities.systemParticipants(),
-        grid.getEmUnits(),
-        grid.getRawGridTypes());
+        grid.getEmUnits());
   }
 
   /**

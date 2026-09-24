@@ -17,10 +17,9 @@ import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.*;
-import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
-import edu.ie3.datamodel.models.input.container.RawGridTypes;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.result.ResultEntity;
@@ -157,10 +156,8 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   public void persistJointGrid(JointGridContainer jointGridContainer) {
     // get raw grid entities with types or operators
     RawGridElements rawGridElements = jointGridContainer.getRawGrid();
-    RawGridTypes rawGridTypes = jointGridContainer.getRawGridTypes();
     Set<NodeInput> nodes = rawGridElements.getNodes();
     Set<LineInput> lines = rawGridElements.getLines();
-    Set<CableTypeInput> cableTypes = rawGridTypes.getCableTypes();
     Set<Transformer2WInput> transformer2Ws = rawGridElements.getTransformer2Ws();
     Set<Transformer3WInput> transformer3Ws = rawGridElements.getTransformer3Ws();
     Set<SwitchInput> switches = rawGridElements.getSwitches();
@@ -201,8 +198,12 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
             .map(Extractor::extractType)
             .collect(Collectors.toSet());
 
-    // add also cableTypes
-    types.addAll(cableTypes);
+    // add also cable types
+    lines.stream()
+        .map(LineInput::getType)
+        .map(LineTypeInput::getCableType)
+        .flatMap(Optional::stream)
+        .forEach(types::add);
 
     // extract operators
     Set<OperatorInput> operators =

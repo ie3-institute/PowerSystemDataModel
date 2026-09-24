@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.models.input.container
 
 import static edu.ie3.test.common.EnergyManagementTestData.emptyEnergyManagementUnits
-import static edu.ie3.test.common.RawGridTypesTestData.emptyRawGridTypes
 import static edu.ie3.test.common.SystemParticipantTestData.emptySystemParticipants
 
 import edu.ie3.test.common.EnergyManagementTestData
@@ -27,7 +26,7 @@ class JointGridContainerTest extends Specification {
 
   def "A single subgrid can be used to build a JointGridContainer"() {
     when:
-    def jointGridContainer = new JointGridContainer(GRID_NAME, RAW_GRID, emptySystemParticipants, emptyEnergyManagementUnits, emptyRawGridTypes)
+    def jointGridContainer = new JointGridContainer(GRID_NAME, RAW_GRID, emptySystemParticipants, emptyEnergyManagementUnits)
 
     then:
     noExceptionThrown()
@@ -36,11 +35,10 @@ class JointGridContainerTest extends Specification {
 
   def "A JointGridContainer's copy method should work as expected"() {
     given:
-    def jointGridContainer = new JointGridContainer(GRID_NAME, RAW_GRID, emptySystemParticipants, emptyEnergyManagementUnits, emptyRawGridTypes)
+    def jointGridContainer = new JointGridContainer(GRID_NAME, RAW_GRID, emptySystemParticipants, emptyEnergyManagementUnits)
     def rawGrid = new RawGridElements(List.of(GridTestData.lineAtoB, GridTestData.transformerAtoBtoC))
     def systemParticipants = new SystemParticipants(List.of(SystemParticipantTestData.bmInput))
     def emUnits = new EnergyManagementUnits(Set.of(EnergyManagementTestData.emInput))
-    def rawGridTypes = new RawGridTypes(List.of(GridTestData.lineTypeInputCtoD))
 
     when:
     def modifiedJointGridContainer = jointGridContainer.copy()
@@ -48,7 +46,6 @@ class JointGridContainerTest extends Specification {
         .rawGrid(rawGrid)
         .systemParticipants(systemParticipants)
         .emUnits(emUnits)
-        .rawGridTypes(rawGridTypes)
         .build()
 
     then:
@@ -56,6 +53,5 @@ class JointGridContainerTest extends Specification {
     modifiedJointGridContainer.rawGrid == rawGrid
     modifiedJointGridContainer.systemParticipants == systemParticipants
     modifiedJointGridContainer.emUnits == emUnits
-    modifiedJointGridContainer.rawGridTypes == rawGridTypes
   }
 }
