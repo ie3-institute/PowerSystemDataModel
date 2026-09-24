@@ -1,3 +1,8 @@
+/*
+ * © 2026. TU Dortmund University,
+ * Institute of Energy Systems, Energy Efficiency and Energy Economics,
+ * Research group Distribution grid planning and operation
+*/
 package edu.ie3.datamodel;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
@@ -15,7 +20,6 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.PValue;
 import edu.ie3.util.TimeUtil;
 import edu.ie3.util.interval.ClosedInterval;
-
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -23,76 +27,100 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class MarkovGenerator {
 
-    private static TimeUtil timeUtil = TimeUtil.withDefaults;
+  private static TimeUtil timeUtil = TimeUtil.withDefaults;
 
-    public static void main(String[] args) throws SourceException, EntityProcessorException {
-        Path input = Path.of("input").toAbsolutePath();
-        Path output = Path.of("output").toAbsolutePath();
+  public static void main(String[] args) throws SourceException, EntityProcessorException {
+    Path input = Path.of("input").toAbsolutePath();
+    Path output = Path.of("output").toAbsolutePath();
 
-        var baseline = new FileLoadProfileMetaInformation("baseline", input.resolve("psdm_model_baselines.json"), FileType.JSON);
-        var additional = new FileLoadProfileMetaInformation("additional", input.resolve("psdm_model_additional.json"), FileType.JSON);
+    var baseline =
+        new FileLoadProfileMetaInformation(
+            "baseline", input.resolve("psdm_model_baselines.json"), FileType.JSON);
+    var additional =
+        new FileLoadProfileMetaInformation(
+            "additional", input.resolve("psdm_model_additional.json"), FileType.JSON);
 
+    JsonDataSource source = new JsonDataSource(input, new FileNamingStrategy());
 
-        JsonDataSource source = new JsonDataSource(input, new FileNamingStrategy());
+    var markovSource = new JsonMarkovProfileSource(source, baseline);
 
-        var markovSource = new JsonMarkovProfileSource(source, baseline);
+    var model = markovSource.getModel();
 
-        var model = markovSource.getModel();
+    generate(3, 2000, 10, model, output);
+  }
 
-        var t = ZonedDateTime.now();
-        var sink = new CsvFileSink(output.resolve("baseline_" + t.getMonthValue() + "-" + t.getDayOfMonth() + " " + t.getHour() + ":" + t.getMinute() + ":" + t.getSecond()));
+  private static void generate(
+      int repeat, int n, int warmUpHours, MarkovLoadModel model, Path output)
+      throws EntityProcessorException {
+    for (int r = 0; r < repeat; r++) {
+      var t = ZonedDateTime.now();
+      var sink =
+          new CsvFileSink(
+              output.resolve(
+                  "baseline_"
+                      + t.getMonthValue()
+                      + "-"
+                      + t.getDayOfMonth()
+                      + " "
+                      + t.getHour()
+                      + ":"
+                      + t.getMinute()
+                      + ":"
+                      + t.getSecond()));
 
-        ZonedDateTime start = timeUtil.toZonedDateTime("2025-07-01T00:00:00Z");
-        ZonedDateTime end = timeUtil.toZonedDateTime("2025-07-02T00:00:00Z");
+      ZonedDateTime start = timeUtil.toZonedDateTime("2025-07-01T00:00:00Z");
+      ZonedDateTime end = timeUtil.toZonedDateTime("2025-07-02T00:00:00Z");
 
-        var interval = new ClosedInterval<>(start, end);
+      var interval = new ClosedInterval<>(start, end);
 
-       run(1000,10, interval, model).forEach(sink::persistTimeSeries);
+      run(n, warmUpHours, interval, model).forEach(sink::persistTimeSeries);
+    }
+  }
+
+  private static List<IndividualTimeSeries<PValue>> run(
+      int n, int warmUpHours, ClosedInterval<ZonedDateTime> range, MarkovLoadModel model) {
+    List<IndividualTimeSeries<PValue>> series = new ArrayList<>();
+
+    ZonedDateTime start = range.getLower();
+    ZonedDateTime end = range.getUpper();
+
+    for (int i = 0; i < n; i++) {
+      long seed = ThreadLocalRandom.current().nextLong();
+
+      // System.out.println("Count (seed: " + seed + "): " + i);
+      SortedSet<TimeBasedValue<PValue>> values = new TreeSet<>(TimeBasedValue::compareTo);
+
+      ZonedDateTime current = start.minusHours(warmUpHours);
+      OptionalInt previousState = OptionalInt.of(0);
+      OptionalDouble initialNormalizedValue = OptionalDouble.empty();
+
+      while (current.isBefore(start)) {
+        PowerValueSource.MarkovIdentifier identifier =
+            new PowerValueSource.MarkovIdentifier(
+                current, previousState, initialNormalizedValue, seed);
+        PowerValueSource.MarkovOutputValue value = model.getValueSupplier(identifier).get();
+
+        previousState = OptionalInt.of(value.nextState());
+
+        current = current.plusMinutes(15);
+      }
+
+      while (!current.isAfter(end)) {
+        PowerValueSource.MarkovIdentifier identifier =
+            new PowerValueSource.MarkovIdentifier(
+                current, previousState, initialNormalizedValue, seed);
+        PowerValueSource.MarkovOutputValue value = model.getValueSupplier(identifier).get();
+        previousState = OptionalInt.of(value.nextState());
+
+        PValue power = value.value().orElse(null);
+        values.add(new TimeBasedValue<>(current, power));
+
+        current = current.plusMinutes(15);
+      }
+
+      series.add(new IndividualTimeSeries<>(values));
     }
 
-    private static List<IndividualTimeSeries<PValue>> run(int n, int warmUpHours, ClosedInterval<ZonedDateTime> range, MarkovLoadModel model)  {
-        List<IndividualTimeSeries<PValue>> series = new ArrayList<>();
-
-        ZonedDateTime start = range.getLower();
-        ZonedDateTime end = range.getUpper();
-
-        for (int i=0;i<n;i++) {
-            long seed = ThreadLocalRandom.current().nextLong();
-
-            System.out.println("Count (seed: " + seed + "): " + i);
-            SortedSet<TimeBasedValue<PValue>> values = new TreeSet<>(TimeBasedValue::compareTo);
-
-            ZonedDateTime current = start.minusHours(warmUpHours);
-            OptionalInt previousState = OptionalInt.of(0);
-            OptionalDouble initialNormalizedValue = OptionalDouble.empty();
-
-
-            while (current.isBefore(start)) {
-                PowerValueSource.MarkovIdentifier identifier = new PowerValueSource.MarkovIdentifier(current, previousState, initialNormalizedValue, seed);
-                PowerValueSource.MarkovOutputValue value = model.getValueSupplier(identifier).get();
-
-                previousState = OptionalInt.of(value.nextState());
-
-                current = current.plusMinutes(15);
-            }
-
-
-            while (!current.isAfter(end)) {
-                PowerValueSource.MarkovIdentifier identifier = new PowerValueSource.MarkovIdentifier(current, previousState, initialNormalizedValue, seed);
-                PowerValueSource.MarkovOutputValue value = model.getValueSupplier(identifier).get();
-                previousState = OptionalInt.of(value.nextState());
-
-                PValue power = value.value().orElse(null);
-                values.add(new TimeBasedValue<>(current, power));
-
-                current = current.plusMinutes(15);
-            }
-
-            series.add(new IndividualTimeSeries<>(values));
-        }
-
-        System.out.println("Finished.");
-
-        return series;
-    }
+    return series;
+  }
 }
