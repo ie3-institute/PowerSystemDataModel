@@ -19,10 +19,10 @@ import edu.ie3.util.interval.ClosedInterval;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MarkovGenerator {
 
-    private static long seed = 4523L;
     private static TimeUtil timeUtil = TimeUtil.withDefaults;
 
     public static void main(String[] args) throws SourceException, EntityProcessorException {
@@ -40,14 +40,14 @@ public class MarkovGenerator {
         var model = markovSource.getModel();
 
         var t = ZonedDateTime.now();
-        var sink = new CsvFileSink(output.resolve("baseline_" + t.getMonth() + "-" + t.getDayOfMonth() + " " + t.getHour() + ":" + t.getMinute() + ":" + t.getSecond()));
+        var sink = new CsvFileSink(output.resolve("baseline_" + t.getMonthValue() + "-" + t.getDayOfMonth() + " " + t.getHour() + ":" + t.getMinute() + ":" + t.getSecond()));
 
         ZonedDateTime start = timeUtil.toZonedDateTime("2025-07-01T00:00:00Z");
-        ZonedDateTime end = timeUtil.toZonedDateTime("2025-07-08T00:00:00Z");
+        ZonedDateTime end = timeUtil.toZonedDateTime("2025-07-02T00:00:00Z");
 
         var interval = new ClosedInterval<>(start, end);
 
-       run(3,10, interval, model).forEach(sink::persistTimeSeries);
+       run(1000,10, interval, model).forEach(sink::persistTimeSeries);
     }
 
     private static List<IndividualTimeSeries<PValue>> run(int n, int warmUpHours, ClosedInterval<ZonedDateTime> range, MarkovLoadModel model)  {
@@ -57,7 +57,9 @@ public class MarkovGenerator {
         ZonedDateTime end = range.getUpper();
 
         for (int i=0;i<n;i++) {
-            System.out.println("Count: " + i);
+            long seed = ThreadLocalRandom.current().nextLong();
+
+            System.out.println("Count (seed: " + seed + "): " + i);
             SortedSet<TimeBasedValue<PValue>> values = new TreeSet<>(TimeBasedValue::compareTo);
 
             ZonedDateTime current = start.minusHours(warmUpHours);
