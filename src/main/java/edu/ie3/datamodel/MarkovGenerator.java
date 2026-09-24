@@ -46,7 +46,7 @@ public class MarkovGenerator {
 
     var model = markovSource.getModel();
 
-    generate(3, 2000, 10, model, output);
+    generate(1, 100, 10, model, output);
   }
 
   private static void generate(
@@ -69,7 +69,7 @@ public class MarkovGenerator {
                       + t.getSecond()));
 
       ZonedDateTime start = timeUtil.toZonedDateTime("2025-07-01T00:00:00Z");
-      ZonedDateTime end = timeUtil.toZonedDateTime("2025-07-02T00:00:00Z");
+      ZonedDateTime end = timeUtil.toZonedDateTime("2026-07-01T00:00:00Z");
 
       var interval = new ClosedInterval<>(start, end);
 
@@ -85,6 +85,7 @@ public class MarkovGenerator {
     ZonedDateTime end = range.getUpper();
 
     for (int i = 0; i < n; i++) {
+        System.out.println("Remaining: " + (n - i));
       long seed = ThreadLocalRandom.current().nextLong();
 
       // System.out.println("Count (seed: " + seed + "): " + i);
