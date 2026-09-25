@@ -16,37 +16,36 @@ import tech.units.indriya.ComparableQuantity;
 /** Represents calculation results of a thermal line segment. */
 public class ThermalLineSegmentResult extends ResultEntity {
 
-  /** Temperature of the thermal line segment */
-  private ComparableQuantity<Temperature> lineSegmentTemperature;
+  /** Temperature of the thermal line segment in standard units. */
+  private final ComparableQuantity<Temperature> lineSegmentTemperature;
 
   /**
-   * Standard constructor.
+   * Creates a new thermal line segment result.
    *
-   * @param time date and time when the result is produced
-   * @param lineSegmentUuid uuid of the thermal line segment
-   * @param lineSegmentTemperature temperature of the thermal line segment
+   * @param dateTime the point in time for which the result is valid
+   * @param lineSegmentUuid the UUID of the corresponding thermal line segment
+   * @param lineSegmentTemperature the temperature of the thermal line segment
    */
   public ThermalLineSegmentResult(
-      ZonedDateTime time,
+      ZonedDateTime dateTime,
       UUID lineSegmentUuid,
       ComparableQuantity<Temperature> lineSegmentTemperature) {
-    super(time, lineSegmentUuid);
+    super(dateTime, lineSegmentUuid);
     this.lineSegmentTemperature = lineSegmentTemperature.to(StandardUnits.TEMPERATURE);
   }
 
   /**
-   * @return uuid of the thermal line segment
+   * @return the UUID of the corresponding thermal line segment
    */
   public UUID getLineSegmentUuid() {
     return getInputModel();
   }
 
+  /**
+   * @return the temperature of the thermal line segment in standard units
+   */
   public ComparableQuantity<Temperature> getLineSegmentTemperature() {
     return lineSegmentTemperature;
-  }
-
-  public void setLineSegmentTemperature(ComparableQuantity<Temperature> lineSegmentTemperature) {
-    this.lineSegmentTemperature = lineSegmentTemperature.to(StandardUnits.TEMPERATURE);
   }
 
   @Override

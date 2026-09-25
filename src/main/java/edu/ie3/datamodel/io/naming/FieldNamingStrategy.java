@@ -211,6 +211,7 @@ public class FieldNamingStrategy {
   public static final String INPUT_MODEL = "inputModel";
   public static final String ENERGY = "energy";
   public static final String FILL_LEVEL = "fillLevel";
+  public static final String LINE_SEGMENT_TEMPERATURE = "lineSegmentTemperature";
   public static final String MAX = "max";
   public static final String MIN = "min";
   public static final String SOC = "soc";

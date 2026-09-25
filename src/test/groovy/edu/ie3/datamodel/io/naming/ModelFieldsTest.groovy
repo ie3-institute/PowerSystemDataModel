@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.naming
 
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel
+import edu.ie3.datamodel.models.result.thermal.ThermalLineSegmentResult
 import spock.lang.Specification
 
 class ModelFieldsTest extends Specification {
@@ -39,5 +40,18 @@ class ModelFieldsTest extends Specification {
       FieldNamingStrategy.MARKOV_TRANSITION_VALUES,
       FieldNamingStrategy.MARKOV_GMM_BUCKETS
     ])
+  }
+
+  def "getMandatoryFields returns registered fields for ThermalLineSegmentResult"() {
+    when:
+    def fields = ModelFields.getMandatoryFields(ThermalLineSegmentResult)
+
+    then:
+    fields.size() == 1
+    fields[0] == [
+      FieldNamingStrategy.TIME,
+      FieldNamingStrategy.INPUT_MODEL,
+      FieldNamingStrategy.LINE_SEGMENT_TEMPERATURE
+    ] as Set
   }
 }

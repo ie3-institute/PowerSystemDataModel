@@ -38,6 +38,7 @@ import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
+import edu.ie3.datamodel.models.result.thermal.ThermalLineSegmentResult;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
@@ -482,6 +483,8 @@ public final class ModelFields extends FieldNamingStrategy {
 
     Stream.of(CylindricalStorageResult.class, DomesticHotWaterStorageResult.class)
         .forEach(r -> registerMandatory(r, thermal, ENERGY, FILL_LEVEL));
+
+    registerMandatory(ThermalLineSegmentResult.class, result, LINE_SEGMENT_TEMPERATURE);
   }
 
   /** Method for registering some time series related fields. */
