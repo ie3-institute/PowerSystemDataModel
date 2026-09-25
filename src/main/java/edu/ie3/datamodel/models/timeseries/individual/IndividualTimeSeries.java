@@ -7,44 +7,39 @@ package edu.ie3.datamodel.models.timeseries.individual;
 
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.value.Value;
+import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /** Describes a TimeSeries with individual values per time step */
 public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedValue<V>, V, V> {
   /** Maps a time to its respective value to retrieve faster */
-  private final Map<ZonedDateTime, TimeBasedValue<V>> timeToValue;
+  private final NavigableMap<ZonedDateTime, TimeBasedValue<V>> timeToValue;
 
   public IndividualTimeSeries(Set<TimeBasedValue<V>> values) {
-    super(values);
-
-    timeToValue =
-        values.stream().collect(Collectors.toMap(TimeBasedValue::getTime, Function.identity()));
+    this(UUID.randomUUID(), values);
   }
 
   public IndividualTimeSeries(UUID uuid, Set<TimeBasedValue<V>> values) {
-    super(uuid, values);
-
-    timeToValue =
-        values.stream().collect(Collectors.toMap(TimeBasedValue::getTime, Function.identity()));
+    super(uuid, values, TimeBasedValue::compareTo);
+    timeToValue = new TreeMap<>();
+    values.forEach(v -> timeToValue.put(v.getTime(), v));
   }
 
-  /**
-   * Returns the sorted set of all entries known to this time series
-   *
-   * @return An unmodifiable sorted set of all known time based values of this time series
-   */
-  @Override
-  public SortedSet<TimeBasedValue<V>> getEntries() {
-    TreeSet<TimeBasedValue<V>> sortedEntries = new TreeSet<>(timeToValue.values());
-    return Collections.unmodifiableSortedSet(sortedEntries);
+  private IndividualTimeSeries(UUID uuid, NavigableMap<ZonedDateTime, TimeBasedValue<V>> subMap) {
+    super(uuid, subMap.sequencedValues(), TimeBasedValue::compareTo);
+    this.timeToValue = subMap;
   }
 
   @Override
   public Optional<TimeBasedValue<V>> getTimeBasedValue(ZonedDateTime time) {
     return Optional.ofNullable(timeToValue.get(time));
+  }
+
+  public IndividualTimeSeries<V> getSubTimeSeries(ClosedInterval<ZonedDateTime> timeInterval) {
+    return new IndividualTimeSeries<>(
+        getUuid(),
+        timeToValue.subMap(timeInterval.getLower(), true, timeInterval.getUpper(), true));
   }
 
   @Override
@@ -54,16 +49,12 @@ public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedV
 
   @Override
   public Optional<ZonedDateTime> getPreviousDateTime(ZonedDateTime time) {
-    return timeToValue.keySet().stream()
-        .filter(valueTime -> valueTime.isBefore(time))
-        .max(ZonedDateTime::compareTo);
+    return Optional.ofNullable(timeToValue.navigableKeySet().lower(time));
   }
 
   @Override
   public Optional<ZonedDateTime> getNextDateTime(ZonedDateTime time) {
-    return timeToValue.keySet().stream()
-        .filter(valueTime -> valueTime.compareTo(time) > 0)
-        .min(Comparator.naturalOrder());
+    return Optional.ofNullable(timeToValue.navigableKeySet().higher(time));
   }
 
   /**
@@ -73,7 +64,7 @@ public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedV
    * @return a list of all time keys
    */
   public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) {
-    return timeToValue.keySet().stream().filter(timeKey -> timeKey.isAfter(time)).sorted().toList();
+    return new ArrayList<>(timeToValue.navigableKeySet().tailSet(time, false));
   }
 
   @Override

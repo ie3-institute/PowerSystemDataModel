@@ -22,15 +22,22 @@ import java.util.*;
 public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value, R extends Value>
     implements Entity, Uniqueness {
   private final UUID uuid;
-  private final Set<E> entries;
+  private final NavigableSet<E> entries;
 
-  protected TimeSeries(Set<E> entries) {
-    this(UUID.randomUUID(), entries);
+  protected TimeSeries(Set<E> entries, Comparator<E> comparator) {
+    this(UUID.randomUUID(), entries, comparator);
   }
 
-  protected TimeSeries(UUID uuid, Set<E> entries) {
+  protected TimeSeries(UUID uuid, Set<E> entries, Comparator<E> comparator) {
     this.uuid = uuid;
-    this.entries = Collections.unmodifiableSet(entries);
+    this.entries = new TreeSet<>(comparator);
+    this.entries.addAll(entries);
+  }
+
+  protected TimeSeries(UUID uuid, Collection<E> entries, Comparator<E> comparator) {
+    this.uuid = uuid;
+    this.entries = new TreeSet<>(comparator);
+    this.entries.addAll(entries);
   }
 
   @Override
@@ -45,13 +52,7 @@ public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value, 
    * @return the value at the given time step as a TimeBasedValue
    */
   public Optional<TimeBasedValue<R>> getTimeBasedValue(ZonedDateTime time) {
-    R content = getValue(time).orElse(null);
-
-    if (content != null) {
-      return Optional.of(new TimeBasedValue<>(time, content));
-    } else {
-      return Optional.empty();
-    }
+    return getValue(time).map(v -> new TimeBasedValue<>(time, v));
   }
 
   /**
@@ -104,7 +105,7 @@ public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value, 
    *
    * @return all unique entries
    */
-  public Set<E> getEntries() {
+  public NavigableSet<E> getEntries() {
     return entries;
   }
 
