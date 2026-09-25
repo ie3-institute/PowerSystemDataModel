@@ -21,12 +21,9 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class FileDataSource implements DataSource {
 
-  protected final Logger log = LoggerFactory.getLogger(getClass());
   protected final Path baseDirectory;
   protected final FileNamingStrategy fileNamingStrategy;
 
