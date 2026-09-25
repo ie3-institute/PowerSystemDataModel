@@ -7,12 +7,11 @@ package edu.ie3.datamodel.io.factory.input
 
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.EntityData
-import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.connector.CableDeploymentInput
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
-
+import tech.units.indriya.unit.Units
 
 class CableDeploymentInputFactoryTest extends Specification implements FactoryTestHelper {
   def "A CableDeploymentInputFactory should contain exactly the expected class for parsing"() {
@@ -47,8 +46,8 @@ class CableDeploymentInputFactoryTest extends Specification implements FactoryTe
       uuid == UUID.fromString(parameter["uuid"])
       lineUuid == UUID.fromString(parameter["lineUuid"])
       layoutFormation == parameter["layoutFormation"]
-      depthCables == getQuant(parameter["depthCables"], StandardUnits.LINE_LENGTH)
-      distanceCables == getQuant(parameter["distanceCables"], StandardUnits.LINE_LENGTH)
+      depthCables == getQuant(parameter["depthCables"], Units.METRE)
+      distanceCables == getQuant(parameter["distanceCables"], Units.METRE)
     }
   }
 }
