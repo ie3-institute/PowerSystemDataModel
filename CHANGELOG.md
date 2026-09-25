@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed issues regarding determination of additional parameters [#1661](https://github.com/ie3-institute/PowerSystemDataModel/issues/1661)
 - Fixed overshadowed `ParsingException` in system participant factories [#1722](https://github.com/ie3-institute/PowerSystemDataModel/issues/1722)
+- Throw exceptions instead of silently swallowing errors in `FileDataSource` [#927](https://github.com/ie3-institute/PowerSystemDataModel/issues/927)
 - Fixed poor performance of `TimeSeries` interval operations. [#1736](https://github.com/ie3-institute/PowerSystemDataModel/issues/1736)
 
 ### Changed

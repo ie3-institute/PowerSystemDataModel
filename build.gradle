@@ -66,7 +66,7 @@ dependencies {
   implementation 'org.locationtech.jts.io:jts-io-common:1.20.0'
 
   // parsing json
-  implementation 'tools.jackson.core:jackson-databind:3.2.2'
+  implementation 'tools.jackson.core:jackson-databind:3.2.3'
 
   // Graphs
   implementation 'org.jgrapht:jgrapht-core:1.5.3'
