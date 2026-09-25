@@ -32,24 +32,26 @@ public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult>
 
     UUID inputModel = data.getUUID(INPUT_MODEL);
     ComparableQuantity<ElectricCurrent> iAMag =
-        data.getQuantity(IAMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-    ComparableQuantity<Angle> iAAng = data.getQuantity(IAANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
+        data.getQuantity(I_A_MAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+    ComparableQuantity<Angle> iAAng =
+        data.getQuantity(I_A_ANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
     ComparableQuantity<ElectricCurrent> iBMag =
-        data.getQuantity(IBMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-    ComparableQuantity<Angle> iBAng = data.getQuantity(IBANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
+        data.getQuantity(I_B_MAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+    ComparableQuantity<Angle> iBAng =
+        data.getQuantity(I_B_ANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
 
     if (entityClass.equals(LineResult.class))
       return new LineResult(time, inputModel, iAMag, iAAng, iBMag, iBAng);
     else if (entityClass.equals(Transformer2WResult.class)) {
-      final int tapPos = data.getInt(TAPPOS);
+      final int tapPos = data.getInt(TAP_POS);
 
       return new Transformer2WResult(time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
     } else if (entityClass.equals(Transformer3WResult.class)) {
       ComparableQuantity<ElectricCurrent> iCMag =
-          data.getQuantity(ICMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+          data.getQuantity(I_C_MAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
       ComparableQuantity<Angle> iCAng =
-          data.getQuantity(ICANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
-      final int tapPos = data.getInt(TAPPOS);
+          data.getQuantity(I_C_ANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
+      final int tapPos = data.getInt(TAP_POS);
 
       return new Transformer3WResult(
           time, inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos);

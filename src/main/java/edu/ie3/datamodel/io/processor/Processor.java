@@ -104,8 +104,8 @@ public abstract class Processor<T> {
   private static class UuidFirstComparator implements Comparator<String> {
     @Override
     public int compare(String a, String b) {
-      if (a.equalsIgnoreCase(UniqueEntity.UUID_FIELD_NAME)) return -1;
-      else if (b.equalsIgnoreCase(UniqueEntity.UUID_FIELD_NAME)) return 1;
+      if (a.equalsIgnoreCase(FieldNamingStrategy.UUID)) return -1;
+      else if (b.equalsIgnoreCase(FieldNamingStrategy.UUID)) return 1;
       else return a.compareTo(b);
     }
   }
