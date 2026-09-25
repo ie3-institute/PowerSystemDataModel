@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed graphic related code [#1655](https://github.com/ie3-institute/PowerSystemDataModel/issues/1655)
 - Minor clean up [#1667](https://github.com/ie3-institute/PowerSystemDataModel/issues/1667)
 - Clean up of `jackson` dependencies [#1724](https://github.com/ie3-institute/PowerSystemDataModel/issues/1724)
+- Harmonized loggers in sources to only use the one of the respective base class [#1597](https://github.com/ie3-institute/PowerSystemDataModel/issues/1597)
 
 
 ## [9.1.0] - 2026-06-04

@@ -26,8 +26,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import tech.units.indriya.ComparableQuantity;
 
 /**
@@ -36,7 +34,6 @@ import tech.units.indriya.ComparableQuantity;
  * @param <V> type of load values
  */
 public class SqlLoadProfileSource<V extends LoadValues> extends LoadProfileSource<V> {
-  protected static final Logger log = LoggerFactory.getLogger(SqlLoadProfileSource.class);
   private final SqlDataSource dataSource;
   private final String tableName;
 

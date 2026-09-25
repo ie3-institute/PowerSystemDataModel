@@ -23,13 +23,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Point;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** Abstract class for WeatherSource by Csv and Sql Data */
 public abstract class WeatherSource extends EntitySource {
-
-  protected static final Logger log = LoggerFactory.getLogger(WeatherSource.class);
 
   protected TimeBasedWeatherValueFactory weatherFactory;
 

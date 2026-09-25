@@ -16,13 +16,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Stream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** Contains all functions that are needed to read a SQL data source. */
 public class SqlDataSource implements DataSource {
-
-  protected static final Logger log = LoggerFactory.getLogger(SqlDataSource.class);
 
   protected final SqlConnector connector;
   protected final DatabaseNamingStrategy databaseNamingStrategy;
