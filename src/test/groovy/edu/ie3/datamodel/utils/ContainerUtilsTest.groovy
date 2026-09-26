@@ -389,6 +389,7 @@ class ContainerUtilsTest extends Specification {
     RawGridElements rawGrid = ComplexTopology.grid.rawGrid
     SystemParticipants systemParticipants = ComplexTopology.grid.systemParticipants
     EnergyManagementUnits energyManagementUnits = ComplexTopology.grid.emUnits
+
     Map<Integer, SubGridContainer> subgrids = ContainerUtils.buildSubGridContainers(
         gridName,
         subNetNumbers,

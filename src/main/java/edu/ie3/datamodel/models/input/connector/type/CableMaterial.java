@@ -37,7 +37,7 @@ public enum CableMaterial {
   /** Steel armoring material */
   STEEL,
   /** Polypropylene material */
-  POLYPROPYLEN,
+  POLYPROPYLENE,
   /** Unknown material type */
   UNKNOWN;
 
@@ -58,7 +58,7 @@ public enum CableMaterial {
       case "semicondscreen", "semi_cond_screen" -> SEMI_COND_SCREEN;
       case "lead" -> LEAD;
       case "steel" -> STEEL;
-      case "polypropylen", "pp" -> POLYPROPYLEN;
+      case "polypropylene", "polypropylen", "pp" -> POLYPROPYLENE;
       default -> UNKNOWN;
     };
   }
@@ -82,19 +82,19 @@ public enum CableMaterial {
       case XLPE, PE ->
           new ThermalProperties(
               Quantities.getQuantity(3.5, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(2.4, JOULE_PER_CUBIC_METRE_KELVIN));
+              Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN));
       case PVC ->
           new ThermalProperties(
               Quantities.getQuantity(5.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(1.7, JOULE_PER_CUBIC_METRE_KELVIN));
+              Quantities.getQuantity(1.7e6, JOULE_PER_CUBIC_METRE_KELVIN));
       case SEMI_COND_SCREEN ->
           new ThermalProperties(
               Quantities.getQuantity(2.5, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(2.4, JOULE_PER_CUBIC_METRE_KELVIN));
+              Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN));
       case SC_TAPE ->
           new ThermalProperties(
               Quantities.getQuantity(6.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(2.4, JOULE_PER_CUBIC_METRE_KELVIN));
+              Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN));
       case LEAD ->
           new ThermalProperties(
               Quantities.getQuantity(1.0 / 35.0, KELVIN_METRE_PER_WATT),
@@ -103,10 +103,10 @@ public enum CableMaterial {
           new ThermalProperties(
               Quantities.getQuantity(1.0 / 45.0, KELVIN_METRE_PER_WATT),
               Quantities.getQuantity(3756000.0, JOULE_PER_CUBIC_METRE_KELVIN));
-      case POLYPROPYLEN ->
+      case POLYPROPYLENE ->
           new ThermalProperties(
               Quantities.getQuantity(6.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(2.0, JOULE_PER_CUBIC_METRE_KELVIN));
+              Quantities.getQuantity(2.0e6, JOULE_PER_CUBIC_METRE_KELVIN));
       case UNKNOWN ->
           throw new IllegalArgumentException(
               "Cannot provide thermal properties for unknown material");

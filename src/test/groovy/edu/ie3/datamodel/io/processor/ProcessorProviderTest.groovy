@@ -12,13 +12,8 @@ import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.*
-import edu.ie3.datamodel.models.input.connector.LineInput
-import edu.ie3.datamodel.models.input.connector.SwitchInput
-import edu.ie3.datamodel.models.input.connector.Transformer2WInput
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput
-import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
-import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
-import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
+import edu.ie3.datamodel.models.input.connector.*
+import edu.ie3.datamodel.models.input.connector.type.*
 import edu.ie3.datamodel.models.input.system.*
 import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
@@ -97,6 +92,8 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
       AcTypeInput,
       HpTypeInput,
       LineTypeInput,
+      CableTypeInput,
+      CableDeploymentInput,
       Transformer2WTypeInput,
       Transformer3WTypeInput,
       StorageTypeInput,

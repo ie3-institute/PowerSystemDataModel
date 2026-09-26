@@ -123,16 +123,28 @@ public abstract class EntitySource {
   /**
    * Method to get a source for the build in entities.
    *
+   * @param clazz class used to access the resources
    * @param subdirectory from the resource folder
+   * @param resourcePaths resources that have to exist
    * @return a new {@link CsvDataSource}
    */
-  protected static CsvDataSource getBuildInSource(Class<?> clazz, String subdirectory)
-      throws SourceException {
+  protected static CsvDataSource getBuildInSource(
+      Class<?> clazz, String subdirectory, String... resourcePaths) throws SourceException {
     try {
       URL url = clazz.getResource(subdirectory);
 
       if (url == null) {
-        throw new SourceException("Resources not found for: " + subdirectory);
+        String message = "Resources not found for: " + subdirectory;
+        log.error(message);
+        throw new SourceException(message);
+      }
+
+      for (String resourcePath : resourcePaths) {
+        if (clazz.getResource(resourcePath) == null) {
+          String message = "Built-in resource '" + resourcePath + "' is missing.";
+          log.error(message);
+          throw new SourceException(message);
+        }
       }
 
       URI uri = url.toURI();

@@ -16,10 +16,8 @@ import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.*;
-import edu.ie3.datamodel.models.input.connector.LineInput;
-import edu.ie3.datamodel.models.input.connector.SwitchInput;
-import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
+import edu.ie3.datamodel.models.input.connector.*;
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
@@ -164,6 +162,10 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     Set<Transformer3WInput> transformer3Ws = rawGridElements.getTransformer3Ws();
     Set<SwitchInput> switches = rawGridElements.getSwitches();
     Set<MeasurementUnitInput> measurementUnits = rawGridElements.getMeasurementUnits();
+    List<CableDeploymentInput> cableDeployments =
+        rawGridElements.getCableDeploymentsByLine().values().stream()
+            .flatMap(Collection::stream)
+            .toList();
 
     // get system participants with types or operators
     SystemParticipants systemParticipants = jointGridContainer.getSystemParticipants();
@@ -196,6 +198,13 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
             .map(Extractor::extractType)
             .collect(Collectors.toSet());
 
+    // add also cable types
+    lines.stream()
+        .map(LineInput::getType)
+        .map(LineTypeInput::getCableType)
+        .flatMap(Optional::stream)
+        .forEach(types::add);
+
     // extract operators
     Set<OperatorInput> operators =
         Stream.of(
@@ -224,6 +233,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     // persist all entities
     Stream.of(
             rawGridElements.allEntitiesAsList(),
+            cableDeployments,
             systemParticipants.allEntitiesAsList(),
             jointGridContainer.getEmUnits().getEmUnits().stream().toList(),
             types,

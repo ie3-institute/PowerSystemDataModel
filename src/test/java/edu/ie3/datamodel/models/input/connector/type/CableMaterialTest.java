@@ -40,7 +40,7 @@ class CableMaterialTest {
     CableMaterial.ThermalProperties props = CableMaterial.XLPE.getThermalProperties();
     assertNotNull(props);
     assertEquals(3.5, props.resistivity().getValue().doubleValue(), 1e-3);
-    assertEquals(2.4, props.capacitance().getValue().doubleValue(), 1e-3);
+    assertEquals(2.4e6, props.capacitance().getValue().doubleValue(), 1e-3);
   }
 
   @Test
@@ -131,7 +131,7 @@ class CableMaterialTest {
     CableMaterial.ThermalProperties props = CableMaterial.PVC.getThermalProperties();
     assertNotNull(props);
     assertEquals(5.0, props.resistivity().getValue().doubleValue(), 1e-3);
-    assertEquals(1.7, props.capacitance().getValue().doubleValue(), 1e-3);
+    assertEquals(1.7e6, props.capacitance().getValue().doubleValue(), 1e-3);
   }
 
   @Test
@@ -140,7 +140,7 @@ class CableMaterialTest {
     CableMaterial.ThermalProperties props = CableMaterial.SEMI_COND_SCREEN.getThermalProperties();
     assertNotNull(props);
     assertEquals(2.5, props.resistivity().getValue().doubleValue(), 1e-3);
-    assertEquals(2.4, props.capacitance().getValue().doubleValue(), 1e-3);
+    assertEquals(2.4e6, props.capacitance().getValue().doubleValue(), 1e-3);
   }
 
   @Test
@@ -149,6 +149,6 @@ class CableMaterialTest {
     CableMaterial.ThermalProperties props = CableMaterial.SC_TAPE.getThermalProperties();
     assertNotNull(props);
     assertEquals(6.0, props.resistivity().getValue().doubleValue(), 1e-3);
-    assertEquals(2.4, props.capacitance().getValue().doubleValue(), 1e-3);
+    assertEquals(2.4e6, props.capacitance().getValue().doubleValue(), 1e-3);
   }
 }

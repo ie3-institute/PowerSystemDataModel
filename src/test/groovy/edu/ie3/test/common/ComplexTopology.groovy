@@ -63,7 +63,7 @@ class ComplexTopology extends GridTestData {
                 [] as Set,
                 [] as Set),
             emptySystemParticipants,
-            emptyEnergyManagementUnits
+            emptyEnergyManagementUnits,
             )
         )
     expectedSubGrids.put(2, new SubGridContainer(
@@ -77,7 +77,7 @@ class ComplexTopology extends GridTestData {
                 [] as Set,
                 [] as Set),
             emptySystemParticipants,
-            emptyEnergyManagementUnits
+            emptyEnergyManagementUnits,
             )
         )
     expectedSubGrids.put(3, new SubGridContainer(
@@ -91,7 +91,7 @@ class ComplexTopology extends GridTestData {
                 [] as Set,
                 [] as Set),
             emptySystemParticipants,
-            emptyEnergyManagementUnits
+            emptyEnergyManagementUnits,
             )
         )
     expectedSubGrids.put(4, new SubGridContainer(
@@ -105,7 +105,7 @@ class ComplexTopology extends GridTestData {
                 [] as Set,
                 [] as Set),
             emptySystemParticipants,
-            emptyEnergyManagementUnits
+            emptyEnergyManagementUnits,
             )
         )
     expectedSubGrids.put(5, new SubGridContainer(
@@ -122,7 +122,7 @@ class ComplexTopology extends GridTestData {
                 [] as Set,
                 [] as Set),
             emptySystemParticipants,
-            emptyEnergyManagementUnits
+            emptyEnergyManagementUnits,
             )
         )
     expectedSubGrids.put(6, new SubGridContainer(
@@ -139,7 +139,7 @@ class ComplexTopology extends GridTestData {
                 [] as Set,
                 [] as Set),
             emptySystemParticipants,
-            emptyEnergyManagementUnits
+            emptyEnergyManagementUnits,
             )
         )
 
