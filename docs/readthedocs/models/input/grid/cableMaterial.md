@@ -38,31 +38,31 @@ Retrieved via `getThermalProperties()`. Returns a `ThermalProperties` container 
     
   * - `XLPE (Cross-linked polyethylene)`
     - 3.5
-    - 2.4
+    - $2.4 \times 10^{6}$
     - {cite:cts}`andersRatingElectricPower1997` p. 400
     - 
     
   * - `PE (Polyethylene)`
     - 3.5
-    - 2.4
+    - $2.4 \times 10^{6}$
     - {cite:cts}`andersRatingElectricPower1997` p. 400
     - 
     
   * - `PVC (Polyvinyl chloride)`
     - 5.0
-    - 1.7
+    - $1.7 \times 10^{6}$
     - {cite:cts}`andersRatingElectricPower1997` p. 400
     - 
     
   * - `Semi-Conductive Screen`
     - 2.5
-    - 2.4
+    - $2.4 \times 10^{6}$
     - Th. Res.: {cite:cts}`CIGRE_TB880_2022` p. 28; Th. Capa.: Same as adjacent dielectric material see {cite:cts}`andersRatingElectricPower1997` p. 400
     - 
 
   * - `SC-Tape (Screen Tape)`
     - 6.0
-    - 2.4
+    - $2.4 \times 10^{6}$
     - Th. Res.: {cite:cts}`CIGRE_TB880_2022` p. 28; Th. Capa.: Same as adjacent dielectric material see {cite:cts}`andersRatingElectricPower1997` p. 400
     - 
     
@@ -75,13 +75,13 @@ Retrieved via `getThermalProperties()`. Returns a `ThermalProperties` container 
     
   * - `Steel`
     - 1/45
-    - 3,756,000.0
+    - $3.756 \times 10^{6}$
     - Th. Res.: {cite:cts}`wiki:thermal_conductivity_resistivity`; Th. Capa.: {cite:cts}`wiki:specific_heat_capacities`
     - 
     
   * - `Polypropylene`
     - 6.0
-    - 2.0
+    - $2.0 \times 10^{6}$
     - Th. Res.: {cite:cts}`CIGRE_TB880_2022` p. 28; Th. Capa.: Assumed to be close to Paper-polypropylene-paper (PPL) in {cite:cts}`andersRatingElectricPower1997` p. 400
     - 
 ```
