@@ -21,14 +21,14 @@ public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedV
   }
 
   public IndividualTimeSeries(UUID uuid, Set<TimeBasedValue<V>> values) {
-    super(uuid, values, TimeBasedValue::compareTo);
+    super(uuid, values, TimeBasedValue::compareTo, TimeBasedValue::getTime);
     timeToValue = new TreeMap<>();
     values.forEach(v -> timeToValue.put(v.getTime(), v));
   }
 
   private IndividualTimeSeries(UUID uuid, NavigableMap<ZonedDateTime, TimeBasedValue<V>> subMap) {
-    super(uuid, subMap.sequencedValues(), TimeBasedValue::compareTo);
-    this.timeToValue = subMap;
+    super(uuid, subMap.sequencedValues(), TimeBasedValue::compareTo, TimeBasedValue::getTime);
+    this.timeToValue = new TreeMap<>(subMap);
   }
 
   @Override

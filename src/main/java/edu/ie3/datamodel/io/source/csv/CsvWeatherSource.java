@@ -107,7 +107,7 @@ public class CsvWeatherSource extends WeatherSource {
         IndividualTimeSeries<WeatherValue> ts =
             coordinateToTimeSeries.get(coordinate).getSubTimeSeries(timeInterval);
 
-        if (!ts.getEntries().isEmpty()) {
+        if (ts.nonEmpty()) {
           result.put(coordinate, ts);
         }
       }
@@ -181,7 +181,7 @@ public class CsvWeatherSource extends WeatherSource {
           IndividualTimeSeries<WeatherValue> trimmedSeries =
               timeSeries.getSubTimeSeries(timeInterval);
 
-          if (!trimmedSeries.getEntries().isEmpty()) {
+          if (trimmedSeries.nonEmpty()) {
             trimmed.put(point, trimmedSeries);
           }
         });

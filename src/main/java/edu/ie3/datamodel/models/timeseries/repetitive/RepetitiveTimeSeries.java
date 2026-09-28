@@ -8,16 +8,35 @@ package edu.ie3.datamodel.models.timeseries.repetitive;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.value.Value;
+import java.lang.reflect.Array;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.function.ToIntFunction;
 
 /** Describes a TimeSeries with repetitive values that can be calculated from a pattern */
 public abstract class RepetitiveTimeSeries<
         E extends TimeSeriesEntry<V>, V extends Value, R extends Value>
     extends TimeSeries<E, V, R> {
 
-  protected RepetitiveTimeSeries(Set<E> entries, Comparator<E> comparator) {
-    super(entries, comparator);
+  private final V[] entries;
+
+  @SuppressWarnings("unchecked")
+  protected RepetitiveTimeSeries(
+      Set<E> entries, Class<V> valueClass, ToIntFunction<E> keyExtractor) {
+    super(entries, Comparator.comparing(keyExtractor::applyAsInt), keyExtractor::applyAsInt);
+
+    this.entries = (V[]) Array.newInstance(valueClass, entries.size());
+    entries.forEach(e -> this.entries[keyExtractor.applyAsInt(e)] = e.getValue());
+  }
+
+  /**
+   * Method to retrieve the value at the given index.
+   *
+   * @param index of the value
+   * @return the value
+   */
+  protected V get(int index) {
+    return entries[index];
   }
 
   /**

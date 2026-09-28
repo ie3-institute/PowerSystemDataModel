@@ -22,7 +22,6 @@ import tech.units.indriya.ComparableQuantity;
 public class LoadProfileTimeSeries<V extends LoadValues>
     extends RepetitiveTimeSeries<LoadProfileEntry<V>, V, PValue> {
   protected final PowerProfileKey powerProfileKey;
-  protected final NavigableMap<Integer, V> valueMapping;
 
   /**
    * The maximum average power consumption per quarter-hour calculated over all seasons and weekday
@@ -36,13 +35,11 @@ public class LoadProfileTimeSeries<V extends LoadValues>
   public LoadProfileTimeSeries(
       PowerProfileKey powerProfileKey,
       Set<LoadProfileEntry<V>> entries,
+      Class<V> valueClass,
       ComparableQuantity<Power> maxPower,
       ComparableQuantity<Energy> profileEnergyScaling) {
-    super(entries, Comparator.comparingInt(LoadProfileEntry::getQuarterHour));
+    super(entries, valueClass, LoadProfileEntry::getQuarterHour);
     this.powerProfileKey = powerProfileKey;
-    this.valueMapping = new TreeMap<>(Comparator.naturalOrder());
-    entries.forEach(e -> valueMapping.put(e.getQuarterHour(), e.getValue()));
-
     this.maxPower = maxPower;
     this.profileEnergyScaling = profileEnergyScaling;
   }
@@ -74,9 +71,7 @@ public class LoadProfileTimeSeries<V extends LoadValues>
    * @return A supplier for an option on the value at the given time step.
    */
   public Supplier<Optional<PValue>> supplyValue(ZonedDateTime time) {
-    int quarterHour = TimeSeriesUtils.calculateQuarterHourOfDay(time);
-    LoadValues loadValue = valueMapping.get(quarterHour);
-    return () -> Optional.ofNullable(loadValue.getValue(time, powerProfileKey));
+    return () -> getValue(time);
   }
 
   @Override
@@ -89,15 +84,10 @@ public class LoadProfileTimeSeries<V extends LoadValues>
     return Optional.of(time.plusMinutes(15));
   }
 
-  /** Returns the value mapping. */
-  protected Map<Integer, V> getValueMapping() {
-    return valueMapping;
-  }
-
   @Override
   protected PValue calc(ZonedDateTime time) {
     int quarterHour = TimeSeriesUtils.calculateQuarterHourOfDay(time);
-    return valueMapping.get(quarterHour).getValue(time, powerProfileKey);
+    return get(quarterHour).getValue(time, powerProfileKey);
   }
 
   @Override
@@ -106,7 +96,7 @@ public class LoadProfileTimeSeries<V extends LoadValues>
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     LoadProfileTimeSeries<?> that = (LoadProfileTimeSeries<?>) o;
-    return powerProfileKey.equals(that.powerProfileKey) && valueMapping.equals(that.valueMapping);
+    return powerProfileKey.equals(that.powerProfileKey);
   }
 
   @Override
@@ -119,8 +109,8 @@ public class LoadProfileTimeSeries<V extends LoadValues>
     return "LoadProfileTimeSeries{"
         + "loadProfile="
         + getPowerProfileKey().getValue()
-        + ", valueMapping="
-        + getValueMapping()
+        + ", #entries="
+        + size()
         + '}';
   }
 }
