@@ -67,6 +67,19 @@ public class IndividualTimeSeries<V extends Value> extends TimeSeries<TimeBasedV
     return new ArrayList<>(timeToValue.navigableKeySet().tailSet(time, false));
   }
 
+  /**
+   * Adds the values of the given time series to this time series.
+   *
+   * @param that time series with values to add
+   * @return a new time series with the same uuid as this time series
+   */
+  public IndividualTimeSeries<V> add(IndividualTimeSeries<V> that) {
+    SortedSet<TimeBasedValue<V>> allValues = new TreeSet<>(getEntries());
+    allValues.addAll(that.getEntries());
+
+    return new IndividualTimeSeries<>(getUuid(), allValues);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
