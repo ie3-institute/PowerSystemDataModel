@@ -42,7 +42,7 @@ class ModelFieldsTest extends Specification {
     ])
   }
 
-  def "getMandatoryFields returns registered fields for CableDeploymentInput"() {
+  def "ModelFields returns registered fields for CableDeploymentInput correctly"() {
     when:
     def mandatoryFields = ModelFields.getMandatoryFields(CableDeploymentInput)
     def optionalFields = ModelFields.getOptionalFields(CableDeploymentInput)
