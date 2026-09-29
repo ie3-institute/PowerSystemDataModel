@@ -71,35 +71,18 @@ public class CableTypeParser {
         ComparableQuantity<Length> innerDiameter =
             parseQuantityField(
                 layerNode,
-                "innerDiameter",
+                INNER_DIAMETER,
                 Length.class,
                 PowerSystemUnits.MILLIMETRE,
-                "Cannot parse " + LAYER + ": missing innerDiameter in " + element);
+                "Cannot parse " + LAYER + ": missing " + INNER_DIAMETER + " in " + element);
         ComparableQuantity<Length> outerDiameter =
             parseQuantityField(
                 layerNode,
-                "outerDiameter",
+                OUTER_DIAMETER,
                 Length.class,
                 PowerSystemUnits.MILLIMETRE,
-                "Cannot parse " + LAYER + ": missing outerDiameter in " + element);
-        ComparableQuantity<ThermalResistivity> thermalResistivity =
-            parseQuantityField(
-                layerNode,
-                THERMAL_RESISTIVITY,
-                edu.ie3.util.quantities.interfaces.ThermalResistivity.class,
-                PowerSystemUnits.KELVIN_METRE_PER_WATT,
-                "Cannot parse " + LAYER + ": missing thermalResistivity in " + element);
-        ComparableQuantity<edu.ie3.util.quantities.interfaces.ThermalCapacitance>
-            thermalCapacitance =
-                parseQuantityField(
-                    layerNode,
-                    THERMAL_CAPACITANCE,
-                    edu.ie3.util.quantities.interfaces.ThermalCapacitance.class,
-                    PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN,
-                    "Cannot parse " + LAYER + ": missing thermalCapacitance in " + element);
-        ComparableQuantity<Area> area =
-            parseOptionalQuantityField(
-                layerNode, AREA, Area.class, PowerSystemUnits.SQUARE_MILLIMETRE, LAYER);
+                "Cannot parse " + LAYER + ": missing " + OUTER_DIAMETER + " in " + element);
+        CommonLayerFields fields = parseCommonLayerFields(layerNode, LAYER, element);
 
         layers.add(
             new LayerInput(
@@ -108,9 +91,9 @@ public class CableTypeParser {
                 material,
                 innerDiameter,
                 outerDiameter,
-                thermalResistivity,
-                thermalCapacitance,
-                area));
+                fields.thermalResistivity(),
+                fields.thermalCapacitance(),
+                fields.area()));
       }
 
       return List.copyOf(layers);
@@ -139,34 +122,18 @@ public class CableTypeParser {
       ComparableQuantity<Length> innerDiameter =
           parseQuantityField(
               screenNode,
-              "innerDiameter",
+              INNER_DIAMETER,
               Length.class,
               PowerSystemUnits.MILLIMETRE,
-              "Cannot parse " + SCREEN_LAYER + ": missing innerDiameter in " + json);
+              "Cannot parse " + SCREEN_LAYER + ": missing " + INNER_DIAMETER + " in " + json);
       ComparableQuantity<Length> outerDiameter =
           parseQuantityField(
               screenNode,
-              "outerDiameter",
+              OUTER_DIAMETER,
               Length.class,
               PowerSystemUnits.MILLIMETRE,
-              "Cannot parse " + SCREEN_LAYER + ": missing outerDiameter in " + json);
-      ComparableQuantity<edu.ie3.util.quantities.interfaces.ThermalResistivity> thermalResistivity =
-          parseQuantityField(
-              screenNode,
-              THERMAL_RESISTIVITY,
-              edu.ie3.util.quantities.interfaces.ThermalResistivity.class,
-              PowerSystemUnits.KELVIN_METRE_PER_WATT,
-              "Cannot parse " + SCREEN_LAYER + ": missing thermalResistivity in " + json);
-      ComparableQuantity<edu.ie3.util.quantities.interfaces.ThermalCapacitance> thermalCapacitance =
-          parseQuantityField(
-              screenNode,
-              THERMAL_CAPACITANCE,
-              edu.ie3.util.quantities.interfaces.ThermalCapacitance.class,
-              PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN,
-              "Cannot parse " + SCREEN_LAYER + ": missing thermalCapacitance in " + json);
-      ComparableQuantity<Area> area =
-          parseOptionalQuantityField(
-              screenNode, AREA, Area.class, PowerSystemUnits.SQUARE_MILLIMETRE, SCREEN_LAYER);
+              "Cannot parse " + SCREEN_LAYER + ": missing " + OUTER_DIAMETER + " in " + json);
+      CommonLayerFields fields = parseCommonLayerFields(screenNode, SCREEN_LAYER, json);
       String wiresNumberText = optionalText(screenNode, WIRES_NUMBER);
       if (wiresNumberText == null) {
         throw new ParsingException(
@@ -198,9 +165,9 @@ public class CableTypeParser {
           material,
           innerDiameter,
           outerDiameter,
-          thermalResistivity,
-          thermalCapacitance,
-          Optional.ofNullable(area),
+          fields.thermalResistivity(),
+          fields.thermalCapacitance(),
+          Optional.ofNullable(fields.area()),
           wiresNumber,
           wireDiameter,
           Optional.ofNullable(lengthOfLay),
@@ -244,23 +211,7 @@ public class CableTypeParser {
           node.has(IS_COMPACTED)
               && !node.get(IS_COMPACTED).isNull()
               && node.get(IS_COMPACTED).asBoolean(false);
-      ComparableQuantity<edu.ie3.util.quantities.interfaces.ThermalResistivity> thermalResistivity =
-          parseQuantityField(
-              node,
-              THERMAL_RESISTIVITY,
-              edu.ie3.util.quantities.interfaces.ThermalResistivity.class,
-              PowerSystemUnits.KELVIN_METRE_PER_WATT,
-              "Cannot parse " + CONDUCTOR + ": missing thermalResistivity in " + json);
-      ComparableQuantity<edu.ie3.util.quantities.interfaces.ThermalCapacitance> thermalCapacitance =
-          parseQuantityField(
-              node,
-              THERMAL_CAPACITANCE,
-              edu.ie3.util.quantities.interfaces.ThermalCapacitance.class,
-              PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN,
-              "Cannot parse " + CONDUCTOR + ": missing thermalCapacitance in " + json);
-      ComparableQuantity<Area> area =
-          parseOptionalQuantityField(
-              node, AREA, Area.class, PowerSystemUnits.SQUARE_MILLIMETRE, CONDUCTOR);
+      CommonLayerFields fields = parseCommonLayerFields(node, CONDUCTOR, json);
 
       return new ConductorInput(
           uuid,
@@ -269,9 +220,9 @@ public class CableTypeParser {
           crossSection,
           diameter,
           isCompacted,
-          thermalResistivity,
-          thermalCapacitance,
-          area);
+          fields.thermalResistivity(),
+          fields.thermalCapacitance(),
+          fields.area());
     } catch (RuntimeException e) {
       throw new ParsingException(
           "Cannot parse " + CONDUCTOR + ": " + json + ". Cause: " + e.getMessage(), e);
@@ -296,22 +247,15 @@ public class CableTypeParser {
   }
 
   /**
-   * Locates the screen-layer node inside a possibly wrapped object by looking for the first node
-   * that carries a non-null material field.
+   * Locates the screen-layer node, which must be the given object itself.
    *
    * @param node candidate root node
    * @param source original source used in the error message
    * @return the screen-layer node
-   * @throws ParsingException if no child carries a material field
+   * @throws ParsingException if the node does not carry a material field
    */
   private ObjectNode findScreenNode(ObjectNode node, String source) throws ParsingException {
     if (hasMaterial(node)) return node;
-
-    for (JsonNode child : node) {
-      if (child != null && child.isObject() && hasMaterial(child)) {
-        return (ObjectNode) child;
-      }
-    }
 
     throw new ParsingException("Cannot parse " + SCREEN_LAYER + ": missing material in " + source);
   }
@@ -327,18 +271,20 @@ public class CableTypeParser {
   }
 
   /**
-   * Reads and parses the {@code uuid} field of a node, generating and inserting a fresh UUID when
-   * the field is absent or null.
+   * Reads and parses the {@code uuid} field of a node.
    *
    * @param node node to read from
    * @param context logical name used in the error message
-   * @return the parsed (or newly generated) UUID
-   * @throws ParsingException if the stored value is not a valid UUID
+   * @return the parsed UUID
+   * @throws ParsingException if the uuid is missing or not a valid UUID
    */
   private UUID parseUuid(ObjectNode node, String context) throws ParsingException {
-    ensureUuid(node);
+    String uuidText = optionalText(node, UUID);
+    if (uuidText == null) {
+      throw new ParsingException("Cannot parse " + context + ": missing uuid in " + node);
+    }
     try {
-      return java.util.UUID.fromString(node.get(UUID).asString());
+      return java.util.UUID.fromString(uuidText);
     } catch (IllegalArgumentException e) {
       throw new ParsingException("Cannot parse " + context + ": invalid uuid in " + node, e);
     }
@@ -469,18 +415,6 @@ public class CableTypeParser {
   }
 
   /**
-   * Ensures the node carries a {@code uuid} field, generating and storing a random UUID when the
-   * field is absent or null.
-   *
-   * @param node node to inspect (mutated when a UUID must be generated)
-   */
-  private void ensureUuid(ObjectNode node) {
-    if (!node.has(UUID) || node.get(UUID).isNull()) {
-      node.put(UUID, java.util.UUID.randomUUID().toString());
-    }
-  }
-
-  /**
    * Resolves the first non-empty text field among the given candidate names.
    *
    * @param node node to read from
@@ -514,4 +448,49 @@ public class CableTypeParser {
           "Cannot parse " + context + ": invalid " + fieldName + " in " + source, e);
     }
   }
+
+  /**
+   * Parses the fields that are shared by all cable layers: {@code thermalResistivity}, {@code
+   * thermalCapacitance} and the optional {@code area}.
+   *
+   * @param node node to read from
+   * @param context logical name used in the error message
+   * @param source original source used in the error message
+   * @return the parsed common layer fields
+   * @throws ParsingException if a required field is missing or not a valid number
+   */
+  private CommonLayerFields parseCommonLayerFields(ObjectNode node, String context, Object source)
+      throws ParsingException {
+    ComparableQuantity<ThermalResistivity> thermalResistivity =
+        parseQuantityField(
+            node,
+            THERMAL_RESISTIVITY,
+            ThermalResistivity.class,
+            PowerSystemUnits.KELVIN_METRE_PER_WATT,
+            "Cannot parse " + context + ": missing " + THERMAL_RESISTIVITY + " in " + source);
+    ComparableQuantity<edu.ie3.util.quantities.interfaces.ThermalCapacitance> thermalCapacitance =
+        parseQuantityField(
+            node,
+            THERMAL_CAPACITANCE,
+            edu.ie3.util.quantities.interfaces.ThermalCapacitance.class,
+            PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN,
+            "Cannot parse " + context + ": missing " + THERMAL_CAPACITANCE + " in " + source);
+    ComparableQuantity<Area> area =
+        parseOptionalQuantityField(
+            node, AREA, Area.class, PowerSystemUnits.SQUARE_MILLIMETRE, context);
+
+    return new CommonLayerFields(thermalResistivity, thermalCapacitance, area);
+  }
+
+  /**
+   * Holds the parsed fields that are shared by all cable layers.
+   *
+   * @param thermalResistivity thermal resistivity of the layer
+   * @param thermalCapacitance thermal capacitance of the layer
+   * @param area cross-sectional area of the layer, may be {@code null}
+   */
+  private record CommonLayerFields(
+      ComparableQuantity<ThermalResistivity> thermalResistivity,
+      ComparableQuantity<edu.ie3.util.quantities.interfaces.ThermalCapacitance> thermalCapacitance,
+      ComparableQuantity<Area> area) {}
 }

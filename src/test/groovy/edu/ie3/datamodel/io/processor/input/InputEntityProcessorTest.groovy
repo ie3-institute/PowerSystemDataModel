@@ -451,7 +451,7 @@ class InputEntityProcessorTest extends Specification {
       "frequency" : "50.0",
       "skinEffectCoefficient" : "1.0",
       "proximityEffectCoefficient": "1.0",
-      "electricalCapacitance" : "3.5E-7",
+      "electricalCapacitance" : "3.5E-10",
       "tanDelta" : "0.1",
       "circulatingLossFactor" : "0.0",
       "eddyCurrentLossFactor" : "0.0",
@@ -460,7 +460,7 @@ class InputEntityProcessorTest extends Specification {
       "jack" : "[]",
       "screen" : "",
       "conductor" : '{"uuid":"' + type.getConductor().getUuid() + '","name":"conductor","material":"COPPER","crossSection":"4.0E-4","diameter":"0.0225","isCompacted":false,"thermalResistivity":"0.0026041667","thermalCapacitance":"3449600.0","area":"1.0","additionalInformation":{}}',
-      "isolation" : '[{"uuid":"' + type.getIsolation().get(0).getUuid() + '","name":"Main insulation","material":"XLPE","innerDiameter":"0.0225","outerDiameter":"0.027","thermalResistivity":"3.5","thermalCapacitance":"2.4","area":"1.0","additionalInformation":{}}]'
+      "isolation" : '[{"uuid":"' + type.getIsolation().get(0).getUuid() + '","name":"Main insulation","material":"XLPE","innerDiameter":"0.0225","outerDiameter":"0.027","thermalResistivity":"3.5","thermalCapacitance":"2.4E6","area":"1.0","additionalInformation":{}}]'
     ]
 
     when:

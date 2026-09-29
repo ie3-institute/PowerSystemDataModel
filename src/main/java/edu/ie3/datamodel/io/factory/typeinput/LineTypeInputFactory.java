@@ -59,15 +59,31 @@ public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeIn
 
     Optional<CableTypeInput> cableType = Optional.empty();
     if (cableUuidStr != null) {
+      UUID cableUuid;
       try {
-        UUID cableUuid = java.util.UUID.fromString(cableUuidStr);
-        cableType = Optional.ofNullable(this.cableTypes.get(cableUuid));
-        if (cableType.isEmpty()) {
-          log.warn("Ignoring unknown cable_type '{}' for line type {}", cableUuidStr, uuid);
-        }
+        cableUuid = java.util.UUID.fromString(cableUuidStr);
       } catch (IllegalArgumentException e) {
-        log.error("Ignoring invalid cable_type UUID '{}' for line type {}", cableUuidStr, uuid, e);
+        log.error("Invalid cable_type UUID '{}' for line type {}", cableUuidStr, uuid, e);
+        throw new IllegalArgumentException(
+            "Invalid cable_type UUID '"
+                + cableUuidStr
+                + "' for line type '"
+                + id
+                + "': "
+                + e.getMessage(),
+            e);
       }
+      CableTypeInput resolvedCableType = this.cableTypes.get(cableUuid);
+      if (resolvedCableType == null) {
+        log.error("Unknown cable_type '{}' referenced by line type '{}'", cableUuidStr, id);
+        throw new IllegalArgumentException(
+            "Unknown cable_type '"
+                + cableUuidStr
+                + "' referenced by line type '"
+                + id
+                + "'. No cable type with this UUID exists.");
+      }
+      cableType = Optional.of(resolvedCableType);
     }
 
     return new LineTypeInput(

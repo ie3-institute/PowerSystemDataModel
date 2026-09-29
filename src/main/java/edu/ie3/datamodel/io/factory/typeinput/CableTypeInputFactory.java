@@ -13,13 +13,15 @@ import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.ConductorInput;
 import edu.ie3.datamodel.models.input.connector.type.LayerInput;
 import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput;
+import edu.ie3.util.quantities.interfaces.SpecificCapacitance;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import javax.measure.quantity.ElectricCapacitance;
+import javax.measure.Unit;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Temperature;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.Units;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -29,6 +31,9 @@ import tools.jackson.databind.json.JsonMapper;
  * {@link CableTypeParser}.
  */
 public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableTypeInput> {
+
+  private static final Unit<SpecificCapacitance> FARAD_PER_METRE =
+      new ProductUnit<>(Units.FARAD.divide(Units.METRE));
 
   private final CableTypeParser parser;
 
@@ -77,12 +82,12 @@ public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableType
     }
 
     ComparableQuantity<Temperature> limitTemp =
-        data.getQuantity(LIMIT_TEMP, StandardUnits.TEMPERATURE);
+        data.getQuantity(LIMIT_TEMPERATURE, StandardUnits.TEMPERATURE);
     ComparableQuantity<Frequency> frequency = data.getQuantity(FREQUENCY, Units.HERTZ);
-    double skinEffectCoefficient = data.getDouble(SKIN_EFF_COEFF);
-    double proxEffectCoefficient = data.getDouble(PROX_EFF_COEFF);
-    ComparableQuantity<ElectricCapacitance> electricalCapacitance =
-        data.getQuantity(ELECTR_CAPACITANCE, Units.FARAD);
+    double skinEffectCoefficient = data.getDouble(SKIN_EFFECT_COEFFICIENT);
+    double proxEffectCoefficient = data.getDouble(PROXIMITY_EFFECT_COEFFICIENT);
+    ComparableQuantity<SpecificCapacitance> electricalCapacitance =
+        data.getQuantity(ELECTRICAL_CAPACITANCE, FARAD_PER_METRE);
     double tanDelta = data.getDouble(TAN_DELTA);
     double circulatingLossFactor = data.getDouble(CIRCULATING_LOSS_FACTOR);
     double eddyCurrentLossFactor = data.getDouble(EDDY_CURRENT_LOSS_FACTOR);

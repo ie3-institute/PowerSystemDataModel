@@ -67,9 +67,9 @@ public class FieldNamingStrategy {
   public static final String WIRES_NUMBER = "wiresNumber";
   public static final String LENGTH_OF_LAY = "lengthOfLay";
   public static final String IS_COMPACTED = "isCompacted";
-  public static final String LAYER = "LayerInput";
-  public static final String SCREEN_LAYER = "ScreenLayerInput";
-  public static final String CONDUCTOR = "ConductorInput";
+  public static final String LAYER = "layer";
+  public static final String SCREEN_LAYER = "screenLayer";
+  public static final String CONDUCTOR = "conductor";
   public static final String DIAMETER = "diameter";
   public static final String INNER_DIAMETER = "innerDiameter";
   public static final String OUTER_DIAMETER = "outerDiameter";
@@ -120,10 +120,8 @@ public class FieldNamingStrategy {
   public static final String FILLER_STRING = "filler";
   public static final String ARMOR_STRING = "armor";
   public static final String JACK_STRING = "jack";
-  public static final String LIMIT_TEMP = "limitTemperature";
-  public static final String SKIN_EFF_COEFF = "skinEffectCoefficient";
-  public static final String PROX_EFF_COEFF = "proximityEffectCoefficient";
-  public static final String ELECTR_CAPACITANCE = "electricalCapacitance";
+  public static final String SKIN_EFFECT_COEFFICIENT = "skinEffectCoefficient";
+  public static final String PROXIMITY_EFFECT_COEFFICIENT = "proximityEffectCoefficient";
   public static final String TAN_DELTA = "tanDelta";
   public static final String CIRCULATING_LOSS_FACTOR = "circulatingLossFactor";
   public static final String EDDY_CURRENT_LOSS_FACTOR = "eddyCurrentLossFactor";

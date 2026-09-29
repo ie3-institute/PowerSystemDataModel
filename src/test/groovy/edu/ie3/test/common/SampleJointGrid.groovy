@@ -6,7 +6,6 @@
 package edu.ie3.test.common
 
 import static edu.ie3.util.quantities.PowerSystemUnits.*
-import static tech.units.indriya.unit.Units.*
 
 import edu.ie3.datamodel.exceptions.ParsingException
 import edu.ie3.datamodel.models.OperationTime
@@ -28,7 +27,6 @@ import org.locationtech.jts.io.geojson.GeoJsonReader
 import tech.units.indriya.quantity.Quantities
 
 import java.util.stream.Collectors
-
 /**
  * //ToDo: Class Description
  *
@@ -144,44 +142,7 @@ class SampleJointGrid extends SystemParticipantTestData {
   }
 
 
-  public static final CableTypeInput cableTypeInput = new CableTypeInput(
-  UUID.fromString("a93fcf78-f9ff-41e6-a90f-ae08679d8fd8"),
-  "test cable type input",
-  1,
-  new ConductorInput(
-      UUID.randomUUID(),
-      "conductor",
-      CableMaterial.COPPER,
-      Quantities.getQuantity(400.0e-6, SQUARE_METRE),
-      Quantities.getQuantity(0.0225, METRE),
-      false,
-      Quantities.getQuantity(1.0 / 384.0, KELVIN_METRE_PER_WATT),
-      Quantities.getQuantity(
-          3449600.0, JOULE_PER_CUBIC_METRE_KELVIN),
-      null),
-  [
-    new LayerInput(
-        UUID.randomUUID(),
-        "Main insulation",
-        CableMaterial.XLPE,
-        Quantities.getQuantity(0.0225, METRE),
-        Quantities.getQuantity(0.027, METRE),
-        Quantities.getQuantity(3.5, KELVIN_METRE_PER_WATT),
-        Quantities.getQuantity(2.4, JOULE_PER_CUBIC_METRE_KELVIN),
-        null)
-  ],
-  null,
-  new ArrayList<>(),
-  new ArrayList<>(),
-  new ArrayList<>(),
-  Quantities.getQuantity(90.0, CELSIUS),
-  Quantities.getQuantity(50.0, HERTZ),
-  1.0,
-  1.0,
-  Quantities.getQuantity(350e-9, FARAD),
-  0.1,
-  0.0,
-  0.0)
+  public static final CableTypeInput cableTypeInput = GridTestData.cableTypeInput
 
   private static final GeoJsonReader geoJsonReader = new GeoJsonReader()
 

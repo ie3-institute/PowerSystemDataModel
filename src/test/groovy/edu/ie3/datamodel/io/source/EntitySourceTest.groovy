@@ -26,7 +26,7 @@ class EntitySourceTest extends Specification {
 
   def "An EntitySource validates required built-in resources"() {
     when:
-    def source = getBuildInSource(EntitySource, "/type", "/type/line_type_input.csv")
+    def source = getBuildInSource(EntitySource, "/type")
 
     then:
     source

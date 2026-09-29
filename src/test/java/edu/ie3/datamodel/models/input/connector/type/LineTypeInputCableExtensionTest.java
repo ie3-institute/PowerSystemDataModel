@@ -12,6 +12,7 @@ import static tech.units.indriya.unit.Units.*;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.PowerSystemUnits;
+import edu.ie3.util.quantities.interfaces.SpecificCapacitance;
 import edu.ie3.util.quantities.interfaces.SpecificConductance;
 import edu.ie3.util.quantities.interfaces.SpecificResistance;
 import java.util.ArrayList;
@@ -25,11 +26,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.Units;
 
 /** Unit tests for LineTypeInput cable-related extensions. */
 @DisplayName("LineTypeInput Cable Extensions Tests")
 class LineTypeInputCableExtensionTest {
+  private static final ProductUnit<SpecificCapacitance> FARAD_PER_METRE =
+      new ProductUnit<>(Units.FARAD.divide(Units.METRE));
+
   UUID lineUuid = UUID.randomUUID();
 
   ComparableQuantity<SpecificConductance> b =
@@ -71,7 +76,7 @@ class LineTypeInputCableExtensionTest {
                   Quantities.getQuantity(0.0225, METRE),
                   Quantities.getQuantity(0.027, METRE),
                   Quantities.getQuantity(3.5, KELVIN_METRE_PER_WATT),
-                  Quantities.getQuantity(2.4, JOULE_PER_CUBIC_METRE_KELVIN),
+                  Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN),
                   Optional.<ComparableQuantity<Area>>empty())),
           null,
           new ArrayList<>(),
@@ -81,7 +86,7 @@ class LineTypeInputCableExtensionTest {
           Quantities.getQuantity(50.0, HERTZ),
           1.0,
           1.0,
-          Quantities.getQuantity(350e-9, FARAD),
+          Quantities.getQuantity(350e-12, FARAD_PER_METRE),
           0.1,
           0.0,
           0.0);
@@ -108,7 +113,7 @@ class LineTypeInputCableExtensionTest {
                   Quantities.getQuantity(0.0225, METRE),
                   Quantities.getQuantity(0.027, METRE),
                   Quantities.getQuantity(3.5, KELVIN_METRE_PER_WATT),
-                  Quantities.getQuantity(2.4, JOULE_PER_CUBIC_METRE_KELVIN),
+                  Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN),
                   Optional.<ComparableQuantity<Area>>empty())),
           null,
           new ArrayList<>(),
@@ -118,7 +123,7 @@ class LineTypeInputCableExtensionTest {
           Quantities.getQuantity(50.0, HERTZ),
           1.0,
           1.0,
-          Quantities.getQuantity(350e-9, FARAD),
+          Quantities.getQuantity(350e-12, FARAD_PER_METRE),
           0.1,
           0.0,
           0.0);

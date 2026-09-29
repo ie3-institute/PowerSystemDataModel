@@ -21,10 +21,12 @@ import edu.ie3.datamodel.models.input.connector.type.*
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.util.TimeUtil
+import edu.ie3.util.quantities.interfaces.SpecificCapacitance
 import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.geom.Point
 import org.locationtech.jts.io.geojson.GeoJsonReader
 import tech.units.indriya.quantity.Quantities
+import tech.units.indriya.unit.ProductUnit
 import tech.units.indriya.unit.Units
 
 /**
@@ -332,7 +334,7 @@ class GridTestData {
         Quantities.getQuantity(0.0225, Units.METRE),
         Quantities.getQuantity(0.027, Units.METRE),
         Quantities.getQuantity(3.5, KELVIN_METRE_PER_WATT),
-        Quantities.getQuantity(2.4, JOULE_PER_CUBIC_METRE_KELVIN),
+        Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN),
         Quantities.getQuantity(1.0, Units.SQUARE_METRE))
   ],
   null,
@@ -343,7 +345,7 @@ class GridTestData {
   Quantities.getQuantity(50.0, Units.HERTZ),
   1.0,
   1.0,
-  Quantities.getQuantity(350e-9, Units.FARAD),
+  Quantities.getQuantity(350e-12, new ProductUnit<SpecificCapacitance>(Units.FARAD.divide(Units.METRE))),
   0.1,
   0.0,
   0.0)

@@ -38,7 +38,6 @@ import org.locationtech.jts.io.geojson.GeoJsonWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Basic sketch and skeleton for a processors including all functions that apply for all needed
@@ -73,7 +72,6 @@ public abstract class Processor<T> {
 
   private static final GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
   private static final CableTypeJsonCodec CABLE_JSON_CODEC = new CableTypeJsonCodec();
-  private static final JsonMapper JSON_MAPPER = JsonMapper.builder().build();
 
   private static final String OPERATION_TIME_FIELD_NAME = OperationTime.class.getSimpleName();
   private static final String OPERATES_FROM = FieldNamingStrategy.OPERATES_FROM;
@@ -264,14 +262,7 @@ public abstract class Processor<T> {
 
                         if (o instanceof ScreenLayerInput screenLayer) {
                           return Try.of(
-                              () -> {
-                                try {
-                                  return CABLE_JSON_CODEC.writeScreenLayer(screenLayer);
-                                } catch (JacksonException e) {
-                                  throw new EntityProcessorException(
-                                      "Failed to serialize ScreenLayerInput inside Optional", e);
-                                }
-                              },
+                              () -> serializeCableToJson(screenLayer, fieldName),
                               EntityProcessorException.class);
                         }
 
@@ -335,31 +326,10 @@ public abstract class Processor<T> {
           resultStringBuilder.append(((CongestionResult.InputModelType) methodReturnObject).type);
       case "PowerProfileKey" ->
           resultStringBuilder.append(((PowerProfileKey) methodReturnObject).getValue());
-      case "List" -> {
-        try {
-          String jsonString;
-          if (methodReturnObject instanceof List<?> list
-              && list.stream().allMatch(LayerInput.class::isInstance)) {
-            jsonString =
-                CABLE_JSON_CODEC.writeLayers(list.stream().map(LayerInput.class::cast).toList());
-          } else {
-            jsonString = JSON_MAPPER.writeValueAsString(methodReturnObject);
-          }
-          resultStringBuilder.append(jsonString);
-        } catch (JacksonException e) {
-          throw new EntityProcessorException(
-              "Failed to serialize List to JSON string for field: " + fieldName, e);
-        }
-      }
-      case "ConductorInput" -> {
-        try {
-          String jsonString = CABLE_JSON_CODEC.writeConductor((ConductorInput) methodReturnObject);
-          resultStringBuilder.append(jsonString);
-        } catch (JacksonException e) {
-          throw new EntityProcessorException(
-              "Failed to serialize ConductorInput to JSON string for field: " + fieldName, e);
-        }
-      }
+      case "List" ->
+          resultStringBuilder.append(serializeCableToJson(methodReturnObject, fieldName));
+      case "ConductorInput" ->
+          resultStringBuilder.append(serializeCableToJson(methodReturnObject, fieldName));
       default ->
           throw new EntityProcessorException(
               "Unable to process value for attribute/field '"
@@ -509,4 +479,48 @@ public abstract class Processor<T> {
    * @return The unmodifiable {@link List} of eligible classes
    */
   protected abstract List<Class<? extends T>> getEligibleEntityClasses();
+
+  /**
+   * Serializes a cable component ({@link ScreenLayerInput}, {@link ConductorInput} or a {@link
+   * List} of {@link LayerInput}) into its embedded JSON string representation.
+   *
+   * @param cableObject cable component to serialize
+   * @param fieldName name of the field the value is assigned to
+   * @return the resulting JSON string
+   * @throws EntityProcessorException if the object is not a supported cable component or the JSON
+   *     cannot be written
+   */
+  private String serializeCableToJson(Object cableObject, String fieldName)
+      throws EntityProcessorException {
+    try {
+      if (cableObject instanceof ScreenLayerInput screenLayer) {
+        return CABLE_JSON_CODEC.writeScreenLayer(screenLayer);
+      }
+      if (cableObject instanceof ConductorInput conductor) {
+        return CABLE_JSON_CODEC.writeConductor(conductor);
+      }
+      if (cableObject instanceof List<?> list) {
+        if (list.stream().anyMatch(element -> !(element instanceof LayerInput))) {
+          throw new EntityProcessorException(
+              "Only lists of "
+                  + LayerInput.class.getSimpleName()
+                  + " are supported, but a list was provided for field: "
+                  + fieldName);
+        }
+        return CABLE_JSON_CODEC.writeLayers(list.stream().map(LayerInput.class::cast).toList());
+      }
+      throw new EntityProcessorException(
+          "Unable to serialize "
+              + cableObject.getClass().getSimpleName()
+              + " as cable JSON for field: "
+              + fieldName);
+    } catch (JacksonException e) {
+      throw new EntityProcessorException(
+          "Failed to serialize "
+              + cableObject.getClass().getSimpleName()
+              + " to JSON string for field: "
+              + fieldName,
+          e);
+    }
+  }
 }

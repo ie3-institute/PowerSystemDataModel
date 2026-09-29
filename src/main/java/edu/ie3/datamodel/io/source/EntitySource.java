@@ -125,11 +125,10 @@ public abstract class EntitySource {
    *
    * @param clazz class used to access the resources
    * @param subdirectory from the resource folder
-   * @param resourcePaths resources that have to exist
    * @return a new {@link CsvDataSource}
    */
-  protected static CsvDataSource getBuildInSource(
-      Class<?> clazz, String subdirectory, String... resourcePaths) throws SourceException {
+  protected static CsvDataSource getBuildInSource(Class<?> clazz, String subdirectory)
+      throws SourceException {
     try {
       URL url = clazz.getResource(subdirectory);
 

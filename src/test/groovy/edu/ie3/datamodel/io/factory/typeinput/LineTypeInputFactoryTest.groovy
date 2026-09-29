@@ -60,7 +60,7 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
     }
   }
 
-  def "A LineTypeInputFactory with unknown cable_type UUID resolves to empty cableType"() {
+  def "A LineTypeInputFactory with unknown cable_type UUID fails with a FactoryException"() {
     given:
     def unknownCableUuid = UUID.randomUUID().toString()
     def typeInputFactory = new LineTypeInputFactory([:])
@@ -77,15 +77,15 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
     ]
 
     when:
-    Try<LineTypeInput, FactoryException> typeInput =
-        typeInputFactory.get(new EntityData(parameter, LineTypeInput))
+    typeInputFactory.get(new EntityData(parameter, LineTypeInput)).getOrThrow()
 
     then:
-    typeInput.success
-    !typeInput.data.get().cableType.present
+    FactoryException e = thrown()
+    e.cause instanceof IllegalArgumentException
+    e.cause.message.contains(unknownCableUuid)
   }
 
-  def "A LineTypeInputFactory with invalid cable_type UUID resolves to empty cableType"() {
+  def "A LineTypeInputFactory with invalid cable_type UUID fails with a FactoryException"() {
     given:
     def typeInputFactory = new LineTypeInputFactory([:])
     Map<String, String> parameter = [
@@ -101,12 +101,12 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
     ]
 
     when:
-    Try<LineTypeInput, FactoryException> typeInput =
-        typeInputFactory.get(new EntityData(parameter, LineTypeInput))
+    typeInputFactory.get(new EntityData(parameter, LineTypeInput)).getOrThrow()
 
     then:
-    typeInput.success
-    !typeInput.data.get().cableType.present
+    FactoryException e = thrown()
+    e.cause instanceof IllegalArgumentException
+    e.cause.message.contains("this-is-not-a-uuid")
   }
 
   def "A LineTypeInputFactory with known cable_type resolves to the cableType"() {
