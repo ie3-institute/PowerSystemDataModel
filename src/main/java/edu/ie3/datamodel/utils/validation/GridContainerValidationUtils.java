@@ -151,18 +151,16 @@ public class GridContainerValidationUtils extends ValidationUtils {
             });
 
     /* Checking cable deployments */
+    Map<UUID, LineInput> linesByUuid =
+        rawGridElements.getLines().stream().collect(Collectors.toMap(LineInput::getUuid, l -> l));
     rawGridElements
         .getCableDeploymentsByLine()
         .forEach(
             (lineUuid, deployments) -> {
-              // try to find the referenced line
-              Optional<LineInput> maybeLine =
-                  rawGridElements.getLines().stream()
-                      .filter(l -> l.getUuid().equals(lineUuid))
-                      .findFirst();
+              LineInput line = linesByUuid.get(lineUuid);
 
               for (CableDeploymentInput deployment : deployments) {
-                if (maybeLine.isEmpty()) {
+                if (line == null) {
                   exceptions.add(
                       Try.ofVoid(
                           true,
@@ -172,7 +170,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
                                   deployment)));
                 } else {
                   exceptions.addAll(
-                      ConnectorValidationUtils.checkCableDeployment(deployment, maybeLine.get()));
+                      ConnectorValidationUtils.checkCableDeployment(deployment, line));
                 }
               }
             });

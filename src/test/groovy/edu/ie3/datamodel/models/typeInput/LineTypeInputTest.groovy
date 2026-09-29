@@ -56,7 +56,7 @@ class LineTypeInputTest extends Specification {
         .x(Quantities.getQuantity(0.4d, PowerSystemUnits.OHM_PER_KILOMETRE))
         .iMax(Quantities.getQuantity(310d, Units.AMPERE))
         .vRated(Quantities.getQuantity(30d, Units.VOLT))
-        .cableType(Optional.of(cableTypeInput))
+        .cableType(cableTypeInput)
         .build()
 
     then:

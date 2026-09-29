@@ -344,9 +344,11 @@ public class ContainerUtils {
             .collect(Collectors.toSet());
 
     /* Filter cable deployments for the lines that are part of this subnet */
+    Map<UUID, LineInput> linesByUuid =
+        lines.stream().collect(Collectors.toMap(LineInput::getUuid, Function.identity()));
     Map<UUID, List<CableDeploymentInput>> cableDeploymentsByLine =
         input.getCableDeploymentsByLine().entrySet().stream()
-            .filter(entry -> lines.stream().anyMatch(line -> line.getUuid().equals(entry.getKey())))
+            .filter(entry -> linesByUuid.containsKey(entry.getKey()))
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     return new RawGridElements(
@@ -840,15 +842,6 @@ public class ContainerUtils {
                         oldToNewTrafo3WANodes.values().stream())))
             .collect(Collectors.toSet());
 
-    /* Filter cable deployments for the lines that remain in this subgrid */
-    Map<UUID, List<CableDeploymentInput>> cableDeploymentsByLine =
-        subGridContainer.getRawGrid().getCableDeploymentsByLine().entrySet().stream()
-            .filter(
-                entry ->
-                    subGridContainer.getRawGrid().getLines().stream()
-                        .anyMatch(line -> line.getUuid().equals(entry.getKey())))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
     return new SubGridContainer(
         subGridContainer.getGridName(),
         subGridContainer.getSubnet(),
@@ -860,7 +853,7 @@ public class ContainerUtils {
             new HashSet<>(newTrafos3wToInternalNode.keySet()),
             subGridContainer.getRawGrid().getSwitches(),
             subGridContainer.getRawGrid().getMeasurementUnits(),
-            cableDeploymentsByLine),
+            subGridContainer.getRawGrid().getCableDeploymentsByLine()),
         subGridContainer.getSystemParticipants(),
         subGridContainer.getEmUnits());
   }

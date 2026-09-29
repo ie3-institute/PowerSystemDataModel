@@ -51,31 +51,22 @@ public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeIn
     ComparableQuantity<ElectricPotential> vRated =
         data.getQuantity(V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
 
-    Optional<CableTypeInput> cableType =
+    String cableUuidStr =
         data.getFieldOptional(FieldNamingStrategy.CABLE_TYPE)
             .map(String::trim)
             .filter(s -> !s.isBlank())
-            .flatMap(
-                cableUuidStr -> {
-                  try {
-                    UUID cableUuid = java.util.UUID.fromString(cableUuidStr);
-                    return Optional.ofNullable(this.cableTypes.get(cableUuid));
-                  } catch (IllegalArgumentException e) {
-                    log.warn(
-                        "Ignoring invalid cable_type UUID '{}' for line type {}",
-                        cableUuidStr,
-                        uuid,
-                        e);
-                    return Optional.empty();
-                  }
-                });
+            .orElse(null);
 
-    if (cableType.isEmpty()
-        && data.getFieldsToValues().containsKey(FieldNamingStrategy.CABLE_TYPE)) {
-      // field was present but no matching cable type found
-      String value = data.getFieldsToValues().get(FieldNamingStrategy.CABLE_TYPE);
-      if (value != null && !value.isBlank()) {
-        log.warn("Ignoring unknown cable_type '{}' for line type {}", value.trim(), uuid);
+    Optional<CableTypeInput> cableType = Optional.empty();
+    if (cableUuidStr != null) {
+      try {
+        UUID cableUuid = java.util.UUID.fromString(cableUuidStr);
+        cableType = Optional.ofNullable(this.cableTypes.get(cableUuid));
+        if (cableType.isEmpty()) {
+          log.warn("Ignoring unknown cable_type '{}' for line type {}", cableUuidStr, uuid);
+        }
+      } catch (IllegalArgumentException e) {
+        log.error("Ignoring invalid cable_type UUID '{}' for line type {}", cableUuidStr, uuid, e);
       }
     }
 

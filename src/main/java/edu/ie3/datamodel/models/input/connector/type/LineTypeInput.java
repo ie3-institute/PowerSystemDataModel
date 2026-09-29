@@ -250,9 +250,8 @@ public class LineTypeInput extends AssetTypeInput {
       this.cableType = entity.cableType;
     }
 
-    public LineTypeInputCopyBuilder cableType(Optional<CableTypeInput> cableType) {
-      this.cableType =
-          Objects.requireNonNull(cableType, "Cable type Optional cannot be null").orElse(null);
+    public LineTypeInputCopyBuilder cableType(CableTypeInput cableType) {
+      this.cableType = Objects.requireNonNull(cableType, "Cable type cannot be null");
       return thisInstance();
     }
 

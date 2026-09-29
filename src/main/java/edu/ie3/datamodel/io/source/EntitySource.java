@@ -139,14 +139,6 @@ public abstract class EntitySource {
         throw new SourceException(message);
       }
 
-      for (String resourcePath : resourcePaths) {
-        if (clazz.getResource(resourcePath) == null) {
-          String message = "Built-in resource '" + resourcePath + "' is missing.";
-          log.error(message);
-          throw new SourceException(message);
-        }
-      }
-
       URI uri = url.toURI();
       CsvFileConnector connector;
 

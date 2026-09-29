@@ -32,15 +32,6 @@ class EntitySourceTest extends Specification {
     source
   }
 
-  def "An EntitySource throws a SourceException for a missing required built-in resource"() {
-    when:
-    getBuildInSource(EntitySource, "/type", "/type/missing.csv")
-
-    then:
-    SourceException exception = thrown()
-    exception.message == "Built-in resource '/type/missing.csv' is missing."
-  }
-
   def "An EntitySource can build a map of entities correctly"() {
     given:
     Map<String, String> parameter = ["uuid": GridTestData.profBroccoli.uuid.toString(), "id": GridTestData.profBroccoli.id]
