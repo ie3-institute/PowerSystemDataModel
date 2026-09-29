@@ -63,7 +63,6 @@ public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeIn
       try {
         cableUuid = java.util.UUID.fromString(cableUuidStr);
       } catch (IllegalArgumentException e) {
-        log.error("Invalid cable_type UUID '{}' for line type {}", cableUuidStr, uuid, e);
         throw new IllegalArgumentException(
             "Invalid cable_type UUID '"
                 + cableUuidStr

@@ -13,8 +13,12 @@ import edu.ie3.datamodel.models.input.connector.type.LayerInput;
 import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import tech.units.indriya.quantity.Quantities;
 import tools.jackson.databind.ObjectMapper;
 
@@ -44,40 +48,6 @@ class CableTypeParserTest {
         ParsingException.class,
         () -> parser.parseLayerList("{\"key\":\"value\"}"),
         "Expected array");
-  }
-
-  @Test
-  @DisplayName("Test parseLayerList element with invalid material throws ParsingException")
-  void testParseLayerListElementWithInvalidMaterial() {
-    String json =
-        "[{\"uuid\":\"00000000-0000-0000-0000-000000000001\",\"name\":\"L1\",\"material\":\"INVALID_MATTERIAL\",\"innerDiameter\":\"10\",\"outerDiameter\":\"20\",\"thermalResistivity\":\"1\",\"thermalCapacitance\":\"2\"}]";
-    ParsingException ex = assertThrows(ParsingException.class, () -> parser.parseLayerList(json));
-    assertTrue(ex.getMessage().contains("invalid material"));
-  }
-
-  @Test
-  @DisplayName("Test parseScreenLayer with missing material throws ParsingException")
-  void testParseScreenLayerWithMissingMaterial() {
-    String json =
-        "{\"uuid\":\"00000000-0000-0000-0000-000000000001\",\"name\":\"S1\",\"innerDiameter\":\"10\",\"outerDiameter\":\"20\",\"thermalResistivity\":\"1\",\"thermalCapacitance\":\"2\",\"wiresNumber\":\"56\",\"wireDiameter\":\"0.9\",\"electricalResistivity\":\"1.7\"}";
-    ParsingException ex = assertThrows(ParsingException.class, () -> parser.parseScreenLayer(json));
-    assertTrue(ex.getMessage().contains("missing material"));
-  }
-
-  @Test
-  @DisplayName("Test parseScreenLayer with non-object node throws ParsingException")
-  void testParseScreenLayerWithNonObjectNode() {
-    assertThrows(
-        ParsingException.class, () -> parser.parseScreenLayer("[1,2,3]"), "Expected object");
-  }
-
-  @Test
-  @DisplayName("Test parseConductor with invalid UUID throws ParsingException")
-  void testParseConductorWithInvalidUuid() {
-    String json =
-        "{\"uuid\":\"not-a-valid-uuid\",\"name\":\"C1\",\"material\":\"COPPER\",\"crossSection\":\"10\",\"diameter\":\"5\",\"thermalResistivity\":\"1\",\"thermalCapacitance\":\"2\"}";
-    ParsingException ex = assertThrows(ParsingException.class, () -> parser.parseConductor(json));
-    assertTrue(ex.getMessage().contains("invalid uuid"));
   }
 
   @Test
@@ -114,6 +84,13 @@ class CableTypeParserTest {
         "{\"name\":\"S1\",\"material\":\"COPPER\",\"innerDiameter\":\"10\",\"outerDiameter\":\"20\",\"thermalResistivity\":\"1\",\"thermalCapacitance\":\"2\",\"wiresNumber\":\"56\",\"wireDiameter\":\"0.9\",\"electricalResistivity\":\"1.7\"}";
     ParsingException ex = assertThrows(ParsingException.class, () -> parser.parseScreenLayer(json));
     assertTrue(ex.getMessage().contains("missing uuid"));
+  }
+
+  @Test
+  @DisplayName("Test parseScreenLayer with non-object node throws ParsingException")
+  void testParseScreenLayerWithNonObjectNode() {
+    assertThrows(
+        ParsingException.class, () -> parser.parseScreenLayer("[1,2,3]"), "Expected object");
   }
 
   @Test
@@ -199,5 +176,40 @@ class CableTypeParserTest {
     assertEquals(
         Quantities.getQuantity(35.6, PowerSystemUnits.SQUARE_MILLIMETRE),
         screen.area().orElse(null));
+  }
+
+  @ParameterizedTest(name = "{0} with invalid data throws ParsingException")
+  @MethodSource("invalidCableComponentInputs")
+  @DisplayName("Test invalid cable components throw ParsingException")
+  void testInvalidCableComponents(String component, String json, String expectedMessage) {
+    ParsingException ex =
+        assertThrows(
+            ParsingException.class,
+            () -> {
+              switch (component) {
+                case "layer" -> parser.parseLayerList(json);
+                case "screen layer" -> parser.parseScreenLayer(json);
+                case "conductor" -> parser.parseConductor(json);
+                default ->
+                    throw new IllegalArgumentException("Unsupported component: " + component);
+              }
+            });
+    assertTrue(ex.getMessage().contains(expectedMessage));
+  }
+
+  private static Stream<Arguments> invalidCableComponentInputs() {
+    return Stream.of(
+        Arguments.of(
+            "layer",
+            "[{\"uuid\":\"00000000-0000-0000-0000-000000000001\",\"name\":\"L1\",\"material\":\"INVALID_MATTERIAL\",\"innerDiameter\":\"10\",\"outerDiameter\":\"20\",\"thermalResistivity\":\"1\",\"thermalCapacitance\":\"2\"}]",
+            "invalid material"),
+        Arguments.of(
+            "screen layer",
+            "{\"uuid\":\"00000000-0000-0000-0000-000000000001\",\"name\":\"S1\",\"innerDiameter\":\"10\",\"outerDiameter\":\"20\",\"thermalResistivity\":\"1\",\"thermalCapacitance\":\"2\",\"wiresNumber\":\"56\",\"wireDiameter\":\"0.9\",\"electricalResistivity\":\"1.7\"}",
+            "missing material"),
+        Arguments.of(
+            "conductor",
+            "{\"uuid\":\"not-a-valid-uuid\",\"name\":\"C1\",\"material\":\"COPPER\",\"crossSection\":\"10\",\"diameter\":\"5\",\"thermalResistivity\":\"1\",\"thermalCapacitance\":\"2\"}",
+            "invalid uuid"));
   }
 }
