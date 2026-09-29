@@ -118,8 +118,7 @@ public class CableDeploymentInput extends UniqueInputEntity {
   }
 
   public static class CableDeploymentInputCopyBuilder
-      extends edu.ie3.datamodel.models.UniqueEntity.UniqueEntityCopyBuilder<
-          CableDeploymentInputCopyBuilder> {
+      extends UniqueEntityCopyBuilder<CableDeploymentInputCopyBuilder> {
 
     private UUID lineUuid;
     private String layoutFormation;

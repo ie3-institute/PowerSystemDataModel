@@ -151,7 +151,7 @@ public class RawGridSource extends AssetEntitySource {
         Try.of(
             () -> getEntities(CableDeploymentInput.class, dataSource, cableDeploymentInputFactory),
             SourceException.class);
-    Try<java.util.Map<UUID, List<CableDeploymentInput>>, SourceException> deploymentsByLine =
+    Try<Map<UUID, List<CableDeploymentInput>>, SourceException> deploymentsByLine =
         deploymentMap.flatMap(
             map ->
                 Try.of(

@@ -8,11 +8,10 @@ package edu.ie3.datamodel.io.factory.typeinput.parser;
 import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.*;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
-import edu.ie3.datamodel.models.input.connector.type.CableMaterial;
-import edu.ie3.datamodel.models.input.connector.type.ConductorInput;
-import edu.ie3.datamodel.models.input.connector.type.LayerInput;
-import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput;
+import edu.ie3.datamodel.models.input.connector.type.*;
 import edu.ie3.util.quantities.PowerSystemUnits;
+import edu.ie3.util.quantities.interfaces.ElectricalResistivity;
+import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
 import java.util.*;
 import javax.measure.Quantity;
@@ -30,7 +29,7 @@ import tools.jackson.databind.node.ObjectNode;
 /**
  * Parses the JSON representations of the individual cable components ({@link LayerInput}, {@link
  * ScreenLayerInput} and {@link ConductorInput}) that are stored as embedded JSON strings within a
- * {@link edu.ie3.datamodel.models.input.connector.type.CableTypeInput}.
+ * {@link CableTypeInput}.
  */
 public class CableTypeParser {
   private static final Logger log = LoggerFactory.getLogger(CableTypeParser.class);
@@ -150,14 +149,13 @@ public class CableTypeParser {
       ComparableQuantity<Length> lengthOfLay =
           parseOptionalQuantityField(
               screenNode, LENGTH_OF_LAY, Length.class, PowerSystemUnits.MILLIMETRE, SCREEN_LAYER);
-      ComparableQuantity<edu.ie3.util.quantities.interfaces.ElectricalResistivity>
-          electricalResistivity =
-              parseQuantityField(
-                  screenNode,
-                  "electricalResistivity",
-                  edu.ie3.util.quantities.interfaces.ElectricalResistivity.class,
-                  PowerSystemUnits.OHM_METRE,
-                  "Cannot parse " + SCREEN_LAYER + ": missing electricalResistivity in " + json);
+      ComparableQuantity<ElectricalResistivity> electricalResistivity =
+          parseQuantityField(
+              screenNode,
+              "electricalResistivity",
+              ElectricalResistivity.class,
+              PowerSystemUnits.OHM_METRE,
+              "Cannot parse " + SCREEN_LAYER + ": missing electricalResistivity in " + json);
 
       return new ScreenLayerInput(
           uuid,
@@ -468,11 +466,11 @@ public class CableTypeParser {
             ThermalResistivity.class,
             PowerSystemUnits.KELVIN_METRE_PER_WATT,
             "Cannot parse " + context + ": missing " + THERMAL_RESISTIVITY + " in " + source);
-    ComparableQuantity<edu.ie3.util.quantities.interfaces.ThermalCapacitance> thermalCapacitance =
+    ComparableQuantity<ThermalCapacitance> thermalCapacitance =
         parseQuantityField(
             node,
             THERMAL_CAPACITANCE,
-            edu.ie3.util.quantities.interfaces.ThermalCapacitance.class,
+            ThermalCapacitance.class,
             PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN,
             "Cannot parse " + context + ": missing " + THERMAL_CAPACITANCE + " in " + source);
     ComparableQuantity<Area> area =
@@ -491,6 +489,6 @@ public class CableTypeParser {
    */
   private record CommonLayerFields(
       ComparableQuantity<ThermalResistivity> thermalResistivity,
-      ComparableQuantity<edu.ie3.util.quantities.interfaces.ThermalCapacitance> thermalCapacitance,
+      ComparableQuantity<ThermalCapacitance> thermalCapacitance,
       ComparableQuantity<Area> area) {}
 }
