@@ -25,13 +25,30 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.node.ObjectNode;
 
+/**
+ * Parses the JSON representations of the individual cable components ({@link LayerInput}, {@link
+ * ScreenLayerInput} and {@link ConductorInput}) that are stored as embedded JSON strings within a
+ * {@link edu.ie3.datamodel.models.input.connector.type.CableTypeInput}.
+ */
 public class CableTypeParser {
   private final ObjectMapper mapper;
 
+  /**
+   * Creates a new parser using the given JSON mapper.
+   *
+   * @param mapper JSON mapper used to read the embedded JSON strings; must not be {@code null}
+   */
   public CableTypeParser(ObjectMapper mapper) {
     this.mapper = Objects.requireNonNull(mapper);
   }
 
+  /**
+   * Parses a JSON array of {@link LayerInput} objects.
+   *
+   * @param json the JSON array string, or {@code null} / blank to produce an empty list
+   * @return an immutable list of parsed layers (never {@code null})
+   * @throws ParsingException if the JSON cannot be interpreted as a list of layers
+   */
   public List<LayerInput> parseLayerList(String json) throws ParsingException {
     if (json == null || json.isBlank()) return Collections.emptyList();
 
@@ -99,6 +116,13 @@ public class CableTypeParser {
     }
   }
 
+  /**
+   * Parses a JSON object into a {@link ScreenLayerInput}.
+   *
+   * @param json the JSON string; {@code null} or blank returns {@code null}
+   * @return the parsed screen layer, or {@code null} when the input is empty
+   * @throws ParsingException if the JSON cannot be interpreted as a screen layer
+   */
   public ScreenLayerInput parseScreenLayer(String json) throws ParsingException {
     if (json == null || json.isBlank()) return null;
 
@@ -183,6 +207,13 @@ public class CableTypeParser {
     }
   }
 
+  /**
+   * Parses a JSON object into a {@link ConductorInput}.
+   *
+   * @param json the JSON string; {@code null} or blank returns {@code null}
+   * @return the parsed conductor, or {@code null} when the input is empty
+   * @throws ParsingException if the JSON cannot be interpreted as a conductor
+   */
   public ConductorInput parseConductor(String json) throws ParsingException {
     if (json == null || json.isBlank()) return null;
 
@@ -243,6 +274,15 @@ public class CableTypeParser {
     }
   }
 
+  /**
+   * Ensures the given node is a JSON object, otherwise a parsing error is reported.
+   *
+   * @param node node to validate
+   * @param context logical name used in the error message
+   * @param source original source used in the error message
+   * @return the node cast to {@link ObjectNode}
+   * @throws ParsingException if the node is {@code null} or not an object
+   */
   private ObjectNode requireObject(JsonNode node, String context, Object source)
       throws ParsingException {
     if (node == null || !node.isObject()) {
@@ -251,6 +291,15 @@ public class CableTypeParser {
     return (ObjectNode) node;
   }
 
+  /**
+   * Locates the screen-layer node inside a possibly wrapped object by looking for the first node
+   * that carries a non-null material field.
+   *
+   * @param node candidate root node
+   * @param source original source used in the error message
+   * @return the screen-layer node
+   * @throws ParsingException if no child carries a material field
+   */
   private ObjectNode findScreenNode(ObjectNode node, String source) throws ParsingException {
     if (hasMaterial(node)) return node;
 
@@ -263,10 +312,25 @@ public class CableTypeParser {
     throw new ParsingException("Cannot parse " + SCREEN_LAYER + ": missing material in " + source);
   }
 
+  /**
+   * Returns whether the given node contains a non-null {@code material} field.
+   *
+   * @param node node to inspect
+   * @return {@code true} when a usable material field is present
+   */
   private boolean hasMaterial(JsonNode node) {
     return node.has(MATERIAL) && !node.get(MATERIAL).isNull();
   }
 
+  /**
+   * Reads and parses the {@code uuid} field of a node, generating and inserting a fresh UUID when
+   * the field is absent or null.
+   *
+   * @param node node to read from
+   * @param context logical name used in the error message
+   * @return the parsed (or newly generated) UUID
+   * @throws ParsingException if the stored value is not a valid UUID
+   */
   private UUID parseUuid(ObjectNode node, String context) throws ParsingException {
     ensureUuid(node);
     try {
@@ -276,6 +340,15 @@ public class CableTypeParser {
     }
   }
 
+  /**
+   * Resolves the identifier of a node from the first non-empty candidate among the given field
+   * names (typically {@code id}, then {@code name}).
+   *
+   * @param node node to read from
+   * @param context logical name used in the error message
+   * @return the resolved identifier
+   * @throws ParsingException if none of the candidates is set
+   */
   private String parseId(JsonNode node, String context) throws ParsingException {
     String id = resolveId(node, new String[] {ID, NAME});
     if (id == null) {
@@ -284,6 +357,19 @@ public class CableTypeParser {
     return id;
   }
 
+  /**
+   * Reads an optional quantity field from a node, returning {@code null} when the field is absent,
+   * null, blank, or the literal string {@code "null"}.
+   *
+   * @param <T> the {@link Quantity} sub-type to build
+   * @param node node to read from
+   * @param fieldName name of the JSON field
+   * @param quantityClass concrete quantity class to build
+   * @param unit unit used to build the quantity
+   * @param context logical name used in the error message
+   * @return the parsed quantity, or {@code null} when the field is not present
+   * @throws ParsingException if the value cannot be parsed as a number
+   */
   private <T extends Quantity<T>> ComparableQuantity<T> parseOptionalQuantityField(
       JsonNode node, String fieldName, Class<T> quantityClass, Unit<?> unit, String context)
       throws ParsingException {
@@ -298,6 +384,14 @@ public class CableTypeParser {
     }
   }
 
+  /**
+   * Reads an optional text field from a node, returning {@code null} when the field is absent,
+   * null, blank, or the literal string {@code "null"}.
+   *
+   * @param node node to read from
+   * @param fieldName name of the JSON field
+   * @return the raw text value, or {@code null} when not meaningfully present
+   */
   private String optionalText(JsonNode node, String fieldName) {
     if (!node.has(fieldName) || node.get(fieldName).isNull()) return null;
 
@@ -305,6 +399,14 @@ public class CableTypeParser {
     return value == null || value.isBlank() || "null".equalsIgnoreCase(value) ? null : value;
   }
 
+  /**
+   * Parses the {@code material} field into a {@link CableMaterial}.
+   *
+   * @param node node to read from
+   * @param context logical name used in the error message
+   * @return the parsed cable material
+   * @throws ParsingException if the material is missing or unknown
+   */
   private CableMaterial parseMaterial(JsonNode node, String context) throws ParsingException {
     try {
       String mat = optionalText(node, MATERIAL);
@@ -315,6 +417,18 @@ public class CableTypeParser {
     }
   }
 
+  /**
+   * Reads a required quantity field from a node.
+   *
+   * @param <T> the {@link Quantity} sub-type to build
+   * @param node node to read from
+   * @param fieldName name of the JSON field
+   * @param quantityClass concrete quantity class to build
+   * @param unit unit used to build the quantity
+   * @param missingMessage message used when the field is missing
+   * @return the parsed quantity
+   * @throws ParsingException if the field is missing or not a valid number
+   */
   private <T extends Quantity<T>> ComparableQuantity<T> parseQuantityField(
       JsonNode node, String fieldName, Class<T> quantityClass, Unit<?> unit, String missingMessage)
       throws ParsingException {
@@ -330,6 +444,13 @@ public class CableTypeParser {
     }
   }
 
+  /**
+   * Unwraps a JSON string that itself encodes another JSON document; non-string nodes are returned
+   * unchanged.
+   *
+   * @param node node to possibly unwrap
+   * @return the (possibly unwrapped) node
+   */
   private JsonNode unwrapTextual(JsonNode node) {
     if (node != null && node.isString()) {
       try {
@@ -341,12 +462,25 @@ public class CableTypeParser {
     return node;
   }
 
+  /**
+   * Ensures the node carries a {@code uuid} field, generating and storing a random UUID when the
+   * field is absent or null.
+   *
+   * @param node node to inspect (mutated when a UUID must be generated)
+   */
   private void ensureUuid(ObjectNode node) {
     if (!node.has(UUID) || node.get(UUID).isNull()) {
       node.put(UUID, java.util.UUID.randomUUID().toString());
     }
   }
 
+  /**
+   * Resolves the first non-empty text field among the given candidate names.
+   *
+   * @param node node to read from
+   * @param candidates candidate field names, in the order to try
+   * @return the first non-empty value, or {@code null} when none is present
+   */
   private String resolveId(JsonNode node, String[] candidates) {
     for (String candidate : candidates) {
       String value = optionalText(node, candidate);
@@ -355,6 +489,16 @@ public class CableTypeParser {
     return null;
   }
 
+  /**
+   * Parses a required integer field.
+   *
+   * @param text raw text value
+   * @param fieldName field name used in the error message
+   * @param context logical name used in the error message
+   * @param source original source used in the error message
+   * @return the parsed integer
+   * @throws ParsingException if the text is not a valid integer
+   */
   private int parseIntegerField(String text, String fieldName, String context, String source)
       throws ParsingException {
     try {

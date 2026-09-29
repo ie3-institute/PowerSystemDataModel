@@ -227,8 +227,24 @@ public class ConnectorValidationUtils extends ValidationUtils {
     return exceptions;
   }
 
+  /**
+   * Validates a cable deployment if:
+   *
+   * <ul>
+   *   <li>it is not null
+   *   <li>its layout formation is not empty
+   *   <li>its depth is provided and less than or equal to zero (i.e. below ground level)
+   *   <li>its distance between cables is provided and greater than zero
+   * </ul>
+   *
+   * @param deployment Cable deployment to validate
+   * @param line Owning line input, used for context in error messages
+   * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
+   *     Success
+   */
   protected static List<Try<Void, InvalidEntityException>> checkCableDeployment(
       CableDeploymentInput deployment, LineInput line) {
+
     Try<Void, InvalidEntityException> isNull = checkNonNull(deployment, "a cable deployment");
 
     if (isNull.isFailure()) {

@@ -23,14 +23,27 @@ import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.unit.Units;
 import tools.jackson.databind.json.JsonMapper;
 
+/**
+ * Factory for building {@link CableTypeInput} instances from raw entity data. The embedded JSON
+ * strings of the individual cable components (conductor, layers, screen layer) are parsed with a
+ * {@link CableTypeParser}.
+ */
 public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableTypeInput> {
 
   private final CableTypeParser parser;
 
+  /**
+   * Creates a factory using a default JSON mapper for the underlying {@link CableTypeParser}.
+   */
   public CableTypeInputFactory() {
     this(new CableTypeParser(JsonMapper.builder().build()));
   }
 
+  /**
+   * Creates a factory using the given parser for the embedded cable component JSON strings.
+   *
+   * @param parser parser used to build the cable components; must not be {@code null}
+   */
   public CableTypeInputFactory(CableTypeParser parser) {
     super(CableTypeInput.class);
     this.parser = Objects.requireNonNull(parser);

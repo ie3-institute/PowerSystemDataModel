@@ -14,6 +14,9 @@ import javax.measure.quantity.Length;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.unit.Units;
 
+/**
+ * Factory for building {@link CableDeploymentInput} instances from raw entity data.
+ */
 public class CableDeploymentInputFactory
     extends UniqueEntityFactory<CableDeploymentInput, EntityData> {
 

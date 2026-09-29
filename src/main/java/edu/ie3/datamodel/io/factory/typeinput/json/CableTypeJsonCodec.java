@@ -22,6 +22,11 @@ import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.json.JsonMapper;
 
+/**
+ * Serializes the individual cable components ({@link ConductorInput}, {@link LayerInput} and {@link
+ * ScreenLayerInput}) into JSON strings, using the field names and units defined by the project's
+ * {@link edu.ie3.datamodel.io.naming.FieldNamingStrategy}.
+ */
 public final class CableTypeJsonCodec {
 
   private static final Set<String> DIAMETER_FIELDS =
@@ -29,10 +34,24 @@ public final class CableTypeJsonCodec {
   private static final Set<String> AREA_FIELDS = Set.of(AREA, CROSS_SECTION);
   private static final JsonMapper JSON_MAPPER = JsonMapper.builder().build();
 
+  /**
+   * Serializes the given {@link ConductorInput} into a JSON object string.
+   *
+   * @param conductor Conductor to serialize; {@code null} is serialized as JSON {@code null}
+   * @return the resulting JSON string
+   * @throws JacksonException if the JSON cannot be written
+   */
   public String writeConductor(ConductorInput conductor) throws JacksonException {
     return write(generator -> writeConductor(generator, conductor));
   }
 
+  /**
+   * Serializes the given list of {@link LayerInput} into a JSON array string.
+   *
+   * @param layers Layers to serialize; an empty list is serialized as an empty JSON array
+   * @return the resulting JSON string
+   * @throws JacksonException if the JSON cannot be written
+   */
   public String writeLayers(List<LayerInput> layers) throws JacksonException {
     return write(
         generator -> {
@@ -42,6 +61,13 @@ public final class CableTypeJsonCodec {
         });
   }
 
+  /**
+   * Serializes the given {@link ScreenLayerInput} into a JSON object string.
+   *
+   * @param screenLayer Screen layer to serialize; {@code null} is serialized as JSON {@code null}
+   * @return the resulting JSON string
+   * @throws JacksonException if the JSON cannot be written
+   */
   public String writeScreenLayer(ScreenLayerInput screenLayer) throws JacksonException {
     return write(generator -> writeScreenLayer(generator, screenLayer));
   }
