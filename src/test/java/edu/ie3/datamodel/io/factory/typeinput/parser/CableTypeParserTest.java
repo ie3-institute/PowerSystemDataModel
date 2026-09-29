@@ -192,8 +192,7 @@ class CableTypeParserTest {
       case "layer" -> parser.parseLayerList(json);
       case "screen layer" -> parser.parseScreenLayer(json);
       case "conductor" -> parser.parseConductor(json);
-      default ->
-          throw new IllegalArgumentException("Unsupported component: " + component);
+      default -> throw new IllegalArgumentException("Unsupported component: " + component);
     }
   }
 
