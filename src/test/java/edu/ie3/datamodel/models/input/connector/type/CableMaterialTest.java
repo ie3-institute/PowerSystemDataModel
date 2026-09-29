@@ -44,12 +44,6 @@ class CableMaterialTest {
   }
 
   @Test
-  @DisplayName("Test UNKNOWN material throws exception for thermal properties")
-  void testUnknownThermalProperties() {
-    assertThrows(IllegalArgumentException.class, CableMaterial.UNKNOWN::getThermalProperties);
-  }
-
-  @Test
   @DisplayName("Test COPPER electrical resistivity")
   void testCopperElectricalResistivity() {
     var resistivity = CableMaterial.COPPER.getElectricalResistivity();
@@ -74,9 +68,16 @@ class CableMaterialTest {
   }
 
   @Test
-  @DisplayName("Test UNKNOWN material throws exception for electrical resistivity")
-  void testUnknownElectricalResistivity() {
-    assertThrows(IllegalArgumentException.class, CableMaterial.UNKNOWN::getElectricalResistivity);
+  @DisplayName("Test insulation materials throw exception for electrical resistivity")
+  void testInsulationElectricalResistivity() {
+    assertThrows(IllegalArgumentException.class, CableMaterial.XLPE::getElectricalResistivity);
+    assertThrows(IllegalArgumentException.class, CableMaterial.PE::getElectricalResistivity);
+    assertThrows(IllegalArgumentException.class, CableMaterial.PVC::getElectricalResistivity);
+    assertThrows(
+        IllegalArgumentException.class, CableMaterial.SEMI_COND_SCREEN::getElectricalResistivity);
+    assertThrows(IllegalArgumentException.class, CableMaterial.SC_TAPE::getElectricalResistivity);
+    assertThrows(
+        IllegalArgumentException.class, CableMaterial.POLYPROPYLENE::getElectricalResistivity);
   }
 
   @Test
@@ -108,20 +109,33 @@ class CableMaterialTest {
   }
 
   @Test
-  @DisplayName("Test UNKNOWN material throws exception for temperature coefficient")
-  void testUnknownTemperatureCoefficient() {
+  @DisplayName("Test insulation materials throw exception for temperature coefficient")
+  void testInsulationTemperatureCoefficient() {
     assertThrows(
         IllegalArgumentException.class,
-        CableMaterial.UNKNOWN::getElectricalResistivityTemperatureCoefficient);
+        CableMaterial.XLPE::getElectricalResistivityTemperatureCoefficient);
+    assertThrows(
+        IllegalArgumentException.class,
+        CableMaterial.PE::getElectricalResistivityTemperatureCoefficient);
+    assertThrows(
+        IllegalArgumentException.class,
+        CableMaterial.PVC::getElectricalResistivityTemperatureCoefficient);
+    assertThrows(
+        IllegalArgumentException.class,
+        CableMaterial.SEMI_COND_SCREEN::getElectricalResistivityTemperatureCoefficient);
+    assertThrows(
+        IllegalArgumentException.class,
+        CableMaterial.SC_TAPE::getElectricalResistivityTemperatureCoefficient);
+    assertThrows(
+        IllegalArgumentException.class,
+        CableMaterial.POLYPROPYLENE::getElectricalResistivityTemperatureCoefficient);
   }
 
   @Test
-  @DisplayName("Test all non-UNKNOWN materials have thermal properties")
+  @DisplayName("Test all materials have thermal properties")
   void testAllMaterialsHaveThermalProperties() {
     for (CableMaterial material : CableMaterial.values()) {
-      if (material != CableMaterial.UNKNOWN) {
-        assertDoesNotThrow(material::getThermalProperties);
-      }
+      assertDoesNotThrow(material::getThermalProperties);
     }
   }
 
