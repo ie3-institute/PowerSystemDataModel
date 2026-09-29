@@ -128,4 +128,16 @@ class CableTypeJsonCodecTest {
   void screenLayerSerializationHandlesNull() throws Exception {
     assertEquals("null", new CableTypeJsonCodec().writeScreenLayer(null));
   }
+
+  @Test
+  void parseConductorThrowsParsingExceptionWhenTextualNodeContainsInvalidJson() {
+    ObjectMapper mapper = new ObjectMapper();
+    CableTypeParser parser = new CableTypeParser(mapper);
+
+    String invalidTextualJson = "\"{invalid json}\"";
+
+    assertThrows(
+        edu.ie3.datamodel.exceptions.ParsingException.class,
+        () -> parser.parseConductor(invalidTextualJson));
+  }
 }

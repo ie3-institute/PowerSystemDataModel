@@ -19,6 +19,8 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tools.jackson.databind.JsonNode;
@@ -31,6 +33,8 @@ import tools.jackson.databind.node.ObjectNode;
  * {@link edu.ie3.datamodel.models.input.connector.type.CableTypeInput}.
  */
 public class CableTypeParser {
+  private static final Logger log = LoggerFactory.getLogger(CableTypeParser.class);
+
   private final ObjectMapper mapper;
 
   /**
@@ -456,7 +460,8 @@ public class CableTypeParser {
       try {
         return mapper.readTree(node.asString());
       } catch (Exception e) {
-        throw new IllegalStateException(e);
+        log.error("Failed to unwrap textual JSON node: {}", node.asString(), e);
+        throw new IllegalStateException("Failed to unwrap textual JSON node: " + node.asString(), e);
       }
     }
     return node;
