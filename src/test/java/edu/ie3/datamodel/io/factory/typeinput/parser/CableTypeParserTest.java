@@ -183,18 +183,18 @@ class CableTypeParserTest {
   @DisplayName("Test invalid cable components throw ParsingException")
   void testInvalidCableComponents(String component, String json, String expectedMessage) {
     ParsingException ex =
-        assertThrows(
-            ParsingException.class,
-            () -> {
-              switch (component) {
-                case "layer" -> parser.parseLayerList(json);
-                case "screen layer" -> parser.parseScreenLayer(json);
-                case "conductor" -> parser.parseConductor(json);
-                default ->
-                    throw new IllegalArgumentException("Unsupported component: " + component);
-              }
-            });
+        assertThrows(ParsingException.class, () -> parseComponent(component, json));
     assertTrue(ex.getMessage().contains(expectedMessage));
+  }
+
+  private void parseComponent(String component, String json) throws ParsingException {
+    switch (component) {
+      case "layer" -> parser.parseLayerList(json);
+      case "screen layer" -> parser.parseScreenLayer(json);
+      case "conductor" -> parser.parseConductor(json);
+      default ->
+          throw new IllegalArgumentException("Unsupported component: " + component);
+    }
   }
 
   private static Stream<Arguments> invalidCableComponentInputs() {
