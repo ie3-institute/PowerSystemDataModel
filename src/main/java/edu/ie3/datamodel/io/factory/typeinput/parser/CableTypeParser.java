@@ -461,7 +461,8 @@ public class CableTypeParser {
         return mapper.readTree(node.asString());
       } catch (Exception e) {
         log.error("Failed to unwrap textual JSON node: {}", node.asString(), e);
-        throw new IllegalStateException("Failed to unwrap textual JSON node: " + node.asString(), e);
+        throw new IllegalStateException(
+            "Failed to unwrap textual JSON node: " + node.asString(), e);
       }
     }
     return node;

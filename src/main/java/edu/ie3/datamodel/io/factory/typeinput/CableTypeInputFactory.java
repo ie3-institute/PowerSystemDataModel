@@ -32,9 +32,7 @@ public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableType
 
   private final CableTypeParser parser;
 
-  /**
-   * Creates a factory using a default JSON mapper for the underlying {@link CableTypeParser}.
-   */
+  /** Creates a factory using a default JSON mapper for the underlying {@link CableTypeParser}. */
   public CableTypeInputFactory() {
     this(new CableTypeParser(JsonMapper.builder().build()));
   }

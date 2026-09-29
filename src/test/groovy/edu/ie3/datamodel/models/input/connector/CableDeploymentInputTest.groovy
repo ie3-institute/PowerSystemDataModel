@@ -58,4 +58,41 @@ class CableDeploymentInputTest extends Specification {
     result.contains("TREFOIL")
     result.contains("depthCables") || result.contains("-0.5") || result.contains("lineUuid")
   }
+
+  def "CableDeploymentInput copy preserves all fields and allows modification"() {
+    given:
+    def uuid = UUID.randomUUID()
+    def lineUuid = UUID.randomUUID()
+    def depth = Quantities.getQuantity(-0.5, METRE)
+    def distance = Quantities.getQuantity(0.1, METRE)
+    def original = new CableDeploymentInput(uuid, lineUuid, "TREFOIL", depth, distance)
+
+    when: "copy with no changes"
+    def copy = original.copy().build()
+
+    then:
+    copy == original
+    copy.uuid == uuid
+    copy.lineUuid == lineUuid
+    copy.layoutFormation == "TREFOIL"
+    copy.depthCables == depth
+    copy.distanceCables == distance
+
+    when: "copy with modified fields"
+    def newLineUuid = UUID.randomUUID()
+    def modifiedCopy = original.copy()
+        .lineUuid(newLineUuid)
+        .layoutFormation("FLAT")
+        .depthCables(Quantities.getQuantity(-1.0, METRE))
+        .distanceCables(Quantities.getQuantity(0.2, METRE))
+        .build()
+
+    then:
+    modifiedCopy != original
+    modifiedCopy.lineUuid == newLineUuid
+    modifiedCopy.layoutFormation == "FLAT"
+    modifiedCopy.depthCables == Quantities.getQuantity(-1.0, METRE)
+    modifiedCopy.distanceCables == Quantities.getQuantity(0.2, METRE)
+    modifiedCopy.uuid == uuid
+  }
 }

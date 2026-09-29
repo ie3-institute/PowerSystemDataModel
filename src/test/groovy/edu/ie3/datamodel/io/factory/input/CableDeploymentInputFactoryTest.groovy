@@ -50,4 +50,43 @@ class CableDeploymentInputFactoryTest extends Specification implements FactoryTe
       distanceCables == getQuant(parameter["distanceCables"], Units.METRE)
     }
   }
+
+  def "A CableDeploymentInputFactory throws FactoryException when a required field is missing"() {
+    given:
+    def inputFactory = new CableDeploymentInputFactory()
+    Map<String, String> parameter = [
+      "uuid" : "b8c873a4-e32b-4b10-879e-01c53375e578",
+      "lineUuid" : "2a254a7b-9385-4d1a-bf5c-468f322e65fc",
+      "layoutFormation" : "TREFOIL",
+      // depthCables and distanceCables intentionally missing
+    ]
+
+    when:
+    Try<CableDeploymentInput, FactoryException> input =
+        inputFactory.get(new EntityData(parameter, CableDeploymentInput))
+
+    then:
+    input.failure
+    input.exception.get() instanceof FactoryException
+  }
+
+  def "A CableDeploymentInputFactory throws FactoryException for invalid lineUuid"() {
+    given:
+    def inputFactory = new CableDeploymentInputFactory()
+    Map<String, String> parameter = [
+      "uuid" : "b8c873a4-e32b-4b10-879e-01c53375e578",
+      "lineUuid" : "not-a-valid-uuid",
+      "layoutFormation" : "TREFOIL",
+      "depthCables" : "-0.5",
+      "distanceCables" : "0.1",
+    ]
+
+    when:
+    Try<CableDeploymentInput, FactoryException> input =
+        inputFactory.get(new EntityData(parameter, CableDeploymentInput))
+
+    then:
+    input.failure
+    input.exception.get() instanceof FactoryException
+  }
 }
