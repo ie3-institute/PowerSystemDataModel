@@ -24,14 +24,15 @@ Representation of a thermal line segment.
      - uuid for the associated input model
 
    * - lineSegmentTemperature
-     - kelvin
+     - celsius
      - temperature of the thermal line segment
 
    * - groundTemperature
-     - kelvin
+     - celsius
      - ground temperature at the depth of the line segment
 ```
 
 ## Caveats
 
-The `lineSegmentTemperature` and `groundTemperature` are always converted to Kelvin (`StandardUnits.TEMPERATURE`) upon construction, regardless of the input unit.
+Nothing - at least not known.
+If you found something, please contact us!
