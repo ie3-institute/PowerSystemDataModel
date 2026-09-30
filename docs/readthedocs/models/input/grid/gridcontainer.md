@@ -82,6 +82,7 @@ This sub container simply holds:
 * [two winding transformers](/models/input/grid/transformer2w)
 * [three winding transformers](/models/input/grid/transformer3w)
 * [measurement units](/models/input/grid/measurementunit)
+* [cable deployments](/models/input/grid/cableDeployment)
 
 
 ### SystemParticipants

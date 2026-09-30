@@ -25,6 +25,9 @@ import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.ConnectorInput;
+import edu.ie3.datamodel.models.input.connector.LineInput;
+import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
@@ -297,6 +300,11 @@ public class SqlSink {
   public void persistJointGrid(JointGridContainer jointGridContainer, UUID gridUUID) {
     DbGridMetadata identifier = new DbGridMetadata(jointGridContainer.getGridName(), gridUUID);
     List<Entity> toAdd = new LinkedList<>(jointGridContainer.allEntitiesAsList());
+    jointGridContainer.getRawGrid().getLines().stream()
+        .map(LineInput::getType)
+        .map(LineTypeInput::getCableType)
+        .flatMap(Optional::stream)
+        .forEach(toAdd::add);
     persistAll(toAdd, identifier);
   }
 
@@ -449,7 +457,8 @@ public class SqlSink {
    */
   private static List<Class<?>> hierarchicInsert() {
     List<Class<?>> sortedInsert = new ArrayList<>();
-    sortedInsert.add(AssetTypeInput.class); // 1. Types
+    sortedInsert.add(CableTypeInput.class); // 1a. Cable types (referenced by line types)
+    sortedInsert.add(AssetTypeInput.class); // 1b. Types
     sortedInsert.add(OperatorInput.class); // 2. Operators
     sortedInsert.add(NodeInput.class); // 3. Nodes
     sortedInsert.add(ThermalBusInput.class); // 4. ThermalBus

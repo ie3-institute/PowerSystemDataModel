@@ -305,6 +305,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
 
     then:
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "line_input", ps -> {}).count() == 6
+    sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "cable_type_input", ps -> {}).count() == 1
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "line_type_input", ps -> {}).count() == 2
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "load_input", ps -> {}).count() == 2
     sqlSource.executeQuery("SELECT * FROM " + schemaName + "." + "node_input", ps -> {}).count() == 7
