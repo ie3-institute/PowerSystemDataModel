@@ -138,8 +138,8 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
               () ->
                   detectNegativeQuantities(
                       quantities(
-                          CAP_EX, systemParticipantTypeInput.getCapex(),
-                          OP_EX, systemParticipantTypeInput.getOpex(),
+                          CAPEX, systemParticipantTypeInput.getCapex(),
+                          OPEX, systemParticipantTypeInput.getOpex(),
                           S_RATED, systemParticipantTypeInput.getsRated()),
                       systemParticipantTypeInput),
               InvalidEntityException.class));

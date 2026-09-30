@@ -134,7 +134,7 @@ public class HpTypeInput extends SystemParticipantTypeInput {
     }
 
     @Override
-    public HpTypeInput.HpTypeInputCopyBuilder scale(Double factor) {
+    public HpTypeInput.HpTypeInputCopyBuilder scale(double factor) {
       capex(getCapex().multiply(factor));
       sRated(getsRated().multiply(factor));
       pThermal(getpThermal().multiply(factor));

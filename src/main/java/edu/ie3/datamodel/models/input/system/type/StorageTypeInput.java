@@ -249,7 +249,7 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
     }
 
     @Override
-    public StorageTypeInput.StorageTypeInputCopyBuilder scale(Double factor) {
+    public StorageTypeInput.StorageTypeInputCopyBuilder scale(double factor) {
       capex(getCapex().multiply(factor));
       sRated(getsRated().multiply(factor));
       seteStorage(geteStorage().multiply(factor));

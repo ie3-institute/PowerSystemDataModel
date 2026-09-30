@@ -37,8 +37,8 @@ public class SystemParticipantTypeInputFactory
   protected SystemParticipantTypeInput buildModel(EntityData data) {
     UUID uuid = data.getUUID(UUID);
     String id = data.getField(ID);
-    ComparableQuantity<Currency> capEx = data.getQuantity(CAP_EX, StandardUnits.CAPEX);
-    ComparableQuantity<EnergyPrice> opEx = data.getQuantity(OP_EX, StandardUnits.ENERGY_PRICE);
+    ComparableQuantity<Currency> capEx = data.getQuantity(CAPEX, StandardUnits.CAPEX);
+    ComparableQuantity<EnergyPrice> opEx = data.getQuantity(OPEX, StandardUnits.ENERGY_PRICE);
     ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
     double cosPhi = data.getDouble(COS_PHI_RATED);
 

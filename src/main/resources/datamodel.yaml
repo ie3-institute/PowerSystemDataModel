@@ -1,0 +1,1156 @@
+version: 1.0
+datamodel:
+  models:
+    UniqueEntity:
+      name: UniqueEntity
+      description: "Supplies every subclass with a generated UUID, making it unique."
+      components:
+        - name: uuid
+          type: UUID
+          description: "Unique identifier for an entity."
+
+  models.input:
+    UniqueInputEntity:
+      name: UniqueInputEntity
+      description: "Functionless class to describe that all subclasses are unique input classes."
+      extends: UniqueEntity
+      components:
+        - name: additionalInformation
+          type: StringMap
+          description: "Provided by the source."
+          keys: [additionalInformation]
+          required: false
+
+    AssetInput:
+      name: AssetInput
+      description: "Describes a grid asset under the assumption that every asset could be operable."
+      extends: UniqueInputEntity
+      components:
+        - name: id
+          type: String
+          description: "Name or ID of the asset."
+        - name: operator
+          type: OperatorInput
+          required: false
+          nested: true
+          description: "The operator of this asset."
+        - name: operationTime
+          type: OperationTime
+          keys: [operatesFrom, operatesUntil]
+          required: false
+          description: "Time for which the entity is operated."
+
+    AssetTypeInput:
+      name: AssetTypeInput
+      description: "Describes the type of {@link edu.ie3.datamodel.models.input.AssetInput}."
+      extends: UniqueInputEntity
+      components:
+        - name: id
+          type: String
+          required: true
+          description: "Name or ID of the asset."
+
+    EmInput:
+      name: EmInput
+      extends: AssetInput
+      abstract: false
+      components:
+        - name: controlStrategy
+          type: String
+          description: "Reference to the control strategy to be used for this model."
+        - name: controllingEm
+          type: EmInput
+          nested: true
+          required: true
+          nullable: true
+          description: "Optional UUID of the parent {@link EmInput} that is controlling this em unit. If null, this em
+                  unit is not em-controlled."
+
+    IdCoordinateInput:
+      name: IdCoordinateInput
+      abstract: false
+      components:
+        - name: id
+          type: int
+        - name: point
+          type: Point
+
+    MeasurementUnitInput:
+      name: MeasurementUnitInput
+      abstract: false
+      extends: AssetInput
+      components:
+        - name: node
+          type: NodeInput
+          description: "Grid node, the asset is attached to."
+        - name: vMag
+          type: bool
+          description: "True, if the voltage magnitude is measured."
+        - name: vAng
+          type: bool
+          description: "True, if the voltage angle is measured."
+        - name: p
+          type: bool
+          description: "True, if the nodal residual active power is measured."
+        - name: q
+          type: bool
+          description: "True, if the reactive power is measured."
+
+    NodeInput:
+      name: NodeInput
+      description: "Describes an electrical grid node, that other assets can connect to."
+      abstract: false
+      extends: AssetInput
+      components:
+        - name: vTarget
+          type: Dimensionless
+          unit: StandardUnits.TARGET_VOLTAGE_MAGNITUDE
+          description: "Target voltage magnitude of the node with regard to its rated voltage (typically in p.u.)."
+        - name: slack
+          type: bool
+          description: "Is this node a slack node?"
+        - name: geoPosition
+          type: Point
+          description: "The coordinates of this node, especially relevant for geo-dependant systems, that are connected to this node."
+        - name: voltLvl
+          type: VoltageLevel
+          keys: [voltLvl, vRated]
+          description: "Voltage level of this node."
+        - name: subnet
+          type: int
+          description: "Subgrid of this node."
+
+    OperatorInput:
+      name: OperatorInput
+      description: "Describes an operator, that operates assets."
+      abstract: false
+      extends: UniqueInputEntity
+      components:
+        - name: id
+          type: String
+          description: "The id (=name) of this operator."
+
+  models.input.connector:
+    ConnectorInput:
+      name: ConnectorInput
+      extends: AssetInput
+      components:
+        - name: nodeA
+          type: NodeInput
+          nested: true
+          description: "Grid node at one side of the connector."
+        - name: nodeB
+          type: NodeInput
+          nested: true
+          description: "Grid node at the other side of the connector."
+        - name: parallelDevices
+          type: int
+          description: "Amount of parallel devices."
+
+    LineInput:
+      name: LineInput
+      extends: ConnectorInput
+      abstract: false
+      components:
+        - name: type
+          type: LineTypeInput
+          nested: true
+          description: "Type of this line, containing default values for lines of this kind."
+        - name: length
+          type: Length
+          unit: StandardUnits.LINE_LENGTH
+          description: "Length of this line."
+        - name: geoPosition
+          type: LineString
+          description: "Coordinates of this line."
+        - name: olmCharacteristic
+          type: OlmCharacteristicInput
+          description: "Description of an optional weather dependent operation curve."
+
+    SwitchInput:
+      name: SwitchInput
+      extends: ConnectorInput
+      abstract: false
+      unsupported: [parallelDevices]
+      components:
+        - name: closed
+          type: bool
+          description: "Is the switching state 'closed'?"
+
+    TransformerInput:
+      name: TransformerInput
+      extends: ConnectorInput
+      components:
+        - name: tapPos
+          type: int
+          description: "Tap position of this transformer."
+        - name: autoTap
+          type: bool
+          description: "True, if the tap position of the transformer is adapted automatically."
+
+    Transformer2WInput:
+      name: Transformer2WInput
+      extends: TransformerInput
+      abstract: false
+      components:
+        - name: type
+          type: Transformer2WTypeInput
+          nested: true
+          description: "Type of this 2W transformer, containing default values for transformers of this kind."
+
+    Transformer3WInput:
+      name: Transformer3WInput
+      extends: TransformerInput
+      abstract: false
+      components:
+        - name: type
+          type: Transformer3WTypeInput
+          nested: true
+          description: "Type of this 3W transformer, containing default values for transformers of this kind."
+        - name: nodeC
+          type: NodeInput
+          nested: true
+          description: "The lower voltage node."
+        - name: nodeInternal
+          type: NodeInput
+          nested: true
+          description: "Internal node of the transformers T equivalent circuit."
+
+  models.input.connector.type:
+    CableTypeInput:
+      name: CableTypeInput
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: coreNumber
+          type: int
+        - name: conductor
+          type: ConductorInput
+        - name: isolation
+          type: LayerList
+        - name: screen
+          type: ScreenLayerInput
+          required: false
+        - name: filler
+          type: LayerList
+        - name: armor
+          type: LayerList
+        - name: jack
+          type: LayerList
+        - name: limitTemperature
+          type: Temperature
+          unit: Units.CELSIUS
+        - name: frequency
+          type: Frequency
+          unit: Units.HERTZ
+        - name: skinEffectCoefficient
+          type: double
+        - name: proximityEffectCoefficient
+          type: double
+        - name: electricalCapacitance
+          type: ElectricCapacitance
+        - name: tanDelta
+          type: double
+        - name: circulatingLossFactor
+          type: double
+        - name: eddyCurrentLossFactor
+          type: double
+
+    ConductorInput:
+      name: ConductorInput
+      extends: AssetInput
+      abstract: false
+      components:
+        - name: material
+          type: CableMaterial
+        - name: crossSection
+          type: Area
+        - name: diameter
+          type: Length
+        - name: isCompacted
+          type: bool
+        - name: thermalResistivity
+          type: ThermalResistivity
+        - name: thermalCapacitance
+          type: ThermalCapacitance
+        - name: area
+          type: Area
+          required: false
+
+    LayerInput:
+      name: LayerInput
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: material
+          type: CableMaterial
+        - name: innerDiameter
+          type: Length
+        - name: outerDiameter
+          type: Length
+        - name: thermalResistivity
+          type: ThermalResistivity
+        - name: thermalCapacitance
+          type: ThermalCapacitance
+        - name: area
+          type: Area
+          required: false
+
+    LineTypeInput:
+      name: LineTypeInput
+      description: "Describes the type of {@link edu.ie3.datamodel.models.input.connector.LineInput}."
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: b
+          type: SpecificConductance
+          unit: StandardUnits.SUSCEPTANCE_PER_LENGTH
+          description: "Specific phase-to-ground susceptance for this type of line (typically in µS/km)."
+        - name: g
+          type: SpecificConductance
+          unit: StandardUnits.CONDUCTANCE_PER_LENGTH
+          description: "Specific phase-to-ground conductance for this type of line (typically in µS/km)."
+        - name: r
+          type: SpecificResistance
+          unit: StandardUnits.RESISTANCE_PER_LENGTH
+          description: "Specific resistance for this type of line (typically in Ohm/km)."
+        - name: x
+          type: SpecificResistance
+          unit: StandardUnits.REACTANCE_PER_LENGTH
+          description: "Specific reactance for this type of line (typically in Ohm/km)."
+        - name: iMax
+          type: ElectricCurrent
+          unit: StandardUnits.ELECTRIC_CURRENT_MAGNITUDE
+          description: "Maximum thermal current for this type of line (typically in A)."
+        - name: vRated
+          type: ElectricPotential
+          unit: StandardUnits.RATED_VOLTAGE_MAGNITUDE
+          description: "Rated voltage for this type of line (typically in V)."
+
+    ScreenLayerInput:
+      name: ScreenLayerInput
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: material
+          type: CableMaterial
+        - name: innerDiameter
+          type: Length
+        - name: outerDiameter
+          type: Length
+        - name: thermalResistivity
+          type: ThermalResistivity
+        - name: thermalCapacitance
+          type: ThermalCapacitance
+        - name: area
+          type: Area
+          required: false
+        - name: wiresNumber
+          type: int
+        - name: wireDiameter
+          type: Length
+        - name: lengthOfLay
+          type: Length
+          required: false
+        - name: electricalResistivity
+          type: ElectricalResistivity
+
+    Transformer2WTypeInput:
+      name: Transformer2WTypeInput
+      description: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer2WInput}."
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: rSc
+          type: ElectricResistance
+          unit: StandardUnits.RESISTANCE
+          description: "Short circuit resistance (typically in Ohm)."
+        - name: xSc
+          type: ElectricResistance
+          unit: StandardUnits.REACTANCE
+          description: "Short circuit reactance (typically in Ohm)."
+        - name: sRated
+          type: Power
+          unit: StandardUnits.S_RATED
+          description: "Rated apparent power (typically in kVA)."
+        - name: vRatedA
+          type: ElectricPotential
+          unit: StandardUnits.RATED_VOLTAGE_MAGNITUDE
+          description: "Rated voltage of the high voltage winding (typically in kV)."
+        - name: vRatedB
+          type: ElectricPotential
+          unit: StandardUnits.RATED_VOLTAGE_MAGNITUDE
+          description: "Rated voltage of the low voltage winding (typically in kV)."
+        - name: gM
+          type: ElectricConductance
+          unit: StandardUnits.CONDUCTANCE
+          description: "Phase-to-ground conductance (typically in nS)."
+        - name: bM
+          type: ElectricConductance
+          unit: StandardUnits.SUSCEPTANCE
+          description: "Phase-to-ground susceptance (typically in nS)."
+        - name: dV
+          type: Percent
+          unit: StandardUnits.DV_TAP
+          description: "Voltage magnitude deviation per tap position (typically in %)."
+        - name: dPhi
+          type: DegreeGeom
+          unit: StandardUnits.DPHI_TAP
+          description: "Voltage angle deviation per tap position (typically in °)."
+        - name: tapSide
+          type: bool
+          description: "Selection of winding, where the tap changer is installed. Low voltage, if true."
+        - name: tapNeutr
+          type: int
+          description: "Neutral tap position."
+        - name: tapMin
+          type: int
+          description: "Minimum available tap position."
+        - name: tapMax
+          type: int
+          description: "Maximum available tap position."
+
+    Transformer3WTypeInput:
+      name: Transformer3WTypeInput
+      description: "Describes the type of a {@link edu.ie3.datamodel.models.input.connector.Transformer3WInput}."
+      extends: AssetTypeInput
+      abstract: false
+      components:
+        - name: sRatedA
+          type: Power
+          unit: StandardUnits.S_RATED
+          description: "Rated apparent power of the high voltage winding (typically in kVA)."
+        - name: sRatedB
+          type: Power
+          unit: StandardUnits.S_RATED
+          description: "Rated apparent power of the medium voltage winding (typically in kVA)."
+        - name: sRatedC
+          type: Power
+          unit: StandardUnits.S_RATED
+          description: "Rated apparent power of the low voltage windings (typically in kVA)."
+        - name: vRatedA
+          type: ElectricPotential
+          unit: StandardUnits.RATED_VOLTAGE_MAGNITUDE
+          description: "Rated voltage of the high voltage winding (typically in kV)."
+        - name: vRatedB
+          type: ElectricPotential
+          unit: StandardUnits.RATED_VOLTAGE_MAGNITUDE
+          description: "Rated voltage of the medium voltage winding (typically in kV)."
+        - name: vRatedC
+          type: ElectricPotential
+          unit: StandardUnits.RATED_VOLTAGE_MAGNITUDE
+          description: "Rated voltage of the low voltage winding (typically in kV)."
+        - name: rScA
+          type: ElectricResistance
+          unit: StandardUnits.RESISTANCE
+          description: "Short-circuit resistance of the high voltage winding (typically in Ohm)."
+        - name: rScB
+          type: ElectricResistance
+          unit: StandardUnits.RESISTANCE
+          description: "Short-circuit resistance of the medium voltage winding (typically in Ohm)."
+        - name: rScC
+          type: ElectricResistance
+          unit: StandardUnits.RESISTANCE
+          description: "Short-circuit resistance of the low voltage winding (typically in Ohm)."
+        - name: xScA
+          type: ElectricResistance
+          description: "Short-circuit reactance of the high voltage winding (typically in Ohm)."
+        - name: xScB
+          type: ElectricResistance
+          description: "Short-circuit reactance of the medium voltage winding (typically in Ohm)."
+        - name: xScC
+          type: ElectricResistance
+          description: "Short-circuit reactance of the low voltage winding (typically in Ohm)."
+        - name: gM
+          type: ElectricConductance
+          unit: StandardUnits.CONDUCTANCE
+          description: "Phase-to-ground conductance (typically in nS)."
+        - name: bM
+          type: ElectricConductance
+          unit: StandardUnits.SUSCEPTANCE
+          description: "Phase-to-ground susceptance (typically in nS)."
+        - name: dV
+          type: Percent
+          unit: StandardUnits.DV_TAP
+          description: "Voltage magnitude deviation per tap position (typically in %)."
+        - name: dPhi
+          type: DegreeGeom
+          unit: StandardUnits.DPHI_TAP
+          description: "Voltage angle deviation per tap position (typically in °)."
+        - name: tapNeutr
+          type: int
+          description: "Neutral tap position."
+        - name: tapMin
+          type: int
+          description: "Minimum available tap position."
+        - name: tapMax
+          type: int
+          description: "Maximum available tap position."
+
+  models.input.system:
+    SystemParticipantInput:
+      name: SystemParticipantInput
+      description: "Describes the type of a {@link edu.ie3.datamodel.models.input.system.SystemParticipantInput}."
+      extends: AssetInput
+      components:
+        - name: node
+          type: NodeInput
+          nested: true
+          description: "The node that the asset is connected to."
+        - name: qCharacteristics
+          type: ReactivePowerCharacteristic
+          description: "Description of a reactive power characteristic. For details see further documentation."
+        - name: controllingEm
+          type: EmInput
+          nested: true
+          required: true
+          nullable: true
+          description: "Optional {@link EmInput} that is controlling this system participant. If null, this system participant is not em-controlled."
+
+    AcInput:
+      name: AcInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: type
+          type: AcTypeInput
+          nested: true
+          description: "Type of this air condition, containing default values for air condition of this kind."
+        - name: thermalBus
+          type: ThermalBusInput
+          nested: true
+          description: "The thermal bus, this model is connected to."
+
+    BmInput:
+      name: BmInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: type
+          type: BmTypeInput
+          nested: true
+          description: "Type of this BM plant, containing default values for BM plants of this kind."
+        - name: costControlled
+          type: bool
+          description: "Does this plant increase the output power if the revenues exceed the energy generation costs?"
+        - name: feedInTariff
+          type: EnergyPrice
+          description: "Granted feed in tariff (typically in €/MWh)."
+
+    ChpInput:
+      name: ChpInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: thermalBus
+          type: ThermalBusInput
+          nested: true
+          description: "The thermal bus, this model is connected to."
+        - name: type
+          type: ChpTypeInput
+          nested: true
+          description: "Type of this CHP plant, containing default values for CHP plants of this kind."
+        - name: thermalStorage
+          type: ThermalStorageInput
+          nested: true
+          description: "Thermal storage model."
+
+    EvcsInput:
+      name: EvcsInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: type
+          type: ChargingPointType
+          description: "Type of all installed charging points."
+        - name: chargingPoints
+          type: int
+          description: "Number of installed charging points."
+        - name: cosPhiRated
+          type: double
+          description: "Rated power factor."
+        - name: locationType
+          type: EvcsLocationType
+          description: "Evcs location type."
+        - name: v2gSupport
+          type: bool
+          description: "Whether charging station supports vehicle to grid."
+
+    EvInput:
+      name: EvInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: type
+          type: EvTypeInput
+          nested: true
+          description: "Type of this EV, containing default values for EVs of this kind."
+
+    FixedFeedInInput:
+      name: FixedFeedInInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: sRated
+          type: Power
+          description: "Rated apparent power (typically in kVA)."
+        - name: cosPhiRated
+          type: double
+          description: "Rated power factor."
+
+    HpInput:
+      name: HpInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: type
+          type: HpTypeInput
+          nested: true
+          description: "Type of this heat pump, containing default values for heat pump of this kind."
+        - name: thermalBus
+          type: ThermalBusInput
+          nested: true
+          description: "The thermal bus, this model is connected to."
+
+    LoadInput:
+      name: LoadInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: loadProfile
+          type: PowerProfileKey
+          description: "Reference to a load profile to use for the model. If you intend to assign specific values,\n
+                 create an timeSeries and assign it via an external mapping (e.g. by providing a global time\n
+                 series for a specific load profile) to this model."
+        - name: eConsAnnual
+          type: Energy
+          description: "Annually consumed energy (typically in kWh)."
+        - name: sRated
+          type: Power
+          description: "Active Power (typically in kVA)."
+        - name: cosPhiRated
+          type: double
+          description: "Rated power factor."
+
+    PvInput:
+      name: PvInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: albedo
+          type: double
+          description: "Albedo value (typically a value between 0 and 1)."
+        - name: azimuth
+          type: DegreeGeom
+          description: "Inclination in a compass direction (typically °: South 0◦; West 90◦; East -90◦)."
+        - name: etaConv
+          type: Percent
+          description: "Efficiency of converter (typically in %)."
+        - name: elevationAngle
+          type: DegreeGeom
+          description: "Tilted inclination from horizontal (typically in °)."
+        - name: kG
+          type: double
+          description: "Generator correction factor merging different technical influences."
+        - name: kT
+          type: double
+          description: "Temperature correction factor."
+        - name: sRated
+          type: Power
+          description: "Rated apparent power (typically in kVA)."
+        - name: cosPhiRated
+          type: double
+          description: "Rated power factor."
+
+    StorageInput:
+      name: StorageInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: type
+          type: StorageTypeInput
+          nested: true
+          description: "Type of this storage, containing default values for storages of this kind."
+
+    WecInput:
+      name: WecInput
+      extends: SystemParticipantInput
+      abstract: false
+      components:
+        - name: type
+          type: WecTypeInput
+          nested: true
+          description: "Type of this WEC, containing default values for WEC assets of this kind."
+
+  models.input.system.type:
+    SystemParticipantTypeInput:
+      name: SystemParticipantTypeInput
+      extends: AssetTypeInput
+      components:
+        - name: capex
+          type: Currency
+          description: "Capital expense for this type of system participant (typically in €)."
+        - name: opex
+          type: EnergyPrice
+          description: "Operating expense for this type of system participant (typically in €/MWh)."
+        - name: sRated
+          type: Power
+          description: "Rated apparent power of the type (in kVA)."
+        - name: cosPhiRated
+          type: double
+          description: "Power factor for this type of system participant."
+
+    AcTypeInput:
+      name: AcTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: pThermal
+          type: Power
+          description: "Thermal output of the air condition (typically in kW), when sRated * cosPhiRated is consumed."
+
+    BmTypeInput:
+      name: BmTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: activePowerGradient
+          type: DimensionlessRate
+          description: "Permissible load gradient (typically in %/h)."
+        - name: etaConv
+          type: Dimensionless
+          description: "Efficiency of converter for this type of BM (typically in %)."
+
+    ChpTypeInput:
+      name: ChpTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: etaEl
+          type: Dimensionless
+          description: "Electrical efficiency (typically in %)."
+        - name: etaThermal
+          type: Dimensionless
+          description: "Thermal efficiency (typically in %)."
+        - name: pThermal
+          type: Power
+          description: "Rated thermal power (typically in kW)."
+        - name: pOwn
+          type: Power
+          description: "Internal consumption (typically in kW)."
+
+    EvTypeInput:
+      name: EvTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: eStorage
+          type: Energy
+          description: "Energy capacity of the storage (typically in kWh)."
+        - name: eCons
+          type: SpecificEnergy
+          description: "Consumed electric energy per driven distance (typically in kWh/km)."
+        - name: sRatedDC
+          type: Power
+          description: "Power for DC (typically in kW)."
+
+    HpTypeInput:
+      name: HpTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: pThermal
+          type: Power
+          description: "Thermal output of the heat pump (typically in kW), when sRated * cosPhiRated is consumed."
+
+    StorageTypeInput:
+      name: StorageTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: eStorage
+          type: Energy
+          description: "."
+        - name: pMax
+          type: Power
+          description: "."
+        - name: activePowerGradient
+          type: DimensionlessRate
+          description: "."
+        - name: eta
+          type: Dimensionless
+          description: "."
+
+    WecTypeInput:
+      name: WecTypeInput
+      extends: SystemParticipantTypeInput
+      abstract: false
+      components:
+        - name: cpCharacteristic
+          type: WecCharacteristicInput
+          description: "."
+        - name: etaConv
+          type: Dimensionless
+          description: "."
+        - name: rotorArea
+          type: Area
+          description: "."
+        - name: hubHeight
+          type: Length
+          description: "."
+
+  models.input.thermal:
+    ThermalInput:
+      name: ThermalInput
+      extends: AssetInput
+
+    ThermalUnitInput:
+      name: ThermalUnitInput
+      extends: ThermalInput
+      components:
+        - name: thermalBus
+          type: ThermalBusInput
+          nested: true
+          description: "The thermal bus, a thermal unit is connected to."
+
+    ThermalStorageInput:
+      name: ThermalStorageInput
+      extends: ThermalUnitInput
+
+    AbstractStorageInput:
+      name: AbstractStorageInput
+      extends: ThermalStorageInput
+      components:
+        - name: storageVolumeLvl
+          type: Volume
+          description: "Available storage volume (typically in m³)."
+        - name: inletTemp
+          type: Temperature
+          description: "Temperature of the inlet (typically in C)."
+        - name: returnTemp
+          type: Temperature
+          description: "Temperature of the outlet (typically in C)."
+        - name: c
+          type: SpecificHeatCapacity
+          description: "Specific heat capacity of the storage medium (typically in kWh/K*m³)."
+        - name: pThermalMax
+          type: Power
+          description: "Maximum permissible thermal power (typically in kW)."
+
+    CylindricalStorageInput:
+      name: CylindricalStorageInput
+      extends: AbstractStorageInput
+      abstract: false
+
+    DomesticHotWaterStorageInput:
+      name: DomesticHotWaterStorageInput
+      extends: AbstractStorageInput
+      abstract: false
+
+    ThermalBusInput:
+      name: ThermalBusInput
+      extends: ThermalInput
+      abstract: false
+
+    ThermalSinkInput:
+      name: ThermalSinkInput
+      extends: ThermalUnitInput
+
+    ThermalHouseInput:
+      name: ThermalHouseInput
+      extends: ThermalSinkInput
+      abstract: false
+      components:
+        - name: ethLosses
+          type: ThermalConductance
+          description: "Thermal, transitional losses of the included thermal house model (typically in kW/K)."
+        - name: ethCapa
+          type: HeatCapacity
+          description: "Thermal capacity of the included thermal house model (typically in kWh/K)."
+        - name: targetTemperature
+          type: Temperature
+          description: "Desired target temperature of the thermal house model (typically in °C)."
+        - name: upperTemperatureLimit
+          type: Temperature
+          description: "Upper boundary temperature of the thermal house model (typically in °C)."
+        - name: lowerTemperatureLimit
+          type: Temperature
+          description: "Lower boundary temperature of the thermal house model (typically in °C)."
+        - name: housingType
+          type: String
+          description: "Type of the building, e.g. house or flat."
+        - name: numberOfInhabitants
+          type: double
+          description: "Number of people living in the building, double to allow proper scaling."
+
+  models.result:
+    ResultEntity:
+      name: ResultEntity
+      components:
+        - name: time
+          type: ZonedDateTime
+          description: "Date and time of the produced result."
+        - name: inputModel
+          type: UUID
+          description: "Uuid of the input model that produces the result."
+
+    NodeResult:
+      name: NodeResult
+      extends: ResultEntity
+      abstract: false
+      components:
+        - name: vMag
+          type: Dimensionless
+          description: "Voltage magnitude @ this node in p.u."
+        - name: vAng
+          type: Angle
+          description: "Voltage angle @ this node in degree."
+
+    CongestionResult:
+      name: CongestionResult
+      extends: ResultEntity
+      abstract: false
+      components:
+        - name: subgrid
+          type: int
+        - name: type
+          type: InputModelType
+        - name: value
+          type: Dimensionless
+        - name: min
+          type: Dimensionless
+        - name: max
+          type: Dimensionless
+
+  models.result.connector:
+    ConnectorResult:
+      name: ConnectorResult
+      extends: ResultEntity
+      components:
+        - name: iAMag
+          type: ElectricCurrent
+          description: "Electric current magnitude @ port A, normally provided in Ampere."
+        - name: iAAng
+          type: Angle
+          description: "Electric current angle @ Port A in degree °."
+        - name: iBMag
+          type: ElectricCurrent
+          description: "Electric current magnitude @ port B, normally provided in Ampere."
+        - name: iBAng
+          type: Angle
+          description: "Electric current angle @ Port B in degree °."
+
+    LineResult:
+      name: LineResult
+      extends: ConnectorResult
+      abstract: false
+
+    SwitchResult:
+      name: SwitchResult
+      extends: ResultEntity
+      abstract: false
+      components:
+        - name: closed
+          type: bool
+          description: "Is the switching state 'closed'?"
+
+    TransformerResult:
+      name: TransformerResult
+      extends: ConnectorResult
+      abstract: false
+      components:
+        - name: tapPos
+          type: int
+          description: "Current tapping position if a transformer has a tap changer."
+
+    Transformer2WResult:
+      name: Transformer2WResult
+      extends: TransformerResult
+      abstract: false
+
+    Transformer3WResult:
+      name: Transformer3WResult
+      extends: TransformerResult
+      abstract: false
+      components:
+        - name: iCMag
+          type: ElectricCurrent
+        - name: iCAng
+          type: Angle
+
+  models.results.system:
+    SystemParticipantResult:
+      name: SystemParticipantResult
+      extends: ResultEntity
+      components:
+        - name: p
+          type: Power
+          description: "Active power output normally provided in MW."
+        - name: q
+          type: Power
+          description: "Reactive power output normally provided in MVAr."
+
+    SystemParticipantWithHeatResult:
+      name: SystemParticipantWithHeatResult
+      extends: SystemParticipantResult
+      components:
+        - name: qDot
+          type: Power
+          description: "The thermal power output normally provided in MW."
+
+    ElectricalEnergyStorageResult:
+      name: ElectricalEnergyStorageResult
+      extends: SystemParticipantResult
+      components:
+        - name: soc
+          type: Dimensionless
+          description: "State of Charge (SoC) in %."
+
+    FlexOptionsResult:
+      name: FlexOptionsResult
+      extends: ResultEntity
+      components:
+        - name: pMin
+          type: Power
+          description: "Minimum active power to which the operating point of the model can be reduced (might be\n
+                 negative, thus feed-in) at the given point in simulation time. This equates to the lower bound\n
+                 of possible power flexibility provision."
+        - name: pMax
+          type: Power
+          description: "Maximum active power to which the operating point of the model can be increased (might be\n
+                  negative, thus feed-in) at the given point in simulation time. This equates to upper bound of\n
+                  possible power flexibility provision."
+
+    AcResult:
+      name: AcResult
+      extends: SystemParticipantWithHeatResult
+      abstract: false
+
+    BmResult:
+      name: BmResult
+      extends: SystemParticipantResult
+      abstract: false
+
+    ChpResult:
+      name: ChpResult
+      extends: SystemParticipantWithHeatResult
+      abstract: false
+
+    EmResult:
+      name: EmResult
+      extends: SystemParticipantResult
+      abstract: false
+
+    EnergyBoundariesFlexOptionsResult:
+      name: EnergyBoundariesFlexOptionsResult
+      extends: FlexOptionsResult
+      abstract: false
+      components:
+        - name: eState
+          type: Energy
+          description: "State of energy of the model at the given point in simulation time."
+        - name: eMin
+          type: Energy
+          description: "Minimum state of energy of the model at the given point in simulation time."
+        - name: eMax
+          type: Energy
+          description: "Maximum state of energy of the model at the given point in simulation time."
+
+    EvcsResult:
+      name: EvcsResult
+      extends: SystemParticipantResult
+      abstract: false
+
+    EvResult:
+      name: EvResult
+      extends: ElectricalEnergyStorageResult
+      abstract: false
+
+    FixedFeedInResult:
+      name: FixedFeedInResult
+      extends: SystemParticipantResult
+      abstract: false
+
+    HpResult:
+      name: HpResult
+      extends: SystemParticipantWithHeatResult
+      abstract: false
+
+    LoadResult:
+      name: LoadResult
+      extends: SystemParticipantResult
+      abstract: false
+
+    PowerLimitFlexOptionsResult:
+      name: PowerLimitFlexOptionsResult
+      extends: FlexOptionsResult
+      abstract: false
+      components:
+        - name: pRef
+          type: Power
+          description: "Active power (might be negative, thus feed-in) that was suggested for regular usage by the\n
+                  model."
+
+    PvResult:
+      name: PvResult
+      extends: SystemParticipantResult
+      abstract: false
+
+    StorageResult:
+      name: StorageResult
+      extends: ElectricalEnergyStorageResult
+      abstract: false
+
+    WecResult:
+      name: WecResult
+      extends: SystemParticipantResult
+      abstract: false
+
+  models.result.thermal:
+    ThermalUnitResult:
+      name: ThermalUnitResult
+      extends: ResultEntity
+      components:
+        - name: qDot
+          type: Power
+          description: "Average thermal power flowing into the thermal unit (+: Power flowing into unit, -: Power\n
+                  flowing from unit)"
+
+    ThermalSinkResult:
+      name: ThermalSinkResult
+      extends: ThermalUnitResult
+
+    ThermalStorageResult:
+      name: ThermalStorageResult
+      extends: ThermalSinkResult
+      components:
+        - name: energy
+          type: Energy
+          description: "Currently stored energy."
+
+    AbstractThermalStorageResult:
+      name: AbstractThermalStorageResult
+      extends: ThermalStorageResult
+      components:
+        - name: fillLevel
+          type: Dimensionless
+          description: "Fill level of the storage."
+
+    CylindricalStorageResult:
+      name: CylindricalStorageResult
+      extends: AbstractThermalStorageResult
+      abstract: false
+
+    DomesticHotWaterStorageResult:
+      name: DomesticHotWaterStorageResult
+      extends: AbstractThermalStorageResult
+      abstract: false
+
+    ThermalHouseResult:
+      name: ThermalHouseResult
+      extends: ThermalSinkResult
+      abstract: false
+      components:
+        - name: indoorTemperature
+          type: Temperature
+          description: "Indoor room temperature of the house."
