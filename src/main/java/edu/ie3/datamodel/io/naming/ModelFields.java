@@ -484,7 +484,7 @@ public final class ModelFields extends FieldNamingStrategy {
     Stream.of(CylindricalStorageResult.class, DomesticHotWaterStorageResult.class)
         .forEach(r -> registerMandatory(r, thermal, ENERGY, FILL_LEVEL));
 
-    registerMandatory(ThermalLineSegmentResult.class, result, LINE_SEGMENT_TEMPERATURE);
+    registerMandatory(ThermalLineSegmentResult.class, result, LINE_SEGMENT_TEMPERATURE, GROUND_TEMPERATURE);
   }
 
   /** Method for registering some time series related fields. */

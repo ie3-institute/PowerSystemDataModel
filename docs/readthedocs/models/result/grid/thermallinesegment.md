@@ -27,8 +27,11 @@ Representation of a thermal line segment.
      - kelvin
      - temperature of the thermal line segment
 
+   * - groundTemperature
+     - kelvin
+     - ground temperature at the depth of the line segment
 ```
 
 ## Caveats
 
-The `lineSegmentTemperature` is always converted to Kelvin (`StandardUnits.TEMPERATURE`) upon construction, regardless of the input unit.
+The `lineSegmentTemperature` and `groundTemperature` are always converted to Kelvin (`StandardUnits.TEMPERATURE`) upon construction, regardless of the input unit.

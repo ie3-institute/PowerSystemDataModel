@@ -51,7 +51,8 @@ class ModelFieldsTest extends Specification {
     fields[0] == [
       FieldNamingStrategy.TIME,
       FieldNamingStrategy.INPUT_MODEL,
-      FieldNamingStrategy.LINE_SEGMENT_TEMPERATURE
+      FieldNamingStrategy.LINE_SEGMENT_TEMPERATURE,
+      FieldNamingStrategy.GROUND_TEMPERATURE
     ] as Set
   }
 }
