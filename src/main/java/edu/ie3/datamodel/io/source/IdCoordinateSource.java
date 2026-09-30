@@ -33,7 +33,7 @@ public abstract class IdCoordinateSource extends EntitySource {
    * @param id the ID to look up
    * @return matching coordinate
    */
-  public abstract Optional<Point> getCoordinate(int id);
+  public abstract Optional<Point> getCoordinate(int id) throws SourceException;
 
   /**
    * Get the matching coordinates for the given IDs
@@ -41,7 +41,7 @@ public abstract class IdCoordinateSource extends EntitySource {
    * @param ids the IDs to look up
    * @return the matching coordinates
    */
-  public abstract Collection<Point> getCoordinates(int... ids);
+  public abstract Collection<Point> getCoordinates(int... ids) throws SourceException;
 
   /**
    * Get the ID for the coordinate point
@@ -49,14 +49,14 @@ public abstract class IdCoordinateSource extends EntitySource {
    * @param coordinate the coordinate to look up
    * @return the matching ID
    */
-  public abstract Optional<Integer> getId(Point coordinate);
+  public abstract Optional<Integer> getId(Point coordinate) throws SourceException;
 
   /**
    * Returns all the coordinates of this source
    *
    * @return all available coordinates
    */
-  public abstract Collection<Point> getAllCoordinates();
+  public abstract Collection<Point> getAllCoordinates() throws SourceException;
 
   /**
    * Returns the nearest n coordinate points. If n is greater than four, this method will try to
@@ -66,7 +66,8 @@ public abstract class IdCoordinateSource extends EntitySource {
    * @param n number of searched points
    * @return the nearest n coordinates or all coordinates if n is less than all available points
    */
-  public abstract List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n);
+  public abstract List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n)
+      throws SourceException;
 
   /**
    * Returns the closest n coordinate points to the given coordinate, that are inside a given
@@ -80,7 +81,7 @@ public abstract class IdCoordinateSource extends EntitySource {
    * @return the nearest n coordinates to the given point
    */
   public abstract List<CoordinateDistance> getClosestCoordinates(
-      Point coordinate, int n, ComparableQuantity<Length> distance);
+      Point coordinate, int n, ComparableQuantity<Length> distance) throws SourceException;
 
   /**
    * Calculates and returns the nearest n coordinate distances to the given coordinate from a given
@@ -113,7 +114,7 @@ public abstract class IdCoordinateSource extends EntitySource {
    *     max. 4 points)
    */
   public abstract List<CoordinateDistance> findCornerPoints(
-      Point coordinate, ComparableQuantity<Length> distance);
+      Point coordinate, ComparableQuantity<Length> distance) throws SourceException;
 
   /**
    * Method for finding the corner points of a given coordinate. If a point matches the given

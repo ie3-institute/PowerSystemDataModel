@@ -147,7 +147,7 @@ public abstract class WeatherSource extends EntitySource {
    * @return the TimeBasedWeatherValueData
    */
   protected Optional<TimeBasedWeatherValueData> toTimeBasedWeatherValueData(
-      Map<String, String> fieldMap) {
+      Map<String, String> fieldMap) throws SourceException {
     String coordinateValue = fieldMap.remove(WEATHER_COORDINATE_ID);
     fieldMap.putIfAbsent("uuid", UUID.randomUUID().toString());
     int coordinateId = Integer.parseInt(coordinateValue);
@@ -184,20 +184,23 @@ public abstract class WeatherSource extends EntitySource {
   }
 
   protected Map<Point, List<ZonedDateTime>> toTimeKeys(
-      Stream<Map<String, String>> fieldMaps, TimeBasedWeatherValueFactory factory) {
-    return groupTime(
-        fieldMaps.map(
-            fieldMap -> {
-              String coordinateValue = fieldMap.get(WEATHER_COORDINATE_ID);
-              int coordinateId = Integer.parseInt(coordinateValue);
-              Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
-              ZonedDateTime time = factory.extractTime(fieldMap);
+      Stream<Map<String, String>> fieldMaps, TimeBasedWeatherValueFactory factory)
+      throws SourceException {
+    List<Pair<Optional<Point>, ZonedDateTime>> timeKeys = new ArrayList<>();
 
-              if (coordinate.isEmpty()) {
-                log.warn("Unable to match coordinate ID {} to a point", coordinateId);
-              }
-              return Pair.of(coordinate, time);
-            }));
+    for (Map<String, String> fieldMap : fieldMaps.toList()) {
+      String coordinateValue = fieldMap.get(WEATHER_COORDINATE_ID);
+      int coordinateId = Integer.parseInt(coordinateValue);
+      Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
+      ZonedDateTime time = factory.extractTime(fieldMap);
+
+      if (coordinate.isEmpty()) {
+        log.warn("Unable to match coordinate ID {} to a point", coordinateId);
+      }
+      timeKeys.add(Pair.of(coordinate, time));
+    }
+
+    return groupTime(timeKeys.stream());
   }
 
   protected Map<Point, List<ZonedDateTime>> groupTime(
@@ -300,14 +303,16 @@ public abstract class WeatherSource extends EntitySource {
    * @return a list of that TimeBasedValues
    */
   protected List<TimeBasedValue<WeatherValue>> buildTimeBasedValues(
-      TimeBasedWeatherValueFactory factory, Stream<Map<String, String>> inputStream) {
-    return inputStream
-        .map(
-            fieldsToAttributes -> {
-              fieldsToAttributes.remove("tid");
-              return toTimeBasedWeatherValueData(fieldsToAttributes);
-            })
-        .flatMap(Optional::stream)
+      TimeBasedWeatherValueFactory factory, Stream<Map<String, String>> inputStream)
+      throws SourceException {
+    List<TimeBasedWeatherValueData> weatherValueData = new ArrayList<>();
+
+    for (Map<String, String> fieldsToAttributes : inputStream.toList()) {
+      fieldsToAttributes.remove("tid");
+      toTimeBasedWeatherValueData(fieldsToAttributes).ifPresent(weatherValueData::add);
+    }
+
+    return weatherValueData.stream()
         .map(factory::get)
         .map(
             tryResult -> {

@@ -23,7 +23,6 @@ import java.sql.Array;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 import org.locationtech.jts.geom.Point;
 
 /** SQL source for weather data */
@@ -124,10 +123,10 @@ public class SqlWeatherSource extends WeatherSource {
     if (coordinates.isEmpty())
       throw new NoDataException("No coordinates provided for weather data query.");
 
-    Map<Point, Integer> knownCoordinates =
-        coordinates.stream()
-            .flatMap(c -> idCoordinateSource.getId(c).map(id -> Map.entry(c, id)).stream())
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    Map<Point, Integer> knownCoordinates = new HashMap<>();
+    for (Point c : coordinates) {
+      idCoordinateSource.getId(c).ifPresent(id -> knownCoordinates.put(c, id));
+    }
 
     List<Point> unknownCoordinates =
         coordinates.stream().filter(c -> !knownCoordinates.containsKey(c)).toList();
