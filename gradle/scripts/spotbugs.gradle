@@ -2,8 +2,8 @@
 
 // workaround because imports do not work in files that are only included by build.gradle
 def classLoader = plugins['com.github.spotbugs'].class.classLoader
-def SpotBugsEffort = classLoader.findLoadedClass( 'com.github.spotbugs.snom.Effort' )
-def SpotBugsConfidence = classLoader.findLoadedClass( 'com.github.spotbugs.snom.Confidence' )
+def SpotBugsEffort = classLoader.findLoadedClass('com.github.spotbugs.snom.Effort')
+def SpotBugsConfidence = classLoader.findLoadedClass('com.github.spotbugs.snom.Confidence')
 
 spotbugs{
   ignoreFailures = true // dont let the build fail on rule violations

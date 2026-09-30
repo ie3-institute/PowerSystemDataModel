@@ -14,8 +14,7 @@ import java.util.Objects;
 
 /**
  * Data used for those classes of {@link edu.ie3.datamodel.models.input.connector.ConnectorInput}
- * that need an instance of some type T of {@link
- * edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput} as well.
+ * that need an instance of some type T of {@link AssetTypeInput} as well.
  *
  * @param <T> Subclass of {@link AssetTypeInput} that is required for the construction of the
  *     ConnectorInput

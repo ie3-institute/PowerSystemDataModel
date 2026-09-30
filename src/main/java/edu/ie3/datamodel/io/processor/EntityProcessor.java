@@ -74,25 +74,26 @@ public abstract class EntityProcessor<T extends Entity> extends Processor<T> {
   protected Try<String, QuantityException> handleProcessorSpecificQuantity(
       Quantity<?> quantity, String fieldName) {
     return switch (fieldName) {
-      case "energy", "eConsAnnual", "eStorage":
-        yield Success.of(
-            quantityValToOptionalString(quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN)));
-      case "q":
-        yield Success.of(
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN)));
-      case "p", "pMax", "pOwn", "pThermal":
-        yield Success.of(
-            quantityValToOptionalString(
-                quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN)));
-      default:
-        yield Failure.of(
-            new QuantityException(
-                "Cannot process quantity with value '"
-                    + quantity
-                    + "' for field with name "
-                    + fieldName
-                    + " in input entity processing!"));
+      case "energy", "eConsAnnual", "eStorage" ->
+          Success.of(
+              quantityValToOptionalString(
+                  quantity.asType(Energy.class).to(StandardUnits.ENERGY_IN)));
+      case "q" ->
+          Success.of(
+              quantityValToOptionalString(
+                  quantity.asType(Power.class).to(StandardUnits.REACTIVE_POWER_IN)));
+      case "p", "pMax", "pOwn", "pThermal" ->
+          Success.of(
+              quantityValToOptionalString(
+                  quantity.asType(Power.class).to(StandardUnits.ACTIVE_POWER_IN)));
+      default ->
+          Failure.of(
+              new QuantityException(
+                  "Cannot process quantity with value '"
+                      + quantity
+                      + "' for field with name "
+                      + fieldName
+                      + " in input entity processing!"));
     };
   }
 

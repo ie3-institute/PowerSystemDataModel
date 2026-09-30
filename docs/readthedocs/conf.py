@@ -22,8 +22,8 @@ copyright = u'2023. TU Dortmund University, Institute of Energy Systems, Energy 
 author = 'Institute of Energy Systems, Energy Efficiency and Energy Economics'
 
 # The full version, including alpha/beta/rc tags
-version = '9.1'
-release = '9.1.0'
+version = '9.2'
+release = '9.2.0'
 
 pygments_style = 'tango'
 add_function_parentheses = True
@@ -36,8 +36,13 @@ master_doc = 'index'
 # ones.
 extensions = [
     'sphinx.ext.intersphinx',
-    'myst_parser'
+    'myst_parser',
+    'sphinxcontrib.bibtex',
+    'sphinx.ext.mathjax'
 ]
+
+bibtex_bibfiles = ["_static/bibliography/bibtex.bib"]
+bibtex_default_style = 'plain'
 
 myst_enable_extensions = ["dollarmath", "amsmath"]
 myst_heading_anchors = 4

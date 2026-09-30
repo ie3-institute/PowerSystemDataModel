@@ -23,12 +23,6 @@ package models.input.container {
         + validate(): void
     }
 
-    class GraphicElements {
-        - nodeGraphics: Set<NodeGraphicInput>
-        - lineGraphics: Set<LineGraphicInput>
-    }
-    GraphicElements ..|> InputContainer
-
     class RawGridElements {
         - nodes: Set<NodeInput>
         - lines: Set<LineInput>

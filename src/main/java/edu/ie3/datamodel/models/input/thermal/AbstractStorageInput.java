@@ -156,7 +156,7 @@ public abstract class AbstractStorageInput extends ThermalStorageInput {
 
   /**
    * A builder pattern based approach to create copies of {@link AbstractStorageInput} entities with
-   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * altered field values. For detailed field descriptions refer to Javadocs of {@link
    * AbstractStorageInput}
    */
   protected abstract static class AbstractStorageInputCopyBuilder<

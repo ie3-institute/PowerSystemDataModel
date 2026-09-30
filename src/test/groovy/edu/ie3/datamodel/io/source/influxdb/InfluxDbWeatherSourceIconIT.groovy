@@ -24,7 +24,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 @Testcontainers
-class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSourceTestHelper, TestContainerHelper {
+class InfluxDbWeatherSourceIconIT extends Specification implements TestContainerHelper {
 
   @Shared
   InfluxDBContainer influxDbContainer = new InfluxDBContainer(DockerImageName.parse("influxdb").withTag("1.8.10"))
@@ -58,14 +58,14 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 
   def "An InfluxDbWeatherSource can read and correctly parse a single value for a specific date and coordinate"() {
     given:
-    def expectedTimeBasedValue = new TimeBasedValue(IconWeatherTestData.TIME_15H , IconWeatherTestData.WEATHER_VALUE_67775_15H)
+    def expectedTimeBasedValue = new TimeBasedValue(IconWeatherTestData.TIME_15H, IconWeatherTestData.WEATHER_VALUE_67775_15H)
 
     when:
-    def optTimeBasedValue = source.getWeather(IconWeatherTestData.TIME_15H , IconWeatherTestData.COORDINATE_67775)
+    def optTimeBasedValue = source.getWeather(IconWeatherTestData.TIME_15H, IconWeatherTestData.COORDINATE_67775)
 
     then:
     optTimeBasedValue != null
-    equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
+    WeatherSourceTestHelper.equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
   }
 
   def "An InfluxDbWeatherSource can read multiple time series values for multiple coordinates"() {
@@ -74,16 +74,16 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
       IconWeatherTestData.COORDINATE_67775,
       IconWeatherTestData.COORDINATE_67776
     ]
-    def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_16H , IconWeatherTestData.TIME_17H)
+    def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_16H, IconWeatherTestData.TIME_17H)
     def timeseries67775 = new IndividualTimeSeries(null,
         [
-          new TimeBasedValue(IconWeatherTestData.TIME_16H , IconWeatherTestData.WEATHER_VALUE_67775_16H),
-          new TimeBasedValue(IconWeatherTestData.TIME_17H , IconWeatherTestData.WEATHER_VALUE_67775_17H)
+          new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67775_16H),
+          new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)
         ]
         as Set<TimeBasedValue>)
     def timeseries67776 = new IndividualTimeSeries(null,
         [
-          new TimeBasedValue(IconWeatherTestData.TIME_16H , IconWeatherTestData.WEATHER_VALUE_67776_16H)
+          new TimeBasedValue(IconWeatherTestData.TIME_16H, IconWeatherTestData.WEATHER_VALUE_67776_16H)
         ] as Set<TimeBasedValue>)
 
     when:
@@ -91,13 +91,13 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 
     then:
     coordinateToTimeSeries.keySet().size() == 2
-    equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775), timeseries67775)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776), timeseries67776)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775), timeseries67775)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776), timeseries67776)
   }
 
   def "An InfluxDbWeatherSource can read all weather data in a given time interval"() {
     given:
-    def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H , IconWeatherTestData.TIME_17H)
+    def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H, IconWeatherTestData.TIME_17H)
     def timeseries67775 = new IndividualTimeSeries(null,
         [
           new TimeBasedValue(IconWeatherTestData.TIME_15H, IconWeatherTestData.WEATHER_VALUE_67775_15H),
@@ -115,8 +115,8 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 
     then:
     coordinateToTimeSeries.keySet().size() == 2
-    equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775).entries, timeseries67775.entries)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776).entries, timeseries67776.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775).entries, timeseries67775.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776).entries, timeseries67776.entries)
   }
 
   def "An InfluxDbWeatherSource will throw NoDataException when being unable to map a coordinate to its ID"() {
@@ -124,7 +124,7 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
     def validCoordinate = IconWeatherTestData.COORDINATE_67775
     def invalidCoordinate = GeoUtils.buildPoint(7d, 48d)
     def time = IconWeatherTestData.TIME_15H
-    def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H , IconWeatherTestData.TIME_17H)
+    def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H, IconWeatherTestData.TIME_17H)
 
     when: "requesting weather for an invalid coordinate at a specific date"
     source.getWeather(time, invalidCoordinate)
@@ -164,7 +164,7 @@ class InfluxDbWeatherSourceIconIT extends Specification implements WeatherSource
 
     then:
     result != null
-    equalsIgnoreUUID(result, expectedFallback)
+    WeatherSourceTestHelper.equalsIgnoreUUID(result, expectedFallback)
   }
 
   def "An InfluxDbWeatherSource throws NoDataException when no weather data is found at a specific time and no earlier data is available"() {

@@ -212,7 +212,7 @@ public class LineInput extends ConnectorInput implements HasType {
 
   /**
    * A builder pattern based approach to create copies of {@link LineInput} entities with altered
-   * field values. For detailed field descriptions refer to java docs of {@link LineInput}
+   * field values. For detailed field descriptions refer to Javadocs of {@link LineInput}
    *
    * @version 0.1
    * @since 05.06.20

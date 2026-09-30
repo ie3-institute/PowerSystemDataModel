@@ -39,7 +39,9 @@ abstract class WeatherTestData {
     }
     @Override
     Collection<Point> getCoordinates(int... ids) {
-      return Stream.of(ids).map(this.&getCoordinate).filter({ c -> c != null }).collect(Collectors.toSet())
+      return Stream.of(ids).map(this.&getCoordinate).filter({ c ->
+        c != null
+      }).collect(Collectors.toSet())
     }
     @Override
     Optional<Integer> getId(Point coordinate) {

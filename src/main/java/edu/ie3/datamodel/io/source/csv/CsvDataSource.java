@@ -110,7 +110,8 @@ public class CsvDataSource extends FileDataSource {
    * @return A mapping from column scheme to the individual time series meta information
    */
   public Map<UUID, FileIndividualTimeSeriesMetaInformation>
-      getCsvIndividualTimeSeriesMetaInformation(final ColumnScheme... columnSchemes) {
+      getCsvIndividualTimeSeriesMetaInformation(final ColumnScheme... columnSchemes)
+          throws SourceException {
     return getIndividualTimeSeriesMetaInformation(columnSchemes)
         .filter(metaInformation -> metaInformation.getFileType() == CSV)
         .collect(Collectors.toMap(TimeSeriesMetaInformation::getUuid, Function.identity()));
@@ -123,7 +124,7 @@ public class CsvDataSource extends FileDataSource {
    * @return A mapping from profile to the load profile time series meta information
    */
   public Map<PowerProfileKey, FileLoadProfileMetaInformation> getCsvLoadProfileMetaInformation(
-      LoadProfile... profiles) {
+      LoadProfile... profiles) throws SourceException {
     return getLoadProfileMetaInformation(profiles)
         .filter(metaInformation -> metaInformation.getFileType() == CSV)
         .collect(Collectors.toMap(LoadProfileMetaInformation::getProfileKey, Function.identity()));

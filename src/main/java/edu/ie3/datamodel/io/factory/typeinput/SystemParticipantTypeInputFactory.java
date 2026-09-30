@@ -142,15 +142,14 @@ public class SystemParticipantTypeInputFactory
 
     ComparableQuantity<Length> hubHeight = data.getQuantity(HUB_HEIGHT, StandardUnits.HUB_HEIGHT);
 
+    String cpCharacteristicValue = data.getField(CP_CHARACTERISTIC);
+
     WecCharacteristicInput cpCharacteristic;
     try {
-      cpCharacteristic = new WecCharacteristicInput(data.getField(CP_CHARACTERISTIC));
+      cpCharacteristic = new WecCharacteristicInput(cpCharacteristicValue);
     } catch (ParsingException e) {
       throw new FactoryException(
-          "Cannot parse the following Betz characteristic: '"
-              + data.getField(CP_CHARACTERISTIC)
-              + "'",
-          e);
+          "Cannot parse the following Betz characteristic: '" + cpCharacteristicValue + "'", e);
     }
 
     return new WecTypeInput(

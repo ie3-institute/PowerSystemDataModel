@@ -11,7 +11,7 @@ import edu.ie3.datamodel.models.value.GroundTemperatureValue
 import edu.ie3.datamodel.models.value.WeatherValue
 import edu.ie3.util.quantities.QuantityUtil
 
-trait WeatherSourceTestHelper {
+class WeatherSourceTestHelper {
 
   static boolean equalsIgnoreUUID(IndividualTimeSeries<WeatherValue> ts1, IndividualTimeSeries<WeatherValue> ts2) {
     return equalsIgnoreUUID(ts1.entries, ts2.entries)
@@ -21,7 +21,9 @@ trait WeatherSourceTestHelper {
     if (c1 == null || c2 == null) return (c1 == null && c2 == null)
     if (c1.size() != c2.size()) return false
     for (TimeBasedValue<WeatherValue> value1 : c1) {
-      if (!c2.stream().anyMatch({ value2 -> equalsIgnoreUUID(value1, value2) })) return false
+      if (!c2.stream().anyMatch({ value2 ->
+            equalsIgnoreUUID(value1, value2)
+            })) return false
     }
     return true
   }
@@ -46,7 +48,7 @@ trait WeatherSourceTestHelper {
     return true
   }
 
-  static boolean compareOptionalTemperature(Optional<GroundTemperatureValue> optA,Optional<GroundTemperatureValue> optB) {
+  static boolean compareOptionalTemperature(Optional<GroundTemperatureValue> optA, Optional<GroundTemperatureValue> optB) {
     if (optA.isPresent() != optB.isPresent()) return false
     if (!optA.isPresent()) return true
     return QuantityUtil.isEquivalentAbs(

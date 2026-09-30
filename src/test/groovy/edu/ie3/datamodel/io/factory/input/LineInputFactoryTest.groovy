@@ -40,13 +40,13 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
     given: "a system participant input type factory and model data"
     def inputFactory = new LineInputFactory()
     Map<String, String> parameter = [
-      "uuid"             : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesfrom"     : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "operatesuntil"    : "",
-      "id"               : "TestID",
-      "paralleldevices"  : "2",
-      "length"           : "3",
-      "geoposition"      : "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesuntil" : "",
+      "id" : "TestID",
+      "paralleldevices" : "2",
+      "length" : "3",
+      "geoposition" : "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
       "olmcharacteristic": "olm:{(0.0,1.0)}"
     ]
     def inputClass = LineInput
@@ -80,8 +80,8 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
         uuid != null
         points == Collections.unmodifiableSortedSet([
           new CharacteristicPoint<Speed, Dimensionless>(
-          Quantities.getQuantity(0d, METRE_PER_SECOND),
-          Quantities.getQuantity(1d, PU))
+              Quantities.getQuantity(0d, METRE_PER_SECOND),
+              Quantities.getQuantity(1d, PU))
         ] as TreeSet)
       }
     }
@@ -91,13 +91,13 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
     given: "a system participant input type factory and model data"
     def inputFactory = new LineInputFactory()
     Map<String, String> parameter = [
-      "uuid"             : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesfrom"     : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "operatesuntil"    : "",
-      "id"               : "TestID",
-      "paralleldevices"  : "2",
-      "length"           : "3",
-      "geoposition"      : "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesuntil" : "",
+      "id" : "TestID",
+      "paralleldevices" : "2",
+      "length" : "3",
+      "geoposition" : "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}",
       "olmcharacteristic": ""
     ]
     def inputClass = LineInput
@@ -131,8 +131,8 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
         uuid != null
         points == Collections.unmodifiableSortedSet([
           new CharacteristicPoint<Speed, Dimensionless>(
-          Quantities.getQuantity(0d, METRE_PER_SECOND),
-          Quantities.getQuantity(1d, PU))
+              Quantities.getQuantity(0d, METRE_PER_SECOND),
+              Quantities.getQuantity(1d, PU))
         ] as TreeSet)
       }
     }
@@ -142,13 +142,13 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
     given: "a line input factory and model data"
     def inputFactory = new LineInputFactory()
     Map<String, String> parameter = [
-      "uuid"             : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesfrom"     : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "operatesuntil"    : "",
-      "id"               : "TestID",
-      "paralleldevices"  : "2",
-      "length"           : "3",
-      "geoposition"      : geoLineString,
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesuntil" : "",
+      "id" : "TestID",
+      "paralleldevices" : "2",
+      "length" : "3",
+      "geoposition" : geoLineString,
       "olmcharacteristic": "olm:{(0.0,1.0)}"
     ]
     def inputClass = LineInput
@@ -170,8 +170,8 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
     }
 
     where:
-    geoLineString                                                                                                                         | _
-    "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228]]}"                                           | _
+    geoLineString | _
+    "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228]]}" | _
     "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228],[7.411111, 51.49228]]}" | _
     "{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.49228],[7.411111, 51.49228],[7.311111, 51.49228],[7.511111, 51.49228]]}" | _
   }

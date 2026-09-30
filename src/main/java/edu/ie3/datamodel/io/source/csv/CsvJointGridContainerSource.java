@@ -53,7 +53,6 @@ public class CsvJointGridContainerSource {
     EnergyManagementSource emSource = new EnergyManagementSource(typeSource, dataSource);
     SystemParticipantSource systemParticipantSource =
         new SystemParticipantSource(typeSource, thermalSource, rawGridSource, emSource, dataSource);
-    GraphicSource graphicSource = new GraphicSource(typeSource, rawGridSource, dataSource);
 
     /* validating sources */
     try {
@@ -62,7 +61,6 @@ public class CsvJointGridContainerSource {
       thermalSource.validate();
       emSource.validate();
       systemParticipantSource.validate();
-      graphicSource.validate();
     } catch (ValidationException ve) {
       throw new SourceException("Could not read source because validation failed", ve);
     }
@@ -86,11 +84,7 @@ public class CsvJointGridContainerSource {
         Try.of(
             () -> new EnergyManagementUnits(new HashSet<>(emSource.getEmUnits(operators).values())),
             SourceException.class);
-    Try<GraphicElements, SourceException> graphicElements =
-        Try.of(() -> graphicSource.getGraphicElements(nodes, lines), SourceException.class);
-
-    List<? extends Exception> exceptions =
-        Try.getExceptions(rawGridElements, systemParticipants, graphicElements);
+    List<? extends Exception> exceptions = Try.getExceptions(rawGridElements, systemParticipants);
 
     if (!exceptions.isEmpty()) {
       throw new SourceException("Some exception(s) occurred while reading the grid.", exceptions);

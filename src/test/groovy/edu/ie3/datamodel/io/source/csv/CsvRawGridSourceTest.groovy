@@ -247,13 +247,29 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
       lines.size() == expected.lines.size()
       lines.each {entry -> expected.lines.contains({it.uuid == entry.uuid})}
       transformer2Ws.size() == expected.transformer2Ws.size()
-      transformer2Ws.each {entry -> expected.transformer2Ws.contains({it.uuid == entry.uuid})}
+      transformer2Ws.each {entry ->
+        expected.transformer2Ws.contains({
+          it.uuid == entry.uuid
+        })
+      }
       transformer3Ws.size() == expected.transformer3Ws.size()
-      transformer3Ws.each {entry -> expected.transformer3Ws.contains({it.uuid == entry.uuid})}
+      transformer3Ws.each {entry ->
+        expected.transformer3Ws.contains({
+          it.uuid == entry.uuid
+        })
+      }
       switches.size() == expected.switches.size()
-      switches.each {entry -> expected.switches.contains({it.uuid == entry.uuid})}
+      switches.each {entry ->
+        expected.switches.contains({
+          it.uuid == entry.uuid
+        })
+      }
       measurementUnits.size() == expected.measurementUnits.size()
-      measurementUnits.each {entry -> expected.measurementUnits.contains({it.uuid == entry.uuid})}
+      measurementUnits.each {entry ->
+        expected.measurementUnits.contains({
+          it.uuid == entry.uuid
+        })
+      }
     }
   }
 
@@ -288,17 +304,17 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     given:
     def typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy))
     def rawGridSource =
-    new RawGridSource(typeSource, new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy)) {
-      @Override
-      Map<UUID, NodeInput> getNodes() {
-        return Collections.emptyMap()
-      }
+        new RawGridSource(typeSource, new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy)) {
+          @Override
+          Map<UUID, NodeInput> getNodes() {
+            return Collections.emptyMap()
+          }
 
-      @Override
-      Map<UUID, NodeInput> getNodes(Map<UUID, OperatorInput> operators) {
-        return Collections.emptyMap()
-      }
-    }
+          @Override
+          Map<UUID, NodeInput> getNodes(Map<UUID, OperatorInput> operators) {
+            return Collections.emptyMap()
+          }
+        }
 
     when:
     def rawGridElements = Try.of(() -> rawGridSource.gridData, SourceException)
@@ -310,7 +326,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     Exception ex = rawGridElements.exception.get()
     ex.class == SourceException
     ex.message == "2 exception(s) occurred within \"LineInput\" data: \n" +
-    "        Extracting UUID for field 'nodeA' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-    "        Extracting UUID for field 'nodeA' failed. Caused by: Entity with uuid bd837a25-58f3-44ac-aa90-c6b6e3cd91b2 was not provided."
+        "        Extracting UUID for field 'nodeA' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+        "        Extracting UUID for field 'nodeA' failed. Caused by: Entity with uuid bd837a25-58f3-44ac-aa90-c6b6e3cd91b2 was not provided."
   }
 }

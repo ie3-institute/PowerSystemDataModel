@@ -25,9 +25,6 @@ import tech.units.indriya.quantity.Quantities;
 /**
  * Utility class to create either custom instances of {@link ChargingPointType}s or to retrieve
  * common standard {@link ChargingPointType}s based on their id
- *
- * @version 0.1
- * @since 26.07.20
  */
 public class ChargingPointTypeUtils {
 
@@ -140,8 +137,8 @@ public class ChargingPointTypeUtils {
               .flatMap(
                   type ->
                       Stream.concat(
-                          Stream.of(type.getId().toLowerCase()),
-                          type.getSynonymousIds().stream().map(String::toLowerCase))
+                          Stream.of(type.id().toLowerCase()),
+                          type.synonymousIds().stream().map(String::toLowerCase))
                           .collect(Collectors.toMap(Function.identity(), v -> type))
                           .entrySet()
                           .stream())
@@ -204,8 +201,8 @@ public class ChargingPointTypeUtils {
           fromIdString(id)
               .flatMap(
                   commonType -> {
-                    if (commonType.getsRated().equals(sRated)
-                        && commonType.getElectricCurrentType().equals(currentType)) {
+                    if (commonType.sRated().equals(sRated)
+                        && commonType.electricCurrentType().equals(currentType)) {
                       return Optional.of(commonType);
                     } else {
                       return Optional.empty();

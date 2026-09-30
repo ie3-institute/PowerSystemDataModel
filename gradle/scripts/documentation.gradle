@@ -33,7 +33,7 @@ javadoc() {
  *
  * Important note: you have to install GraphViz Manually before being able to execute this task! -> https://graphviz.org
  */
-task puml2png() {
+tasks.register('puml2png') {
   description 'Converts plantUML diagrams to png files.'
   group 'Documentation'
 

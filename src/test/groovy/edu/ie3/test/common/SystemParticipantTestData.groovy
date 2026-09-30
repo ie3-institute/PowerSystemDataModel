@@ -230,7 +230,7 @@ class SystemParticipantTestData {
   // EV
   private static final ComparableQuantity<Energy> eStorage = Quantities.getQuantity(100, ENERGY_IN)
   private static final ComparableQuantity<SpecificEnergy> eCons = Quantities.getQuantity(5, ENERGY_PER_DISTANCE)
-  private static final ComparableQuantity<Power> sRatedDC = Quantities.getQuantity(20,ACTIVE_POWER_IN )
+  private static final ComparableQuantity<Power> sRatedDC = Quantities.getQuantity(20, ACTIVE_POWER_IN)
   public static final EvTypeInput evTypeInput = new EvTypeInput(
   typeUuid,
   "test_evTypeInput",

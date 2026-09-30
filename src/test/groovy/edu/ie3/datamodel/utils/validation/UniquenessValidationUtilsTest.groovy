@@ -201,20 +201,20 @@ class UniquenessValidationUtilsTest extends Specification {
 
     entityDuplicate.failure
     entityDuplicate.exception.get().message == "'MappingEntry' entities with duplicated UUID key, but different field values found! " +
-    "Affected primary keys: [1f25eea2-20eb-4b6b-8f05-bdbb0e851e65]"
+        "Affected primary keys: [1f25eea2-20eb-4b6b-8f05-bdbb0e851e65]"
   }
 
   def "Checking if time based weather values are unique"() {
     given:
     ZonedDateTime time = ZonedDateTime.now()
     WeatherValue value = new WeatherValue(
-    GeoUtils.buildPoint(50d, 7d),
-    new SolarIrradianceValue(Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE)),
-    new TemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)),
-    new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND)),
-    Optional.of(new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS))),
-    Optional.of(new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)))
-    )
+        GeoUtils.buildPoint(50d, 7d),
+        new SolarIrradianceValue(Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE)),
+        new TemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)),
+        new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND)),
+        Optional.of(new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS))),
+        Optional.of(new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)))
+        )
 
     Set<TimeBasedValue<WeatherValue>> uniqueValues = [
       new TimeBasedValue<WeatherValue>(time, value),
@@ -232,13 +232,13 @@ class UniquenessValidationUtilsTest extends Specification {
     given:
     ZonedDateTime time = ZonedDateTime.now()
     WeatherValue value = new WeatherValue(
-    GeoUtils.buildPoint(50d, 7d),
-    new SolarIrradianceValue(Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE)),
-    new TemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)),
-    new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND)),
-    Optional.of(new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS))),
-    Optional.of(new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)))
-    )
+        GeoUtils.buildPoint(50d, 7d),
+        new SolarIrradianceValue(Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE)),
+        new TemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)),
+        new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND)),
+        Optional.of(new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS))),
+        Optional.of(new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)))
+        )
     Set<TimeBasedValue<WeatherValue>> notUniqueValues = [
       new TimeBasedValue<WeatherValue>(time, value),
       new TimeBasedValue<WeatherValue>(time, value)

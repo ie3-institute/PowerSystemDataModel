@@ -23,6 +23,7 @@ public abstract class TimeBasedValueFactory<D extends TimeBasedValueData<V>, V e
 
   protected final TimeUtil timeUtil;
 
+  @SafeVarargs
   protected TimeBasedValueFactory(Class<? extends V>... valueClasses) {
     super(valueClasses);
     this.timeUtil = TimeUtil.withDefaults;

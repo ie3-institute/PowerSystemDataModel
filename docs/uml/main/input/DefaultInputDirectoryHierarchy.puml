@@ -17,13 +17,9 @@ package <gridname>(.tar.gz) {
                 label "//its_<uuid0>.csv//\n...\n//its_<uuidn>.csv//\n//rts_<uuid0>.csv//\n...\n//rts_<uuidn>.csv//\n\n//participant_to_time_series.csv//"
             }
         }
-        package //graphics// as gr {
-            label "//line_graphic_input.csv//\n//node_graphic_input.csv//"
-        }
 
         grid -[hidden]- global
         participants -[hidden]- th
-        th -[hidden]- gr
     }
 }
 

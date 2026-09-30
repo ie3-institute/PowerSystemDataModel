@@ -113,10 +113,11 @@ public record CsvFileDefinition(Path filePath, String[] headLineElements, String
     // equals implementation is required here because
     // records' equals method and array fields don't play together nicely
     if (this == o) return true;
-    if (!(o instanceof CsvFileDefinition that)) return false;
-    return filePath.equals(that.filePath)
-        && Arrays.equals(headLineElements, that.headLineElements)
-        && csvSep.equals(that.csvSep);
+    if (!(o instanceof CsvFileDefinition(Path path, String[] lineElements, String sep)))
+      return false;
+    return filePath.equals(path)
+        && Arrays.equals(headLineElements, lineElements)
+        && csvSep.equals(sep);
   }
 
   @Override

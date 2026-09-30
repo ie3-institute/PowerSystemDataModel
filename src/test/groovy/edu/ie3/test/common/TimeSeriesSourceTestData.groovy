@@ -13,7 +13,7 @@ import tech.units.indriya.quantity.Quantities
 
 import java.time.ZonedDateTime
 
-final class  TimeSeriesSourceTestData {
+final class TimeSeriesSourceTestData {
 
   private TimeSeriesSourceTestData() {
     // restrict instantiation

@@ -26,8 +26,8 @@ class VoltageValueTest extends Specification {
     QuantityUtil.isEquivalentAbs(actual.get(), expected, tolerance)
 
     where:
-    value                                                                                    | expected
-    new VoltageValue(Quantities.getQuantity(1, PU), Quantities.getQuantity(0, DEGREE_GEOM))  | Quantities.getQuantity(1, PU)
+    value | expected
+    new VoltageValue(Quantities.getQuantity(1, PU), Quantities.getQuantity(0, DEGREE_GEOM)) | Quantities.getQuantity(1, PU)
     new VoltageValue(Quantities.getQuantity(1, PU), Quantities.getQuantity(45, DEGREE_GEOM)) | Quantities.getQuantity(0.7071067811865476, PU)
     new VoltageValue(Quantities.getQuantity(1, PU), Quantities.getQuantity(90, DEGREE_GEOM)) | Quantities.getQuantity(0, PU)
   }
@@ -42,8 +42,8 @@ class VoltageValueTest extends Specification {
     QuantityUtil.isEquivalentAbs(actual.get(), expected, tolerance)
 
     where:
-    value                                                                                    | expected
-    new VoltageValue(Quantities.getQuantity(1, PU), Quantities.getQuantity(0, DEGREE_GEOM))  | Quantities.getQuantity(0, PU)
+    value | expected
+    new VoltageValue(Quantities.getQuantity(1, PU), Quantities.getQuantity(0, DEGREE_GEOM)) | Quantities.getQuantity(0, PU)
     new VoltageValue(Quantities.getQuantity(1, PU), Quantities.getQuantity(45, DEGREE_GEOM)) | Quantities.getQuantity(0.7071067811865475, PU)
     new VoltageValue(Quantities.getQuantity(1, PU), Quantities.getQuantity(90, DEGREE_GEOM)) | Quantities.getQuantity(1, PU)
   }

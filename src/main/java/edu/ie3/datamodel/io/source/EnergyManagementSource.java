@@ -98,7 +98,7 @@ public class EnergyManagementSource extends AssetEntitySource {
     List<Try<AssetInputEntityData, SourceException>> rootEmsEntityData = split.get(false);
     List<Try<AssetInputEntityData, SourceException>> others = split.get(true);
 
-    // at the start, this is only root ems
+    // at the start, there are only root ems
     Map<UUID, EmInput> allEms =
         unpack(
                 rootEmsEntityData.stream()
@@ -106,7 +106,11 @@ public class EnergyManagementSource extends AssetEntitySource {
                     .map(
                         entityDataTry ->
                             entityDataTry.map(
-                                entityData -> new EmAssetInputEntityData(entityData, null)))
+                                entityData -> {
+                                  // remove the empty field from the additional data
+                                  entityData.getField(CONTROLLING_EM);
+                                  return new EmAssetInputEntityData(entityData, null);
+                                }))
                     .map(emInputFactory::get),
                 EmInput.class)
             .collect(toMap());

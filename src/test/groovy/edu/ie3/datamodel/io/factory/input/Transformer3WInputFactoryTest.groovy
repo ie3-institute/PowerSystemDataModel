@@ -17,7 +17,7 @@ import edu.ie3.test.common.GridTestData
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 
-class Transformer3WInputFactoryTest  extends Specification implements FactoryTestHelper {
+class Transformer3WInputFactoryTest extends Specification implements FactoryTestHelper {
   def "A Transformer3WInputFactory should contain exactly the expected class for parsing"() {
     given:
     def inputFactory = new Transformer3WInputFactory()
@@ -31,11 +31,11 @@ class Transformer3WInputFactoryTest  extends Specification implements FactoryTes
     given: "a system participant input type factory and model data"
     def inputFactory = new Transformer3WInputFactory()
     Map<String, String> parameter = [
-      "uuid"           : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id"             : "TestID",
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id" : "TestID",
       "paralleldevices": "2",
-      "tappos"         : "3",
-      "autotap"        : "true"
+      "tappos" : "3",
+      "autotap" : "true"
     ]
     def inputClass = Transformer3WInput
     def nodeInputA = GridTestData.nodeA
@@ -67,11 +67,11 @@ class Transformer3WInputFactoryTest  extends Specification implements FactoryTes
     given: "a system participant input type factory and model data"
     def inputFactory = new Transformer3WInputFactory()
     Map<String, String> parameter = [
-      "uuid"           : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id"             : "TestID",
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id" : "TestID",
       "paralleldevices": "2",
-      "tappos"         : "3",
-      "autotap"        : "true"
+      "tappos" : "3",
+      "autotap" : "true"
     ]
     def inputClass = Transformer3WInput
     def nodeInputA = GridTestData.nodeC

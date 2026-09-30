@@ -49,7 +49,9 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.check() recognizes all potential errors for a system participant"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidSystemParticipant).findAll { it -> it.failure }
+    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidSystemParticipant).findAll { it ->
+      it.failure
+    }
 
     then:
     exceptions.size() == expectedSize
@@ -58,8 +60,8 @@ class SystemParticipantValidationUtilsTest extends Specification {
     ex.message == expectedException.message
 
     where:
-    invalidSystemParticipant                                                || expectedSize || expectedException
-    SystemParticipantTestData.bmInput.copy().qCharacteristics(null).build() || 1            || new InvalidEntityException("Reactive power characteristics of system participant is not defined", invalidSystemParticipant)
+    invalidSystemParticipant || expectedSize || expectedException
+    SystemParticipantTestData.bmInput.copy().qCharacteristics(null).build() || 1 || new InvalidEntityException("Reactive power characteristics of system participant is not defined", invalidSystemParticipant)
   }
 
   // Common data for all system participant types
@@ -103,10 +105,10 @@ class SystemParticipantValidationUtilsTest extends Specification {
     ex.message.contains(expectedException.message)
 
     where:
-    invalidType                                                                                                                                                                                           || expectedException
-    new BmTypeInput(uuid, id, null, opex, activePowerGradient, sRated, cosPhiRated, etaConv)                                                                                                              || new InvalidEntityException("At least one of capex, opex, or sRated is null", invalidType)
+    invalidType || expectedException
+    new BmTypeInput(uuid, id, null, opex, activePowerGradient, sRated, cosPhiRated, etaConv) || new InvalidEntityException("At least one of capex, opex, or sRated is null", invalidType)
     new BmTypeInput(uuid, id, Quantities.getQuantity(-100d, CAPEX), Quantities.getQuantity(-50d, ENERGY_PRICE), activePowerGradient, Quantities.getQuantity(-25d, ACTIVE_POWER_IN), cosPhiRated, etaConv) || new InvalidEntityException("The following quantities have to be zero or positive: capex=-100 EUR, opex=-50 EUR/MWh, sRated=-25 kVA", invalidType)
-    new BmTypeInput(uuid, id, capex, opex, activePowerGradient, sRated, 2, etaConv)                                                                                                                       || new InvalidEntityException("Rated power factor of BmTypeInput must be between 0 and 1", invalidType)
+    new BmTypeInput(uuid, id, capex, opex, activePowerGradient, sRated, 2, etaConv) || new InvalidEntityException("Rated power factor of BmTypeInput must be between 0 and 1", invalidType)
   }
 
   // BM
@@ -144,9 +146,9 @@ class SystemParticipantValidationUtilsTest extends Specification {
     ex.message.contains(expectedException.message)
 
     where:
-    invalidBmType                                                                                                             || expectedException
-    new BmTypeInput(uuid, id, capex, opex, Quantities.getQuantity(-25, ACTIVE_POWER_GRADIENT), sRated, cosPhiRated, etaConv)  || new InvalidEntityException("The following quantities have to be zero or positive: activePowerGradient=-25 %/h", invalidBmType)
-    new BmTypeInput(uuid, id, capex, opex, activePowerGradient, sRated, cosPhiRated, Quantities.getQuantity(1000d, PERCENT))  || new InvalidEntityException("Efficiency of inverter of BmTypeInput must be between 0% and 100%", invalidBmType)
+    invalidBmType || expectedException
+    new BmTypeInput(uuid, id, capex, opex, Quantities.getQuantity(-25, ACTIVE_POWER_GRADIENT), sRated, cosPhiRated, etaConv) || new InvalidEntityException("The following quantities have to be zero or positive: activePowerGradient=-25 %/h", invalidBmType)
+    new BmTypeInput(uuid, id, capex, opex, activePowerGradient, sRated, cosPhiRated, Quantities.getQuantity(1000d, PERCENT)) || new InvalidEntityException("Efficiency of inverter of BmTypeInput must be between 0% and 100%", invalidBmType)
   }
 
   // CHP
@@ -184,11 +186,11 @@ class SystemParticipantValidationUtilsTest extends Specification {
     ex.message.contains(expectedException.message)
 
     where:
-    invalidChpType                                                                                                                           || expectedException
+    invalidChpType || expectedException
     new ChpTypeInput(uuid, id, capex, opex, etaEl, etaThermal, sRated, cosPhiRated, pThermal, Quantities.getQuantity(-100, ACTIVE_POWER_IN)) || new InvalidEntityException("The following quantities have to be zero or positive: pOwn=-100 kW", invalidChpType)
-    new ChpTypeInput(uuid, id, capex, opex, etaEl, etaThermal, sRated, cosPhiRated, Quantities.getQuantity(0, ACTIVE_POWER_IN), pOwn)        || new InvalidEntityException("The following quantities have to be positive: pThermal=0 kW", invalidChpType)
-    new ChpTypeInput(uuid, id, capex, opex, Quantities.getQuantity(110, EFFICIENCY), etaThermal, sRated, cosPhiRated, pThermal, pOwn)        || new InvalidEntityException("Electrical efficiency of ChpTypeInput must be between 0% and 100%", invalidChpType)
-    new ChpTypeInput(uuid, id, capex, opex, etaEl, Quantities.getQuantity(110, EFFICIENCY), sRated, cosPhiRated, pThermal, pOwn)             || new InvalidEntityException("Thermal efficiency of ChpTypeInput must be between 0% and 100%", invalidChpType)
+    new ChpTypeInput(uuid, id, capex, opex, etaEl, etaThermal, sRated, cosPhiRated, Quantities.getQuantity(0, ACTIVE_POWER_IN), pOwn) || new InvalidEntityException("The following quantities have to be positive: pThermal=0 kW", invalidChpType)
+    new ChpTypeInput(uuid, id, capex, opex, Quantities.getQuantity(110, EFFICIENCY), etaThermal, sRated, cosPhiRated, pThermal, pOwn) || new InvalidEntityException("Electrical efficiency of ChpTypeInput must be between 0% and 100%", invalidChpType)
+    new ChpTypeInput(uuid, id, capex, opex, etaEl, Quantities.getQuantity(110, EFFICIENCY), sRated, cosPhiRated, pThermal, pOwn) || new InvalidEntityException("Thermal efficiency of ChpTypeInput must be between 0% and 100%", invalidChpType)
   }
 
   // EV
@@ -226,7 +228,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
     ex.message.contains(expectedException.message)
 
     where:
-    invalidEvType                                                                                                                                                                                  || expectedException
+    invalidEvType || expectedException
     new EvTypeInput(uuid, id, capex, opex, Quantities.getQuantity(0, ENERGY_IN), Quantities.getQuantity(0, ENERGY_PER_DISTANCE), sRated, cosPhiRated, Quantities.getQuantity(20, ACTIVE_POWER_IN)) || new InvalidEntityException("The following quantities have to be positive: eStorage=0 kWh, eCons=0 kWh/km", invalidEvType)
   }
 
@@ -245,7 +247,9 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.checkFixedFeedIn() recognizes all potential errors for an a Fixed Feed-In"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidFixedFeedIn).findAll { it -> it.failure }
+    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidFixedFeedIn).findAll { it ->
+      it.failure
+    }
 
     then:
     exceptions.size() == expectedSize
@@ -254,9 +258,9 @@ class SystemParticipantValidationUtilsTest extends Specification {
     ex.message == expectedException.message
 
     where:
-    invalidFixedFeedIn                                                                                               || expectedSize || expectedException
-    SystemParticipantTestData.fixedFeedInInput.copy().sRated(Quantities.getQuantity(-100d, ACTIVE_POWER_IN)).build() || 1            || new InvalidEntityException("The following quantities have to be zero or positive: sRated=-100 kVA", invalidFixedFeedIn)
-    SystemParticipantTestData.fixedFeedInInput.copy().cosPhiRated(-1d).build()                                       || 1            || new InvalidEntityException("Rated power factor of FixedFeedInInput must be between 0 and 1", invalidFixedFeedIn)
+    invalidFixedFeedIn || expectedSize || expectedException
+    SystemParticipantTestData.fixedFeedInInput.copy().sRated(Quantities.getQuantity(-100d, ACTIVE_POWER_IN)).build() || 1 || new InvalidEntityException("The following quantities have to be zero or positive: sRated=-100 kVA", invalidFixedFeedIn)
+    SystemParticipantTestData.fixedFeedInInput.copy().cosPhiRated(-1d).build() || 1 || new InvalidEntityException("Rated power factor of FixedFeedInInput must be between 0 and 1", invalidFixedFeedIn)
   }
 
   // HP
@@ -294,9 +298,9 @@ class SystemParticipantValidationUtilsTest extends Specification {
     ex.message.contains(expectedException.message)
 
     where:
-    invalidHpType                                                                                            || expectedException
-    new HpTypeInput(uuid, id, capex, opex, Quantities.getQuantity(0, S_RATED), cosPhiRated, pThermal)        || new InvalidEntityException("The following quantities have to be positive: sRated=0 kVA", invalidHpType)
-    new HpTypeInput(uuid, id, capex, opex, sRated, cosPhiRated, Quantities.getQuantity(0, ACTIVE_POWER_IN))  || new InvalidEntityException("The following quantities have to be positive: pThermal=0 kW", invalidHpType)
+    invalidHpType || expectedException
+    new HpTypeInput(uuid, id, capex, opex, Quantities.getQuantity(0, S_RATED), cosPhiRated, pThermal) || new InvalidEntityException("The following quantities have to be positive: sRated=0 kVA", invalidHpType)
+    new HpTypeInput(uuid, id, capex, opex, sRated, cosPhiRated, Quantities.getQuantity(0, ACTIVE_POWER_IN)) || new InvalidEntityException("The following quantities have to be positive: pThermal=0 kW", invalidHpType)
   }
 
   // AC
@@ -334,8 +338,8 @@ class SystemParticipantValidationUtilsTest extends Specification {
     ex.message.contains(expectedException.message)
 
     where:
-    invalidAcType                                                                                           || expectedException
-    new AcTypeInput(uuid, id, capex, opex, Quantities.getQuantity(0, S_RATED), cosPhiRated, pThermal)       || new InvalidEntityException("The following quantities have to be positive: sRated=0 kVA", invalidAcType)
+    invalidAcType || expectedException
+    new AcTypeInput(uuid, id, capex, opex, Quantities.getQuantity(0, S_RATED), cosPhiRated, pThermal) || new InvalidEntityException("The following quantities have to be positive: sRated=0 kVA", invalidAcType)
     new AcTypeInput(uuid, id, capex, opex, sRated, cosPhiRated, Quantities.getQuantity(0, ACTIVE_POWER_IN)) || new InvalidEntityException("The following quantities have to be positive: pThermal=0 kW", invalidAcType)
   }
 
@@ -355,7 +359,9 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.checkLoad() recognizes all potential errors for a load"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidLoad).findAll { it -> it.failure }
+    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidLoad).findAll { it ->
+      it.failure
+    }
 
     then:
     exceptions.size() == expectedSize
@@ -364,10 +370,10 @@ class SystemParticipantValidationUtilsTest extends Specification {
     ex.message == expectedException.message
 
     where:
-    invalidLoad                                                                                                                                                    || expectedSize || expectedException
+    invalidLoad || expectedSize || expectedException
     SystemParticipantTestData.loadInput.copy().loadProfile(null).build() || 1 || new InvalidEntityException("No load profile key defined for load", invalidLoad)
-    SystemParticipantTestData.loadInput.copy().sRated(Quantities.getQuantity(-25d, ACTIVE_POWER_IN)).eConsAnnual(Quantities.getQuantity(-4000, ENERGY_IN)).build() || 1            || new InvalidEntityException("The following quantities have to be zero or positive: sRated=-25 kVA, eConsAnnual=-4000 kWh", invalidLoad)
-    SystemParticipantTestData.loadInput.copy().cosPhiRated(2).build()                                                                                              || 1            || new InvalidEntityException("Rated power factor of LoadInput must be between 0 and 1", invalidLoad)
+    SystemParticipantTestData.loadInput.copy().sRated(Quantities.getQuantity(-25d, ACTIVE_POWER_IN)).eConsAnnual(Quantities.getQuantity(-4000, ENERGY_IN)).build() || 1 || new InvalidEntityException("The following quantities have to be zero or positive: sRated=-25 kVA, eConsAnnual=-4000 kWh", invalidLoad)
+    SystemParticipantTestData.loadInput.copy().cosPhiRated(2).build() || 1 || new InvalidEntityException("Rated power factor of LoadInput must be between 0 and 1", invalidLoad)
   }
 
   // PV
@@ -385,7 +391,9 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "SystemParticipantValidationUtils.checkPV() recognizes all potential errors for a PV"() {
     when:
-    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidPV).findAll { it -> it.failure }
+    List<Try<Void, InvalidEntityException>> exceptions = SystemParticipantValidationUtils.check(invalidPV).findAll { it ->
+      it.failure
+    }
 
     then:
     exceptions.size() == expectedSize
@@ -394,13 +402,13 @@ class SystemParticipantValidationUtilsTest extends Specification {
     ex.message == expectedException.message
 
     where:
-    invalidPV                                                                                                            || expectedSize || expectedException
-    SystemParticipantTestData.pvInput.copy().sRated(Quantities.getQuantity(-25d, ACTIVE_POWER_IN)).build()               || 1            || new InvalidEntityException("The following quantities have to be zero or positive: sRated=-25 kVA", invalidPV)
-    SystemParticipantTestData.pvInput.copy().albedo(2).build()                                                           || 1            || new InvalidEntityException("Albedo of the plant's surrounding of PvInput must be between 0 and 1", invalidPV)
-    SystemParticipantTestData.pvInput.copy().azimuth(Quantities.getQuantity(-181d, AZIMUTH)).build()                     || 1            || new InvalidEntityException("Azimuth angle of PvInput must be between -180° and 180°", invalidPV)
-    SystemParticipantTestData.pvInput.copy().etaConv(Quantities.getQuantity(110d, EFFICIENCY)).build()                   || 1            || new InvalidEntityException("Efficiency of the converter of PvInput must be between 0% and 100%", invalidPV)
-    SystemParticipantTestData.pvInput.copy().elevationAngle(Quantities.getQuantity(100d, SOLAR_ELEVATION_ANGLE)).build() || 1            || new InvalidEntityException("Tilted inclination from horizontal of PvInput must be between 0° and 90°", invalidPV)
-    SystemParticipantTestData.pvInput.copy().cosPhiRated(2).build()                                                      || 1            || new InvalidEntityException("Rated power factor of PvInput must be between 0 and 1", invalidPV)
+    invalidPV || expectedSize || expectedException
+    SystemParticipantTestData.pvInput.copy().sRated(Quantities.getQuantity(-25d, ACTIVE_POWER_IN)).build() || 1 || new InvalidEntityException("The following quantities have to be zero or positive: sRated=-25 kVA", invalidPV)
+    SystemParticipantTestData.pvInput.copy().albedo(2).build() || 1 || new InvalidEntityException("Albedo of the plant's surrounding of PvInput must be between 0 and 1", invalidPV)
+    SystemParticipantTestData.pvInput.copy().azimuth(Quantities.getQuantity(-181d, AZIMUTH)).build() || 1 || new InvalidEntityException("Azimuth angle of PvInput must be between -180° and 180°", invalidPV)
+    SystemParticipantTestData.pvInput.copy().etaConv(Quantities.getQuantity(110d, EFFICIENCY)).build() || 1 || new InvalidEntityException("Efficiency of the converter of PvInput must be between 0% and 100%", invalidPV)
+    SystemParticipantTestData.pvInput.copy().elevationAngle(Quantities.getQuantity(100d, SOLAR_ELEVATION_ANGLE)).build() || 1 || new InvalidEntityException("Tilted inclination from horizontal of PvInput must be between 0° and 90°", invalidPV)
+    SystemParticipantTestData.pvInput.copy().cosPhiRated(2).build() || 1 || new InvalidEntityException("Rated power factor of PvInput must be between 0 and 1", invalidPV)
   }
 
   // Storage
@@ -438,10 +446,10 @@ class SystemParticipantValidationUtilsTest extends Specification {
     ex.message.contains(expectedException.message)
 
     where:
-    invalidStorageType                                                                                                                                                                                                                           || expectedException
-    new StorageTypeInput(uuid, id, capex, opex, eStorage, sRated, cosPhiRated, pMax, cpRate, Quantities.getQuantity(110, EFFICIENCY))                                                                                  || new InvalidEntityException("Efficiency of the electrical converter of StorageTypeInput must be between 0% and 100%", invalidStorageType)
+    invalidStorageType || expectedException
+    new StorageTypeInput(uuid, id, capex, opex, eStorage, sRated, cosPhiRated, pMax, cpRate, Quantities.getQuantity(110, EFFICIENCY)) || new InvalidEntityException("Efficiency of the electrical converter of StorageTypeInput must be between 0% and 100%", invalidStorageType)
     new StorageTypeInput(uuid, id, capex, opex, eStorage, sRated, cosPhiRated, Quantities.getQuantity(-15, ACTIVE_POWER_IN), Quantities.getQuantity(-100, ACTIVE_POWER_GRADIENT), eta) || new InvalidEntityException("The following quantities have to be zero or positive: pMax=-15 kW, activePowerGradient=-100 %/h", invalidStorageType)
-    new StorageTypeInput(uuid, id, capex, opex, Quantities.getQuantity(0, ENERGY_IN), sRated, cosPhiRated, pMax, cpRate, eta)                                                                                          || new InvalidEntityException("The following quantities have to be positive: eStorage=0 kWh", invalidStorageType)
+    new StorageTypeInput(uuid, id, capex, opex, Quantities.getQuantity(0, ENERGY_IN), sRated, cosPhiRated, pMax, cpRate, eta) || new InvalidEntityException("The following quantities have to be positive: eStorage=0 kWh", invalidStorageType)
   }
 
   // WEC
@@ -479,14 +487,16 @@ class SystemParticipantValidationUtilsTest extends Specification {
     ex.message.contains(expectedException.message)
 
     where:
-    invalidWecType                                                                                                                                                              || expectedException
-    new WecTypeInput(uuid, id, capex, opex, sRated, cosPhiRated, wecCharacteristic, Quantities.getQuantity(110d, EFFICIENCY), rotorArea, hubHeight)                             || new InvalidEntityException("Efficiency of the converter of WecTypeInput must be between 0% and 100%", invalidWecType)
+    invalidWecType || expectedException
+    new WecTypeInput(uuid, id, capex, opex, sRated, cosPhiRated, wecCharacteristic, Quantities.getQuantity(110d, EFFICIENCY), rotorArea, hubHeight) || new InvalidEntityException("Efficiency of the converter of WecTypeInput must be between 0% and 100%", invalidWecType)
     new WecTypeInput(uuid, id, capex, opex, sRated, cosPhiRated, wecCharacteristic, etaConv, Quantities.getQuantity(-10, ROTOR_AREA), Quantities.getQuantity(-200, HUB_HEIGHT)) || new InvalidEntityException("The following quantities have to be zero or positive: rotorArea=-10 m², hubHeight=-200 m", invalidWecType)
   }
 
   def "SystemParticipantValidationUtils.checkEvcs() recognizes all potential errors for a evcs"() {
     when:
-    def exceptions = SystemParticipantValidationUtils.check(invalidEvcs).findAll { it.failure }
+    def exceptions = SystemParticipantValidationUtils.check(invalidEvcs).findAll {
+      it.failure
+    }
 
     then:
     exceptions.size() == 1
@@ -495,10 +505,10 @@ class SystemParticipantValidationUtilsTest extends Specification {
     ex.message == expectedException.message
 
     where:
-    invalidEvcs                                                           || expectedException
+    invalidEvcs || expectedException
     SystemParticipantTestData.evcsInput.copy().chargingPoints(-1).build() || new InvalidEntityException("Invalid number of charging points: '-1'. At least one charging point is needed.", invalidEvcs)
-    SystemParticipantTestData.evcsInput.copy().chargingPoints(0).build()  || new InvalidEntityException("Invalid number of charging points: '0'. At least one charging point is needed.", invalidEvcs)
-    SystemParticipantTestData.evcsInput.copy().cosPhiRated(2).build()     || new InvalidEntityException("Rated power factor of EvcsInput must be between 0 and 1", invalidEvcs)
+    SystemParticipantTestData.evcsInput.copy().chargingPoints(0).build() || new InvalidEntityException("Invalid number of charging points: '0'. At least one charging point is needed.", invalidEvcs)
+    SystemParticipantTestData.evcsInput.copy().cosPhiRated(2).build() || new InvalidEntityException("Rated power factor of EvcsInput must be between 0 and 1", invalidEvcs)
   }
 
   def "SystemParticipantValidationUtils.checkEvcs() recognizes all potential errors for a evcs type"() {
@@ -508,7 +518,9 @@ class SystemParticipantValidationUtilsTest extends Specification {
     def expectedExceptions = new InvalidEntityException("The following quantities have to be zero or positive: sRated=-1 kVA", invalidEvcs)
 
     when:
-    def exceptions = SystemParticipantValidationUtils.check(invalidEvcs).findAll { it.failure }
+    def exceptions = SystemParticipantValidationUtils.check(invalidEvcs).findAll {
+      it.failure
+    }
 
     then:
     exceptions.size() == 1
