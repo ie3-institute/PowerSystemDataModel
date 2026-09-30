@@ -33,7 +33,7 @@ public class ThermalLineSegmentResult extends ResultEntity {
   public ThermalLineSegmentResult(
       ZonedDateTime dateTime,
       UUID lineSegmentUuid,
-      ComparableQuantity<Temperature> lineSegmentTemperature
+      ComparableQuantity<Temperature> lineSegmentTemperature,
       ComparableQuantity<Temperature> groundTemperature) {
     super(dateTime, lineSegmentUuid);
     this.lineSegmentTemperature = lineSegmentTemperature.to(StandardUnits.TEMPERATURE);
