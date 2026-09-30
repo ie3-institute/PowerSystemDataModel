@@ -356,9 +356,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     def entries = [
       new TimeBasedValue(ZonedDateTime.now(), new IntValue(5))
     ] as SortedSet
-    IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
-    timeSeries.uuid >> UUID.randomUUID()
-    timeSeries.entries >> entries
+    def timeSeries = new IndividualTimeSeries(UUID.randomUUID(), entries)
 
     when:
     Optional<String> actual = strategy.getEntityName(timeSeries)
@@ -371,9 +369,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     given:
     EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy()
     def entries = [] as SortedSet
-    IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
-    timeSeries.uuid >> UUID.randomUUID()
-    timeSeries.entries >> entries
+    def timeSeries = new IndividualTimeSeries(UUID.randomUUID(), entries)
 
     when:
     Optional<String> actual = strategy.getEntityName(timeSeries)
@@ -388,9 +384,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     def entries = [
       new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))
     ] as SortedSet
-    IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
-    timeSeries.uuid >> uuid
-    timeSeries.entries >> entries
+    def timeSeries = new IndividualTimeSeries(uuid, entries)
 
     when:
     Optional<String> actual = strategy.getEntityName(timeSeries)
@@ -409,9 +403,7 @@ class EntityPersistenceNamingStrategyTest extends Specification {
     EntityPersistenceNamingStrategy strategy = new EntityPersistenceNamingStrategy("aa", "zz")
     def entries = [] as SortedSet
     entries.add(new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR))))
-    IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
-    timeSeries.uuid >> uuid
-    timeSeries.entries >> entries
+    def timeSeries = new IndividualTimeSeries(uuid, entries)
 
     when:
     Optional<String> actual = strategy.getEntityName(timeSeries)

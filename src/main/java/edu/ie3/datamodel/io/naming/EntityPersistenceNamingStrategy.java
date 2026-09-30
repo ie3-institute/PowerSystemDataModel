@@ -336,7 +336,7 @@ public class EntityPersistenceNamingStrategy {
           R extends Value>
       Optional<String> getEntityName(T timeSeries) {
     if (timeSeries instanceof IndividualTimeSeries<?> its) {
-      Optional<E> maybeFirstElement = timeSeries.getEntries().stream().findFirst();
+      Optional<E> maybeFirstElement = timeSeries.first();
       if (maybeFirstElement.isPresent()) {
         Class<? extends Value> valueClass = maybeFirstElement.get().getValue().getClass();
         Optional<ColumnScheme> mayBeColumnScheme = ColumnScheme.parse(valueClass);

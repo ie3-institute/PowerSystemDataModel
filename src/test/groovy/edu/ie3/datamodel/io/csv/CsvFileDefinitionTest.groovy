@@ -145,9 +145,7 @@ class CsvFileDefinitionTest extends Specification {
     def entries = [
       new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(50d, StandardUnits.ENERGY_PRICE)))
     ] as SortedSet
-    def timeSeries = Mock(IndividualTimeSeries)
-    timeSeries.uuid >> UUID.fromString("0c03ce9f-ab0e-4715-bc13-f9d903f26dbf")
-    timeSeries.entries >> entries
+    def timeSeries = new IndividualTimeSeries(UUID.fromString("0c03ce9f-ab0e-4715-bc13-f9d903f26dbf"), entries)
 
     when:
     def actual = new CsvFileDefinition(timeSeries, ["a", "b", "c"] as String[], ",", fileNamingStrategy)
@@ -170,9 +168,7 @@ class CsvFileDefinitionTest extends Specification {
     def entries = [
       new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(50d, StandardUnits.ENERGY_PRICE)))
     ] as SortedSet
-    def timeSeries = Mock(IndividualTimeSeries)
-    timeSeries.uuid >> UUID.fromString("0c03ce9f-ab0e-4715-bc13-f9d903f26dbf")
-    timeSeries.entries >> entries
+    def timeSeries = new IndividualTimeSeries(UUID.fromString("0c03ce9f-ab0e-4715-bc13-f9d903f26dbf"), entries)
 
     when:
     def actual = new CsvFileDefinition(timeSeries, ["a", "b", "c"] as String[], ",", fileNamingStrategy)
