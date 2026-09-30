@@ -7,11 +7,11 @@ package edu.ie3.datamodel.models.input.connector.type;
 
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.util.quantities.interfaces.SpecificCapacitance;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import javax.measure.quantity.ElectricCapacitance;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Temperature;
 import org.jspecify.annotations.NonNull;
@@ -35,7 +35,7 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
   private final ComparableQuantity<Frequency> frequency;
   private final double skinEffectCoefficient;
   private final double proximityEffectCoefficient;
-  private final ComparableQuantity<ElectricCapacitance> electricalCapacitance;
+  private final ComparableQuantity<SpecificCapacitance> electricalCapacitance;
   private final double tanDelta;
   private final double circulatingLossFactor;
   private final double eddyCurrentLossFactor;
@@ -79,7 +79,7 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
       ComparableQuantity<Frequency> frequency,
       double skinEffectCoefficient,
       double proximityEffectCoefficient,
-      ComparableQuantity<ElectricCapacitance> electricalCapacitance,
+      ComparableQuantity<SpecificCapacitance> electricalCapacitance,
       double tanDelta,
       double circulatingLossFactor,
       double eddyCurrentLossFactor) {
@@ -147,7 +147,7 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
     return proximityEffectCoefficient;
   }
 
-  public ComparableQuantity<ElectricCapacitance> getElectricalCapacitance() {
+  public ComparableQuantity<SpecificCapacitance> getElectricalCapacitance() {
     return electricalCapacitance;
   }
 
@@ -270,7 +270,7 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
     private ComparableQuantity<Frequency> frequency;
     private double skinEffectCoefficient;
     private double proximityEffectCoefficient;
-    private ComparableQuantity<ElectricCapacitance> electricalCapacitance;
+    private ComparableQuantity<SpecificCapacitance> electricalCapacitance;
     private double tanDelta;
     private double circulatingLossFactor;
     private double eddyCurrentLossFactor;
@@ -351,7 +351,7 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
     }
 
     public CableTypeInputCopyBuilder electricalCapacitance(
-        ComparableQuantity<ElectricCapacitance> value) {
+        ComparableQuantity<SpecificCapacitance> value) {
       this.electricalCapacitance = value;
       return thisInstance();
     }

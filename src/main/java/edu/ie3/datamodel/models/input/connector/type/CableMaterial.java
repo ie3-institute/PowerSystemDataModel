@@ -37,37 +37,12 @@ public enum CableMaterial {
   /** Steel armoring material */
   STEEL,
   /** Polypropylene material */
-  POLYPROPYLEN,
-  /** Unknown material type */
-  UNKNOWN;
-
-  /**
-   * Parses a material string into a Cable Material.
-   *
-   * @return An enum of the cable material if it can be parsed.
-   */
-  public static CableMaterial fromString(String s) {
-    if (s == null) return UNKNOWN;
-    return switch (s.trim().toLowerCase()) {
-      case "copper" -> COPPER;
-      case "copperwoventape", "sc_tape" -> SC_TAPE;
-      case "aluminium" -> ALUMINIUM;
-      case "xlpe" -> XLPE;
-      case "pe" -> PE;
-      case "pvc" -> PVC;
-      case "semicondscreen", "semi_cond_screen" -> SEMI_COND_SCREEN;
-      case "lead" -> LEAD;
-      case "steel" -> STEEL;
-      case "polypropylen", "pp" -> POLYPROPYLEN;
-      default -> UNKNOWN;
-    };
-  }
+  POLYPROPYLENE;
 
   /**
    * Get the default thermal properties resistivity and capacitance for this material.
    *
    * @return A pair of thermal resistivity and thermal capacitance
-   * @throws IllegalArgumentException if the material type is unknown
    */
   public ThermalProperties getThermalProperties() {
     return switch (this) {
@@ -82,19 +57,19 @@ public enum CableMaterial {
       case XLPE, PE ->
           new ThermalProperties(
               Quantities.getQuantity(3.5, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(2.4, JOULE_PER_CUBIC_METRE_KELVIN));
+              Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN));
       case PVC ->
           new ThermalProperties(
               Quantities.getQuantity(5.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(1.7, JOULE_PER_CUBIC_METRE_KELVIN));
+              Quantities.getQuantity(1.7e6, JOULE_PER_CUBIC_METRE_KELVIN));
       case SEMI_COND_SCREEN ->
           new ThermalProperties(
               Quantities.getQuantity(2.5, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(2.4, JOULE_PER_CUBIC_METRE_KELVIN));
+              Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN));
       case SC_TAPE ->
           new ThermalProperties(
               Quantities.getQuantity(6.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(2.4, JOULE_PER_CUBIC_METRE_KELVIN));
+              Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN));
       case LEAD ->
           new ThermalProperties(
               Quantities.getQuantity(1.0 / 35.0, KELVIN_METRE_PER_WATT),
@@ -103,13 +78,10 @@ public enum CableMaterial {
           new ThermalProperties(
               Quantities.getQuantity(1.0 / 45.0, KELVIN_METRE_PER_WATT),
               Quantities.getQuantity(3756000.0, JOULE_PER_CUBIC_METRE_KELVIN));
-      case POLYPROPYLEN ->
+      case POLYPROPYLENE ->
           new ThermalProperties(
               Quantities.getQuantity(6.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(2.0, JOULE_PER_CUBIC_METRE_KELVIN));
-      case UNKNOWN ->
-          throw new IllegalArgumentException(
-              "Cannot provide thermal properties for unknown material");
+              Quantities.getQuantity(2.0e6, JOULE_PER_CUBIC_METRE_KELVIN));
     };
   }
 
@@ -117,7 +89,8 @@ public enum CableMaterial {
    * Get the default electrical resistivity for this material at reference conditions.
    *
    * @return Electrical resistivity
-   * @throws IllegalArgumentException if the material type is unknown
+   * @throws IllegalArgumentException if the material has no electrical resistivity data (e.g.
+   *     non-conductive insulation)
    */
   public ComparableQuantity<ElectricalResistivity> getElectricalResistivity() {
     return switch (this) {
@@ -125,9 +98,6 @@ public enum CableMaterial {
       case ALUMINIUM -> Quantities.getQuantity(2.8264e-8, OHM_METRE);
       case STEEL -> Quantities.getQuantity(13.8e-8, OHM_METRE);
       case LEAD -> Quantities.getQuantity(21.4e-8, OHM_METRE);
-      case UNKNOWN ->
-          throw new IllegalArgumentException(
-              "Cannot provide electrical resistivity for unknown material");
       default ->
           throw new IllegalArgumentException(
               "No electrical resistivity data available for material: " + this);
@@ -138,7 +108,8 @@ public enum CableMaterial {
    * Get the temperature coefficient for electrical resistivity of this material.
    *
    * @return Temperature coefficient
-   * @throws IllegalArgumentException if the material type is unknown
+   * @throws IllegalArgumentException if the material has no temperature coefficient data (e.g.
+   *     non-conductive insulation)
    */
   public double getElectricalResistivityTemperatureCoefficient() {
     return switch (this) {
@@ -146,9 +117,6 @@ public enum CableMaterial {
       case ALUMINIUM -> 4.03e-3;
       case LEAD -> 4.0e-3;
       case STEEL -> 4.5e-3;
-      case UNKNOWN ->
-          throw new IllegalArgumentException(
-              "Cannot provide temperature coefficient for unknown material");
       default ->
           throw new IllegalArgumentException(
               "No temperature coefficient data available for material: " + this);

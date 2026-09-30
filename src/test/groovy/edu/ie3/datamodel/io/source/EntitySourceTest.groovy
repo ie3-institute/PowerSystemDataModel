@@ -24,6 +24,14 @@ import spock.lang.Specification
 
 class EntitySourceTest extends Specification {
 
+  def "An EntitySource validates required built-in resources"() {
+    when:
+    def source = getBuildInSource(EntitySource, "/type")
+
+    then:
+    source
+  }
+
   def "An EntitySource can build a map of entities correctly"() {
     given:
     Map<String, String> parameter = ["uuid": GridTestData.profBroccoli.uuid.toString(), "id": GridTestData.profBroccoli.id]

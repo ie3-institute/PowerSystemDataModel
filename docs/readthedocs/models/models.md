@@ -126,6 +126,7 @@ input/grid/measurementunit
 input/grid/gridcontainer
 input/grid/cableMaterial
 input/grid/cableType
+input/grid/cableDeployment
 ```
 
 #### Thermal Grid

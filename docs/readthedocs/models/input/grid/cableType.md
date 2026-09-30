@@ -6,7 +6,7 @@ Representation of a cable type.
 
 ### Type Model
 
-Type model of a cable. 
+Type model of a cable.
 
 ```{list-table}
    :widths: auto
@@ -31,7 +31,7 @@ Type model of a cable.
 
    * - conductor
      - ConductorInput
-     - Layer model that represents the attributes and geometry of the conductor.  
+     - Layer model that represents the attributes and geometry of the conductor.
 
    * - isolation
      - List of LayerInput
@@ -45,7 +45,7 @@ Type model of a cable.
      - List of LayerInput
      - List of filler layers (from inner to outer)
 
-   * - armor 
+   * - armor
      - List of LayerInput
      - List of armor layers (from inner to outer)
      
@@ -59,14 +59,14 @@ Type model of a cable.
         
    * - frequency
      - Hz
-     - Rated frequency of the system     
+     - Rated frequency of the system
 
    * - skin effect coefficient
      - -
      - Skin effect coefficient
 
    * - proximity effect coefficient
-     - 
+     -
      - Proximity effect coefficient
    
    * - electrical capacitance
@@ -79,7 +79,7 @@ Type model of a cable.
    
    * - circulatingLossFactor
      - -
-     - Circulating loss factor 
+     - Circulating loss factor
      
    * - eddyCurrentLossFactor
      - -
@@ -94,7 +94,7 @@ Cables are modeled as a series of concentric layers. These layers—which includ
 
 #### LayerInput Attributes
 
-The following table details the attributes required to define a single cable 
+The following table details the attributes required to define a single cable
 
 ```{list-table}
    :widths: auto
@@ -122,7 +122,7 @@ The following table details the attributes required to define a single cable
   - Outer diameter of the layer
     
 * - thermalResistivity
-  - (K·m/W) 
+  - (K·m/W)
   - Thermal resistivity of the material
     
 * - thermalCapacitance
@@ -150,8 +150,7 @@ Some standard cables type parameter and geometries.
    :widths: auto
    :class: wrapping
    :header-rows: 1
-   
-   
+
 * - uuid
   - id
   - core_number
@@ -174,12 +173,12 @@ Some standard cables type parameter and geometries.
 * - b8152c3f-d12f-4857-9746-a30aef6aee08
   - CigreT880_33kVLandCable
   - 1
-  - "{""name"":""conductor"",""material"":""COPPER"",""crossSection"":""240.0"",""diameter"":""18.4"",""thermalResistivity"":""0.0026"",""thermalCapacitance"":""3.4e6"",""area"":""240.0"",""isCompacted"":false}"
-  - "[{""name"":""conductorScreen"",""material"":""SEMI_COND_SCREEN"",""innerDiameter"":""18.4"",""outerDiameter"":""19.4"",""thermalResistivity"":""4.0"",""thermalCapacitance"":""2.0e6"",""area"":null},{""name"":""insulation"",""material"":""XLPE"",""innerDiameter"":""19.4"",""outerDiameter"":""34.8"",""thermalResistivity"":""3.5"",""thermalCapacitance"":""2.4e6"",""area"":null},{""name"":""insulationScreen"",""material"":""SEMI_COND_SCREEN"",""innerDiameter"":""34.8"",""outerDiameter"":""35.8"",""thermalResistivity"":""4.0"",""thermalCapacitance"":""2.0e6"",""area"":null},{""name"":""screenTape"",""material"":""SC_TAPE"",""innerDiameter"":""35.8"",""outerDiameter"":""36.8"",""thermalResistivity"":""0.01"",""thermalCapacitance"":""3.0e6"",""area"":null}]",
-  - "{""name"":""screen"",""material"":""COPPER"",""innerDiameter"":""36.8"",""outerDiameter"":""38.6"",""thermalResistivity"":""0.0026"",""thermalCapacitance"":""3.4e6"",""area"":""35.62566"",""wiresNumber"":56,""wireDiameter"":""0.9"",""electricalResistivity"":""1.7241e-8""}"
+  - "{""id"":""conductor"",""uuid"":""fbf23859-b88f-58d5-8b54-4b9468c7ab60"",""material"":""COPPER"",""crossSection"":""240.0"",""diameter"":""18.4"",""thermalResistivity"":""0.0026"",""thermalCapacitance"":""3.4496e6"",""area"":""240.0"",""isCompacted"":true}"
+  - "[{""id"":""conductorScreen"",""uuid"":""e50bded2-1372-5a6c-8430-ec768742164e"",""material"":""SEMI_COND_SCREEN"",""innerDiameter"":""18.4"",""outerDiameter"":""19.4"",""thermalResistivity"":""2.5"",""thermalCapacitance"":""2.4e6"",""area"":null},{""id"":""insulation"",""uuid"":""b13f4943-ab7c-53eb-a9d1-e4711f8ff4ba"",""material"":""XLPE"",""innerDiameter"":""19.4"",""outerDiameter"":""34.8"",""thermalResistivity"":""3.5"",""thermalCapacitance"":""2.4e6"",""area"":null},{""id"":""insulationScreen"",""uuid"":""8e5d91de-5d83-5838-b269-2e2e8000d4f7"",""material"":""SEMI_COND_SCREEN"",""innerDiameter"":""34.8"",""outerDiameter"":""35.8"",""thermalResistivity"":""2.5"",""thermalCapacitance"":""2.4e6"",""area"":null},{""id"":""screenTape"",""uuid"":""229496ce-b084-5975-9918-7c49dbbf678c"",""material"":""SC_TAPE"",""innerDiameter"":""35.8"",""outerDiameter"":""36.8"",""thermalResistivity"":""6.0"",""thermalCapacitance"":""2.4e6"",""area"":null}]",
+  - "{""id"":""screen"",""uuid"":""73dde224-622d-52ec-9c58-2ea442720175"",""material"":""COPPER"",""innerDiameter"":""36.8"",""outerDiameter"":""38.6"",""thermalResistivity"":""0.0026"",""thermalCapacitance"":""3.4496e6"",""area"":""35.62566"",""wiresNumber"":56,""wireDiameter"":""0.9"",""lengthOfLay"":""240.0"",""electricalResistivity"":""1.7241e-8""}"
   - -
   - -
-  - "[{""name"":""jackTape"",""material"":""SC_TAPE"",""innerDiameter"":""38.6"",""outerDiameter"":""39.2"",""thermalResistivity"":""0.01"",""thermalCapacitance"":""3.0e6"",""area"":null},{""name"":""jack"",""material"":""XLPE"",""innerDiameter"":""39.2"",""outerDiameter"":""43.6"",""thermalResistivity"":""3.5"",""thermalCapacitance"":""2.4e6"",""area"":null},{""name"":""outerCover"",""material"":""SEMI_COND_SCREEN"",""innerDiameter"":""43.6"",""outerDiameter"":""44.0"",""thermalResistivity"":""4.0"",""thermalCapacitance"":""2.0e6"",""area"":null}]"
+  - "[{""id"":""jackTape"",""uuid"":""19895925-1b44-518e-a5f2-176b690d77d6"",""material"":""SC_TAPE"",""innerDiameter"":""38.6"",""outerDiameter"":""39.2"",""thermalResistivity"":""6.0"",""thermalCapacitance"":""2.4e6"",""area"":null},{""id"":""jack"",""uuid"":""ae5a63f4-6f66-5be9-bedd-b7a709842984"",""material"":""PE"",""innerDiameter"":""39.2"",""outerDiameter"":""43.6"",""thermalResistivity"":""3.5"",""thermalCapacitance"":""2.4e6"",""area"":null},{""id"":""outerCover"",""uuid"":""8dd70f91-ca8f-503e-8952-4c553238e782"",""material"":""SEMI_COND_SCREEN"",""innerDiameter"":""43.6"",""outerDiameter"":""44.0"",""thermalResistivity"":""2.5"",""thermalCapacitance"":""2.4e6"",""area"":null}]"
   - 90.0
   - 50.0
   - 1.0
@@ -192,6 +191,44 @@ Some standard cables type parameter and geometries.
 
 ```
 
+## Canonical JSON field units
+
+The cable type JSON fields are written and expected in the following canonical, unitless numeric formats (the numeric value corresponds to the stated unit):
+
+```{list-table}
+   :widths: auto
+   :class: wrapping
+   :header-rows: 1
+
+ * - Field
+   - Unit (persisted numeric interpretation)
+   - Notes
+
+ * - diameter, innerDiameter, outerDiameter, wireDiameter, lengthOfLay
+   - millimetre (mm)
+   - Length fields are serialized as millimetres
+
+ * - crossSection, area
+   - square millimetre (mm²)
+   - Areas and cross sections are serialized as mm²
+
+ * - electricalResistivity
+   - ohm metre (Ω·m)
+   - Electrical resistivity
+
+ * - thermalResistivity
+   - kelvin metre per watt (K·m/W)
+   - Thermal resistivity
+
+ * - thermalCapacitance
+   - joule per cubic metre kelvin (J/(m³·K))
+   - Volumetric thermal capacitance
+
+ * - other numeric top-level fields (limitTemperature, frequency, skinEffectCoefficient, proximityEffectCoefficient, electricalCapacitance, tanDelta, circulatingLossFactor, eddyCurrentLossFactor)
+   - keep units as documented in the Type Model table
+   - e.g., limitTemperature: °C, frequency: Hz, electricalCapacitance: F/m
+
+```
 
 ## Caveats
 

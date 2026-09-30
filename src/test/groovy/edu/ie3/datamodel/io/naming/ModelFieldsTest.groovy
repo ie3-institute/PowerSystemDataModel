@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.naming
 
+import edu.ie3.datamodel.models.input.connector.CableDeploymentInput
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel
 import edu.ie3.datamodel.models.result.thermal.ThermalLineSegmentResult
 import spock.lang.Specification
@@ -41,6 +42,23 @@ class ModelFieldsTest extends Specification {
       FieldNamingStrategy.MARKOV_GMM_BUCKETS
     ])
   }
+  
+  def "ModelFields returns registered fields for CableDeploymentInput correctly"() {
+    when:
+    def mandatoryFields = ModelFields.getMandatoryFields(CableDeploymentInput)
+    def optionalFields = ModelFields.getOptionalFields(CableDeploymentInput)
+
+    then:
+    mandatoryFields == [
+      [
+        FieldNamingStrategy.UUID,
+        FieldNamingStrategy.LINE_UUID,
+        FieldNamingStrategy.LAYOUT_FORMATION,
+        FieldNamingStrategy.DEPTH_CABLES,
+        FieldNamingStrategy.DISTANCE_CABLES
+      ] as Set
+    ]
+    optionalFields == [] as Set
 
   def "getMandatoryFields returns registered fields for ThermalLineSegmentResult"() {
     when:

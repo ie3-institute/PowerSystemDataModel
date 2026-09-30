@@ -8,11 +8,9 @@ package edu.ie3.datamodel.io.source;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.input.OperatorInputFactory;
-import edu.ie3.datamodel.io.factory.typeinput.LineTypeInputFactory;
-import edu.ie3.datamodel.io.factory.typeinput.SystemParticipantTypeInputFactory;
-import edu.ie3.datamodel.io.factory.typeinput.Transformer2WTypeInputFactory;
-import edu.ie3.datamodel.io.factory.typeinput.Transformer3WTypeInputFactory;
+import edu.ie3.datamodel.io.factory.typeinput.*;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
@@ -22,8 +20,8 @@ import java.util.UUID;
 
 /**
  * Interface that provides the capability to build entities of type {@link
- * SystemParticipantTypeInput} and {@link OperatorInput} from different data sources e.g. .csv files
- * or databases
+ * SystemParticipantTypeInput} and {@link OperatorInput} from different data sources e.g. '.csv'
+ * files or databases
  */
 public class TypeSource extends EntitySource {
   private static final String SUB_DIRECTORY = "/type";
@@ -31,7 +29,7 @@ public class TypeSource extends EntitySource {
   // factories
   private final OperatorInputFactory operatorInputFactory;
   private final Transformer2WTypeInputFactory transformer2WTypeInputFactory;
-  private final LineTypeInputFactory lineTypeInputFactory;
+  private final CableTypeInputFactory cableTypeInputFactory;
   private final Transformer3WTypeInputFactory transformer3WTypeInputFactory;
   private final SystemParticipantTypeInputFactory systemParticipantTypeInputFactory;
 
@@ -42,7 +40,7 @@ public class TypeSource extends EntitySource {
 
     this.operatorInputFactory = new OperatorInputFactory();
     this.transformer2WTypeInputFactory = new Transformer2WTypeInputFactory();
-    this.lineTypeInputFactory = new LineTypeInputFactory();
+    this.cableTypeInputFactory = new CableTypeInputFactory();
     this.transformer3WTypeInputFactory = new Transformer3WTypeInputFactory();
     this.systemParticipantTypeInputFactory = new SystemParticipantTypeInputFactory();
   }
@@ -162,11 +160,47 @@ public class TypeSource extends EntitySource {
    * @return a map of UUID to object- and uuid-unique {@link LineTypeInput} entities
    */
   private Map<UUID, LineTypeInput> getLineTypes(boolean withBuildIn) throws SourceException {
-    Map<UUID, LineTypeInput> types =
-        getEntities(LineTypeInput.class, dataSource, lineTypeInputFactory);
+    Map<UUID, CableTypeInput> cableTypes = getCableTypes(true);
+
+    Map<UUID, LineTypeInput> lineTypes =
+        getEntities(LineTypeInput.class, dataSource, new LineTypeInputFactory(cableTypes));
 
     if (withBuildIn) {
       Map<UUID, LineTypeInput> allTypes = getStandardLineTypes();
+      allTypes.putAll(lineTypes);
+      return allTypes;
+    }
+
+    return lineTypes;
+  }
+
+  /**
+   * Returns a set of build in {@link CableTypeInput} instances within a map by UUID.
+   *
+   * @return a map of UUID to object- and uuid-unique {@link CableTypeInput} entities
+   */
+  public static Map<UUID, CableTypeInput> getStandardCableTypes() throws SourceException {
+    return new TypeSource(getBuildInSource(CableTypeInput.class, SUB_DIRECTORY))
+        .getCableTypes(false);
+  }
+
+  /**
+   * Returns a set of {@link CableTypeInput} instances within a map by UUID.
+   *
+   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
+   * UUID} uniqueness of the provided {@link CableTypeInput} which has to be checked manually, as
+   * {@link CableTypeInput#equals(Object)} is NOT restricted on the uuid of {@link CableTypeInput}.
+   *
+   * @param withBuildIn if true the cable line types will be included if their uuid is not
+   *     overwritten by the source
+   * @return a map of UUID to object- and uuid-unique {@link CableTypeInput} entities
+   */
+  public Map<UUID, CableTypeInput> getCableTypes(boolean withBuildIn) throws SourceException {
+    Map<UUID, CableTypeInput> types =
+        getEntities(CableTypeInput.class, dataSource, cableTypeInputFactory);
+
+    if (withBuildIn) {
+      Map<UUID, CableTypeInput> allTypes = getStandardCableTypes();
       allTypes.putAll(types);
       return allTypes;
     }
