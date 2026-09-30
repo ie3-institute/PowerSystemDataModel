@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.factory.typeinput
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.models.StandardUnits
+import edu.ie3.datamodel.models.input.connector.type.CableTypeInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
@@ -35,7 +36,8 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
       "r": "5",
       "x": "6",
       "imax": "7",
-      "vrated": "8"
+      "vrated": "8",
+      "cabletype": "",
     ]
     def typeInputClass = LineTypeInput
 
@@ -54,6 +56,84 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
       x == getQuant(parameter["x"], StandardUnits.REACTANCE_PER_LENGTH)
       iMax == getQuant(parameter["imax"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
       vRated == getQuant(parameter["vrated"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
+      !cableType.present
     }
+  }
+
+  def "A LineTypeInputFactory with unknown cable_type UUID fails with a FactoryException"() {
+    given:
+    def unknownCableUuid = UUID.randomUUID().toString()
+    def typeInputFactory = new LineTypeInputFactory([:])
+    Map<String, String> parameter = [
+      "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id": "line-with-unknown-cable",
+      "b": "3",
+      "g": "4",
+      "r": "5",
+      "x": "6",
+      "imax": "7",
+      "vrated": "8",
+      "cableType": unknownCableUuid,
+    ]
+
+    when:
+    typeInputFactory.get(new EntityData(parameter, LineTypeInput)).getOrThrow()
+
+    then:
+    FactoryException e = thrown()
+    e.cause instanceof IllegalArgumentException
+    e.cause.message.contains(unknownCableUuid)
+  }
+
+  def "A LineTypeInputFactory with invalid cable_type UUID fails with a FactoryException"() {
+    given:
+    def typeInputFactory = new LineTypeInputFactory([:])
+    Map<String, String> parameter = [
+      "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id": "line-with-invalid-cable",
+      "b": "3",
+      "g": "4",
+      "r": "5",
+      "x": "6",
+      "imax": "7",
+      "vrated": "8",
+      "cableType": "this-is-not-a-uuid",
+    ]
+
+    when:
+    typeInputFactory.get(new EntityData(parameter, LineTypeInput)).getOrThrow()
+
+    then:
+    FactoryException e = thrown()
+    e.cause instanceof IllegalArgumentException
+    e.cause.message.contains("this-is-not-a-uuid")
+  }
+
+  def "A LineTypeInputFactory with known cable_type resolves to the cableType"() {
+    given:
+    def cableType = edu.ie3.test.common.GridTestData.cableTypeInput
+    def cableTypeMap = new java.util.HashMap<UUID, CableTypeInput>()
+    cableTypeMap.put(cableType.uuid, cableType)
+    def typeInputFactory = new LineTypeInputFactory(cableTypeMap)
+    Map<String, String> parameter = [
+      "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id": "line-with-known-cable",
+      "b": "3",
+      "g": "4",
+      "r": "5",
+      "x": "6",
+      "imax": "7",
+      "vrated": "8",
+      "cableType": cableType.uuid.toString(),
+    ]
+
+    when:
+    Try<LineTypeInput, FactoryException> typeInput =
+        typeInputFactory.get(new EntityData(parameter, LineTypeInput))
+
+    then:
+    typeInput.success
+    typeInput.data.get().cableType.present
+    typeInput.data.get().cableType.get() == cableType
   }
 }

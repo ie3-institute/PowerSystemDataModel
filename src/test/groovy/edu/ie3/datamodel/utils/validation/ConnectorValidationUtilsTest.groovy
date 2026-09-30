@@ -10,16 +10,20 @@ import static edu.ie3.util.quantities.PowerSystemUnits.*
 
 import edu.ie3.datamodel.exceptions.FailedValidationException
 import edu.ie3.datamodel.exceptions.InvalidEntityException
+import edu.ie3.datamodel.models.input.connector.CableDeploymentInput
 import edu.ie3.datamodel.models.input.connector.type.*
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData
 import edu.ie3.util.quantities.interfaces.ElectricalResistivity
+import edu.ie3.util.quantities.interfaces.SpecificCapacitance
 import edu.ie3.util.quantities.interfaces.ThermalCapacitance
 import edu.ie3.util.quantities.interfaces.ThermalResistivity
 import spock.lang.Specification
 import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
+import tech.units.indriya.unit.ProductUnit
+import tech.units.indriya.unit.Units
 
 import javax.measure.quantity.*
 
@@ -124,7 +128,6 @@ class ConnectorValidationUtilsTest extends Specification {
     validCableType(limitTemperature: temperature(-1d)) || "limitTemperature"
     validCableType(frequency: frequency(0d)) || "frequency"
     validCableType(frequency: frequency(-50d)) || "frequency"
-    validCableType(electricalCapacitance: capacitance(-1d)) || "electricalCapacitance"
     validCableType(skinEffectCoefficient: -1d) || "skinEffectCoefficient"
     validCableType(proximityEffectCoefficient: -1d) || "proximityEffectCoefficient"
     validCableType(tanDelta: -0.1d) || "tanDelta"
@@ -375,6 +378,27 @@ class ConnectorValidationUtilsTest extends Specification {
   }
 
 
+  def "ConnectorValidationUtils validates cable deployments"() {
+    when:
+    def results = ConnectorValidationUtils.checkCableDeployment(deployment, GridTestData.lineAtoB)
+
+    then:
+    results.count { it.failure } == failureCount
+    results.findAll {
+      it.failure
+    }.every {
+      it.exception.get().message.contains(expectedMessage)
+    }
+
+    where:
+    deployment || failureCount || expectedMessage
+    cableDeployment("TREFOIL", -0.5d, 0.1d) || 0 || ""
+    cableDeployment("", -0.5d, 0.1d) || 1 || "Layout formation cannot be empty"
+    cableDeployment("TREFOIL", 0.5d, 0.1d) || 1 || "Cable depth must be less than or equal to 0"
+    cableDeployment("TREFOIL", -0.5d, 0d) || 1 || "distanceCables"
+  }
+
+
   private static ConductorInput validConductor(Map overrides = [:]) {
     def areaParam = overrides.get("area", null)
     if (areaParam instanceof Optional) {
@@ -410,7 +434,7 @@ class ConnectorValidationUtilsTest extends Specification {
         overrides.get("frequency", frequency(50d)),
         overrides.get("skinEffectCoefficient", 1d),
         overrides.get("proximityEffectCoefficient", 1d),
-        overrides.get("electricalCapacitance", capacitance(350e-9d)),
+        overrides.get("electricalCapacitance", capacitance(350e-12d)),
         overrides.get("tanDelta", 0.1d),
         overrides.get("circulatingLossFactor", 0d),
         overrides.get("eddyCurrentLossFactor", 0d))
@@ -427,7 +451,7 @@ class ConnectorValidationUtilsTest extends Specification {
         overrides.get("innerDiameter", length(0.0225d)),
         overrides.get("outerDiameter", length(0.027d)),
         overrides.get("thermalResistivity", thermalResistivity(3.5d)),
-        overrides.get("thermalCapacitance", thermalCapacitance(2.4d)),
+        overrides.get("thermalCapacitance", thermalCapacitance(2.4e6d)),
         overrides.get("area", Optional.<ComparableQuantity<Area>>empty()))
   }
 
@@ -439,12 +463,21 @@ class ConnectorValidationUtilsTest extends Specification {
         overrides.get("innerDiameter", length(0.027d)),
         overrides.get("outerDiameter", length(0.028d)),
         overrides.get("thermalResistivity", thermalResistivity(2.5d)),
-        overrides.get("thermalCapacitance", thermalCapacitance(2.4d)),
+        overrides.get("thermalCapacitance", thermalCapacitance(2.4e6d)),
         overrides.get("area", Optional.<ComparableQuantity<Area>>empty()),
         overrides.get("wiresNumber", 20),
         overrides.get("wireDiameter", length(0.0005d)),
         overrides.get("lengthOfLay", Optional.<ComparableQuantity<Length>>empty()),
         overrides.get("electricalResistivity", electricalResistivity(1.7e-7d)))
+  }
+
+  private static CableDeploymentInput cableDeployment(String layoutFormation, double depth, double distance) {
+    new CableDeploymentInput(
+        UUID.randomUUID(),
+        GridTestData.lineAtoB.uuid,
+        layoutFormation,
+        Quantities.getQuantity(depth, METRE),
+        Quantities.getQuantity(distance, METRE))
   }
 
   private static ComparableQuantity<Temperature> temperature(double value) {
@@ -453,10 +486,6 @@ class ConnectorValidationUtilsTest extends Specification {
 
   private static ComparableQuantity<Frequency> frequency(double value) {
     Quantities.getQuantity(value, HERTZ)
-  }
-
-  private static ComparableQuantity<ElectricCapacitance> capacitance(double value) {
-    Quantities.getQuantity(value, FARAD)
   }
 
   private static ComparableQuantity<Area> area(double value) {
@@ -477,5 +506,9 @@ class ConnectorValidationUtilsTest extends Specification {
 
   private static ComparableQuantity<ElectricalResistivity> electricalResistivity(double value) {
     Quantities.getQuantity(value, OHM_METRE)
+  }
+
+  private static ComparableQuantity<SpecificCapacitance> capacitance(double value) {
+    Quantities.getQuantity(value, new ProductUnit<SpecificCapacitance>(Units.FARAD.divide(Units.METRE)))
   }
 }

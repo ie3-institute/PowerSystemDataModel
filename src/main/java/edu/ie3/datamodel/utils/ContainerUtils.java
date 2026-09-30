@@ -343,7 +343,16 @@ public class ContainerUtils {
             .filter(measurement -> measurement.getNode().getSubnet() == subnet)
             .collect(Collectors.toSet());
 
-    return new RawGridElements(nodes, lines, transformer2w, transformer3w, switches, measurements);
+    /* Filter cable deployments for the lines that are part of this subnet */
+    Map<UUID, LineInput> linesByUuid =
+        lines.stream().collect(Collectors.toMap(LineInput::getUuid, Function.identity()));
+    Map<UUID, List<CableDeploymentInput>> cableDeploymentsByLine =
+        input.getCableDeploymentsByLine().entrySet().stream()
+            .filter(entry -> linesByUuid.containsKey(entry.getKey()))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+    return new RawGridElements(
+        nodes, lines, transformer2w, transformer3w, switches, measurements, cableDeploymentsByLine);
   }
 
   /**
@@ -843,7 +852,8 @@ public class ContainerUtils {
             // HashSet$KeySet is not serializable, thus create new set
             new HashSet<>(newTrafos3wToInternalNode.keySet()),
             subGridContainer.getRawGrid().getSwitches(),
-            subGridContainer.getRawGrid().getMeasurementUnits()),
+            subGridContainer.getRawGrid().getMeasurementUnits(),
+            subGridContainer.getRawGrid().getCableDeploymentsByLine()),
         subGridContainer.getSystemParticipants(),
         subGridContainer.getEmUnits());
   }

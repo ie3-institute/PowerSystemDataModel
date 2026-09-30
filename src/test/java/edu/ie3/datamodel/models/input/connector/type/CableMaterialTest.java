@@ -7,46 +7,44 @@ package edu.ie3.datamodel.models.input.connector.type;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /** Unit tests for CableMaterial enum and its thermal/electrical property methods. */
 @DisplayName("CableMaterial Tests")
 class CableMaterialTest {
 
-  @Test
-  @DisplayName("Test COPPER thermal properties")
-  void testCopperThermalProperties() {
-    CableMaterial.ThermalProperties props = CableMaterial.COPPER.getThermalProperties();
+  static Stream<Arguments> thermalPropertiesArgs() {
+    return Stream.of(
+        Arguments.of(CableMaterial.COPPER, 0.002604166667, 3449600.0, 1e-12, 1e-5),
+        Arguments.of(CableMaterial.ALUMINIUM, 0.0042194092827, 2420913.3, 1e-12, 1e-5),
+        Arguments.of(CableMaterial.XLPE, 3.5, 2.4e6, 1e-3, 1e-3),
+        Arguments.of(CableMaterial.PVC, 5.0, 1.7e6, 1e-3, 1e-3),
+        Arguments.of(CableMaterial.SEMI_COND_SCREEN, 2.5, 2.4e6, 1e-3, 1e-3),
+        Arguments.of(CableMaterial.SC_TAPE, 6.0, 2.4e6, 1e-3, 1e-3));
+  }
+
+  @ParameterizedTest
+  @MethodSource("thermalPropertiesArgs")
+  @DisplayName("Test thermal properties")
+  void testThermalProperties(
+      CableMaterial material,
+      double expectedResistivity,
+      double expectedCapacitance,
+      double resistivityDelta,
+      double capacitanceDelta) {
+    CableMaterial.ThermalProperties props = material.getThermalProperties();
     assertNotNull(props);
     assertNotNull(props.resistivity());
     assertNotNull(props.capacitance());
-    assertEquals(0.002604166667, props.resistivity().getValue().doubleValue(), 1e-12);
-    assertEquals(3449600.0, props.capacitance().getValue().doubleValue(), 1e-5);
-  }
-
-  @Test
-  @DisplayName("Test ALUMINIUM thermal properties")
-  void testAluminiumThermalProperties() {
-    CableMaterial.ThermalProperties props = CableMaterial.ALUMINIUM.getThermalProperties();
-    assertNotNull(props);
-    assertEquals(0.0042194092827, props.resistivity().getValue().doubleValue(), 1e-12);
-    assertEquals(2420913.3, props.capacitance().getValue().doubleValue(), 1e-5);
-  }
-
-  @Test
-  @DisplayName("Test XLPE thermal properties")
-  void testXlpeThermalProperties() {
-    CableMaterial.ThermalProperties props = CableMaterial.XLPE.getThermalProperties();
-    assertNotNull(props);
-    assertEquals(3.5, props.resistivity().getValue().doubleValue(), 1e-3);
-    assertEquals(2.4, props.capacitance().getValue().doubleValue(), 1e-3);
-  }
-
-  @Test
-  @DisplayName("Test UNKNOWN material throws exception for thermal properties")
-  void testUnknownThermalProperties() {
-    assertThrows(IllegalArgumentException.class, CableMaterial.UNKNOWN::getThermalProperties);
+    assertEquals(
+        expectedResistivity, props.resistivity().getValue().doubleValue(), resistivityDelta);
+    assertEquals(
+        expectedCapacitance, props.capacitance().getValue().doubleValue(), capacitanceDelta);
   }
 
   @Test
@@ -74,9 +72,16 @@ class CableMaterialTest {
   }
 
   @Test
-  @DisplayName("Test UNKNOWN material throws exception for electrical resistivity")
-  void testUnknownElectricalResistivity() {
-    assertThrows(IllegalArgumentException.class, CableMaterial.UNKNOWN::getElectricalResistivity);
+  @DisplayName("Test insulation materials throw exception for electrical resistivity")
+  void testInsulationElectricalResistivity() {
+    assertThrows(IllegalArgumentException.class, CableMaterial.XLPE::getElectricalResistivity);
+    assertThrows(IllegalArgumentException.class, CableMaterial.PE::getElectricalResistivity);
+    assertThrows(IllegalArgumentException.class, CableMaterial.PVC::getElectricalResistivity);
+    assertThrows(
+        IllegalArgumentException.class, CableMaterial.SEMI_COND_SCREEN::getElectricalResistivity);
+    assertThrows(IllegalArgumentException.class, CableMaterial.SC_TAPE::getElectricalResistivity);
+    assertThrows(
+        IllegalArgumentException.class, CableMaterial.POLYPROPYLENE::getElectricalResistivity);
   }
 
   @Test
@@ -108,47 +113,33 @@ class CableMaterialTest {
   }
 
   @Test
-  @DisplayName("Test UNKNOWN material throws exception for temperature coefficient")
-  void testUnknownTemperatureCoefficient() {
+  @DisplayName("Test insulation materials throw exception for temperature coefficient")
+  void testInsulationTemperatureCoefficient() {
     assertThrows(
         IllegalArgumentException.class,
-        CableMaterial.UNKNOWN::getElectricalResistivityTemperatureCoefficient);
+        CableMaterial.XLPE::getElectricalResistivityTemperatureCoefficient);
+    assertThrows(
+        IllegalArgumentException.class,
+        CableMaterial.PE::getElectricalResistivityTemperatureCoefficient);
+    assertThrows(
+        IllegalArgumentException.class,
+        CableMaterial.PVC::getElectricalResistivityTemperatureCoefficient);
+    assertThrows(
+        IllegalArgumentException.class,
+        CableMaterial.SEMI_COND_SCREEN::getElectricalResistivityTemperatureCoefficient);
+    assertThrows(
+        IllegalArgumentException.class,
+        CableMaterial.SC_TAPE::getElectricalResistivityTemperatureCoefficient);
+    assertThrows(
+        IllegalArgumentException.class,
+        CableMaterial.POLYPROPYLENE::getElectricalResistivityTemperatureCoefficient);
   }
 
   @Test
-  @DisplayName("Test all non-UNKNOWN materials have thermal properties")
+  @DisplayName("Test all materials have thermal properties")
   void testAllMaterialsHaveThermalProperties() {
     for (CableMaterial material : CableMaterial.values()) {
-      if (material != CableMaterial.UNKNOWN) {
-        assertDoesNotThrow(material::getThermalProperties);
-      }
+      assertDoesNotThrow(material::getThermalProperties);
     }
-  }
-
-  @Test
-  @DisplayName("Test PVC thermal properties")
-  void testPvcThermalProperties() {
-    CableMaterial.ThermalProperties props = CableMaterial.PVC.getThermalProperties();
-    assertNotNull(props);
-    assertEquals(5.0, props.resistivity().getValue().doubleValue(), 1e-3);
-    assertEquals(1.7, props.capacitance().getValue().doubleValue(), 1e-3);
-  }
-
-  @Test
-  @DisplayName("Test SEMI_COND_SCREEN thermal properties")
-  void testSemiCondScreenThermalProperties() {
-    CableMaterial.ThermalProperties props = CableMaterial.SEMI_COND_SCREEN.getThermalProperties();
-    assertNotNull(props);
-    assertEquals(2.5, props.resistivity().getValue().doubleValue(), 1e-3);
-    assertEquals(2.4, props.capacitance().getValue().doubleValue(), 1e-3);
-  }
-
-  @Test
-  @DisplayName("Test SC_TAPE thermal properties")
-  void testScTapeThermalProperties() {
-    CableMaterial.ThermalProperties props = CableMaterial.SC_TAPE.getThermalProperties();
-    assertNotNull(props);
-    assertEquals(6.0, props.resistivity().getValue().doubleValue(), 1e-3);
-    assertEquals(2.4, props.capacitance().getValue().doubleValue(), 1e-3);
   }
 }
