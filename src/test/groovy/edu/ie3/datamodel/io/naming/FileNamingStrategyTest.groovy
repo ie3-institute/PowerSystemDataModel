@@ -306,9 +306,7 @@ class FileNamingStrategyTest extends Specification {
     def entries = [
       new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))
     ] as SortedSet
-    IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
-    timeSeries.uuid >> uuid
-    timeSeries.entries >> entries
+    def timeSeries = new IndividualTimeSeries(uuid, entries)
 
     when:
     def actual = strategy.getFilePath(timeSeries)
@@ -328,9 +326,7 @@ class FileNamingStrategyTest extends Specification {
     def entries = [
       new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))
     ] as SortedSet
-    IndividualTimeSeries timeSeries = Mock(IndividualTimeSeries)
-    timeSeries.uuid >> uuid
-    timeSeries.entries >> entries
+    def timeSeries = new IndividualTimeSeries(uuid, entries)
 
     when:
     def actual = strategy.getFilePath(timeSeries)
@@ -648,9 +644,7 @@ class FileNamingStrategyTest extends Specification {
     def entries = [
       new TimeBasedValue(ZonedDateTime.now(), new EnergyPriceValue(Quantities.getQuantity(500d, PowerSystemUnits.EURO_PER_MEGAWATTHOUR)))
     ] as SortedSet
-    def timeSeries = Mock(IndividualTimeSeries)
-    timeSeries.uuid >> uuid
-    timeSeries.entries >> entries
+    def timeSeries = new IndividualTimeSeries(uuid, entries)
 
     when:
     def actual = strategy.getFilePath(timeSeries)
