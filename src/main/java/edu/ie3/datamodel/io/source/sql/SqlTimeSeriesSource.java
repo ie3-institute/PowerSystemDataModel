@@ -24,12 +24,9 @@ import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
 
-  protected static final Logger log = LoggerFactory.getLogger(SqlTimeSeriesSource.class);
   private final SqlDataSource dataSource;
   private final String tableName;
 
