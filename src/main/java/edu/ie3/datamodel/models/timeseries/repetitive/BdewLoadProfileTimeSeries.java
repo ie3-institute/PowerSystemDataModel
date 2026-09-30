@@ -24,7 +24,7 @@ public class BdewLoadProfileTimeSeries extends LoadProfileTimeSeries<BdewLoadVal
       Set<LoadProfileEntry<BdewLoadValues>> values,
       ComparableQuantity<Power> maxPower,
       ComparableQuantity<Energy> profileEnergyScaling) {
-    super(powerProfileKey, values, maxPower, profileEnergyScaling);
+    super(powerProfileKey, values, BdewLoadValues.class, maxPower, profileEnergyScaling);
   }
 
   @Override

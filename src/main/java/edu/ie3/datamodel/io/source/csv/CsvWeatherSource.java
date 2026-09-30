@@ -23,10 +23,8 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
-import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.datamodel.utils.ExceptionUtils;
-import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import edu.ie3.util.interval.ClosedInterval;
@@ -101,13 +99,18 @@ public class CsvWeatherSource extends WeatherSource {
     if (coordinates.isEmpty())
       throw new NoDataException("No coordinates provided for weather data query.");
 
-    Map<Point, IndividualTimeSeries<WeatherValue>> filteredMap =
-        coordinateToTimeSeries.entrySet().stream()
-            .filter(entry -> coordinates.contains(entry.getKey()))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    Map<Point, IndividualTimeSeries<WeatherValue>> result = new HashMap<>();
 
-    Map<Point, IndividualTimeSeries<WeatherValue>> result =
-        trimMapToInterval(filteredMap, timeInterval);
+    for (Point coordinate : coordinates) {
+      if (coordinateToTimeSeries.containsKey(coordinate)) {
+        IndividualTimeSeries<WeatherValue> ts =
+            coordinateToTimeSeries.get(coordinate).getSubTimeSeries(timeInterval);
+
+        if (ts.nonEmpty()) {
+          result.put(coordinate, ts);
+        }
+      }
+    }
 
     return validateAndWarnMissing(result, coordinates, timeInterval);
   }
@@ -175,26 +178,13 @@ public class CsvWeatherSource extends WeatherSource {
     map.forEach(
         (point, timeSeries) -> {
           IndividualTimeSeries<WeatherValue> trimmedSeries =
-              TimeSeriesUtils.trimTimeSeriesToInterval(timeSeries, timeInterval);
-          if (!trimmedSeries.getEntries().isEmpty()) {
+              timeSeries.getSubTimeSeries(timeInterval);
+
+          if (trimmedSeries.nonEmpty()) {
             trimmed.put(point, trimmedSeries);
           }
         });
     return trimmed;
-  }
-
-  /**
-   * Merge two individual time series into a new time series with the UUID of the first parameter
-   *
-   * @param a the first time series to merge
-   * @param b the second time series to merge
-   * @return merged time series with a's UUID
-   */
-  protected <V extends Value> IndividualTimeSeries<V> mergeTimeSeries(
-      IndividualTimeSeries<V> a, IndividualTimeSeries<V> b) {
-    SortedSet<TimeBasedValue<V>> entries = a.getEntries();
-    entries.addAll(b.getEntries());
-    return new IndividualTimeSeries<>(a.getUuid(), entries);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -237,11 +227,9 @@ public class CsvWeatherSource extends WeatherSource {
                   // issues
                   // otherwise
                   IndividualTimeSeries<WeatherValue> timeSeries =
-                      new IndividualTimeSeries<>(UUID.randomUUID(), new HashSet<>(timeBasedValues));
+                      new IndividualTimeSeries<>(UUID.randomUUID(), new TreeSet<>(timeBasedValues));
                   if (weatherTimeSeries.containsKey(point)) {
-                    IndividualTimeSeries<WeatherValue> mergedTimeSeries =
-                        mergeTimeSeries(weatherTimeSeries.get(point), timeSeries);
-                    weatherTimeSeries.put(point, mergedTimeSeries);
+                    weatherTimeSeries.put(point, weatherTimeSeries.get(point).add(timeSeries));
                   } else {
                     weatherTimeSeries.put(point, timeSeries);
                   }
