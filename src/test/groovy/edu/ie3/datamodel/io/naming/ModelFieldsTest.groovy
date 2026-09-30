@@ -19,27 +19,27 @@ class ModelFieldsTest extends Specification {
     then:
     fields.size() == 1
     fields[0].containsAll([
-      // top-level
-      FieldNamingStrategy.MARKOV_SCHEMA,
-      FieldNamingStrategy.MARKOV_GENERATED_AT,
-      FieldNamingStrategy.MARKOV_GENERATOR,
-      FieldNamingStrategy.MARKOV_TIME_MODEL,
-      FieldNamingStrategy.MARKOV_VALUE_MODEL,
-      FieldNamingStrategy.MARKOV_DATA,
-      // nested - required for simulation
-      FieldNamingStrategy.MARKOV_GENERATOR_NAME,
-      FieldNamingStrategy.MARKOV_GENERATOR_VERSION,
-      FieldNamingStrategy.MARKOV_BUCKET_COUNT,
-      FieldNamingStrategy.MARKOV_SAMPLING_INTERVAL,
-      FieldNamingStrategy.MARKOV_TIMEZONE,
-      FieldNamingStrategy.MARKOV_DISCRETIZATION_STATES,
-      FieldNamingStrategy.MARKOV_DISCRETIZATION_THRESHOLDS,
-      FieldNamingStrategy.MARKOV_MAX_POWER_VALUE,
-      FieldNamingStrategy.MARKOV_MAX_POWER_UNIT,
-      FieldNamingStrategy.MARKOV_MIN_POWER_VALUE,
-      FieldNamingStrategy.MARKOV_MIN_POWER_UNIT,
-      FieldNamingStrategy.MARKOV_TRANSITION_VALUES,
-      FieldNamingStrategy.MARKOV_GMM_BUCKETS
+            // top-level
+            FieldNamingStrategy.MARKOV_SCHEMA,
+            FieldNamingStrategy.MARKOV_GENERATED_AT,
+            FieldNamingStrategy.MARKOV_GENERATOR,
+            FieldNamingStrategy.MARKOV_TIME_MODEL,
+            FieldNamingStrategy.MARKOV_VALUE_MODEL,
+            FieldNamingStrategy.MARKOV_DATA,
+            // nested - required for simulation
+            FieldNamingStrategy.MARKOV_GENERATOR_NAME,
+            FieldNamingStrategy.MARKOV_GENERATOR_VERSION,
+            FieldNamingStrategy.MARKOV_BUCKET_COUNT,
+            FieldNamingStrategy.MARKOV_SAMPLING_INTERVAL,
+            FieldNamingStrategy.MARKOV_TIMEZONE,
+            FieldNamingStrategy.MARKOV_DISCRETIZATION_STATES,
+            FieldNamingStrategy.MARKOV_DISCRETIZATION_THRESHOLDS,
+            FieldNamingStrategy.MARKOV_MAX_POWER_VALUE,
+            FieldNamingStrategy.MARKOV_MAX_POWER_UNIT,
+            FieldNamingStrategy.MARKOV_MIN_POWER_VALUE,
+            FieldNamingStrategy.MARKOV_MIN_POWER_UNIT,
+            FieldNamingStrategy.MARKOV_TRANSITION_VALUES,
+            FieldNamingStrategy.MARKOV_GMM_BUCKETS
     ])
   }
 
@@ -50,13 +50,13 @@ class ModelFieldsTest extends Specification {
 
     then:
     mandatoryFields == [
-      [
-        FieldNamingStrategy.UUID,
-        FieldNamingStrategy.LINE_UUID,
-        FieldNamingStrategy.LAYOUT_FORMATION,
-        FieldNamingStrategy.DEPTH_CABLES,
-        FieldNamingStrategy.DISTANCE_CABLES
-      ] as Set
+            [
+                    FieldNamingStrategy.UUID,
+                    FieldNamingStrategy.LINE_UUID,
+                    FieldNamingStrategy.LAYOUT_FORMATION,
+                    FieldNamingStrategy.DEPTH_CABLES,
+                    FieldNamingStrategy.DISTANCE_CABLES
+            ] as Set
     ]
     optionalFields == [] as Set
 
@@ -67,10 +67,11 @@ class ModelFieldsTest extends Specification {
       then:
       fields.size() == 1
       fields[0] == [
-        FieldNamingStrategy.TIME,
-        FieldNamingStrategy.INPUT_MODEL,
-        FieldNamingStrategy.LINE_SEGMENT_TEMPERATURE,
-        FieldNamingStrategy.GROUND_TEMPERATURE
+              FieldNamingStrategy.TIME,
+              FieldNamingStrategy.INPUT_MODEL,
+              FieldNamingStrategy.LINE_SEGMENT_TEMPERATURE,
+              FieldNamingStrategy.GROUND_TEMPERATURE
       ] as Set
     }
   }
+}
