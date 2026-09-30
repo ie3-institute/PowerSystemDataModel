@@ -59,19 +59,19 @@ class ModelFieldsTest extends Specification {
       ] as Set
     ]
     optionalFields == [] as Set
+  }
 
-    def "getMandatoryFields returns registered fields for ThermalLineSegmentResult"() {
-      when:
-      def fields = ModelFields.getMandatoryFields(ThermalLineSegmentResult)
+  def "getMandatoryFields returns registered fields for ThermalLineSegmentResult"() {
+    when:
+    def fields = ModelFields.getMandatoryFields(ThermalLineSegmentResult)
 
-      then:
-      fields.size() == 1
-      fields[0] == [
-        FieldNamingStrategy.TIME,
-        FieldNamingStrategy.INPUT_MODEL,
-        FieldNamingStrategy.LINE_SEGMENT_TEMPERATURE,
-        FieldNamingStrategy.GROUND_TEMPERATURE
-      ] as Set
-    }
+    then:
+    fields.size() == 1
+    fields[0] == [
+      FieldNamingStrategy.TIME,
+      FieldNamingStrategy.INPUT_MODEL,
+      FieldNamingStrategy.LINE_SEGMENT_TEMPERATURE,
+      FieldNamingStrategy.GROUND_TEMPERATURE
+    ] as Set
   }
 }
