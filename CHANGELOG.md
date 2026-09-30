@@ -15,12 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhance data model by cable type information [#1670](https://github.com/ie3-institute/PowerSystemDataModel/issues/1670)
 - Added ThermalLineSegmentResult [#1728](https://github.com/ie3-institute/PowerSystemDataModel/issues/1728)
 - Increase test coverage for TimeBasedWeatherValueData [#1609](https://github.com/ie3-institute/PowerSystemDataModel/issues/1609)
-- 
+
 ### Fixed
 - Fixed issues regarding determination of additional parameters [#1661](https://github.com/ie3-institute/PowerSystemDataModel/issues/1661)
 - Fixed overshadowed `ParsingException` in system participant factories [#1722](https://github.com/ie3-institute/PowerSystemDataModel/issues/1722)
 - Throw exceptions instead of silently swallowing errors in `FileDataSource` [#927](https://github.com/ie3-institute/PowerSystemDataModel/issues/927)
 - Fixed poor performance of `TimeSeries` interval operations. [#1736](https://github.com/ie3-institute/PowerSystemDataModel/issues/1736)
+- Fixed version number in `version.properties` [#1750](https://github.com/ie3-institute/PowerSystemDataModel/issues/1750)
 
 ### Changed
 - Switched trait `WeatherSourceTestHelper` to class and more code clean up [#1657](https://github.com/ie3-institute/PowerSystemDataModel/issues/1657)
