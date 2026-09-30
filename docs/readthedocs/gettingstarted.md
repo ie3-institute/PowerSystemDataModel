@@ -20,7 +20,7 @@ On [Maven central](https://search.maven.org/artifact/com.github.ie3-institute/Po
 <dependency>
   <groupId>com.github.ie3-institute</groupId>
   <artifactId>PowerSystemDataModel</artifactId>
-  <version>9.1.0</version>
+  <version>9.2.0</version>
 </dependency>
 ```
 
