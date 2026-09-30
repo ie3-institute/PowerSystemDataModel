@@ -198,6 +198,7 @@ result/grid/transformer
 result/grid/transformer2w
 result/grid/transformer3w
 result/grid/congestion
+result/grid/thermallinesegment
 ```
 
 ### Participant Related Models
