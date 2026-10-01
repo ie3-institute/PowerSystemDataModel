@@ -6,31 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
-
-## [9.2.0] - 2026-09-30
-
-### Added
-- Introduce data model for cable types [#1669](https://github.com/ie3-institute/PowerSystemDataModel/issues/1669)
-- Added support for Markov-chain-based load profiles loaded from JSON [#1472](https://github.com/ie3-institute/PowerSystemDataModel/issues/1472)
-- Enhance data model by cable type information [#1670](https://github.com/ie3-institute/PowerSystemDataModel/issues/1670)
-- Added ThermalLineSegmentResult [#1728](https://github.com/ie3-institute/PowerSystemDataModel/issues/1728)
-- Increase test coverage for TimeBasedWeatherValueData [#1609](https://github.com/ie3-institute/PowerSystemDataModel/issues/1609)
-
-### Fixed
-- Fixed issues regarding determination of additional parameters [#1661](https://github.com/ie3-institute/PowerSystemDataModel/issues/1661)
-- Fixed overshadowed `ParsingException` in system participant factories [#1722](https://github.com/ie3-institute/PowerSystemDataModel/issues/1722)
-- Throw exceptions instead of silently swallowing errors in `FileDataSource` [#927](https://github.com/ie3-institute/PowerSystemDataModel/issues/927)
-- Fixed poor performance of `TimeSeries` interval operations. [#1736](https://github.com/ie3-institute/PowerSystemDataModel/issues/1736)
-- Fixed version number in `version.properties` [#1750](https://github.com/ie3-institute/PowerSystemDataModel/issues/1750)
-
 ### Changed
-- Switched trait `WeatherSourceTestHelper` to class and more code clean up [#1657](https://github.com/ie3-institute/PowerSystemDataModel/issues/1657)
-- Removed graphic related code [#1655](https://github.com/ie3-institute/PowerSystemDataModel/issues/1655)
-- Minor clean up [#1667](https://github.com/ie3-institute/PowerSystemDataModel/issues/1667)
-- Clean up of `jackson` dependencies [#1724](https://github.com/ie3-institute/PowerSystemDataModel/issues/1724)
-- Harmonized loggers in sources to only use the one of the respective base class [#1597](https://github.com/ie3-institute/PowerSystemDataModel/issues/1597)
-
-## [9.1.0] - 2026-06-04
+- Change Evcs.locationType from single element to list [#1460](https://github.com/ie3-institute/PowerSystemDataModel/issues/1460)
 
 ### Added
 - Added explicit handling for cases where no weather data is received from any source [#554](https://github.com/ie3-institute/PowerSystemDataModel/issues/554)
@@ -105,7 +82,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `Couchbase` version within the tests [#1586](https://github.com/ie3-institute/PowerSystemDataModel/issues/1586)
 - Use the default time pattern for persisting time series keys [#766](https://github.com/ie3-institute/PowerSystemDataModel/issues/766) 
 - Handled some more SonarQube Issues [#1598](https://github.com/ie3-institute/PowerSystemDataModel/issues/1598)
-- Change Evcs.locationType from single element to list [#1460](https://github.com/ie3-institute/PowerSystemDataModel/issues/1460)
 
 ## [8.1.0] - 2025-07-25
 
@@ -490,9 +466,7 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/9.2.0...HEAD
-[9.2.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/9.1.0...9.2.0
-[9.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/9.0.0...9.1.0
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/9.0.0...HEAD
 [9.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/8.1.0...9.0.0
 [8.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/8.0.0...8.1.0
 [8.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/7.0.0...8.0.0
