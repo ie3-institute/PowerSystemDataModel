@@ -345,7 +345,6 @@ class ResultEntityProcessorTest extends Specification {
     given:
     def sysPartResProcessor = new ResultEntityProcessor(ThermalLineSegmentResult)
 
-    // take a non-standard unit on purpose, model normalizes to StandardUnits.TEMPERATURE
     Quantity<Temperature> lineSegTemp = Quantities.getQuantity(40, Units.CELSIUS)
     Quantity<Temperature> groundTemp = Quantities.getQuantity(12, Units.CELSIUS)
 
