@@ -302,7 +302,7 @@ class InputEntityProcessorTest extends Specification {
       "type" : SystemParticipantTestData.evcsInput.type.toString(),
       "cosPhiRated" : SystemParticipantTestData.evcsInput.cosPhiRated.toString(),
       "chargingPoints" : SystemParticipantTestData.evcsInput.chargingPoints.toString(),
-      "locationTypes"   : SystemParticipantTestData.evcsInput.locationTypes.toString(),
+      "locationTypes" : SystemParticipantTestData.evcsInput.locationTypes.toString(),
       "v2gSupport" : SystemParticipantTestData.evcsInput.v2gSupport.toString(),
       "controllingEm" : SystemParticipantTestData.acInput.controllingEm.map{entity ->
         entity.uuid.toString()

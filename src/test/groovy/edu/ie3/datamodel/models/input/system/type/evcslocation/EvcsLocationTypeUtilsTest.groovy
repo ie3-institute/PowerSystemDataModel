@@ -51,9 +51,9 @@ class EvcsLocationTypeUtilsTest extends Specification {
     parsed == expectedObj
 
     where:
-    parsableString           || expectedObj
+    parsableString || expectedObj
     "WORK, CUSTOMER_PARKING" || [WORK, CUSTOMER_PARKING]
-    "HOME,WORK,STREET"       || [HOME, WORK, STREET]
+    "HOME,WORK,STREET" || [HOME, WORK, STREET]
   }
 
   def "The EvcsLocationTypeUtils should throw exceptions as expected when invalid evcs location type string is provided"() {
