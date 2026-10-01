@@ -466,7 +466,9 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/9.0.0...HEAD
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/9.2.0...HEAD
+[9.2.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/9.1.0...9.2.0
+[9.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/9.0.0...9.1.0
 [9.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/8.1.0...9.0.0
 [8.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/8.0.0...8.1.0
 [8.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/7.0.0...8.0.0
