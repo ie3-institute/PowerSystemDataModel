@@ -355,7 +355,6 @@ class ResultEntityProcessorTest extends Specification {
       inputModel : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
       groundTemperature : '12.0',
       lineSegmentTemperature : '40.0',
-      lineSegmentUuid : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
       time : '2020-01-30T17:26:44Z']
 
     when:
