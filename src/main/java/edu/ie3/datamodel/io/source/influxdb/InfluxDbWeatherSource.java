@@ -62,7 +62,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval) throws NoDataException {
+      ClosedInterval<ZonedDateTime> timeInterval) throws SourceException, NoDataException {
     try (InfluxDB session = connector.getSession()) {
       String query = createQueryStringForTimeInterval(timeInterval);
       QueryResult queryResult = session.query(new Query(query));
@@ -87,11 +87,13 @@ public class InfluxDbWeatherSource extends WeatherSource {
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
-      throws NoDataException {
+      throws SourceException, NoDataException {
     if (coordinates.isEmpty())
       throw new NoDataException("No coordinates provided for weather data query.");
-    Map<Point, Optional<Integer>> coordinatesToId =
-        coordinates.stream().collect(Collectors.toMap(point -> point, idCoordinateSource::getId));
+    Map<Point, Optional<Integer>> coordinatesToId = new HashMap<>();
+    for (Point point : coordinates) {
+      coordinatesToId.put(point, idCoordinateSource.getId(point));
+    }
 
     List<Point> unknownCoordinates =
         coordinatesToId.entrySet().stream()
@@ -151,7 +153,8 @@ public class InfluxDbWeatherSource extends WeatherSource {
   }
 
   @Override
-  public Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time) {
+  public Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time)
+      throws SourceException {
     try (InfluxDB session = connector.getSession()) {
       String query = createQueryStringForTimeKeysAfter(time);
       QueryResult queryResult = session.query(new Query(query));
@@ -173,7 +176,8 @@ public class InfluxDbWeatherSource extends WeatherSource {
   }
 
   @Override
-  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time, Point coordinate) {
+  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time, Point coordinate)
+      throws SourceException {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
       return Collections.emptyList();
@@ -194,7 +198,8 @@ public class InfluxDbWeatherSource extends WeatherSource {
    * @return weather data for the specified time and coordinate
    */
   public IndividualTimeSeries<WeatherValue> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval, Point coordinate) throws NoDataException {
+      ClosedInterval<ZonedDateTime> timeInterval, Point coordinate)
+      throws SourceException, NoDataException {
     Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
     if (coordinateId.isEmpty()) {
       throw new NoDataException("No coordinate ID found for the given point: " + coordinate);
@@ -215,32 +220,37 @@ public class InfluxDbWeatherSource extends WeatherSource {
    * successful and an empty Optional otherwise.
    */
   private Stream<Optional<TimeBasedValue<WeatherValue>>> optTimeBasedValueStream(
-      QueryResult queryResult) {
+      QueryResult queryResult) throws SourceException {
     Map<String, Set<Map<String, String>>> measurementsMap =
         InfluxDbConnector.parseQueryResult(queryResult, MEASUREMENT_NAME_WEATHER);
     final String coordinateIdFieldName = weatherFactory.getCoordinateIdFieldString();
-    return measurementsMap.getOrDefault(MEASUREMENT_NAME_WEATHER, Collections.emptySet()).stream()
-        .map(
-            fieldToValue -> {
-              /* The factory expects flat case id's for fields -> Convert the keys */
-              Map<String, String> flatCaseFields =
-                  fieldToValue.entrySet().stream()
-                      .collect(
-                          Collectors.toMap(
-                              entry -> StringUtils.snakeCaseToCamelCase(entry.getKey()),
-                              Map.Entry::getValue));
 
-              /* Add a random UUID if necessary */
-              flatCaseFields.putIfAbsent("uuid", UUID.randomUUID().toString());
+    List<Optional<TimeBasedValue<WeatherValue>>> values = new ArrayList<>();
 
-              /* Get the corresponding coordinate id from map AND REMOVE THE ENTRY !!! */
-              int coordinateId = Integer.parseInt(flatCaseFields.remove(coordinateIdFieldName));
-              return idCoordinateSource
-                  .getCoordinate(coordinateId)
-                  .map(point -> new TimeBasedWeatherValueData(flatCaseFields, point))
-                  .map(weatherFactory::get)
-                  .flatMap(Try::getData);
-            });
+    for (Map<String, String> fieldToValue :
+        measurementsMap.getOrDefault(MEASUREMENT_NAME_WEATHER, Collections.emptySet())) {
+      /* The factory expects flat case id's for fields -> Convert the keys */
+      Map<String, String> flatCaseFields =
+          fieldToValue.entrySet().stream()
+              .collect(
+                  Collectors.toMap(
+                      entry -> StringUtils.snakeCaseToCamelCase(entry.getKey()),
+                      Map.Entry::getValue));
+
+      /* Add a random UUID if necessary */
+      flatCaseFields.putIfAbsent("uuid", UUID.randomUUID().toString());
+
+      /* Get the corresponding coordinate id from map AND REMOVE THE ENTRY !!! */
+      int coordinateId = Integer.parseInt(flatCaseFields.remove(coordinateIdFieldName));
+      values.add(
+          idCoordinateSource
+              .getCoordinate(coordinateId)
+              .map(point -> new TimeBasedWeatherValueData(flatCaseFields, point))
+              .map(weatherFactory::get)
+              .flatMap(Try::getData));
+    }
+
+    return values.stream();
   }
 
   private String createQueryStringForCoordinateAndTimeInterval(
@@ -320,7 +330,8 @@ public class InfluxDbWeatherSource extends WeatherSource {
     return COORDINATE_ID_COLUMN_NAME + "='" + coordinateId + "'";
   }
 
-  private Stream<TimeBasedValue<WeatherValue>> toWeatherValues(QueryResult queryResult) {
+  private Stream<TimeBasedValue<WeatherValue>> toWeatherValues(QueryResult queryResult)
+      throws SourceException {
     return filterEmptyOptionals(optTimeBasedValueStream(queryResult));
   }
 
