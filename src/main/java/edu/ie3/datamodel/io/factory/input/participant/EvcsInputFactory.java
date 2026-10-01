@@ -18,14 +18,12 @@ import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTyp
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils;
 import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType;
 import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationTypeUtils;
+import java.util.List;
 import java.util.UUID;
 
 /**
  * Factory to create instances of {@link EvcsInput}s based on {@link SystemParticipantEntityData}
  * and additional fields.
- *
- * @version 0.1
- * @since 26.07.20
  */
 public class EvcsInputFactory
     extends SystemParticipantInputEntityFactory<EvcsInput, SystemParticipantEntityData> {
@@ -59,15 +57,19 @@ public class EvcsInputFactory
     final int chargingPoints = data.getInt(CHARGING_POINTS);
     final double cosPhi = data.getDouble(COS_PHI_RATED);
 
-    final EvcsLocationType locationType;
-    String locationFieldValue = data.getField(LOCATION_TYPE);
+    final List<EvcsLocationType> locationTypes;
+    String locationFieldValue = data.getField(LOCATION_TYPES);
     try {
-      locationType = EvcsLocationTypeUtils.parse(locationFieldValue);
+      if (locationFieldValue.contains(",")) {
+        locationTypes = EvcsLocationTypeUtils.parse(locationFieldValue);
+      } else {
+        locationTypes = List.of(EvcsLocationTypeUtils.parseSingle(locationFieldValue));
+      }
     } catch (ParsingException e) {
       throw new FactoryException(
           String.format(
-              "Exception while trying to parse field \"%s\" with supposed int value \"%s\"",
-              LOCATION_TYPE, locationFieldValue),
+              "Exception while trying to parse field \"%s\" with supposed value \"%s\"",
+              LOCATION_TYPES, locationFieldValue),
           e);
     }
 
@@ -84,7 +86,7 @@ public class EvcsInputFactory
         type,
         chargingPoints,
         cosPhi,
-        locationType,
+        locationTypes,
         v2gSupport,
         data.getFieldsToValues());
   }
