@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Register `ThermalLineSegmentResult` at `ResultEntityProcessor` [#1759](https://github.com/ie3-institute/PowerSystemDataModel/issues/1759)
 
+### Fixed
+- Fixed recurring `gradlew.bat` modifications [#1757](https://github.com/ie3-institute/PowerSystemDataModel/issues/1757)
+
+
 ## [9.2.0] - 2026-09-30
 
 ### Added
