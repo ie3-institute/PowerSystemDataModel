@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.input.container;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
+import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import edu.ie3.datamodel.models.input.connector.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -32,6 +33,9 @@ public class RawGridElements implements InputContainer<AssetInput> {
   /** Measurement units in this grid */
   private final Set<MeasurementUnitInput> measurementUnits;
 
+  /** Cable deployments mapped by the uuid of the line they belong to */
+  private final Map<UUID, List<CableDeploymentInput>> cableDeploymentsByLine;
+
   public RawGridElements(
       Set<NodeInput> nodes,
       Set<LineInput> lines,
@@ -39,12 +43,30 @@ public class RawGridElements implements InputContainer<AssetInput> {
       Set<Transformer3WInput> transformer3Ws,
       Set<SwitchInput> switches,
       Set<MeasurementUnitInput> measurementUnits) {
+    this(nodes, lines, transformer2Ws, transformer3Ws, switches, measurementUnits, Map.of());
+  }
+
+  /** Extended constructor that includes cable deployments mapping. */
+  public RawGridElements(
+      Set<NodeInput> nodes,
+      Set<LineInput> lines,
+      Set<Transformer2WInput> transformer2Ws,
+      Set<Transformer3WInput> transformer3Ws,
+      Set<SwitchInput> switches,
+      Set<MeasurementUnitInput> measurementUnits,
+      Map<UUID, List<CableDeploymentInput>> cableDeploymentsByLine) {
     this.nodes = nodes;
     this.lines = lines;
     this.transformer2Ws = transformer2Ws;
     this.transformer3Ws = transformer3Ws;
     this.switches = switches;
     this.measurementUnits = measurementUnits;
+
+    Map<UUID, List<CableDeploymentInput>> tmp = new java.util.HashMap<>();
+    if (cableDeploymentsByLine != null) {
+      cableDeploymentsByLine.forEach((k, v) -> tmp.put(k, List.copyOf(v)));
+    }
+    this.cableDeploymentsByLine = Collections.unmodifiableMap(tmp);
   }
 
   /**
@@ -77,15 +99,27 @@ public class RawGridElements implements InputContainer<AssetInput> {
         rawGridElements.stream()
             .flatMap(rawElements -> rawElements.getMeasurementUnits().stream())
             .collect(Collectors.toSet());
+    Map<UUID, List<CableDeploymentInput>> merged = new HashMap<>();
+    rawGridElements.stream()
+        .flatMap(e -> e.getCableDeploymentsByLine().entrySet().stream())
+        .forEach(
+            entry ->
+                merged
+                    .computeIfAbsent(entry.getKey(), k -> new ArrayList<>())
+                    .addAll(entry.getValue()));
+
+    Map<UUID, List<CableDeploymentInput>> tmp = new HashMap<>();
+    merged.forEach((k, v) -> tmp.put(k, Collections.unmodifiableList(v)));
+    this.cableDeploymentsByLine = Collections.unmodifiableMap(tmp);
   }
 
   /**
-   * Create an instance based on a list of {@link AssetInput} entities that are included in {@link
-   * RawGridElements}
+   * Create an instance based on a list of {@link UniqueInputEntity} entities that are included in
+   * {@link RawGridElements}
    *
-   * @param rawGridElements list of grid elements this container instance should created from
+   * @param rawGridElements list of grid elements this container instance should create from
    */
-  public RawGridElements(List<AssetInput> rawGridElements) {
+  public RawGridElements(List<? extends UniqueInputEntity> rawGridElements) {
 
     /* init sets */
     this.nodes =
@@ -118,6 +152,14 @@ public class RawGridElements implements InputContainer<AssetInput> {
             .filter(MeasurementUnitInput.class::isInstance)
             .map(MeasurementUnitInput.class::cast)
             .collect(Collectors.toSet());
+    Map<UUID, List<CableDeploymentInput>> deployments = new HashMap<>();
+    rawGridElements.stream()
+        .filter(CableDeploymentInput.class::isInstance)
+        .map(CableDeploymentInput.class::cast)
+        .forEach(d -> deployments.computeIfAbsent(d.getLineUuid(), k -> new ArrayList<>()).add(d));
+    Map<UUID, List<CableDeploymentInput>> tmp = new HashMap<>();
+    deployments.forEach((k, v) -> tmp.put(k, List.copyOf(v)));
+    this.cableDeploymentsByLine = Collections.unmodifiableMap(tmp);
   }
 
   @Override
@@ -179,6 +221,14 @@ public class RawGridElements implements InputContainer<AssetInput> {
     return Collections.unmodifiableSet(measurementUnits);
   }
 
+  /**
+   * Returns an unmodifiable map of cable deployments grouped by referring line uuid. Each list is
+   * unmodifiable as well.
+   */
+  public Map<UUID, List<CableDeploymentInput>> getCableDeploymentsByLine() {
+    return cableDeploymentsByLine;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -188,21 +238,26 @@ public class RawGridElements implements InputContainer<AssetInput> {
         && transformer2Ws.equals(that.transformer2Ws)
         && transformer3Ws.equals(that.transformer3Ws)
         && switches.equals(that.switches)
-        && measurementUnits.equals(that.measurementUnits);
+        && measurementUnits.equals(that.measurementUnits)
+        && cableDeploymentsByLine.equals(that.cableDeploymentsByLine);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nodes, lines, transformer2Ws, transformer3Ws, switches, measurementUnits);
+    return Objects.hash(
+        nodes,
+        lines,
+        transformer2Ws,
+        transformer3Ws,
+        switches,
+        measurementUnits,
+        cableDeploymentsByLine);
   }
 
   /**
    * A builder pattern based approach to create copies of {@link RawGridElements} containers with
-   * altered field values. For detailed field descriptions refer to java docs of {@link
+   * altered field values. For detailed field descriptions refer to Javadocs of {@link
    * RawGridElements}
-   *
-   * @version 3.1
-   * @since 14.02.23
    */
   public static class RawGridElementsCopyBuilder extends InputContainerCopyBuilder<AssetInput> {
     private Set<NodeInput> nodes;
@@ -211,6 +266,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
     private Set<Transformer3WInput> transformer3Ws;
     private Set<SwitchInput> switches;
     private Set<MeasurementUnitInput> measurementUnits;
+    private Map<UUID, List<CableDeploymentInput>> cableDeploymentsByLine;
 
     /**
      * Constructor for {@link RawGridElementsCopyBuilder}
@@ -224,6 +280,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
       this.transformer3Ws = rawGridElements.getTransformer3Ws();
       this.switches = rawGridElements.getSwitches();
       this.measurementUnits = rawGridElements.getMeasurementUnits();
+      this.cableDeploymentsByLine = rawGridElements.getCableDeploymentsByLine();
     }
 
     /**
@@ -262,7 +319,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
     /**
      * Method to alter {@link Transformer3WInput}
      *
-     * @param transformer3Ws set of altered three winding trnasformers
+     * @param transformer3Ws set of altered three winding transformers
      * @return this instance of {@link RawGridElementsCopyBuilder}
      */
     public RawGridElementsCopyBuilder transformer3Ws(Set<Transformer3WInput> transformer3Ws) {
@@ -292,6 +349,18 @@ public class RawGridElements implements InputContainer<AssetInput> {
       return thisInstance();
     }
 
+    /**
+     * Method to alter {@link CableDeploymentInput}
+     *
+     * @param cableDeploymentsByLine set of altered cable deployments by line
+     * @return this instance of {@link RawGridElementsCopyBuilder}
+     */
+    public RawGridElementsCopyBuilder cableDeploymentsByLine(
+        Map<UUID, List<CableDeploymentInput>> cableDeploymentsByLine) {
+      this.cableDeploymentsByLine = cableDeploymentsByLine;
+      return thisInstance();
+    }
+
     @Override
     protected RawGridElementsCopyBuilder thisInstance() {
       return this;
@@ -300,7 +369,13 @@ public class RawGridElements implements InputContainer<AssetInput> {
     @Override
     public RawGridElements build() {
       return new RawGridElements(
-          nodes, lines, transformer2Ws, transformer3Ws, switches, measurementUnits);
+          nodes,
+          lines,
+          transformer2Ws,
+          transformer3Ws,
+          switches,
+          measurementUnits,
+          cableDeploymentsByLine);
     }
   }
 }

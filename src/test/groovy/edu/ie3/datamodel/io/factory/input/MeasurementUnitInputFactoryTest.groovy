@@ -28,12 +28,12 @@ class MeasurementUnitInputFactoryTest extends Specification implements FactoryTe
     given: "a system participant input type factory and model data"
     def inputFactory = new MeasurementUnitInputFactory()
     Map<String, String> parameter = [
-      "uuid"         : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id"           : "TestID",
-      "vmag"         : "true",
-      "vang"         : "false",
-      "p"            : "true",
-      "q"            : "true"
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id" : "TestID",
+      "vmag" : "true",
+      "vang" : "false",
+      "p" : "true",
+      "q" : "true"
     ]
     def inputClass = MeasurementUnitInput
     def nodeInput = Mock(NodeInput)

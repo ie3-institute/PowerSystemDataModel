@@ -8,15 +8,13 @@ package edu.ie3.datamodel.io.naming;
 import edu.ie3.datamodel.exceptions.FileException;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.Entity;
-import edu.ie3.datamodel.models.input.*;
-import edu.ie3.datamodel.models.input.connector.LineInput;
-import edu.ie3.datamodel.models.input.connector.SwitchInput;
-import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
+import edu.ie3.datamodel.models.input.MeasurementUnitInput;
+import edu.ie3.datamodel.models.input.NodeInput;
+import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
-import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
 import edu.ie3.datamodel.models.input.system.type.*;
@@ -206,6 +204,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
         Constants.INPUT_SUB_TREE.resolve("grid"),
         true,
         Stream.of(
+                CableDeploymentInput.class,
                 LineInput.class,
                 SwitchInput.class,
                 Transformer2WInput.class,
@@ -286,11 +285,7 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
     THERMAL_RESULTS(
         Constants.RESULT_SUB_TREE.resolve("thermal"),
         false,
-        Stream.of(ThermalUnitResult.class).collect(Collectors.toSet())),
-    GRAPHICS(
-        Constants.INPUT_SUB_TREE.resolve("graphics"),
-        false,
-        Stream.of(GraphicInput.class).collect(Collectors.toSet()));
+        Stream.of(ThermalUnitResult.class).collect(Collectors.toSet()));
     private final Path relPath;
     private final boolean mandatory;
     private final Set<Class<?>> relevantClasses;

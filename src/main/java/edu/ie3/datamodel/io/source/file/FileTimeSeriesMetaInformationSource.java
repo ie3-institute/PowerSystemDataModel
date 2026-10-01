@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.file;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.FileIndividualTimeSeriesMetaInformation;
@@ -37,7 +38,8 @@ public class FileTimeSeriesMetaInformationSource extends TimeSeriesMetaInformati
    * @param fileNamingStrategy the file naming strategy
    */
   public FileTimeSeriesMetaInformationSource(
-      String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy) {
+      String csvSep, Path folderPath, FileNamingStrategy fileNamingStrategy)
+      throws SourceException {
     this(new CsvDataSource(csvSep, folderPath, fileNamingStrategy));
   }
 
@@ -46,7 +48,7 @@ public class FileTimeSeriesMetaInformationSource extends TimeSeriesMetaInformati
    *
    * @param dataSource a file data source
    */
-  public FileTimeSeriesMetaInformationSource(FileDataSource dataSource) {
+  public FileTimeSeriesMetaInformationSource(FileDataSource dataSource) throws SourceException {
     // retrieve only the desired time series
     this.timeSeriesMetaInformation =
         dataSource

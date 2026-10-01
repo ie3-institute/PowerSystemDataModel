@@ -39,13 +39,16 @@ public abstract class SystemParticipantInputEntityFactory<
   protected T buildModel(
       D data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
     NodeInput node = data.getNode();
+
+    String qCharacteristicsValue = data.getField(Q_CHARACTERISTICS);
+
     ReactivePowerCharacteristic qCharacteristics;
     try {
-      qCharacteristics = ReactivePowerCharacteristic.parse(data.getField(Q_CHARACTERISTICS));
+      qCharacteristics = ReactivePowerCharacteristic.parse(qCharacteristicsValue);
     } catch (ParsingException e) {
       throw new FactoryException(
           "Cannot parse the following reactive power characteristic: '"
-              + data.getField(Q_CHARACTERISTICS)
+              + qCharacteristicsValue
               + "'",
           e);
     }

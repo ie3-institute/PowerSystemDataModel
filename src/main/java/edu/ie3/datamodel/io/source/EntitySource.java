@@ -123,6 +123,7 @@ public abstract class EntitySource {
   /**
    * Method to get a source for the build in entities.
    *
+   * @param clazz class used to access the resources
    * @param subdirectory from the resource folder
    * @return a new {@link CsvDataSource}
    */
@@ -132,7 +133,9 @@ public abstract class EntitySource {
       URL url = clazz.getResource(subdirectory);
 
       if (url == null) {
-        throw new SourceException("Resources not found for: " + subdirectory);
+        String message = "Resources not found for: " + subdirectory;
+        log.error(message);
+        throw new SourceException(message);
       }
 
       URI uri = url.toURI();

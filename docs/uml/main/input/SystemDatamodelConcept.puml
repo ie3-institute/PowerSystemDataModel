@@ -66,7 +66,6 @@ package models {
     childNote .. timeseries
     childNote .. value
     childNote .. connector
-    childNote .. graphics
     childNote .. thermal
 
     package input {
@@ -78,8 +77,6 @@ package models {
             - name: String
         }
         OperatorInput --|> InputEntity
-
-        package graphics {}
 
         abstract class AssetInput {
             - id: String

@@ -20,6 +20,31 @@ CREATE TABLE public.transformer_2_w_type_input
     WITHOUT OIDS
 	TABLESPACE pg_default;
 
+CREATE TABLE public.cable_type_input
+(
+    uuid UUID PRIMARY KEY,
+    id varchar NOT NULL,
+    core_number int NOT NULL,
+    conductor jsonb NOT NULL,
+    isolation jsonb NOT NULL,
+    screen jsonb,
+    filler jsonb NOT NULL,
+    armor jsonb NOT NULL,
+    jack jsonb NOT NULL,
+    limit_temperature double precision NOT NULL,
+    frequency double precision NOT NULL,
+    skin_effect_coefficient double precision NOT NULL,
+    proximity_effect_coefficient double precision NOT NULL,
+    electrical_capacitance double precision NOT NULL,
+    tan_delta double precision NOT NULL,
+    circulating_loss_factor double precision NOT NULL,
+    eddy_current_loss_factor double precision NOT NULL,
+    grid_uuid UUID NOT NULL REFERENCES grids(uuid)
+)   WITHOUT OIDS
+	TABLESPACE pg_default;
+CREATE INDEX idx_cable_type_conductor_material ON public.cable_type_input USING gin ((conductor->'material'));
+CREATE INDEX idx_cable_type_id ON public.cable_type_input (id);
+
 CREATE TABLE public.line_type_input
 (
     uuid UUID PRIMARY KEY,
@@ -30,7 +55,7 @@ CREATE TABLE public.line_type_input
     r DOUBLE PRECISION NOT NULL,
     v_rated DOUBLE PRECISION NOT NULL,
     x DOUBLE PRECISION NOT NULL,
-
+    cable_type UUID REFERENCES public.cable_type_input(uuid),
     grid_uuid UUID NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS

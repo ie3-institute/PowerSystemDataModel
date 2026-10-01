@@ -14,21 +14,17 @@ import edu.ie3.datamodel.io.naming.timeseries.TimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.*;
-import edu.ie3.datamodel.models.input.connector.LineInput;
-import edu.ie3.datamodel.models.input.connector.SwitchInput;
-import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
+import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
-import edu.ie3.datamodel.models.input.graphics.LineGraphicInput;
-import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.DomesticHotWaterStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
+import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel;
 import edu.ie3.datamodel.models.result.CongestionResult;
 import edu.ie3.datamodel.models.result.NodeResult;
 import edu.ie3.datamodel.models.result.connector.LineResult;
@@ -39,6 +35,7 @@ import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
+import edu.ie3.datamodel.models.result.thermal.ThermalLineSegmentResult;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
@@ -62,6 +59,7 @@ public final class ModelFields extends FieldNamingStrategy {
   private static final Map<Class<?>, Set<String>> unsupportedFields = new HashMap<>();
   private static final Map<Class<? extends Value>, List<Set<String>>> valueMandatoryFields =
       new HashMap<>();
+  private static final Map<Class<?>, List<Set<String>>> genericMandatoryFields = new HashMap<>();
 
   /**
    * Retrieves a list that contains combinations of mandatory fields for the provided class.
@@ -75,7 +73,7 @@ public final class ModelFields extends FieldNamingStrategy {
     } else if (Value.class.isAssignableFrom(clazz)) {
       return valueMandatoryFields.getOrDefault(clazz, Collections.emptyList());
     } else {
-      return Collections.emptyList();
+      return genericMandatoryFields.getOrDefault(clazz, Collections.emptyList());
     }
   }
 
@@ -148,6 +146,20 @@ public final class ModelFields extends FieldNamingStrategy {
   }
 
   /**
+   * Method to register mandatory fields for a class that is neither an {@link Entity} nor a {@link
+   * Value}.
+   *
+   * <p>NOTE: This method will only add fields, if no fields are registered yet!
+   *
+   * @param clazz for which fields should be registered
+   * @param mandatoryFields the mandatory field combinations to register
+   */
+  @SafeVarargs
+  public static void registerGeneric(Class<?> clazz, Set<String>... mandatoryFields) {
+    ModelFields.genericMandatoryFields.putIfAbsent(clazz, List.of(mandatoryFields));
+  }
+
+  /**
    * Method to register mandatory fields for a given entity class.
    *
    * <p>NOTE: This method will only add fields, if no fields are registered yet!
@@ -199,7 +211,6 @@ public final class ModelFields extends FieldNamingStrategy {
     registerGridAssetFields();
     registerParticipantFields();
     registerThermalFields();
-    registerGraphicFields();
     registerResultFields();
     registerTimeSeriesRelatedFields();
     registerValueFields();
@@ -208,6 +219,30 @@ public final class ModelFields extends FieldNamingStrategy {
     // registering em fields
     registerMandatory(EmInput.class, assetFields, CONTROLLING_EM, CONTROL_STRATEGY);
     registerOptional(EmInput.class, assetOptionalFields);
+
+    // markov load model fields
+    registerGeneric(
+        MarkovLoadModel.class,
+        newSet(
+            MARKOV_SCHEMA,
+            MARKOV_GENERATED_AT,
+            MARKOV_GENERATOR,
+            MARKOV_TIME_MODEL,
+            MARKOV_VALUE_MODEL,
+            MARKOV_DATA,
+            MARKOV_GENERATOR_NAME,
+            MARKOV_GENERATOR_VERSION,
+            MARKOV_BUCKET_COUNT,
+            MARKOV_SAMPLING_INTERVAL,
+            MARKOV_TIMEZONE,
+            MARKOV_DISCRETIZATION_STATES,
+            MARKOV_DISCRETIZATION_THRESHOLDS,
+            MARKOV_MAX_POWER_VALUE,
+            MARKOV_MAX_POWER_UNIT,
+            MARKOV_MIN_POWER_VALUE,
+            MARKOV_MIN_POWER_UNIT,
+            MARKOV_TRANSITION_VALUES,
+            MARKOV_GMM_BUCKETS));
   }
 
   /**
@@ -289,11 +324,27 @@ public final class ModelFields extends FieldNamingStrategy {
   /** Method for registering all grid asset fields. */
   private static void registerGridAssetFields() {
 
+    Stream.of(
+            NodeInput.class,
+            SwitchInput.class,
+            LineInput.class,
+            Transformer2WInput.class,
+            Transformer3WInput.class,
+            MeasurementUnitInput.class)
+        .forEach(c -> register(c, assetFields));
+
     addMandatory(NodeInput.class, V_TARGET, V_RATED, SLACK, GEO_POSITION, VOLT_LVL, SUBNET);
 
     addMandatory(SwitchInput.class, NODE_A, NODE_B, CLOSED);
 
     addMandatory(LineInput.class, LENGTH, GEO_POSITION, OLM_CHARACTERISTIC);
+
+    registerOptional(LineTypeInput.class, newSet(CABLE_TYPE));
+
+    register(
+        CableDeploymentInput.class,
+        newSet(UUID, LINE_UUID, LAYOUT_FORMATION, DEPTH_CABLES, DISTANCE_CABLES),
+        Set.of());
 
     Stream.of(LineInput.class, Transformer2WInput.class, Transformer3WInput.class)
         .forEach(c -> addMandatory(c, NODE_A, NODE_B, PARALLEL_DEVICES, TYPE));
@@ -387,13 +438,6 @@ public final class ModelFields extends FieldNamingStrategy {
                     c, STORAGE_VOLUME_LVL, INLET_TEMP, RETURN_TEMP, C, P_THERMAL_MAX, THERMAL_BUS));
   }
 
-  /** Method for registering all graphic fields. */
-  private static void registerGraphicFields() {
-    Set<String> graphicBase = newSet(UUID, GRAPHIC_LAYER, PATH_LINE_STRING);
-    registerMandatory(NodeGraphicInput.class, graphicBase, POINT, NODE);
-    registerMandatory(LineGraphicInput.class, graphicBase, LINE);
-  }
-
   /** Method for registering all result fields. */
   private static void registerResultFields() {
     Set<String> result = newSet(TIME, INPUT_MODEL);
@@ -444,6 +488,9 @@ public final class ModelFields extends FieldNamingStrategy {
 
     Stream.of(CylindricalStorageResult.class, DomesticHotWaterStorageResult.class)
         .forEach(r -> registerMandatory(r, thermal, ENERGY, FILL_LEVEL));
+
+    registerMandatory(
+        ThermalLineSegmentResult.class, result, LINE_SEGMENT_TEMPERATURE, GROUND_TEMPERATURE);
   }
 
   /** Method for registering some time series related fields. */

@@ -16,7 +16,7 @@ import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes the type of a {@link edu.ie3.datamodel.models.input.system.BmInput} */
+/** Describes the type of {@link edu.ie3.datamodel.models.input.system.BmInput} */
 public class BmTypeInput extends SystemParticipantTypeInput {
 
   /** Permissible load gradient (typically in %/h) */
@@ -128,7 +128,7 @@ public class BmTypeInput extends SystemParticipantTypeInput {
 
   /**
    * A builder pattern based approach to create copies of {@link BmTypeInput} entities with altered
-   * field values. For detailed field descriptions refer to java docs of {@link BmTypeInput}
+   * field values. For detailed field descriptions refer to Javadocs of {@link BmTypeInput}
    */
   public static class BmTypeInputCopyBuilder
       extends SystemParticipantTypeInputCopyBuilder<BmTypeInputCopyBuilder> {

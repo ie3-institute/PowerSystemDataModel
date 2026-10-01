@@ -32,15 +32,15 @@ class EvcsLocationTypeUtilsTest extends Specification {
     parsed[0].name().toLowerCase().replaceAll("[-_]*", "") == parsableString.toLowerCase().replaceAll("[-_]*", "")
 
     where:
-    parsableString           || expectedObj
-    "HOME"                   || HOME
-    "WORK"                   || WORK
-    "CUSTOMER_PARKING"       || CUSTOMER_PARKING
-    "STREET"                 || STREET
-    "CHARGING_HUB_TOWN"      || CHARGING_HUB_TOWN
-    "CHARGING_HUB_HIGHWAY"   || CHARGING_HUB_HIGHWAY
-    "charging_hub_highway"   || CHARGING_HUB_HIGHWAY // lower case
-    "charginghubhighway"     || CHARGING_HUB_HIGHWAY // lower case without underscores
+    parsableString || expectedObj
+    "HOME" || HOME
+    "WORK" || WORK
+    "CUSTOMER_PARKING" || CUSTOMER_PARKING
+    "STREET" || STREET
+    "CHARGING_HUB_TOWN" || CHARGING_HUB_TOWN
+    "CHARGING_HUB_HIGHWAY" || CHARGING_HUB_HIGHWAY
+    "charging_hub_highway" || CHARGING_HUB_HIGHWAY // lower case
+    "charginghubhighway" || CHARGING_HUB_HIGHWAY // lower case without underscores
   }
 
   def "The EvcsLocationTypeUtils should parse multiple evcs location type strings as expected"() {

@@ -15,12 +15,12 @@ import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.ConnectorInput;
+import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.container.GridContainer;
 import edu.ie3.datamodel.models.input.container.ThermalGrid;
-import edu.ie3.datamodel.models.input.graphics.GraphicInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalUnitInput;
@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 public class ValidationUtils {
   protected static final Logger logger = LoggerFactory.getLogger(ValidationUtils.class);
 
-  record NamedQuantity(String name, Quantity<?> value) {}
+  protected record NamedQuantity(String name, Quantity<?> value) {}
 
   /**
    * Creates a Stream of NamedQuantity objects from alternating name/value pairs. Each pair consists
@@ -100,8 +100,6 @@ public class ValidationUtils {
       exceptions.addAll(checkAsset((AssetInput) obj));
     } else if (GridContainer.class.isAssignableFrom(obj.getClass())) {
       exceptions.addAll(GridContainerValidationUtils.check((GridContainer) obj));
-    } else if (GraphicInput.class.isAssignableFrom(obj.getClass())) {
-      exceptions.addAll(GraphicValidationUtils.check((GraphicInput) obj));
     } else if (AssetTypeInput.class.isAssignableFrom(obj.getClass())) {
       exceptions.addAll(checkAssetType((AssetTypeInput) obj));
     } else if (ThermalGrid.class.isAssignableFrom(obj.getClass())) {
@@ -235,6 +233,8 @@ public class ValidationUtils {
     // Further checks for subclasses
     if (LineTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
       exceptions.addAll(ConnectorValidationUtils.checkLineType((LineTypeInput) assetTypeInput));
+    else if (CableTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
+      exceptions.addAll(ConnectorValidationUtils.checkCableType((CableTypeInput) assetTypeInput));
     else if (Transformer2WTypeInput.class.isAssignableFrom(assetTypeInput.getClass()))
       exceptions.addAll(
           ConnectorValidationUtils.checkTransformer2WType((Transformer2WTypeInput) assetTypeInput));

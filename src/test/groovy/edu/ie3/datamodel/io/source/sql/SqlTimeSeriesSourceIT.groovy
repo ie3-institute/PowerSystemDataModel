@@ -87,13 +87,13 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
     timeSeries.entries[0].value.class == valueClass
 
     where:
-    uuid                                                    | columnScheme                                || amountOfEntries | valueClass
-    UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1") | ColumnScheme.ENERGY_PRICE                   || 2               | EnergyPriceValue
-    UUID.fromString("c8fe6547-fd85-4fdf-a169-e4da6ce5c3d0") | ColumnScheme.HEAT_DEMAND                    || 2               | HeatDemandValue
-    UUID.fromString("9185b8c1-86ba-4a16-8dea-5ac898e8caa5") | ColumnScheme.ACTIVE_POWER                   || 2               | PValue
-    UUID.fromString("76c9d846-797c-4f07-b7ec-2245f679f5c7") | ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND   || 2               | HeatAndPValue
-    UUID.fromString("3fbfaa97-cff4-46d4-95ba-a95665e87c26") | ColumnScheme.APPARENT_POWER                 || 2               | SValue
-    UUID.fromString("46be1e57-e4ed-4ef7-95f1-b2b321cb2047") | ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND || 2               | HeatAndSValue
+    uuid | columnScheme || amountOfEntries | valueClass
+    UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1") | ColumnScheme.ENERGY_PRICE || 2 | EnergyPriceValue
+    UUID.fromString("c8fe6547-fd85-4fdf-a169-e4da6ce5c3d0") | ColumnScheme.HEAT_DEMAND || 2 | HeatDemandValue
+    UUID.fromString("9185b8c1-86ba-4a16-8dea-5ac898e8caa5") | ColumnScheme.ACTIVE_POWER || 2 | PValue
+    UUID.fromString("76c9d846-797c-4f07-b7ec-2245f679f5c7") | ColumnScheme.ACTIVE_POWER_AND_HEAT_DEMAND || 2 | HeatAndPValue
+    UUID.fromString("3fbfaa97-cff4-46d4-95ba-a95665e87c26") | ColumnScheme.APPARENT_POWER || 2 | SValue
+    UUID.fromString("46be1e57-e4ed-4ef7-95f1-b2b321cb2047") | ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND || 2 | HeatAndSValue
   }
 
   def "The factory method in SqlTimeSeriesSource refuses to build time series with unsupported column type"() {
@@ -140,7 +140,7 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
     actual == expectedResult
 
     where:
-    time       | expectedResult
+    time | expectedResult
     TIME_00MIN | Optional.empty()
     TIME_15MIN | Optional.of(new TimeBasedValue<>(TIME_00MIN, P_VALUE_00MIN))
     TIME_30MIN | Optional.of(new TimeBasedValue<>(TIME_15MIN, P_VALUE_15MIN))
@@ -191,7 +191,7 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
     actual == expectedKey
 
     where:
-    timeKey                | expectedKey
+    timeKey | expectedKey
     "2019-12-31T23:59:59Z" | Optional.empty()
     "2020-01-01T00:00:00Z" | Optional.empty()
     "2020-01-01T00:15:00Z" | Optional.of(TimeUtil.withDefaults.toZonedDateTime("2020-01-01T00:00:00Z"))

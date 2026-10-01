@@ -195,7 +195,7 @@ public class BmInput extends SystemParticipantInput implements HasType {
 
   /**
    * A builder pattern based approach to create copies of {@link BmInput} entities with altered
-   * field values. For detailed field descriptions refer to java docs of {@link BmInput}
+   * field values. For detailed field descriptions refer to Javadocs of {@link BmInput}
    *
    * @version 0.1
    * @since 05.06.20

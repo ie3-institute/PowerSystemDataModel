@@ -73,10 +73,6 @@ You may extend / alter the naming with pre- or suffix by calling `new EntityPers
 * - wind energy converter
   - *prefix_* wec_input *_suffix*  
     *prefix_* wec_type_input *_suffix*
-* - schematic node graphic
-  - *prefix_* node_graphic_input *_suffix*
-* - schematic line graphic
-  - *prefix_* line_graphic_input *_suffix*
 ```
 
 ### Time Series
@@ -91,6 +87,100 @@ You may extend / alter the naming with pre- or suffix by calling `new EntityPers
      - *prefix_* its *_columnScheme_UUID* *_suffix*
    * - load profile input
      - *prefix_* lpts *_profileKey* *_suffix*
+```
+
+#### Individual Time Series
+
+Let's spend a few more words on the individual time series:
+Those files are meant to carry different types of content - one might give information about wholesale market prices,
+the other is a record of power values provided by a real system.
+To be able to understand, what's inside of the file, the *columnScheme* part of the file name gives insight of its
+content.
+
+For example, you have an IndividualTimeSeries CSV file for energy prices, then you use the key `c` from the table below
+for columnScheme `its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1.csv`.
+The CSV file must then have the appropriate format for the key `c` :
+
+```text
+   time,price
+   2020-01-01T00:00:00Z,100.0
+```
+
+The CSV file requires a unique identification number.
+The UUID (Universally Unique Identifier) can be created [here](https://www.uuidgenerator.net/).
+You can also use the Method `java.util.UUID#randomUUID` to create a UUID.
+This is the UUID from the example above `2fcb3e53-b94a-4b96-bea4-c469e499f1a1`.
+
+The following keys are supported until now:
+```{list-table}
+   :widths: auto
+   :class: wrapping
+   :header-rows: 1
+
+   * - Key
+     - Information and supported head line.
+   * - c
+     - An energy price (e.g. in €/MWh; c stands for charge).
+       Permissible head line: ``time,price``
+   * - p
+     - Active power.
+       Permissible head line: ``time,p``
+   * - pq
+     - Active and reactive power.
+       Permissible head line: ``time,p,q``
+   * - h
+     - Heat power demand.
+       Permissible head line: ``time,h``
+   * - ph
+     - Active and heat power.
+       Permissible head line: ``time,p,h``
+   * - pqh
+     - Active, reactive and heat power.
+       Permissible head line: ``time,p,q,h``
+   * - v
+     - Voltage magnitude in pu and angle in °.
+       Permissible head line: ``time,vMag,vAng``
+   * - weather
+     - Weather information.
+       Permissible head line: ``time,coordinate,direct_irradiation,diffuse_irradiation,temperature,wind_velocity,wind_direction``
+
+```
+
+
+##### Load Profile Time Series
+
+The following profiles are supported until now:
+
+Note:
+Load profile keys must be unique across all load-profile sources. Do not use the same profile key
+for both CSV (lpts_*) and Markov JSON (markov_*), e.g. avoid having both lpts_h0.csv and
+markov_h0.json.
+
+Markov-based load models (`markov_*`) do not support energy scaling. Calls to
+`getProfileEnergyScaling()` will always return `Optional.empty()`.
+
+```{list-table}
+   :widths: auto
+   :class: wrapping
+   :header-rows: 1
+
+   * - Key
+     - Information
+     - Supported head line.
+   * - e.g.: H0
+     - BDEW standard load profiles 1999 ([source](https://www.bdew.de/energie/standardlastprofile-strom/))
+     - Permissible head line: ``SuSa,SuSu,SuWd,TrSa,TrSu,TrWd,WiSa,WiSu,WiWd,quarterHour``
+   * - e.g.: h25
+     - BDEW standard load profiles 2025 ([source](https://www.bdew.de/energie/standardlastprofile-strom/))
+     - Permissible head line: ``janSa,janSu,janWd,febSa,febSu,febWd,marSa,marSu,marWd,aprSa,aprSu,aprWd,maySa,maySu,mayWd,junSa,junSu,junWd,julSa,julSu,julWd,augSa,augSu,augWd,sepSa,sepSu,sepWd,octSa,octSu,octWd,novSa,novSu,novWd,decSa,decSu,decWd,quarterHour``
+   * - random
+     - A random load profile based on: ``Kays - Agent-based simulation environment for improving the planning of distribution grids``
+     - Permissible head line: ``kSa,kSu,kWd,mySa,mySu,myWd,sigmaSa,sigmaSu,sigmaWd,quarterHour``
+   * - markov
+     - Markov-chain-based stochastic load profiles from JSON files (``markov_<key>.json``).
+       See {ref}`Markov-based Load Profiles <markov-load-model>` for the full JSON schema documentation.
+     - Not a CSV format. Uses JSON with schema ``simonaMarkovLoad:psdm:1.0``.
+
 ```
 
 ### Results
@@ -166,7 +256,7 @@ grid. It consists of the three main blocks:
 
 1. [Raw grid elements](/models/input/grid/gridcontainer)
 2. [System participants](/models/input/grid/gridcontainer)
-3. [Graphics](/models/input/grid/gridcontainer)
+3. [Energy Management](/models/input/grid/gridcontainer)
 
 Those blocks are also reflected in the structure of data source interface definitions.
 There is one source for each of the containers, respectively.
@@ -196,26 +286,22 @@ An application example to load an *exampleGrid* from csv files located in `./exa
             thermalSource,
             rawGridSource
     );
-    GraphicSource graphicsSource = new CsvGraphicSource(
-            csvSep,
-            folderPath,
-            namingStrategy,
-            typeSource,
-            rawGridSource
-    );
+    EnergyManagementSource emSource = new EnergyManagementSource(typeSource, dataSource);
     
     /* Loading models */
     RawGridElements rawGridElements = rawGridSource.getGridData().orElseThrow(
             () -> new SourceException("Error during reading of raw grid data."));
     SystemParticipants systemParticipants = systemParticipantSource.getSystemParticipants().orElseThrow(
             () -> new SourceException("Error during reading of system participant data."));
-    GraphicElements graphicElements = graphicsSource.getGraphicElements().orElseThrow(
-            () -> new SourceException("Error during reading of graphic elements."));
+    Try<EnergyManagementUnits, SourceException> emUnits =
+        Try.of(
+            () -> new EnergyManagementUnits(new HashSet<>(emSource.getEmUnits(operators).values())),
+            SourceException.class);        
     JointGridContainer fullGrid = new JointGridContainer(
             gridName,
             rawGridElements,
             systemParticipants,
-            graphicElements
+            emUnits.getOrThrow()
     );
 ```
 

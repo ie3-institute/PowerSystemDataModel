@@ -38,31 +38,31 @@ class ReactivePowerCharacteristicTest extends Specification {
     validCosPhiFixed = new CosPhiFixed(
         [
           new CharacteristicPoint<Dimensionless, Dimensionless>(
-          Quantities.getQuantity(0d, PU), Quantities.getQuantity(0.95, PU))
+              Quantities.getQuantity(0d, PU), Quantities.getQuantity(0.95, PU))
         ] as SortedSet<CharacteristicPoint<Dimensionless, Dimensionless>>
         )
 
     validCosPhiP = new CosPhiP(
         [
           new CharacteristicPoint<Dimensionless, Dimensionless>(
-          Quantities.getQuantity(0d, PU), Quantities.getQuantity(1.0, PU)),
+              Quantities.getQuantity(0d, PU), Quantities.getQuantity(1.0, PU)),
           new CharacteristicPoint<Dimensionless, Dimensionless>(
-          Quantities.getQuantity(0.9, PU), Quantities.getQuantity(1.0, PU)),
+              Quantities.getQuantity(0.9, PU), Quantities.getQuantity(1.0, PU)),
           new CharacteristicPoint<Dimensionless, Dimensionless>(
-          Quantities.getQuantity(1.2, PU), Quantities.getQuantity(-0.3, PU))
+              Quantities.getQuantity(1.2, PU), Quantities.getQuantity(-0.3, PU))
         ] as SortedSet<CharacteristicPoint<Dimensionless, Dimensionless>>
         )
 
     validQV = new QV(
         [
           new CharacteristicPoint<Dimensionless, Dimensionless>(
-          Quantities.getQuantity(0.9, PU), Quantities.getQuantity(-0.3, PU)),
+              Quantities.getQuantity(0.9, PU), Quantities.getQuantity(-0.3, PU)),
           new CharacteristicPoint<Dimensionless, Dimensionless>(
-          Quantities.getQuantity(0.95, PU), Quantities.getQuantity(0.0, PU)),
+              Quantities.getQuantity(0.95, PU), Quantities.getQuantity(0.0, PU)),
           new CharacteristicPoint<Dimensionless, Dimensionless>(
-          Quantities.getQuantity(1.05, PU), Quantities.getQuantity(0.0, PU)),
+              Quantities.getQuantity(1.05, PU), Quantities.getQuantity(0.0, PU)),
           new CharacteristicPoint<Dimensionless, Dimensionless>(
-          Quantities.getQuantity(1.1, PU), Quantities.getQuantity(0.3, PU))
+              Quantities.getQuantity(1.1, PU), Quantities.getQuantity(0.3, PU))
         ] as SortedSet<CharacteristicPoint<Dimensionless, Dimensionless>>
         )
   }

@@ -18,13 +18,10 @@ package models {
     childNote .. timeseries
     childNote .. value
     childNote .. connector
-    childNote .. graphics
     childNote .. thermal
     childNote .. type
 
     package input {
-        package graphics {}
-
         package connector {}
 
         package system {

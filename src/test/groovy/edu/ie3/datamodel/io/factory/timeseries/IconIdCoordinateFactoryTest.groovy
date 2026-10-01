@@ -55,10 +55,10 @@ class IconIdCoordinateFactoryTest extends Specification {
   def "A COSMO id to coordinate factory builds model from valid data"() {
     given:
     Map<String, String> parameter = [
-      "id":"477295",
-      "latitude":"52.312",
-      "longitude":"12.812",
-      "coordinateType":"ICON"]
+      "id": "477295",
+      "latitude": "52.312",
+      "longitude": "12.812",
+      "coordinateType": "ICON"]
     def validSimpleFactoryData = new SimpleFactoryData(parameter, IdCoordinateInput)
     IdCoordinateInput expectedIdCoordinate = new IdCoordinateInput(477295, GeoUtils.buildPoint(52.312, 12.812))
 

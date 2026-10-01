@@ -55,6 +55,28 @@ public class FieldNamingStrategy {
   public static final String NODE_A = "nodeA";
   public static final String NODE_B = "nodeB";
   public static final String NODE_C = "nodeC";
+  public static final String LINE_UUID = "lineUuid";
+
+  // cable types data
+  public static final String NAME = "name";
+  public static final String CABLE_TYPE = "cableType";
+  public static final String MATERIAL = "material";
+  public static final String AREA = "area";
+  public static final String THERMAL_RESISTIVITY = "thermalResistivity";
+  public static final String THERMAL_CAPACITANCE = "thermalCapacitance";
+  public static final String WIRES_NUMBER = "wiresNumber";
+  public static final String LENGTH_OF_LAY = "lengthOfLay";
+  public static final String IS_COMPACTED = "isCompacted";
+  public static final String LAYER = "layer";
+  public static final String SCREEN_LAYER = "screenLayer";
+  public static final String CONDUCTOR = "conductor";
+  public static final String DIAMETER = "diameter";
+  public static final String INNER_DIAMETER = "innerDiameter";
+  public static final String OUTER_DIAMETER = "outerDiameter";
+  public static final String WIRE_DIAMETER = "wireDiameter";
+  public static final String ELECTRICAL_RESISTIVITY = "electricalResistivity";
+  public static final String CROSS_SECTION = "crossSection";
+  public static final String ADDITIONAL_INFORMATION = "additionalInformation";
 
   /**
    * Attribute that _can_, but does not _have to_ be present for the creation of {@link
@@ -86,6 +108,26 @@ public class FieldNamingStrategy {
   public static final String X_SC_A = "xScA";
   public static final String X_SC_B = "xScB";
   public static final String X_SC_C = "xScC";
+
+  // cable types
+  public static final String LIMIT_TEMPERATURE = "limitTemperature";
+  public static final String FREQUENCY = "frequency";
+  public static final String ELECTRICAL_CAPACITANCE = "electricalCapacitance";
+  public static final String CORE_NUMBER = "coreNumber";
+  public static final String CONDUCTOR_STRING = "conductor";
+  public static final String ISOLATION_STRING = "isolation";
+  public static final String SCREEN_STRING = "screen";
+  public static final String FILLER_STRING = "filler";
+  public static final String ARMOR_STRING = "armor";
+  public static final String JACK_STRING = "jack";
+  public static final String SKIN_EFFECT_COEFFICIENT = "skinEffectCoefficient";
+  public static final String PROXIMITY_EFFECT_COEFFICIENT = "proximityEffectCoefficient";
+  public static final String TAN_DELTA = "tanDelta";
+  public static final String CIRCULATING_LOSS_FACTOR = "circulatingLossFactor";
+  public static final String EDDY_CURRENT_LOSS_FACTOR = "eddyCurrentLossFactor";
+  public static final String LAYOUT_FORMATION = "layoutFormation";
+  public static final String DEPTH_CABLES = "depthCables";
+  public static final String DISTANCE_CABLES = "distanceCables";
 
   // efficiency
   public static final String ETA = "eta";
@@ -204,6 +246,8 @@ public class FieldNamingStrategy {
   public static final String INPUT_MODEL = "inputModel";
   public static final String ENERGY = "energy";
   public static final String FILL_LEVEL = "fillLevel";
+  public static final String LINE_SEGMENT_TEMPERATURE = "lineSegmentTemperature";
+  public static final String GROUND_TEMPERATURE = "groundTemperature";
   public static final String MAX = "max";
   public static final String MIN = "min";
   public static final String SOC = "soc";
@@ -212,9 +256,52 @@ public class FieldNamingStrategy {
   public static final String TIME = "time";
   public static final String VALUE = "value";
 
-  // graphic
-  public static final String GRAPHIC_LAYER = "graphicLayer";
-  public static final String LINE = "line";
-  public static final String PATH_LINE_STRING = "path";
-  public static final String POINT = "point";
+  // markov - top-level
+  public static final String MARKOV_SCHEMA = "schema";
+  public static final String MARKOV_GENERATED_AT = "generatedAt";
+  public static final String MARKOV_GENERATOR = "generator";
+  public static final String MARKOV_TIME_MODEL = "timeModel";
+  public static final String MARKOV_VALUE_MODEL = "valueModel";
+  public static final String MARKOV_PARAMETERS = "parameters";
+  public static final String MARKOV_DATA = "data";
+
+  // markov - nested fields required for simulation
+  public static final String MARKOV_GENERATOR_NAME = "generator.name";
+  public static final String MARKOV_GENERATOR_VERSION = "generator.version";
+  public static final String MARKOV_GENERATOR_CONFIG = "generator.config";
+  public static final String MARKOV_BUCKET_COUNT = "timeModel.bucketCount";
+  public static final String MARKOV_BUCKET_ENCODING = "timeModel.bucketEncoding";
+  public static final String MARKOV_BUCKET_ENCODING_FORMULA = "timeModel.bucketEncoding.formula";
+  public static final String MARKOV_SAMPLING_INTERVAL = "timeModel.samplingIntervalMinutes";
+  public static final String MARKOV_TIMEZONE = "timeModel.timezone";
+  public static final String MARKOV_VALUE_UNIT = "valueModel.valueUnit";
+  public static final String MARKOV_NORMALIZATION = "valueModel.normalization";
+  public static final String MARKOV_NORMALIZATION_METHOD = "valueModel.normalization.method";
+  public static final String MARKOV_MAX_POWER = "valueModel.normalization.maxPower";
+  public static final String MARKOV_DISCRETIZATION = "valueModel.discretization";
+  public static final String MARKOV_DISCRETIZATION_STATES = "valueModel.discretization.states";
+  public static final String MARKOV_DISCRETIZATION_THRESHOLDS =
+      "valueModel.discretization.thresholdsRight";
+  public static final String MARKOV_MAX_POWER_VALUE = "valueModel.normalization.maxPower.value";
+  public static final String MARKOV_MAX_POWER_UNIT = "valueModel.normalization.maxPower.unit";
+  public static final String MARKOV_MIN_POWER = "valueModel.normalization.minPower";
+  public static final String MARKOV_MIN_POWER_VALUE = "valueModel.normalization.minPower.value";
+  public static final String MARKOV_MIN_POWER_UNIT = "valueModel.normalization.minPower.unit";
+  public static final String MARKOV_PARAMETERS_TRANSITIONS = "parameters.transitions";
+  public static final String MARKOV_EMPTY_ROW_STRATEGY = "parameters.transitions.emptyRowStrategy";
+  public static final String MARKOV_PARAMETERS_GMM = "parameters.gmm";
+  public static final String MARKOV_GMM_VALUE_COLUMN = "parameters.gmm.valueCol";
+  public static final String MARKOV_GMM_VERBOSE = "parameters.gmm.verbose";
+  public static final String MARKOV_GMM_HEARTBEAT_SECONDS = "parameters.gmm.heartbeatSeconds";
+  public static final String MARKOV_TRANSITIONS = "data.transitions";
+  public static final String MARKOV_TRANSITION_DTYPE = "data.transitions.dtype";
+  public static final String MARKOV_TRANSITION_ENCODING = "data.transitions.encoding";
+  public static final String MARKOV_TRANSITION_SHAPE = "data.transitions.shape";
+  public static final String MARKOV_TRANSITION_VALUES = "data.transitions.values";
+  public static final String MARKOV_GMMS = "data.gmms";
+  public static final String MARKOV_GMM_BUCKETS = "data.gmms.buckets";
+  public static final String MARKOV_GMM_STATES = "data.gmms.buckets.states";
+  public static final String MARKOV_GMM_WEIGHTS = "data.gmms.buckets.states.weights";
+  public static final String MARKOV_GMM_MEANS = "data.gmms.buckets.states.means";
+  public static final String MARKOV_GMM_VARIANCES = "data.gmms.buckets.states.variances";
 }

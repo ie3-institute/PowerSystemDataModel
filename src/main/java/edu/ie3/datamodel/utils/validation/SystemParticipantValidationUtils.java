@@ -630,8 +630,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         chargingPointValidation,
         () -> checkRatedPowerFactor(evcsInput, evcsInput.getCosPhiRated()),
         () ->
-            detectNegativeQuantities(
-                quantities(S_RATED, evcsInput.getType().getsRated()), evcsInput));
+            detectNegativeQuantities(quantities(S_RATED, evcsInput.getType().sRated()), evcsInput));
   }
 
   /**

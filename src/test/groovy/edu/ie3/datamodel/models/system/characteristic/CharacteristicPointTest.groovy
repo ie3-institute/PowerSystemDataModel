@@ -45,7 +45,7 @@ class CharacteristicPointTest extends Specification {
     LinkedList<CharacteristicPoint<Power, Dimensionless>> expected = [a, b, c, d, e] as Queue
 
     when: "the points are put to sorted set randomly"
-    SortedSet<CharacteristicPoint<Power, Dimensionless>> actual =  [d, c, a, e, b] as SortedSet
+    SortedSet<CharacteristicPoint<Power, Dimensionless>> actual = [d, c, a, e, b] as SortedSet
 
     then: "they appear in the correct order"
     actual.size() == expected.size()
@@ -81,11 +81,11 @@ class CharacteristicPointTest extends Specification {
     actual.y.value.doubleValue() == y
 
     where: "different inputs are tested"
-    input 			|| x 	|| y
-    "(3.00,2.00)"	|| 3.0 	|| 2.0
-    "(3.00,2)" 		|| 3.0 	|| 2.0
-    "(3,2.00)" 		|| 3.0 	|| 2.0
-    "(3.00,-2.00)" 	|| 3.0 	|| -2.0
+    input || x || y
+    "(3.00,2.00)" || 3.0 || 2.0
+    "(3.00,2)" || 3.0 || 2.0
+    "(3,2.00)" || 3.0 || 2.0
+    "(3.00,-2.00)" || 3.0 || -2.0
   }
 
   def "The CharacteristicCoordinate throws a parsing exception, if the input is malformed"() {

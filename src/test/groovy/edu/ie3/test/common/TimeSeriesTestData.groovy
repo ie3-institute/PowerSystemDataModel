@@ -37,16 +37,16 @@ trait TimeSeriesTestData {
   ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
   new EnergyPriceValue(Quantities.getQuantity(5d, EURO_PER_MEGAWATTHOUR)))
 
-  IndividualTimeSeries<EnergyPriceValue> individualEnergyPriceTimeSeries =  new IndividualTimeSeries<>(
+  IndividualTimeSeries<EnergyPriceValue> individualEnergyPriceTimeSeries = new IndividualTimeSeries<>(
   UUID.fromString("a4bbcb77-b9d0-4b88-92be-b9a14a3e332b"),
   [
     timeBasedEntry,
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
-    new EnergyPriceValue(Quantities.getQuantity(15d, EURO_PER_MEGAWATTHOUR))),
+        ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
+        new EnergyPriceValue(Quantities.getQuantity(15d, EURO_PER_MEGAWATTHOUR))),
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
-    new EnergyPriceValue(Quantities.getQuantity(10d, EURO_PER_MEGAWATTHOUR))),
+        ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
+        new EnergyPriceValue(Quantities.getQuantity(10d, EURO_PER_MEGAWATTHOUR))),
   ] as Set
   )
 
@@ -55,18 +55,18 @@ trait TimeSeriesTestData {
   ColumnScheme.ENERGY_PRICE
   )
 
-  Set<LinkedHashMap<String, String>>  individualEnergyPriceTimeSeriesProcessed = [
+  Set<LinkedHashMap<String, String>> individualEnergyPriceTimeSeriesProcessed = [
     [
-      "time"    : "2020-04-02T10:00:00Z",
-      "price"   : "5.0"
+      "time" : "2020-04-02T10:00:00Z",
+      "price" : "5.0"
     ] as LinkedHashMap,
     [
-      "time"    : "2020-04-02T10:15:00Z",
-      "price"   : "15.0"
+      "time" : "2020-04-02T10:15:00Z",
+      "price" : "15.0"
     ] as LinkedHashMap,
     [
-      "time"    : "2020-04-02T10:30:00Z",
-      "price"   : "10.0"
+      "time" : "2020-04-02T10:30:00Z",
+      "price" : "10.0"
     ] as LinkedHashMap
   ] as Set
 
@@ -79,384 +79,384 @@ trait TimeSeriesTestData {
   ] as Set
   )
 
-  IndividualTimeSeries<TemperatureValue> individualTemperatureTimeSeries =  new IndividualTimeSeries<>(
+  IndividualTimeSeries<TemperatureValue> individualTemperatureTimeSeries = new IndividualTimeSeries<>(
   UUID.fromString("90da7b7d-2148-4510-a730-31f01a554ace"),
   [
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
-    new TemperatureValue(Quantities.getQuantity(5d, CELSIUS))),
+        ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
+        new TemperatureValue(Quantities.getQuantity(5d, CELSIUS))),
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
-    new TemperatureValue(Quantities.getQuantity(15d, CELSIUS))),
+        ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
+        new TemperatureValue(Quantities.getQuantity(15d, CELSIUS))),
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
-    new TemperatureValue(Quantities.getQuantity(10d, CELSIUS))),
+        ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
+        new TemperatureValue(Quantities.getQuantity(10d, CELSIUS))),
   ] as Set
   )
 
-  Set<LinkedHashMap<String, String>>  individualTemperatureTimeSeriesProcessed = [
+  Set<LinkedHashMap<String, String>> individualTemperatureTimeSeriesProcessed = [
     [
-      "time"          : "2020-04-02T10:00:00Z",
+      "time" : "2020-04-02T10:00:00Z",
       "temperature" : "5.0"
     ] as LinkedHashMap,
     [
-      "time"          : "2020-04-02T10:15:00Z",
+      "time" : "2020-04-02T10:15:00Z",
       "temperature" : "15.0"
     ] as LinkedHashMap,
     [
-      "time"          : "2020-04-02T10:30:00Z",
+      "time" : "2020-04-02T10:30:00Z",
       "temperature" : "10.0"
     ] as LinkedHashMap
   ] as Set
 
-  IndividualTimeSeries<WindValue> individualWindTimeSeries =  new IndividualTimeSeries<>(
+  IndividualTimeSeries<WindValue> individualWindTimeSeries = new IndividualTimeSeries<>(
   UUID.fromString("3dbfb74f-1fba-4150-95e7-24d22bfca4ac"),
   [
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
-    new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND))),
+        ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
+        new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND))),
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
-    new WindValue(Quantities.getQuantity(15d, DEGREE_GEOM), Quantities.getQuantity(20d, METRE_PER_SECOND))),
+        ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
+        new WindValue(Quantities.getQuantity(15d, DEGREE_GEOM), Quantities.getQuantity(20d, METRE_PER_SECOND))),
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
-    new WindValue(Quantities.getQuantity(10d, DEGREE_GEOM), Quantities.getQuantity(15d, METRE_PER_SECOND))),
+        ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
+        new WindValue(Quantities.getQuantity(10d, DEGREE_GEOM), Quantities.getQuantity(15d, METRE_PER_SECOND))),
   ] as Set
   )
 
-  Set<LinkedHashMap<String, String>>  individualWindTimeSeriesProcessed = [
+  Set<LinkedHashMap<String, String>> individualWindTimeSeriesProcessed = [
     [
-      "direction"   : "5.0",
-      "time"       : "2020-04-02T10:00:00Z",
-      "velocity"    : "10.0"
+      "direction" : "5.0",
+      "time" : "2020-04-02T10:00:00Z",
+      "velocity" : "10.0"
     ] as LinkedHashMap,
     [
-      "direction"   : "15.0",
-      "time"       : "2020-04-02T10:15:00Z",
-      "velocity"    : "20.0"
+      "direction" : "15.0",
+      "time" : "2020-04-02T10:15:00Z",
+      "velocity" : "20.0"
     ] as LinkedHashMap,
     [
-      "direction"   : "10.0",
-      "time"       : "2020-04-02T10:30:00Z",
-      "velocity"    : "15.0"
+      "direction" : "10.0",
+      "time" : "2020-04-02T10:30:00Z",
+      "velocity" : "15.0"
     ] as LinkedHashMap
   ] as Set
 
-  IndividualTimeSeries<SolarIrradianceValue> individualIrradianceTimeSeries =  new IndividualTimeSeries<>(
+  IndividualTimeSeries<SolarIrradianceValue> individualIrradianceTimeSeries = new IndividualTimeSeries<>(
   UUID.fromString("fa7fd93b-3d83-4cf6-83d0-85eb1853dcfa"),
   [
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
-    new SolarIrradianceValue(Quantities.getQuantity(5d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE))),
+        ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
+        new SolarIrradianceValue(Quantities.getQuantity(5d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE))),
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
-    new SolarIrradianceValue(Quantities.getQuantity(15d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(20d, StandardUnits.SOLAR_IRRADIANCE))),
+        ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
+        new SolarIrradianceValue(Quantities.getQuantity(15d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(20d, StandardUnits.SOLAR_IRRADIANCE))),
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
-    new SolarIrradianceValue(Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(15d, StandardUnits.SOLAR_IRRADIANCE))),
+        ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
+        new SolarIrradianceValue(Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(15d, StandardUnits.SOLAR_IRRADIANCE))),
   ] as Set
   )
 
   Set<LinkedHashMap<String, String>> individualIrradianceTimeSeriesProcessed = [
     [
-      "directIrradiance"       : "5.0",
-      "diffuseIrradiance"   : "10.0",
-      "time"                : "2020-04-02T10:00:00Z"
+      "directIrradiance" : "5.0",
+      "diffuseIrradiance" : "10.0",
+      "time" : "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
-      "directIrradiance"       : "15.0",
-      "diffuseIrradiance"   : "20.0",
-      "time"                : "2020-04-02T10:15:00Z"
+      "directIrradiance" : "15.0",
+      "diffuseIrradiance" : "20.0",
+      "time" : "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
-      "directIrradiance"       : "10.0",
-      "diffuseIrradiance"   : "15.0",
-      "time"                : "2020-04-02T10:30:00Z"
+      "directIrradiance" : "10.0",
+      "diffuseIrradiance" : "15.0",
+      "time" : "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
-  IndividualTimeSeries<WeatherValue> individualWeatherTimeSeries =  new IndividualTimeSeries<>(
+  IndividualTimeSeries<WeatherValue> individualWeatherTimeSeries = new IndividualTimeSeries<>(
   UUID.fromString("4fcbdfcd-4ff0-46dd-b0df-f3af7ae3ed98"),
   [
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
-    new WeatherValue(
-    defaultLocation,
-    new SolarIrradianceValue(Quantities.getQuantity(5d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE)),
-    new TemperatureValue(Quantities.getQuantity(5d, CELSIUS)),
-    new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND)),
-    Optional.empty(),
-    Optional.empty(),
-    )
-    ),
+        ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
+        new WeatherValue(
+            defaultLocation,
+            new SolarIrradianceValue(Quantities.getQuantity(5d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE)),
+            new TemperatureValue(Quantities.getQuantity(5d, CELSIUS)),
+            new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND)),
+            Optional.empty(),
+            Optional.empty(),
+            )
+        ),
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
-    new WeatherValue(
-    defaultLocation,
-    new SolarIrradianceValue(Quantities.getQuantity(15d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(20d, StandardUnits.SOLAR_IRRADIANCE)),
-    new TemperatureValue(Quantities.getQuantity(15d, CELSIUS)),
-    new WindValue(Quantities.getQuantity(15d, DEGREE_GEOM), Quantities.getQuantity(20d, METRE_PER_SECOND)),
-    Optional.of(new GroundTemperatureValue(Quantities.getQuantity(10d, CELSIUS))),
-    Optional.empty(),
-    )
-    ),
+        ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
+        new WeatherValue(
+            defaultLocation,
+            new SolarIrradianceValue(Quantities.getQuantity(15d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(20d, StandardUnits.SOLAR_IRRADIANCE)),
+            new TemperatureValue(Quantities.getQuantity(15d, CELSIUS)),
+            new WindValue(Quantities.getQuantity(15d, DEGREE_GEOM), Quantities.getQuantity(20d, METRE_PER_SECOND)),
+            Optional.of(new GroundTemperatureValue(Quantities.getQuantity(10d, CELSIUS))),
+            Optional.empty(),
+            )
+        ),
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
-    new WeatherValue(
-    defaultLocation,
-    new SolarIrradianceValue(Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(15d, StandardUnits.SOLAR_IRRADIANCE)),
-    new TemperatureValue(Quantities.getQuantity(10d, CELSIUS)),
-    new WindValue(Quantities.getQuantity(10d, DEGREE_GEOM), Quantities.getQuantity(15d, METRE_PER_SECOND)),
-    Optional.of(new GroundTemperatureValue(Quantities.getQuantity(10d, CELSIUS))),
-    Optional.of(new GroundTemperatureValue(Quantities.getQuantity(10d, CELSIUS)))
-    )
-    ),
+        ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
+        new WeatherValue(
+            defaultLocation,
+            new SolarIrradianceValue(Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(15d, StandardUnits.SOLAR_IRRADIANCE)),
+            new TemperatureValue(Quantities.getQuantity(10d, CELSIUS)),
+            new WindValue(Quantities.getQuantity(10d, DEGREE_GEOM), Quantities.getQuantity(15d, METRE_PER_SECOND)),
+            Optional.of(new GroundTemperatureValue(Quantities.getQuantity(10d, CELSIUS))),
+            Optional.of(new GroundTemperatureValue(Quantities.getQuantity(10d, CELSIUS)))
+            )
+        ),
   ] as Set
   )
 
-  Set<LinkedHashMap<String, String>>  individualWeatherTimeSeriesProcessed = [
+  Set<LinkedHashMap<String, String>> individualWeatherTimeSeriesProcessed = [
     [
-      "coordinate"            : "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "diffuseIrradiance"       : "10.0",
-      "directIrradiance"        : "5.0",
-      "direction"               : "5.0",
-      "temperature"             : "5.0",
-      "time"                    : "2020-04-02T10:00:00Z",
-      "velocity"                : "10.0",
+      "coordinate" : "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+      "diffuseIrradiance" : "10.0",
+      "directIrradiance" : "5.0",
+      "direction" : "5.0",
+      "temperature" : "5.0",
+      "time" : "2020-04-02T10:00:00Z",
+      "velocity" : "10.0",
     ] as LinkedHashMap,
     [
-      "coordinate"            : "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "diffuseIrradiance"       : "20.0",
-      "directIrradiance"        : "15.0",
-      "direction"               : "15.0",
-      "temperature"             : "15.0",
-      "time"                    : "2020-04-02T10:15:00Z",
-      "velocity"                : "20.0",
-      "groundTemperatureLevel1"   : "10.0"
+      "coordinate" : "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+      "diffuseIrradiance" : "20.0",
+      "directIrradiance" : "15.0",
+      "direction" : "15.0",
+      "temperature" : "15.0",
+      "time" : "2020-04-02T10:15:00Z",
+      "velocity" : "20.0",
+      "groundTemperatureLevel1" : "10.0"
     ] as LinkedHashMap,
     [
-      "coordinate"            : "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
-      "diffuseIrradiance"       : "15.0",
-      "directIrradiance"        : "10.0",
-      "direction"               : "10.0",
-      "temperature"             : "10.0",
-      "time"                    : "2020-04-02T10:30:00Z",
-      "velocity"                : "15.0",
-      "groundTemperatureLevel1"    : "10.0",
-      "groundTemperatureLevel2"   : "10.0"
+      "coordinate" : "{\"type\":\"Point\",\"coordinates\":[7.412152,51.492758],\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:4326\"}}}",
+      "diffuseIrradiance" : "15.0",
+      "directIrradiance" : "10.0",
+      "direction" : "10.0",
+      "temperature" : "10.0",
+      "time" : "2020-04-02T10:30:00Z",
+      "velocity" : "15.0",
+      "groundTemperatureLevel1" : "10.0",
+      "groundTemperatureLevel2" : "10.0"
     ] as LinkedHashMap
   ] as Set
 
-  IndividualTimeSeries<HeatDemandValue> individualHeatDemandTimeSeries =  new IndividualTimeSeries<>(
+  IndividualTimeSeries<HeatDemandValue> individualHeatDemandTimeSeries = new IndividualTimeSeries<>(
   UUID.fromString("3c0ebc06-9bd7-44ea-a347-0c52d3dec854"),
   [
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
-    new HeatDemandValue(Quantities.getQuantity(5d, KILOWATT))),
+        ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
+        new HeatDemandValue(Quantities.getQuantity(5d, KILOWATT))),
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
-    new HeatDemandValue(Quantities.getQuantity(15d, KILOWATT))),
+        ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
+        new HeatDemandValue(Quantities.getQuantity(15d, KILOWATT))),
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
-    new HeatDemandValue(Quantities.getQuantity(10d, KILOWATT))),
+        ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
+        new HeatDemandValue(Quantities.getQuantity(10d, KILOWATT))),
   ] as Set
   )
 
-  Set<LinkedHashMap<String, String>>  individualHeatDemandTimeSeriesProcessed = [
+  Set<LinkedHashMap<String, String>> individualHeatDemandTimeSeriesProcessed = [
     [
-      "heatDemand"  : "5.0",
-      "time"          : "2020-04-02T10:00:00Z"
+      "heatDemand" : "5.0",
+      "time" : "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
-      "heatDemand"  : "15.0",
-      "time"          : "2020-04-02T10:15:00Z"
+      "heatDemand" : "15.0",
+      "time" : "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
-      "heatDemand"  : "10.0",
-      "time"          : "2020-04-02T10:30:00Z"
+      "heatDemand" : "10.0",
+      "time" : "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
-  IndividualTimeSeries<PValue> individualPTimeSeries =  new IndividualTimeSeries<>(
+  IndividualTimeSeries<PValue> individualPTimeSeries = new IndividualTimeSeries<>(
   UUID.fromString("b3d93b08-4985-41a6-b063-00f934a10b28"),
   [
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
-    new PValue(Quantities.getQuantity(5d, KILOWATT))),
+        ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
+        new PValue(Quantities.getQuantity(5d, KILOWATT))),
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
-    new PValue(Quantities.getQuantity(15d, KILOWATT))),
+        ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
+        new PValue(Quantities.getQuantity(15d, KILOWATT))),
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
-    new PValue(Quantities.getQuantity(10d, KILOWATT))),
+        ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
+        new PValue(Quantities.getQuantity(10d, KILOWATT))),
   ] as Set
   )
 
-  Set<LinkedHashMap<String, String>>  individualPTimeSeriesProcessed = [
+  Set<LinkedHashMap<String, String>> individualPTimeSeriesProcessed = [
     [
-      "p"      : "5.0",
-      "time"    : "2020-04-02T10:00:00Z"
+      "p" : "5.0",
+      "time" : "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
-      "p"      : "15.0",
-      "time"    : "2020-04-02T10:15:00Z"
+      "p" : "15.0",
+      "time" : "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
-      "p"      : "10.0",
-      "time"    : "2020-04-02T10:30:00Z"
+      "p" : "10.0",
+      "time" : "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
-  IndividualTimeSeries<HeatAndPValue> individualHeatAndPTimeSeries =  new IndividualTimeSeries<>(
+  IndividualTimeSeries<HeatAndPValue> individualHeatAndPTimeSeries = new IndividualTimeSeries<>(
   UUID.fromString("56c20b88-c001-4225-8dac-cd13a75c6b48"),
   [
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
-    new HeatAndPValue(Quantities.getQuantity(5d, KILOWATT), Quantities.getQuantity(10d, KILOWATT))),
+        ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
+        new HeatAndPValue(Quantities.getQuantity(5d, KILOWATT), Quantities.getQuantity(10d, KILOWATT))),
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
-    new HeatAndPValue(Quantities.getQuantity(15d, KILOWATT), Quantities.getQuantity(20d, KILOWATT))),
+        ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
+        new HeatAndPValue(Quantities.getQuantity(15d, KILOWATT), Quantities.getQuantity(20d, KILOWATT))),
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
-    new HeatAndPValue(Quantities.getQuantity(10d, KILOWATT), Quantities.getQuantity(15d, KILOWATT))),
+        ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
+        new HeatAndPValue(Quantities.getQuantity(10d, KILOWATT), Quantities.getQuantity(15d, KILOWATT))),
   ] as Set
   )
 
-  Set<LinkedHashMap<String, String>>  individualHeatAndPTimeSeriesProcessed = [
+  Set<LinkedHashMap<String, String>> individualHeatAndPTimeSeriesProcessed = [
     [
-      "heatDemand"  : "10.0",
-      "p"            : "5.0",
-      "time"          : "2020-04-02T10:00:00Z"
+      "heatDemand" : "10.0",
+      "p" : "5.0",
+      "time" : "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
-      "heatDemand"  : "20.0",
-      "p"            : "15.0",
-      "time"          : "2020-04-02T10:15:00Z"
+      "heatDemand" : "20.0",
+      "p" : "15.0",
+      "time" : "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
-      "heatDemand"  : "15.0",
-      "p"            : "10.0",
-      "time"          : "2020-04-02T10:30:00Z"
+      "heatDemand" : "15.0",
+      "p" : "10.0",
+      "time" : "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
-  IndividualTimeSeries<SValue> individualSTimeSeries =  new IndividualTimeSeries<>(
+  IndividualTimeSeries<SValue> individualSTimeSeries = new IndividualTimeSeries<>(
   UUID.fromString("7d085fc9-be29-4218-b768-00f885be066b"),
   [
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
-    new SValue(Quantities.getQuantity(5d, KILOWATT), Quantities.getQuantity(10d, KILOWATT))),
+        ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
+        new SValue(Quantities.getQuantity(5d, KILOWATT), Quantities.getQuantity(10d, KILOWATT))),
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
-    new SValue(Quantities.getQuantity(15d, KILOWATT), Quantities.getQuantity(20d, KILOWATT))),
+        ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
+        new SValue(Quantities.getQuantity(15d, KILOWATT), Quantities.getQuantity(20d, KILOWATT))),
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
-    new SValue(Quantities.getQuantity(10d, KILOWATT), Quantities.getQuantity(15d, KILOWATT))),
+        ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
+        new SValue(Quantities.getQuantity(10d, KILOWATT), Quantities.getQuantity(15d, KILOWATT))),
   ] as Set
   )
 
-  Set<LinkedHashMap<String, String>>  individualSTimeSeriesProcessed = [
+  Set<LinkedHashMap<String, String>> individualSTimeSeriesProcessed = [
     [
-      "p"      : "5.0",
-      "q"      : "10.0",
-      "time"    : "2020-04-02T10:00:00Z"
+      "p" : "5.0",
+      "q" : "10.0",
+      "time" : "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
-      "p"      : "15.0",
-      "q"      : "20.0",
-      "time"    : "2020-04-02T10:15:00Z"
+      "p" : "15.0",
+      "q" : "20.0",
+      "time" : "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
-      "p"      : "10.0",
-      "q"      : "15.0",
-      "time"    : "2020-04-02T10:30:00Z"
+      "p" : "10.0",
+      "q" : "15.0",
+      "time" : "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
-  IndividualTimeSeries<HeatAndSValue> individualHeatAndSTimeSeries =  new IndividualTimeSeries<>(
+  IndividualTimeSeries<HeatAndSValue> individualHeatAndSTimeSeries = new IndividualTimeSeries<>(
   UUID.fromString("83b577cc-06b1-47a1-bfff-ad648a00784b"),
   [
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
-    new HeatAndSValue(Quantities.getQuantity(5d, KILOWATT), Quantities.getQuantity(10d, KILOWATT), Quantities.getQuantity(15d, KILOWATT))),
+        ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")),
+        new HeatAndSValue(Quantities.getQuantity(5d, KILOWATT), Quantities.getQuantity(10d, KILOWATT), Quantities.getQuantity(15d, KILOWATT))),
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
-    new HeatAndSValue(Quantities.getQuantity(15d, KILOWATT), Quantities.getQuantity(20d, KILOWATT), Quantities.getQuantity(25d, KILOWATT))),
+        ZonedDateTime.of(2020, 4, 2, 10, 15, 0, 0, ZoneId.of("UTC")),
+        new HeatAndSValue(Quantities.getQuantity(15d, KILOWATT), Quantities.getQuantity(20d, KILOWATT), Quantities.getQuantity(25d, KILOWATT))),
     new TimeBasedValue<>(
-    ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
-    new HeatAndSValue(Quantities.getQuantity(10d, KILOWATT), Quantities.getQuantity(15d, KILOWATT), Quantities.getQuantity(20d, KILOWATT))),
+        ZonedDateTime.of(2020, 4, 2, 10, 30, 0, 0, ZoneId.of("UTC")),
+        new HeatAndSValue(Quantities.getQuantity(10d, KILOWATT), Quantities.getQuantity(15d, KILOWATT), Quantities.getQuantity(20d, KILOWATT))),
   ] as Set
   )
 
-  Set<LinkedHashMap<String, String>>  individualHeatAndSTimeSeriesProcessed = [
+  Set<LinkedHashMap<String, String>> individualHeatAndSTimeSeriesProcessed = [
     [
-      "heatDemand"  : "15.0",
-      "p"            : "5.0",
-      "q"            : "10.0",
-      "time"          : "2020-04-02T10:00:00Z"
+      "heatDemand" : "15.0",
+      "p" : "5.0",
+      "q" : "10.0",
+      "time" : "2020-04-02T10:00:00Z"
     ] as LinkedHashMap,
     [
-      "heatDemand"  : "25.0",
-      "p"            : "15.0",
-      "q"            : "20.0",
-      "time"          : "2020-04-02T10:15:00Z"
+      "heatDemand" : "25.0",
+      "p" : "15.0",
+      "q" : "20.0",
+      "time" : "2020-04-02T10:15:00Z"
     ] as LinkedHashMap,
     [
-      "heatDemand"  : "20.0",
-      "p"            : "10.0",
-      "q"            : "15.0",
-      "time"          : "2020-04-02T10:30:00Z"
+      "heatDemand" : "20.0",
+      "p" : "10.0",
+      "q" : "15.0",
+      "time" : "2020-04-02T10:30:00Z"
     ] as LinkedHashMap
   ] as Set
 
-  BdewLoadProfileTimeSeries loadProfileTimeSeries =  new BdewLoadProfileTimeSeries(
+  BdewLoadProfileTimeSeries loadProfileTimeSeries = new BdewLoadProfileTimeSeries(
   BdewStandardLoadProfile.G2.key,
   [
     new LoadProfileEntry<>(
-    new BdewLoadValues(BdewLoadValues.BdewScheme.BDEW1999,
-    [
-      (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.SATURDAY))    : 63.1d,
-      (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.SUNDAY))      : 50.6d,
-      (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.WEEKDAY))     : 60.8d,
-      (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.SATURDAY)): 73.1d,
-      (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.SUNDAY))  : 64.2d,
-      (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.WEEKDAY)) : 70.5d,
-      (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.SATURDAY))    : 80.6d,
-      (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.SUNDAY))      : 73.7d,
-      (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.WEEKDAY))     : 77.4d
-    ]),
-    0
-    ),
+        new BdewLoadValues(BdewLoadValues.BdewScheme.BDEW1999,
+        [
+          (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.SATURDAY)) : 63.1d,
+          (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.SUNDAY)) : 50.6d,
+          (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.WEEKDAY)) : 60.8d,
+          (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.SATURDAY)): 73.1d,
+          (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.SUNDAY)) : 64.2d,
+          (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.WEEKDAY)) : 70.5d,
+          (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.SATURDAY)) : 80.6d,
+          (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.SUNDAY)) : 73.7d,
+          (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.WEEKDAY)) : 77.4d
+        ]),
+        0
+        ),
     new LoadProfileEntry<>(
-    new BdewLoadValues(BdewLoadValues.BdewScheme.BDEW1999,
-    [
-      (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.SATURDAY))    : 58.0d,
-      (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.SUNDAY))      : 47.4d,
-      (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.WEEKDAY))     : 53.0d,
-      (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.SATURDAY)): 67.6d,
-      (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.SUNDAY))  : 60.7d,
-      (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.WEEKDAY)) : 61.9d,
-      (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.SATURDAY))    : 74.6d,
-      (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.SUNDAY))      : 68.7d,
-      (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.WEEKDAY))     : 67.4d
-    ]),
-    1
-    ),
+        new BdewLoadValues(BdewLoadValues.BdewScheme.BDEW1999,
+        [
+          (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.SATURDAY)) : 58.0d,
+          (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.SUNDAY)) : 47.4d,
+          (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.WEEKDAY)) : 53.0d,
+          (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.SATURDAY)): 67.6d,
+          (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.SUNDAY)) : 60.7d,
+          (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.WEEKDAY)) : 61.9d,
+          (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.SATURDAY)) : 74.6d,
+          (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.SUNDAY)) : 68.7d,
+          (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.WEEKDAY)) : 67.4d
+        ]),
+        1
+        ),
     new LoadProfileEntry<>(
-    new BdewLoadValues(BdewLoadValues.BdewScheme.BDEW1999,
-    [
-      (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.SATURDAY))    : 53.5d,
-      (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.SUNDAY))      : 44.3d,
-      (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.WEEKDAY))     : 46.0d,
-      (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.SATURDAY)): 62.8d,
-      (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.SUNDAY))  : 56.9d,
-      (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.WEEKDAY)) : 54.4d,
-      (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.SATURDAY))    : 69.2d,
-      (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.SUNDAY))      : 63.6d,
-      (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.WEEKDAY))     : 58.4d
-    ]),
-    2
-    ),
+        new BdewLoadValues(BdewLoadValues.BdewScheme.BDEW1999,
+        [
+          (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.SATURDAY)) : 53.5d,
+          (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.SUNDAY)) : 44.3d,
+          (new BdewLoadValues.Bdew1999Key(SUMMER, BdewLoadValues.DayType.WEEKDAY)) : 46.0d,
+          (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.SATURDAY)): 62.8d,
+          (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.SUNDAY)) : 56.9d,
+          (new BdewLoadValues.Bdew1999Key(TRANSITION, BdewLoadValues.DayType.WEEKDAY)) : 54.4d,
+          (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.SATURDAY)) : 69.2d,
+          (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.SUNDAY)) : 63.6d,
+          (new BdewLoadValues.Bdew1999Key(WINTER, BdewLoadValues.DayType.WEEKDAY)) : 58.4d
+        ]),
+        2
+        ),
   ] as Set,
   Quantities.getQuantity(80.6, WATT),
   Quantities.getQuantity(1000d, KILOWATTHOUR)

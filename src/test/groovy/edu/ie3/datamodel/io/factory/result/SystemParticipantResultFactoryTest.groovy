@@ -44,10 +44,10 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     given: "a system participant factory and model data"
     def resultFactory = new SystemParticipantResultFactory()
     Map<String, String> parameter = [
-      "time"      : "2020-01-30T17:26:44Z",
+      "time" : "2020-01-30T17:26:44Z",
       "inputModel": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "p"         : "2",
-      "q"         : "2"
+      "p" : "2",
+      "q" : "2"
     ]
 
     if (modelClass == EvResult || modelClass == StorageResult) {
@@ -92,30 +92,30 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     }
 
     where:
-    modelClass        || resultingModelClass
-    LoadResult        || LoadResult
+    modelClass || resultingModelClass
+    LoadResult || LoadResult
     FixedFeedInResult || FixedFeedInResult
-    BmResult          || BmResult
-    EvResult          || EvResult
-    PvResult          || PvResult
-    EvcsResult        || EvcsResult
-    ChpResult         || ChpResult
-    WecResult         || WecResult
-    HpResult          || HpResult
-    AcResult          || AcResult
-    StorageResult     || StorageResult
-    EmResult          || EmResult
+    BmResult || BmResult
+    EvResult || EvResult
+    PvResult || PvResult
+    EvcsResult || EvcsResult
+    ChpResult || ChpResult
+    WecResult || WecResult
+    HpResult || HpResult
+    AcResult || AcResult
+    StorageResult || StorageResult
+    EmResult || EmResult
   }
 
   def "A SystemParticipantResultFactory should parse a StorageResult correctly"() {
     given: "a system participant factory and model data"
     def resultFactory = new SystemParticipantResultFactory()
     Map<String, String> parameter = [
-      "time"      : "2020-01-30T17:26:44Z",
+      "time" : "2020-01-30T17:26:44Z",
       "inputModel": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "soc"       : "20",
-      "p"         : "2",
-      "q"         : "2"
+      "soc" : "20",
+      "p" : "2",
+      "q" : "2"
     ]
     when:
     Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new EntityData(parameter, StorageResult))
@@ -150,11 +150,11 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     given: "a factory and dummy model data"
     def resultFactory = new SystemParticipantResultFactory()
     Map<String, String> parameter = [
-      "time"      : "2020-01-30T17:26:44Z",
+      "time" : "2020-01-30T17:26:44Z",
       "inputModel": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "soc"       : "20",
-      "p"         : "2",
-      "q"         : "2",
+      "soc" : "20",
+      "p" : "2",
+      "q" : "2",
     ]
     expect: "that the factory should not need more than 3 seconds for processing 10.000 entities"
     Long startTime = System.currentTimeMillis()

@@ -1,6 +1,6 @@
 /* This file holds functions for version control system handling */
 
-task finalizePR() {
+tasks.register('finalizePR') {
   description 'Finalizes a pull request by formatting the code, testing it and writing the documentation'
   group 'VCS'
 }

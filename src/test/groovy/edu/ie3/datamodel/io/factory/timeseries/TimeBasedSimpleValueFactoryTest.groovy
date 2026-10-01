@@ -34,14 +34,14 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     factory.getFields(valueClass) == expectedFields
 
     where:
-    valueClass       || expectedFields
+    valueClass || expectedFields
     EnergyPriceValue || [
       [
         TIME,
         PRICE
       ] as Set
     ]
-    SValue           || [
+    SValue || [
       [
         TIME,
         ACTIVE_POWER,
@@ -105,7 +105,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
         )
 
     expect:
-    Objects.equals(factory.buildModel(data),expected)
+    Objects.equals(factory.buildModel(data), expected)
   }
 
   def "The simple time based value factory builds correct heat and apparent power value"() {

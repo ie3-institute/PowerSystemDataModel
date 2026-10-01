@@ -75,7 +75,7 @@ public class BufferedCsvWriter extends BufferedWriter {
    *
    * @param entityFieldData a mapping of an entity instance fields to their values
    * @throws IOException If writing has failed
-   * @throws SinkException If the data does not meet the pre-defined head line
+   * @throws SinkException If the data does not meet the pre-defined headline
    */
   public synchronized void write(Map<String, String> entityFieldData)
       throws IOException, SinkException {
