@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+### Added
+- Register `ThermalLineSegmentResult` at `ResultEntityProcessor` [#1759](https://github.com/ie3-institute/PowerSystemDataModel/issues/1759)
 
 ## [9.2.0] - 2026-09-30
 

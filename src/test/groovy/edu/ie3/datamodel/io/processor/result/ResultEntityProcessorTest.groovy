@@ -17,6 +17,7 @@ import edu.ie3.datamodel.models.result.connector.Transformer3WResult
 import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult
+import edu.ie3.datamodel.models.result.thermal.ThermalLineSegmentResult
 import edu.ie3.util.quantities.PowerSystemUnits
 import spock.lang.Shared
 import spock.lang.Specification
@@ -340,6 +341,31 @@ class ResultEntityProcessorTest extends Specification {
     validProcessedElement == expectedResults
   }
 
+  def "A ResultEntityProcessor should serialize a ThermalLineSegmentResult correctly"() {
+    given:
+    def sysPartResProcessor = new ResultEntityProcessor(ThermalLineSegmentResult)
+
+    // take a non-standard unit on purpose, model normalizes to StandardUnits.TEMPERATURE
+    Quantity<Temperature> lineSegTemp = Quantities.getQuantity(40, Units.CELSIUS)
+    Quantity<Temperature> groundTemp = Quantities.getQuantity(12, Units.CELSIUS)
+
+    def validResult = new ThermalLineSegmentResult(
+        ZonedDateTime.parse("2020-01-30T17:26:44Z"), inputModel, lineSegTemp, groundTemp)
+
+    def expectedResults = [
+      inputModel : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+      groundTemperature : '12.0',
+      lineSegmentTemperature : '40.0',
+      lineSegmentUuid : '22bea5fc-2cb2-4c61-beb9-b476e0107f52',
+      time : '2020-01-30T17:26:44Z']
+
+    when:
+    def validProcessedElement = sysPartResProcessor.handleEntity(validResult)
+
+    then:
+    validProcessedElement == expectedResults
+  }
+
   def "A ResultEntityProcessor should throw an EntityProcessorException when it receives an entity result that is not eligible"() {
 
     given:
@@ -358,7 +384,7 @@ class ResultEntityProcessorTest extends Specification {
 
   def "The list of eligible entity classes for a ResultEntityProcessor should be valid"() {
     given:
-    int noOfElements = 23 // number of all currently implemented entity results
+    int noOfElements = 24 // number of all currently implemented entity results
 
     expect:
     ResultEntityProcessor.eligibleEntityClasses.size() == noOfElements
