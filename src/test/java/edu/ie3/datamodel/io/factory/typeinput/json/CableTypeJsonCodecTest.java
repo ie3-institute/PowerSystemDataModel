@@ -100,7 +100,7 @@ class CableTypeJsonCodecTest {
   }
 
   @Test
-  void layerSerializationProducesAnArrayInParserUnits() throws Exception {
+  void layerSerializationProducesAnArrayInParserUnits() {
     CableTypeJsonCodec codec = new CableTypeJsonCodec();
     ObjectMapper mapper = new ObjectMapper();
 
@@ -125,7 +125,7 @@ class CableTypeJsonCodecTest {
   }
 
   @Test
-  void screenLayerSerializationHandlesNull() throws Exception {
+  void screenLayerSerializationHandlesNull() {
     assertEquals("null", new CableTypeJsonCodec().writeScreenLayer(null));
   }
 
