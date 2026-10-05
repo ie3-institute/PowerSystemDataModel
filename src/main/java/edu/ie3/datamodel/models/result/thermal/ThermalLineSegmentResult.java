@@ -41,13 +41,6 @@ public class ThermalLineSegmentResult extends ResultEntity {
   }
 
   /**
-   * @return the UUID of the corresponding thermal line segment
-   */
-  public UUID getLineSegmentUuid() {
-    return getInputModel();
-  }
-
-  /**
    * @return the temperature of the thermal line segment in standard units
    */
   public ComparableQuantity<Temperature> getLineSegmentTemperature() {
@@ -84,7 +77,7 @@ public class ThermalLineSegmentResult extends ResultEntity {
         + "time="
         + getTime()
         + ", lineSegmentUuid="
-        + getLineSegmentUuid()
+        + getInputModel()
         + ", lineSegmentTemperature="
         + lineSegmentTemperature
         + ", groundTemperature="
