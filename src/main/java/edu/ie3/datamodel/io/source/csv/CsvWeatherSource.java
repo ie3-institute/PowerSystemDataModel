@@ -213,16 +213,16 @@ public class CsvWeatherSource extends WeatherSource {
 
       // we need a reader for each file
       try (BufferedReader reader = connector.initReader(path)) {
-        List<TimeBasedValue<WeatherValue>> values = new ArrayList<>();
-
-        for (Map<String, String> fieldToValues :
-            buildStreamWithFieldsToAttributesMap(reader, path.getFileName())
-                .getOrThrow()
-                .toList()) {
-          buildWeatherValue(fieldToValues).ifPresent(values::add);
-        }
-
-        values.stream()
+        Try.scanStream(
+                buildStreamWithFieldsToAttributesMap(reader, path.getFileName())
+                    .getOrThrow()
+                    .map(
+                        fieldToValues ->
+                            Try.of(() -> buildWeatherValue(fieldToValues), SourceException.class)),
+                "weather value",
+                SourceException::new)
+            .getOrThrow()
+            .flatMap(Optional::stream)
             .collect(Collectors.groupingBy(tbv -> tbv.getValue().getCoordinate()))
             .forEach(
                 (point, timeBasedValues) -> {
