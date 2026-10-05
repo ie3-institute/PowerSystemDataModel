@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Fixed
+- Fixed recurring `gradlew.bat` modifications [#1757](https://github.com/ie3-institute/PowerSystemDataModel/issues/1757)
 - Throw a `SourceException` instead of silently swallowing SQL errors in `SqlDataSource` [#914](https://github.com/ie3-institute/PowerSystemDataModel/issues/914)
 
 
