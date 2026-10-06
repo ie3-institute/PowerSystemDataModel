@@ -7,10 +7,9 @@ package edu.ie3.datamodel.io.factory.typeinput;
 
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
-import tech.units.indriya.ComparableQuantity;
-
-import javax.measure.quantity.*;
 import java.util.Map;
+import javax.measure.quantity.*;
+import tech.units.indriya.ComparableQuantity;
 
 public class Transformer2WTypeInputFactory
     extends AssetTypeInputEntityFactory<Transformer2WTypeInput, Transformer2WTypeInput> {
@@ -24,8 +23,10 @@ public class Transformer2WTypeInputFactory
     ComparableQuantity<ElectricResistance> rSc = getQuantity(data, R_SC, StandardUnits.RESISTANCE);
     ComparableQuantity<ElectricResistance> xSc = getQuantity(data, X_SC, StandardUnits.REACTANCE);
     ComparableQuantity<Power> sRated = getQuantity(data, S_RATED, StandardUnits.S_RATED);
-    ComparableQuantity<ElectricPotential> vRatedA = getQuantity(data, V_RATED_A, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-    ComparableQuantity<ElectricPotential> vRatedB = getQuantity(data, V_RATED_B, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    ComparableQuantity<ElectricPotential> vRatedA =
+        getQuantity(data, V_RATED_A, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    ComparableQuantity<ElectricPotential> vRatedB =
+        getQuantity(data, V_RATED_B, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     ComparableQuantity<ElectricConductance> gM = getQuantity(data, G_M, StandardUnits.CONDUCTANCE);
     ComparableQuantity<ElectricConductance> bM = getQuantity(data, B_M, StandardUnits.SUSCEPTANCE);
     ComparableQuantity<Dimensionless> dV = getQuantity(data, D_V, StandardUnits.DV_TAP);

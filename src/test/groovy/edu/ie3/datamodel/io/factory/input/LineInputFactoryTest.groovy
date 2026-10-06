@@ -5,8 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
-import spock.lang.Shared
-
 import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
@@ -21,6 +19,7 @@ import edu.ie3.datamodel.utils.GridAndGeoUtils
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import org.locationtech.jts.geom.LineString
+import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 

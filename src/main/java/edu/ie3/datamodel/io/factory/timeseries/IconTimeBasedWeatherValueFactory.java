@@ -9,17 +9,16 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.util.quantities.PowerSystemUnits;
+import java.time.ZonedDateTime;
+import java.util.Map;
+import java.util.Optional;
+import javax.measure.quantity.Angle;
+import javax.measure.quantity.Speed;
+import javax.measure.quantity.Temperature;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
-
-import javax.measure.quantity.Angle;
-import javax.measure.quantity.Speed;
-import javax.measure.quantity.Temperature;
-import java.time.ZonedDateTime;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * Factory implementation of {@link TimeBasedWeatherValueFactory}, that is able to handle field to
@@ -85,8 +84,13 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
    */
   private WindValue getWindValue(Map<String, String> data) {
     /* Get the three-dimensional parts of the wind velocity vector in Cartesian coordinates */
-    double u = getDouble(data, ICON_WIND_VELOCITY_U); // Wind component from west to east (parallel to latitudes)
-    double v = getDouble(data, ICON_WIND_VELOCITY_V); // Wind component from south to north (parallel to longitudes)
+    double u =
+        getDouble(
+            data, ICON_WIND_VELOCITY_U); // Wind component from west to east (parallel to latitudes)
+    double v =
+        getDouble(
+            data,
+            ICON_WIND_VELOCITY_V); // Wind component from south to north (parallel to longitudes)
 
     double angle = Math.toDegrees(Math.atan2(-u, -v));
     ComparableQuantity<Angle> windAngle =

@@ -5,9 +5,8 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
-import org.locationtech.jts.geom.Point;
-
 import java.util.Map;
+import org.locationtech.jts.geom.Point;
 
 public class TimeBasedWeatherValueData {
 

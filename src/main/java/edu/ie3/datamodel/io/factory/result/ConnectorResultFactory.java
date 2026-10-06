@@ -11,13 +11,12 @@ import edu.ie3.datamodel.models.result.connector.ConnectorResult;
 import edu.ie3.datamodel.models.result.connector.LineResult;
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult;
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
-import tech.units.indriya.ComparableQuantity;
-
-import javax.measure.quantity.Angle;
-import javax.measure.quantity.ElectricCurrent;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.UUID;
+import javax.measure.quantity.Angle;
+import javax.measure.quantity.ElectricCurrent;
+import tech.units.indriya.ComparableQuantity;
 
 public class ConnectorResultFactory<R extends ConnectorResult>
     extends ResultEntityFactory<ConnectorResult, R> {
@@ -34,10 +33,14 @@ public class ConnectorResultFactory<R extends ConnectorResult>
   @Override
   @SuppressWarnings("unchecked")
   protected R buildModel(Map<String, String> data, ZonedDateTime time, UUID inputModel) {
-    ComparableQuantity<ElectricCurrent> iAMag = getQuantity(data, IAMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-    ComparableQuantity<Angle> iAAng = getQuantity(data, IAANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
-    ComparableQuantity<ElectricCurrent> iBMag = getQuantity(data, IBMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-    ComparableQuantity<Angle> iBAng = getQuantity(data, IBANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
+    ComparableQuantity<ElectricCurrent> iAMag =
+        getQuantity(data, IAMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+    ComparableQuantity<Angle> iAAng =
+        getQuantity(data, IAANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
+    ComparableQuantity<ElectricCurrent> iBMag =
+        getQuantity(data, IBMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+    ComparableQuantity<Angle> iBAng =
+        getQuantity(data, IBANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
 
     if (targetClass.equals(LineResult.class))
       return (R) new LineResult(time, inputModel, iAMag, iAAng, iBMag, iBAng);
@@ -46,8 +49,10 @@ public class ConnectorResultFactory<R extends ConnectorResult>
 
       return (R) new Transformer2WResult(time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
     } else if (targetClass.equals(Transformer3WResult.class)) {
-      ComparableQuantity<ElectricCurrent> iCMag = getQuantity(data, ICMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-      ComparableQuantity<Angle> iCAng = getQuantity(data, ICANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
+      ComparableQuantity<ElectricCurrent> iCMag =
+          getQuantity(data, ICMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+      ComparableQuantity<Angle> iCAng =
+          getQuantity(data, ICANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
       int tapPos = getInt(data, TAP_POS);
 
       return (R)

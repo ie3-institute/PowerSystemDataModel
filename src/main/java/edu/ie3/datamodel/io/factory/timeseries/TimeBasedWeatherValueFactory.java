@@ -11,7 +11,8 @@ import edu.ie3.datamodel.models.value.WeatherValue;
  * Abstract factory to handle the conversion from "flat" field to value mapping onto actual {@link
  * TimeBasedValueFactory} with {@link WeatherValue}
  */
-public abstract class TimeBasedWeatherValueFactory extends TimeBasedValueFactory<TimeBasedWeatherValueData, WeatherValue> {
+public abstract class TimeBasedWeatherValueFactory
+    extends TimeBasedValueFactory<TimeBasedWeatherValueData, WeatherValue> {
 
   protected TimeBasedWeatherValueFactory() {
     super(WeatherValue.class);

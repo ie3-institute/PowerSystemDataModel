@@ -30,7 +30,10 @@ class Transformer2WInputFactoryTest extends Specification implements FactoryTest
     operatorInput.getUuid() >> operatorUuid
     typeInput.getUuid() >> typeUuid
 
-    inputFactory = new Transformer2WInputFactory(map(operatorInput), map([GridTestData.nodeA, GridTestData.nodeB]), map(typeInput))
+    inputFactory = new Transformer2WInputFactory(map(operatorInput), map([
+      GridTestData.nodeA,
+      GridTestData.nodeB
+    ]), map(typeInput))
   }
 
   def "A Transformer2WInputFactory should contain exactly the expected class for parsing"() {

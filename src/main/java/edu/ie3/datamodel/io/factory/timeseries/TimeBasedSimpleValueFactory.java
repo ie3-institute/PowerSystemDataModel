@@ -14,7 +14,8 @@ import edu.ie3.datamodel.models.value.*;
 import java.time.ZonedDateTime;
 import java.util.Map;
 
-public class TimeBasedSimpleValueFactory<V extends Value> extends TimeBasedValueFactory<Map<String, String>, V> {
+public class TimeBasedSimpleValueFactory<V extends Value>
+    extends TimeBasedValueFactory<Map<String, String>, V> {
 
   private final Class<V> targetClass;
 

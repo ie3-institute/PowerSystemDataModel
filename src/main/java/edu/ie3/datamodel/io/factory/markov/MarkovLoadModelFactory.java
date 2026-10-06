@@ -13,8 +13,7 @@ import java.util.Optional;
 import tools.jackson.databind.JsonNode;
 
 /** Factory turning Markov JSON data into {@link MarkovLoadModel}s. */
-public class MarkovLoadModelFactory
-    extends Factory<MarkovLoadModel, JsonNode, MarkovLoadModel>
+public class MarkovLoadModelFactory extends Factory<MarkovLoadModel, JsonNode, MarkovLoadModel>
     implements MarkovModelParsingSupport {
 
   public MarkovLoadModelFactory() {

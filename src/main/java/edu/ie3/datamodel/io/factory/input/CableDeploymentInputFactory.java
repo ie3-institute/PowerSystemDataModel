@@ -8,12 +8,11 @@ package edu.ie3.datamodel.io.factory.input;
 import edu.ie3.datamodel.io.factory.UniqueEntityFactory;
 import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.models.input.connector.CableDeploymentInput;
-import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.unit.Units;
-
-import javax.measure.quantity.Length;
 import java.util.Map;
 import java.util.UUID;
+import javax.measure.quantity.Length;
+import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.unit.Units;
 
 /** Factory for building {@link CableDeploymentInput} instances from raw entity data. */
 public class CableDeploymentInputFactory

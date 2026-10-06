@@ -5,16 +5,15 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import static edu.ie3.datamodel.io.factory.input.EmInputFactory.CONTROLLING_EM;
+
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.input.EmInputFactory;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.utils.Try;
-
 import java.util.*;
-
-import static edu.ie3.datamodel.io.factory.input.EmInputFactory.CONTROLLING_EM;
 
 public class EnergyManagementSource extends AssetEntitySource {
 
@@ -82,10 +81,7 @@ public class EnergyManagementSource extends AssetEntitySource {
           }
         });
 
-    Try.scanStream(
-            currentLevel.stream().map(factory::get),
-            "EmInput",
-            SourceException::new)
+    Try.scanStream(currentLevel.stream().map(factory::get), "EmInput", SourceException::new)
         .getOrThrow()
         .forEach(em -> emUnits.put(em.getUuid(), em));
 

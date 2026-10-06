@@ -5,8 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import spock.lang.Shared
-
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.FactoryException
@@ -21,6 +19,7 @@ import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
+import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
@@ -28,14 +27,14 @@ import javax.measure.quantity.Dimensionless
 
 class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
 
-  @Shared  private UUID nodeUuid = UUID.randomUUID()
-  @Shared  private def nodeInput = Mock(NodeInput)
+  @Shared private UUID nodeUuid = UUID.randomUUID()
+  @Shared private def nodeInput = Mock(NodeInput)
   @Shared private UUID operatorUuid = UUID.randomUUID()
-  @Shared  private def operatorInput = Mock(OperatorInput)
-  @Shared  private UUID emUuid = UUID.randomUUID()
-  @Shared  private def emUnit = Mock(EmInput)
+  @Shared private def operatorInput = Mock(OperatorInput)
+  @Shared private UUID emUuid = UUID.randomUUID()
+  @Shared private def emUnit = Mock(EmInput)
 
-  @Shared  private LoadInputFactory inputFactory
+  @Shared private LoadInputFactory inputFactory
 
   def setupSpec() {
     nodeInput.getUuid() >> nodeUuid

@@ -15,9 +15,6 @@ import edu.ie3.datamodel.io.source.csv.CsvDataSource;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.utils.Try;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,6 +27,8 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for all entity sources. This class provides some functionalities that are common among

@@ -12,11 +12,10 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.FixedFeedInInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
-import tech.units.indriya.ComparableQuantity;
-
-import javax.measure.quantity.Power;
 import java.util.Map;
 import java.util.UUID;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 
 /** Factory to create instances of {@link FixedFeedInInput}s. */
 public class FixedFeedInInputFactory extends SystemParticipantInputEntityFactory<FixedFeedInInput> {

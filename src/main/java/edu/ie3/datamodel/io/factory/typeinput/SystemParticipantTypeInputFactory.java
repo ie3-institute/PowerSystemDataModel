@@ -14,11 +14,10 @@ import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.DimensionlessRate;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import edu.ie3.util.quantities.interfaces.SpecificEnergy;
-import tech.units.indriya.ComparableQuantity;
-
-import javax.measure.quantity.*;
 import java.util.Map;
 import java.util.UUID;
+import javax.measure.quantity.*;
+import tech.units.indriya.ComparableQuantity;
 
 public class SystemParticipantTypeInputFactory<T extends SystemParticipantTypeInput>
     extends AssetTypeInputEntityFactory<SystemParticipantTypeInput, T> {
@@ -78,8 +77,10 @@ public class SystemParticipantTypeInputFactory<T extends SystemParticipantTypeIn
       ComparableQuantity<Power> sRated,
       double cosPhi) {
     ComparableQuantity<Energy> eStorage = getQuantity(data, E_STORAGE, StandardUnits.ENERGY_IN);
-    ComparableQuantity<SpecificEnergy> eCons = getQuantity(data, E_CONS, StandardUnits.ENERGY_PER_DISTANCE);
-    ComparableQuantity<Power> sRatedDC = getQuantity(data, S_RATED_DC, StandardUnits.ACTIVE_POWER_IN);
+    ComparableQuantity<SpecificEnergy> eCons =
+        getQuantity(data, E_CONS, StandardUnits.ENERGY_PER_DISTANCE);
+    ComparableQuantity<Power> sRatedDC =
+        getQuantity(data, S_RATED_DC, StandardUnits.ACTIVE_POWER_IN);
 
     return new EvTypeInput(uuid, id, capEx, opEx, eStorage, eCons, sRated, cosPhi, sRatedDC, data);
   }
@@ -92,7 +93,8 @@ public class SystemParticipantTypeInputFactory<T extends SystemParticipantTypeIn
       ComparableQuantity<EnergyPrice> opEx,
       ComparableQuantity<Power> sRated,
       double cosPhi) {
-    ComparableQuantity<Power> pThermal = getQuantity(data, P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
+    ComparableQuantity<Power> pThermal =
+        getQuantity(data, P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
 
     return new HpTypeInput(uuid, id, capEx, opEx, sRated, cosPhi, pThermal, data);
   }
@@ -105,7 +107,8 @@ public class SystemParticipantTypeInputFactory<T extends SystemParticipantTypeIn
       ComparableQuantity<EnergyPrice> opEx,
       ComparableQuantity<Power> sRated,
       double cosPhi) {
-    ComparableQuantity<Power> pThermal = getQuantity(data, P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
+    ComparableQuantity<Power> pThermal =
+        getQuantity(data, P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
 
     return new AcTypeInput(uuid, id, capEx, opEx, sRated, cosPhi, pThermal, data);
   }
@@ -118,8 +121,10 @@ public class SystemParticipantTypeInputFactory<T extends SystemParticipantTypeIn
       ComparableQuantity<EnergyPrice> opEx,
       ComparableQuantity<Power> sRated,
       double cosPhi) {
-    ComparableQuantity<DimensionlessRate> loadGradient = getQuantity(data, ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT);
-    ComparableQuantity<Dimensionless> etaConv = getQuantity(data, ETA_CONV, StandardUnits.EFFICIENCY);
+    ComparableQuantity<DimensionlessRate> loadGradient =
+        getQuantity(data, ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT);
+    ComparableQuantity<Dimensionless> etaConv =
+        getQuantity(data, ETA_CONV, StandardUnits.EFFICIENCY);
 
     return new BmTypeInput(uuid, id, capEx, opEx, loadGradient, sRated, cosPhi, etaConv, data);
   }
@@ -132,7 +137,8 @@ public class SystemParticipantTypeInputFactory<T extends SystemParticipantTypeIn
       ComparableQuantity<EnergyPrice> opEx,
       ComparableQuantity<Power> sRated,
       double cosPhi) {
-    ComparableQuantity<Dimensionless> etaConv = getQuantity(data, ETA_CONV, StandardUnits.EFFICIENCY);
+    ComparableQuantity<Dimensionless> etaConv =
+        getQuantity(data, ETA_CONV, StandardUnits.EFFICIENCY);
     ComparableQuantity<Area> rotorArea = getQuantity(data, ROTOR_AREA, StandardUnits.ROTOR_AREA);
     ComparableQuantity<Length> hubHeight = getQuantity(data, HUB_HEIGHT, StandardUnits.HUB_HEIGHT);
 
@@ -169,8 +175,10 @@ public class SystemParticipantTypeInputFactory<T extends SystemParticipantTypeIn
       ComparableQuantity<Power> sRated,
       double cosPhi) {
     ComparableQuantity<Dimensionless> etaEl = getQuantity(data, ETA_EL, StandardUnits.EFFICIENCY);
-    ComparableQuantity<Dimensionless> etaThermal = getQuantity(data, ETA_THERMAL, StandardUnits.EFFICIENCY);
-    ComparableQuantity<Power> pThermal = getQuantity(data, P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
+    ComparableQuantity<Dimensionless> etaThermal =
+        getQuantity(data, ETA_THERMAL, StandardUnits.EFFICIENCY);
+    ComparableQuantity<Power> pThermal =
+        getQuantity(data, P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
     ComparableQuantity<Power> pOwn = getQuantity(data, P_OWN, StandardUnits.ACTIVE_POWER_IN);
 
     return new ChpTypeInput(
@@ -187,7 +195,8 @@ public class SystemParticipantTypeInputFactory<T extends SystemParticipantTypeIn
       double cosPhi) {
     ComparableQuantity<Energy> eStorage = getQuantity(data, E_STORAGE, StandardUnits.ENERGY_IN);
     ComparableQuantity<Power> pMax = getQuantity(data, P_MAX, StandardUnits.ACTIVE_POWER_IN);
-    ComparableQuantity<DimensionlessRate> activePowerGradient = getQuantity(data, ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT);
+    ComparableQuantity<DimensionlessRate> activePowerGradient =
+        getQuantity(data, ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT);
     ComparableQuantity<Dimensionless> eta = getQuantity(data, ETA, StandardUnits.EFFICIENCY);
 
     return new StorageTypeInput(

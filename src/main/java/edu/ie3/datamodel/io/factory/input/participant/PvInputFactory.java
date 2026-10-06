@@ -12,13 +12,12 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.PvInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
-import tech.units.indriya.ComparableQuantity;
-
+import java.util.Map;
+import java.util.UUID;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
-import java.util.Map;
-import java.util.UUID;
+import tech.units.indriya.ComparableQuantity;
 
 /** Factory to create instances of {@link PvInput}s. */
 public class PvInputFactory extends SystemParticipantInputEntityFactory<PvInput> {
@@ -40,8 +39,10 @@ public class PvInputFactory extends SystemParticipantInputEntityFactory<PvInput>
       EmInput controllingEm) {
     double albedo = getDouble(data, ALBEDO);
     ComparableQuantity<Angle> azimuth = getQuantity(data, AZIMUTH, StandardUnits.AZIMUTH);
-    ComparableQuantity<Dimensionless> etaConv = getQuantity(data, ETA_CONV, StandardUnits.EFFICIENCY);
-    ComparableQuantity<Angle> elevationAngle = getQuantity(data, ELEVATION_ANGLE, StandardUnits.SOLAR_ELEVATION_ANGLE);
+    ComparableQuantity<Dimensionless> etaConv =
+        getQuantity(data, ETA_CONV, StandardUnits.EFFICIENCY);
+    ComparableQuantity<Angle> elevationAngle =
+        getQuantity(data, ELEVATION_ANGLE, StandardUnits.SOLAR_ELEVATION_ANGLE);
     double kG = getDouble(data, KG);
     double kT = getDouble(data, KT);
     ComparableQuantity<Power> sRated = getQuantity(data, S_RATED, StandardUnits.S_RATED);

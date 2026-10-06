@@ -28,7 +28,11 @@ class Transformer3WInputFactoryTest extends Specification implements FactoryTest
   def setupSpec() {
     typeInput.getUuid() >> typeUuid
 
-    inputFactory = new Transformer3WInputFactory(map(OperatorInput.NO_OPERATOR_ASSIGNED), map([GridTestData.nodeA, GridTestData.nodeB, GridTestData.nodeC]), map(typeInput))
+    inputFactory = new Transformer3WInputFactory(map(OperatorInput.NO_OPERATOR_ASSIGNED), map([
+      GridTestData.nodeA,
+      GridTestData.nodeB,
+      GridTestData.nodeC
+    ]), map(typeInput))
   }
 
   def "A Transformer3WInputFactory should contain exactly the expected class for parsing"() {

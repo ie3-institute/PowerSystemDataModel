@@ -14,10 +14,9 @@ import edu.ie3.datamodel.models.input.system.BmInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
-import tech.units.indriya.ComparableQuantity;
-
 import java.util.Map;
 import java.util.UUID;
+import tech.units.indriya.ComparableQuantity;
 
 /** Factory to create instances of {@link BmInput}s. */
 public class BmInputFactory extends SystemParticipantInputEntityFactory<BmInput> {
@@ -44,7 +43,8 @@ public class BmInputFactory extends SystemParticipantInputEntityFactory<BmInput>
       OperationTime operationTime,
       EmInput controllingEm) {
     boolean costControlled = getBoolean(data, COST_CONTROLLED);
-    ComparableQuantity<EnergyPrice> feedInTariff = getQuantity(data, FEED_IN_TARIFF, StandardUnits.ENERGY_PRICE);
+    ComparableQuantity<EnergyPrice> feedInTariff =
+        getQuantity(data, FEED_IN_TARIFF, StandardUnits.ENERGY_PRICE);
 
     return new BmInput(
         uuid,

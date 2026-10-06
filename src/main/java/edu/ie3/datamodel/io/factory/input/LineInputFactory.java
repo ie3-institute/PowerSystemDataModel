@@ -15,12 +15,11 @@ import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput;
 import edu.ie3.datamodel.utils.GridAndGeoUtils;
-import org.locationtech.jts.geom.LineString;
-import tech.units.indriya.ComparableQuantity;
-
-import javax.measure.quantity.Length;
 import java.util.Map;
 import java.util.UUID;
+import javax.measure.quantity.Length;
+import org.locationtech.jts.geom.LineString;
+import tech.units.indriya.ComparableQuantity;
 
 public class LineInputFactory extends ConnectorInputEntityFactory<LineInput> {
 

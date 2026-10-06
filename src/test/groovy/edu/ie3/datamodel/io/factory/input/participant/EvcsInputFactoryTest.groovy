@@ -31,11 +31,11 @@ import javax.measure.quantity.Dimensionless
 class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
 
   @Shared private UUID nodeUuid = UUID.randomUUID()
-  @Shared  private def nodeInput = Mock(NodeInput)
-  @Shared  private UUID operatorUuid = UUID.randomUUID()
-  @Shared   private def operatorInput = Mock(OperatorInput)
-  @Shared   private UUID emUuid = UUID.randomUUID()
-  @Shared   private def emUnit = Mock(EmInput)
+  @Shared private def nodeInput = Mock(NodeInput)
+  @Shared private UUID operatorUuid = UUID.randomUUID()
+  @Shared private def operatorInput = Mock(OperatorInput)
+  @Shared private UUID emUuid = UUID.randomUUID()
+  @Shared private def emUnit = Mock(EmInput)
 
   @Shared private EvcsInputFactory inputFactory
 

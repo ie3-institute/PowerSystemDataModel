@@ -10,12 +10,11 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
-import org.locationtech.jts.geom.Point;
-import tech.units.indriya.ComparableQuantity;
-
-import javax.measure.quantity.Dimensionless;
 import java.util.Map;
 import java.util.UUID;
+import javax.measure.quantity.Dimensionless;
+import org.locationtech.jts.geom.Point;
+import tech.units.indriya.ComparableQuantity;
 
 public class NodeInputFactory extends AssetInputEntityFactory<NodeInput> {
 
@@ -30,7 +29,8 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput> {
       String id,
       OperatorInput operator,
       OperationTime operationTime) {
-    ComparableQuantity<Dimensionless> vTarget = getQuantity(data, V_TARGET, StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
+    ComparableQuantity<Dimensionless> vTarget =
+        getQuantity(data, V_TARGET, StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
     boolean slack = getBoolean(data, SLACK);
     Point geoPosition = getPoint(data, GEO_POSITION).orElse(NodeInput.DEFAULT_GEO_POSITION);
     VoltageLevel voltLvl = getVoltageLvl(data, VOLT_LVL, V_RATED);

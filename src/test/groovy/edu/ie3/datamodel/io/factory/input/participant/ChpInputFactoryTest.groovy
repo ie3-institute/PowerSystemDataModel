@@ -5,8 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import spock.lang.Shared
-
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.FactoryException
@@ -20,6 +18,7 @@ import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.models.input.thermal.ThermalStorageInput
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
+import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
@@ -28,20 +27,20 @@ import javax.measure.quantity.Dimensionless
 
 class ChpInputFactoryTest extends Specification implements FactoryTestHelper {
 
-  @Shared  private UUID nodeUuid = UUID.randomUUID()
-  @Shared  private def nodeInput = Mock(NodeInput)
-  @Shared  private UUID operatorUuid = UUID.randomUUID()
-  @Shared  private def operatorInput = Mock(OperatorInput)
-  @Shared  private UUID emUuid = UUID.randomUUID()
-  @Shared  private def emUnit = Mock(EmInput)
-  @Shared  private UUID typeUuid = UUID.randomUUID()
-  @Shared  private def typeInput = Mock(ChpTypeInput)
-  @Shared  private UUID busUuid = UUID.randomUUID()
-  @Shared  private def thermalBusInput = Mock(ThermalBusInput)
-  @Shared  private UUID storageUuid = UUID.randomUUID()
-  @Shared  private def thermalStorageInput = Mock(ThermalStorageInput)
+  @Shared private UUID nodeUuid = UUID.randomUUID()
+  @Shared private def nodeInput = Mock(NodeInput)
+  @Shared private UUID operatorUuid = UUID.randomUUID()
+  @Shared private def operatorInput = Mock(OperatorInput)
+  @Shared private UUID emUuid = UUID.randomUUID()
+  @Shared private def emUnit = Mock(EmInput)
+  @Shared private UUID typeUuid = UUID.randomUUID()
+  @Shared private def typeInput = Mock(ChpTypeInput)
+  @Shared private UUID busUuid = UUID.randomUUID()
+  @Shared private def thermalBusInput = Mock(ThermalBusInput)
+  @Shared private UUID storageUuid = UUID.randomUUID()
+  @Shared private def thermalStorageInput = Mock(ThermalStorageInput)
 
-  @Shared  private ChpInputFactory inputFactory
+  @Shared private ChpInputFactory inputFactory
 
   def setupSpec() {
     nodeInput.getUuid() >> nodeUuid

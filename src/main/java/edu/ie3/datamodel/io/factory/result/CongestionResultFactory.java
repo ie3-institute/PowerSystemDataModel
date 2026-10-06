@@ -5,19 +5,18 @@
 */
 package edu.ie3.datamodel.io.factory.result;
 
+import static tech.units.indriya.unit.Units.PERCENT;
+
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.result.CongestionResult;
 import edu.ie3.datamodel.models.result.CongestionResult.InputModelType;
 import edu.ie3.datamodel.utils.Try;
-import tech.units.indriya.ComparableQuantity;
-
-import javax.measure.quantity.Dimensionless;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.UUID;
-
-import static tech.units.indriya.unit.Units.PERCENT;
+import javax.measure.quantity.Dimensionless;
+import tech.units.indriya.ComparableQuantity;
 
 public class CongestionResultFactory
     extends ResultEntityFactory<CongestionResult, CongestionResult> {

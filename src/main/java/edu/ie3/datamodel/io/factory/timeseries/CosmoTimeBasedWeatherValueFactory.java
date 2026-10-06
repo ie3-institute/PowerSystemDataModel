@@ -10,16 +10,15 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiance;
-import org.locationtech.jts.geom.Point;
-import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.unit.Units;
-
-import javax.measure.quantity.Angle;
-import javax.measure.quantity.Speed;
-import javax.measure.quantity.Temperature;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.Optional;
+import javax.measure.quantity.Angle;
+import javax.measure.quantity.Speed;
+import javax.measure.quantity.Temperature;
+import org.locationtech.jts.geom.Point;
+import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.unit.Units;
 
 /**
  * Factory implementation of {@link TimeBasedWeatherValueFactory}, that is able to handle field to

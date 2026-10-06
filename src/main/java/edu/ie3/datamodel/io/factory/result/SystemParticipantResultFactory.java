@@ -5,18 +5,17 @@
 */
 package edu.ie3.datamodel.io.factory.result;
 
+import static tech.units.indriya.unit.Units.PERCENT;
+
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.system.*;
-import tech.units.indriya.ComparableQuantity;
-
-import javax.measure.quantity.Dimensionless;
-import javax.measure.quantity.Power;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.UUID;
-
-import static tech.units.indriya.unit.Units.PERCENT;
+import javax.measure.quantity.Dimensionless;
+import javax.measure.quantity.Power;
+import tech.units.indriya.ComparableQuantity;
 
 /** Factory class for creating {@link SystemParticipantResult} entities. */
 public class SystemParticipantResultFactory<R extends SystemParticipantResult>
@@ -48,7 +47,8 @@ public class SystemParticipantResultFactory<R extends SystemParticipantResult>
   protected R buildModel(Map<String, String> data, ZonedDateTime time, UUID inputModel) {
 
     ComparableQuantity<Power> p = getQuantity(data, POWER, StandardUnits.ACTIVE_POWER_RESULT);
-    ComparableQuantity<Power> q = getQuantity(data, REACTIVE_POWER, StandardUnits.REACTIVE_POWER_RESULT);
+    ComparableQuantity<Power> q =
+        getQuantity(data, REACTIVE_POWER, StandardUnits.REACTIVE_POWER_RESULT);
 
     if (targetClass.equals(LoadResult.class)) {
       return (R) new LoadResult(time, inputModel, p, q);

@@ -10,13 +10,12 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.AbstractStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
-import tech.units.indriya.ComparableQuantity;
-
+import java.util.Map;
+import java.util.UUID;
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
-import java.util.Map;
-import java.util.UUID;
+import tech.units.indriya.ComparableQuantity;
 
 public abstract class AbstractThermalStorageInputFactory<T extends AbstractStorageInput>
     extends AssetInputEntityFactory<T> {

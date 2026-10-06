@@ -11,15 +11,14 @@ import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult;
-import tech.units.indriya.ComparableQuantity;
-
+import java.time.ZonedDateTime;
+import java.util.Map;
+import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
-import java.time.ZonedDateTime;
-import java.util.Map;
-import java.util.UUID;
+import tech.units.indriya.ComparableQuantity;
 
 public class ThermalResultFactory<R extends ThermalUnitResult>
     extends ResultEntityFactory<ThermalUnitResult, R> {

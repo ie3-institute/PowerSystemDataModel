@@ -5,19 +5,18 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
+import static edu.ie3.datamodel.models.StandardUnits.*;
+
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
 import edu.ie3.util.quantities.interfaces.HeatCapacity;
 import edu.ie3.util.quantities.interfaces.ThermalConductance;
-import tech.units.indriya.ComparableQuantity;
-
-import javax.measure.quantity.Temperature;
 import java.util.Map;
 import java.util.UUID;
-
-import static edu.ie3.datamodel.models.StandardUnits.*;
+import javax.measure.quantity.Temperature;
+import tech.units.indriya.ComparableQuantity;
 
 public class ThermalHouseInputFactory extends AssetInputEntityFactory<ThermalHouseInput> {
 
@@ -36,11 +35,15 @@ public class ThermalHouseInputFactory extends AssetInputEntityFactory<ThermalHou
       String id,
       OperatorInput operator,
       OperationTime operationTime) {
-    ComparableQuantity<ThermalConductance> ethLosses = getQuantity(data, ETH_LOSSES, THERMAL_TRANSMISSION);
+    ComparableQuantity<ThermalConductance> ethLosses =
+        getQuantity(data, ETH_LOSSES, THERMAL_TRANSMISSION);
     ComparableQuantity<HeatCapacity> ethCapa = getQuantity(data, ETH_CAPA, HEAT_CAPACITY);
-    ComparableQuantity<Temperature> targetTemperature = getQuantity(data, TARGET_TEMPERATURE, TEMPERATURE);
-    ComparableQuantity<Temperature> upperTemperatureLimit = getQuantity(data, UPPER_TEMPERATURE_LIMIT, TEMPERATURE);
-    ComparableQuantity<Temperature> lowerTemperatureLimit = getQuantity(data, LOWER_TEMPERATURE_LIMIT, TEMPERATURE);
+    ComparableQuantity<Temperature> targetTemperature =
+        getQuantity(data, TARGET_TEMPERATURE, TEMPERATURE);
+    ComparableQuantity<Temperature> upperTemperatureLimit =
+        getQuantity(data, UPPER_TEMPERATURE_LIMIT, TEMPERATURE);
+    ComparableQuantity<Temperature> lowerTemperatureLimit =
+        getQuantity(data, LOWER_TEMPERATURE_LIMIT, TEMPERATURE);
     String housingType = getField(data, HOUSING_TYPE);
     double numberInhabitants = getDouble(data, NUMBER_INHABITANTS);
     return new ThermalHouseInput(

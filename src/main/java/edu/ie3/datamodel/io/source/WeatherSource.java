@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.WEATHER_COORDINATE_ID;
+
 import edu.ie3.datamodel.exceptions.NoDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.timeseries.CosmoTimeBasedWeatherValueFactory;
@@ -14,16 +16,13 @@ import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.interval.ClosedInterval;
-import org.apache.commons.lang3.tuple.Pair;
-import org.locationtech.jts.geom.Point;
-
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.WEATHER_COORDINATE_ID;
+import org.apache.commons.lang3.tuple.Pair;
+import org.locationtech.jts.geom.Point;
 
 /** Abstract class for WeatherSource by Csv and Sql Data */
 public abstract class WeatherSource extends EntitySource {
