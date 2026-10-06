@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
-import static edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory.*
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.*
 
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.models.StandardUnits
@@ -77,125 +77,111 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     ]
   }
 
-  def "The simple time based value factory throws a FactoryException upon request of fields, if a class is not supported"() {
-    given:
-    def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
-    def data = Mock(SimpleTimeBasedValueData)
-    data.targetClass >> NodeInput
-
-    when:
-    factory.getFields(data.targetClass)
-
-    then:
-    def e = thrown(FactoryException)
-    e.message == "The given factory cannot handle target class '" + NodeInput + "'."
-  }
-
   def "The simple time based value factory builds correct energy price value"() {
     given:
     def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
     def time = zonedDateTime
-    def data = new SimpleTimeBasedValueData([
+    def data = [
       "time": defaultTimeUtil.toString(time),
       "price": "52.4"
-    ], EnergyPriceValue)
+    ]
     def expected = new TimeBasedValue(
         time,
         new EnergyPriceValue(Quantities.getQuantity(52.4, StandardUnits.ENERGY_PRICE))
         )
 
     expect:
-    Objects.equals(factory.buildModel(data), expected)
+    Objects.equals(factory.buildModel(new HashMap<>(data)), expected)
   }
 
   def "The simple time based value factory builds correct heat and apparent power value"() {
     given:
     def factory = new TimeBasedSimpleValueFactory(HeatAndSValue)
     def time = zonedDateTime
-    def data = new SimpleTimeBasedValueData([
+    def data = [
       "uuid": "78ca078a-e6e9-4972-a58d-b2cadbc2df2c",
       "time": defaultTimeUtil.toString(time),
       "p": "500.0",
       "q": "165.0",
       "heatDemand": "8.0"
-    ], HeatAndSValue)
+    ]
     def expected = new TimeBasedValue(
         time,
         new HeatAndSValue(Quantities.getQuantity(500.0, StandardUnits.ACTIVE_POWER_IN), Quantities.getQuantity(165.0, StandardUnits.REACTIVE_POWER_IN), Quantities.getQuantity(8.0, StandardUnits.HEAT_DEMAND))
         )
 
     expect:
-    Objects.equals(factory.buildModel(data), expected)
+    Objects.equals(factory.buildModel(new HashMap<>(data)), expected)
   }
 
   def "The simple time based value factory builds correct heat and active power value"() {
     given:
     def factory = new TimeBasedSimpleValueFactory(HeatAndPValue)
     def time = zonedDateTime
-    def data = new SimpleTimeBasedValueData([
+    def data = [
       "time": defaultTimeUtil.toString(time),
       "p": "500.0",
       "heatDemand": "8.0"
-    ], HeatAndPValue)
+    ]
     def expected = new TimeBasedValue(
         time,
         new HeatAndPValue(Quantities.getQuantity(500.0, StandardUnits.ACTIVE_POWER_IN), Quantities.getQuantity(8.0, StandardUnits.HEAT_DEMAND))
         )
 
     expect:
-    Objects.equals(factory.buildModel(data), expected)
+    Objects.equals(factory.buildModel(new HashMap<>(data)), expected)
   }
 
   def "The simple time based value factory builds correct heat demand value"() {
     given:
     def factory = new TimeBasedSimpleValueFactory(HeatDemandValue)
     def time = zonedDateTime
-    def data = new SimpleTimeBasedValueData([
+    def data = [
       "time": defaultTimeUtil.toString(time),
       "heatDemand": "8.0"
-    ], HeatDemandValue)
+    ]
     def expected = new TimeBasedValue(
         time,
         new HeatDemandValue(Quantities.getQuantity(8.0, StandardUnits.HEAT_DEMAND))
         )
 
     expect:
-    Objects.equals(factory.buildModel(data), expected)
+    Objects.equals(factory.buildModel(new HashMap<>(data)), expected)
   }
 
   def "The simple time based value factory builds correct apparent power value"() {
     given:
     def factory = new TimeBasedSimpleValueFactory(SValue)
     def time = zonedDateTime
-    def data = new SimpleTimeBasedValueData([
+    def data = [
       "time": defaultTimeUtil.toString(time),
       "p": "500.0",
       "q": "165.0"
-    ], SValue)
+    ]
     def expected = new TimeBasedValue(
         time,
         new SValue(Quantities.getQuantity(500.0, StandardUnits.ACTIVE_POWER_IN), Quantities.getQuantity(165.0, StandardUnits.REACTIVE_POWER_IN))
         )
 
     expect:
-    Objects.equals(factory.buildModel(data), expected)
+    Objects.equals(factory.buildModel(new HashMap<>(data)), expected)
   }
 
   def "The simple time based value factory builds correct active power value"() {
     given:
     def factory = new TimeBasedSimpleValueFactory(PValue)
     def time = zonedDateTime
-    def data = new SimpleTimeBasedValueData([
+    def data = [
       "time": defaultTimeUtil.toString(time),
       "p": "500.0"
-    ], PValue)
+    ]
     def expected = new TimeBasedValue(
         time,
         new PValue(Quantities.getQuantity(500.0, StandardUnits.ACTIVE_POWER_IN))
         )
 
 
-    def obj = factory.buildModel(data)
+    def obj = factory.buildModel(new HashMap<>(data))
 
     expect:
     Objects.equals(obj, expected)
@@ -203,14 +189,14 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
 
   def "The simple time based value factory throws a FactoryException upon build request, if a class is not supported"() {
     given:
-    def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
+    def factory = new TimeBasedSimpleValueFactory(NodeInput)
     def time = zonedDateTime
-    def data = new SimpleTimeBasedValueData([
+    def data = [
       "time": defaultTimeUtil.toString(time)
-    ], NodeInput)
+    ]
 
     when:
-    factory.buildModel(data)
+    factory.buildModel(new HashMap<>(data))
 
     then:
     def e = thrown(FactoryException)

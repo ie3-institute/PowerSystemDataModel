@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.io.connectors.SqlConnector;
-import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMetaInformationFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
@@ -14,6 +13,7 @@ import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformatio
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMetaInformationSource;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
+import edu.ie3.datamodel.utils.Try;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,8 +24,12 @@ import java.util.stream.Collectors;
 /** SQL implementation for retrieving {@link TimeSeriesMetaInformationSource} from the SQL scheme */
 public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformationSource {
 
-  private static final TimeSeriesMetaInformationFactory metaInformationFactory =
-      new TimeSeriesMetaInformationFactory();
+  private static final TimeSeriesMetaInformationFactory<IndividualTimeSeriesMetaInformation>
+      individualMetaInformationFactory =
+          new TimeSeriesMetaInformationFactory<>(IndividualTimeSeriesMetaInformation.class);
+  private static final TimeSeriesMetaInformationFactory<LoadProfileMetaInformation>
+      loadProfileMetaInformationFactory =
+          new TimeSeriesMetaInformationFactory<>(LoadProfileMetaInformation.class);
 
   private final Map<UUID, IndividualTimeSeriesMetaInformation> timeSeriesMetaInformation;
 
@@ -43,7 +47,8 @@ public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
     this.timeSeriesMetaInformation =
         dataSource
             .executeQuery(queryComplete)
-            .map(this::createEntity)
+            .map(individualMetaInformationFactory::get)
+            .map(Try::getData)
             .flatMap(Optional::stream)
             .collect(
                 Collectors.toMap(
@@ -52,7 +57,8 @@ public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
     this.loadProfileMetaInformation =
         dataSource
             .executeQuery(loadMetaInformationQuery)
-            .map(this::createLoadProfileEntity)
+            .map(loadProfileMetaInformationFactory::get)
+            .map(Try::getData)
             .flatMap(Optional::stream)
             .collect(
                 Collectors.toMap(LoadProfileMetaInformation::getProfileKey, Function.identity()));
@@ -114,24 +120,5 @@ public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
   public Optional<IndividualTimeSeriesMetaInformation> getTimeSeriesMetaInformation(
       UUID timeSeriesUuid) {
     return Optional.ofNullable(timeSeriesMetaInformation.get(timeSeriesUuid));
-  }
-
-  private Optional<IndividualTimeSeriesMetaInformation> createEntity(
-      Map<String, String> fieldToValues) {
-    EntityData entityData =
-        new EntityData(fieldToValues, IndividualTimeSeriesMetaInformation.class);
-    return metaInformationFactory
-        .get(entityData)
-        .map(IndividualTimeSeriesMetaInformation.class::cast)
-        .getData();
-  }
-
-  private Optional<LoadProfileMetaInformation> createLoadProfileEntity(
-      Map<String, String> fieldToValues) {
-    EntityData entityData = new EntityData(fieldToValues, LoadProfileMetaInformation.class);
-    return metaInformationFactory
-        .get(entityData)
-        .map(LoadProfileMetaInformation.class::cast)
-        .getData();
   }
 }

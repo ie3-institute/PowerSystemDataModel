@@ -6,60 +6,66 @@
 package edu.ie3.datamodel.io.factory.result;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.io.factory.EntityData;
-import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalUnitResult;
-import java.time.ZonedDateTime;
-import java.util.UUID;
+import tech.units.indriya.ComparableQuantity;
+
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
-import tech.units.indriya.ComparableQuantity;
+import java.time.ZonedDateTime;
+import java.util.Map;
+import java.util.UUID;
 
-public class ThermalResultFactory extends ResultEntityFactory<ThermalUnitResult> {
-  public ThermalResultFactory() {
+public class ThermalResultFactory<R extends ThermalUnitResult>
+    extends ResultEntityFactory<ThermalUnitResult, R> {
+
+  private final Class<R> targetClass;
+
+  public ThermalResultFactory(Class<R> targetClass) {
     super(
         ThermalHouseResult.class,
         CylindricalStorageResult.class,
         DomesticHotWaterStorageResult.class);
+    this.targetClass = targetClass;
+
+    isSupportedClass(targetClass);
   }
 
   @Override
-  protected ThermalUnitResult buildModel(EntityData data) {
-    Class<? extends Entity> clazz = data.getTargetClass();
+  @SuppressWarnings("unchecked")
+  protected R buildModel(Map<String, String> data, ZonedDateTime time, UUID inputModel) {
+    ComparableQuantity<Power> qDotQuantity = getQuantity(data, Q_DOT, StandardUnits.HEAT_DEMAND);
 
-    ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
-    UUID inputModelUuid = data.getUUID(INPUT_MODEL);
-    ComparableQuantity<Power> qDotQuantity = data.getQuantity(Q_DOT, StandardUnits.HEAT_DEMAND);
-
-    if (clazz.equals(ThermalHouseResult.class)) {
+    if (targetClass.equals(ThermalHouseResult.class)) {
       ComparableQuantity<Temperature> indoorTemperature =
-          data.getQuantity(INDOOR_TEMPERATURE, StandardUnits.TEMPERATURE);
+          getQuantity(data, INDOOR_TEMPERATURE, StandardUnits.TEMPERATURE);
 
-      return new ThermalHouseResult(zdtTime, inputModelUuid, qDotQuantity, indoorTemperature);
-    } else if (clazz.equals(CylindricalStorageResult.class)) {
+      return (R) new ThermalHouseResult(time, inputModel, qDotQuantity, indoorTemperature);
+    } else if (targetClass.equals(CylindricalStorageResult.class)) {
       ComparableQuantity<Energy> energyQuantity =
-          data.getQuantity(ENERGY, StandardUnits.ENERGY_RESULT);
+          getQuantity(data, ENERGY, StandardUnits.ENERGY_RESULT);
       ComparableQuantity<Dimensionless> fillLevelQuantity =
-          data.getQuantity(FILL_LEVEL, StandardUnits.FILL_LEVEL);
+          getQuantity(data, FILL_LEVEL, StandardUnits.FILL_LEVEL);
 
-      return new CylindricalStorageResult(
-          zdtTime, inputModelUuid, energyQuantity, qDotQuantity, fillLevelQuantity);
-    } else if (clazz.equals(DomesticHotWaterStorageResult.class)) {
+      return (R)
+          new CylindricalStorageResult(
+              time, inputModel, energyQuantity, qDotQuantity, fillLevelQuantity);
+    } else if (targetClass.equals(DomesticHotWaterStorageResult.class)) {
       ComparableQuantity<Energy> energyQuantity =
-          data.getQuantity(ENERGY, StandardUnits.ENERGY_RESULT);
+          getQuantity(data, ENERGY, StandardUnits.ENERGY_RESULT);
       ComparableQuantity<Dimensionless> fillLevelQuantity =
-          data.getQuantity(FILL_LEVEL, StandardUnits.FILL_LEVEL);
+          getQuantity(data, FILL_LEVEL, StandardUnits.FILL_LEVEL);
 
-      return new DomesticHotWaterStorageResult(
-          zdtTime, inputModelUuid, energyQuantity, qDotQuantity, fillLevelQuantity);
+      return (R)
+          new DomesticHotWaterStorageResult(
+              time, inputModel, energyQuantity, qDotQuantity, fillLevelQuantity);
     } else {
-      throw new FactoryException("Cannot process " + clazz.getSimpleName() + ".class.");
+      throw new FactoryException("Cannot process " + targetClass.getSimpleName() + ".class.");
     }
   }
 }

@@ -40,7 +40,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
         )
 
     when:
-    def actual = source.createTimeBasedValue(fieldToValue)
+    def actual = factory.get(fieldToValue)
 
     then:
     actual.success

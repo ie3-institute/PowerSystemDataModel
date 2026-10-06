@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.NodeResult
@@ -32,19 +31,19 @@ class NodeResultFactoryTest extends Specification implements FactoryTestHelper {
     Map<String, String> parameter = [
       "time" : "2020-01-30T17:26:44Z",
       "inputModel": "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
-      "vmag" : "2",
-      "vang" : "2"
+      "vMag" : "2",
+      "vAng" : "2"
     ]
 
     when:
-    Try<? extends NodeResult, FactoryException> result = resultFactory.get(new EntityData(parameter, NodeResult))
+    Try<? extends NodeResult, FactoryException> result = resultFactory.get(new HashMap<>(parameter))
 
     then:
     result.success
     result.data.get().getClass() == NodeResult
     ((NodeResult) result.data.get()).with {
-      vMag == getQuant(parameter["vmag"], StandardUnits.VOLTAGE_MAGNITUDE)
-      vAng == getQuant(parameter["vang"], StandardUnits.VOLTAGE_ANGLE)
+      vMag == getQuant(parameter["vMag"], StandardUnits.VOLTAGE_MAGNITUDE)
+      vAng == getQuant(parameter["vAng"], StandardUnits.VOLTAGE_ANGLE)
       time == TIME_UTIL.toZonedDateTime(parameter["time"])
       inputModel == UUID.fromString(parameter["inputModel"])
     }

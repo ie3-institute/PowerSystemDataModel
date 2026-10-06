@@ -6,38 +6,51 @@
 package edu.ie3.datamodel.io.factory.input;
 
 import edu.ie3.datamodel.models.StandardUnits;
+import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.AbstractStorageInput;
+import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
+import tech.units.indriya.ComparableQuantity;
+
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
-import tech.units.indriya.ComparableQuantity;
+import java.util.Map;
+import java.util.UUID;
 
 public abstract class AbstractThermalStorageInputFactory<T extends AbstractStorageInput>
-    extends AssetInputEntityFactory<T, ThermalUnitInputEntityData> {
+    extends AssetInputEntityFactory<T> {
 
-  protected AbstractThermalStorageInputFactory(Class<T> clazz) {
-    super(clazz);
+  private final Map<UUID, ThermalBusInput> thermalBuses;
+
+  protected AbstractThermalStorageInputFactory(
+      Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses, Class<T> clazz) {
+    super(operators, clazz);
+    this.thermalBuses = thermalBuses;
   }
 
-  protected ComparableQuantity<Volume> getStorageVolumeLvl(ThermalUnitInputEntityData data) {
-    return data.getQuantity(STORAGE_VOLUME_LVL, StandardUnits.VOLUME);
+  protected ThermalBusInput getBus(Map<String, String> data) {
+    return getEntity(data, THERMAL_BUS, thermalBuses);
   }
 
-  protected ComparableQuantity<Temperature> getInletTemp(ThermalUnitInputEntityData data) {
-    return data.getQuantity(INLET_TEMP, StandardUnits.TEMPERATURE);
+  protected ComparableQuantity<Volume> getStorageVolumeLvl(Map<String, String> data) {
+    return getQuantity(data, STORAGE_VOLUME_LVL, StandardUnits.VOLUME);
   }
 
-  protected ComparableQuantity<Temperature> getReturnTemp(ThermalUnitInputEntityData data) {
-    return data.getQuantity(RETURN_TEMP, StandardUnits.TEMPERATURE);
+  protected ComparableQuantity<Temperature> getInletTemp(Map<String, String> data) {
+    return getQuantity(data, INLET_TEMP, StandardUnits.TEMPERATURE);
+  }
+
+  protected ComparableQuantity<Temperature> getReturnTemp(Map<String, String> data) {
+    return getQuantity(data, RETURN_TEMP, StandardUnits.TEMPERATURE);
   }
 
   protected ComparableQuantity<SpecificHeatCapacity> getSpecificHeatCapacity(
-      ThermalUnitInputEntityData data) {
-    return data.getQuantity(C, StandardUnits.SPECIFIC_HEAT_CAPACITY);
+      Map<String, String> data) {
+    return getQuantity(data, C, StandardUnits.SPECIFIC_HEAT_CAPACITY);
   }
 
-  protected ComparableQuantity<Power> getMaxThermalPower(ThermalUnitInputEntityData data) {
-    return data.getQuantity(P_THERMAL_MAX, StandardUnits.ACTIVE_POWER_IN);
+  protected ComparableQuantity<Power> getMaxThermalPower(Map<String, String> data) {
+    return getQuantity(data, P_THERMAL_MAX, StandardUnits.ACTIVE_POWER_IN);
   }
 }

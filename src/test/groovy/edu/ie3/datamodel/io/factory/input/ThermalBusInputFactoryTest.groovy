@@ -10,14 +10,27 @@ import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
+import spock.lang.Shared
 import spock.lang.Specification
 
 import java.time.ZonedDateTime
 
 class ThermalBusInputFactoryTest extends Specification implements FactoryTestHelper {
+
+  @Shared private UUID operatorUuid = UUID.randomUUID()
+  @Shared private def operatorInput = Mock(OperatorInput)
+
+  @Shared private ThermalBusInputFactory inputFactory
+
+  def setupSpec() {
+    operatorInput.getUuid() >> operatorUuid
+
+    inputFactory = new ThermalBusInputFactory(map(operatorInput))
+  }
+
+
   def "A ThermalBusInputFactory should contain exactly the expected class for parsing"() {
     given:
-    def inputFactory = new ThermalBusInputFactory()
     def expectedClasses = [ThermalBusInput]
 
     expect:
@@ -26,26 +39,24 @@ class ThermalBusInputFactoryTest extends Specification implements FactoryTestHel
 
   def "A ThermalBusInputFactory should parse a valid SwitchInput correctly"() {
     given: "a system participant input type factory and model data"
-    def inputFactory = new ThermalBusInputFactory()
     Map<String, String> parameter = [
       "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "operatesuntil": "",
-      "id" : "TestID"
+      "operatesFrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesUntil": "",
+      "id" : "TestID",
+      "operator": operatorUuid.toString(),
     ]
-    def inputClass = ThermalBusInput
-    def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<ThermalBusInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
+    Try<ThermalBusInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
 
     then:
     input.success
-    input.data.get().getClass() == inputClass
+    input.data.get().getClass() == ThermalBusInput
     input.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       operationTime.startDate.present
-      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesFrom"])
       !operationTime.endDate.present
       operator == operatorInput
       id == parameter["id"]

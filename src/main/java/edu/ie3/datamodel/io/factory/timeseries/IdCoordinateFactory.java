@@ -6,15 +6,15 @@
 package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.io.factory.Factory;
-import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.models.input.IdCoordinateInput;
+import java.util.Map;
 
 /**
  * Abstract class definition for a factory, that is able to build single mapping entries from
  * coordinate identifier to actual coordinate
  */
 public abstract class IdCoordinateFactory
-    extends Factory<IdCoordinateInput, SimpleFactoryData, IdCoordinateInput> {
+    extends Factory<IdCoordinateInput, Map<String, String>, IdCoordinateInput> {
   protected IdCoordinateFactory(Class<? extends IdCoordinateInput> clazz) {
     super(clazz, IdCoordinateInput.class);
   }

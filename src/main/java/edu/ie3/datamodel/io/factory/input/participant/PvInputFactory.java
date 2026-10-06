@@ -12,39 +12,40 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.PvInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
-import java.util.UUID;
+import tech.units.indriya.ComparableQuantity;
+
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
-import tech.units.indriya.ComparableQuantity;
+import java.util.Map;
+import java.util.UUID;
 
-public class PvInputFactory
-    extends SystemParticipantInputEntityFactory<PvInput, SystemParticipantEntityData> {
+/** Factory to create instances of {@link PvInput}s. */
+public class PvInputFactory extends SystemParticipantInputEntityFactory<PvInput> {
 
-  public PvInputFactory() {
-    super(PvInput.class);
+  public PvInputFactory(
+      Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits) {
+    super(operators, nodes, emUnits, PvInput.class);
   }
 
   @Override
   protected PvInput buildModel(
-      SystemParticipantEntityData data,
+      Map<String, String> data,
       UUID uuid,
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
-      OperationTime operationTime) {
-    final EmInput em = data.getControllingEm().orElse(null);
-    final double albedo = data.getDouble(ALBEDO);
-    final ComparableQuantity<Angle> azimuth = data.getQuantity(AZIMUTH, StandardUnits.AZIMUTH);
-    final ComparableQuantity<Dimensionless> etaConv =
-        data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY);
-    final ComparableQuantity<Angle> elevationAngle =
-        data.getQuantity(ELEVATION_ANGLE, StandardUnits.SOLAR_ELEVATION_ANGLE);
-    final double kG = data.getDouble(KG);
-    final double kT = data.getDouble(KT);
-    final ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
-    final double cosPhi = data.getDouble(COS_PHI_RATED);
+      OperationTime operationTime,
+      EmInput controllingEm) {
+    double albedo = getDouble(data, ALBEDO);
+    ComparableQuantity<Angle> azimuth = getQuantity(data, AZIMUTH, StandardUnits.AZIMUTH);
+    ComparableQuantity<Dimensionless> etaConv = getQuantity(data, ETA_CONV, StandardUnits.EFFICIENCY);
+    ComparableQuantity<Angle> elevationAngle = getQuantity(data, ELEVATION_ANGLE, StandardUnits.SOLAR_ELEVATION_ANGLE);
+    double kG = getDouble(data, KG);
+    double kT = getDouble(data, KT);
+    ComparableQuantity<Power> sRated = getQuantity(data, S_RATED, StandardUnits.S_RATED);
+    double cosPhi = getDouble(data, COS_PHI_RATED);
 
     return new PvInput(
         uuid,
@@ -53,7 +54,7 @@ public class PvInputFactory
         operationTime,
         node,
         qCharacteristics,
-        em,
+        controllingEm,
         albedo,
         azimuth,
         etaConv,
@@ -62,6 +63,6 @@ public class PvInputFactory
         kT,
         sRated,
         cosPhi,
-        data.getFieldsToValues());
+        data);
   }
 }

@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.factory.typeinput;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
-import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.typeinput.parser.CableTypeParser;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
@@ -15,8 +14,8 @@ import edu.ie3.datamodel.models.input.connector.type.LayerInput;
 import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput;
 import edu.ie3.util.quantities.interfaces.SpecificCapacitance;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 import javax.measure.Unit;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Temperature;
@@ -30,7 +29,8 @@ import tools.jackson.databind.json.JsonMapper;
  * strings of the individual cable components (conductor, layers, screen layer) are parsed with a
  * {@link CableTypeParser}.
  */
-public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableTypeInput> {
+public class CableTypeInputFactory
+    extends AssetTypeInputEntityFactory<CableTypeInput, CableTypeInput> {
 
   private static final Unit<SpecificCapacitance> FARAD_PER_METRE =
       new ProductUnit<>(Units.FARAD.divide(Units.METRE));
@@ -53,10 +53,9 @@ public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableType
   }
 
   @Override
-  protected CableTypeInput buildModel(EntityData data) {
-    UUID uuid = data.getUUID(UUID);
-    String id = data.getField(ID);
-    int cores = data.getInt(CORE_NUMBER);
+  protected CableTypeInput buildModel(Map<String, String> data) {
+    String id = getID(data);
+    int cores = getInt(data, CORE_NUMBER);
 
     final ConductorInput conductor;
     final List<LayerInput> isolation;
@@ -66,12 +65,12 @@ public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableType
     final List<LayerInput> jack;
 
     try {
-      conductor = parser.parseConductor(data.getField(CONDUCTOR_STRING));
-      isolation = parser.parseLayerList(data.getField(ISOLATION_STRING));
-      screen = parser.parseScreenLayer(data.getField(SCREEN_STRING));
-      filler = parser.parseLayerList(data.getField(FILLER_STRING));
-      armor = parser.parseLayerList(data.getField(ARMOR_STRING));
-      jack = parser.parseLayerList(data.getField(JACK_STRING));
+      conductor = parser.parseConductor(getField(data, CONDUCTOR_STRING));
+      isolation = parser.parseLayerList(getField(data, ISOLATION_STRING));
+      screen = parser.parseScreenLayer(getField(data, SCREEN_STRING));
+      filler = parser.parseLayerList(getField(data, FILLER_STRING));
+      armor = parser.parseLayerList(getField(data, ARMOR_STRING));
+      jack = parser.parseLayerList(getField(data, JACK_STRING));
     } catch (ParsingException e) {
       throw new IllegalArgumentException(
           "Cannot build CableTypeInput '"
@@ -82,18 +81,18 @@ public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableType
     }
 
     ComparableQuantity<Temperature> limitTemp =
-        data.getQuantity(LIMIT_TEMPERATURE, StandardUnits.TEMPERATURE);
-    ComparableQuantity<Frequency> frequency = data.getQuantity(FREQUENCY, Units.HERTZ);
-    double skinEffectCoefficient = data.getDouble(SKIN_EFFECT_COEFFICIENT);
-    double proxEffectCoefficient = data.getDouble(PROXIMITY_EFFECT_COEFFICIENT);
+        getQuantity(data, LIMIT_TEMPERATURE, StandardUnits.TEMPERATURE);
+    ComparableQuantity<Frequency> frequency = getQuantity(data, FREQUENCY, Units.HERTZ);
+    double skinEffectCoefficient = getDouble(data, SKIN_EFFECT_COEFFICIENT);
+    double proxEffectCoefficient = getDouble(data, PROXIMITY_EFFECT_COEFFICIENT);
     ComparableQuantity<SpecificCapacitance> electricalCapacitance =
-        data.getQuantity(ELECTRICAL_CAPACITANCE, FARAD_PER_METRE);
-    double tanDelta = data.getDouble(TAN_DELTA);
-    double circulatingLossFactor = data.getDouble(CIRCULATING_LOSS_FACTOR);
-    double eddyCurrentLossFactor = data.getDouble(EDDY_CURRENT_LOSS_FACTOR);
+        getQuantity(data, ELECTRICAL_CAPACITANCE, FARAD_PER_METRE);
+    double tanDelta = getDouble(data, TAN_DELTA);
+    double circulatingLossFactor = getDouble(data, CIRCULATING_LOSS_FACTOR);
+    double eddyCurrentLossFactor = getDouble(data, EDDY_CURRENT_LOSS_FACTOR);
 
     return new CableTypeInput(
-        uuid,
+        getUUID(data),
         id,
         cores,
         conductor,

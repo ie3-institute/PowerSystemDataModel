@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import spock.lang.Shared
+
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.FactoryException
@@ -23,9 +25,30 @@ import java.time.ZonedDateTime
 import javax.measure.quantity.Dimensionless
 
 class StorageInputFactoryTest extends Specification implements FactoryTestHelper {
+
+  @Shared private UUID nodeUuid = UUID.randomUUID()
+  @Shared private def nodeInput = Mock(NodeInput)
+  @Shared private UUID operatorUuid = UUID.randomUUID()
+  @Shared  private def operatorInput = Mock(OperatorInput)
+  @Shared  private UUID emUuid = UUID.randomUUID()
+  @Shared  private def emUnit = Mock(EmInput)
+  @Shared  private UUID typeUuid = UUID.randomUUID()
+  @Shared  private def typeInput = Mock(StorageTypeInput)
+
+  @Shared  private StorageInputFactory inputFactory
+
+  def setupSpec() {
+    nodeInput.getUuid() >> nodeUuid
+    operatorInput.getUuid() >> operatorUuid
+    emUnit.getUuid() >> emUuid
+    typeInput.getUuid() >> typeUuid
+
+    inputFactory = new StorageInputFactory(map(operatorInput), map(nodeInput), map(emUnit), map(typeInput))
+  }
+
+
   def "A StorageInputFactory should contain exactly the expected class for parsing"() {
     given:
-    def inputFactory = new StorageInputFactory()
     def expectedClasses = [StorageInput]
 
     expect:
@@ -34,33 +57,30 @@ class StorageInputFactoryTest extends Specification implements FactoryTestHelper
 
   def "A StorageInputFactory should parse a valid StorageInput correctly"() {
     given: "a system participant input type factory and model data"
-    def inputFactory = new StorageInputFactory()
     Map<String, String> parameter = [
       "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "operatesuntil" : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
+      "operatesFrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesUntil" : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
       "id" : "TestID",
-      "qcharacteristics": "cosPhiFixed:{(0.0,1.0)}"
+      "qCharacteristics": "cosPhiFixed:{(0.0,1.0)}",
+      "operator": operatorUuid.toString(),
+      "node": nodeUuid.toString(),
+      "controllingEm": emUuid.toString(),
+      "type": typeUuid.toString()
     ]
-    def inputClass = StorageInput
-    def nodeInput = Mock(NodeInput)
-    def operatorInput = Mock(OperatorInput)
-    def emUnit = Mock(EmInput)
-    def typeInput = Mock(StorageTypeInput)
 
     when:
-    Try<StorageInput, FactoryException> input = inputFactory.get(
-        new SystemParticipantTypedEntityData<StorageTypeInput>(parameter, inputClass, operatorInput, nodeInput, emUnit, typeInput))
+    Try<StorageInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
 
     then:
     input.success
-    input.data.get().getClass() == inputClass
+    input.data.get().getClass() == StorageInput
     input.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       operationTime.startDate.present
-      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesFrom"])
       operationTime.endDate.present
-      operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
+      operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesUntil"])
       operator == operatorInput
       id == parameter["id"]
       node == nodeInput

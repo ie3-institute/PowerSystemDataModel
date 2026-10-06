@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.models.profile.markov
 
 import edu.ie3.datamodel.io.factory.markov.MarkovLoadModelFactory
-import edu.ie3.datamodel.io.factory.markov.MarkovModelData
 import edu.ie3.datamodel.io.source.PowerValueSource
 import edu.ie3.datamodel.models.StandardUnits
 
@@ -117,7 +116,7 @@ class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
   private loadModel(String transitions, String states) {
     def json = markovModelJson(transitions, states, "5.0", "1.0")
     def root = objectMapper.readTree(json)
-    factory.get(new MarkovModelData(root)).getOrThrow()
+    factory.get(root).getOrThrow()
   }
 
   private static String deterministicTransitions() {

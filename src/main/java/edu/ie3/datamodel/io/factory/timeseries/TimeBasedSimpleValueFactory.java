@@ -12,54 +12,57 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
 import java.time.ZonedDateTime;
+import java.util.Map;
 
-public class TimeBasedSimpleValueFactory<V extends Value>
-    extends TimeBasedValueFactory<SimpleTimeBasedValueData<V>, V> {
+public class TimeBasedSimpleValueFactory<V extends Value> extends TimeBasedValueFactory<Map<String, String>, V> {
 
-  public TimeBasedSimpleValueFactory(Class<? extends V> valueClasses) {
-    super(valueClasses);
+  private final Class<V> targetClass;
+
+  public TimeBasedSimpleValueFactory(Class<V> targetClass) {
+    super(targetClass);
+    this.targetClass = targetClass;
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  protected TimeBasedValue<V> buildModel(SimpleTimeBasedValueData<V> data) {
-    ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
+  protected TimeBasedValue<V> buildModel(Map<String, String> data) {
+    ZonedDateTime time = timeUtil.toZonedDateTime(getField(data, TIME));
     V value;
 
-    if (EnergyPriceValue.class.isAssignableFrom(data.getTargetClass())) {
-      value = (V) new EnergyPriceValue(data.getQuantity(PRICE, ENERGY_PRICE));
-    } else if (HeatAndSValue.class.isAssignableFrom(data.getTargetClass())) {
+    if (EnergyPriceValue.class.isAssignableFrom(targetClass)) {
+      value = (V) new EnergyPriceValue(getQuantity(data, PRICE, ENERGY_PRICE));
+    } else if (HeatAndSValue.class.isAssignableFrom(targetClass)) {
       value =
           (V)
               new HeatAndSValue(
-                  data.getQuantity(ACTIVE_POWER, ACTIVE_POWER_IN),
-                  data.getQuantity(REACTIVE_POWER, REACTIVE_POWER_IN),
-                  data.getQuantity(HEAT_DEMAND, StandardUnits.HEAT_DEMAND));
-    } else if (HeatAndPValue.class.isAssignableFrom(data.getTargetClass())) {
+                  getQuantity(data, ACTIVE_POWER, ACTIVE_POWER_IN),
+                  getQuantity(data, REACTIVE_POWER, REACTIVE_POWER_IN),
+                  getQuantity(data, HEAT_DEMAND, StandardUnits.HEAT_DEMAND));
+    } else if (HeatAndPValue.class.isAssignableFrom(targetClass)) {
       value =
           (V)
               new HeatAndPValue(
-                  data.getQuantity(ACTIVE_POWER, ACTIVE_POWER_IN),
-                  data.getQuantity(HEAT_DEMAND, StandardUnits.HEAT_DEMAND));
-    } else if (HeatDemandValue.class.isAssignableFrom(data.getTargetClass())) {
-      value = (V) new HeatDemandValue(data.getQuantity(HEAT_DEMAND, StandardUnits.HEAT_DEMAND));
-    } else if (SValue.class.isAssignableFrom(data.getTargetClass())) {
+                  getQuantity(data, ACTIVE_POWER, ACTIVE_POWER_IN),
+                  getQuantity(data, HEAT_DEMAND, StandardUnits.HEAT_DEMAND));
+    } else if (HeatDemandValue.class.isAssignableFrom(targetClass)) {
+      value = (V) new HeatDemandValue(getQuantity(data, HEAT_DEMAND, StandardUnits.HEAT_DEMAND));
+    } else if (SValue.class.isAssignableFrom(targetClass)) {
       value =
           (V)
               new SValue(
-                  data.getQuantity(ACTIVE_POWER, ACTIVE_POWER_IN),
-                  data.getQuantity(REACTIVE_POWER, REACTIVE_POWER_IN));
-    } else if (PValue.class.isAssignableFrom(data.getTargetClass())) {
-      value = (V) new PValue(data.getQuantity(ACTIVE_POWER, ACTIVE_POWER_IN));
-    } else if (VoltageValue.class.isAssignableFrom(data.getTargetClass())) {
+                  getQuantity(data, ACTIVE_POWER, ACTIVE_POWER_IN),
+                  getQuantity(data, REACTIVE_POWER, REACTIVE_POWER_IN));
+    } else if (PValue.class.isAssignableFrom(targetClass)) {
+      value = (V) new PValue(getQuantity(data, ACTIVE_POWER, ACTIVE_POWER_IN));
+    } else if (VoltageValue.class.isAssignableFrom(targetClass)) {
       value =
           (V)
               new VoltageValue(
-                  data.getQuantity(V_MAG, VOLTAGE_MAGNITUDE),
-                  data.getQuantityOptional(V_ANG, VOLTAGE_ANGLE));
+                  getQuantity(data, V_MAG, VOLTAGE_MAGNITUDE),
+                  getQuantityOptional(data, V_ANG, VOLTAGE_ANGLE));
     } else {
       throw new FactoryException(
-          "The given factory cannot handle target class '" + data.getTargetClass() + "'.");
+          "The given factory cannot handle target class '" + targetClass + "'.");
     }
 
     return new TimeBasedValue<>(time, value);

@@ -5,21 +5,19 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
-import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.EntityFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.csv.CsvDataSource;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.UniqueEntity;
-import edu.ie3.datamodel.utils.QuadFunction;
-import edu.ie3.datamodel.utils.TriFunction;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.Failure;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,14 +26,10 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Base class for all entity sources. This class provides some functionalities that are common among
@@ -175,16 +169,10 @@ public abstract class EntitySource {
    * @throws SourceException - if an error happen during reading
    */
   @SuppressWarnings("unchecked")
-  protected static <E extends UniqueEntity> Map<UUID, E> getEntities(
-      Class<E> entityClass,
-      DataSource dataSource,
-      EntityFactory<? extends UniqueEntity, EntityData> factory)
+  protected static <E extends UniqueEntity, R extends UniqueEntity> Map<UUID, R> getEntityMap(
+      Class<R> entityClass, DataSource dataSource, EntityFactory<E, R> factory)
       throws SourceException {
-    return unpack(
-            buildEntityData(entityClass, dataSource)
-                .map(data -> (Try<E, FactoryException>) factory.get(data)),
-            entityClass)
-        .collect(toMap());
+    return getEntities(entityClass, dataSource, factory).collect(toMap());
   }
 
   /**
@@ -193,166 +181,28 @@ public abstract class EntitySource {
    * @param entityClass class of the entity
    * @param dataSource source for the entity
    * @param factory to build the entity
-   * @param enrichFunction function to enrich the given entity data
    * @return a set of {@link Entity}s
-   * @param <E> type of entity
-   * @param <D> type of entity data
+   * @param <E> type of base entity
+   * @param <R> type of returned entity
    * @throws SourceException - if an error happen during reading
    */
-  protected static <E extends Entity, D extends EntityData> Stream<E> getEntities(
-      Class<E> entityClass,
-      DataSource dataSource,
-      EntityFactory<E, D> factory,
-      WrappedFunction<EntityData, D> enrichFunction)
+  protected static <E extends Entity, R extends Entity> Stream<R> getEntities(
+      Class<R> entityClass, DataSource dataSource, EntityFactory<E, R> factory)
       throws SourceException {
-    return unpack(
-        buildEntityData(entityClass, dataSource, enrichFunction).map(factory::get), entityClass);
+    return unpack(read(entityClass, dataSource).map(factory::get), entityClass);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
   /**
-   * Returns a stream of {@link EntityData} that can be used to build instances of several subtypes
-   * of {@link Entity} by a corresponding {@link EntityFactory} that consumes this data.
-   *
-   * @param entityClass the entity class that should be build
-   * @param dataSource source for the data
-   * @return a stream of the entity data wrapped in a {@link Try}
+   * @param entityClass
+   * @param dataSource
+   * @return
+   * @throws SourceException
    */
-  protected static Stream<Try<EntityData, SourceException>> buildEntityData(
+  protected static Stream<Try<Map<String, String>, SourceException>> read(
       Class<? extends Entity> entityClass, DataSource dataSource) throws SourceException {
-    return dataSource
-        .getSourceData(entityClass)
-        .map(
-            fieldsToAttributes ->
-                new Try.Success<>(new EntityData(fieldsToAttributes, entityClass)));
-  }
-
-  /**
-   * Returns a stream of {@link EntityData} that can be used to build instances of several subtypes
-   * of {@link Entity} by a corresponding {@link EntityFactory} that consumes this data.
-   *
-   * @param entityClass class of the entity
-   * @param dataSource source for the data
-   * @param converter to convert {@link EntityData} to {@link E}
-   * @return an entity data
-   * @param <E> type of entity data
-   */
-  protected static <E extends EntityData> Stream<Try<E, SourceException>> buildEntityData(
-      Class<? extends Entity> entityClass,
-      DataSource dataSource,
-      WrappedFunction<EntityData, E> converter)
-      throws SourceException {
-    return buildEntityData(entityClass, dataSource).map(converter);
-  }
-
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-  /**
-   * Method to build an enrich function.
-   *
-   * @param fieldName name of the field
-   * @param entities map: uuid to {@link Entity}
-   * @param defaultEntity entity that should be used if no other entity was extracted
-   * @param buildingFcn to build the returned {@link EntityData}
-   * @return an enrich function
-   * @param <E> type of entity data
-   * @param <T> type of entity
-   * @param <R> type of returned entity data
-   */
-  protected static <E extends EntityData, T, R extends EntityData>
-      WrappedFunction<E, R> enrichWithDefault(
-          String fieldName,
-          Map<UUID, T> entities,
-          T defaultEntity,
-          BiFunction<E, T, R> buildingFcn) {
-    return entityData ->
-        entityData
-            .zip(extractWithDefaultFunction(entityData, fieldName, entities, defaultEntity))
-            .map(enrichFunction(List.of(fieldName), buildingFcn));
-  }
-
-  /**
-   * Method to build an enrich function.
-   *
-   * @param fieldName name of the field
-   * @param entities map: uuid to {@link Entity}
-   * @param buildingFcn to build the returned {@link EntityData}
-   * @return an enrich function
-   * @param <E> type of entity data
-   * @param <T> type of entity
-   * @param <R> type of returned entity data
-   */
-  protected static <E extends EntityData, T, R extends EntityData> WrappedFunction<E, R> enrich(
-      String fieldName, Map<UUID, T> entities, BiFunction<E, T, R> buildingFcn) {
-    return entityData ->
-        entityData
-            .zip(extractFunction(entityData, fieldName, entities))
-            .map(enrichFunction(List.of(fieldName), buildingFcn));
-  }
-
-  /**
-   * Method to build an enrich function.
-   *
-   * @param fieldName1 name of the first field
-   * @param entities1 map: uuid to {@link Entity}
-   * @param fieldName2 name of the second field
-   * @param entities2 map: uuid to {@link Entity}
-   * @param buildingFcn to build the returned {@link EntityData}
-   * @return an enrich function
-   * @param <E> type of entity data
-   * @param <T1> type of the first entity
-   * @param <T2> type of the second entity
-   * @param <R> type of returned entity data
-   */
-  protected static <
-          E extends EntityData, T1 extends Entity, T2 extends Entity, R extends EntityData>
-      WrappedFunction<E, R> biEnrich(
-          String fieldName1,
-          Map<UUID, T1> entities1,
-          String fieldName2,
-          Map<UUID, T2> entities2,
-          TriFunction<E, T1, T2, R> buildingFcn) {
-    // adapting the provided function
-    BiFunction<E, Pair<T1, T2>, R> adaptedBuildingFcn =
-        (data, pair) -> buildingFcn.apply(data, pair.getKey(), pair.getValue());
-
-    // extractor to get the needed entities
-    WrappedFunction<E, Pair<T1, T2>> pairExtractor =
-        data ->
-            extractFunction(data, fieldName1, entities1)
-                .zip(extractFunction(data, fieldName2, entities2));
-
-    return entityData ->
-        entityData
-            .zip(pairExtractor)
-            .map(enrichFunction(List.of(fieldName1, fieldName2), adaptedBuildingFcn));
-  }
-
-  /**
-   * Method to build a function to create an {@link EntityData}.
-   *
-   * @param fieldNames list with field names
-   * @param buildingFcn to build the returned {@link EntityData}
-   * @return an entity data
-   * @param <E> type of given entity data
-   * @param <T> type of entities
-   * @param <R> type of returned entity data
-   */
-  protected static <E extends EntityData, T, R extends EntityData>
-      Function<Pair<E, T>, R> enrichFunction(
-          List<String> fieldNames, BiFunction<E, T, R> buildingFcn) {
-    return pair -> {
-      E data = pair.getKey();
-      T entities = pair.getValue();
-
-      Map<String, String> fieldsToAttributes = data.getFieldsToValues();
-
-      // remove fields that are passed as objects to constructor
-      fieldNames.forEach(fieldsToAttributes.keySet()::remove);
-
-      return buildingFcn.apply(data, entities);
-    };
+    return dataSource.getSourceData(entityClass).map(Try.Success::new);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -372,72 +222,6 @@ public abstract class EntitySource {
     return Try.scanStream(inputStream, clazz.getSimpleName(), SourceException::new).getOrThrow();
   }
 
-  /**
-   * Method to extract an entity.
-   *
-   * @param entityData data containing complex entities
-   * @param fieldName name of the field
-   * @param entities map: uuid to {@link Entity}
-   * @return an enrichment
-   * @param <E> type of entity data
-   * @param <R> type of entity
-   */
-  protected static <E extends EntityData, R> Try<R, SourceException> extractFunction(
-      Try<E, SourceException> entityData, String fieldName, Map<UUID, R> entities) {
-    return entityData.flatMap(
-        data ->
-            Try.of(() -> data.getUUID(fieldName), FactoryException.class)
-                .flatMap(entityUuid -> extractFunction(entityUuid, entities))
-                .transformF(
-                    exception ->
-                        new SourceException(
-                            "Extracting UUID for field '"
-                                + fieldName
-                                + "' failed. Caused by: "
-                                + exception.getMessage())));
-  }
-
-  /**
-   * Method to extract an entity with default.
-   *
-   * @param entityData data containing complex entities
-   * @param fieldName name of the field
-   * @param entities map: uuid to {@link Entity}
-   * @param defaultEntity that is used if the field is empty
-   * @return an enrichment
-   * @param <E> type of entity data
-   * @param <R> type of entity
-   */
-  protected static <E extends EntityData, R> Try<R, SourceException> extractWithDefaultFunction(
-      Try<E, SourceException> entityData,
-      String fieldName,
-      Map<UUID, R> entities,
-      R defaultEntity) {
-    if (entityData.convert(data -> data.isFieldEmpty(fieldName), f -> false)) {
-      // return the default entity, if the field is empty
-      return new Try.Success<>(defaultEntity);
-    } else {
-      return extractFunction(entityData, fieldName, entities);
-    }
-  }
-
-  /**
-   * Method to extract an {@link Entity} from a given map.
-   *
-   * @param uuid of the entity
-   * @param entityMap map: uuid to entity
-   * @return a try of the {@link Entity}
-   * @param <T> type of entity
-   */
-  protected static <T> Try<T, FactoryException> extractFunction(UUID uuid, Map<UUID, T> entityMap) {
-    return Optional.ofNullable(entityMap.get(uuid))
-        // We either find a matching entity for given UUID, thus return a success
-        .map(entity -> Try.of(() -> entity, FactoryException.class))
-        // ... or find no matching entity, returning a failure.
-        .orElse(
-            new Failure<>(new FactoryException("Entity with uuid " + uuid + " was not provided.")));
-  }
-
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
   // functional interfaces
@@ -451,52 +235,4 @@ public abstract class EntitySource {
   @FunctionalInterface
   protected interface WrappedFunction<T, R>
       extends Function<Try<T, SourceException>, Try<R, SourceException>> {}
-
-  /**
-   * Function for enriching an {@link EntityData} with an {@link Entity}.
-   *
-   * @param <E> type of entity data
-   * @param <T> type of entity
-   * @param <R> type of returned entity data
-   */
-  @FunctionalInterface
-  protected interface EnrichFunction<E extends EntityData, T extends Entity, R extends EntityData>
-      extends BiFunction<Try<E, SourceException>, Map<UUID, T>, Try<R, SourceException>> {}
-
-  /**
-   * Function for enriching an {@link EntityData} with two {@link Entity}.
-   *
-   * @param <E> type of entity data
-   * @param <T1> type of first entity
-   * @param <T2> type of second entity
-   * @param <R> type of returned entity data
-   */
-  @FunctionalInterface
-  protected interface BiEnrichFunction<
-          E extends EntityData, T1 extends Entity, T2 extends Entity, R extends EntityData>
-      extends TriFunction<
-          Try<E, SourceException>, Map<UUID, T1>, Map<UUID, T2>, Try<R, SourceException>> {}
-
-  /**
-   * Function for enriching an {@link EntityData} with three {@link Entity}.
-   *
-   * @param <E> type of entity data
-   * @param <T1> type of first entity
-   * @param <T2> type of second entity
-   * @param <T3> type of third entity
-   * @param <R> type of returned entity data
-   */
-  @FunctionalInterface
-  protected interface TriEnrichFunction<
-          E extends EntityData,
-          T1 extends Entity,
-          T2 extends Entity,
-          T3 extends Entity,
-          R extends EntityData>
-      extends QuadFunction<
-          Try<E, SourceException>,
-          Map<UUID, T1>,
-          Map<UUID, T2>,
-          Map<UUID, T3>,
-          Try<R, SourceException>> {}
 }

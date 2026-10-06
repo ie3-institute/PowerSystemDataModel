@@ -5,18 +5,18 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
-import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.UniqueEntityFactory;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import java.util.Map;
 
-public class OperatorInputFactory extends UniqueEntityFactory<OperatorInput, EntityData> {
+public class OperatorInputFactory extends UniqueEntityFactory<OperatorInput, OperatorInput> {
 
   public OperatorInputFactory() {
     super(OperatorInput.class);
   }
 
   @Override
-  protected OperatorInput buildModel(EntityData data) {
-    return new OperatorInput(data.getUUID(UUID), data.getField(ID), data.getFieldsToValues());
+  protected OperatorInput buildModel(Map<String, String> data) {
+    return new OperatorInput(getUUID(data, UUID), getField(data, ID), data);
   }
 }

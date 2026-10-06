@@ -285,7 +285,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     actual == null
     SourceException ex = thrown()
     ex.message == "1 exception(s) occurred within \"NodeInput\" data: \n" +
-        "        An error occurred when creating instance of NodeInput.class. Caused by: Exception while trying to parse UUID of field \"uuid\" with value \"bd837a25-58f3-44ac-aa90-c6b6e3 cd91b2\""
+        "        An error occurred in NodeInputFactory. Caused by: Exception while trying to parse UUID of field \"uuid\" with value \"bd837a25-58f3-44ac-aa90-c6b6e3 cd91b2\""
   }
 
   def "The CsvRawGridSource returns an empty grid, if the RawGridElements contain no single element"() {

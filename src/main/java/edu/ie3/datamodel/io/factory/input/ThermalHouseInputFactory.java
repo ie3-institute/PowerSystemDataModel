@@ -6,49 +6,49 @@
 package edu.ie3.datamodel.io.factory.input;
 
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput;
 import edu.ie3.util.quantities.interfaces.HeatCapacity;
 import edu.ie3.util.quantities.interfaces.ThermalConductance;
-import java.util.UUID;
-import javax.measure.quantity.Temperature;
 import tech.units.indriya.ComparableQuantity;
 
-public class ThermalHouseInputFactory
-    extends AssetInputEntityFactory<ThermalHouseInput, ThermalUnitInputEntityData> {
+import javax.measure.quantity.Temperature;
+import java.util.Map;
+import java.util.UUID;
 
-  public ThermalHouseInputFactory() {
-    super(ThermalHouseInput.class);
+import static edu.ie3.datamodel.models.StandardUnits.*;
+
+public class ThermalHouseInputFactory extends AssetInputEntityFactory<ThermalHouseInput> {
+
+  private final Map<UUID, ThermalBusInput> thermalBuses;
+
+  public ThermalHouseInputFactory(
+      Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses) {
+    super(operators, ThermalHouseInput.class);
+    this.thermalBuses = thermalBuses;
   }
 
   @Override
   protected ThermalHouseInput buildModel(
-      ThermalUnitInputEntityData data,
+      Map<String, String> data,
       UUID uuid,
       String id,
       OperatorInput operator,
       OperationTime operationTime) {
-    final ThermalBusInput busInput = data.getBusInput();
-    final ComparableQuantity<ThermalConductance> ethLosses =
-        data.getQuantity(ETH_LOSSES, StandardUnits.THERMAL_TRANSMISSION);
-    final ComparableQuantity<HeatCapacity> ethCapa =
-        data.getQuantity(ETH_CAPA, StandardUnits.HEAT_CAPACITY);
-    final ComparableQuantity<Temperature> targetTemperature =
-        data.getQuantity(TARGET_TEMPERATURE, StandardUnits.TEMPERATURE);
-    final ComparableQuantity<Temperature> upperTemperatureLimit =
-        data.getQuantity(UPPER_TEMPERATURE_LIMIT, StandardUnits.TEMPERATURE);
-    final ComparableQuantity<Temperature> lowerTemperatureLimit =
-        data.getQuantity(LOWER_TEMPERATURE_LIMIT, StandardUnits.TEMPERATURE);
-    final String housingType = data.getField(HOUSING_TYPE);
-    final double numberInhabitants = data.getDouble(NUMBER_INHABITANTS);
+    ComparableQuantity<ThermalConductance> ethLosses = getQuantity(data, ETH_LOSSES, THERMAL_TRANSMISSION);
+    ComparableQuantity<HeatCapacity> ethCapa = getQuantity(data, ETH_CAPA, HEAT_CAPACITY);
+    ComparableQuantity<Temperature> targetTemperature = getQuantity(data, TARGET_TEMPERATURE, TEMPERATURE);
+    ComparableQuantity<Temperature> upperTemperatureLimit = getQuantity(data, UPPER_TEMPERATURE_LIMIT, TEMPERATURE);
+    ComparableQuantity<Temperature> lowerTemperatureLimit = getQuantity(data, LOWER_TEMPERATURE_LIMIT, TEMPERATURE);
+    String housingType = getField(data, HOUSING_TYPE);
+    double numberInhabitants = getDouble(data, NUMBER_INHABITANTS);
     return new ThermalHouseInput(
         uuid,
         id,
         operator,
         operationTime,
-        busInput,
+        getEntity(data, THERMAL_BUS, thermalBuses),
         ethLosses,
         ethCapa,
         targetTemperature,
@@ -56,6 +56,6 @@ public class ThermalHouseInputFactory
         lowerTemperatureLimit,
         housingType,
         numberInhabitants,
-        data.getFieldsToValues());
+        data);
   }
 }

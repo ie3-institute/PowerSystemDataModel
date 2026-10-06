@@ -5,27 +5,20 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import static edu.ie3.datamodel.io.factory.input.EmInputFactory.CONTROLLING_EM;
-
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
-import edu.ie3.datamodel.io.factory.input.AssetInputEntityData;
-import edu.ie3.datamodel.io.factory.input.EmAssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.EmInputFactory;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.utils.Try;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import java.util.*;
+
+import static edu.ie3.datamodel.io.factory.input.EmInputFactory.CONTROLLING_EM;
 
 public class EnergyManagementSource extends AssetEntitySource {
 
   private final TypeSource typeSource;
-
-  private static final EmInputFactory emInputFactory = new EmInputFactory();
 
   public EnergyManagementSource(TypeSource typeSource, DataSource dataSource) {
     super(dataSource);
@@ -68,138 +61,36 @@ public class EnergyManagementSource extends AssetEntitySource {
    * @return a map of UUID to {@link EmInput} entities
    */
   public Map<UUID, EmInput> getEmUnits(Map<UUID, OperatorInput> operators) throws SourceException {
-    return createEmInputs(
-        buildEntityData(EmInput.class, dataSource, data -> assetEnricher.apply(data, operators)));
-  }
-
-  /**
-   * Since each EM can itself be controlled by another EM, it does not suffice to link {@link
-   * EmInput}s via {@link EntitySource#enrichFunction} as we do for system participants in {@link
-   * SystemParticipantSource}. Instead, we use a recursive approach, starting with EMs at root level
-   * (which are not EM-controlled themselves).
-   *
-   * @param assetEntityDataStream the data stream of {@link AssetInputEntityData} {@link Try}
-   *     objects
-   * @return a map of UUID to {@link EmInput} entities
-   */
-  private static Map<UUID, EmInput> createEmInputs(
-      Stream<Try<AssetInputEntityData, SourceException>> assetEntityDataStream)
-      throws SourceException {
-
-    // Split stream by failures and EMs that are themselves EM-controlled on one side, and EMs at
-    // root position (that have not failed so far) on the other side, which do not have parents per
-    // definition.
-    Map<Boolean, List<Try<AssetInputEntityData, SourceException>>> split =
-        assetEntityDataStream.collect(
-            Collectors.partitioningBy(
-                dataTry ->
-                    dataTry.map(data -> !data.isFieldBlank(CONTROLLING_EM)).getOrElse(() -> true)));
-
-    List<Try<AssetInputEntityData, SourceException>> rootEmsEntityData = split.get(false);
-    List<Try<AssetInputEntityData, SourceException>> others = split.get(true);
-
-    // at the start, there are only root ems
-    Map<UUID, EmInput> allEms =
-        unpack(
-                rootEmsEntityData.stream()
-                    .parallel()
-                    .map(
-                        entityDataTry ->
-                            entityDataTry.map(
-                                entityData -> {
-                                  // remove the empty field from the additional data
-                                  entityData.getField(CONTROLLING_EM);
-                                  return new EmAssetInputEntityData(entityData, null);
-                                }))
-                    .map(emInputFactory::get),
-                EmInput.class)
-            .collect(toMap());
-
-    if (!others.isEmpty()) {
-      // there's more EM levels beyond root level. Build them recursively
-      Stream<AssetDataAndValidParentUuid> othersWithParentUuid =
-          // We try to keep the Tries as long as possible so that as many failures as possible can
-          // be reported. At this point however, we need to "unpack" (and throw, if applicable),
-          // because without valid parent EM UUID, we cannot proceed.
-          unpack(
-              others.stream()
-                  .map(
-                      dataTry ->
-                          dataTry.flatMap(
-                              data -> {
-                                // we already filtered out those entities that do not have a parent,
-                                // so the field should exist
-                                String uuidString = data.getField(CONTROLLING_EM);
-                                return Try.of(
-                                        () -> UUID.fromString(uuidString),
-                                        IllegalArgumentException.class)
-                                    .transformF(
-                                        iae ->
-                                            new SourceException(
-                                                String.format(
-                                                    "Exception while trying to parse UUID of field \"%s\" with value \"%s\"",
-                                                    CONTROLLING_EM, uuidString),
-                                                iae))
-                                    // failed UUID parses are filtered out at this point. We save
-                                    // the parsed UUID with the asset data
-                                    .map(
-                                        parentUuid ->
-                                            new AssetDataAndValidParentUuid(data, parentUuid));
-                              })),
-              AssetDataAndValidParentUuid.class);
-
-      allEms.putAll(createHierarchicalEmInputs(othersWithParentUuid, allEms));
-    }
-
+    Map<UUID, EmInput> allEms = new HashMap<>();
+    EmInputFactory factory = new EmInputFactory(operators, allEms);
+    createEmsRecursively(dataSource.getSourceData(EmInput.class).toList(), allEms, factory);
     return allEms;
   }
 
-  private static Map<UUID, EmInput> createHierarchicalEmInputs(
-      Stream<AssetDataAndValidParentUuid> assetEntityDataStream, Map<UUID, EmInput> lastLevelEms)
+  private static void createEmsRecursively(
+      List<Map<String, String>> rawData, Map<UUID, EmInput> emUnits, EmInputFactory factory)
       throws SourceException {
+    List<Map<String, String>> currentLevel = new ArrayList<>();
+    List<Map<String, String>> others = new ArrayList<>();
 
-    // Split stream by assets whose parent is already built (which can be built at this level), and
-    // those whose parents are not built yet (which have to be built at some lower recursion level
-    // or not at all)
-    Map<Boolean, List<AssetDataAndValidParentUuid>> split =
-        assetEntityDataStream.collect(
-            Collectors.partitioningBy(data -> lastLevelEms.containsKey(data.parentEm)));
+    rawData.forEach(
+        t -> {
+          if (!factory.isFieldBlank(t, CONTROLLING_EM)) {
+            others.add(t);
+          } else {
+            currentLevel.add(t);
+          }
+        });
 
-    List<AssetDataAndValidParentUuid> toBeBuiltAtThisLevel = split.get(true);
-    List<AssetDataAndValidParentUuid> toBeBuiltAtNextLevel = split.get(false);
+    Try.scanStream(
+            currentLevel.stream().map(factory::get),
+            "EmInput",
+            SourceException::new)
+        .getOrThrow()
+        .forEach(em -> emUnits.put(em.getUuid(), em));
 
-    if (toBeBuiltAtThisLevel.isEmpty()) {
-      // Since we only start a new recursion step if the asset data stream is not empty, there have
-      // to be EMs to be built at next level. This does not work if there's no EMs at the current
-      // recursion level.
-      throw new SourceException(
-          "EMs " + toBeBuiltAtNextLevel + " were assigned a parent EM that does not exist.");
-    } else {
-      // New EMs can be built at this level
-      Map<UUID, EmInput> newEms =
-          unpack(
-                  toBeBuiltAtThisLevel.stream()
-                      .map(
-                          data -> {
-                            // exists because we checked above
-                            EmInput parentEm = lastLevelEms.get(data.parentEm);
-                            return emInputFactory.get(
-                                new EmAssetInputEntityData(data.entityData, parentEm));
-                          }),
-                  EmInput.class)
-              .collect(toMap());
-
-      if (!toBeBuiltAtNextLevel.isEmpty()) {
-        // If there's more EMs left to build, the new EMs have to function as parents there
-        newEms.putAll(createHierarchicalEmInputs(toBeBuiltAtNextLevel.stream(), newEms));
-      }
-      return newEms;
+    if (!others.isEmpty()) {
+      createEmsRecursively(others, emUnits, factory);
     }
   }
-
-  /**
-   * Helper data record that holds an {@link AssetInputEntityData} and the UUID successfully parsed
-   * from {@link EmInputFactory#CONTROLLING_EM} field
-   */
-  private record AssetDataAndValidParentUuid(AssetInputEntityData entityData, UUID parentEm) {}
 }

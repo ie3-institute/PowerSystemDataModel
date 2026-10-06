@@ -15,10 +15,9 @@ import java.util.Map;
 /**
  * Abstract class that is able to build {@link TimeBasedValue}s from "flat" information
  *
- * @param <D> Type of "flat" information as a subclass of {@link TimeBasedValue}.
  * @param <V> Type of the targeted inner {@link Value}, that is carried.
  */
-public abstract class TimeBasedValueFactory<D extends TimeBasedValueData<V>, V extends Value>
+public abstract class TimeBasedValueFactory<D, V extends Value>
     extends Factory<V, D, TimeBasedValue<V>> {
 
   protected final TimeUtil timeUtil;

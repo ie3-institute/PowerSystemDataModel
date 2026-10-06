@@ -31,29 +31,10 @@ import java.util.stream.Collectors;
  */
 public class ResultEntitySource extends EntitySource {
 
-  private final SystemParticipantResultFactory systemParticipantResultFactory;
-  private final ThermalResultFactory thermalResultFactory;
-  private final SwitchResultFactory switchResultFactory;
-  private final NodeResultFactory nodeResultFactory;
-  private final ConnectorResultFactory connectorResultFactory;
-  private final CongestionResultFactory congestionResultFactory;
-  private final PowerLimitFlexOptionsResultFactory powerLimitFlexOptionsResultFactory;
-  private final EnergyBoundariesFlexOptionsResultFactory energyBoundariesFlexOptionsResultFactory;
-
   private final DataSource dataSource;
 
   public ResultEntitySource(DataSource dataSource) {
     this.dataSource = dataSource;
-
-    // init factories
-    this.systemParticipantResultFactory = new SystemParticipantResultFactory();
-    this.thermalResultFactory = new ThermalResultFactory();
-    this.switchResultFactory = new SwitchResultFactory();
-    this.nodeResultFactory = new NodeResultFactory();
-    this.connectorResultFactory = new ConnectorResultFactory();
-    this.congestionResultFactory = new CongestionResultFactory();
-    this.powerLimitFlexOptionsResultFactory = new PowerLimitFlexOptionsResultFactory();
-    this.energyBoundariesFlexOptionsResultFactory = new EnergyBoundariesFlexOptionsResultFactory();
   }
 
   @Override
@@ -95,7 +76,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link NodeResult} entities
    */
   public Set<NodeResult> getNodeResults() throws SourceException {
-    return getResultEntities(NodeResult.class, nodeResultFactory);
+    return getResultEntities(NodeResult.class, new NodeResultFactory());
   }
 
   /**
@@ -109,7 +90,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link SwitchResult} entities
    */
   public Set<SwitchResult> getSwitchResults() throws SourceException {
-    return getResultEntities(SwitchResult.class, switchResultFactory);
+    return getResultEntities(SwitchResult.class, new SwitchResultFactory());
   }
 
   /**
@@ -122,7 +103,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link LineResult} entities
    */
   public Set<LineResult> getLineResults() throws SourceException {
-    return getResultEntities(LineResult.class, connectorResultFactory);
+    return getResultEntities(LineResult.class, new ConnectorResultFactory<>(LineResult.class));
   }
 
   /**
@@ -136,7 +117,8 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link Transformer2WResult} entities
    */
   public Set<Transformer2WResult> getTransformer2WResultResults() throws SourceException {
-    return getResultEntities(Transformer2WResult.class, connectorResultFactory);
+    return getResultEntities(
+        Transformer2WResult.class, new ConnectorResultFactory<>(Transformer2WResult.class));
   }
 
   /**
@@ -150,7 +132,8 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link Transformer3WResult} entities
    */
   public Set<Transformer3WResult> getTransformer3WResultResults() throws SourceException {
-    return getResultEntities(Transformer3WResult.class, connectorResultFactory);
+    return getResultEntities(
+        Transformer3WResult.class, new ConnectorResultFactory<>(Transformer3WResult.class));
   }
 
   /**
@@ -164,7 +147,8 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link PowerLimitFlexOptionsResult} entities
    */
   public Set<PowerLimitFlexOptionsResult> getPowerLimitFlexOptionsResults() throws SourceException {
-    return getResultEntities(PowerLimitFlexOptionsResult.class, powerLimitFlexOptionsResultFactory);
+    return getResultEntities(
+        PowerLimitFlexOptionsResult.class, new PowerLimitFlexOptionsResultFactory());
   }
 
   /**
@@ -180,7 +164,7 @@ public class ResultEntitySource extends EntitySource {
   public Set<EnergyBoundariesFlexOptionsResult> getEnergyBoundariesFlexOptionsResults()
       throws SourceException {
     return getResultEntities(
-        EnergyBoundariesFlexOptionsResult.class, energyBoundariesFlexOptionsResultFactory);
+        EnergyBoundariesFlexOptionsResult.class, new EnergyBoundariesFlexOptionsResultFactory());
   }
 
   /**
@@ -193,7 +177,8 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link LoadResult} entities
    */
   public Set<LoadResult> getLoadResults() throws SourceException {
-    return getResultEntities(LoadResult.class, systemParticipantResultFactory);
+    return getResultEntities(
+        LoadResult.class, new SystemParticipantResultFactory<>(LoadResult.class));
   }
 
   /**
@@ -206,7 +191,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link PvResult} entities
    */
   public Set<PvResult> getPvResults() throws SourceException {
-    return getResultEntities(PvResult.class, systemParticipantResultFactory);
+    return getResultEntities(PvResult.class, new SystemParticipantResultFactory<>(PvResult.class));
   }
 
   /**
@@ -220,7 +205,8 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link FixedFeedInResult} entities
    */
   public Set<FixedFeedInResult> getFixedFeedInResults() throws SourceException {
-    return getResultEntities(FixedFeedInResult.class, systemParticipantResultFactory);
+    return getResultEntities(
+        FixedFeedInResult.class, new SystemParticipantResultFactory<>(FixedFeedInResult.class));
   }
 
   /**
@@ -233,7 +219,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link BmResult} entities
    */
   public Set<BmResult> getBmResults() throws SourceException {
-    return getResultEntities(BmResult.class, systemParticipantResultFactory);
+    return getResultEntities(BmResult.class, new SystemParticipantResultFactory<>(BmResult.class));
   }
 
   /**
@@ -246,7 +232,8 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link ChpResult} entities
    */
   public Set<ChpResult> getChpResults() throws SourceException {
-    return getResultEntities(ChpResult.class, systemParticipantResultFactory);
+    return getResultEntities(
+        ChpResult.class, new SystemParticipantResultFactory<>(ChpResult.class));
   }
 
   /**
@@ -259,7 +246,8 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link WecResult} entities
    */
   public Set<WecResult> getWecResults() throws SourceException {
-    return getResultEntities(WecResult.class, systemParticipantResultFactory);
+    return getResultEntities(
+        WecResult.class, new SystemParticipantResultFactory<>(WecResult.class));
   }
 
   /**
@@ -273,7 +261,8 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link StorageResult} entities
    */
   public Set<StorageResult> getStorageResults() throws SourceException {
-    return getResultEntities(StorageResult.class, systemParticipantResultFactory);
+    return getResultEntities(
+        StorageResult.class, new SystemParticipantResultFactory<>(StorageResult.class));
   }
 
   /**
@@ -286,7 +275,8 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link EvcsResult} entities
    */
   public Set<EvcsResult> getEvcsResults() throws SourceException {
-    return getResultEntities(EvcsResult.class, systemParticipantResultFactory);
+    return getResultEntities(
+        EvcsResult.class, new SystemParticipantResultFactory<>(EvcsResult.class));
   }
 
   /**
@@ -299,7 +289,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link EvResult} entities
    */
   public Set<EvResult> getEvResults() throws SourceException {
-    return getResultEntities(EvResult.class, systemParticipantResultFactory);
+    return getResultEntities(EvResult.class, new SystemParticipantResultFactory<>(EvResult.class));
   }
 
   /**
@@ -312,7 +302,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link AcResult} entities
    */
   public Set<AcResult> getAcResults() throws SourceException {
-    return getResultEntities(AcResult.class, systemParticipantResultFactory);
+    return getResultEntities(AcResult.class, new SystemParticipantResultFactory<>(AcResult.class));
   }
 
   /**
@@ -325,7 +315,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link HpResult} entities
    */
   public Set<HpResult> getHpResults() throws SourceException {
-    return getResultEntities(HpResult.class, systemParticipantResultFactory);
+    return getResultEntities(HpResult.class, new SystemParticipantResultFactory<>(HpResult.class));
   }
 
   /**
@@ -339,7 +329,8 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link CylindricalStorageResult} entities
    */
   public Set<CylindricalStorageResult> getCylindricalStorageResult() throws SourceException {
-    return getResultEntities(CylindricalStorageResult.class, thermalResultFactory);
+    return getResultEntities(
+        CylindricalStorageResult.class, new ThermalResultFactory<>(CylindricalStorageResult.class));
   }
 
   /**
@@ -354,7 +345,9 @@ public class ResultEntitySource extends EntitySource {
    */
   public Set<DomesticHotWaterStorageResult> getDomesticHotWaterStorageResult()
       throws SourceException {
-    return getResultEntities(DomesticHotWaterStorageResult.class, thermalResultFactory);
+    return getResultEntities(
+        DomesticHotWaterStorageResult.class,
+        new ThermalResultFactory<>(DomesticHotWaterStorageResult.class));
   }
 
   /**
@@ -368,7 +361,8 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link ThermalHouseResult} entities
    */
   public Set<ThermalHouseResult> getThermalHouseResults() throws SourceException {
-    return getResultEntities(ThermalHouseResult.class, thermalResultFactory);
+    return getResultEntities(
+        ThermalHouseResult.class, new ThermalResultFactory<>(ThermalHouseResult.class));
   }
 
   /**
@@ -381,7 +375,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and uuid unique {@link EmResult} entities
    */
   public Set<EmResult> getEmResults() throws SourceException {
-    return getResultEntities(EmResult.class, systemParticipantResultFactory);
+    return getResultEntities(EmResult.class, new SystemParticipantResultFactory<>(EmResult.class));
   }
 
   /**
@@ -390,7 +384,7 @@ public class ResultEntitySource extends EntitySource {
    * @return a set of object and subgrid unique {@link CongestionResult} entities
    */
   public Set<CongestionResult> getCongestionResults() throws SourceException {
-    return getResultEntities(CongestionResult.class, congestionResultFactory);
+    return getResultEntities(CongestionResult.class, new CongestionResultFactory());
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -405,10 +399,8 @@ public class ResultEntitySource extends EntitySource {
    * @param <T> type of entity
    */
   @SuppressWarnings("unchecked")
-  private <T extends ResultEntity> Set<T> getResultEntities(
-      Class<T> entityClass, ResultEntityFactory<? extends ResultEntity> factory)
-      throws SourceException {
-    return getEntities(entityClass, dataSource, (ResultEntityFactory<T>) factory, t -> t)
-        .collect(Collectors.toSet());
+  private <T extends ResultEntity, R extends ResultEntity> Set<R> getResultEntities(
+      Class<R> entityClass, ResultEntityFactory<T, R> factory) throws SourceException {
+    return getEntities(entityClass, dataSource, factory).collect(Collectors.toSet());
   }
 }

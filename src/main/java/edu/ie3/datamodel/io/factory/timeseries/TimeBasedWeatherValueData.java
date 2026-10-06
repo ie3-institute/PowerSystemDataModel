@@ -5,13 +5,14 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
-import edu.ie3.datamodel.models.value.WeatherValue;
-import java.util.Map;
 import org.locationtech.jts.geom.Point;
 
-public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> {
+import java.util.Map;
+
+public class TimeBasedWeatherValueData {
 
   private final Point coordinate;
+  private final Map<String, String> fieldsToAttributes;
 
   /**
    * Creates a new TimeBasedEntryData object
@@ -20,12 +21,16 @@ public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> 
    * @param coordinate coordinate for this WeatherValue
    */
   public TimeBasedWeatherValueData(Map<String, String> fieldsToAttributes, Point coordinate) {
-    super(fieldsToAttributes, WeatherValue.class);
+    this.fieldsToAttributes = fieldsToAttributes;
     this.coordinate = coordinate;
   }
 
   public Point getCoordinate() {
     return coordinate;
+  }
+
+  public Map<String, String> getFieldsToAttributes() {
+    return fieldsToAttributes;
   }
 
   @Override
@@ -35,7 +40,7 @@ public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> 
     if (!super.equals(o)) return false;
 
     TimeBasedWeatherValueData that = (TimeBasedWeatherValueData) o;
-    return coordinate.equals(that.coordinate);
+    return coordinate.equals(that.coordinate) && fieldsToAttributes.equals(that.fieldsToAttributes);
   }
 
   @Override
@@ -49,9 +54,7 @@ public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> 
   public String toString() {
     return "TimeBasedWeatherValueData{"
         + "fieldsToAttributes="
-        + getFieldsToValues()
-        + ", targetClass="
-        + getTargetClass()
+        + fieldsToAttributes
         + ", coordinate="
         + coordinate
         + '}';

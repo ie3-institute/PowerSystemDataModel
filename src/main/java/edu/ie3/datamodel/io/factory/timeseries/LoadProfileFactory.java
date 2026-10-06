@@ -10,6 +10,7 @@ import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.load.LoadValues;
+import java.util.Map;
 import java.util.Set;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -21,7 +22,7 @@ import tech.units.indriya.ComparableQuantity;
  * @param <V> type of load values
  */
 public abstract class LoadProfileFactory<V extends LoadValues>
-    extends Factory<V, LoadProfileData<V>, LoadProfileEntry<V>> {
+    extends Factory<V, Map<String, String>, LoadProfileEntry<V>> {
 
   protected LoadProfileFactory(Class<? extends V> valueClass) {
     super(valueClass);

@@ -12,10 +12,9 @@ import edu.ie3.datamodel.models.Entity;
  *
  * @param <T> Type of entity that this factory can create. Can be a subclass of the entities that
  *     this factory creates.
- * @param <D> Type of data class that is required for entity creation
  */
-public abstract class UniqueEntityFactory<T extends Entity, D extends EntityData>
-    extends EntityFactory<T, D> {
+public abstract class UniqueEntityFactory<T extends Entity, R extends Entity>
+    extends EntityFactory<T, R> {
 
   @SafeVarargs
   protected UniqueEntityFactory(Class<? extends T>... allowedClasses) {

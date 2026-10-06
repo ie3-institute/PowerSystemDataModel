@@ -5,29 +5,27 @@
 */
 package edu.ie3.datamodel.io.factory.result;
 
-import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.NodeResult;
-import java.time.ZonedDateTime;
-import java.util.UUID;
-import javax.measure.quantity.Angle;
-import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 
-public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
+import javax.measure.quantity.Angle;
+import javax.measure.quantity.Dimensionless;
+import java.time.ZonedDateTime;
+import java.util.Map;
+import java.util.UUID;
+
+public class NodeResultFactory extends ResultEntityFactory<NodeResult, NodeResult> {
 
   public NodeResultFactory() {
     super(NodeResult.class);
   }
 
   @Override
-  protected NodeResult buildModel(EntityData data) {
-    ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
-    UUID inputModelUuid = data.getUUID(INPUT_MODEL);
-    ComparableQuantity<Dimensionless> vMagValue =
-        data.getQuantity(V_MAG, StandardUnits.VOLTAGE_MAGNITUDE);
-    ComparableQuantity<Angle> vAngValue = data.getQuantity(V_ANG, StandardUnits.VOLTAGE_ANGLE);
+  protected NodeResult buildModel(Map<String, String> data, ZonedDateTime time, UUID inputModel) {
+    ComparableQuantity<Dimensionless> vMagValue = getQuantity(data, V_MAG, StandardUnits.VOLTAGE_MAGNITUDE);
+    ComparableQuantity<Angle> vAngValue = getQuantity(data, V_ANG, StandardUnits.VOLTAGE_ANGLE);
 
-    return new NodeResult(zdtTime, inputModelUuid, vMagValue, vAngValue);
+    return new NodeResult(time, inputModel, vMagValue, vAngValue);
   }
 }

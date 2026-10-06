@@ -6,53 +6,53 @@
 package edu.ie3.datamodel.io.factory.result;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.io.factory.EntityData;
-import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.connector.ConnectorResult;
 import edu.ie3.datamodel.models.result.connector.LineResult;
 import edu.ie3.datamodel.models.result.connector.Transformer2WResult;
 import edu.ie3.datamodel.models.result.connector.Transformer3WResult;
-import java.time.ZonedDateTime;
-import java.util.UUID;
-import javax.measure.quantity.Angle;
-import javax.measure.quantity.ElectricCurrent;
 import tech.units.indriya.ComparableQuantity;
 
-public class ConnectorResultFactory extends ResultEntityFactory<ConnectorResult> {
+import javax.measure.quantity.Angle;
+import javax.measure.quantity.ElectricCurrent;
+import java.time.ZonedDateTime;
+import java.util.Map;
+import java.util.UUID;
 
-  public ConnectorResultFactory() {
+public class ConnectorResultFactory<R extends ConnectorResult>
+    extends ResultEntityFactory<ConnectorResult, R> {
+
+  private final Class<R> targetClass;
+
+  public ConnectorResultFactory(Class<R> targetClass) {
     super(LineResult.class, Transformer2WResult.class, Transformer3WResult.class);
+    this.targetClass = targetClass;
+
+    isSupportedClass(targetClass);
   }
 
   @Override
-  protected ConnectorResult buildModel(EntityData data) {
-    final Class<? extends Entity> entityClass = data.getTargetClass();
-    ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
+  @SuppressWarnings("unchecked")
+  protected R buildModel(Map<String, String> data, ZonedDateTime time, UUID inputModel) {
+    ComparableQuantity<ElectricCurrent> iAMag = getQuantity(data, IAMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+    ComparableQuantity<Angle> iAAng = getQuantity(data, IAANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
+    ComparableQuantity<ElectricCurrent> iBMag = getQuantity(data, IBMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+    ComparableQuantity<Angle> iBAng = getQuantity(data, IBANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
 
-    UUID inputModel = data.getUUID(INPUT_MODEL);
-    ComparableQuantity<ElectricCurrent> iAMag =
-        data.getQuantity(IAMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-    ComparableQuantity<Angle> iAAng = data.getQuantity(IAANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
-    ComparableQuantity<ElectricCurrent> iBMag =
-        data.getQuantity(IBMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-    ComparableQuantity<Angle> iBAng = data.getQuantity(IBANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
+    if (targetClass.equals(LineResult.class))
+      return (R) new LineResult(time, inputModel, iAMag, iAAng, iBMag, iBAng);
+    else if (targetClass.equals(Transformer2WResult.class)) {
+      int tapPos = getInt(data, TAP_POS);
 
-    if (entityClass.equals(LineResult.class))
-      return new LineResult(time, inputModel, iAMag, iAAng, iBMag, iBAng);
-    else if (entityClass.equals(Transformer2WResult.class)) {
-      final int tapPos = data.getInt(TAPPOS);
+      return (R) new Transformer2WResult(time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
+    } else if (targetClass.equals(Transformer3WResult.class)) {
+      ComparableQuantity<ElectricCurrent> iCMag = getQuantity(data, ICMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+      ComparableQuantity<Angle> iCAng = getQuantity(data, ICANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
+      int tapPos = getInt(data, TAP_POS);
 
-      return new Transformer2WResult(time, inputModel, iAMag, iAAng, iBMag, iBAng, tapPos);
-    } else if (entityClass.equals(Transformer3WResult.class)) {
-      ComparableQuantity<ElectricCurrent> iCMag =
-          data.getQuantity(ICMAG, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
-      ComparableQuantity<Angle> iCAng =
-          data.getQuantity(ICANG, StandardUnits.ELECTRIC_CURRENT_ANGLE);
-      final int tapPos = data.getInt(TAPPOS);
-
-      return new Transformer3WResult(
-          time, inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos);
-    } else throw new FactoryException("Cannot process " + entityClass.getSimpleName() + ".class.");
+      return (R)
+          new Transformer3WResult(
+              time, inputModel, iAMag, iAAng, iBMag, iBAng, iCMag, iCAng, tapPos);
+    } else throw new FactoryException("Cannot process " + targetClass.getSimpleName() + ".class.");
   }
 }

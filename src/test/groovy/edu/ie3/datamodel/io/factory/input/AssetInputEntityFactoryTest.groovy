@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
+import spock.lang.Shared
+
 import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.*
 import static edu.ie3.datamodel.utils.CollectionUtils.newSet
 
@@ -27,14 +29,22 @@ import java.time.ZonedDateTime
  */
 class AssetInputEntityFactoryTest extends Specification implements FactoryTestHelper {
 
+  @Shared private UUID operatorUuid = UUID.randomUUID()
+  @Shared private def operatorInput = Mock(OperatorInput)
+
+  @Shared private TestAssetInputFactory inputFactory
+
   def setupSpec() {
     // registering fields for the asset
     ModelFields.register(TestAssetInput, newSet(FieldNamingStrategy.UUID, ID), newSet(OPERATOR, OPERATES_FROM, OPERATES_UNTIL))
+
+    operatorInput.getUuid() >> operatorUuid
+
+    inputFactory = new TestAssetInputFactory(map(operatorInput))
   }
 
   def "An AssetInputFactory should contain exactly the expected class for parsing"() {
     given:
-    def inputFactory = new TestAssetInputFactory()
     def expectedClasses = [TestAssetInput]
 
     expect:
@@ -43,20 +53,18 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
   def "An AssetInputFactory should parse a valid operated AssetInput correctly (no operation time provided)"() {
     given: "a system participant input type factory and model data"
-    def inputFactory = new TestAssetInputFactory()
     Map<String, String> parameter = [
       "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id" : "TestID"
+      "id" : "TestID",
+      "operator": operatorUuid.toString(),
     ]
-    def inputClass = TestAssetInput
-    def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
 
     then:
     input.success
-    input.data.get().getClass() == inputClass
+    input.data.get().getClass() == TestAssetInput
     input.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       operationTime == OperationTime.notLimited()
@@ -67,21 +75,19 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
   def "An AssetInputFactory should parse a additional information correctly"() {
     given:
-    def inputFactory = new TestAssetInputFactory()
     Map<String, String> parameter = [
       "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "id" : "TestID",
-      "additional" : "information"
+      "additional" : "information",
+      "operator": operatorUuid.toString(),
     ]
-    def inputClass = TestAssetInput
-    def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
 
     then:
     input.success
-    input.data.get().getClass() == inputClass
+    input.data.get().getClass() == TestAssetInput
     input.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       operationTime == OperationTime.notLimited()
@@ -93,22 +99,20 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
   def "An AssetInputFactory should parse a valid operated AssetInput correctly (with nulls and empty strings)"() {
     given: "a system participant input type factory and model data"
-    def inputFactory = new TestAssetInputFactory()
     Map<String, String> parameter = [
       "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesfrom" : operatesfrom,
-      "operatesuntil": operatesuntil,
-      "id" : "TestID"
+      "operatesFrom" : operatesfrom,
+      "operatesUntil": operatesuntil,
+      "id" : "TestID",
+      "operator": operatorUuid.toString(),
     ]
-    def inputClass = TestAssetInput
-    def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
 
     then:
     input.success
-    input.data.get().getClass() == inputClass
+    input.data.get().getClass() == TestAssetInput
     input.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       operationTime == OperationTime.notLimited()
@@ -126,26 +130,24 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
   def "An AssetInputFactory should parse a valid operated AssetInput correctly (operation start time provided)"() {
     given: "a system participant input type factory and model data"
-    def inputFactory = new TestAssetInputFactory()
     Map<String, String> parameter = [
       "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "operatesuntil": "",
-      "id" : "TestID"
+      "operatesFrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesUntil": "",
+      "id" : "TestID",
+      "operator": operatorUuid.toString(),
     ]
-    def inputClass = TestAssetInput
-    def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
 
     then:
     input.success
-    input.data.get().getClass() == inputClass
+    input.data.get().getClass() == TestAssetInput
     input.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       operationTime.startDate.present
-      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesFrom"])
       !operationTime.endDate.present
       operator == operatorInput
       id == parameter["id"]
@@ -154,26 +156,24 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
   def "An AssetInputFactory should parse a valid operated AssetInput correctly (operation end time provided)"() {
     given: "a system participant input type factory and model data"
-    def inputFactory = new TestAssetInputFactory()
     Map<String, String> parameter = [
       "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesuntil": "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "id" : "TestID"
+      "operatesUntil": "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "id" : "TestID",
+      "operator": operatorUuid.toString(),
     ]
-    def inputClass = TestAssetInput
-    def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
 
     then:
     input.success
-    input.data.get().getClass() == inputClass
+    input.data.get().getClass() == TestAssetInput
     input.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       !operationTime.startDate.present
       operationTime.endDate.present
-      operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
+      operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesUntil"])
       operator == operatorInput
       id == parameter["id"]
     }
@@ -181,28 +181,26 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
   def "An AssetInputFactory should parse a valid operated AssetInput correctly (operation start and end time provided)"() {
     given: "a system participant input type factory and model data"
-    def inputFactory = new TestAssetInputFactory()
     Map<String, String> parameter = [
       "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "operatesuntil": "2019-12-31T00:00:00+01:00[Europe/Berlin]",
-      "id" : "TestID"
+      "operatesFrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesUntil": "2019-12-31T00:00:00+01:00[Europe/Berlin]",
+      "id" : "TestID",
+      "operator": operatorUuid.toString(),
     ]
-    def inputClass = TestAssetInput
-    def operatorInput = Mock(OperatorInput)
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass, operatorInput))
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
 
     then:
     input.success
-    input.data.get().getClass() == inputClass
+    input.data.get().getClass() == TestAssetInput
     input.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       operationTime.startDate.present
-      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesFrom"])
       operationTime.endDate.present
-      operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
+      operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesUntil"])
       operator == operatorInput
       id == parameter["id"]
     }
@@ -215,14 +213,13 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
       "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "id" : "TestID"
     ]
-    def inputClass = TestAssetInput
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass))
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
 
     then:
     input.success
-    input.data.get().getClass() == inputClass
+    input.data.get().getClass() == TestAssetInput
     input.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       operationTime == OperationTime.notLimited()
@@ -233,24 +230,22 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
   def "An AssetInputFactory should parse a valid AssetInput correctly (operation start time provided)"() {
     given: "a system participant input type factory and model data"
-    def inputFactory = new TestAssetInputFactory()
     Map<String, String> parameter = [
       "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesfrom": "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesFrom": "2019-01-01T00:00:00+01:00[Europe/Berlin]",
       "id" : "TestID"
     ]
-    def inputClass = TestAssetInput
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass))
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
 
     then:
     input.success
-    input.data.get().getClass() == inputClass
+    input.data.get().getClass() == TestAssetInput
     input.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       operationTime.startDate.present
-      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesFrom"])
       !operationTime.endDate.present
       operator == OperatorInput.NO_OPERATOR_ASSIGNED
       id == parameter["id"]
@@ -259,25 +254,23 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
   def "An AssetInputFactory should parse a valid AssetInput correctly (operation end time provided)"() {
     given: "a system participant input type factory and model data"
-    def inputFactory = new TestAssetInputFactory()
     Map<String, String> parameter = [
       "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesuntil": "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesUntil": "2019-01-01T00:00:00+01:00[Europe/Berlin]",
       "id" : "TestID"
     ]
-    def inputClass = TestAssetInput
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass))
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
 
     then:
     input.success
-    input.data.get().getClass() == inputClass
+    input.data.get().getClass() == TestAssetInput
     input.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       !operationTime.startDate.present
       operationTime.endDate.present
-      operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
+      operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesUntil"])
       operator == OperatorInput.NO_OPERATOR_ASSIGNED
       id == parameter["id"]
     }
@@ -285,27 +278,25 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
   def "An AssetInputFactory should parse a valid AssetInput correctly (operation start and end time provided"() {
     given: "a system participant input type factory and model data"
-    def inputFactory = new TestAssetInputFactory()
     Map<String, String> parameter = [
       "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "operatesuntil": "2019-12-31T00:00:00+01:00[Europe/Berlin]",
+      "operatesFrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesUntil": "2019-12-31T00:00:00+01:00[Europe/Berlin]",
       "id" : "TestID"
     ]
-    def inputClass = TestAssetInput
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new AssetInputEntityData(parameter, inputClass))
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
 
     then:
     input.success
-    input.data.get().getClass() == inputClass
+    input.data.get().getClass() == TestAssetInput
     input.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       operationTime.startDate.present
-      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesFrom"])
       operationTime.endDate.present
-      operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
+      operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesUntil"])
       operator == OperatorInput.NO_OPERATOR_ASSIGNED
       id == parameter["id"]
     }
@@ -345,14 +336,14 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     }
   }
 
-  private static class TestAssetInputFactory extends AssetInputEntityFactory<TestAssetInput, AssetInputEntityData> {
-    TestAssetInputFactory() {
-      super(TestAssetInput)
+  private static class TestAssetInputFactory extends AssetInputEntityFactory<TestAssetInput> {
+    TestAssetInputFactory(Map<UUID, OperatorInput> operators) {
+      super(operators, TestAssetInput)
     }
 
     @Override
-    protected TestAssetInput buildModel(AssetInputEntityData data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
-      return new TestAssetInput(uuid, id, operator, operationTime, data.getFieldsToValues())
+    protected TestAssetInput buildModel(Map<String, String> data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
+      return new TestAssetInput(uuid, id, operator, operationTime, data)
     }
   }
 }

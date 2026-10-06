@@ -14,7 +14,7 @@ import tools.jackson.databind.JsonNode;
 
 /** Factory turning Markov JSON data into {@link MarkovLoadModel}s. */
 public class MarkovLoadModelFactory
-    extends Factory<MarkovLoadModel, MarkovModelData, MarkovLoadModel>
+    extends Factory<MarkovLoadModel, JsonNode, MarkovLoadModel>
     implements MarkovModelParsingSupport {
 
   public MarkovLoadModelFactory() {
@@ -23,8 +23,7 @@ public class MarkovLoadModelFactory
 
   /** Builds a {@link MarkovLoadModel} from a parsed JSON tree. */
   @Override
-  protected MarkovLoadModel buildModel(MarkovModelData data) {
-    JsonNode root = data.getRoot();
+  protected MarkovLoadModel buildModel(JsonNode root) {
     String schema = extractText(root, MARKOV_SCHEMA);
     ZonedDateTime generatedAt = parseTimestamp(extractText(root, jsonField(MARKOV_GENERATED_AT)));
     Generator generator = parseGenerator(extractNode(root, MARKOV_GENERATOR));

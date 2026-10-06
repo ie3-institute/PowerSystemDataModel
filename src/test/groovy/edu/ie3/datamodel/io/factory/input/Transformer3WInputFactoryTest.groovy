@@ -7,20 +7,32 @@ package edu.ie3.datamodel.io.factory.input
 
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.models.OperationTime
-import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
+import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.helper.FactoryTestHelper
+import spock.lang.Shared
 import spock.lang.Specification
 
 class Transformer3WInputFactoryTest extends Specification implements FactoryTestHelper {
+
+  @Shared private UUID typeUuid = UUID.randomUUID()
+  @Shared private Transformer3WTypeInput typeInput = Mock(Transformer3WTypeInput)
+
+  @Shared private Transformer3WInputFactory inputFactory
+
+  def setupSpec() {
+    typeInput.getUuid() >> typeUuid
+
+    inputFactory = new Transformer3WInputFactory(map(OperatorInput.NO_OPERATOR_ASSIGNED), map([GridTestData.nodeA, GridTestData.nodeB, GridTestData.nodeC]), map(typeInput))
+  }
+
   def "A Transformer3WInputFactory should contain exactly the expected class for parsing"() {
     given:
-    def inputFactory = new Transformer3WInputFactory()
     def expectedClasses = [Transformer3WInput]
 
     expect:
@@ -29,58 +41,56 @@ class Transformer3WInputFactoryTest extends Specification implements FactoryTest
 
   def "A Transformer3WInputFactory should parse a valid Transformer3WInput correctly"() {
     given: "a system participant input type factory and model data"
-    def inputFactory = new Transformer3WInputFactory()
     Map<String, String> parameter = [
       "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "id" : "TestID",
-      "paralleldevices": "2",
-      "tappos" : "3",
-      "autotap" : "true"
+      "parallelDevices": "2",
+      "tapPos" : "3",
+      "autoTap" : "true",
+      "operator": "",
+      "nodeA": GridTestData.nodeA.getUuid().toString(),
+      "nodeB": GridTestData.nodeB.getUuid().toString(),
+      "nodeC": GridTestData.nodeC.getUuid().toString(),
+      "type": typeUuid.toString()
     ]
-    def inputClass = Transformer3WInput
-    def nodeInputA = GridTestData.nodeA
-    def nodeInputB = GridTestData.nodeB
-    def nodeInputC = GridTestData.nodeC
-    def typeInput = Mock(Transformer3WTypeInput)
 
     when:
-    Try<Transformer3WInput, FactoryException> input = inputFactory.get(new Transformer3WInputEntityData(parameter, inputClass, nodeInputA, nodeInputB, nodeInputC, typeInput))
+    Try<Transformer3WInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
 
     then:
     input.success
-    input.data.get().getClass() == inputClass
+    input.data.get().getClass() == Transformer3WInput
     input.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       operationTime == OperationTime.notLimited()
       operator == OperatorInput.NO_OPERATOR_ASSIGNED
       id == parameter["id"]
-      nodeA == nodeInputA
-      nodeB == nodeInputB
-      nodeC == nodeInputC
+      nodeA == GridTestData.nodeA
+      nodeB == GridTestData.nodeB
+      nodeC == GridTestData.nodeC
       type == typeInput
-      parallelDevices == Integer.parseInt(parameter["paralleldevices"])
-      tapPos == Integer.parseInt(parameter["tappos"])
+      parallelDevices == Integer.parseInt(parameter["parallelDevices"])
+      tapPos == Integer.parseInt(parameter["tapPos"])
       autoTap
     }
   }
   def "A Transformer3WInputFactory should throw an IllegalArgumentException if nodeB is greater than nodeA or nodeC is greater than nodeB"() {
     given: "a system participant input type factory and model data"
-    def inputFactory = new Transformer3WInputFactory()
     Map<String, String> parameter = [
       "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "id" : "TestID",
-      "paralleldevices": "2",
-      "tappos" : "3",
-      "autotap" : "true"
+      "parallelDevices": "2",
+      "tapPos" : "3",
+      "autoTap" : "true",
+      "operator": "",
+      "nodeA": GridTestData.nodeC.getUuid().toString(),
+      "nodeB": GridTestData.nodeB.getUuid().toString(),
+      "nodeC": GridTestData.nodeA.getUuid().toString(),
+      "type": typeUuid.toString()
     ]
-    def inputClass = Transformer3WInput
-    def nodeInputA = GridTestData.nodeC
-    def nodeInputB = GridTestData.nodeB
-    def nodeInputC = GridTestData.nodeA
-    def typeInput = Mock(Transformer3WTypeInput)
 
     when:
-    Try<Transformer2WInput, FactoryException> input = inputFactory.get(new Transformer3WInputEntityData(parameter, inputClass, nodeInputA, nodeInputB, nodeInputC, typeInput))
+    Try<Transformer3WInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
 
     then:
     input.failure

@@ -14,31 +14,37 @@ import edu.ie3.datamodel.models.input.system.BmInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
-import java.util.UUID;
 import tech.units.indriya.ComparableQuantity;
 
-public class BmInputFactory
-    extends SystemParticipantInputEntityFactory<
-        BmInput, SystemParticipantTypedEntityData<BmTypeInput>> {
+import java.util.Map;
+import java.util.UUID;
 
-  public BmInputFactory() {
-    super(BmInput.class);
+/** Factory to create instances of {@link BmInput}s. */
+public class BmInputFactory extends SystemParticipantInputEntityFactory<BmInput> {
+
+  private final Map<UUID, BmTypeInput> types;
+
+  public BmInputFactory(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, EmInput> emUnits,
+      Map<UUID, BmTypeInput> types) {
+    super(operators, nodes, emUnits, BmInput.class);
+    this.types = types;
   }
 
   @Override
   protected BmInput buildModel(
-      SystemParticipantTypedEntityData<BmTypeInput> data,
+      Map<String, String> data,
       UUID uuid,
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
-      OperationTime operationTime) {
-    final EmInput em = data.getControllingEm().orElse(null);
-    final BmTypeInput typeInput = data.getTypeInput();
-    final boolean costControlled = data.getBoolean(COST_CONTROLLED);
-    final ComparableQuantity<EnergyPrice> feedInTariff =
-        data.getQuantity(FEED_IN_TARIFF, StandardUnits.ENERGY_PRICE);
+      OperationTime operationTime,
+      EmInput controllingEm) {
+    boolean costControlled = getBoolean(data, COST_CONTROLLED);
+    ComparableQuantity<EnergyPrice> feedInTariff = getQuantity(data, FEED_IN_TARIFF, StandardUnits.ENERGY_PRICE);
 
     return new BmInput(
         uuid,
@@ -47,10 +53,10 @@ public class BmInputFactory
         operationTime,
         node,
         qCharacteristics,
-        em,
-        typeInput,
+        controllingEm,
+        getEntity(data, TYPE, types),
         costControlled,
         feedInTariff,
-        data.getFieldsToValues());
+        data);
   }
 }

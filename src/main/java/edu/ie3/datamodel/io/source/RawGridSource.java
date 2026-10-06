@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.source;
 import edu.ie3.datamodel.exceptions.RawGridException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
-import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.input.*;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -34,27 +33,9 @@ public class RawGridSource extends AssetEntitySource {
   // general fields
   private final TypeSource typeSource;
 
-  // factories
-  private final NodeInputFactory nodeInputFactory;
-  private final LineInputFactory lineInputFactory;
-  private final Transformer2WInputFactory transformer2WInputFactory;
-  private final Transformer3WInputFactory transformer3WInputFactory;
-  private final SwitchInputFactory switchInputFactory;
-  private final MeasurementUnitInputFactory measurementUnitInputFactory;
-  private final CableDeploymentInputFactory cableDeploymentInputFactory;
-
   public RawGridSource(TypeSource typeSource, DataSource dataSource) {
     super(dataSource);
     this.typeSource = typeSource;
-
-    // init factories
-    this.nodeInputFactory = new NodeInputFactory();
-    this.lineInputFactory = new LineInputFactory();
-    this.transformer2WInputFactory = new Transformer2WInputFactory();
-    this.transformer3WInputFactory = new Transformer3WInputFactory();
-    this.switchInputFactory = new SwitchInputFactory();
-    this.measurementUnitInputFactory = new MeasurementUnitInputFactory();
-    this.cableDeploymentInputFactory = new CableDeploymentInputFactory();
   }
 
   @Override
@@ -149,7 +130,9 @@ public class RawGridSource extends AssetEntitySource {
         Try.of(() -> getMeasurementUnits(operators, nodes), SourceException.class);
     Try<Map<UUID, CableDeploymentInput>, SourceException> deploymentMap =
         Try.of(
-            () -> getEntities(CableDeploymentInput.class, dataSource, cableDeploymentInputFactory),
+            () ->
+                getEntityMap(
+                    CableDeploymentInput.class, dataSource, new CableDeploymentInputFactory()),
             SourceException.class);
     Try<Map<UUID, List<CableDeploymentInput>>, SourceException> deploymentsByLine =
         deploymentMap.flatMap(
@@ -218,12 +201,7 @@ public class RawGridSource extends AssetEntitySource {
    * @return a map of UUID to object- and uuid-unique {@link NodeInput} entities
    */
   public Map<UUID, NodeInput> getNodes(Map<UUID, OperatorInput> operators) throws SourceException {
-    return getEntities(
-            NodeInput.class,
-            dataSource,
-            nodeInputFactory,
-            data -> assetEnricher.apply(data, operators))
-        .collect(toMap());
+    return getEntityMap(NodeInput.class, dataSource, new NodeInputFactory(operators));
   }
 
   /**
@@ -265,9 +243,8 @@ public class RawGridSource extends AssetEntitySource {
       Map<UUID, NodeInput> nodes,
       Map<UUID, LineTypeInput> lineTypeInputs)
       throws SourceException {
-    return getTypedConnectorEntities(
-            LineInput.class, dataSource, lineInputFactory, operators, nodes, lineTypeInputs)
-        .collect(toMap());
+    return getEntityMap(
+        LineInput.class, dataSource, new LineInputFactory(operators, nodes, lineTypeInputs));
   }
 
   /**
@@ -337,13 +314,10 @@ public class RawGridSource extends AssetEntitySource {
       Map<UUID, NodeInput> nodes,
       Map<UUID, Transformer2WTypeInput> transformer2WTypes)
       throws SourceException {
-    return getTypedConnectorEntities(
+    return getEntities(
             Transformer2WInput.class,
             dataSource,
-            transformer2WInputFactory,
-            operators,
-            nodes,
-            transformer2WTypes)
+            new Transformer2WInputFactory(operators, nodes, transformer2WTypes))
         .collect(toSet());
   }
 
@@ -388,19 +362,10 @@ public class RawGridSource extends AssetEntitySource {
       Map<UUID, NodeInput> nodes,
       Map<UUID, Transformer3WTypeInput> transformer3WTypes)
       throws SourceException {
-    WrappedFunction<EntityData, Transformer3WInputEntityData> builder =
-        data ->
-            connectorEnricher
-                .andThen(
-                    biEnrich(
-                        "nodeC",
-                        nodes,
-                        TYPE,
-                        transformer3WTypes,
-                        Transformer3WInputEntityData::new))
-                .apply(data, operators, nodes);
-
-    return getEntities(Transformer3WInput.class, dataSource, transformer3WInputFactory, builder)
+    return getEntities(
+            Transformer3WInput.class,
+            dataSource,
+            new Transformer3WInputFactory(operators, nodes, transformer3WTypes))
         .collect(toSet());
   }
 
@@ -439,11 +404,7 @@ public class RawGridSource extends AssetEntitySource {
    */
   public Set<SwitchInput> getSwitches(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) throws SourceException {
-    return getEntities(
-            SwitchInput.class,
-            dataSource,
-            switchInputFactory,
-            data -> connectorEnricher.apply(data, operators, nodes))
+    return getEntities(SwitchInput.class, dataSource, new SwitchInputFactory(operators, nodes))
         .collect(toSet());
   }
 
@@ -486,8 +447,7 @@ public class RawGridSource extends AssetEntitySource {
     return getEntities(
             MeasurementUnitInput.class,
             dataSource,
-            measurementUnitInputFactory,
-            data -> nodeAssetEnricher.apply(data, operators, nodes))
+            new MeasurementUnitInputFactory(operators, nodes))
         .collect(toSet());
   }
 }

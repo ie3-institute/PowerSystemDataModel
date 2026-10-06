@@ -9,28 +9,28 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
+import java.util.Map;
 import java.util.UUID;
 
-public class SwitchInputFactory
-    extends ConnectorInputEntityFactory<SwitchInput, ConnectorInputEntityData> {
+public class SwitchInputFactory extends ConnectorInputEntityFactory<SwitchInput> {
 
-  public SwitchInputFactory() {
-    super(SwitchInput.class);
+  public SwitchInputFactory(Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) {
+    super(operators, nodes, SwitchInput.class);
   }
 
   @Override
   protected SwitchInput buildModel(
-      ConnectorInputEntityData data,
+      Map<String, String> data,
       UUID uuid,
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
       OperatorInput operator,
       OperationTime operationTime) {
-    final boolean closed = data.getBoolean(CLOSED);
+    boolean closed = getBoolean(data, CLOSED);
 
     if (data.containsKey(PARALLEL_DEVICES)) {
-      String parallelDevices = data.getField(PARALLEL_DEVICES);
+      String parallelDevices = getField(data, PARALLEL_DEVICES);
 
       log.warn(
           "The SwitchInput with id `{}` specifies the unused parameter `parallelDevices` with a value of `{}`."
@@ -40,7 +40,6 @@ public class SwitchInputFactory
           parallelDevices);
     }
 
-    return new SwitchInput(
-        uuid, id, operator, operationTime, nodeA, nodeB, closed, data.getFieldsToValues());
+    return new SwitchInput(uuid, id, operator, operationTime, nodeA, nodeB, closed, data);
   }
 }

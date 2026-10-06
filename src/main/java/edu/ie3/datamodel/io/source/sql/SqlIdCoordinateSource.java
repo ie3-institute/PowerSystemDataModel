@@ -9,7 +9,6 @@ import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryStrin
 
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
-import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.io.factory.timeseries.SqlIdCoordinateFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
@@ -198,11 +197,7 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
 
   private CoordinateValue createCoordinateValue(Map<String, String> fieldToValues) {
     fieldToValues.remove("distance");
-
-    SimpleFactoryData simpleFactoryData =
-        new SimpleFactoryData(fieldToValues, IdCoordinateInput.class);
-
-    IdCoordinateInput idCoordinate = factory.get(simpleFactoryData).getOrThrow();
+    IdCoordinateInput idCoordinate = factory.get(fieldToValues).getOrThrow();
     return new CoordinateValue(idCoordinate.id(), idCoordinate.point());
   }
 

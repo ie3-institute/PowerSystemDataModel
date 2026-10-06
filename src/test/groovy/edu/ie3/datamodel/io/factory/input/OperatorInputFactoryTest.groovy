@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.factory.input
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.utils.Try
 import spock.lang.Specification
@@ -30,14 +29,12 @@ class OperatorInputFactoryTest extends Specification {
       "id" : "TestOperatorId",
     ]
 
-    def inputClass = OperatorInput
-
     when:
-    Try<OperatorInput, FactoryException> input = inputFactory.get(new EntityData(parameter, inputClass))
+    Try<OperatorInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
 
     then:
     input.success
-    input.data.get().getClass() == inputClass
+    input.data.get().getClass() == OperatorInput
     input.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       id == parameter["id"]

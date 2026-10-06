@@ -7,10 +7,8 @@ package edu.ie3.datamodel.io.source;
 
 import static edu.ie3.datamodel.models.profile.LoadProfile.RandomLoadProfile.RANDOM_LOAD_PROFILE;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.factory.timeseries.BdewLoadProfileFactory;
-import edu.ie3.datamodel.io.factory.timeseries.LoadProfileData;
 import edu.ie3.datamodel.io.factory.timeseries.LoadProfileFactory;
 import edu.ie3.datamodel.io.factory.timeseries.RandomLoadProfileFactory;
 import edu.ie3.datamodel.io.naming.timeseries.FileLoadProfileMetaInformation;
@@ -21,11 +19,9 @@ import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile;
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
-import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
-import edu.ie3.datamodel.utils.Try;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.Optional;
@@ -46,19 +42,6 @@ public abstract class LoadProfileSource<V extends LoadValues> extends EntitySour
     this.powerProfileKey = metaInformation.getProfileKey();
     this.entryClass = entryClass;
     this.entryFactory = entryFactory;
-  }
-
-  /**
-   * Build a list of type {@code E}, whereas the underlying {@link Value} does not need any
-   * additional information.
-   *
-   * @param fieldToValues Mapping from field id to values
-   * @return {@link Try} of simple time based value
-   */
-  protected Try<LoadProfileEntry<V>, FactoryException> createEntries(
-      Map<String, String> fieldToValues) {
-    LoadProfileData<V> factoryData = new LoadProfileData<>(fieldToValues, entryClass);
-    return entryFactory.get(factoryData);
   }
 
   /** Returns the load profile entries as a set. */

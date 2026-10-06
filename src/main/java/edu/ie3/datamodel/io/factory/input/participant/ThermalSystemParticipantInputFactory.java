@@ -17,33 +17,40 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Abstract factory for thermal system participants that share common construction patterns
+ * Abstract factory for thermal system participants that share common construction patterns.
  *
  * @param <M> The model type (AcInput, HpInput, etc.)
  * @param <T> The type input type (AcTypeInput, HpTypeInput, etc.)
- * @param <D> The entity data type
  */
 public abstract class ThermalSystemParticipantInputFactory<
-        M extends SystemParticipantInput,
-        T extends SystemParticipantTypeInput,
-        D extends ThermalSystemParticipantEntityData<T>>
-    extends SystemParticipantInputEntityFactory<M, D> {
+        M extends SystemParticipantInput, T extends SystemParticipantTypeInput>
+    extends SystemParticipantInputEntityFactory<M> {
 
-  protected ThermalSystemParticipantInputFactory(Class<M> modelClass) {
-    super(modelClass);
+  private final Map<UUID, T> types;
+  private final Map<UUID, ThermalBusInput> thermalBuses;
+
+  protected ThermalSystemParticipantInputFactory(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, EmInput> emUnits,
+      Map<UUID, T> types,
+      Map<UUID, ThermalBusInput> thermalBuses,
+      Class<M> modelClass) {
+    super(operators, nodes, emUnits, modelClass);
+    this.types = types;
+    this.thermalBuses = thermalBuses;
   }
 
   @Override
   protected final M buildModel(
-      D data,
+      Map<String, String> data,
       UUID uuid,
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
-      OperationTime operationTime) {
-
-    final EmInput em = data.getControllingEm().orElse(null);
+      OperationTime operationTime,
+      EmInput controllingEm) {
 
     return createThermalSystemModel(
         uuid,
@@ -51,11 +58,11 @@ public abstract class ThermalSystemParticipantInputFactory<
         operator,
         operationTime,
         node,
-        data.getThermalBusInput(),
+        getEntity(data, THERMAL_BUS, thermalBuses),
         qCharacteristics,
-        em,
-        data.getTypeInput(),
-        data.getFieldsToValues());
+        controllingEm,
+        getEntity(data, TYPE, types),
+        data);
   }
 
   /**

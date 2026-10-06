@@ -13,10 +13,7 @@ import edu.ie3.datamodel.io.naming.ModelFields;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import edu.ie3.datamodel.utils.Try.Success;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,11 +23,10 @@ import org.slf4j.LoggerFactory;
  * class instances.
  *
  * @param <C> Type of the intended target class.
- * @param <D> Type of the "flat" information.
  * @param <R> Type of the intended return type (might differ slightly from target class (cf. {@link
  *     edu.ie3.datamodel.io.factory.timeseries.TimeBasedValueFactory})).
  */
-public abstract class Factory<C, D extends FactoryData, R> extends FieldNamingStrategy {
+public abstract class Factory<C, D, R> extends FieldNamingStrategy implements FactoryHelperMethods {
   public static final Logger log = LoggerFactory.getLogger(Factory.class);
 
   private final List<Class<? extends C>> supportedClasses;
@@ -48,23 +44,18 @@ public abstract class Factory<C, D extends FactoryData, R> extends FieldNamingSt
    * Builds entity with data from given EntityData object after doing all kinds of checks on the
    * data
    *
-   * @param data EntityData (or subclass) containing the data
+   * @param data of the model
    * @return An entity wrapped in a {@link Success} if successful, or an exception wrapped in a
    *     {@link Failure}
    */
   public Try<R, FactoryException> get(D data) {
-    isSupportedClass(data.getTargetClass());
 
     try {
       // build the model
       return Success.of(buildModel(data));
     } catch (FactoryException | IllegalArgumentException e) {
       return Failure.of(
-          new FactoryException(
-              "An error occurred when creating instance of "
-                  + data.getTargetClass().getSimpleName()
-                  + ".class.",
-              e));
+          new FactoryException("An error occurred in " + this.getClass().getSimpleName() + ".", e));
     }
   }
 
@@ -72,7 +63,7 @@ public abstract class Factory<C, D extends FactoryData, R> extends FieldNamingSt
    * Builds entity with data from given EntityData object after doing all kinds of checks on the
    * data
    *
-   * @param data EntityData (or subclass) containing the data wrapped in a {@link Try}
+   * @param data of the model
    * @return An entity wrapped in a {@link Success} if successful, or an exception wrapped in a
    *     {@link Failure}
    */
@@ -81,10 +72,9 @@ public abstract class Factory<C, D extends FactoryData, R> extends FieldNamingSt
   }
 
   /**
-   * Builds model with data from given {@link FactoryData} object. Throws {@link FactoryException}
-   * if something goes wrong.
+   * Builds model with data. Throws {@link FactoryException} if something goes wrong.
    *
-   * @param data {@link FactoryData} (or subclass) containing the data
+   * @param data of the model
    * @return model created from data
    * @throws FactoryException if the model cannot be build
    */
@@ -95,7 +85,7 @@ public abstract class Factory<C, D extends FactoryData, R> extends FieldNamingSt
    *
    * @param desiredClass Class that should be built
    */
-  private void isSupportedClass(Class<?> desiredClass) {
+  protected void isSupportedClass(Class<?> desiredClass) {
     if (!supportedClasses.contains(desiredClass))
       throw new FactoryException(
           "Cannot process "

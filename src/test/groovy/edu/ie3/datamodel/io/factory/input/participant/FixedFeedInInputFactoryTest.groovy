@@ -5,6 +5,8 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import spock.lang.Shared
+
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.FactoryException
@@ -26,9 +28,26 @@ import java.time.ZonedDateTime
 import javax.measure.quantity.Dimensionless
 
 class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHelper {
+
+  @Shared  private UUID nodeUuid = UUID.randomUUID()
+  @Shared   private def nodeInput = Mock(NodeInput)
+  @Shared  private UUID operatorUuid = UUID.randomUUID()
+  @Shared   private def operatorInput = Mock(OperatorInput)
+  @Shared   private UUID emUuid = UUID.randomUUID()
+  @Shared  private def emUnit = Mock(EmInput)
+
+  @Shared  private FixedFeedInInputFactory inputFactory
+
+  def setupSpec() {
+    nodeInput.getUuid() >> nodeUuid
+    operatorInput.getUuid() >> operatorUuid
+    emUnit.getUuid() >> emUuid
+
+    inputFactory = new FixedFeedInInputFactory(map(operatorInput), map(nodeInput), map(emUnit))
+  }
+
   def "A FixedFeedInInputFactory should contain exactly the expected class for parsing"() {
     given:
-    def inputFactory = new FixedFeedInInputFactory()
     def expectedClasses = [FixedFeedInInput]
 
     expect:
@@ -37,31 +56,29 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
 
   def "A FixedFeedInInputFactory should parse a valid FixedFeedInInput correctly"() {
     given: "a system participant input type factory and model data"
-    def inputFactory = new FixedFeedInInputFactory()
     Map<String, String> parameter = [
       "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "operatesuntil" : "",
+      "operatesFrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesUntil" : "",
       "id" : "TestID",
-      "qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
-      "srated" : "3",
-      "cosphirated" : "4"
+      "qCharacteristics": "cosPhiFixed:{(0.0,1.0)}",
+      "sRated" : "3",
+      "cosPhiRated" : "4",
+      "operator": operatorUuid.toString(),
+      "node": nodeUuid.toString(),
+      "controllingEm": emUuid.toString()
     ]
-    def inputClass = FixedFeedInInput
-    def nodeInput = Mock(NodeInput)
-    def operatorInput = Mock(OperatorInput)
-    def emUnit = Mock(EmInput)
 
     when:
-    Try<FixedFeedInInput, FactoryException> input = inputFactory.get(new SystemParticipantEntityData(parameter, inputClass, operatorInput, nodeInput, emUnit))
+    Try<FixedFeedInInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
 
     then:
     input.success
-    input.data.get().getClass() == inputClass
+    input.data.get().getClass() == FixedFeedInInput
     input.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       operationTime.startDate.present
-      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesFrom"])
       !operationTime.endDate.present
       operator == operatorInput
       id == parameter["id"]
@@ -73,8 +90,8 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
         ] as TreeSet)
       }
       controllingEm == Optional.of(emUnit)
-      sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-      cosPhiRated == Double.parseDouble(parameter["cosphirated"])
+      sRated == getQuant(parameter["sRated"], StandardUnits.S_RATED)
+      cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
     }
   }
 

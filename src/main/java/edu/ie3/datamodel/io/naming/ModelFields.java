@@ -5,11 +5,6 @@
 */
 package edu.ie3.datamodel.io.naming;
 
-import static edu.ie3.datamodel.io.factory.timeseries.BdewLoadProfileFactory.BDEW1999_FIELDS;
-import static edu.ie3.datamodel.io.factory.timeseries.BdewLoadProfileFactory.BDEW2025_FIELDS;
-import static edu.ie3.datamodel.utils.CollectionUtils.expandSet;
-import static edu.ie3.datamodel.utils.CollectionUtils.newSet;
-
 import edu.ie3.datamodel.io.naming.timeseries.TimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.Entity;
@@ -39,8 +34,14 @@ import edu.ie3.datamodel.models.result.thermal.ThermalLineSegmentResult;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
+
 import java.util.*;
 import java.util.stream.Stream;
+
+import static edu.ie3.datamodel.io.factory.timeseries.BdewLoadProfileFactory.BDEW1999_FIELDS;
+import static edu.ie3.datamodel.io.factory.timeseries.BdewLoadProfileFactory.BDEW2025_FIELDS;
+import static edu.ie3.datamodel.utils.CollectionUtils.expandSet;
+import static edu.ie3.datamodel.utils.CollectionUtils.newSet;
 
 /**
  * Class that contains the field namings for entity classes and some values. There are some method
@@ -448,9 +449,9 @@ public final class ModelFields extends FieldNamingStrategy {
 
     register(LineResult.class, connectorResultBase);
 
-    registerMandatory(Transformer2WResult.class, connectorResultBase, TAPPOS);
+    registerMandatory(Transformer2WResult.class, connectorResultBase, TAP_POS);
 
-    registerMandatory(Transformer3WResult.class, connectorResultBase, ICMAG, ICANG, TAPPOS);
+    registerMandatory(Transformer3WResult.class, connectorResultBase, ICMAG, ICANG, TAP_POS);
 
     registerMandatory(PowerLimitFlexOptionsResult.class, result, P_REF, P_MIN, P_MAX);
 

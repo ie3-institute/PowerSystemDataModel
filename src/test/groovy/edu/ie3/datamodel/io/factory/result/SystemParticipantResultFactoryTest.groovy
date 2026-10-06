@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.EntityData
+import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.system.*
@@ -20,7 +20,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 
   def "A SystemParticipantResultFactory should contain all expected classes for parsing"() {
     given:
-    def resultFactory = new SystemParticipantResultFactory()
+    def resultFactory = new SystemParticipantResultFactory(LoadResult)
     def expectedClasses = [
       LoadResult,
       FixedFeedInResult,
@@ -42,7 +42,6 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 
   def "A SystemParticipantResultFactory should parse a valid result model correctly"() {
     given: "a system participant factory and model data"
-    def resultFactory = new SystemParticipantResultFactory()
     Map<String, String> parameter = [
       "time" : "2020-01-30T17:26:44Z",
       "inputModel": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
@@ -59,7 +58,8 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     }
 
     when:
-    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new EntityData(parameter, modelClass))
+    def resultFactory = new SystemParticipantResultFactory(modelClass)
+    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new HashMap<>(parameter))
 
     then:
     result.success
@@ -109,7 +109,6 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 
   def "A SystemParticipantResultFactory should parse a StorageResult correctly"() {
     given: "a system participant factory and model data"
-    def resultFactory = new SystemParticipantResultFactory()
     Map<String, String> parameter = [
       "time" : "2020-01-30T17:26:44Z",
       "inputModel": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
@@ -118,7 +117,8 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
       "q" : "2"
     ]
     when:
-    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new EntityData(parameter, StorageResult))
+    def resultFactory = new SystemParticipantResultFactory(StorageResult)
+    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new HashMap<>(parameter))
 
     then:
     result.success
@@ -137,7 +137,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     def actualFields = CollectionUtils.newSet("time", "input_model", "q")
 
     when:
-    Try<SystemParticipantResult, FactoryException> result = DataSource.validate(actualFields, WecResult)
+    Try<Void, ValidationException> result = DataSource.validate(actualFields, WecResult)
 
     then:
     result.failure
@@ -148,7 +148,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 
   def "A SystemParticipantResultFactory should be performant"() {
     given: "a factory and dummy model data"
-    def resultFactory = new SystemParticipantResultFactory()
+    def resultFactory = new SystemParticipantResultFactory(StorageResult)
     Map<String, String> parameter = [
       "time" : "2020-01-30T17:26:44Z",
       "inputModel": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
@@ -159,7 +159,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     expect: "that the factory should not need more than 3 seconds for processing 10.000 entities"
     Long startTime = System.currentTimeMillis()
     10000.times {
-      resultFactory.get(new EntityData(parameter, StorageResult))
+      resultFactory.get(parameter)
     }
     BigDecimal elapsedTime = (System
         .currentTimeMillis() - startTime) / 1000.0
