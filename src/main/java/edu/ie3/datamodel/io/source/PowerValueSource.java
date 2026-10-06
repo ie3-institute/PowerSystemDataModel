@@ -5,13 +5,14 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.value.PValue;
+import edu.ie3.datamodel.utils.Try.TrySupplier;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
-import java.util.function.Supplier;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -33,7 +34,7 @@ public sealed interface PowerValueSource<
    * @param data input data that is used to calculate the next power value.
    * @return A supplier for an option on the value at the given time step.
    */
-  Supplier<O> getValueSupplier(I data);
+  TrySupplier<O, SourceException> getValueSupplier(I data);
 
   /**
    * Method to determine the next timestamp for which data is present.
@@ -44,7 +45,7 @@ public sealed interface PowerValueSource<
   Optional<ZonedDateTime> getNextTimeKey(ZonedDateTime time);
 
   /** Returns the maximal power that can be returned by this source. */
-  Optional<ComparableQuantity<Power>> getMaxPower();
+  Optional<ComparableQuantity<Power>> getMaxPower() throws SourceException;
 
   /** Returns the energy scaling of this power source. */
   Optional<ComparableQuantity<Energy>> getProfileEnergyScaling();
@@ -116,7 +117,8 @@ public sealed interface PowerValueSource<
    * @param value
    */
   record TimeSeriesOutputValue(Optional<PValue> value) implements PowerOutputValue {
-    public static Supplier<TimeSeriesOutputValue> from(Supplier<Optional<PValue>> supplier) {
+    public static TrySupplier<TimeSeriesOutputValue, SourceException> from(
+        TrySupplier<Optional<PValue>, SourceException> supplier) {
       return () -> new TimeSeriesOutputValue(supplier.get());
     }
   }

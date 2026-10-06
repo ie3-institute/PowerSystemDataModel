@@ -8,7 +8,6 @@ package edu.ie3.datamodel.io.source.sql;
 import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
 
 import edu.ie3.datamodel.exceptions.SourceException;
-import edu.ie3.datamodel.exceptions.UncheckedSourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.timeseries.LoadProfileFactory;
@@ -20,11 +19,11 @@ import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
+import edu.ie3.datamodel.utils.Try.TrySupplier;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -95,31 +94,18 @@ public class SqlLoadProfileSource<V extends LoadValues> extends LoadProfileSourc
   }
 
   @Override
-  public Supplier<TimeSeriesOutputValue> getValueSupplier(TimeSeriesInputValue data) {
+  public TrySupplier<TimeSeriesOutputValue, SourceException> getValueSupplier(
+      TimeSeriesInputValue data) {
     ZonedDateTime time = data.time();
-    Optional<LoadValues> loadValueOption;
-    try {
-      loadValueOption = queryForValue(time);
-    } catch (SourceException e) {
-      // the PowerValueSource contract does not allow a checked exception here
-      throw new UncheckedSourceException("Cannot retrieve load value for time " + time + ".", e);
-    }
     return TimeSeriesOutputValue.from(
-        () -> loadValueOption.map(v -> v.getValue(time, powerProfileKey)));
+        () -> queryForValue(time).map(v -> v.getValue(time, powerProfileKey)));
   }
 
   @Override
-  public Optional<ComparableQuantity<Power>> getMaxPower() {
+  public Optional<ComparableQuantity<Power>> getMaxPower() throws SourceException {
     // TODO: Improve this calculation
-    Set<LoadProfileEntry<V>> entries;
-    try {
-      entries = getEntries(queryFull, ps -> {});
-    } catch (SourceException e) {
-      // the PowerValueSource contract does not allow a checked exception here
-      throw new UncheckedSourceException(
-          "Cannot retrieve load profile entries for " + powerProfileKey + ".", e);
-    }
-    return Optional.ofNullable(entryFactory.calculateMaxPower(powerProfileKey, entries));
+    return Optional.ofNullable(
+        entryFactory.calculateMaxPower(powerProfileKey, getEntries(queryFull, ps -> {})));
   }
 
   @Override
