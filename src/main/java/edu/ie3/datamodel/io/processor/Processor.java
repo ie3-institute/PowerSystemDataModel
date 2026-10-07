@@ -18,6 +18,7 @@ import edu.ie3.datamodel.models.input.connector.type.ConductorInput;
 import edu.ie3.datamodel.models.input.connector.type.LayerInput;
 import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
+import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.result.CongestionResult;
@@ -326,16 +327,22 @@ public abstract class Processor<T> {
           resultStringBuilder.append(((CongestionResult.InputModelType) methodReturnObject).type);
       case "PowerProfileKey" ->
           resultStringBuilder.append(((PowerProfileKey) methodReturnObject).getValue());
-      case "ArrayList" -> {
-        if (methodReturnObject instanceof Collection<?> collection) {
+      case "ArrayList", "List" -> {
+        if (methodReturnObject instanceof List<?> list
+            && !list.isEmpty()
+            && list.stream().allMatch(element -> element instanceof LayerInput)) {
+          resultStringBuilder.append(serializeCableToJson(list, fieldName));
+        } else if (methodReturnObject instanceof List<?> list
+            && !list.isEmpty()
+            && list.stream().allMatch(element -> element instanceof EvcsLocationType)) {
           resultStringBuilder.append(
-              collection.stream().map(Object::toString).collect(Collectors.joining(",", "[", "]")));
+              list.stream().map(Object::toString).collect(Collectors.joining(",", "[", "]")));
+        } else if (methodReturnObject instanceof List<?> list) {
+          resultStringBuilder.append(serializeCableToJson(list, fieldName));
         } else {
           resultStringBuilder.append(methodReturnObject.toString());
         }
       }
-      case "List" ->
-          resultStringBuilder.append(serializeCableToJson(methodReturnObject, fieldName));
       case "ConductorInput" ->
           resultStringBuilder.append(serializeCableToJson(methodReturnObject, fieldName));
       default ->
