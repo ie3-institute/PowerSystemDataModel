@@ -17,6 +17,7 @@ import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.profile.NbwTemperatureDependantLoadProfile
+import edu.ie3.datamodel.models.profile.PowerProfileKey
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
@@ -80,5 +81,6 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
     profileKey || profile
     "G-4" || BdewStandardLoadProfile.G4.key
     "ep1" || NbwTemperatureDependantLoadProfile.EP1.key
+    "markov_h0" || new PowerProfileKey("h0", PowerProfileKey.Type.MARKOV)
   }
 }

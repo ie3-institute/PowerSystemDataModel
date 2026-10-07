@@ -34,7 +34,7 @@ public class LoadInputFactory
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
-    PowerProfileKey loadProfile = new PowerProfileKey(data.getField(LOAD_PROFILE));
+    PowerProfileKey loadProfile = PowerProfileKey.parse(data.getField(LOAD_PROFILE));
 
     final EmInput em = data.getControllingEm().orElse(null);
 

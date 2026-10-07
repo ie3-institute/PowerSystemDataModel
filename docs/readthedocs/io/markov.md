@@ -26,8 +26,9 @@ During simulation, one step works as follows:
 
 Markov model files follow the naming convention {code}`markov_<profileKey>.json`, e.g. {code}`markov_h0.json`.
 A profile key consists of 1 to 11 letters, optionally followed by up to 3 digits.
-The profile key must be unique across all load-profile sources. Do not use the same key for both a CSV profile
-({code}`lpts_<key>.csv`) and a Markov profile ({code}`markov_<key>.json`).
+A load input references a Markov profile via {code}`markov_<profileKey>` in its {code}`loadProfile` field,
+e.g. {code}`markov_h0`. Since the type is part of the key, a CSV profile ({code}`lpts_<key>.csv`) and a Markov
+profile ({code}`markov_<key>.json`) can use the same key.
 
 ## JSON Schema
 
