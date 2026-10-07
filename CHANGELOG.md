@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Register `ThermalLineSegmentResult` at `ResultEntityProcessor` [#1759](https://github.com/ie3-institute/PowerSystemDataModel/issues/1759)
+- Allow `LoadInput` to reference Markov load profiles [#1765](https://github.com/ie3-institute/PowerSystemDataModel/issues/1765)
 
 ### Fixed
 - Fixed recurring `gradlew.bat` modifications [#1757](https://github.com/ie3-institute/PowerSystemDataModel/issues/1757)

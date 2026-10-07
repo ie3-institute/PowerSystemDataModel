@@ -326,7 +326,7 @@ public abstract class Processor<T> {
       case "InputModelType" ->
           resultStringBuilder.append(((CongestionResult.InputModelType) methodReturnObject).type);
       case "PowerProfileKey" ->
-          resultStringBuilder.append(((PowerProfileKey) methodReturnObject).getValue());
+          resultStringBuilder.append(((PowerProfileKey) methodReturnObject).serialize());
       case "ArrayList", "List" -> {
         if (methodReturnObject instanceof List<?> list
             && !list.isEmpty()

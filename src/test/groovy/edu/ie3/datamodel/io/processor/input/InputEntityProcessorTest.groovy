@@ -16,6 +16,7 @@ import edu.ie3.datamodel.models.input.connector.*
 import edu.ie3.datamodel.models.input.connector.type.*
 import edu.ie3.datamodel.models.input.system.*
 import edu.ie3.datamodel.models.input.system.type.*
+import edu.ie3.datamodel.models.profile.PowerProfileKey
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SystemParticipantTestData
@@ -308,6 +309,20 @@ class InputEntityProcessorTest extends Specification {
         entity.uuid.toString()
       }.orElse("")
     ]
+  }
+
+  def "The InputEntityProcessor should serialize a Markov load profile of a LoadInput correctly"() {
+    given:
+    def processor = new InputEntityProcessor(LoadInput)
+    def loadInput = SystemParticipantTestData.loadInput.copy()
+        .loadProfile(new PowerProfileKey("h0", PowerProfileKey.Type.MARKOV))
+        .build()
+
+    when:
+    Map<String, String> actual = processor.handleEntity(loadInput)
+
+    then:
+    actual.get("loadProfile") == "markov_h0"
   }
 
   def "The InputEntityProcessor should serialize a provided OperatorInput correctly"() {
