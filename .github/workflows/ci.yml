@@ -33,7 +33,7 @@ jobs:
 
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -44,7 +44,7 @@ jobs:
           java-version: 21
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Check Branch
         run: |
@@ -60,14 +60,14 @@ jobs:
 
           export BRANCH_NAME
 
-          echo "BRANCH_NAME=$BRANCH_NAME" >> "$GITHUB_ENV"
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
 
           ./gradlew checkBranchName -PbranchName="$BRANCH_NAME" --warning-mode=none
 
           bash scripts/branch_type.sh
 
       - name: Version Check
-        if: github.event_name == 'pull_request'
+        if: ${{ github.event_name == 'pull_request' }}
         env:
           BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
         run: bash scripts/run-version-check.sh
@@ -76,7 +76,8 @@ jobs:
         run: ./gradlew --refresh-dependencies clean assemble spotlessCheck
 
       - name: Run Tests
-        run: ./gradlew pmdMain pmdTest spotbugsMain spotbugsTest test jacocoTestReport jacocoTestCoverageVerification
+        run: |
+          ./gradlew pmdMain pmdTest spotbugsMain spotbugsTest test jacocoTestReport jacocoTestCoverageVerification
 
       - name: Build Java-Docs
         run: ./gradlew javadoc
@@ -86,7 +87,7 @@ jobs:
           ./gradlew sonar \
           -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }} \
           -Dsonar.host.url=${{ vars.SONAR_HOST_URL }} \
-          -Dsonar.token="${{ secrets.SONAR_TOKEN }}" \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
           -Dsonar.qualitygate.wait=true
 
   deployAndStaging:
@@ -95,39 +96,49 @@ jobs:
       github.event.action == 'closed' &&
       github.event.pull_request.merged == true &&
       github.event.pull_request.base.ref == 'main' &&
-      startsWith(github.event.pull_request.head.ref, 'rel/') &&
-      (github.actor == 'sebastian-peter' || github.actor == 'danielfeismann' || github.actor == 'staudtMarius')
+      startsWith(github.event.pull_request.head.ref, 'rel/')
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
-    env:
-      ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVENCENTRAL_SIGNINGKEY }}
-      ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVENCENTRAL_SIGNINGPASS }}
-      ORG_GRADLE_PROJECT_mavenCentralUser: ${{ (github.actor == 'sebastian-peter' && secrets.MAVENCENTRAL_USER) || (github.actor == 'danielfeismann' && secrets.MAVENCENTRAL_DANIEL_USER) || (github.actor == 'staudtMarius' && secrets.MAVENCENTRAL_MARIUS_USER) }}
-      ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ (github.actor == 'sebastian-peter' && secrets.MAVENCENTRAL_PASS) || (github.actor == 'danielfeismann' && secrets.MAVENCENTRAL_DANIEL_PASS) || (github.actor == 'staudtMarius' && secrets.MAVENCENTRAL_MARIUS_PASS) }}
-
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Setup Java
         uses: actions/setup-java@v5
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: 21
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
-
+      #Deployment
       - name: Deploy
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVENCENTRAL_SIGNINGKEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVENCENTRAL_SIGNINGPASS }}
+          ORG_GRADLE_PROJECT_mavenCentralUser: ${{ github.actor == 'sebastian-peter' && secrets.MAVENCENTRAL_USER ||
+            github.actor == 'danielfeismann' && secrets.MAVENCENTRAL_DANIEL_USER || github.actor == 'staudtMarius' && secrets.MAVENCENTRAL_MARIUS_USER}}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ github.actor == 'sebastian-peter' && secrets.MAVENCENTRAL_PASS ||
+            github.actor == 'danielfeismann' && secrets.MAVENCENTRAL_DANIEL_PASS || github.actor == 'staudtMarius' && secrets.MAVENCENTRAL_MARIUS_PASS}}
+
         run: |
           echo "Using MavenCentral Token of GitHub Actor: ${{ github.actor }}"
-          currentVersion="$(./gradlew -q currentVersion)"
-          echo "currentVersion=$currentVersion"
-          ./gradlew publish -PdeployVersion="$currentVersion"
+          currentVersion=$(./gradlew -q currentVersion)
 
+          echo "currentVersion=$currentVersion"
+
+          ./gradlew publish -PdeployVersion=$currentVersion
+
+      #MavenCentral Staging
       - name: MavenCentral Staging
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVENCENTRAL_SIGNINGKEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVENCENTRAL_SIGNINGPASS }}
+          ORG_GRADLE_PROJECT_mavenCentralUser: ${{ github.actor == 'sebastian-peter' && secrets.MAVENCENTRAL_USER ||
+            github.actor == 'danielfeismann' && secrets.MAVENCENTRAL_DANIEL_USER || github.actor == 'staudtMarius' && secrets.MAVENCENTRAL_MARIUS_USER}}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ github.actor == 'sebastian-peter' && secrets.MAVENCENTRAL_PASS ||
+            github.actor == 'danielfeismann' && secrets.MAVENCENTRAL_DANIEL_PASS || github.actor == 'staudtMarius' && secrets.MAVENCENTRAL_MARIUS_PASS}}
+
         run: |
           ./gradlew stagingAtMavenCentralPortal
