@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.exceptions.InvalidColumnNameException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
@@ -136,7 +137,8 @@ public class SqlDataSource implements DataSource {
   }
 
   @Override
-  public Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass) {
+  public Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass)
+      throws SourceException {
     String explicitTableName = databaseNamingStrategy.getEntityName(entityClass).orElseThrow();
     return buildStreamByTableName(explicitTableName);
   }
@@ -163,7 +165,8 @@ public class SqlDataSource implements DataSource {
    * Creates a stream with maps representing a data point in the SQL data source using an explicit
    * table name.
    */
-  protected Stream<Map<String, String>> buildStreamByTableName(String tableName) {
+  protected Stream<Map<String, String>> buildStreamByTableName(String tableName)
+      throws SourceException {
     String query = createBaseQueryString(schemaName, tableName);
     return executeQuery(query);
   }
@@ -172,7 +175,8 @@ public class SqlDataSource implements DataSource {
    * Creates a stream with maps representing a data point in the SQL data source using an explicit
    * table name.
    */
-  protected Stream<Map<String, String>> executeQuery(String query, AddParams addParams) {
+  protected Stream<Map<String, String>> executeQuery(String query, AddParams addParams)
+      throws SourceException {
     try {
       PreparedStatement ps = connector.getConnection().prepareStatement(query);
       addParams.addParams(ps);
@@ -183,12 +187,11 @@ public class SqlDataSource implements DataSource {
 
       return connector.toStream(ps, 1000);
     } catch (SQLException e) {
-      log.error("Error during execution of query {}", query, e);
+      throw new SourceException("Error during execution of query " + query, e);
     }
-    return Stream.empty();
   }
 
-  protected Stream<Map<String, String>> executeQuery(String query) {
+  protected Stream<Map<String, String>> executeQuery(String query) throws SourceException {
     return executeQuery(query, x -> {});
   }
 }
