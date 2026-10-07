@@ -330,14 +330,11 @@ public abstract class Processor<T> {
       case "ArrayList", "List" -> {
         if (methodReturnObject instanceof List<?> list
             && !list.isEmpty()
-            && list.stream().allMatch(element -> element instanceof LayerInput)) {
-          resultStringBuilder.append(serializeCableToJson(list, fieldName));
-        } else if (methodReturnObject instanceof List<?> list
-            && !list.isEmpty()
-            && list.stream().allMatch(element -> element instanceof EvcsLocationType)) {
+            && list.stream().allMatch(e -> e instanceof EvcsLocationType)) {
           resultStringBuilder.append(
               list.stream().map(Object::toString).collect(Collectors.joining(",", "[", "]")));
         } else if (methodReturnObject instanceof List<?> list) {
+          // Handles the LayerInput list case as well as throwing for anything else.
           resultStringBuilder.append(serializeCableToJson(list, fieldName));
         } else {
           resultStringBuilder.append(methodReturnObject.toString());

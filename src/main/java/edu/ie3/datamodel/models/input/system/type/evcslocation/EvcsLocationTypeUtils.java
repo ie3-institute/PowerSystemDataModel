@@ -6,10 +6,9 @@
 package edu.ie3.datamodel.models.input.system.type.evcslocation;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Utility class providing tools to retrieve {@link EvcsLocationType}s from string representation
@@ -48,18 +47,14 @@ public class EvcsLocationTypeUtils {
 
     // Check if it contains comma for multiple values
     if (parsableString.contains(",")) {
-      return Arrays.stream(parsableString.split(","))
-          .map(String::trim)
-          .filter(s -> !s.isEmpty())
-          .map(
-              s -> {
-                try {
-                  return parseSingle(s);
-                } catch (ParsingException e) {
-                  throw new RuntimeException(e);
-                }
-              })
-          .collect(Collectors.toList());
+      final List<EvcsLocationType> types = new ArrayList<>();
+      for (String part : parsableString.split(",")) {
+        final String trimmed = part.trim();
+        if (!trimmed.isEmpty()) {
+          types.add(parseSingle(trimmed));
+        }
+      }
+      return types;
     } else {
       // Single value - wrap in List
       return List.of(parseSingle(parsableString.trim()));
