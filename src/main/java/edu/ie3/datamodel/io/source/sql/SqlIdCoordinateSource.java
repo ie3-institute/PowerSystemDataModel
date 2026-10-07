@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.sql;
 
 import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.SimpleFactoryData;
@@ -97,7 +98,7 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
   }
 
   @Override
-  public Optional<Point> getCoordinate(int id) {
+  public Optional<Point> getCoordinate(int id) throws SourceException {
     List<CoordinateValue> values =
         executeQueryToStream(queryForPoint, ps -> ps.setInt(1, id)).toList();
 
@@ -109,7 +110,7 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
   }
 
   @Override
-  public Collection<Point> getCoordinates(int... ids) {
+  public Collection<Point> getCoordinates(int... ids) throws SourceException {
     Object[] idSet = Arrays.stream(ids).boxed().distinct().toArray();
 
     return executeQueryToStream(
@@ -123,7 +124,7 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
   }
 
   @Override
-  public Optional<Integer> getId(Point coordinate) {
+  public Optional<Integer> getId(Point coordinate) throws SourceException {
     double latitude = coordinate.getY();
     double longitude = coordinate.getX();
 
@@ -144,12 +145,13 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
   }
 
   @Override
-  public Collection<Point> getAllCoordinates() {
+  public Collection<Point> getAllCoordinates() throws SourceException {
     return executeQueryToStream(basicQuery + ";").map(value -> value.coordinate).toList();
   }
 
   @Override
-  public List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n) {
+  public List<CoordinateDistance> getNearestCoordinates(Point coordinate, int n)
+      throws SourceException {
     List<Point> points =
         executeQueryToStream(
                 queryForNearestPoints,
@@ -165,14 +167,14 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
 
   @Override
   public List<CoordinateDistance> getClosestCoordinates(
-      Point coordinate, int n, ComparableQuantity<Length> distance) {
+      Point coordinate, int n, ComparableQuantity<Length> distance) throws SourceException {
     List<Point> points = getCoordinatesInBoundingBox(coordinate, distance);
     return calculateCoordinateDistances(coordinate, n, points);
   }
 
   @Override
   public List<CoordinateDistance> findCornerPoints(
-      Point coordinate, ComparableQuantity<Length> distance) {
+      Point coordinate, ComparableQuantity<Length> distance) throws SourceException {
     List<Point> points = getCoordinatesInBoundingBox(coordinate, distance);
     return findCornerPoints(
         coordinate, GeoUtils.calcOrderedCoordinateDistances(coordinate, points));
@@ -181,7 +183,7 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   private List<Point> getCoordinatesInBoundingBox(
-      Point coordinate, ComparableQuantity<Length> distance) {
+      Point coordinate, ComparableQuantity<Length> distance) throws SourceException {
     Envelope envelope = GeoUtils.calculateBoundingBox(coordinate, distance);
 
     return executeQueryToStream(
@@ -206,12 +208,12 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
     return new CoordinateValue(idCoordinate.id(), idCoordinate.point());
   }
 
-  private Stream<CoordinateValue> executeQueryToStream(String query) {
+  private Stream<CoordinateValue> executeQueryToStream(String query) throws SourceException {
     return dataSource.executeQuery(query).map(this::createCoordinateValue);
   }
 
   private Stream<CoordinateValue> executeQueryToStream(
-      String query, SqlDataSource.AddParams addParams) {
+      String query, SqlDataSource.AddParams addParams) throws SourceException {
     return dataSource.executeQuery(query, addParams).map(this::createCoordinateValue);
   }
 

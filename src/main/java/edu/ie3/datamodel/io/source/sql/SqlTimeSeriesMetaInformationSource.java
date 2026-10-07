@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.sql;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMetaInformationFactory;
@@ -33,7 +34,8 @@ public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
   private final SqlDataSource dataSource;
 
   public SqlTimeSeriesMetaInformationSource(
-      SqlConnector connector, String schemaName, DatabaseNamingStrategy databaseNamingStrategy) {
+      SqlConnector connector, String schemaName, DatabaseNamingStrategy databaseNamingStrategy)
+      throws SourceException {
     this.dataSource = new SqlDataSource(connector, schemaName, databaseNamingStrategy);
     this.namingStrategy = databaseNamingStrategy;
 
