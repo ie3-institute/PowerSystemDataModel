@@ -145,6 +145,9 @@ class JsonMarkovProfileSourceTest extends MarkovModelJsonTestSupport {
     output.value().isPresent()
     output.nextState() == 1
     output.value().get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 5.25d
+    // stationary distribution [0.25, 0.75] of 10 kW and 5.25 kW over the 8760 hours of 2019
+    source.getProfileEnergyScaling().isPresent()
+    Math.abs(source.getProfileEnergyScaling().get().to(StandardUnits.ENERGY_IN).value.doubleValue() - 6.4375d * 8760) < 1e-6
   }
 
   protected static String validModelJson() {

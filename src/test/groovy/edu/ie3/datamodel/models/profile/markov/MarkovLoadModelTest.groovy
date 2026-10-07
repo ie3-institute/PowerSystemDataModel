@@ -114,6 +114,111 @@ class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
     thrown(IllegalArgumentException)
   }
 
+  def "energy scaling of a chain with constant power is the energy of one year"() {
+    given: "a chain that always moves to the state with normalized value 0.8, i.e. 4.2 kW"
+    def model = loadModel(deterministicTransitions(), deterministicStates())
+
+    when:
+    def energyScaling = model.getProfileEnergyScaling()
+
+    then: "the year 2019 has 8760 hours"
+    energyScaling.isPresent()
+    Math.abs(energyScaling.get().to(StandardUnits.ENERGY_IN).value.doubleValue() - 4.2d * 8760) < 1e-6
+  }
+
+  def "energy scaling weights the states with the stationary distribution of the chain"() {
+    given: "a chain with stationary distribution [0.25, 0.75]"
+    def model = loadModel(defaultTransitionValues(), states)
+
+    when:
+    def energyScaling = model.getProfileEnergyScaling().get()
+
+    then:
+    Math.abs(energyScaling.to(StandardUnits.ENERGY_IN).value.doubleValue() - averagePower * 8760) < 1e-6
+
+    where:
+    states || averagePower
+    deterministicStates() || 3.8d // normalized value 0.25 * 0.4 + 0.75 * 0.8 = 0.7
+    stateWithoutGmm() || 1.4d // normalized value 0.25 * 0.4 + 0.75 * 0 = 0.1
+  }
+
+  def "energy scaling uses the transitions and GMMs of the same bucket, as when sampling"() {
+    given: "two buckets alternating every quarter-hour, moving to state 0 in bucket 0 and to state 1 in bucket 1"
+    def template = loadModel(deterministicTransitions(), deterministicStates())
+    def transitions = [
+      [[1d, 0d], [1d, 0d]],
+      [[0d, 1d], [0d, 1d]]
+    ] as double[][][]
+    def gmms = new MarkovLoadModel.GmmBuckets([
+      new MarkovLoadModel.GmmBuckets.GmmBucket([gmm(0.2d), gmm(0.6d)]),
+      new MarkovLoadModel.GmmBuckets.GmmBucket([gmm(0.3d), gmm(0.9d)])
+    ])
+    def model = new MarkovLoadModel(
+        template.schema(),
+        template.generatedAt(),
+        template.generator(),
+        new MarkovLoadModel.TimeModel(2, "quarter_hour", 15, "UTC"),
+        template.valueModel(),
+        template.parameters(),
+        new MarkovLoadModel.TransitionData("float32", "nested_lists", transitions),
+        Optional.of(gmms)
+        )
+
+    when:
+    def energyScaling = model.getProfileEnergyScaling().get()
+
+    then: "the normalized values 0.2 and 0.9 alternate, i.e. 3.2 kW on average"
+    Math.abs(energyScaling.to(StandardUnits.ENERGY_IN).value.doubleValue() - 3.2d * 8760) < 1e-6
+  }
+
+  def "energy scaling is not affected by transition rows that sum up to one only within the tolerance"() {
+    given: "a chain with stationary distribution [0.25, 0.75] and rows summing up to 0.999995"
+    def transitions = """
+      [
+        [
+          [0.1, 0.899995],
+          [0.3, 0.699995]
+        ]
+      ]
+    """.stripIndent()
+    def model = loadModel(transitions, deterministicStates())
+
+    when:
+    def energyScaling = model.getProfileEnergyScaling().get()
+
+    then:
+    Math.abs(energyScaling.to(StandardUnits.ENERGY_IN).value.doubleValue() / (3.8d * 8760) - 1d) < 1e-4
+  }
+
+  def "energy scaling matches the mean energy of sampled years"() {
+    given: "GMMs with samples that are often clamped to [0, 1]"
+    def model = loadModel(defaultTransitionValues(), clampedStates())
+    def seeds = 1L..4L
+
+    when: "sampling in hourly steps, so that the energy in kWh is the sum of the powers in kW"
+    def sampledEnergy = seeds.sum { seed ->
+      sampleYear(model, seed)
+    } / seeds.size()
+    def energyScaling = model.getProfileEnergyScaling().get().to(StandardUnits.ENERGY_IN).value.doubleValue()
+
+    then:
+    Math.abs(sampledEnergy - energyScaling) / energyScaling < 0.01
+  }
+
+  private static double sampleYear(MarkovLoadModel model, long seed) {
+    def start = ZonedDateTime.parse("2019-01-01T00:00:00Z")
+    def energy = 0d
+    def previousState = OptionalInt.empty()
+    for (def time = start; time.isBefore(start.plusYears(1)); time = time.plusHours(1)) {
+      def initialValue = previousState.isPresent() ? OptionalDouble.empty() : OptionalDouble.of(0d)
+      def output = model.getValueSupplier(
+          new PowerValueSource.MarkovIdentifier(time, previousState, initialValue, seed)).get()
+      energy += output.value().get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue()
+      previousState = OptionalInt.of(output.nextState())
+    }
+    return energy
+  }
+
   private loadModel(String transitions, String states) {
     def json = markovModelJson(transitions, states, "5.0", "1.0")
     def root = objectMapper.readTree(json)
@@ -143,6 +248,40 @@ class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
           "weights": [1.0],
           "means": [0.8],
           "variances": [0.0]
+        }
+      ]
+    """.stripIndent()
+  }
+
+  private static String stateWithoutGmm() {
+    return """
+      [
+        {
+          "weights": [1.0],
+          "means": [0.4],
+          "variances": [0.0]
+        },
+        null
+      ]
+    """.stripIndent()
+  }
+
+  private static MarkovLoadModel.GmmBuckets.GmmState gmm(double mean) {
+    return new MarkovLoadModel.GmmBuckets.GmmState([1d], [mean], [0d])
+  }
+
+  private static String clampedStates() {
+    return """
+      [
+        {
+          "weights": [0.5, 0.5],
+          "means": [0.05, 0.3],
+          "variances": [0.01, 0.02]
+        },
+        {
+          "weights": [1.0],
+          "means": [0.9],
+          "variances": [0.05]
         }
       ]
     """.stripIndent()
