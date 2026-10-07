@@ -244,14 +244,6 @@ public abstract class Processor<T> {
           "ChargingPointType",
           "EvcsLocationTypes" ->
           resultStringBuilder.append(methodReturnObject.toString());
-      case "List", "ArrayList" -> {
-        if (methodReturnObject instanceof Collection<?> collection) {
-          resultStringBuilder.append(
-              collection.stream().map(Object::toString).collect(Collectors.joining(",", "[", "]")));
-        } else {
-          resultStringBuilder.append(methodReturnObject.toString());
-        }
-      }
       case "Quantity", "ComparableQuantity" ->
           resultStringBuilder.append(handleQuantity((Quantity<?>) methodReturnObject, fieldName));
       case "Optional" ->
@@ -334,6 +326,14 @@ public abstract class Processor<T> {
           resultStringBuilder.append(((CongestionResult.InputModelType) methodReturnObject).type);
       case "PowerProfileKey" ->
           resultStringBuilder.append(((PowerProfileKey) methodReturnObject).getValue());
+      case "ArrayList" -> {
+        if (methodReturnObject instanceof Collection<?> collection) {
+          resultStringBuilder.append(
+              collection.stream().map(Object::toString).collect(Collectors.joining(",", "[", "]")));
+        } else {
+          resultStringBuilder.append(methodReturnObject.toString());
+        }
+      }
       case "List" ->
           resultStringBuilder.append(serializeCableToJson(methodReturnObject, fieldName));
       case "ConductorInput" ->
