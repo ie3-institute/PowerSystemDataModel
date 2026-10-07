@@ -93,7 +93,7 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
   }
 
   @Override
-  public Optional<Set<String>> getSourceFields() {
+  public Optional<Set<String>> getSourceFields() throws SourceException {
     return dataSource.getSourceFields(coordinateTableName);
   }
 
