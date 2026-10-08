@@ -29,12 +29,12 @@ public abstract class TimeSeriesSource<V extends Value> extends EntitySource {
     this.valueClass = valueClass;
   }
 
-  public abstract IndividualTimeSeries<V> getTimeSeries();
+  public abstract IndividualTimeSeries<V> getTimeSeries() throws SourceException;
 
   public abstract IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval)
       throws SourceException;
 
-  public abstract Optional<V> getValue(ZonedDateTime time);
+  public abstract Optional<V> getValue(ZonedDateTime time) throws SourceException;
 
   /**
    * Method to retrieve the value of the given time or the last timestamp before the given time.
@@ -42,7 +42,7 @@ public abstract class TimeSeriesSource<V extends Value> extends EntitySource {
    * @param time given time
    * @return an option for a value
    */
-  public Optional<V> getValueOrLast(ZonedDateTime time) {
+  public Optional<V> getValueOrLast(ZonedDateTime time) throws SourceException {
     Optional<V> value = getValue(time);
 
     if (value.isEmpty()) {
@@ -52,7 +52,8 @@ public abstract class TimeSeriesSource<V extends Value> extends EntitySource {
     return value;
   }
 
-  public abstract Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime time);
+  public abstract Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime time)
+      throws SourceException;
 
   /**
    * Method to return all time keys after a given timestamp.
@@ -60,7 +61,7 @@ public abstract class TimeSeriesSource<V extends Value> extends EntitySource {
    * @param time given time
    * @return a list of time keys
    */
-  public abstract List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time);
+  public abstract List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) throws SourceException;
 
   /**
    * Method to return all last known time keys before a given timestamp.
@@ -68,5 +69,6 @@ public abstract class TimeSeriesSource<V extends Value> extends EntitySource {
    * @param time given time
    * @return an option for the time key
    */
-  public abstract Optional<ZonedDateTime> getLastTimeKeyBefore(ZonedDateTime time);
+  public abstract Optional<ZonedDateTime> getLastTimeKeyBefore(ZonedDateTime time)
+      throws SourceException;
 }

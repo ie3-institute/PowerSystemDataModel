@@ -15,6 +15,7 @@ import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
+import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.Duration;
 import java.time.ZonedDateTime;
@@ -147,7 +148,7 @@ public abstract class WeatherSource extends EntitySource {
    * @return the TimeBasedWeatherValueData
    */
   protected Optional<TimeBasedWeatherValueData> toTimeBasedWeatherValueData(
-      Map<String, String> fieldMap) {
+      Map<String, String> fieldMap) throws SourceException {
     String coordinateValue = fieldMap.remove(WEATHER_COORDINATE_ID);
     fieldMap.putIfAbsent("uuid", UUID.randomUUID().toString());
     int coordinateId = Integer.parseInt(coordinateValue);
@@ -184,20 +185,30 @@ public abstract class WeatherSource extends EntitySource {
   }
 
   protected Map<Point, List<ZonedDateTime>> toTimeKeys(
-      Stream<Map<String, String>> fieldMaps, TimeBasedWeatherValueFactory factory) {
+      Stream<Map<String, String>> fieldMaps, TimeBasedWeatherValueFactory factory)
+      throws SourceException {
     return groupTime(
-        fieldMaps.map(
-            fieldMap -> {
-              String coordinateValue = fieldMap.get(WEATHER_COORDINATE_ID);
-              int coordinateId = Integer.parseInt(coordinateValue);
-              Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
-              ZonedDateTime time = factory.extractTime(fieldMap);
+        Try.scanStream(
+                fieldMaps.map(
+                    fieldMap ->
+                        Try.of(
+                            () -> {
+                              String coordinateValue = fieldMap.get(WEATHER_COORDINATE_ID);
+                              int coordinateId = Integer.parseInt(coordinateValue);
+                              Optional<Point> coordinate =
+                                  idCoordinateSource.getCoordinate(coordinateId);
+                              ZonedDateTime time = factory.extractTime(fieldMap);
 
-              if (coordinate.isEmpty()) {
-                log.warn("Unable to match coordinate ID {} to a point", coordinateId);
-              }
-              return Pair.of(coordinate, time);
-            }));
+                              if (coordinate.isEmpty()) {
+                                log.warn(
+                                    "Unable to match coordinate ID {} to a point", coordinateId);
+                              }
+                              return Pair.of(coordinate, time);
+                            },
+                            SourceException.class)),
+                "time key",
+                SourceException::new)
+            .getOrThrow());
   }
 
   protected Map<Point, List<ZonedDateTime>> groupTime(
@@ -300,13 +311,20 @@ public abstract class WeatherSource extends EntitySource {
    * @return a list of that TimeBasedValues
    */
   protected List<TimeBasedValue<WeatherValue>> buildTimeBasedValues(
-      TimeBasedWeatherValueFactory factory, Stream<Map<String, String>> inputStream) {
-    return inputStream
-        .map(
-            fieldsToAttributes -> {
-              fieldsToAttributes.remove("tid");
-              return toTimeBasedWeatherValueData(fieldsToAttributes);
-            })
+      TimeBasedWeatherValueFactory factory, Stream<Map<String, String>> inputStream)
+      throws SourceException {
+    return Try.scanStream(
+            inputStream.map(
+                fieldsToAttributes ->
+                    Try.of(
+                        () -> {
+                          fieldsToAttributes.remove("tid");
+                          return toTimeBasedWeatherValueData(fieldsToAttributes);
+                        },
+                        SourceException.class)),
+            "weather value data",
+            SourceException::new)
+        .getOrThrow()
         .flatMap(Optional::stream)
         .map(factory::get)
         .map(

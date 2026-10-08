@@ -17,10 +17,10 @@ import edu.ie3.datamodel.io.source.EntitySource;
 import edu.ie3.datamodel.io.source.PowerValueSource;
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel;
+import edu.ie3.datamodel.utils.Try.TrySupplier;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Supplier;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -108,7 +108,7 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
 
   /** Delegates to the cached {@link MarkovLoadModel} for a single simulation step. */
   @Override
-  public Supplier<MarkovOutputValue> getValueSupplier(MarkovIdentifier data) {
+  public TrySupplier<MarkovOutputValue, SourceException> getValueSupplier(MarkovIdentifier data) {
     return getModelUnchecked().getValueSupplier(data);
   }
 

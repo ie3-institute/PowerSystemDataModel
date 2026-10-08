@@ -5,9 +5,11 @@
 */
 package edu.ie3.datamodel.models.profile.markov;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.source.PowerValueSource;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.value.PValue;
+import edu.ie3.datamodel.utils.Try.TrySupplier;
 import java.time.DayOfWeek;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -19,7 +21,6 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.SplittableRandom;
 import java.util.function.IntToDoubleFunction;
-import java.util.function.Supplier;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -175,14 +176,15 @@ public class MarkovLoadModel {
    *
    * <p>Callers are expected to create a new supplier for each time step.
    */
-  public Supplier<PowerValueSource.MarkovOutputValue> getValueSupplier(
+  public TrySupplier<PowerValueSource.MarkovOutputValue, SourceException> getValueSupplier(
       PowerValueSource.MarkovIdentifier data) {
     Objects.requireNonNull(data, "data");
     return () -> computeStep(data);
   }
 
   /** Convenience helper to compute a single step immediately. */
-  public PowerValueSource.MarkovOutputValue getPower(PowerValueSource.MarkovIdentifier data) {
+  public PowerValueSource.MarkovOutputValue getPower(PowerValueSource.MarkovIdentifier data)
+      throws SourceException {
     return getValueSupplier(data).get();
   }
 

@@ -37,7 +37,7 @@ public class LoadInputFactory extends SystemParticipantInputEntityFactory<LoadIn
       OperatorInput operator,
       OperationTime operationTime,
       EmInput controllingEm) {
-    PowerProfileKey loadProfile = new PowerProfileKey(getField(data, LOAD_PROFILE));
+    PowerProfileKey loadProfile = PowerProfileKey.parse(data.getField(LOAD_PROFILE));
 
     ComparableQuantity<Energy> eConsAnnual =
         getQuantity(data, E_CONS_ANNUAL, StandardUnits.ENERGY_IN);

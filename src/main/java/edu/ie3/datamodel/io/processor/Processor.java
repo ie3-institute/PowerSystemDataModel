@@ -325,7 +325,7 @@ public abstract class Processor<T> {
       case "InputModelType" ->
           resultStringBuilder.append(((CongestionResult.InputModelType) methodReturnObject).type);
       case "PowerProfileKey" ->
-          resultStringBuilder.append(((PowerProfileKey) methodReturnObject).getValue());
+          resultStringBuilder.append(((PowerProfileKey) methodReturnObject).serialize());
       case "List" ->
           resultStringBuilder.append(serializeCableToJson(methodReturnObject, fieldName));
       case "ConductorInput" ->

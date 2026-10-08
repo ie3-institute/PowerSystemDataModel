@@ -140,13 +140,14 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   @Override
-  public IndividualTimeSeries<V> getTimeSeries() {
+  public IndividualTimeSeries<V> getTimeSeries() throws SourceException {
     Set<TimeBasedValue<V>> timeBasedValues = getTimeBasedValueSet(queryFull, ps -> {});
     return new IndividualTimeSeries<>(timeSeriesUuid, timeBasedValues);
   }
 
   @Override
-  public IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval) {
+  public IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval)
+      throws SourceException {
     Set<TimeBasedValue<V>> timeBasedValues =
         getTimeBasedValueSet(
             queryTimeInterval,
@@ -158,7 +159,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   }
 
   @Override
-  public Optional<V> getValue(ZonedDateTime time) {
+  public Optional<V> getValue(ZonedDateTime time) throws SourceException {
     Set<TimeBasedValue<V>> timeBasedValues =
         getTimeBasedValueSet(queryTime, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())));
     if (timeBasedValues.isEmpty()) return Optional.empty();
@@ -168,7 +169,8 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   }
 
   @Override
-  public Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime time) {
+  public Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime time)
+      throws SourceException {
     return getTimeBasedValueSet(
             queryForValueBefore, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())))
         .stream()
@@ -176,7 +178,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   }
 
   @Override
-  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) {
+  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) throws SourceException {
     return dataSource
         .executeQuery(
             queryTimeKeysAfter, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())))
@@ -186,7 +188,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   }
 
   @Override
-  public Optional<ZonedDateTime> getLastTimeKeyBefore(ZonedDateTime time) {
+  public Optional<ZonedDateTime> getLastTimeKeyBefore(ZonedDateTime time) throws SourceException {
     return dataSource
         .executeQuery(
             queryForValueBefore, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant())))
@@ -198,7 +200,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
 
   /** Creates a set of TimeBasedValues from database */
   private Set<TimeBasedValue<V>> getTimeBasedValueSet(
-      String query, SqlDataSource.AddParams addParams) {
+      String query, SqlDataSource.AddParams addParams) throws SourceException {
     return dataSource
         .executeQuery(query, addParams)
         .map(this::createEntity)

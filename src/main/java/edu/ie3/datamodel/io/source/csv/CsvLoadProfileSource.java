@@ -15,12 +15,12 @@ import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.TrySupplier;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -70,8 +70,9 @@ public class CsvLoadProfileSource<V extends LoadValues> extends LoadProfileSourc
   }
 
   @Override
-  public Supplier<TimeSeriesOutputValue> getValueSupplier(TimeSeriesInputValue data) {
-    return TimeSeriesOutputValue.from(loadProfileTimeSeries.supplyValue(data.time()));
+  public TrySupplier<TimeSeriesOutputValue, SourceException> getValueSupplier(
+      TimeSeriesInputValue data) {
+    return TimeSeriesOutputValue.from(loadProfileTimeSeries.supplyValue(data.time())::get);
   }
 
   @Override
