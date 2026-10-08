@@ -64,9 +64,6 @@ public class EvcsInput extends SystemParticipantInput {
       List<EvcsLocationType> locationTypes,
       boolean v2gSupport) {
     super(uuid, id, operator, operationTime, node, qCharacteristics, em);
-    if (locationTypes == null || locationTypes.isEmpty()) {
-      throw new IllegalArgumentException("At least one location type must be provided");
-    }
     this.type = type;
     this.chargingPoints = chargingPoints;
     this.cosPhiRated = cosPhiRated;
@@ -176,9 +173,6 @@ public class EvcsInput extends SystemParticipantInput {
       List<EvcsLocationType> locationTypes,
       boolean v2gSupport) {
     super(uuid, id, node, qCharacteristics, em);
-    if (locationTypes == null || locationTypes.isEmpty()) {
-      throw new IllegalArgumentException("At least one location type must be provided");
-    }
     this.type = type;
     this.chargingPoints = chargingPoints;
     this.cosPhiRated = cosPhiRated;

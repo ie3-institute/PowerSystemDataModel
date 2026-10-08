@@ -60,11 +60,7 @@ public class EvcsInputFactory
     final List<EvcsLocationType> locationTypes;
     String locationFieldValue = data.getField(LOCATION_TYPES);
     try {
-      if (locationFieldValue.contains(",")) {
-        locationTypes = EvcsLocationTypeUtils.parse(locationFieldValue);
-      } else {
-        locationTypes = List.of(EvcsLocationTypeUtils.parseSingle(locationFieldValue));
-      }
+      locationTypes = EvcsLocationTypeUtils.parse(locationFieldValue);
     } catch (ParsingException e) {
       throw new FactoryException(
           String.format(
