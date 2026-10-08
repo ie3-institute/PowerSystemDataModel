@@ -31,8 +31,6 @@ get_branch_version() {
     rm -rf "$DIR_NAME"
 }
 
-
-get_branch_version "dev"
 get_branch_version "main"
 
 echo "Get Versions: OK!"
