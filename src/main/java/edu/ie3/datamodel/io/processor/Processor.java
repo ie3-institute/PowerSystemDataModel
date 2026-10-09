@@ -242,8 +242,7 @@ public abstract class Processor<T> {
           "String",
           "DayOfWeek",
           "Season",
-          "ChargingPointType",
-          "EvcsLocationTypes" ->
+          "ChargingPointType" ->
           resultStringBuilder.append(methodReturnObject.toString());
       case "Quantity", "ComparableQuantity" ->
           resultStringBuilder.append(handleQuantity((Quantity<?>) methodReturnObject, fieldName));
