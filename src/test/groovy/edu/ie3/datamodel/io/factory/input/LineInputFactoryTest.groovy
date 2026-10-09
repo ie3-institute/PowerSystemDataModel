@@ -49,7 +49,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
     nodeInputB.getGeoPosition() >> NodeInput.DEFAULT_GEO_POSITION
 
     typeInput.getUuid() >> typeUuid
-    inputFactory = new LineInputFactory(map(operatorInput), map(nodeInputA, nodeInputB), map(typeInput))
+    inputFactory = new LineInputFactory(map(operatorInput), map([nodeInputA, nodeInputB]), map(typeInput))
   }
 
 

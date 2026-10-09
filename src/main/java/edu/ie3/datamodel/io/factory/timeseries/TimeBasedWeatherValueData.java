@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory.timeseries;
 
 import java.util.Map;
+import java.util.TreeMap;
 import org.locationtech.jts.geom.Point;
 
 public class TimeBasedWeatherValueData {
@@ -20,7 +21,9 @@ public class TimeBasedWeatherValueData {
    * @param coordinate coordinate for this WeatherValue
    */
   public TimeBasedWeatherValueData(Map<String, String> fieldsToAttributes, Point coordinate) {
-    this.fieldsToAttributes = fieldsToAttributes;
+    // this does the magic: case-insensitive get/set calls on keys
+    this.fieldsToAttributes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    this.fieldsToAttributes.putAll(fieldsToAttributes);
     this.coordinate = coordinate;
   }
 
@@ -36,7 +39,6 @@ public class TimeBasedWeatherValueData {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
 
     TimeBasedWeatherValueData that = (TimeBasedWeatherValueData) o;
     return coordinate.equals(that.coordinate) && fieldsToAttributes.equals(that.fieldsToAttributes);
@@ -44,7 +46,7 @@ public class TimeBasedWeatherValueData {
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
+    int result = fieldsToAttributes.hashCode();
     result = 31 * result + (coordinate != null ? coordinate.hashCode() : 0);
     return result;
   }

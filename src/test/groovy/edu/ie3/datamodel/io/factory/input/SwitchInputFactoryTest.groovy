@@ -35,7 +35,7 @@ class SwitchInputFactoryTest extends Specification implements FactoryTestHelper 
     nodeInputB.getUuid() >> uuidNodeB
     nodeInputB.getGeoPosition() >> NodeInput.DEFAULT_GEO_POSITION
 
-    inputFactory = new SwitchInputFactory(map(operatorInput), map(nodeInputA, nodeInputB))
+    inputFactory = new SwitchInputFactory(map(operatorInput), map([nodeInputA, nodeInputB]))
   }
 
   def "A SwitchInputFactory should contain exactly the expected class for parsing"() {

@@ -7,11 +7,13 @@ package edu.ie3.datamodel.io.source;
 
 import static edu.ie3.datamodel.io.factory.input.EmInputFactory.CONTROLLING_EM;
 
+import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.input.EmInputFactory;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.utils.ExceptionUtils;
 import edu.ie3.datamodel.utils.Try;
 import java.util.*;
 
@@ -69,21 +71,48 @@ public class EnergyManagementSource extends AssetEntitySource {
   private static void createEmsRecursively(
       List<Map<String, String>> rawData, Map<UUID, EmInput> emUnits, EmInputFactory factory)
       throws SourceException {
+    List<FactoryException> exceptions = new ArrayList<>();
+
     List<Map<String, String>> currentLevel = new ArrayList<>();
     List<Map<String, String>> others = new ArrayList<>();
 
     rawData.forEach(
         t -> {
-          if (!factory.isFieldBlank(t, CONTROLLING_EM)) {
-            others.add(t);
-          } else {
-            currentLevel.add(t);
+          try {
+            if (!factory.isFieldBlank(t, CONTROLLING_EM)) {
+              UUID controllingEm = factory.getUUID(t, CONTROLLING_EM);
+
+              // we have to re-add the field to the map to prevent issues
+              t.put(CONTROLLING_EM, controllingEm.toString());
+
+              if (emUnits.containsKey(controllingEm)) {
+                currentLevel.add(t);
+              } else {
+                others.add(t);
+              }
+            } else {
+              currentLevel.add(t);
+            }
+          } catch (FactoryException fe) {
+            // save exception
+            exceptions.add(fe);
           }
         });
+
+    if (!exceptions.isEmpty()) {
+      // throw all exceptions at once
+      throw new SourceException(
+          "Could not process em inputs due to: " + ExceptionUtils.combineExceptions(exceptions));
+    }
 
     Try.scanStream(currentLevel.stream().map(factory::get), "EmInput", SourceException::new)
         .getOrThrow()
         .forEach(em -> emUnits.put(em.getUuid(), em));
+
+    if (currentLevel.isEmpty()) {
+      throw new SourceException(
+          "There are em inputs, where controlling ems are assigned that don't exist.");
+    }
 
     if (!others.isEmpty()) {
       createEmsRecursively(others, emUnits, factory);

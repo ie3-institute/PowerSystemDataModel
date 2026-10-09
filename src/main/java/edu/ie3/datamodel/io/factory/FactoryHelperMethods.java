@@ -11,12 +11,12 @@ import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.VoltageLevelException;
 import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.models.Entity;
+import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.DoubleFunction;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.ElectricPotential;
@@ -115,23 +115,6 @@ public interface FactoryHelperMethods {
   }
 
   /**
-   * Parses and returns a Quantity from field value of given field name. Throws {@link
-   * FactoryException} if field does not exist or parsing fails.
-   *
-   * @param fieldsToAttributes map: field name to attribute
-   * @param field field name
-   * @param buildFcn function to construct a quantity
-   * @param <Q> unit type parameter
-   * @return Quantity of given field with given unit
-   */
-  default <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(
-      Map<String, String> fieldsToAttributes,
-      String field,
-      DoubleFunction<ComparableQuantity<Q>> buildFcn) {
-    return buildFcn.apply(getDouble(fieldsToAttributes, field));
-  }
-
-  /**
    * Returns field value for given field name, or empty Optional if field does not exist.
    *
    * <p>Note: This method removes the field from the map.
@@ -147,26 +130,6 @@ public interface FactoryHelperMethods {
     return Optional.ofNullable(fieldsToAttributes.remove(field))
         .filter(str -> !str.isEmpty())
         .map(value -> Quantities.getQuantity(Double.parseDouble(value), unit));
-  }
-
-  /**
-   * Returns field value for given field name, or empty Optional if field does not exist.
-   *
-   * <p>Note: This method removes the field from the map.
-   *
-   * @param fieldsToAttributes map: field name to attribute
-   * @param field field name
-   * @param buildFcn function to construct a quantity
-   * @param <Q> unit type parameter
-   * @return field value
-   */
-  default <Q extends Quantity<Q>> Optional<ComparableQuantity<Q>> getQuantityOptional(
-      Map<String, String> fieldsToAttributes,
-      String field,
-      DoubleFunction<ComparableQuantity<Q>> buildFcn) {
-    return Optional.ofNullable(fieldsToAttributes.remove(field))
-        .filter(str -> !str.isEmpty())
-        .map(value -> buildFcn.apply(Double.parseDouble(value)));
   }
 
   /**
@@ -253,7 +216,18 @@ public interface FactoryHelperMethods {
 
   default <E extends Entity> E getEntity(
       Map<String, String> fieldsToAttributes, String field, Map<UUID, E> entities) {
-    return entities.get(getUUID(fieldsToAttributes, field));
+    UUID uuid = getUUID(fieldsToAttributes, field);
+
+    if (entities.containsKey(uuid)) {
+      return entities.get(uuid);
+    } else {
+      throw new FactoryException(
+          "Extracting UUID for field '"
+              + field
+              + "' failed. Caused by: Entity with uuid "
+              + uuid
+              + " was not provided.");
+    }
   }
 
   default <E extends Entity> E getEntity(
@@ -265,9 +239,9 @@ public interface FactoryHelperMethods {
     }
   }
 
-  default <E extends Entity> E getType(
+  default <E extends AssetTypeInput> E getType(
       Map<String, String> fieldsToAttributes, Map<UUID, E> entities) {
-    return entities.get(getUUID(fieldsToAttributes, FieldNamingStrategy.TYPE));
+    return getEntity(fieldsToAttributes, FieldNamingStrategy.TYPE, entities);
   }
 
   /**

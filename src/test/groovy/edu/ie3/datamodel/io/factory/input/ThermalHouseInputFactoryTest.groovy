@@ -26,7 +26,7 @@ class ThermalHouseInputFactoryTest extends Specification implements FactoryTestH
   def setupSpec() {
     thermalBusInput.getUuid() >> busUuid
 
-    inputFactory = new ThermalHouseInputFactory(map(), map(thermalBusInput))
+    inputFactory = new ThermalHouseInputFactory(Collections.emptyMap(), map(thermalBusInput))
   }
 
   def "A ThermalHouseInputFactory should contain exactly the expected class for parsing"() {
