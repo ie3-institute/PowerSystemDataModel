@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+- Validate that every storage is controlled by an energy management unit [#1293](https://github.com/ie3-institute/PowerSystemDataModel/issues/1293)
 - Register `ThermalLineSegmentResult` at `ResultEntityProcessor` [#1759](https://github.com/ie3-institute/PowerSystemDataModel/issues/1759)
 - Allow `LoadInput` to reference Markov load profiles [#1765](https://github.com/ie3-institute/PowerSystemDataModel/issues/1765)
 
