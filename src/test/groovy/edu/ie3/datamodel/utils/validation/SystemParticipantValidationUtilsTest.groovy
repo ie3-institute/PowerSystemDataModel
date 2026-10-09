@@ -509,6 +509,7 @@ class SystemParticipantValidationUtilsTest extends Specification {
     SystemParticipantTestData.evcsInput.copy().chargingPoints(-1).build() || new InvalidEntityException("Invalid number of charging points: '-1'. At least one charging point is needed.", invalidEvcs)
     SystemParticipantTestData.evcsInput.copy().chargingPoints(0).build() || new InvalidEntityException("Invalid number of charging points: '0'. At least one charging point is needed.", invalidEvcs)
     SystemParticipantTestData.evcsInput.copy().cosPhiRated(2).build() || new InvalidEntityException("Rated power factor of EvcsInput must be between 0 and 1", invalidEvcs)
+    SystemParticipantTestData.evcsInput.copy().locationTypes([]).build() || new InvalidEntityException(invalidEvcs.id + " LocationType is empty. At least one location type must be provided.", invalidEvcs)
   }
 
   def "SystemParticipantValidationUtils.checkEvcs() recognizes all potential errors for a evcs type"() {

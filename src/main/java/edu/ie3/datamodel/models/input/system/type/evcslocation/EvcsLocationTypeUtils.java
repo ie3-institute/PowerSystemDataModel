@@ -6,7 +6,9 @@
 package edu.ie3.datamodel.models.input.system.type.evcslocation;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Utility class providing tools to retrieve {@link EvcsLocationType}s from string representation
@@ -28,14 +30,46 @@ public class EvcsLocationTypeUtils {
   }
 
   /**
-   * Parsing a location type string into one {@link EvcsLocationType}. Matching the string is
-   * case-insensitive and all - and _ are removed. Throws exception, if type does not exist.
+   * Parsing a location type string into one {@link EvcsLocationType} or a list of
+   * EvcsLocationTypes. Matching the string is case-insensitive and all - and _ are removed.
+   *
+   * @param parsableString string to parse
+   * @return List<EvcsLocationType>
+   * @throws ParsingException if string does not represent a location type
+   */
+  public static List<EvcsLocationType> parse(String parsableString) throws ParsingException {
+    if (parsableString == null || parsableString.trim().isEmpty()) {
+      throw new ParsingException("Location types string cannot be null or empty");
+    }
+
+    // Remove brackets if present
+    parsableString = parsableString.replace("[", "").replace("]", "");
+
+    // Check if it contains comma for multiple values
+    if (parsableString.contains(",")) {
+      final List<EvcsLocationType> types = new ArrayList<>();
+      for (String part : parsableString.split(",")) {
+        final String trimmed = part.trim();
+        if (!trimmed.isEmpty()) {
+          types.add(parseSingle(trimmed));
+        }
+      }
+      return types;
+    } else {
+      // Single value - wrap in List
+      return List.of(parseSingle(parsableString.trim()));
+    }
+  }
+
+  /**
+   * Parsing a single location type string into one {@link EvcsLocationType}. Matching the string is
+   * case-insensitive and all - and _ are removed.
    *
    * @param parsableString string to parse
    * @return corresponding EvcsLocationType
    * @throws ParsingException if string does not represent a location type
    */
-  public static EvcsLocationType parse(String parsableString) throws ParsingException {
+  public static EvcsLocationType parseSingle(String parsableString) throws ParsingException {
     final String key = toKey(parsableString);
     if (nameToType.containsKey(key)) return nameToType.get(key);
     else throw new ParsingException("EvcsLocationType '" + key + "' does not exist.");

@@ -18,6 +18,7 @@ import edu.ie3.datamodel.models.input.connector.type.ConductorInput;
 import edu.ie3.datamodel.models.input.connector.type.LayerInput;
 import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
+import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.result.CongestionResult;
@@ -241,8 +242,7 @@ public abstract class Processor<T> {
           "String",
           "DayOfWeek",
           "Season",
-          "ChargingPointType",
-          "EvcsLocationType" ->
+          "ChargingPointType" ->
           resultStringBuilder.append(methodReturnObject.toString());
       case "Quantity", "ComparableQuantity" ->
           resultStringBuilder.append(handleQuantity((Quantity<?>) methodReturnObject, fieldName));
@@ -326,8 +326,8 @@ public abstract class Processor<T> {
           resultStringBuilder.append(((CongestionResult.InputModelType) methodReturnObject).type);
       case "PowerProfileKey" ->
           resultStringBuilder.append(((PowerProfileKey) methodReturnObject).serialize());
-      case "List" ->
-          resultStringBuilder.append(serializeCableToJson(methodReturnObject, fieldName));
+      case "ArrayList", "List" ->
+          resultStringBuilder.append(processList(methodReturnObject, fieldName));
       case "ConductorInput" ->
           resultStringBuilder.append(serializeCableToJson(methodReturnObject, fieldName));
       default ->
@@ -479,6 +479,27 @@ public abstract class Processor<T> {
    * @return The unmodifiable {@link List} of eligible classes
    */
   protected abstract List<Class<? extends T>> getEligibleEntityClasses();
+
+  /**
+   * Processes a list-valued field to its String representation. A list of {@link EvcsLocationType}s
+   * is comma-joined, a list of {@link LayerInput}s (cable layers) is serialized to embedded JSON
+   * and any other list is rejected.
+   *
+   * @param methodReturnObject The value returned by the getter (expected to be a {@link List})
+   * @param fieldName Name of the foreseen field
+   * @return A String representation of the list
+   * @throws EntityProcessorException if the list is neither a list of {@link EvcsLocationType}s nor
+   *     a list of {@link LayerInput}s
+   */
+  private String processList(Object methodReturnObject, String fieldName)
+      throws EntityProcessorException {
+    return switch (methodReturnObject) {
+      case List<?> list when list.stream().allMatch(EvcsLocationType.class::isInstance) ->
+          list.stream().map(Object::toString).collect(Collectors.joining(",", "[", "]"));
+      case List<?> list -> serializeCableToJson(list, fieldName);
+      case null, default -> methodReturnObject == null ? "" : methodReturnObject.toString();
+    };
+  }
 
   /**
    * Serializes a cable component ({@link ScreenLayerInput}, {@link ConductorInput} or a {@link

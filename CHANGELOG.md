@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Throw a `SourceException` instead of silently swallowing SQL errors in `SqlDataSource` [#914](https://github.com/ie3-institute/PowerSystemDataModel/issues/914)
 - Throw a `SourceException` in `SqlDataSource.getSourceFields` if the fields of a table cannot be read [#1761](https://github.com/ie3-institute/PowerSystemDataModel/issues/1761)
 
+### Changed
+- Change Evcs.locationType from single element to list [#1460](https://github.com/ie3-institute/PowerSystemDataModel/issues/1460)
 
 ## [9.2.0] - 2026-09-30
 
