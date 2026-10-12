@@ -48,4 +48,42 @@ class EvInputTest extends Specification {
       type.eCons == ev.type.eCons * 2d
     }
   }
+
+  def "An EvInput always-on constructor should work as expected"() {
+    given:
+    def uuid = UUID.randomUUID()
+    def ev = new EvInput(uuid, "ev_always_on", SystemParticipantTestData.evTypeInput)
+
+    expect:
+    ev.uuid == uuid
+    ev.id == "ev_always_on"
+    ev.type == SystemParticipantTestData.evTypeInput
+    ev.operator != null
+    ev.operationTime != null
+  }
+
+  def "An EvInput equals and hashCode should work as expected"() {
+    given:
+    def ev1 = SystemParticipantTestData.evInput
+    def ev2 = SystemParticipantTestData.evInput.copy().build()
+    def evDifferentType = SystemParticipantTestData.evInput.copy()
+        .type(SystemParticipantTestData.evTypeInput.copy().id("other").build())
+        .build()
+    def evDifferentUuid = new EvInput(
+        UUID.randomUUID(),
+        SystemParticipantTestData.evInput.id,
+        SystemParticipantTestData.evInput.operator,
+        SystemParticipantTestData.evInput.operationTime,
+        SystemParticipantTestData.evTypeInput
+        )
+
+    expect:
+    ev1 == ev1
+    ev1 == ev2
+    ev1.hashCode() == ev2.hashCode()
+    ev1 != null
+    ev1 != "string"
+    ev1 != evDifferentType
+    ev1 != evDifferentUuid
+  }
 }
