@@ -43,47 +43,79 @@ public class SystemParticipantResultFactory<R extends SystemParticipantResult>
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   protected R buildModel(Map<String, String> data, ZonedDateTime time, UUID inputModel) {
-
     ComparableQuantity<Power> p = getQuantity(data, POWER, StandardUnits.ACTIVE_POWER_RESULT);
     ComparableQuantity<Power> q =
         getQuantity(data, REACTIVE_POWER, StandardUnits.REACTIVE_POWER_RESULT);
 
-    if (targetClass.equals(LoadResult.class)) {
-      return (R) new LoadResult(time, inputModel, p, q);
-    } else if (targetClass.equals(FixedFeedInResult.class)) {
-      return (R) new FixedFeedInResult(time, inputModel, p, q);
-    } else if (targetClass.equals(BmResult.class)) {
+    if (SystemParticipantWithHeatResult.class.isAssignableFrom(targetClass)) {
+      return buildModelWithHeat(data, time, inputModel, p, q);
+    } else if (ElectricalEnergyStorageResult.class.isAssignableFrom(targetClass)) {
+      return buildModelWithSoc(data, time, inputModel, p, q);
+    } else {
+      return buildModel(time, inputModel, p, q);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private R buildModel(
+      ZonedDateTime time,
+      UUID inputModel,
+      ComparableQuantity<Power> p,
+      ComparableQuantity<Power> q) {
+    if (targetClass.equals(BmResult.class)) {
       return (R) new BmResult(time, inputModel, p, q);
-    } else if (targetClass.equals(PvResult.class)) {
-      return (R) new PvResult(time, inputModel, p, q);
-    } else if (targetClass.equals(EvcsResult.class)) {
-      return (R) new EvcsResult(time, inputModel, p, q);
     } else if (targetClass.equals(EmResult.class)) {
       return (R) new EmResult(time, inputModel, p, q);
-    } else if (SystemParticipantWithHeatResult.class.isAssignableFrom(targetClass)) {
-      /* The following classes all have a heat component as well */
-      ComparableQuantity<Power> qDot = getQuantity(data, Q_DOT, StandardUnits.Q_DOT_RESULT);
-
-      if (targetClass.equals(ChpResult.class)) {
-        return (R) new ChpResult(time, inputModel, p, q, qDot);
-      } else if (targetClass.equals(HpResult.class)) {
-        return (R) new HpResult(time, inputModel, p, q, qDot);
-      } else if (targetClass.equals(AcResult.class)) {
-        return (R) new AcResult(time, inputModel, p, q, qDot);
-      } else {
-        throw new FactoryException("Cannot process " + targetClass.getSimpleName() + ".class.");
-      }
+    } else if (targetClass.equals(EvcsResult.class)) {
+      return (R) new EvcsResult(time, inputModel, p, q);
+    } else if (targetClass.equals(FixedFeedInResult.class)) {
+      return (R) new FixedFeedInResult(time, inputModel, p, q);
+    } else if (targetClass.equals(LoadResult.class)) {
+      return (R) new LoadResult(time, inputModel, p, q);
+    } else if (targetClass.equals(PvResult.class)) {
+      return (R) new PvResult(time, inputModel, p, q);
     } else if (targetClass.equals(WecResult.class)) {
       return (R) new WecResult(time, inputModel, p, q);
-    } else if (targetClass.equals(EvResult.class)) {
-      ComparableQuantity<Dimensionless> socQuantity = getQuantity(data, SOC, PERCENT);
+    } else {
+      throw new FactoryException("Cannot process " + targetClass.getSimpleName() + ".class.");
+    }
+  }
 
+  @SuppressWarnings("unchecked")
+  private R buildModelWithHeat(
+      Map<String, String> data,
+      ZonedDateTime time,
+      UUID inputModel,
+      ComparableQuantity<Power> p,
+      ComparableQuantity<Power> q) {
+    /* The following classes all have a heat component as well */
+    ComparableQuantity<Power> qDot = getQuantity(data, Q_DOT, StandardUnits.Q_DOT_RESULT);
+
+    if (targetClass.equals(ChpResult.class)) {
+      return (R) new ChpResult(time, inputModel, p, q, qDot);
+    } else if (targetClass.equals(HpResult.class)) {
+      return (R) new HpResult(time, inputModel, p, q, qDot);
+    } else if (targetClass.equals(AcResult.class)) {
+      return (R) new AcResult(time, inputModel, p, q, qDot);
+    } else {
+      throw new FactoryException("Cannot process " + targetClass.getSimpleName() + ".class.");
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private R buildModelWithSoc(
+      Map<String, String> data,
+      ZonedDateTime time,
+      UUID inputModel,
+      ComparableQuantity<Power> p,
+      ComparableQuantity<Power> q) {
+    /* The following classes all have a soc component as well */
+    ComparableQuantity<Dimensionless> socQuantity = getQuantity(data, SOC, PERCENT);
+
+    if (targetClass.equals(EvResult.class)) {
       return (R) new EvResult(time, inputModel, p, q, socQuantity);
     } else if (targetClass.equals(StorageResult.class)) {
-      ComparableQuantity<Dimensionless> socQuantity = getQuantity(data, SOC, PERCENT);
-
       return (R) new StorageResult(time, inputModel, p, q, socQuantity);
     } else {
       throw new FactoryException("Cannot process " + targetClass.getSimpleName() + ".class.");
