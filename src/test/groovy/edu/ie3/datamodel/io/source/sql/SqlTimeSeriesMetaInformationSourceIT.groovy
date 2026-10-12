@@ -66,7 +66,7 @@ class SqlTimeSeriesMetaInformationSourceIT extends Specification implements Test
         new IndividualTimeSeriesMetaInformation(UUID.fromString("3fbfaa97-cff4-46d4-95ba-a95665e87c26"), ColumnScheme.APPARENT_POWER),
         new IndividualTimeSeriesMetaInformation(UUID.fromString("46be1e57-e4ed-4ef7-95f1-b2b321cb2047"), ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND),
         new IndividualTimeSeriesMetaInformation(UUID.fromString("b669e4bf-a351-4067-860d-d5f224b62247"), ColumnScheme.ACTIVE_POWER)
-        )
+    )
     def result = source.timeSeriesMetaInformation
 
     then:
@@ -74,7 +74,7 @@ class SqlTimeSeriesMetaInformationSourceIT extends Specification implements Test
 
     result.every {
       it.key == it.value.uuid &&
-      expectedTimeSeries.contains(it.value)
+          expectedTimeSeries.contains(it.value)
     }
   }
 

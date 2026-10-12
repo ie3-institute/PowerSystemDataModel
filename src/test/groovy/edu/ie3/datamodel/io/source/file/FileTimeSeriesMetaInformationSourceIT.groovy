@@ -34,7 +34,7 @@ class FileTimeSeriesMetaInformationSourceIT extends Specification implements Csv
         new FileIndividualTimeSeriesMetaInformation(UUID.fromString("46be1e57-e4ed-4ef7-95f1-b2b321cb2047"), ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND, Path.of('its_pqh_46be1e57-e4ed-4ef7-95f1-b2b321cb2047'), FileType.CSV),
         new FileIndividualTimeSeriesMetaInformation(UUID.fromString("1061af70-1c03-46e1-b960-940b956c429f"), ColumnScheme.APPARENT_POWER, Path.of('its_pq_1061af70-1c03-46e1-b960-940b956c429f'), FileType.CSV),
         new FileIndividualTimeSeriesMetaInformation(UUID.fromString("eeccbe3c-a47e-448e-8eca-1f369d3c24e6"), ColumnScheme.VOLTAGE, Path.of("its_v_eeccbe3c-a47e-448e-8eca-1f369d3c24e6"), FileType.CSV)
-        )
+    )
 
     when:
     def actual = source.timeSeriesMetaInformation
@@ -43,7 +43,7 @@ class FileTimeSeriesMetaInformationSourceIT extends Specification implements Csv
     actual.size() == 8
     actual.every {
       it.key == it.value.uuid &&
-      expectedTimeSeries.contains(it.value)
+          expectedTimeSeries.contains(it.value)
     }
   }
 

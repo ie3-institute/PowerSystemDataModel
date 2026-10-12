@@ -214,7 +214,7 @@ class UniquenessValidationUtilsTest extends Specification {
         new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND)),
         Optional.of(new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS))),
         Optional.of(new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)))
-        )
+    )
 
     Set<TimeBasedValue<WeatherValue>> uniqueValues = [
       new TimeBasedValue<WeatherValue>(time, value),
@@ -238,7 +238,7 @@ class UniquenessValidationUtilsTest extends Specification {
         new WindValue(Quantities.getQuantity(5d, DEGREE_GEOM), Quantities.getQuantity(10d, METRE_PER_SECOND)),
         Optional.of(new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS))),
         Optional.of(new GroundTemperatureValue(Quantities.getQuantity(5d, Units.CELSIUS)))
-        )
+    )
     Set<TimeBasedValue<WeatherValue>> notUniqueValues = [
       new TimeBasedValue<WeatherValue>(time, value),
       new TimeBasedValue<WeatherValue>(time, value)

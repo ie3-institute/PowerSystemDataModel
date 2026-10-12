@@ -89,7 +89,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
         "input_entities.sql",
         "time_series.sql",
         "load_profiles.sql"
-        )
+    )
     for (String file: importFiles) {
       Container.ExecResult res = postgreSQLContainer.execInContainer("psql", "-Utest", "-f/home/" + file)
       assert res.stderr.empty
@@ -228,7 +228,7 @@ class SqlSinkTest extends Specification implements TestContainerHelper, TimeSeri
         1,
         Quantities.getQuantity(25d, KILOVOLTAMPERE),
         0.95
-        )
+    )
 
     when:
     sink.persistIgnoreNested(nestedInput, identifier)
