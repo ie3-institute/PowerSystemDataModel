@@ -24,6 +24,12 @@ public abstract class AssetInputEntityFactory<T extends AssetInput>
 
   private final Map<UUID, OperatorInput> operators;
 
+  protected AssetInputEntityFactory(
+      Map<UUID, OperatorInput> operators, Class<? extends T> allowedClass) {
+    super(allowedClass);
+    this.operators = operators;
+  }
+
   @SafeVarargs
   protected AssetInputEntityFactory(
       Map<UUID, OperatorInput> operators, Class<? extends T>... allowedClasses) {
