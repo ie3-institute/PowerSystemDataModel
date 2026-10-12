@@ -23,7 +23,7 @@ class SystemParticipantsTest extends Specification {
         Collections.singleton(SystemParticipantTestData.pvInput),
         Collections.singleton(SystemParticipantTestData.storageInput),
         Collections.singleton(SystemParticipantTestData.wecInput)
-        )
+    )
 
     when:
     def newlyCreatedSystemParticipants = new SystemParticipants(systemParticipants.allEntitiesAsList())
@@ -45,7 +45,7 @@ class SystemParticipantsTest extends Specification {
         Collections.singleton(SystemParticipantTestData.pvInput),
         Collections.singleton(SystemParticipantTestData.storageInput),
         Collections.singleton(SystemParticipantTestData.wecInput)
-        )
+    )
 
     def modifiedBmInput = SystemParticipantTestData.bmInput.copy().id("modified").build()
     def modifiedChpInput = SystemParticipantTestData.chpInput.copy().id("modified").build()

@@ -290,7 +290,7 @@ class InputEntityProcessorTest extends Specification {
       "type" : SystemParticipantTestData.evcsInput.type.toString(),
       "cosPhiRated" : SystemParticipantTestData.evcsInput.cosPhiRated.toString(),
       "chargingPoints" : SystemParticipantTestData.evcsInput.chargingPoints.toString(),
-      "locationType" : SystemParticipantTestData.evcsInput.locationType.name(),
+      "locationTypes" : SystemParticipantTestData.evcsInput.locationTypes.toString(),
       "v2gSupport" : SystemParticipantTestData.evcsInput.v2gSupport.toString(),
       "controllingEm" : SystemParticipantTestData.acInput.controllingEm.map{entity ->
         entity.uuid.toString()
@@ -672,7 +672,7 @@ class InputEntityProcessorTest extends Specification {
         "formationX",
         Quantities.getQuantity(0.1, StandardUnits.LINE_LENGTH),
         Quantities.getQuantity(0.2, StandardUnits.LINE_LENGTH)
-        )
+    )
 
     Map expected = [
       "uuid" : "11111111-1111-1111-1111-111111111111",

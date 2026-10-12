@@ -351,7 +351,7 @@ class SystemParticipantTestData {
   ChargingPointTypeUtils.HouseholdSocket,
   4,
   cosPhiRated,
-  EvcsLocationType.HOME,
+  [EvcsLocationType.HOME],
   v2gSupport
   )
 
