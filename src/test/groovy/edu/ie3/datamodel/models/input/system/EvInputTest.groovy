@@ -75,7 +75,7 @@ class EvInputTest extends Specification {
         SystemParticipantTestData.evInput.operator,
         SystemParticipantTestData.evInput.operationTime,
         SystemParticipantTestData.evTypeInput
-        )
+    )
 
     expect:
     ev1 == ev1
