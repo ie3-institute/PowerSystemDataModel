@@ -131,7 +131,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
           new InputEntityProcessor(CableTypeInput),
           new InputEntityProcessor(LoadInput),
           new InputEntityProcessor(EmInput)
-        ], [] as Map),
+        ], [:] as Map),
         new FileNamingStrategy(),
         ",")
 
@@ -257,7 +257,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         1,
         Quantities.getQuantity(25d, KILOVOLTAMPERE),
         0.95
-        )
+    )
 
     when:
     csvFileSink.persist(nestedInput)
@@ -291,7 +291,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         1,
         Quantities.getQuantity(25d, KILOVOLTAMPERE),
         0.95
-        )
+    )
 
     when:
     csvFileSink.persistIgnoreNested(nestedInput)

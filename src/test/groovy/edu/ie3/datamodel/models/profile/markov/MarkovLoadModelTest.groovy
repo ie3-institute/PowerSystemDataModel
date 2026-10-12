@@ -23,7 +23,7 @@ class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
         OptionalInt.of(0),
         OptionalDouble.empty(),
         99L
-        )
+    )
 
     when:
     def supplier = model.getValueSupplier(input)
@@ -48,7 +48,7 @@ class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
         OptionalInt.of(0),
         OptionalDouble.empty(),
         17L
-        )
+    )
 
     when:
     def supplier = model.getValueSupplier(input)
@@ -67,7 +67,7 @@ class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
         OptionalInt.empty(),
         OptionalDouble.of(0.25d),
         13L
-        )
+    )
 
     when:
     def supplier = model.getValueSupplier(input)
@@ -86,7 +86,7 @@ class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
         OptionalInt.empty(),
         OptionalDouble.of(0.5d),
         13L
-        )
+    )
 
     when:
     def output = model.getValueSupplier(input).get()
@@ -104,7 +104,7 @@ class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
         OptionalInt.of(5),
         OptionalDouble.empty(),
         1L
-        )
+    )
 
     when:
     model.getValueSupplier(input).get()

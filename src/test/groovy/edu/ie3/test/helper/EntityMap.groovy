@@ -17,6 +17,6 @@ class EntityMap {
             { entity -> entity.uuid },
             Function.identity()
             )
-        )
+    )
   }
 }

@@ -236,7 +236,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
         [
           rgtd.measurementUnitInput
         ] as Set
-        )
+    )
 
     then: "all elements are there"
     actual != null

@@ -36,7 +36,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
     def expected = new TimeBasedValue(
         time,
         new EnergyPriceValue(Quantities.getQuantity(52.4, ENERGY_PRICE))
-        )
+    )
 
     when:
     def actual = factory.get(fieldToValue)
