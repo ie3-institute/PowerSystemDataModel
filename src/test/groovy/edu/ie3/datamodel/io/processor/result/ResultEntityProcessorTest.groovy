@@ -322,7 +322,7 @@ class ResultEntityProcessorTest extends Specification {
         Quantities.getQuantity(110, Units.PERCENT),
         Quantities.getQuantity(0, Units.PERCENT),
         Quantities.getQuantity(100, Units.PERCENT),
-        )
+    )
 
     def expectedResults = [
       inputModel: '22bea5fc-2cb2-4c61-beb9-b476e0107f52',

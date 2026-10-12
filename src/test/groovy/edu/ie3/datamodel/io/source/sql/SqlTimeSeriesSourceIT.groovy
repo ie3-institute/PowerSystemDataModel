@@ -67,7 +67,7 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
     def metaInformation = new IndividualTimeSeriesMetaInformation(
         pTimeSeriesUuid,
         ColumnScheme.ACTIVE_POWER
-        )
+    )
 
     namingStrategy = new DatabaseNamingStrategy()
 
@@ -101,7 +101,7 @@ class SqlTimeSeriesSourceIT extends Specification implements TestContainerHelper
     def metaInformation = new IndividualTimeSeriesMetaInformation(
         UUID.fromString("8bc9120d-fb9b-4484-b4e3-0cdadf0feea9"),
         ColumnScheme.WEATHER
-        )
+    )
 
     when:
     SqlTimeSeriesSource.createSource(connector, schemaName, namingStrategy, metaInformation)

@@ -685,7 +685,7 @@ class InputEntityProcessorTest extends Specification {
         "formationX",
         Quantities.getQuantity(0.1, StandardUnits.LINE_LENGTH),
         Quantities.getQuantity(0.2, StandardUnits.LINE_LENGTH)
-        )
+    )
 
     Map expected = [
       "uuid" : "11111111-1111-1111-1111-111111111111",

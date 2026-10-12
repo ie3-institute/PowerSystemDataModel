@@ -72,14 +72,14 @@ class ThermalHouseInputTest extends Specification {
         Quantities.getQuantity(15, StandardUnits.TEMPERATURE),
         "house",
         2.0
-        )
+    )
 
     expect:
     thermalHouseInput.targetTemperature == Quantities.getQuantity(20, StandardUnits.TEMPERATURE)
     thermalHouseInput.upperTemperatureLimit == Quantities.getQuantity(25, StandardUnits.TEMPERATURE)
     thermalHouseInput.lowerTemperatureLimit == Quantities.getQuantity(15, StandardUnits.TEMPERATURE)
     thermalHouseInput.housingType == "house"
-    thermalHouseInput.numberOfInhabitants == 2.0
+    thermalHouseInput.numberOfInhabitants == 2.0d
   }
 
   def "Scaling a ThermalHouseInput via builder should work as expected"() {
