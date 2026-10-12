@@ -9,37 +9,45 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.ConnectorInput;
+import java.util.Map;
 import java.util.UUID;
 
 /**
- * Abstract factory class that can be extended in order for creating {@link ConnectorInput} entities
- * with {@link ConnectorInputEntityData} data objects.
+ * Abstract factory class that can be extended in order for creating {@link ConnectorInput}
+ * entities.
  *
  * @param <T> Type of entity that this factory can create. Must be a subclass of {@link
  *     ConnectorInput}
- * @param <D> Type of data class that is required for entity creation
- * @since 19.02.20
  */
-public abstract class ConnectorInputEntityFactory<
-        T extends ConnectorInput, D extends ConnectorInputEntityData>
-    extends AssetInputEntityFactory<T, D> {
+public abstract class ConnectorInputEntityFactory<T extends ConnectorInput>
+    extends AssetInputEntityFactory<T> {
+
+  protected final Map<UUID, NodeInput> nodes;
 
   @SafeVarargs
-  protected ConnectorInputEntityFactory(Class<? extends T>... allowedClasses) {
-    super(allowedClasses);
+  protected ConnectorInputEntityFactory(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Class<? extends T>... allowedClasses) {
+    super(operators, allowedClasses);
+    this.nodes = nodes;
   }
 
   @Override
   protected T buildModel(
-      D data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
-    final NodeInput nodeA = data.getNodeA();
-    final NodeInput nodeB = data.getNodeB();
+      Map<String, String> data,
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime) {
+    final NodeInput nodeA = getEntity(data, NODE_A, nodes);
+    final NodeInput nodeB = getEntity(data, NODE_B, nodes);
 
     return buildModel(data, uuid, id, nodeA, nodeB, operator, operationTime);
   }
 
   protected abstract T buildModel(
-      D data,
+      Map<String, String> data,
       UUID uuid,
       String id,
       NodeInput nodeA,

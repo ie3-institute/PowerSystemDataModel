@@ -8,39 +8,49 @@ package edu.ie3.datamodel.io.factory.input.participant;
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityFactory;
-import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.models.OperationTime;
+import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
-import java.util.*;
+import java.util.Map;
+import java.util.UUID;
 
 /**
- * Abstract factory class for creating {@link SystemParticipantInput} entities with {@link
- * NodeAssetInputEntityData} data objects.
+ * Abstract factory class for creating {@link SystemParticipantInput} entities.
  *
  * @param <T> Type of entity that this factory can create. Must be a subclass of {@link
  *     SystemParticipantInput}
- * @param <D> Type of data class that is required for entity creation
- * @version 0.1
- * @since 28.01.20
  */
-public abstract class SystemParticipantInputEntityFactory<
-        T extends SystemParticipantInput, D extends SystemParticipantEntityData>
-    extends AssetInputEntityFactory<T, D> {
+public abstract class SystemParticipantInputEntityFactory<T extends SystemParticipantInput>
+    extends AssetInputEntityFactory<T> {
+
+  private final Map<UUID, NodeInput> nodes;
+  private final Map<UUID, EmInput> emUnits;
 
   @SafeVarargs
-  protected SystemParticipantInputEntityFactory(Class<? extends T>... allowedClasses) {
-    super(allowedClasses);
+  protected SystemParticipantInputEntityFactory(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, EmInput> emUnits,
+      Class<? extends T>... allowedClasses) {
+    super(operators, allowedClasses);
+    this.nodes = nodes;
+    this.emUnits = emUnits;
   }
 
   @Override
   protected T buildModel(
-      D data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
-    NodeInput node = data.getNode();
+      Map<String, String> data,
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime) {
+    NodeInput node = getEntity(data, NODE, nodes);
+    EmInput controllingEm = getEntity(data, CONTROLLING_EM, emUnits, null);
 
-    String qCharacteristicsValue = data.getField(Q_CHARACTERISTICS);
+    String qCharacteristicsValue = getField(data, Q_CHARACTERISTICS);
 
     ReactivePowerCharacteristic qCharacteristics;
     try {
@@ -53,7 +63,8 @@ public abstract class SystemParticipantInputEntityFactory<
           e);
     }
 
-    return buildModel(data, uuid, id, node, qCharacteristics, operator, operationTime);
+    return buildModel(
+        data, uuid, id, node, qCharacteristics, operator, operationTime, controllingEm);
   }
 
   /**
@@ -69,11 +80,12 @@ public abstract class SystemParticipantInputEntityFactory<
    * @return newly created asset object
    */
   protected abstract T buildModel(
-      D data,
+      Map<String, String> data,
       UUID uuid,
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
-      OperationTime operationTime);
+      OperationTime operationTime,
+      EmInput controllingEm);
 }

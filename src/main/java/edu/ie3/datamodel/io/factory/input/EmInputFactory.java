@@ -10,24 +10,25 @@ import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import java.util.*;
 
-public class EmInputFactory extends AssetInputEntityFactory<EmInput, EmAssetInputEntityData> {
+public class EmInputFactory extends AssetInputEntityFactory<EmInput> {
 
-  public EmInputFactory() {
-    super(EmInput.class);
+  private final Map<UUID, EmInput> emUnits;
+
+  public EmInputFactory(Map<UUID, OperatorInput> operators, Map<UUID, EmInput> emUnits) {
+    super(operators, EmInput.class);
+    this.emUnits = emUnits;
   }
 
   @Override
   protected EmInput buildModel(
-      EmAssetInputEntityData data,
+      Map<String, String> data,
       UUID uuid,
       String id,
       OperatorInput operator,
       OperationTime operationTime) {
-    String controlStrategy = data.getField(CONTROL_STRATEGY);
+    String controlStrategy = getField(data, CONTROL_STRATEGY);
+    EmInput parentEm = getEntity(data, CONTROLLING_EM, emUnits, null);
 
-    EmInput parentEm = data.getControllingEm();
-
-    return new EmInput(
-        uuid, id, operator, operationTime, controlStrategy, parentEm, data.getFieldsToValues());
+    return new EmInput(uuid, id, operator, operationTime, controlStrategy, parentEm, data);
   }
 }

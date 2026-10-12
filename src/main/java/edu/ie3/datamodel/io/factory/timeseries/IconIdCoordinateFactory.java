@@ -5,8 +5,8 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
-import edu.ie3.datamodel.io.factory.SimpleFactoryData;
 import edu.ie3.datamodel.models.input.IdCoordinateInput;
+import java.util.Map;
 
 /**
  * Factory, that is able to build coordinate id to coordinate mapping from German Federal Weather
@@ -19,10 +19,10 @@ public class IconIdCoordinateFactory extends IdCoordinateFactory {
   }
 
   @Override
-  protected IdCoordinateInput buildModel(SimpleFactoryData data) {
-    int coordinateId = data.getInt(COORDINATE_ID);
-    double lat = data.getDouble(LAT);
-    double lon = data.getDouble(LONG);
+  protected IdCoordinateInput buildModel(Map<String, String> data) {
+    int coordinateId = getInt(data, COORDINATE_ID);
+    double lat = getDouble(data, LAT);
+    double lon = getDouble(data, LONG);
     return new IdCoordinateInput(coordinateId, lat, lon);
   }
 

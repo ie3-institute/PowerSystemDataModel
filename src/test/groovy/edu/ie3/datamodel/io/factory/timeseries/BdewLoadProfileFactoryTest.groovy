@@ -25,7 +25,7 @@ class BdewLoadProfileFactoryTest extends Specification {
   def setupSpec() {
     factory = new BdewLoadProfileFactory()
 
-    def data0 = new LoadProfileData([
+    def data0 = [
       "SuSa": "74.6",
       "SuSu": "68.8",
       "SuWd": "71.5",
@@ -36,9 +36,9 @@ class BdewLoadProfileFactoryTest extends Specification {
       "WiSu": "63.2",
       "WiWd": "65.5",
       "quarterHour": "0"
-    ] as Map, BdewLoadValues)
+    ]
 
-    def data1 = new LoadProfileData([
+    def data1 = [
       "SuSa": "76.2",
       "SuSu": "67.4",
       "SuWd": "69.0",
@@ -49,9 +49,9 @@ class BdewLoadProfileFactoryTest extends Specification {
       "WiSu": "61.0",
       "WiWd": "62.6",
       "quarterHour": "1"
-    ] as Map, BdewLoadValues)
+    ]
 
-    def data2 = new LoadProfileData([
+    def data2 = [
       "SuSa": "77.7",
       "SuSu": "65.7",
       "SuWd": "66.3",
@@ -62,7 +62,7 @@ class BdewLoadProfileFactoryTest extends Specification {
       "WiSu": "58.9",
       "WiWd": "59.6",
       "quarterHour": "2"
-    ] as Map, BdewLoadValues)
+    ]
 
     allEntries = [
       factory.buildModel(data0),
@@ -117,7 +117,7 @@ class BdewLoadProfileFactoryTest extends Specification {
     ] as Map
 
     when:
-    def entry = factory.buildModel(new LoadProfileData<>(data, BdewLoadValues))
+    def entry = factory.buildModel(data)
 
     then:
     entry.value.class == BdewLoadValues

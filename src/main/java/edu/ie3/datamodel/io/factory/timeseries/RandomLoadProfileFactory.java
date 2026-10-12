@@ -12,6 +12,7 @@ import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
 import edu.ie3.util.quantities.PowerSystemUnits;
+import java.util.Map;
 import java.util.Set;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -25,20 +26,20 @@ public class RandomLoadProfileFactory extends LoadProfileFactory<RandomLoadValue
   }
 
   @Override
-  protected LoadProfileEntry<RandomLoadValues> buildModel(LoadProfileData<RandomLoadValues> data) {
-    int quarterHour = data.getInt(QUARTER_HOUR);
+  protected LoadProfileEntry<RandomLoadValues> buildModel(Map<String, String> data) {
+    int quarterHour = getInt(data, QUARTER_HOUR);
 
     return new LoadProfileEntry<>(
         new RandomLoadValues(
-            data.getDouble(K_SATURDAY),
-            data.getDouble(K_SUNDAY),
-            data.getDouble(K_WEEKDAY),
-            data.getDouble(MY_SATURDAY),
-            data.getDouble(MY_SUNDAY),
-            data.getDouble(MY_WEEKDAY),
-            data.getDouble(SIGMA_SATURDAY),
-            data.getDouble(SIGMA_SUNDAY),
-            data.getDouble(SIGMA_WEEKDAY)),
+            getDouble(data, K_SATURDAY),
+            getDouble(data, K_SUNDAY),
+            getDouble(data, K_WEEKDAY),
+            getDouble(data, MY_SATURDAY),
+            getDouble(data, MY_SUNDAY),
+            getDouble(data, MY_WEEKDAY),
+            getDouble(data, SIGMA_SATURDAY),
+            getDouble(data, SIGMA_SUNDAY),
+            getDouble(data, SIGMA_WEEKDAY)),
         quarterHour);
   }
 

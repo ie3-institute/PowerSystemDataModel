@@ -78,27 +78,27 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     ex.class == SystemParticipantsException
     ex.message == "Exception(s) occurred in 11 input file(s) while initializing system participants.\n" +
         "        1 exception(s) occurred within \"FixedFeedInInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+        "               An error occurred in FixedFeedInInputFactory. Caused by: Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
         "        1 exception(s) occurred within \"PvInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+        "               An error occurred in PvInputFactory. Caused by: Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
         "        1 exception(s) occurred within \"LoadInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+        "               An error occurred in LoadInputFactory. Caused by: Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
         "        1 exception(s) occurred within \"BmInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+        "               An error occurred in BmInputFactory. Caused by: Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
         "        1 exception(s) occurred within \"StorageInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+        "               An error occurred in StorageInputFactory. Caused by: Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
         "        1 exception(s) occurred within \"WecInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+        "               An error occurred in WecInputFactory. Caused by: Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
         "        1 exception(s) occurred within \"EvInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+        "               An error occurred in EvInputFactory. Caused by: Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
         "        1 exception(s) occurred within \"EvcsInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+        "               An error occurred in EvcsInputFactory. Caused by: Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
         "        1 exception(s) occurred within \"ChpInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+        "               An error occurred in ChpInputFactory. Caused by: Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
         "        1 exception(s) occurred within \"HpInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+        "               An error occurred in HpInputFactory. Caused by: Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
         "        1 exception(s) occurred within \"AcInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided."
+        "               An error occurred in AcInputFactory. Caused by: Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided."
   }
 
   def "A SystemParticipantSource with csv input should return data from valid input file as expected"() {

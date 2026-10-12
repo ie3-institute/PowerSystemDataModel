@@ -252,7 +252,6 @@ public class FieldNamingStrategy {
   public static final String MIN = "min";
   public static final String SOC = "soc";
   public static final String SUBGRID = "subgrid";
-  public static final String TAPPOS = "tapPos";
   public static final String TIME = "time";
   public static final String VALUE = "value";
 

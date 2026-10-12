@@ -21,14 +21,15 @@ import tech.units.indriya.unit.Units
 class IconTimeBasedWeatherValueFactoryTest extends Specification {
   def "A time based weather value factory for ICON column scheme determines wind velocity angle correctly"() {
     given:
-    def data = new TimeBasedWeatherValueData([
+    def factory = new IconTimeBasedWeatherValueFactory()
+    def data = [
       "u131m": u.toString(),
       "v131m": v.toString(),
-    ], Mock(Point))
+    ]
     def expected = Quantities.getQuantity(expectedValue, PowerSystemUnits.DEGREE_GEOM)
 
     when:
-    def actual = IconTimeBasedWeatherValueFactory.getWindValue(data).direction.get()
+    def actual = factory.getWindValue(data).direction.get()
 
     then:
     actual.getUnit() == StandardUnits.WIND_DIRECTION
@@ -48,14 +49,15 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
 
   def "A time based weather value factory for ICON column scheme determines wind velocity correctly"() {
     given:
-    def data = new TimeBasedWeatherValueData([
+    def factory = new IconTimeBasedWeatherValueFactory()
+    def data = [
       "u131m": u.toString(),
       "v131m": v.toString(),
-    ], Mock(Point))
+    ]
     def expected = Quantities.getQuantity(expectedValue, PowerSystemUnits.METRE_PER_SECOND)
 
     when:
-    def actual = IconTimeBasedWeatherValueFactory.getWindValue(data).velocity.get()
+    def actual = factory.getWindValue(data).velocity.get()
 
     then:
     actual.getUnit() == StandardUnits.WIND_VELOCITY

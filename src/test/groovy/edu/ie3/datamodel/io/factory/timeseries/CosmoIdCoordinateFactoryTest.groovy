@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
-import edu.ie3.datamodel.io.factory.SimpleFactoryData
+
 import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.input.IdCoordinateInput
 import edu.ie3.datamodel.utils.CollectionUtils
@@ -65,11 +65,10 @@ class CosmoIdCoordinateFactoryTest extends Specification {
       "longRot": "-6.8125"
     ]
 
-    def validSimpleFactoryData = new SimpleFactoryData(parameter, IdCoordinateInput)
     IdCoordinateInput expectedIdCoordinate = new IdCoordinateInput(106580, GeoUtils.buildPoint(39.602772, 1.279336))
 
     when:
-    def actual = factory.get(validSimpleFactoryData)
+    def actual = factory.get(parameter)
 
     then:
     actual.success

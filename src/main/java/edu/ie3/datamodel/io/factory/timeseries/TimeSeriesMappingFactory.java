@@ -5,22 +5,21 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
-import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.EntityFactory;
-import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
+import edu.ie3.datamodel.io.source.TimeSeriesMappingSource.MappingEntry;
+import java.util.Map;
 import java.util.UUID;
 
-public class TimeSeriesMappingFactory
-    extends EntityFactory<TimeSeriesMappingSource.MappingEntry, EntityData> {
+public class TimeSeriesMappingFactory extends EntityFactory<MappingEntry, MappingEntry> {
 
   public TimeSeriesMappingFactory() {
-    super(TimeSeriesMappingSource.MappingEntry.class);
+    super(MappingEntry.class);
   }
 
   @Override
-  protected TimeSeriesMappingSource.MappingEntry buildModel(EntityData data) {
-    UUID asset = data.getUUID(ASSET);
-    UUID timeSeries = data.getUUID(TIME_SERIES);
-    return new TimeSeriesMappingSource.MappingEntry(asset, timeSeries);
+  protected MappingEntry buildModel(Map<String, String> data) {
+    UUID asset = getUUID(data, ASSET);
+    UUID timeSeries = getUUID(data, TIME_SERIES);
+    return new MappingEntry(asset, timeSeries);
   }
 }

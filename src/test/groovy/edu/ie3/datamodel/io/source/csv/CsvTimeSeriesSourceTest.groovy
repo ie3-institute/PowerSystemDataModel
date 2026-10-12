@@ -26,7 +26,6 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
   def "The csv time series source is able to build time based values from simple data"() {
     given:
     def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
-    def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), Path.of("its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), EnergyPriceValue, factory)
     def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
     def timeUtil = TimeUtil.withDefaults
     def fieldToValue = [
@@ -40,7 +39,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
         )
 
     when:
-    def actual = source.createTimeBasedValue(fieldToValue)
+    def actual = factory.get(fieldToValue)
 
     then:
     actual.success

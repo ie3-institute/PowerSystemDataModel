@@ -10,29 +10,33 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import java.time.ZonedDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 /**
- * Abstract factory class that can be extended in order for creating {@link AssetInput} entities
- * with {@link AssetInputEntityData} data objects.
+ * Abstract factory class that can be extended in order for creating {@link AssetInput} entities.
  *
  * @param <T> Type of entity that this factory can create. Must be a subclass of {@link AssetInput}
- * @param <D> Type of data class that is required for entity creation
  * @since 19.02.20
  */
-public abstract class AssetInputEntityFactory<T extends AssetInput, D extends AssetInputEntityData>
-    extends UniqueEntityFactory<T, D> {
+public abstract class AssetInputEntityFactory<T extends AssetInput>
+    extends UniqueEntityFactory<T, T> {
+
+  private final Map<UUID, OperatorInput> operators;
 
   @SafeVarargs
-  protected AssetInputEntityFactory(Class<? extends T>... allowedClasses) {
+  protected AssetInputEntityFactory(
+      Map<UUID, OperatorInput> operators, Class<? extends T>... allowedClasses) {
     super(allowedClasses);
+    this.operators = operators;
   }
 
   @Override
-  protected T buildModel(D data) {
-    UUID uuid = data.getUUID(UUID);
-    String id = data.getField(ID);
-    OperatorInput operator = data.getOperatorInput();
+  protected T buildModel(Map<String, String> data) {
+    UUID uuid = getUUID(data, UUID);
+    String id = getField(data, ID);
+    OperatorInput operator =
+        getEntity(data, OPERATOR, operators, OperatorInput.NO_OPERATOR_ASSIGNED);
     OperationTime operationTime = buildOperationTime(data);
 
     return buildModel(data, uuid, id, operator, operationTime);
@@ -49,7 +53,11 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
    * @return newly created asset object
    */
   protected abstract T buildModel(
-      D data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime);
+      Map<String, String> data,
+      UUID uuid,
+      String id,
+      OperatorInput operator,
+      OperationTime operationTime);
 
   /**
    * Creates an {@link OperationTime} from the entity data from attributes OPERATES_FROM and
@@ -58,9 +66,9 @@ public abstract class AssetInputEntityFactory<T extends AssetInput, D extends As
    * @param data entity data to take the dates from
    * @return Operation time object
    */
-  private static OperationTime buildOperationTime(AssetInputEntityData data) {
-    final String from = data.getFieldOptional(OPERATES_FROM).orElse(null);
-    final String until = data.getFieldOptional(OPERATES_UNTIL).orElse(null);
+  private OperationTime buildOperationTime(Map<String, String> data) {
+    final String from = getFieldOptional(data, OPERATES_FROM).orElse(null);
+    final String until = getFieldOptional(data, OPERATES_UNTIL).orElse(null);
 
     OperationTime.OperationTimeBuilder builder = new OperationTime.OperationTimeBuilder();
     if (from != null && !from.trim().isEmpty()) builder.withStart(ZonedDateTime.parse(from));

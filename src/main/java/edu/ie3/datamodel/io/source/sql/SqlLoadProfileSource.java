@@ -149,7 +149,7 @@ public class SqlLoadProfileSource<V extends LoadValues> extends LoadProfileSourc
    */
   private Optional<LoadProfileEntry<V>> createEntity(Map<String, String> fieldToValues) {
     fieldToValues.remove("timeSeries");
-    return createEntries(fieldToValues).getData();
+    return entryFactory.get(fieldToValues).getData();
   }
 
   /**

@@ -5,13 +5,14 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
-import edu.ie3.datamodel.models.value.WeatherValue;
 import java.util.Map;
+import java.util.TreeMap;
 import org.locationtech.jts.geom.Point;
 
-public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> {
+public class TimeBasedWeatherValueData {
 
   private final Point coordinate;
+  private final Map<String, String> fieldsToAttributes;
 
   /**
    * Creates a new TimeBasedEntryData object
@@ -20,7 +21,9 @@ public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> 
    * @param coordinate coordinate for this WeatherValue
    */
   public TimeBasedWeatherValueData(Map<String, String> fieldsToAttributes, Point coordinate) {
-    super(fieldsToAttributes, WeatherValue.class);
+    // this does the magic: case-insensitive get/set calls on keys
+    this.fieldsToAttributes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    this.fieldsToAttributes.putAll(fieldsToAttributes);
     this.coordinate = coordinate;
   }
 
@@ -28,19 +31,22 @@ public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> 
     return coordinate;
   }
 
+  public Map<String, String> getFieldsToAttributes() {
+    return fieldsToAttributes;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
 
     TimeBasedWeatherValueData that = (TimeBasedWeatherValueData) o;
-    return coordinate.equals(that.coordinate);
+    return coordinate.equals(that.coordinate) && fieldsToAttributes.equals(that.fieldsToAttributes);
   }
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
+    int result = fieldsToAttributes.hashCode();
     result = 31 * result + (coordinate != null ? coordinate.hashCode() : 0);
     return result;
   }
@@ -49,9 +55,7 @@ public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> 
   public String toString() {
     return "TimeBasedWeatherValueData{"
         + "fieldsToAttributes="
-        + getFieldsToValues()
-        + ", targetClass="
-        + getTargetClass()
+        + fieldsToAttributes
         + ", coordinate="
         + coordinate
         + '}';
