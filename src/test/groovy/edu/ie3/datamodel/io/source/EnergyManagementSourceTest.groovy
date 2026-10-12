@@ -56,7 +56,7 @@ class EnergyManagementSourceTest extends Specification {
               "controlstrategy" : ""],
             EmInput
             ),
-        ).map(data -> Try.of(() -> data, SourceException))
+    ).map(data -> Try.of(() -> data, SourceException))
 
     expect:
     def emUnits = EnergyManagementSource.createEmInputs(assetEntityDataStream)
@@ -66,31 +66,31 @@ class EnergyManagementSourceTest extends Specification {
         "root",
         "",
         null
-        )
+    )
     def expectedEm1 = new EmInput(
         UUID.fromString("0-0-0-0-1"),
         "child 1",
         "",
         expectedRootEm
-        )
+    )
     def expectedEm11 = new EmInput(
         UUID.fromString("0-0-0-0-11"),
         "child 1-1",
         "",
         expectedEm1
-        )
+    )
     def expectedEm2 = new EmInput(
         UUID.fromString("0-0-0-0-2"),
         "child 2",
         "",
         expectedRootEm
-        )
+    )
     def expectedEm21 = new EmInput(
         UUID.fromString("0-0-0-0-21"),
         "child 2-1",
         "",
         expectedEm2
-        )
+    )
 
     expectedRootEm.additionalInformation.isEmpty()
     expectedEm1.additionalInformation.isEmpty()
@@ -131,7 +131,7 @@ class EnergyManagementSourceTest extends Specification {
               "controlstrategy" : "other"],
             EmInput
             ),
-        ).map(data -> Try.of(() -> data, SourceException))
+    ).map(data -> Try.of(() -> data, SourceException))
 
     expect:
     def emUnits = EnergyManagementSource.createEmInputs(assetEntityDataStream)
@@ -141,19 +141,19 @@ class EnergyManagementSourceTest extends Specification {
         "em 1",
         "",
         null
-        )
+    )
     def expectedEm2 = new EmInput(
         UUID.fromString("0-0-0-0-2"),
         "em 2",
         "strat_b",
         null
-        )
+    )
     def expectedEm3 = new EmInput(
         UUID.fromString("0-0-0-0-3"),
         "em 3",
         "other",
         null
-        )
+    )
 
     emUnits == map([
       expectedEm1,
@@ -180,7 +180,7 @@ class EnergyManagementSourceTest extends Specification {
             EmInput
             )),
         new Try.Failure<AssetInputEntityData, SourceException>(new SourceException("test failure abc"))
-        )
+    )
 
     when:
     EnergyManagementSource.createEmInputs(assetEntityDataStream)
@@ -207,7 +207,7 @@ class EnergyManagementSourceTest extends Specification {
               "controlstrategy" : ""],
             EmInput
             ),
-        ).map(data -> Try.of(() -> data, SourceException))
+    ).map(data -> Try.of(() -> data, SourceException))
 
     when:
     EnergyManagementSource.createEmInputs(assetEntityDataStream)
@@ -233,7 +233,7 @@ class EnergyManagementSourceTest extends Specification {
               "controlstrategy" : ""],
             EmInput
             ),
-        ).map(data -> Try.of(() -> data, SourceException))
+    ).map(data -> Try.of(() -> data, SourceException))
 
     when:
     EnergyManagementSource.createEmInputs(assetEntityDataStream)
@@ -261,7 +261,7 @@ class EnergyManagementSourceTest extends Specification {
               "controlstrategy" : ""],
             EmInput
             ),
-        ).map(data -> Try.of(() -> data, SourceException))
+    ).map(data -> Try.of(() -> data, SourceException))
 
     when:
     EnergyManagementSource.createEmInputs(assetEntityDataStream)
@@ -288,7 +288,7 @@ class EnergyManagementSourceTest extends Specification {
               "controlstrategy" : ""],
             EmInput
             ),
-        ).map(data -> Try.of(() -> data, SourceException))
+    ).map(data -> Try.of(() -> data, SourceException))
 
     when:
     EnergyManagementSource.createEmInputs(assetEntityDataStream)

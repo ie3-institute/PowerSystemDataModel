@@ -149,7 +149,7 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
             Optional.of(new GroundTemperatureValue(
                 Quantities.getQuantity(9.5, TEMPERATURE)
                 )))
-        )
+    )
 
     when:
     def actual = source.buildWeatherValue(fieldToValues)
