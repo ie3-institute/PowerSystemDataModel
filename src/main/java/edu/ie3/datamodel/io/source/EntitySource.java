@@ -148,14 +148,7 @@ public abstract class EntitySource {
           // handling resources in jar
           String[] array = uri.toString().split("!");
 
-          if (jarFileSystem == null) {
-            URI jarUri = URI.create(array[0]);
-            try {
-              jarFileSystem = FileSystems.getFileSystem(jarUri);
-            } catch (FileSystemNotFoundException e) {
-              jarFileSystem = FileSystems.newFileSystem(jarUri, Collections.emptyMap());
-            }
-          }
+          jarFileSystem = getJarFileSystem(URI.create(array[0]));
 
           connector =
               new CsvFileConnector(jarFileSystem.getPath(array[1]), clazz::getResourceAsStream);
@@ -167,6 +160,21 @@ public abstract class EntitySource {
       return new CsvDataSource(",", connector, new FileNamingStrategy());
     } catch (URISyntaxException | IOException e) {
       throw new SourceException(e);
+    }
+  }
+
+  /**
+   * Gets the file system for the given jar file, creating it if it does not yet exist.
+   *
+   * @param jarUri uri pointing to the jar file
+   * @return the file system of the given jar file
+   * @throws IOException - if an error occurred while opening the file system
+   */
+  protected static FileSystem getJarFileSystem(URI jarUri) throws IOException {
+    try {
+      return FileSystems.getFileSystem(jarUri);
+    } catch (FileSystemNotFoundException e) {
+      return FileSystems.newFileSystem(jarUri, Collections.emptyMap());
     }
   }
 

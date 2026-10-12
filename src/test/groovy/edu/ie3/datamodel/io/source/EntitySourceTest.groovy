@@ -22,6 +22,10 @@ import edu.ie3.test.common.GridTestData
 import org.apache.commons.lang3.tuple.Pair
 import spock.lang.Specification
 
+import java.nio.file.FileSystem
+import java.nio.file.FileSystems
+import java.nio.file.Path
+
 class EntitySourceTest extends Specification {
 
   def "An EntitySource validates required built-in resources"() {
@@ -30,6 +34,19 @@ class EntitySourceTest extends Specification {
 
     then:
     source
+  }
+
+  def "EntitySource returns the jar file system for a given jar uri"() {
+    given:
+    Path jarPath = new File(GroovyObject.class.protectionDomain.codeSource.location.toURI()).toPath()
+    URI jarUri = URI.create("jar:" + jarPath.toUri())
+
+    when:
+    FileSystem fileSystem = getJarFileSystem(jarUri)
+
+    then:
+    fileSystem
+    fileSystem == FileSystems.getFileSystem(jarUri)
   }
 
   def "An EntitySource can build a map of entities correctly"() {
