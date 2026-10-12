@@ -16,8 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Throw a `SourceException` in `SqlDataSource.getSourceFields` if the fields of a table cannot be read [#1761](https://github.com/ie3-institute/PowerSystemDataModel/issues/1761)
 
 ### Changed
-- Updated ci.yml and get_versions.sh [#1763](https://github.com/ie3-institute/simonaAPI/issues/1763)
-
+- Change Evcs.locationType from single element to list [#1460](https://github.com/ie3-institute/PowerSystemDataModel/issues/1460)
+- Updated ci.yml and get_versions.sh [#1763](https://github.com/ie3-institute/PowerSystemDataModel/issues/1763)
 
 ## [9.2.0] - 2026-09-30
 

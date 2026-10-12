@@ -624,10 +624,19 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
                     + "'. At least one charging point is needed.",
                 evcsInput);
         };
+    Try.VoidSupplier<InvalidEntityException> locationTypeValidation =
+        () -> {
+          if (evcsInput.getLocationTypes() == null || evcsInput.getLocationTypes().isEmpty())
+            throw new InvalidEntityException(
+                evcsInput.getId()
+                    + " LocationType is empty. At least one location type must be provided.",
+                evcsInput);
+        };
 
     return Try.ofVoid(
         InvalidEntityException.class,
         chargingPointValidation,
+        locationTypeValidation,
         () -> checkRatedPowerFactor(evcsInput, evcsInput.getCosPhiRated()),
         () ->
             detectNegativeQuantities(quantities(S_RATED, evcsInput.getType().sRated()), evcsInput));
