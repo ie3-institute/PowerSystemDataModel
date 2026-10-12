@@ -5,18 +5,13 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
+import edu.ie3.datamodel.io.factory.input.AssetInputEntityFactory;
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.input.EmInput;
-import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.EvInput;
-import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
-import edu.ie3.datamodel.models.input.system.type.EvTypeInput;
 import java.util.UUID;
 
-public class EvInputFactory
-    extends SystemParticipantInputEntityFactory<
-        EvInput, SystemParticipantTypedEntityData<EvTypeInput>> {
+public class EvInputFactory extends AssetInputEntityFactory<EvInput, EvInputEntityData> {
 
   public EvInputFactory() {
     super(EvInput.class);
@@ -24,24 +19,12 @@ public class EvInputFactory
 
   @Override
   protected EvInput buildModel(
-      SystemParticipantTypedEntityData<EvTypeInput> data,
+      EvInputEntityData data,
       UUID uuid,
       String id,
-      NodeInput node,
-      ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
       OperationTime operationTime) {
-    final EmInput em = data.getControllingEm().orElse(null);
-
     return new EvInput(
-        uuid,
-        id,
-        operator,
-        operationTime,
-        node,
-        qCharacteristics,
-        em,
-        data.getTypeInput(),
-        data.getFieldsToValues());
+        uuid, id, operator, operationTime, data.getTypeInput(), data.getFieldsToValues());
   }
 }

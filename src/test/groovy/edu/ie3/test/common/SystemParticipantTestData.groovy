@@ -246,9 +246,6 @@ class SystemParticipantTestData {
   "test_evInput",
   operator,
   operationTime,
-  participantNode,
-  cosPhiFixed,
-  emInput,
   evTypeInput
   )
 
@@ -360,7 +357,6 @@ class SystemParticipantTestData {
 
   public static SystemParticipants emptySystemParticipants =
   new SystemParticipants(
-  [] as Set,
   [] as Set,
   [] as Set,
   [] as Set,

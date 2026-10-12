@@ -366,7 +366,6 @@ public class ContainerUtils {
     Set<BmInput> bmPlants = filterParticipants(input.getBmPlants(), subnet);
     Set<ChpInput> chpPlants = filterParticipants(input.getChpPlants(), subnet);
     Set<EvcsInput> evcsInputs = filterParticipants(input.getEvcs(), subnet);
-    Set<EvInput> evs = filterParticipants(input.getEvs(), subnet);
     Set<FixedFeedInInput> fixedFeedIns = filterParticipants(input.getFixedFeedIns(), subnet);
     Set<HpInput> heatpumps = filterParticipants(input.getHeatPumps(), subnet);
     Set<AcInput> airConditions = filterParticipants(input.getAirConditions(), subnet);
@@ -379,7 +378,6 @@ public class ContainerUtils {
         bmPlants,
         chpPlants,
         evcsInputs,
-        evs,
         fixedFeedIns,
         heatpumps,
         airConditions,

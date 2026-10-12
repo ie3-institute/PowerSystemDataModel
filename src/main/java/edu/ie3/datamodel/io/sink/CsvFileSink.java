@@ -173,7 +173,6 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     Set<BmInput> bmPlants = systemParticipants.getBmPlants();
     Set<ChpInput> chpPlants = systemParticipants.getChpPlants();
     Set<EvcsInput> evcs = systemParticipants.getEvcs();
-    Set<EvInput> evs = systemParticipants.getEvs();
     Set<FixedFeedInInput> fixedFeedIns = systemParticipants.getFixedFeedIns();
     Set<HpInput> heatPumps = systemParticipants.getHeatPumps();
     Set<LoadInput> loads = systemParticipants.getLoads();
@@ -189,7 +188,6 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                 transformer3Ws,
                 bmPlants,
                 chpPlants,
-                evs,
                 heatPumps,
                 airConditions,
                 storages,
@@ -217,7 +215,6 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
                 bmPlants,
                 chpPlants,
                 evcs,
-                evs,
                 fixedFeedIns,
                 heatPumps,
                 airConditions,

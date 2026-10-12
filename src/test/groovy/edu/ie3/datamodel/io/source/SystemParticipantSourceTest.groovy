@@ -11,7 +11,7 @@ import edu.ie3.datamodel.io.factory.input.ConnectorInputEntityData
 import edu.ie3.datamodel.io.factory.input.participant.SystemParticipantEntityData
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
-import edu.ie3.datamodel.models.input.system.EvInput
+import edu.ie3.datamodel.models.input.system.WecInput
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SystemParticipantTestData as sptd
@@ -40,14 +40,14 @@ class SystemParticipantSourceTest extends Specification {
 
   def "An SystemParticipantSource can enrich SystemParticipantEntityData with SystemParticipantTypeInput correctly"() {
     given:
-    def entityData = new SystemParticipantEntityData(["type": sptd.evTypeInput.uuid.toString()], EvInput, sptd.evInput.node, sptd.emInput)
-    def types = map([sptd.evTypeInput])
+    def entityData = new SystemParticipantEntityData(["type": sptd.wecType.uuid.toString()], WecInput, sptd.participantNode, sptd.emInput)
+    def types = map([sptd.wecType])
 
     when:
     def actual = SystemParticipantSource.enrichTypes(types).apply(new Try.Success<>(entityData))
 
     then:
     actual.success
-    actual.data.get().typeInput == sptd.evTypeInput
+    actual.data.get().typeInput == sptd.wecType
   }
 }

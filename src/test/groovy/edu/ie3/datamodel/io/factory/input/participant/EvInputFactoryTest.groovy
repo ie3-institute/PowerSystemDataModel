@@ -43,14 +43,12 @@ class EvInputFactoryTest extends Specification implements FactoryTestHelper {
       "qcharacteristics": "cosPhiFixed:{(0.0,1.0)}"
     ]
     def inputClass = EvInput
-    def nodeInput = Mock(NodeInput)
     def operatorInput = Mock(OperatorInput)
-    def emUnit = Mock(EmInput)
     def typeInput = Mock(EvTypeInput)
 
     when:
     Try<EvInput, FactoryException> input = inputFactory.get(
-        new SystemParticipantTypedEntityData<EvTypeInput>(parameter, inputClass, operatorInput, nodeInput, emUnit, typeInput))
+        new EvInputEntityData(parameter, inputClass, operatorInput, typeInput))
 
     then:
     input.success
@@ -63,14 +61,6 @@ class EvInputFactoryTest extends Specification implements FactoryTestHelper {
       operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
       operator == operatorInput
       id == parameter["id"]
-      node == nodeInput
-      qCharacteristics.with {
-        uuid != null
-        points == Collections.unmodifiableSortedSet([
-          new CharacteristicPoint<Dimensionless, Dimensionless>(Quantities.getQuantity(0d, PU), Quantities.getQuantity(1d, PU))
-        ] as TreeSet)
-      }
-      controllingEm == Optional.of(emUnit)
       type == typeInput
     }
   }

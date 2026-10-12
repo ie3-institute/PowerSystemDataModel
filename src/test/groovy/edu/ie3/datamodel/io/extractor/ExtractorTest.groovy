@@ -89,12 +89,8 @@ class ExtractorTest extends Specification {
       sptd.bmInput.controllingEm.get().controllingEm.get()
     ]
     sptd.evInput || [
-      sptd.evInput.node,
       sptd.evInput.type,
-      sptd.evInput.operator,
-      sptd.evInput.node.operator,
-      sptd.evInput.controllingEm.get(),
-      sptd.evInput.controllingEm.get().controllingEm.get()
+      sptd.evInput.operator
     ]
     sptd.storageInput || [
       sptd.storageInput.node,

@@ -17,7 +17,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
   private final Set<BmInput> bmPlants;
   private final Set<ChpInput> chpPlants;
   private final Set<EvcsInput> evcs;
-  private final Set<EvInput> evs;
   private final Set<FixedFeedInInput> fixedFeedIns;
   private final Set<HpInput> heatPumps;
   private final Set<AcInput> airConditions;
@@ -30,7 +29,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
       Set<BmInput> bmPlants,
       Set<ChpInput> chpPlants,
       Set<EvcsInput> evcs,
-      Set<EvInput> evs,
       Set<FixedFeedInInput> fixedFeedIns,
       Set<HpInput> heatPumps,
       Set<AcInput> airConditions,
@@ -41,7 +39,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     this.bmPlants = bmPlants;
     this.chpPlants = chpPlants;
     this.evcs = evcs;
-    this.evs = evs;
     this.fixedFeedIns = fixedFeedIns;
     this.heatPumps = heatPumps;
     this.airConditions = airConditions;
@@ -68,10 +65,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     this.evcs =
         systemParticipants.stream()
             .flatMap(participants -> participants.evcs.stream())
-            .collect(Collectors.toSet());
-    this.evs =
-        systemParticipants.stream()
-            .flatMap(participants -> participants.evs.stream())
             .collect(Collectors.toSet());
     this.fixedFeedIns =
         systemParticipants.stream()
@@ -127,11 +120,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
             .filter(EvcsInput.class::isInstance)
             .map(EvcsInput.class::cast)
             .collect(Collectors.toSet());
-    this.evs =
-        systemParticipants.parallelStream()
-            .filter(EvInput.class::isInstance)
-            .map(EvInput.class::cast)
-            .collect(Collectors.toSet());
     this.fixedFeedIns =
         systemParticipants.parallelStream()
             .filter(FixedFeedInInput.class::isInstance)
@@ -175,7 +163,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     allEntities.addAll(bmPlants);
     allEntities.addAll(chpPlants);
     allEntities.addAll(evcs);
-    allEntities.addAll(evs);
     allEntities.addAll(fixedFeedIns);
     allEntities.addAll(heatPumps);
     allEntities.addAll(airConditions);
@@ -209,13 +196,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
    */
   public Set<EvcsInput> getEvcs() {
     return Collections.unmodifiableSet(evcs);
-  }
-
-  /**
-   * @return unmodifiable Set of all electric vehicles in this grid
-   */
-  public Set<EvInput> getEvs() {
-    return evs;
   }
 
   /**
@@ -274,7 +254,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     return Objects.equals(bmPlants, that.bmPlants)
         && Objects.equals(chpPlants, that.chpPlants)
         && Objects.equals(evcs, that.evcs)
-        && Objects.equals(evs, that.evs)
         && Objects.equals(fixedFeedIns, that.fixedFeedIns)
         && Objects.equals(heatPumps, that.heatPumps)
         && Objects.equals(airConditions, that.airConditions)
@@ -290,7 +269,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
         bmPlants,
         chpPlants,
         evcs,
-        evs,
         fixedFeedIns,
         heatPumps,
         airConditions,
@@ -313,7 +291,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     private Set<BmInput> bmPlants;
     private Set<ChpInput> chpPlants;
     private Set<EvcsInput> evcs;
-    private Set<EvInput> evs;
     private Set<FixedFeedInInput> fixedFeedIns;
     private Set<HpInput> heatPumps;
     private Set<AcInput> airConditions;
@@ -331,7 +308,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
       this.bmPlants = systemParticipants.bmPlants;
       this.chpPlants = systemParticipants.chpPlants;
       this.evcs = systemParticipants.evcs;
-      this.evs = systemParticipants.evs;
       this.fixedFeedIns = systemParticipants.fixedFeedIns;
       this.heatPumps = systemParticipants.heatPumps;
       this.airConditions = systemParticipants.airConditions;
@@ -371,17 +347,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
      */
     public SystemParticipantsCopyBuilder evcs(Set<EvcsInput> evcs) {
       this.evcs = evcs;
-      return thisInstance();
-    }
-
-    /**
-     * Method to alter {@link EvInput}
-     *
-     * @param evs set of altered electric vehicles
-     * @return this instance of {@link SystemParticipantsCopyBuilder}
-     */
-    public SystemParticipantsCopyBuilder evs(Set<EvInput> evs) {
-      this.evs = evs;
       return thisInstance();
     }
 
@@ -473,7 +438,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
           bmPlants,
           chpPlants,
           evcs,
-          evs,
           fixedFeedIns,
           heatPumps,
           airConditions,

@@ -112,7 +112,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         new ProcessorProvider([
           new ResultEntityProcessor(PvResult),
           new ResultEntityProcessor(WecResult),
-          new ResultEntityProcessor(EvResult),
           new ResultEntityProcessor(EvcsResult),
           new ResultEntityProcessor(EmResult),
           new ResultEntityProcessor(PowerLimitFlexOptionsResult),

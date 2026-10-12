@@ -33,11 +33,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def systemParticipants = csvSystemParticipantSource.systemParticipants
 
     then:
-    systemParticipants.allEntitiesAsList().size() == 11
+    systemParticipants.allEntitiesAsList().size() == 10
     systemParticipants.pvPlants.first().uuid == sptd.pvInput.uuid
     systemParticipants.bmPlants.first().uuid == sptd.bmInput.uuid
     systemParticipants.chpPlants.first().uuid == sptd.chpInput.uuid
-    systemParticipants.evs.first().uuid == sptd.evInput.uuid
     systemParticipants.fixedFeedIns.first().uuid == sptd.fixedFeedInInput.uuid
     systemParticipants.heatPumps.first().uuid == sptd.hpInput.uuid
     systemParticipants.airConditions.first().uuid == sptd.acInput.uuid
@@ -76,7 +75,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 
     Exception ex = systemParticipants.exception.get()
     ex.class == SystemParticipantsException
-    ex.message == "Exception(s) occurred in 11 input file(s) while initializing system participants.\n" +
+    ex.message == "Exception(s) occurred in 10 input file(s) while initializing system participants.\n" +
         "        1 exception(s) occurred within \"FixedFeedInInput\" data: \n" +
         "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
         "        1 exception(s) occurred within \"PvInput\" data: \n" +
@@ -88,8 +87,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
         "        1 exception(s) occurred within \"StorageInput\" data: \n" +
         "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
         "        1 exception(s) occurred within \"WecInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-        "        1 exception(s) occurred within \"EvInput\" data: \n" +
         "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
         "        1 exception(s) occurred within \"EvcsInput\" data: \n" +
         "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
@@ -127,10 +124,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def chpUnits = Try.of(() -> csvSystemParticipantSource.getChpPlants(operatorMap, nodeMap, emUnitsMap, map([sptd.chpTypeInput]), thermalBusMap, thermalStorageMap), SourceException)
     chpUnits.success
     chpUnits.data.get() == [sptd.chpInput] as Set
-
-    def evs = Try.of(() -> csvSystemParticipantSource.getEvs(operatorMap, nodeMap, emUnitsMap, map([sptd.evTypeInput])), SourceException)
-    evs.success
-    evs.data.get() == [sptd.evInput] as Set
 
     def wecs = Try.of(() -> csvSystemParticipantSource.getWecPlants(operatorMap, nodeMap, emUnitsMap, map([sptd.wecType])), SourceException)
     wecs.success
@@ -232,29 +225,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     [] | [] | [] | [] as List
     [sptd.chpInput.operator] | [] | [] | [] as List
     [sptd.chpInput.operator] | [sptd.chpInput.type] | [] | [] as List
-  }
-
-  def "A SystemParticipantSource with csv input should throw an exception from invalid ev input file as expected"() {
-    given:
-    def csvSystemParticipantSource = new SystemParticipantSource(
-        Mock(TypeSource),
-        Mock(ThermalSource),
-        Mock(RawGridSource),
-        Mock(EnergyManagementSource),
-        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
-    def nodeMap = map([sptd.participantNode])
-    def emUnitsMap = map([sptd.emInput])
-
-    expect:
-    def sysParts = Try.of(() -> csvSystemParticipantSource.getEvs(map(operators), nodeMap, emUnitsMap, map(types)), SourceException)
-
-    sysParts.failure
-    sysParts.exception.get().class == SourceException
-
-    where:
-    operators | types
-    [sptd.evInput.operator] | []
-    [] | []
   }
 
   def "A SystemParticipantSource with csv input should throw an exception from invalid wec input file as expected"() {
