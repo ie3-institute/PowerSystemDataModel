@@ -100,7 +100,7 @@ class EntitySourceTest extends Specification {
         entityMap, { entityDataToEnrich, operator ->
           new AssetInputEntityData(entityDataToEnrich, operator)
         }
-        )
+    )
 
     when:
     def actual = buildEntityData(DummyAssetInput, source, fcn).toList()
@@ -125,7 +125,7 @@ class EntitySourceTest extends Specification {
         OperatorInput.NO_OPERATOR_ASSIGNED, { entityDataToEnrich, operator ->
           new AssetInputEntityData(entityDataToEnrich, operator)
         }
-        )
+    )
 
     when:
     def enrichedWithEntity = fcn.apply(new Try.Success<>(entityData1))
@@ -149,7 +149,7 @@ class EntitySourceTest extends Specification {
         OperatorInput.NO_OPERATOR_ASSIGNED, { entityDataToEnrich, operator ->
           new AssetInputEntityData(entityDataToEnrich, operator)
         }
-        )
+    )
 
     when:
     def enrichedData = fcn.apply(new Try.Success<>(entityData))
@@ -173,7 +173,7 @@ class EntitySourceTest extends Specification {
         entityMap, { entityDataToEnrich, nodeA, nodeB ->
           new ConnectorInputEntityData(entityDataToEnrich, nodeA, nodeB)
         }
-        )
+    )
 
     when:
     def enrichedData = fcn.apply(new Try.Success<>(entityData))
@@ -192,7 +192,7 @@ class EntitySourceTest extends Specification {
         ["operator"], { entityDataToEnrich, operator ->
           new AssetInputEntityData(entityDataToEnrich, operator)
         }
-        )
+    )
 
     when:
     def result = fcn.apply(pair)

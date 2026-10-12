@@ -30,7 +30,7 @@ jacocoTestReport {
   getClassDirectories().setFrom(fileTree(
           dir: "$rootDir/build/classes/",
           excludes: excludes
-          ))
+      ))
 
   //	sourceSets sourceSets.main
   executionData check // include integration tests in jacoco reports

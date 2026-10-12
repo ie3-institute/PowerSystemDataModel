@@ -102,7 +102,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     def expected = new TimeBasedValue(
         time,
         new EnergyPriceValue(Quantities.getQuantity(52.4, StandardUnits.ENERGY_PRICE))
-        )
+    )
 
     expect:
     Objects.equals(factory.buildModel(data), expected)
@@ -122,7 +122,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     def expected = new TimeBasedValue(
         time,
         new HeatAndSValue(Quantities.getQuantity(500.0, StandardUnits.ACTIVE_POWER_IN), Quantities.getQuantity(165.0, StandardUnits.REACTIVE_POWER_IN), Quantities.getQuantity(8.0, StandardUnits.HEAT_DEMAND))
-        )
+    )
 
     expect:
     Objects.equals(factory.buildModel(data), expected)
@@ -140,7 +140,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     def expected = new TimeBasedValue(
         time,
         new HeatAndPValue(Quantities.getQuantity(500.0, StandardUnits.ACTIVE_POWER_IN), Quantities.getQuantity(8.0, StandardUnits.HEAT_DEMAND))
-        )
+    )
 
     expect:
     Objects.equals(factory.buildModel(data), expected)
@@ -157,7 +157,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     def expected = new TimeBasedValue(
         time,
         new HeatDemandValue(Quantities.getQuantity(8.0, StandardUnits.HEAT_DEMAND))
-        )
+    )
 
     expect:
     Objects.equals(factory.buildModel(data), expected)
@@ -175,7 +175,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     def expected = new TimeBasedValue(
         time,
         new SValue(Quantities.getQuantity(500.0, StandardUnits.ACTIVE_POWER_IN), Quantities.getQuantity(165.0, StandardUnits.REACTIVE_POWER_IN))
-        )
+    )
 
     expect:
     Objects.equals(factory.buildModel(data), expected)
@@ -192,7 +192,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     def expected = new TimeBasedValue(
         time,
         new PValue(Quantities.getQuantity(500.0, StandardUnits.ACTIVE_POWER_IN))
-        )
+    )
 
 
     def obj = factory.buildModel(data)
