@@ -46,7 +46,7 @@ class JsonMarkovProfileSourceTest extends MarkovModelJsonTestSupport {
     def source = new JsonMarkovProfileSource(
         new JsonDataSource(tempDir, new FileNamingStrategy()),
         new FileLoadProfileMetaInformation("profile1", jsonFile, FileType.JSON)
-        )
+    )
 
     when:
     source.validate()
@@ -75,7 +75,7 @@ class JsonMarkovProfileSourceTest extends MarkovModelJsonTestSupport {
     def source = new JsonMarkovProfileSource(
         new JsonDataSource(new JsonFileConnector(tempDir, countingStream), new FileNamingStrategy()),
         new FileLoadProfileMetaInformation("profile1", jsonFile, FileType.JSON)
-        )
+    )
 
     when:
     source.validate()
@@ -94,7 +94,7 @@ class JsonMarkovProfileSourceTest extends MarkovModelJsonTestSupport {
     def source = new JsonMarkovProfileSource(
         new JsonDataSource(tempDir, new FileNamingStrategy()),
         new FileLoadProfileMetaInformation("profile1", jsonFile, FileType.JSON)
-        )
+    )
 
     when:
     source.validate()
@@ -112,7 +112,7 @@ class JsonMarkovProfileSourceTest extends MarkovModelJsonTestSupport {
     def source = new JsonMarkovProfileSource(
         new JsonDataSource(tempDir, new FileNamingStrategy()),
         new FileLoadProfileMetaInformation("brokenProfile", jsonFile, FileType.JSON)
-        )
+    )
 
     when:
     source.getModel()
@@ -127,7 +127,7 @@ class JsonMarkovProfileSourceTest extends MarkovModelJsonTestSupport {
     def source = new JsonMarkovProfileSource(
         new JsonDataSource(tempDir, new FileNamingStrategy()),
         new FileLoadProfileMetaInformation("profile1", jsonFile, FileType.JSON)
-        )
+    )
     def input = new PowerValueSource.MarkovIdentifier(
         ZonedDateTime.parse("2025-01-01T00:00:00Z"),
         OptionalInt.of(0),

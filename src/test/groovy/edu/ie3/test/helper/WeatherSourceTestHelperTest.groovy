@@ -53,7 +53,7 @@ class WeatherSourceTestHelperTest extends Specification {
         wind,
         Optional.of(ground1),
         Optional.of(ground2)
-        )
+    )
   }
 
   def "The WeatherSourceTestHelper compares two identical single TimeBasedValues correctly"() {
@@ -80,15 +80,15 @@ class WeatherSourceTestHelperTest extends Specification {
 
     def createWeatherWithIrr = { double directVal ->
       new WeatherValue(
-      coordinate,
-      new SolarIrradianceValue(
-          Quantities.getQuantity(directVal, StandardUnits.SOLAR_IRRADIANCE),
-          baseWeather.solarIrradiance.diffuseIrradiance.get()
-          ),
-      baseWeather.temperature,
-      baseWeather.wind,
-      baseWeather.groundTemperatureLevel1,
-      baseWeather.groundTemperatureLevel2
+          coordinate,
+          new SolarIrradianceValue(
+              Quantities.getQuantity(directVal, StandardUnits.SOLAR_IRRADIANCE),
+              baseWeather.solarIrradiance.diffuseIrradiance.get()
+              ),
+          baseWeather.temperature,
+          baseWeather.wind,
+          baseWeather.groundTemperatureLevel1,
+          baseWeather.groundTemperatureLevel2
       )
     }
 
@@ -115,7 +115,7 @@ class WeatherSourceTestHelperTest extends Specification {
         baseWeather.wind,
         Optional.of(groundDiff),
         baseWeather.groundTemperatureLevel2
-        )
+    )
 
     def weatherMissingGround = new WeatherValue(
         coordinate,
@@ -124,7 +124,7 @@ class WeatherSourceTestHelperTest extends Specification {
         baseWeather.wind,
         Optional.empty(),
         baseWeather.groundTemperatureLevel2
-        )
+    )
 
     def tbvDiff = new TimeBasedValue(time, weatherDiffGround)
     def tbvMissing = new TimeBasedValue(time, weatherMissingGround)

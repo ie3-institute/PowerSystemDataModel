@@ -106,7 +106,8 @@ public class SqlDataSource implements DataSource {
   }
 
   @Override
-  public Optional<Set<String>> getSourceFields(Class<? extends Entity> entityClass) {
+  public Optional<Set<String>> getSourceFields(Class<? extends Entity> entityClass)
+      throws SourceException {
     String tableName = databaseNamingStrategy.getEntityName(entityClass).orElseThrow();
     return getSourceFields(tableName);
   }
@@ -115,9 +116,10 @@ public class SqlDataSource implements DataSource {
    * Method that uses the table name to retrieve all field names.
    *
    * @param tableName to be used
-   * @return an option for a set of found fields
+   * @return an option for a set of found fields, empty if the table does not exist
+   * @throws SourceException if the fields of the table could not be read
    */
-  public Optional<Set<String>> getSourceFields(String tableName) {
+  public Optional<Set<String>> getSourceFields(String tableName) throws SourceException {
     try {
       ResultSet rs =
           connector.getConnection().getMetaData().getColumns(null, null, tableName, null);
@@ -128,11 +130,14 @@ public class SqlDataSource implements DataSource {
         columnNames.add(StringUtils.snakeCaseToCamelCase(name));
       }
 
+      if (columnNames.isEmpty()) {
+        log.debug("The table '{}' couldn't be found!", tableName);
+        return Optional.empty();
+      }
+
       return Optional.of(columnNames);
     } catch (SQLException e) {
-      log.warn("The table '{}' couldn't be read and therefore not be validated!", tableName, e);
-      // FIXME only return empty if table not found. Throw exception if error occurred
-      return Optional.empty();
+      throw new SourceException("Error while trying to read the fields of table " + tableName, e);
     }
   }
 

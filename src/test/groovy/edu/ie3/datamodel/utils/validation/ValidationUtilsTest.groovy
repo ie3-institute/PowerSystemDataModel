@@ -61,7 +61,7 @@ class ValidationUtilsTest extends Specification {
         Quantities.getQuantity(0.356, OHM_PER_KILOMETRE),
         Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
         Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
-        )
+    )
     def invalidAsset = new LineTypeInput(
         UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
         "lineType_AtoB",
@@ -71,7 +71,7 @@ class ValidationUtilsTest extends Specification {
         Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
         Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
         Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
-        )
+    )
 
     when:
     ValidationUtils.detectNegativeQuantities(ValidationUtils.quantities(B, asset.getB()), asset)
@@ -98,7 +98,7 @@ class ValidationUtilsTest extends Specification {
         Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
         Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
         Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
-        )
+    )
     def invalidAsset = new LineTypeInput(
         UUID.fromString("3bed3eb3-9790-4874-89b5-a5434d408088"),
         "lineType_AtoB",
@@ -108,7 +108,7 @@ class ValidationUtilsTest extends Specification {
         Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
         Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
         Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
-        )
+    )
 
     when:
     ValidationUtils.detectZeroOrNegativeQuantities(ValidationUtils.quantities(B, asset.getB()), asset)

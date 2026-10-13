@@ -31,7 +31,7 @@ class CsvIdCoordinateSourceIconIT extends Specification implements CsvTestDataMe
         ["id": "531137", "latitude": "51.5", "longitude": "7.375", "coordinateType": "ICON"],
         ["id": "551525", "latitude": "51.438", "longitude": "7.438", "coordinateType": "ICON"],
         ["id": "278150", "latitude": "51.438", "longitude": "7.375", "coordinateType": "ICON"]
-        )
+    )
 
     when:
     def actualStream = source.buildStreamWithFieldsToAttributesMap()
