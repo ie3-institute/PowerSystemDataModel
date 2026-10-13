@@ -65,7 +65,7 @@ class ComplexTopology extends GridTestData {
             emptySystemParticipants,
             emptyEnergyManagementUnits,
             )
-        )
+    )
     expectedSubGrids.put(2, new SubGridContainer(
             gridName,
             2,
@@ -79,7 +79,7 @@ class ComplexTopology extends GridTestData {
             emptySystemParticipants,
             emptyEnergyManagementUnits,
             )
-        )
+    )
     expectedSubGrids.put(3, new SubGridContainer(
             gridName,
             3,
@@ -93,7 +93,7 @@ class ComplexTopology extends GridTestData {
             emptySystemParticipants,
             emptyEnergyManagementUnits,
             )
-        )
+    )
     expectedSubGrids.put(4, new SubGridContainer(
             gridName,
             4,
@@ -107,7 +107,7 @@ class ComplexTopology extends GridTestData {
             emptySystemParticipants,
             emptyEnergyManagementUnits,
             )
-        )
+    )
     expectedSubGrids.put(5, new SubGridContainer(
             gridName,
             5,
@@ -124,7 +124,7 @@ class ComplexTopology extends GridTestData {
             emptySystemParticipants,
             emptyEnergyManagementUnits,
             )
-        )
+    )
     expectedSubGrids.put(6, new SubGridContainer(
             gridName,
             6,
@@ -141,7 +141,7 @@ class ComplexTopology extends GridTestData {
             emptySystemParticipants,
             emptyEnergyManagementUnits,
             )
-        )
+    )
 
     DirectedMultigraph<SubGridContainer, SubGridGate> mutableGraph =
         new DirectedMultigraph<>(SubGridGate)

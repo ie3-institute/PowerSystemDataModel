@@ -18,7 +18,7 @@ class EmInputTest extends Specification {
         "test_emInput",
         SystemParticipantTestData.emControlStrategy,
         SystemParticipantTestData.parentEm
-        )
+    )
 
     then:
     emInput.with {
@@ -75,7 +75,7 @@ class EmInputTest extends Specification {
         "testParent",
         "controlStrat",
         null
-        )
+    )
 
     when:
     def alteredUnit = emInput.copy().controlStrategy(newStrat).parentEm(givenParentEm).build()

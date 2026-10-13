@@ -40,7 +40,7 @@ class ReactivePowerCharacteristicTest extends Specification {
           new CharacteristicPoint<Dimensionless, Dimensionless>(
               Quantities.getQuantity(0d, PU), Quantities.getQuantity(0.95, PU))
         ] as SortedSet<CharacteristicPoint<Dimensionless, Dimensionless>>
-        )
+    )
 
     validCosPhiP = new CosPhiP(
         [
@@ -51,7 +51,7 @@ class ReactivePowerCharacteristicTest extends Specification {
           new CharacteristicPoint<Dimensionless, Dimensionless>(
               Quantities.getQuantity(1.2, PU), Quantities.getQuantity(-0.3, PU))
         ] as SortedSet<CharacteristicPoint<Dimensionless, Dimensionless>>
-        )
+    )
 
     validQV = new QV(
         [
@@ -64,7 +64,7 @@ class ReactivePowerCharacteristicTest extends Specification {
           new CharacteristicPoint<Dimensionless, Dimensionless>(
               Quantities.getQuantity(1.1, PU), Quantities.getQuantity(0.3, PU))
         ] as SortedSet<CharacteristicPoint<Dimensionless, Dimensionless>>
-        )
+    )
   }
 
   def "A valid CosPhiFixed is correctly serialized"() {

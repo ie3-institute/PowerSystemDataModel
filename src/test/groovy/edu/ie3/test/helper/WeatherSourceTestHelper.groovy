@@ -55,6 +55,6 @@ class WeatherSourceTestHelper {
         optA.get().getTemperature().get(),
         optB.get().getTemperature().get(),
         1E-10
-        )
+    )
   }
 }

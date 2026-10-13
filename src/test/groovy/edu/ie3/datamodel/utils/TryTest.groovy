@@ -236,14 +236,14 @@ class TryTest extends Specification {
         new Try.Failure<>(new Exception("exception", new SourceException("source exception"))),
         new Try.Success<>("two"),
         new Try.Success<>("three")
-        )
+    )
 
     when:
     Try<Set<String>, Exception> scan = Try.scanCollection(
         set,
         String,
         { message -> new Exception(message) }
-        )
+    )
 
     then:
     scan.failure
@@ -257,14 +257,14 @@ class TryTest extends Specification {
         new Try.Success<>("one"),
         new Try.Success<>("two"),
         new Try.Success<>("three")
-        )
+    )
 
     when:
     Try<Set<String>, Exception> scan = Try.scanCollection(
         set,
         String,
         { -> new Exception() }
-        )
+    )
 
     then:
     scan.success
@@ -544,7 +544,7 @@ class TryTest extends Specification {
         new Try.Failure<>(new UnsupportedOperationException("unsupported operation exception")),
         new Try.Success<>("two"),
         new Try.Failure<>(new SourceException("source exception 2"))
-        )
+    )
 
     when:
     List<Exception> exceptions = Try.getExceptions(tries)
