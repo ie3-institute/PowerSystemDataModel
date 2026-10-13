@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.naming;
 import edu.ie3.datamodel.exceptions.FileException;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.Entity;
+import edu.ie3.datamodel.models.input.EvInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;

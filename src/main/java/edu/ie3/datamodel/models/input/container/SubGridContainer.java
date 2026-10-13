@@ -6,9 +6,11 @@
 package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.exceptions.InvalidGridException;
+import edu.ie3.datamodel.models.input.EvInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.datamodel.utils.ContainerUtils;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Represents the accumulation of all data needed to create one galvanically complete single grid
@@ -25,9 +27,10 @@ public class SubGridContainer extends GridContainer {
       int subnet,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
-      EnergyManagementUnits emUnits)
+      EnergyManagementUnits emUnits,
+      Set<EvInput> evs)
       throws InvalidGridException {
-    super(gridName, rawGrid, systemParticipants, emUnits);
+    super(gridName, rawGrid, systemParticipants, emUnits, evs);
     this.subnet = subnet;
     this.predominantVoltageLevel = ContainerUtils.determinePredominantVoltLvl(rawGrid, subnet);
   }
@@ -113,7 +116,7 @@ public class SubGridContainer extends GridContainer {
     @Override
     public SubGridContainer build() throws InvalidGridException {
       return new SubGridContainer(
-          getGridName(), subnet, getRawGrid(), getSystemParticipants(), getEmUnits());
+          getGridName(), subnet, getRawGrid(), getSystemParticipants(), getEmUnits(), getEvs());
     }
   }
 }

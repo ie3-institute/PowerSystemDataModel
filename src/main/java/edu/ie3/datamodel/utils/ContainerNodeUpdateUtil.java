@@ -74,7 +74,8 @@ public class ContainerNodeUpdateUtil {
         grid.getGridName(),
         updatedEntities.rawGridElements(),
         updatedEntities.systemParticipants(),
-        grid.getEmUnits());
+        grid.getEmUnits()
+    );
   }
 
   /**

@@ -7,8 +7,11 @@ package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.graph.SubGridTopologyGraph;
+import edu.ie3.datamodel.models.input.EvInput;
 import edu.ie3.datamodel.utils.ContainerUtils;
 import java.util.Objects;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,9 +26,10 @@ public class JointGridContainer extends GridContainer {
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
-      EnergyManagementUnits emUnits)
+      EnergyManagementUnits emUnits,
+      Set<EvInput> evs)
       throws InvalidGridException {
-    super(gridName, rawGrid, systemParticipants, emUnits);
+    super(gridName, rawGrid, systemParticipants, emUnits, evs);
 
     /* Build sub grid dependency */
     this.subGridTopologyGraph =
@@ -39,8 +43,9 @@ public class JointGridContainer extends GridContainer {
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
       EnergyManagementUnits emUnits,
+      Set<EvInput> evs,
       SubGridTopologyGraph subGridTopologyGraph) {
-    super(gridName, rawGrid, systemParticipants, emUnits);
+    super(gridName, rawGrid, systemParticipants, emUnits, evs);
     this.subGridTopologyGraph = subGridTopologyGraph;
     checkSubGridTopologyGraph(this.subGridTopologyGraph);
   }
@@ -114,7 +119,7 @@ public class JointGridContainer extends GridContainer {
     @Override
     public JointGridContainer build() {
       return new JointGridContainer(
-          getGridName(), getRawGrid(), getSystemParticipants(), getEmUnits(), subGridTopologyGraph);
+          getGridName(), getRawGrid(), getSystemParticipants(), getEmUnits(), getEvs(), subGridTopologyGraph);
     }
   }
 }

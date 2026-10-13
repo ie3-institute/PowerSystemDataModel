@@ -5,6 +5,8 @@
  */
 package edu.ie3.test.common
 
+import edu.ie3.datamodel.models.input.EvInput
+
 import static edu.ie3.datamodel.models.StandardUnits.*
 
 import edu.ie3.datamodel.models.OperationTime

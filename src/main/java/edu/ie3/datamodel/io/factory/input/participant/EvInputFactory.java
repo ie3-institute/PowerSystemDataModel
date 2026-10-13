@@ -8,7 +8,7 @@ package edu.ie3.datamodel.io.factory.input.participant;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityFactory;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.system.EvInput;
+import edu.ie3.datamodel.models.input.EvInput;
 import java.util.UUID;
 
 public class EvInputFactory extends AssetInputEntityFactory<EvInput, EvInputEntityData> {
