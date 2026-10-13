@@ -45,11 +45,7 @@ import org.slf4j.LoggerFactory;
 public abstract class EntitySource {
   protected static final Logger log = LoggerFactory.getLogger(EntitySource.class);
 
-  // file system for build-in entities
-  private static FileSystem jarFileSystem = null;
-
   // convenience collectors
-
   protected static <T extends UniqueEntity> Collector<T, ?, Map<UUID, T>> toMap() {
     return Collectors.toMap(UniqueEntity::getUuid, Function.identity());
   }
@@ -147,8 +143,7 @@ public abstract class EntitySource {
         case "jar" -> {
           // handling resources in jar
           String[] array = uri.toString().split("!");
-
-          jarFileSystem = getJarFileSystem(URI.create(array[0]));
+          FileSystem jarFileSystem = getJarFileSystem(URI.create(array[0]));
 
           connector =
               new CsvFileConnector(jarFileSystem.getPath(array[1]), clazz::getResourceAsStream);
