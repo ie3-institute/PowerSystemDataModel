@@ -289,6 +289,12 @@ with the expected values of the GMMs, taking into account that samples are clamp
 chain runs through a warm-up week starting from a uniform distribution, so that the result does not depend on an
 initial state.
 
+## Expected Values
+
+For forecasts, {code}`getExpectedPowers(time, state, steps)` returns the expected power of the steps following the
+step at {code}`time`, given the {code}`state` of the chain after that step. The distribution over the states is
+propagated in the same way as for the energy scaling.
+
 ## Simulation Input and Output
 
 Power values are requested via {code}`PowerValueSource.MarkovIdentifier`, which carries:
