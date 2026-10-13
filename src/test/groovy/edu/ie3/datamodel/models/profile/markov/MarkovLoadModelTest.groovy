@@ -162,7 +162,7 @@ class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
         template.parameters(),
         new MarkovLoadModel.TransitionData("float32", "nested_lists", transitions),
         Optional.of(gmms)
-        )
+    )
 
     when:
     def energyScaling = model.getProfileEnergyScaling().get()
