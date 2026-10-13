@@ -195,7 +195,7 @@ class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
     def model = loadModel(defaultTransitionValues(), clampedStates())
     def seeds = 1L..4L
 
-    when: "sampling in hourly steps, so that the energy in kWh is the sum of the powers in kW"
+    when: "sampling in hourly steps"
     def sampledEnergy = seeds.sum { seed ->
       sampleYear(model, seed)
     } / seeds.size()
