@@ -83,12 +83,7 @@ public final class SoilDataParser {
       int rowNumber = 0;
       while (iterator.hasNext()) {
         rowNumber++;
-        try {
-          parsed.add(rowParser.parse(iterator.next()));
-        } catch (ParsingException e) {
-          log.error("Failed to parse {} row {}", sourceName, rowNumber, e);
-          throw new SourceException("Failed to parse " + sourceName + " row " + rowNumber, e);
-        }
+        parseRowOrThrow(iterator.next(), rowParser, parsed, sourceName, rowNumber);
       }
       return List.copyOf(parsed);
     } catch (RuntimeException e) {
@@ -221,5 +216,20 @@ public final class SoilDataParser {
   @FunctionalInterface
   private interface SoilRowParser<T> {
     T parse(Map<String, String> row) throws ParsingException;
+  }
+
+  private static <T> void parseRowOrThrow(
+      Map<String, String> row,
+      SoilRowParser<T> rowParser,
+      List<T> parsed,
+      String sourceName,
+      int rowNumber)
+      throws SourceException {
+    try {
+      parsed.add(rowParser.parse(row));
+    } catch (ParsingException e) {
+      log.error("Failed to parse {} row {}", sourceName, rowNumber, e);
+      throw new SourceException("Failed to parse " + sourceName + " row " + rowNumber, e);
+    }
   }
 }

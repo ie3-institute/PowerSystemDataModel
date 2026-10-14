@@ -26,7 +26,7 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
   /** Accumulated energy management units */
   protected final EnergyManagementUnits emUnits;
 
-  protected final SoilData soilData;
+  protected final transient SoilData soilData;
 
   protected GridContainer(
       String gridName,
@@ -121,7 +121,7 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     private RawGridElements rawGrid;
     private SystemParticipants systemParticipants;
     private EnergyManagementUnits emUnits;
-    private SoilData soilData;
+    private transient SoilData soilData;
 
     /**
      * Constructor for {@link GridContainerCopyBuilder}.

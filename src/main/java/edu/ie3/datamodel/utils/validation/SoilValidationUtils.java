@@ -158,9 +158,12 @@ public class SoilValidationUtils extends ValidationUtils {
     List<Exception> problems = new ArrayList<>();
 
     Map<String, List<SoilLayer>> grouped =
-        layers.stream().collect(Collectors.groupingBy(l -> geometryKey(l.getGeometry())));
+        layers.stream()
+            .collect(
+                Collectors.groupingBy(
+                    l -> geometryKey(l.getGeometry()), Collectors.toUnmodifiableList()));
 
-    for (var e : grouped.entrySet()) {
+    for (Map.Entry<String, List<SoilLayer>> e : grouped.entrySet()) {
       List<SoilLayer> group = e.getValue();
       for (int i = 0; i < group.size(); i++) {
         SoilLayer a = group.get(i);
@@ -201,14 +204,17 @@ public class SoilValidationUtils extends ValidationUtils {
     List<Exception> problems = new ArrayList<>();
 
     Map<String, List<SoilLayer>> grouped =
-        layers.stream().collect(Collectors.groupingBy(l -> geometryKey(l.getGeometry())));
+        layers.stream()
+            .collect(
+                Collectors.groupingBy(
+                    l -> geometryKey(l.getGeometry()), Collectors.toUnmodifiableList()));
 
-    for (var e : grouped.entrySet()) {
+    for (Map.Entry<String, List<SoilLayer>> e : grouped.entrySet()) {
       List<SoilLayer> group =
           e.getValue().stream()
               .filter(l -> l.getZFrom() != null && l.getZTo() != null)
               .sorted(Comparator.comparingDouble(l -> l.zInterval().lower()))
-              .collect(Collectors.toList());
+              .toList();
 
       if (group.isEmpty()) continue;
 

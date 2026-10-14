@@ -14,6 +14,8 @@ import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
+import edu.ie3.datamodel.models.input.grid.SoilLayer;
+import edu.ie3.datamodel.models.input.grid.SoilType;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
@@ -46,6 +48,8 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
           SwitchInput.class,
           MeasurementUnitInput.class,
           ThermalBusInput.class,
+          SoilType.class,
+          SoilLayer.class,
           /* -- SystemParticipantInput */
           AcInput.class,
           ChpInput.class,

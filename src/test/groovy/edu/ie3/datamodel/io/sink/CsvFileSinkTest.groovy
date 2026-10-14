@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.sink
 
 import static edu.ie3.util.quantities.PowerSystemUnits.DEGREE_GEOM
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOVOLTAMPERE
+import static tech.units.indriya.unit.Units.METRE
 import static tech.units.indriya.unit.Units.PERCENT
 
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
@@ -25,6 +26,9 @@ import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.type.CableTypeInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
+import edu.ie3.datamodel.models.input.grid.SoilData
+import edu.ie3.datamodel.models.input.grid.SoilLayer
+import edu.ie3.datamodel.models.input.grid.SoilType
 import edu.ie3.datamodel.models.input.system.EvcsInput
 import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
@@ -43,6 +47,8 @@ import edu.ie3.datamodel.models.value.Value
 import edu.ie3.test.common.*
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.io.FileIOUtils
+import org.locationtech.jts.geom.Coordinate
+import org.locationtech.jts.geom.GeometryFactory
 import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
@@ -334,9 +340,27 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         new ProcessorProvider(),
         new FileNamingStrategy(),
         ",")
+    def soilType = new SoilType(UUID.randomUUID(), "loam", null, null, null, null)
+    def coordinates = [
+      new Coordinate(0d, 0d),
+      new Coordinate(1d, 0d),
+      new Coordinate(1d, 1d),
+      new Coordinate(0d, 1d),
+      new Coordinate(0d, 0d)
+    ] as Coordinate[]
+    def soilLayer = new SoilLayer(
+        UUID.randomUUID(),
+        new GeometryFactory().createPolygon(coordinates),
+        Quantities.getQuantity(0d, METRE),
+        Quantities.getQuantity(-1d, METRE),
+        soilType.uuid)
+    def grid = SampleJointGrid.grid().copy()
+        .soilData(new SoilData(Set.of(soilType), Set.of(soilLayer)))
+        .build()
 
     when:
-    csvFileSink.persistJointGrid(SampleJointGrid.grid())
+    csvFileSink.persistJointGrid(grid)
+    csvFileSink.shutdown()
 
     then:
     testBaseFolderPath.resolve("line_input.csv").toFile().exists()
@@ -351,6 +375,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     testBaseFolderPath.resolve("transformer_2_w_input.csv").toFile().exists()
     testBaseFolderPath.resolve("transformer_2_w_type_input.csv").toFile().exists()
     testBaseFolderPath.resolve("em_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("soil_type.csv").toFile().text.contains(soilType.uuid.toString())
+    testBaseFolderPath.resolve("soil_layer.csv").toFile().text.contains(soilLayer.uuid.toString())
 
     cleanup:
     csvFileSink.shutdown()

@@ -474,8 +474,8 @@ public class ContainerUtils {
    * @param gridName Name of the grid
    * @param rawGrid Container model of raw grid elements
    * @param systemParticipants Container model of system participants
-   * @param energyManagementUnits Container model of energy system units
-   * @param soilData soil data to be attached to each sub grid container
+   * @param energyManagementUnits Container model of energy management units
+   * @param soilData soil data to attach to each sub grid container
    * @return An immutable, directed graph of sub grid topologies.
    */
   public static SubGridTopologyGraph buildSubGridTopologyGraph(
@@ -492,7 +492,7 @@ public class ContainerUtils {
     /* Build the single sub grid models */
     HashMap<Integer, SubGridContainer> subGrids =
         buildSubGridContainers(
-            gridName, subnetNumbers, rawGrid, systemParticipants, energyManagementUnits);
+            gridName, subnetNumbers, rawGrid, systemParticipants, energyManagementUnits, soilData);
 
     /* Build the graph structure denoting the topology of the grid */
     return buildSubGridTopologyGraph(subGrids, rawGrid);
@@ -518,12 +518,39 @@ public class ContainerUtils {
    * @param energyManagementUnits Container model with all energy management unit inputs
    * @return A mapping from subnet number to container model with sub grid elements
    */
-  private static HashMap<Integer, SubGridContainer> buildSubGridContainers(
+  public static HashMap<Integer, SubGridContainer> buildSubGridContainers(
       String gridName,
       SortedSet<Integer> subnetNumbers,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
       EnergyManagementUnits energyManagementUnits)
+      throws InvalidGridException {
+    return buildSubGridContainers(
+        gridName,
+        subnetNumbers,
+        rawGrid,
+        systemParticipants,
+        energyManagementUnits,
+        SoilData.empty());
+  }
+
+  /**
+   * Build a mapping from subnet number to actual {@link SubGridContainer}
+   *
+   * @param gridName Name of the grid
+   * @param subnetNumbers Set of available subnet numbers
+   * @param rawGrid Container model with all raw grid elements
+   * @param systemParticipants Container model with all system participant inputs
+   * @param energyManagementUnits Container model with all energy management unit inputs
+   * @return A mapping from subnet number to container model with sub grid elements
+   */
+  public static HashMap<Integer, SubGridContainer> buildSubGridContainers(
+      String gridName,
+      SortedSet<Integer> subnetNumbers,
+      RawGridElements rawGrid,
+      SystemParticipants systemParticipants,
+      EnergyManagementUnits energyManagementUnits,
+      SoilData soilData)
       throws InvalidGridException {
     HashMap<Integer, SubGridContainer> subGrids = new HashMap<>(subnetNumbers.size());
     for (int subnetNumber : subnetNumbers) {
@@ -538,7 +565,8 @@ public class ContainerUtils {
               subnetNumber,
               rawGridElements,
               systemParticipantElements,
-              energyManagementUnits));
+              energyManagementUnits,
+              soilData));
     }
     return subGrids;
   }
@@ -878,6 +906,7 @@ public class ContainerUtils {
             subGridContainer.getRawGrid().getMeasurementUnits(),
             subGridContainer.getRawGrid().getCableDeploymentsByLine()),
         subGridContainer.getSystemParticipants(),
-        subGridContainer.getEmUnits());
+        subGridContainer.getEmUnits(),
+        subGridContainer.getSoilData());
   }
 }
