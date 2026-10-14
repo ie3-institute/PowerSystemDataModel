@@ -58,8 +58,7 @@ public class CsvJointGridContainerSource {
     EnergyManagementSource emSource = new EnergyManagementSource(typeSource, dataSource);
     SystemParticipantSource systemParticipantSource =
         new SystemParticipantSource(typeSource, thermalSource, rawGridSource, emSource, dataSource);
-    CsvSoilDataSource soilDataSource =
-        new CsvSoilDataSource(csvSep, directoryPath, namingStrategy);
+    CsvSoilDataSource soilDataSource = new CsvSoilDataSource(csvSep, directoryPath, namingStrategy);
 
     /* validating sources */
     try {
@@ -98,8 +97,7 @@ public class CsvJointGridContainerSource {
                     new HashSet<>(soilDataSource.getSoilTypes()),
                     new HashSet<>(soilDataSource.getSoilLayers())),
             SourceException.class);
-    List<? extends Exception> exceptions =
-        Try.getExceptions(rawGridElements, systemParticipants);
+    List<? extends Exception> exceptions = Try.getExceptions(rawGridElements, systemParticipants);
 
     if (!exceptions.isEmpty()) {
       throw new SourceException("Some exception(s) occurred while reading the grid.", exceptions);
@@ -107,7 +105,8 @@ public class CsvJointGridContainerSource {
       SoilData resolvedSoilData =
           soilData.getOrElse(
               () -> {
-                logger.debug("No soil data could be read from the source, continuing without soil data.");
+                logger.debug(
+                    "No soil data could be read from the source, continuing without soil data.");
                 return SoilData.empty();
               });
       // getOrThrow should not throw an exception in this context, because all exception are
