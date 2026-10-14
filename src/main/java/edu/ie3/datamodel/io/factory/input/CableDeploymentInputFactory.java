@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
+import static java.util.UUID.fromString;
+
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.UniqueEntityFactory;
 import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
@@ -31,8 +33,25 @@ public class CableDeploymentInputFactory
         data.getQuantity(FieldNamingStrategy.DEPTH_CABLES, Units.METRE);
     ComparableQuantity<Length> distanceCables =
         data.getQuantity(FieldNamingStrategy.DISTANCE_CABLES, Units.METRE);
+    ComparableQuantity<Length> cableBedWidth =
+        data.getQuantityOptional(FieldNamingStrategy.CABLE_BED_WIDTH, Units.METRE).orElse(null);
+    ComparableQuantity<Length> cableBedHeight =
+        data.getQuantityOptional(FieldNamingStrategy.CABLE_BED_HEIGHT, Units.METRE).orElse(null);
+    UUID cableBedSoilTypeUuid =
+        data.getFieldOptional(FieldNamingStrategy.CABLE_BED_SOIL_TYPE_UUID)
+            .filter(value -> !value.isBlank())
+            .map(value -> fromString(value))
+            .orElse(null);
 
     return new CableDeploymentInput(
-        uuid, lineUuid, layoutFormation, depthCables, distanceCables, data.getFieldsToValues());
+        uuid,
+        lineUuid,
+        layoutFormation,
+        depthCables,
+        distanceCables,
+        cableBedWidth,
+        cableBedHeight,
+        cableBedSoilTypeUuid,
+        data.getFieldsToValues());
   }
 }

@@ -344,7 +344,7 @@ public final class ModelFields extends FieldNamingStrategy {
     register(
         CableDeploymentInput.class,
         newSet(UUID, LINE_UUID, LAYOUT_FORMATION, DEPTH_CABLES, DISTANCE_CABLES),
-        Set.of());
+        newSet(CABLE_BED_WIDTH, CABLE_BED_HEIGHT, CABLE_BED_SOIL_TYPE_UUID));
 
     Stream.of(LineInput.class, Transformer2WInput.class, Transformer3WInput.class)
         .forEach(c -> addMandatory(c, NODE_A, NODE_B, PARALLEL_DEVICES, TYPE));

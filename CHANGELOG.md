@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Register `ThermalLineSegmentResult` at `ResultEntityProcessor` [#1759](https://github.com/ie3-institute/PowerSystemDataModel/issues/1759)
 - Allow `LoadInput` to reference Markov load profiles [#1765](https://github.com/ie3-institute/PowerSystemDataModel/issues/1765)
 - Add 'SoilData' to enable the spatial modelling of soil and its parameters [#1783](https://github.com/ie3-institute/PowerSystemDataModel/issues/1783)
+- Add information on cable bedding to `CableDeploymentInput` [#1784](https://github.com/ie3-institute/PowerSystemDataModel/issues/1784)
 
 ### Fixed
 - Fixed recurring `gradlew.bat` modifications [#1757](https://github.com/ie3-institute/PowerSystemDataModel/issues/1757)

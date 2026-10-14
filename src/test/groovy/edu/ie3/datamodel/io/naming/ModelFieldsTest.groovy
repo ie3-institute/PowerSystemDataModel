@@ -58,7 +58,11 @@ class ModelFieldsTest extends Specification {
         FieldNamingStrategy.DISTANCE_CABLES
       ] as Set
     ]
-    optionalFields == [] as Set
+    optionalFields == [
+      FieldNamingStrategy.CABLE_BED_WIDTH,
+      FieldNamingStrategy.CABLE_BED_HEIGHT,
+      FieldNamingStrategy.CABLE_BED_SOIL_TYPE_UUID
+    ] as Set
   }
 
   def "getMandatoryFields returns registered fields for ThermalLineSegmentResult"() {
