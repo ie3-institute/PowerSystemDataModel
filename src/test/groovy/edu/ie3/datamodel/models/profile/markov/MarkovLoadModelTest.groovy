@@ -151,6 +151,7 @@ class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
       [[1d, 0d], [1d, 0d]],
       [[0d, 1d], [0d, 1d]]
     ] as double[][][]
+    // the GMMs with 0.6 and 0.3 are never reached and would only be used with a wrong bucket or state
     def gmms = new MarkovLoadModel.GmmBuckets([
       new MarkovLoadModel.GmmBuckets.GmmBucket([gmm(0.2d), gmm(0.6d)]),
       new MarkovLoadModel.GmmBuckets.GmmBucket([gmm(0.3d), gmm(0.9d)])
