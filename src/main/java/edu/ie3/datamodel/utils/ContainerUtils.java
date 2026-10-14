@@ -17,6 +17,7 @@ import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.container.*;
+import edu.ie3.datamodel.models.input.grid.SoilData;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.util.quantities.interfaces.SpecificResistance;
@@ -461,6 +462,28 @@ public class ContainerUtils {
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
       EnergyManagementUnits energyManagementUnits)
+      throws InvalidGridException {
+    return buildSubGridTopologyGraph(
+        gridName, rawGrid, systemParticipants, energyManagementUnits, SoilData.empty());
+  }
+
+  /**
+   * Disassembles this grid model into sub grid models and returns a topology of the sub grids as a
+   * directed, immutable graph. The direction points from higher to lower voltage level.
+   *
+   * @param gridName Name of the grid
+   * @param rawGrid Container model of raw grid elements
+   * @param systemParticipants Container model of system participants
+   * @param energyManagementUnits Container model of energy system units
+   * @param soilData soil data to be attached to each sub grid container
+   * @return An immutable, directed graph of sub grid topologies.
+   */
+  public static SubGridTopologyGraph buildSubGridTopologyGraph(
+      String gridName,
+      RawGridElements rawGrid,
+      SystemParticipants systemParticipants,
+      EnergyManagementUnits energyManagementUnits,
+      SoilData soilData)
       throws InvalidGridException {
     /* Collect the different subnets. Through the validation of lines, it is ensured, that no galvanically connected
      * grid has more than one subnet number assigned */

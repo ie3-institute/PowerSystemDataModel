@@ -6,6 +6,8 @@
 package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.models.input.UniqueInputEntity;
+import edu.ie3.datamodel.models.input.grid.SoilData;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,16 +26,28 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
   /** Accumulated energy management units */
   protected final EnergyManagementUnits emUnits;
 
+  protected final SoilData soilData;
+
   protected GridContainer(
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
       EnergyManagementUnits emUnits) {
+    this(gridName, rawGrid, systemParticipants, emUnits, SoilData.empty());
+  }
+
+  protected GridContainer(
+      String gridName,
+      RawGridElements rawGrid,
+      SystemParticipants systemParticipants,
+      EnergyManagementUnits emUnits,
+      SoilData soilData) {
     this.gridName = gridName;
 
     this.rawGrid = rawGrid;
     this.systemParticipants = systemParticipants;
     this.emUnits = emUnits;
+    this.soilData = soilData == null ? SoilData.empty() : soilData;
   }
 
   @Override
@@ -41,11 +55,17 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     List<UniqueInputEntity> allEntities = new LinkedList<>();
     allEntities.addAll(rawGrid.allEntitiesAsList());
     rawGrid.getCableDeploymentsByLine().values().stream()
-        .flatMap(java.util.Collection::stream)
+        .flatMap(Collection::stream)
         .forEach(allEntities::add);
     allEntities.addAll(systemParticipants.allEntitiesAsList());
     allEntities.addAll(emUnits.allEntitiesAsList());
+    allEntities.addAll(soilData.getSoilLayers());
     return Collections.unmodifiableList(allEntities);
+  }
+
+  /** Returns soil data held by this container. */
+  public SoilData getSoilData() {
+    return soilData;
   }
 
   /**
@@ -101,6 +121,7 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     private RawGridElements rawGrid;
     private SystemParticipants systemParticipants;
     private EnergyManagementUnits emUnits;
+    private SoilData soilData;
 
     /**
      * Constructor for {@link GridContainerCopyBuilder}.
@@ -112,6 +133,7 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
       this.rawGrid = gridContainer.getRawGrid();
       this.systemParticipants = gridContainer.getSystemParticipants();
       this.emUnits = gridContainer.getEmUnits();
+      this.soilData = gridContainer.getSoilData();
     }
 
     /** Returns grid name */
@@ -132,6 +154,11 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     /** Returns {@link EnergyManagementUnits} */
     public EnergyManagementUnits getEmUnits() {
       return emUnits;
+    }
+
+    /** Returns soil data */
+    protected SoilData getSoilData() {
+      return soilData;
     }
 
     /**
@@ -175,6 +202,12 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
      */
     public B emUnits(EnergyManagementUnits emUnits) {
       this.emUnits = emUnits;
+      return thisInstance();
+    }
+
+    /** Method to alter soil data. */
+    public B soilData(SoilData soilData) {
+      this.soilData = soilData;
       return thisInstance();
     }
 

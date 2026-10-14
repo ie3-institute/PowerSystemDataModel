@@ -71,6 +71,10 @@ A synoptic overview of both classes' attributes is given here:
      - sub grid number - only
        ``SubGridContainer``
 
+   * - soilData
+     - –
+     - see below - optional [soil data](/models/input/grid/soilData)
+
 ```
 
 ### RawGridElements
@@ -83,6 +87,12 @@ This sub container simply holds:
 * [three winding transformers](/models/input/grid/transformer3w)
 * [measurement units](/models/input/grid/measurementunit)
 * [cable deployments](/models/input/grid/cableDeployment)
+
+
+### SoilData
+In contrast to the `RawGridElements`, the soil data is not a part of the raw grid. It is an optional
+[soil data](/models/input/grid/soilData) holder that collects soil types and soil layers. The soil
+layers are exposed via `allEntitiesAsList()`.
 
 
 ### SystemParticipants
