@@ -145,7 +145,8 @@ class JsonMarkovProfileSourceTest extends MarkovModelJsonTestSupport {
     output.value().isPresent()
     output.nextState() == 1
     output.value().get().p.get().to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() == 5.25d
-    // stationary distribution [0.25, 0.75] of 10 kW and 5.25 kW over the 8760 hours of 2019
+    // the chain settles at [0.25, 0.75], state 0 is 0.5 + 1.0 * 9.5 = 10 kW and state 1 is 0.5 + 0.5 * 9.5 = 5.25 kW,
+    // so 0.25 * 10 + 0.75 * 5.25 = 6.4375 kW on average over the 8760 hours of 2019
     source.getProfileEnergyScaling().isPresent()
     Math.abs(source.getProfileEnergyScaling().get().to(StandardUnits.ENERGY_IN).value.doubleValue() - 6.4375d * 8760) < 1e-6
   }

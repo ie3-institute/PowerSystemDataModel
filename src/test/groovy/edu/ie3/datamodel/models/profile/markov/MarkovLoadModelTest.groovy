@@ -116,6 +116,7 @@ class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
 
   def "energy scaling of a chain with constant power is the energy of one year"() {
     given: "a chain that always moves to the state with normalized value 0.8, i.e. 4.2 kW"
+    // the models of these tests range from 1 kW to 5 kW: 1 + 0.8 * (5 - 1) = 4.2 kW
     def model = loadModel(deterministicTransitions(), deterministicStates())
 
     when:
@@ -128,6 +129,7 @@ class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
 
   def "energy scaling weights the states with the stationary distribution of the chain"() {
     given: "a chain with stationary distribution [0.25, 0.75]"
+    // state 0 is left with probability 0.9 and state 1 with 0.3, which is balanced for 0.25 * 0.9 = 0.75 * 0.3
     def model = loadModel(defaultTransitionValues(), states)
 
     when:
@@ -138,8 +140,8 @@ class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
 
     where:
     states || averagePower
-    deterministicStates() || 3.8d // normalized value 0.25 * 0.4 + 0.75 * 0.8 = 0.7
-    stateWithoutGmm() || 1.4d // normalized value 0.25 * 0.4 + 0.75 * 0 = 0.1
+    deterministicStates() || 3.8d // 0.25 * 0.4 + 0.75 * 0.8 = 0.7, 1 + 0.7 * 4 = 3.8 kW
+    stateWithoutGmm() || 1.4d // 0.25 * 0.4 + 0.75 * 0 = 0.1, 1 + 0.1 * 4 = 1.4 kW
   }
 
   def "energy scaling uses the transitions and GMMs of the same bucket, as when sampling"() {
@@ -168,6 +170,7 @@ class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
     def energyScaling = model.getProfileEnergyScaling().get()
 
     then: "the normalized values 0.2 and 0.9 alternate, i.e. 3.2 kW on average"
+    // (0.2 + 0.9) / 2 = 0.55, 1 + 0.55 * 4 = 3.2 kW
     Math.abs(energyScaling.to(StandardUnits.ENERGY_IN).value.doubleValue() - 3.2d * 8760) < 1e-6
   }
 
@@ -186,7 +189,7 @@ class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
     when:
     def energyScaling = model.getProfileEnergyScaling().get()
 
-    then:
+    then: "the same 3.8 kW on average as with exact transition rows"
     Math.abs(energyScaling.to(StandardUnits.ENERGY_IN).value.doubleValue() / (3.8d * 8760) - 1d) < 1e-4
   }
 
