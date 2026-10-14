@@ -5,9 +5,7 @@
  */
 package edu.ie3.datamodel.io.source
 
-import static edu.ie3.datamodel.io.source.EntitySource.getBuildInSource
-import static edu.ie3.datamodel.io.source.EntitySource.getEntities
-import static edu.ie3.datamodel.io.source.EntitySource.getEntityMap
+import static edu.ie3.datamodel.io.source.EntitySource.*
 
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.factory.input.OperatorInputFactory
