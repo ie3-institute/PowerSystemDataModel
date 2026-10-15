@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.naming
 
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.input.EmInput
+import edu.ie3.datamodel.models.input.EvInput
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.connector.LineInput
