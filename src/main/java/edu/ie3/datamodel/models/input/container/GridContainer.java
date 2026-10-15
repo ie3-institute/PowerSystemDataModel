@@ -7,7 +7,6 @@ package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.models.input.EvInput;
 import edu.ie3.datamodel.models.input.UniqueInputEntity;
-
 import java.util.*;
 
 public abstract class GridContainer implements InputContainer<UniqueInputEntity> {
@@ -23,7 +22,7 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
   /** Accumulated energy management units */
   protected final EnergyManagementUnits emUnits;
 
-  //** Accumulated electric vehicles */
+  // ** Accumulated electric vehicles */
   protected final Set<EvInput> evs;
 
   protected GridContainer(
@@ -85,7 +84,7 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
         && rawGrid.equals(that.rawGrid)
         && systemParticipants.equals(that.systemParticipants)
         && emUnits.equals(that.emUnits)
-            && evs.equals(that.evs);
+        && evs.equals(that.evs);
   }
 
   @Override

@@ -7,8 +7,6 @@ package edu.ie3.datamodel.models.input;
 
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.input.AssetInput;
-import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput;
 import java.util.Map;
 import java.util.Objects;

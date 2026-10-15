@@ -5,8 +5,8 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
-import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.EvInput
+import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.test.common.SystemParticipantTestData as sptd
 import spock.lang.Specification
 

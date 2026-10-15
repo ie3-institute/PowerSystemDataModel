@@ -5,12 +5,11 @@
  */
 package edu.ie3.test.common
 
-import edu.ie3.datamodel.models.input.EvInput
-
 import static edu.ie3.datamodel.models.StandardUnits.*
 
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.EmInput
+import edu.ie3.datamodel.models.input.EvInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.container.SystemParticipants

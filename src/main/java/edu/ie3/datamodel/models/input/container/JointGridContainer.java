@@ -11,7 +11,6 @@ import edu.ie3.datamodel.models.input.EvInput;
 import edu.ie3.datamodel.utils.ContainerUtils;
 import java.util.Objects;
 import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +33,7 @@ public class JointGridContainer extends GridContainer {
     /* Build sub grid dependency */
     this.subGridTopologyGraph =
         ContainerUtils.buildSubGridTopologyGraph(
-            this.gridName, this.rawGrid, this.systemParticipants, this.emUnits);
+            this.gridName, this.rawGrid, this.systemParticipants, this.emUnits, evs);
     checkSubGridTopologyGraph(subGridTopologyGraph);
   }
 
@@ -119,7 +118,12 @@ public class JointGridContainer extends GridContainer {
     @Override
     public JointGridContainer build() {
       return new JointGridContainer(
-          getGridName(), getRawGrid(), getSystemParticipants(), getEmUnits(), getEvs(), subGridTopologyGraph);
+          getGridName(),
+          getRawGrid(),
+          getSystemParticipants(),
+          getEmUnits(),
+          getEvs(),
+          subGridTopologyGraph);
     }
   }
 }
