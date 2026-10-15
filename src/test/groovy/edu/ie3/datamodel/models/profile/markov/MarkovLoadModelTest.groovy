@@ -198,11 +198,12 @@ class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
     def expectedPowers = model.getExpectedPowers(ZonedDateTime.parse("2025-01-01T00:00:00Z"), 0, 50)
         .collect { it.to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() }
 
-    then: "the distribution is [0.1, 0.9] after one step and [0.28, 0.72] after two steps"
+    then: "state 0 goes from 1 towards 0.25, the difference shrinks by a factor of 0.1 - 0.3 = -0.2 each step"
+    // after k steps state 0 has 0.25 + 0.75 * (-0.2)^k and the power is 4.2 - 1.6 * that, so 3.8 - 1.2 * (-0.2)^k
     expectedPowers.size() == 50
-    Math.abs(expectedPowers[0] - 4.04d) < 1e-9
-    Math.abs(expectedPowers[1] - 3.752d) < 1e-9
-    Math.abs(expectedPowers[49] - 3.8d) < 1e-9
+    expectedPowers.indexed().every { step, power ->
+      Math.abs(power - (3.8d - 1.2d * Math.pow(-0.2d, step + 1))) < 1e-9
+    }
   }
 
   def "expected powers use the buckets of the following steps"() {

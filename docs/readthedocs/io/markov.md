@@ -292,8 +292,8 @@ initial state.
 ## Expected Values
 
 For forecasts, {code}`getExpectedPowers(time, state, steps)` returns the expected power of the steps following the
-step at {code}`time`, given the {code}`state` of the chain after that step. The distribution over the states is
-propagated in the same way as for the energy scaling.
+step at {code}`time`. Here, {code}`state` is the {code}`nextState` returned by that step. The distribution over the
+states is propagated in the same way as for the energy scaling.
 
 ## Simulation Input and Output
 

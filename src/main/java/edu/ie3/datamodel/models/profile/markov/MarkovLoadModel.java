@@ -234,7 +234,7 @@ public class MarkovLoadModel {
    * as forecast.
    *
    * @param time of the current step
-   * @param state of the chain after the current step
+   * @param state next state returned by the current step
    * @param steps number of following steps
    * @return the expected power of each following step
    */
