@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.factory.typeinput
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.utils.Try
@@ -30,45 +29,44 @@ class Transformer2WTypeInputFactoryTest extends Specification implements Factory
     Map<String, String> parameter = [
       "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "id": "blablub",
-      "rsc": "3",
-      "xsc": "4",
-      "srated": "5",
-      "vrateda": "6",
-      "vratedb": "7",
-      "gm": "8",
-      "bm": "9",
-      "dv": "10",
-      "dphi": "11",
-      "tapside": "1",
-      "tapneutr": "12",
-      "tapmin": "13",
-      "tapmax": "14"
+      "rSc": "3",
+      "xSc": "4",
+      "sRated": "5",
+      "vRatedA": "6",
+      "vRatedB": "7",
+      "gM": "8",
+      "bM": "9",
+      "dV": "10",
+      "dPhi": "11",
+      "tapSide": "1",
+      "tapNeutr": "12",
+      "tapMin": "13",
+      "tapMax": "14"
     ]
-    def typeInputClass = Transformer2WTypeInput
 
     when:
-    Try<Transformer2WTypeInput, FactoryException> typeInput = typeInputFactory.get(new EntityData(parameter, typeInputClass))
+    Try<Transformer2WTypeInput, FactoryException> typeInput = typeInputFactory.get(new HashMap<>(parameter))
 
     then:
     typeInput.success
-    typeInput.data.get().getClass() == typeInputClass
+    typeInput.data.get().getClass() == Transformer2WTypeInput
 
     typeInput.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       id == parameter["id"]
-      rSc == getQuant(parameter["rsc"], StandardUnits.RESISTANCE)
-      xSc == getQuant(parameter["xsc"], StandardUnits.REACTANCE)
-      sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
-      vRatedA == getQuant(parameter["vrateda"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
-      vRatedB == getQuant(parameter["vratedb"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
-      gM == getQuant(parameter["gm"], StandardUnits.CONDUCTANCE)
-      bM == getQuant(parameter["bm"], StandardUnits.SUSCEPTANCE)
-      dV == getQuant(parameter["dv"], StandardUnits.DV_TAP)
-      dPhi == getQuant(parameter["dphi"], StandardUnits.DPHI_TAP)
-      tapSide == (parameter["tapside"].trim() == "1") || parameter["tapside"].trim() == "true"
-      tapNeutr == Integer.parseInt(parameter["tapneutr"])
-      tapMin == Integer.parseInt(parameter["tapmin"])
-      tapMax == Integer.parseInt(parameter["tapmax"])
+      rSc == getQuant(parameter["rSc"], StandardUnits.RESISTANCE)
+      xSc == getQuant(parameter["xSc"], StandardUnits.REACTANCE)
+      sRated == getQuant(parameter["sRated"], StandardUnits.S_RATED)
+      vRatedA == getQuant(parameter["vRatedA"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
+      vRatedB == getQuant(parameter["vRatedB"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
+      gM == getQuant(parameter["gM"], StandardUnits.CONDUCTANCE)
+      bM == getQuant(parameter["bM"], StandardUnits.SUSCEPTANCE)
+      dV == getQuant(parameter["dV"], StandardUnits.DV_TAP)
+      dPhi == getQuant(parameter["dPhi"], StandardUnits.DPHI_TAP)
+      tapSide == (parameter["tapSide"].trim() == "1") || parameter["tapSide"].trim() == "true"
+      tapNeutr == Integer.parseInt(parameter["tapNeutr"])
+      tapMin == Integer.parseInt(parameter["tapMin"])
+      tapMax == Integer.parseInt(parameter["tapMax"])
     }
   }
 }

@@ -6,11 +6,11 @@
 package edu.ie3.datamodel.io.factory.typeinput
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.connector.type.CableTypeInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.utils.Try
+import edu.ie3.test.common.GridTestData
 import edu.ie3.test.helper.FactoryTestHelper
 import spock.lang.Specification
 
@@ -35,18 +35,17 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
       "g": "4",
       "r": "5",
       "x": "6",
-      "imax": "7",
-      "vrated": "8",
-      "cabletype": "",
+      "iMax": "7",
+      "vRated": "8",
+      "cableType": "",
     ]
-    def typeInputClass = LineTypeInput
 
     when:
-    Try<LineTypeInput, FactoryException> typeInput = typeInputFactory.get(new EntityData(parameter, typeInputClass))
+    Try<LineTypeInput, FactoryException> typeInput = typeInputFactory.get(new HashMap<>(parameter))
 
     then:
     typeInput.success
-    typeInput.data.get().getClass() == typeInputClass
+    typeInput.data.get().getClass() == LineTypeInput
     typeInput.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       id == parameter["id"]
@@ -54,8 +53,8 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
       g == getQuant(parameter["g"], StandardUnits.CONDUCTANCE_PER_LENGTH)
       r == getQuant(parameter["r"], StandardUnits.RESISTANCE_PER_LENGTH)
       x == getQuant(parameter["x"], StandardUnits.REACTANCE_PER_LENGTH)
-      iMax == getQuant(parameter["imax"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
-      vRated == getQuant(parameter["vrated"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
+      iMax == getQuant(parameter["iMax"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
+      vRated == getQuant(parameter["vRated"], StandardUnits.RATED_VOLTAGE_MAGNITUDE)
       !cableType.present
     }
   }
@@ -71,13 +70,13 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
       "g": "4",
       "r": "5",
       "x": "6",
-      "imax": "7",
-      "vrated": "8",
+      "iMax": "7",
+      "vRated": "8",
       "cableType": unknownCableUuid,
     ]
 
     when:
-    typeInputFactory.get(new EntityData(parameter, LineTypeInput)).getOrThrow()
+    typeInputFactory.get(new HashMap<>(parameter)).getOrThrow()
 
     then:
     FactoryException e = thrown()
@@ -95,13 +94,13 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
       "g": "4",
       "r": "5",
       "x": "6",
-      "imax": "7",
-      "vrated": "8",
+      "iMax": "7",
+      "vRated": "8",
       "cableType": "this-is-not-a-uuid",
     ]
 
     when:
-    typeInputFactory.get(new EntityData(parameter, LineTypeInput)).getOrThrow()
+    typeInputFactory.get(new HashMap<>(parameter)).getOrThrow()
 
     then:
     FactoryException e = thrown()
@@ -111,8 +110,8 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
 
   def "A LineTypeInputFactory with known cable_type resolves to the cableType"() {
     given:
-    def cableType = edu.ie3.test.common.GridTestData.cableTypeInput
-    def cableTypeMap = new java.util.HashMap<UUID, CableTypeInput>()
+    def cableType = GridTestData.cableTypeInput
+    def cableTypeMap = new HashMap<UUID, CableTypeInput>()
     cableTypeMap.put(cableType.uuid, cableType)
     def typeInputFactory = new LineTypeInputFactory(cableTypeMap)
     Map<String, String> parameter = [
@@ -122,14 +121,13 @@ class LineTypeInputFactoryTest extends Specification implements FactoryTestHelpe
       "g": "4",
       "r": "5",
       "x": "6",
-      "imax": "7",
-      "vrated": "8",
+      "iMax": "7",
+      "vRated": "8",
       "cableType": cableType.uuid.toString(),
     ]
 
     when:
-    Try<LineTypeInput, FactoryException> typeInput =
-        typeInputFactory.get(new EntityData(parameter, LineTypeInput))
+    Try<LineTypeInput, FactoryException> typeInput = typeInputFactory.get(new HashMap<>(parameter))
 
     then:
     typeInput.success

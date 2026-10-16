@@ -13,12 +13,24 @@ import edu.ie3.datamodel.models.input.thermal.DomesticHotWaterStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
+import spock.lang.Shared
 import spock.lang.Specification
 
 class DomesticHotWaterStorageInputFactoryTest extends Specification implements FactoryTestHelper {
+
+  @Shared private UUID busUuid = UUID.randomUUID()
+  @Shared private def thermalBusInput = Mock(ThermalBusInput)
+
+  @Shared private DomesticHotWaterStorageInputFactory inputFactory
+
+  def setupSpec() {
+    thermalBusInput.getUuid() >> busUuid
+
+    inputFactory = new DomesticHotWaterStorageInputFactory(Collections.emptyMap(), map(thermalBusInput))
+  }
+
   def "A DomesticHotWaterStorageInputFactory should contain exactly the expected class for parsing"() {
     given:
-    def inputFactory = new DomesticHotWaterStorageInputFactory()
     def expectedClasses = [DomesticHotWaterStorageInput]
 
     expect:
@@ -27,34 +39,32 @@ class DomesticHotWaterStorageInputFactoryTest extends Specification implements F
 
   def "A DomesticHotWaterStorageInputFactory should parse a valid DomesticHotWaterStorageInput correctly"() {
     given: "a system participant input type factory and model data"
-    def inputFactory = new DomesticHotWaterStorageInputFactory()
     Map<String, String> parameter = [
       "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "id" : "TestID",
-      "storagevolumelvl" : "3",
-      "inlettemp" : "4",
-      "returntemp" : "5",
+      "storageVolumeLvl" : "3",
+      "inletTemp" : "4",
+      "returnTemp" : "5",
       "c" : "6",
-      "pThermalMax" : "7"
+      "pThermalMax" : "7",
+      "thermalBus": busUuid.toString()
     ]
-    def inputClass = DomesticHotWaterStorageInput
-    def thermalBusInput = Mock(ThermalBusInput)
 
     when:
-    Try<DomesticHotWaterStorageInput, FactoryException> input = inputFactory.get(new ThermalUnitInputEntityData(parameter, inputClass, thermalBusInput))
+    Try<DomesticHotWaterStorageInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
 
     then:
     input.success
-    input.data.get().getClass() == inputClass
+    input.data.get().getClass() == DomesticHotWaterStorageInput
     input.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       operationTime == OperationTime.notLimited()
       operator == OperatorInput.NO_OPERATOR_ASSIGNED
       id == parameter["id"]
       thermalBus == thermalBusInput
-      storageVolumeLvl == getQuant(parameter["storagevolumelvl"], StandardUnits.VOLUME)
-      inletTemp == getQuant(parameter["inlettemp"], StandardUnits.TEMPERATURE)
-      returnTemp == getQuant(parameter["returntemp"], StandardUnits.TEMPERATURE)
+      storageVolumeLvl == getQuant(parameter["storageVolumeLvl"], StandardUnits.VOLUME)
+      inletTemp == getQuant(parameter["inletTemp"], StandardUnits.TEMPERATURE)
+      returnTemp == getQuant(parameter["returnTemp"], StandardUnits.TEMPERATURE)
       c == getQuant(parameter["c"], StandardUnits.SPECIFIC_HEAT_CAPACITY)
       pThermalMax == getQuant(parameter["pThermalMax"], StandardUnits.ACTIVE_POWER_IN)
     }

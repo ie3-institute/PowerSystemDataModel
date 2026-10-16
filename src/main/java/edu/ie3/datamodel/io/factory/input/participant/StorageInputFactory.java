@@ -12,27 +12,33 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.StorageInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.StorageTypeInput;
+import java.util.Map;
 import java.util.UUID;
 
-public class StorageInputFactory
-    extends SystemParticipantInputEntityFactory<
-        StorageInput, SystemParticipantTypedEntityData<StorageTypeInput>> {
+/** Factory to create instances of {@link StorageInput}s. */
+public class StorageInputFactory extends SystemParticipantInputEntityFactory<StorageInput> {
 
-  public StorageInputFactory() {
-    super(StorageInput.class);
+  private final Map<UUID, StorageTypeInput> types;
+
+  public StorageInputFactory(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, EmInput> emUnits,
+      Map<UUID, StorageTypeInput> types) {
+    super(operators, nodes, emUnits, StorageInput.class);
+    this.types = types;
   }
 
   @Override
   protected StorageInput buildModel(
-      SystemParticipantTypedEntityData<StorageTypeInput> data,
+      Map<String, String> data,
       UUID uuid,
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
-      OperationTime operationTime) {
-    final EmInput em = data.getControllingEm().orElse(null);
-    final StorageTypeInput typeInput = data.getTypeInput();
+      OperationTime operationTime,
+      EmInput controllingEm) {
     return new StorageInput(
         uuid,
         id,
@@ -40,8 +46,8 @@ public class StorageInputFactory
         operationTime,
         node,
         qCharacteristics,
-        em,
-        typeInput,
-        data.getFieldsToValues());
+        controllingEm,
+        getEntity(data, TYPE, types),
+        data);
   }
 }

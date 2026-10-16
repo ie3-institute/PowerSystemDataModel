@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult
@@ -21,7 +20,7 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
 
   def "A ThermalResultFactory should contain all expected classes for parsing"() {
     given:
-    def resultFactory = new ThermalResultFactory()
+    def resultFactory = new ThermalResultFactory(ThermalHouseResult)
     def expectedClasses = [
       ThermalHouseResult,
       CylindricalStorageResult,
@@ -34,7 +33,7 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
 
   def "A ThermalResultFactory should parse a CylindricalStorageResult correctly"() {
     given: "a thermal result factory and model data"
-    def resultFactory = new ThermalResultFactory()
+    def resultFactory = new ThermalResultFactory(CylindricalStorageResult)
     Map<String, String> parameter = [
       "time" : "2020-01-30T17:26:44Z",
       "inputModel": "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
@@ -43,7 +42,7 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
       "fillLevel" : "20"
     ]
     when:
-    Try<? extends ThermalUnitResult, FactoryException> result = resultFactory.get(new EntityData(parameter, CylindricalStorageResult))
+    Try<? extends ThermalUnitResult, FactoryException> result = resultFactory.get(new HashMap<>(parameter))
 
     then:
     result.success
@@ -59,7 +58,7 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
 
   def "A ThermalResultFactory should parse a DomesticHotWaterStorageResult correctly"() {
     given: "a thermal result factory and model data"
-    def resultFactory = new ThermalResultFactory()
+    def resultFactory = new ThermalResultFactory(DomesticHotWaterStorageResult)
     Map<String, String> parameter = [
       "time" : "2020-01-30T17:26:44Z",
       "inputModel": "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
@@ -68,7 +67,7 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
       "fillLevel" : "20"
     ]
     when:
-    Try<? extends ThermalUnitResult, FactoryException> result = resultFactory.get(new EntityData(parameter, DomesticHotWaterStorageResult))
+    Try<? extends ThermalUnitResult, FactoryException> result = resultFactory.get(new HashMap<>(parameter))
 
     then:
     result.success
@@ -84,7 +83,7 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
 
   def "A ThermalResultFactory should parse a ThermalHouseResult correctly"() {
     given: "a thermal result factory and model data"
-    def resultFactory = new ThermalResultFactory()
+    def resultFactory = new ThermalResultFactory(ThermalHouseResult)
     HashMap<String, String> parameter = [
       "time" : "2020-01-30T17:26:44Z",
       "inputModel" : "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
@@ -92,7 +91,7 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
       "indoorTemperature": "21"
     ]
     when:
-    Try<? extends ThermalUnitResult, FactoryException> result = resultFactory.get(new EntityData(parameter, ThermalHouseResult))
+    Try<? extends ThermalUnitResult, FactoryException> result = resultFactory.get(new HashMap<>(parameter))
 
     then:
     result.success

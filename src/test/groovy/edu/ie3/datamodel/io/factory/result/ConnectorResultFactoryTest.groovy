@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.connector.ConnectorResult
 import edu.ie3.datamodel.models.result.connector.LineResult
@@ -20,7 +19,7 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
 
   def "A ConnectorResultFactory should contain all expected classes for parsing"() {
     given:
-    def resultFactory = new ConnectorResultFactory()
+    def resultFactory = new ConnectorResultFactory(LineResult)
     def expectedClasses = [
       LineResult,
       Transformer2WResult,
@@ -33,27 +32,27 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
 
   def "A ConnectorResultFactory should parse a valid result model correctly"() {
     given: "a connector result factory and model data"
-    def resultFactory = new ConnectorResultFactory()
     Map<String, String> parameter = [
       "time" : "2020-01-30T17:26:44Z",
       "inputModel": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "iamag" : "1.0",
-      "iaang" : "90",
-      "ibmag" : "0.98123",
-      "ibang" : "90"
+      "iAMag" : "1.0",
+      "iAAng" : "90",
+      "iBMag" : "0.98123",
+      "iBAng" : "90"
     ]
 
     if (modelClass == Transformer2WResult) {
-      parameter["tappos"] = "3"
+      parameter["tapPos"] = "3"
     }
     if (modelClass == Transformer3WResult) {
-      parameter["tappos"] = "3"
-      parameter["icmag"] = "1.0"
-      parameter["icang"] = "90"
+      parameter["tapPos"] = "3"
+      parameter["iCMag"] = "1.0"
+      parameter["iCAng"] = "90"
     }
 
     when:
-    Try<? extends ConnectorResult, FactoryException> result = resultFactory.get(new EntityData(parameter, modelClass))
+    def resultFactory = new ConnectorResultFactory(modelClass)
+    Try<? extends ConnectorResult, FactoryException> result = resultFactory.get(new HashMap<>(parameter))
 
     then:
     result.success
@@ -61,21 +60,21 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
     ((ConnectorResult) result.data.get()).with {
       time == TIME_UTIL.toZonedDateTime(parameter["time"])
       inputModel == UUID.fromString(parameter["inputModel"])
-      iAAng == getQuant(parameter["iaang"], StandardUnits.ELECTRIC_CURRENT_ANGLE)
-      iAMag == getQuant(parameter["iamag"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
-      iBAng == getQuant(parameter["ibang"], StandardUnits.ELECTRIC_CURRENT_ANGLE)
-      iBMag == getQuant(parameter["ibmag"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
+      iAAng == getQuant(parameter["iAAng"], StandardUnits.ELECTRIC_CURRENT_ANGLE)
+      iAMag == getQuant(parameter["iAMag"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
+      iBAng == getQuant(parameter["iBAng"], StandardUnits.ELECTRIC_CURRENT_ANGLE)
+      iBMag == getQuant(parameter["iBMag"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
     }
 
     if (result.data.get().getClass() == Transformer2WResult) {
-      ((Transformer2WResult) result.data.get()).tapPos == Integer.parseInt(parameter["tappos"])
+      ((Transformer2WResult) result.data.get()).tapPos == Integer.parseInt(parameter["tapPos"])
     }
 
     if (result.data.get().getClass() == Transformer3WResult) {
       Transformer3WResult transformer3WResult = ((Transformer3WResult) result.data.get())
-      transformer3WResult.tapPos == Integer.parseInt(parameter["tappos"])
-      transformer3WResult.iCAng == getQuant(parameter["icang"], StandardUnits.ELECTRIC_CURRENT_ANGLE)
-      transformer3WResult.iCMag == getQuant(parameter["icmag"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
+      transformer3WResult.tapPos == Integer.parseInt(parameter["tapPos"])
+      transformer3WResult.iCAng == getQuant(parameter["iCAng"], StandardUnits.ELECTRIC_CURRENT_ANGLE)
+      transformer3WResult.iCMag == getQuant(parameter["iCMag"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
     }
 
 

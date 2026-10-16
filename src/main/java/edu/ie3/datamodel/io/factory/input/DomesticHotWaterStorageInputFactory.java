@@ -9,35 +9,36 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.DomesticHotWaterStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
+import java.util.Map;
 import java.util.UUID;
 
 public class DomesticHotWaterStorageInputFactory
     extends AbstractThermalStorageInputFactory<DomesticHotWaterStorageInput> {
 
-  public DomesticHotWaterStorageInputFactory() {
-    super(DomesticHotWaterStorageInput.class);
+  public DomesticHotWaterStorageInputFactory(
+      Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses) {
+    super(operators, thermalBuses, DomesticHotWaterStorageInput.class);
   }
 
   @Override
   protected DomesticHotWaterStorageInput buildModel(
-      ThermalUnitInputEntityData data,
+      Map<String, String> data,
       UUID uuid,
       String id,
       OperatorInput operator,
       OperationTime operationTime) {
 
-    final ThermalBusInput bus = data.getBusInput();
     return new DomesticHotWaterStorageInput(
         uuid,
         id,
         operator,
         operationTime,
-        bus,
+        getBus(data),
         getStorageVolumeLvl(data),
         getInletTemp(data),
         getReturnTemp(data),
         getSpecificHeatCapacity(data),
         getMaxThermalPower(data),
-        data.getFieldsToValues());
+        data);
   }
 }

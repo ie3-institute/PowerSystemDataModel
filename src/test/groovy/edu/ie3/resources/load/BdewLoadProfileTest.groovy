@@ -6,7 +6,6 @@
 package edu.ie3.resources.load
 
 import edu.ie3.datamodel.io.factory.timeseries.BdewLoadProfileFactory
-import edu.ie3.datamodel.io.factory.timeseries.LoadProfileData
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.csv.CsvDataSource
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
@@ -607,7 +606,7 @@ class BdewLoadProfileTest extends Specification {
 
   private List<BdewLoadValues> read(BdewStandardLoadProfile profile) {
     source.getSourceData(Path.of("lpts_"+profile.key.value)).map { it ->
-      factory.buildModel(new LoadProfileData<>(it, BdewLoadValues)).value
+      factory.buildModel(it).value
     }.toList()
   }
 

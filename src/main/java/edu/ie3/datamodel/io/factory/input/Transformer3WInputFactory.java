@@ -10,29 +10,35 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
+import java.util.Map;
 import java.util.UUID;
 
-public class Transformer3WInputFactory
-    extends ConnectorInputEntityFactory<Transformer3WInput, Transformer3WInputEntityData> {
+public class Transformer3WInputFactory extends ConnectorInputEntityFactory<Transformer3WInput> {
 
-  public Transformer3WInputFactory() {
-    super(Transformer3WInput.class);
+  private final Map<UUID, Transformer3WTypeInput> types;
+
+  public Transformer3WInputFactory(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, Transformer3WTypeInput> types) {
+    super(operators, nodes, Transformer3WInput.class);
+    this.types = types;
   }
 
   @Override
   protected Transformer3WInput buildModel(
-      Transformer3WInputEntityData data,
+      Map<String, String> data,
       UUID uuid,
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
       OperatorInput operator,
       OperationTime operationTime) {
-    final int parallelDevices = data.getInt(PARALLEL_DEVICES);
-    final NodeInput nodeC = data.getNodeC();
-    final Transformer3WTypeInput type = data.getType();
-    final int tapPos = data.getInt(TAP_POS);
-    final boolean autoTap = data.getBoolean(AUTO_TAP);
+    int parallelDevices = getInt(data, PARALLEL_DEVICES);
+    NodeInput nodeC = getEntity(data, NODE_C, nodes);
+    Transformer3WTypeInput type = getType(data, types);
+    int tapPos = getInt(data, TAP_POS);
+    boolean autoTap = getBoolean(data, AUTO_TAP);
 
     return new Transformer3WInput(
         uuid,
@@ -46,6 +52,6 @@ public class Transformer3WInputFactory
         type,
         tapPos,
         autoTap,
-        data.getFieldsToValues());
+        data);
   }
 }

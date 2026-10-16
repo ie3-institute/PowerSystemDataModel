@@ -8,21 +8,21 @@ package edu.ie3.datamodel.io.factory.input;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
+import java.util.Map;
 import java.util.UUID;
 
-public class ThermalBusInputFactory
-    extends AssetInputEntityFactory<ThermalBusInput, AssetInputEntityData> {
-  public ThermalBusInputFactory() {
-    super(ThermalBusInput.class);
+public class ThermalBusInputFactory extends AssetInputEntityFactory<ThermalBusInput> {
+  public ThermalBusInputFactory(Map<UUID, OperatorInput> operators) {
+    super(operators, ThermalBusInput.class);
   }
 
   @Override
   protected ThermalBusInput buildModel(
-      AssetInputEntityData data,
+      Map<String, String> data,
       UUID uuid,
       String id,
       OperatorInput operator,
       OperationTime operationTime) {
-    return new ThermalBusInput(uuid, id, operator, operationTime, data.getFieldsToValues());
+    return new ThermalBusInput(uuid, id, operator, operationTime, data);
   }
 }

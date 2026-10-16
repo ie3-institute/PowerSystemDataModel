@@ -45,7 +45,7 @@ public class CsvLoadProfileSource<V extends LoadValues> extends LoadProfileSourc
 
     /* Read in the full time series */
     try {
-      this.loadProfileTimeSeries = buildLoadProfileTimeSeries(this::createEntries);
+      this.loadProfileTimeSeries = buildLoadProfileTimeSeries(entryFactory::get);
     } catch (SourceException e) {
       throw new IllegalArgumentException(
           "Unable to obtain load profile time series with profile '"

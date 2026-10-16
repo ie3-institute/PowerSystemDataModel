@@ -5,7 +5,6 @@
 */
 package edu.ie3.datamodel.io.factory.typeinput;
 
-import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
@@ -19,7 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.units.indriya.ComparableQuantity;
 
-public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeInput> {
+public class LineTypeInputFactory
+    extends AssetTypeInputEntityFactory<LineTypeInput, LineTypeInput> {
 
   private static final Logger log = LoggerFactory.getLogger(LineTypeInputFactory.class);
 
@@ -35,24 +35,24 @@ public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeIn
   }
 
   @Override
-  protected LineTypeInput buildModel(EntityData data) {
-    UUID uuid = data.getUUID(UUID);
-    String id = data.getField(ID);
+  protected LineTypeInput buildModel(Map<String, String> data) {
+    UUID uuid = getUUID(data, UUID);
+    String id = getField(data, ID);
     ComparableQuantity<SpecificConductance> b =
-        data.getQuantity(B, StandardUnits.SUSCEPTANCE_PER_LENGTH);
+        getQuantity(data, B, StandardUnits.SUSCEPTANCE_PER_LENGTH);
     ComparableQuantity<SpecificConductance> g =
-        data.getQuantity(G, StandardUnits.CONDUCTANCE_PER_LENGTH);
+        getQuantity(data, G, StandardUnits.CONDUCTANCE_PER_LENGTH);
     ComparableQuantity<SpecificResistance> r =
-        data.getQuantity(R, StandardUnits.RESISTANCE_PER_LENGTH);
+        getQuantity(data, R, StandardUnits.RESISTANCE_PER_LENGTH);
     ComparableQuantity<SpecificResistance> x =
-        data.getQuantity(X, StandardUnits.REACTANCE_PER_LENGTH);
+        getQuantity(data, X, StandardUnits.REACTANCE_PER_LENGTH);
     ComparableQuantity<ElectricCurrent> iMax =
-        data.getQuantity(I_MAX, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+        getQuantity(data, I_MAX, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
     ComparableQuantity<ElectricPotential> vRated =
-        data.getQuantity(V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+        getQuantity(data, V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
 
     String cableUuidStr =
-        data.getFieldOptional(FieldNamingStrategy.CABLE_TYPE)
+        getFieldOptional(data, FieldNamingStrategy.CABLE_TYPE)
             .map(String::trim)
             .filter(s -> !s.isBlank())
             .orElse(null);
@@ -85,7 +85,6 @@ public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeIn
       cableType = Optional.of(resolvedCableType);
     }
 
-    return new LineTypeInput(
-        uuid, id, b, g, r, x, iMax, vRated, cableType, data.getFieldsToValues());
+    return new LineTypeInput(uuid, id, b, g, r, x, iMax, vRated, cableType, data);
   }
 }

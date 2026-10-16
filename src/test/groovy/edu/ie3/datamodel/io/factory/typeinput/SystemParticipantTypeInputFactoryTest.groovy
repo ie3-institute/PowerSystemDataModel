@@ -9,7 +9,6 @@ import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.EntityData
 import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
@@ -27,7 +26,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
   def "A SystemParticipantTypeInputFactory should contain all expected classes for parsing"() {
     given:
-    def typeInputFactory = new SystemParticipantTypeInputFactory()
+    def typeInputFactory = new SystemParticipantTypeInputFactory(AcTypeInput)
     def expectedClasses = [
       AcTypeInput,
       EvTypeInput,
@@ -44,142 +43,135 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
 
   def "A SystemParticipantTypeInputFactory should parse a valid EvTypeInput correctly"() {
     given: "a system participant input type factory and model data"
-    def typeInputFactory = new SystemParticipantTypeInputFactory()
+    def typeInputFactory = new SystemParticipantTypeInputFactory(EvTypeInput)
     Map<String, String> parameter = [
       "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "id": "blablub",
       "capex": "3",
       "opex": "4",
-      "srated": "5",
+      "sRated": "5",
       "cosPhiRated": "6",
-
-      "estorage": "7",
-      "econs": "8",
-      "srateddc": "9",
+      "eStorage": "7",
+      "eCons": "8",
+      "sRatedDC": "9",
     ]
-    def typeInputClass = EvTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new EntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new HashMap<>(parameter))
 
     then:
     typeInput.success
-    typeInput.data.get().getClass() == typeInputClass
+    typeInput.data.get().getClass() == EvTypeInput
 
     ((EvTypeInput) typeInput.data.get()).with {
       uuid == UUID.fromString(parameter["uuid"])
       id == parameter["id"]
       capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
       opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
-      sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+      sRated == getQuant(parameter["sRated"], StandardUnits.S_RATED)
       cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
 
-      eStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)
-      eCons == getQuant(parameter["econs"], StandardUnits.ENERGY_PER_DISTANCE)
-      sRatedDC == getQuant(parameter["srateddc"], StandardUnits.ACTIVE_POWER_IN)
+      eStorage == getQuant(parameter["eStorage"], StandardUnits.ENERGY_IN)
+      eCons == getQuant(parameter["eCons"], StandardUnits.ENERGY_PER_DISTANCE)
+      sRatedDC == getQuant(parameter["sRatedDC"], StandardUnits.ACTIVE_POWER_IN)
     }
   }
 
   def "A SystemParticipantTypeInputFactory should parse a valid HpTypeInput correctly"() {
     given: "a system participant input type factory and model data"
-    def typeInputFactory = new SystemParticipantTypeInputFactory()
+    def typeInputFactory = new SystemParticipantTypeInputFactory(HpTypeInput)
     Map<String, String> parameter = [
       "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "id": "blablub",
       "capex": "3",
       "opex": "4",
-      "srated": "5",
+      "sRated": "5",
       "cosPhiRated": "6",
-
-      "pthermal": "7",
+      "pThermal": "7",
     ]
-    def typeInputClass = HpTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new EntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new HashMap<>(parameter))
 
     then:
     typeInput.success
-    typeInput.data.get().getClass() == typeInputClass
+    typeInput.data.get().getClass() == HpTypeInput
 
     ((HpTypeInput) typeInput.data.get()).with {
       uuid == UUID.fromString(parameter["uuid"])
       id == parameter["id"]
       capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
       opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
-      sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+      sRated == getQuant(parameter["sRated"], StandardUnits.S_RATED)
       cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
 
-      pThermal == getQuant(parameter["pthermal"], StandardUnits.ACTIVE_POWER_IN)
+      pThermal == getQuant(parameter["pThermal"], StandardUnits.ACTIVE_POWER_IN)
     }
   }
 
   def "A SystemParticipantTypeInputFactory should parse a valid BmTypeInput correctly"() {
     given: "a system participant input type factory and model data"
-    def typeInputFactory = new SystemParticipantTypeInputFactory()
+    def typeInputFactory = new SystemParticipantTypeInputFactory(BmTypeInput)
     Map<String, String> parameter = [
       "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "id": "blablub",
       "capex": "3",
       "opex": "4",
-      "srated": "5",
+      "sRated": "5",
       "cosPhiRated": "6",
-      "activepowergradient": "7",
-      "etaconv": "8"
+      "activePowerGradient": "7",
+      "etaConv": "8"
     ]
-    def typeInputClass = BmTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new EntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new HashMap<>(parameter))
 
     then:
     typeInput.success
-    typeInput.data.get().getClass() == typeInputClass
+    typeInput.data.get().getClass() == BmTypeInput
 
     ((BmTypeInput) typeInput.data.get()).with {
       uuid == UUID.fromString(parameter["uuid"])
       id == parameter["id"]
       capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
       opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
-      sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+      sRated == getQuant(parameter["sRated"], StandardUnits.S_RATED)
       cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
 
-      activePowerGradient == getQuant(parameter["activepowergradient"], StandardUnits.ACTIVE_POWER_GRADIENT)
-      etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)
+      activePowerGradient == getQuant(parameter["activePowerGradient"], StandardUnits.ACTIVE_POWER_GRADIENT)
+      etaConv == getQuant(parameter["etaConv"], StandardUnits.EFFICIENCY)
     }
   }
 
   def "A SystemParticipantTypeInputFactory should parse a valid WecTypeInput correctly"() {
     given: "a system participant input type factory and model data"
-    def typeInputFactory = new SystemParticipantTypeInputFactory()
+    def typeInputFactory = new SystemParticipantTypeInputFactory(WecTypeInput)
     Map<String, String> parameter = [
       "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "id": "blablub",
       "capex": "3",
       "opex": "4",
-      "srated": "5",
+      "sRated": "5",
       "cosPhiRated": "6",
-
       "cpCharacteristic": "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}",
-      "etaconv": "7",
-      "rotorarea": "8",
-      "hubheight": "9"
+      "etaConv": "7",
+      "rotorArea": "8",
+      "hubHeight": "9"
     ]
-    def typeInputClass = WecTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new EntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new HashMap<>(parameter))
 
     then:
     typeInput.success
-    typeInput.data.get().getClass() == typeInputClass
+    typeInput.data.get().getClass() == WecTypeInput
 
     ((WecTypeInput) typeInput.data.get()).with {
       uuid == UUID.fromString(parameter["uuid"])
       id == parameter["id"]
       capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
       opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
-      sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+      sRated == getQuant(parameter["sRated"], StandardUnits.S_RATED)
       cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
 
       cpCharacteristic.with {
@@ -190,88 +182,83 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
           new CharacteristicPoint<Speed, Dimensionless>(Quantities.getQuantity(20d, METRE_PER_SECOND), Quantities.getQuantity(0.2, PU))
         ] as TreeSet)
       }
-      etaConv == getQuant(parameter["etaconv"], StandardUnits.EFFICIENCY)
-      rotorArea == getQuant(parameter["rotorarea"], StandardUnits.ROTOR_AREA)
-      hubHeight == getQuant(parameter["hubheight"], StandardUnits.HUB_HEIGHT)
+      etaConv == getQuant(parameter["etaConv"], StandardUnits.EFFICIENCY)
+      rotorArea == getQuant(parameter["rotorArea"], StandardUnits.ROTOR_AREA)
+      hubHeight == getQuant(parameter["hubHeight"], StandardUnits.HUB_HEIGHT)
     }
   }
 
   def "A SystemParticipantTypeInputFactory should parse a valid ChpTypeInput correctly"() {
     given: "a system participant input type factory and model data"
-    def typeInputFactory = new SystemParticipantTypeInputFactory()
+    def typeInputFactory = new SystemParticipantTypeInputFactory(ChpTypeInput)
     Map<String, String> parameter = [
       "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "id": "blablub",
       "capex": "3",
       "opex": "4",
-      "srated": "5",
+      "sRated": "5",
       "cosPhiRated": "6",
-
-      "etael": "7",
-      "etathermal": "8",
-      "pthermal": "9",
-      "pown": "10"
+      "etaEl": "7",
+      "etaThermal": "8",
+      "pThermal": "9",
+      "pOwn": "10"
     ]
-    def typeInputClass = ChpTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new EntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new HashMap<>(parameter))
 
     then:
     typeInput.success
-    typeInput.data.get().getClass() == typeInputClass
+    typeInput.data.get().getClass() == ChpTypeInput
 
     ((ChpTypeInput) typeInput.data.get()).with {
       uuid == UUID.fromString(parameter["uuid"])
       id == parameter["id"]
       capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
       opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
-      sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+      sRated == getQuant(parameter["sRated"], StandardUnits.S_RATED)
       cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
-
-      etaEl == getQuant(parameter["etael"], StandardUnits.EFFICIENCY)
-      etaThermal == getQuant(parameter["etathermal"], StandardUnits.EFFICIENCY)
-      pThermal == getQuant(parameter["pthermal"], StandardUnits.ACTIVE_POWER_IN)
-      pOwn == getQuant(parameter["pown"], StandardUnits.ACTIVE_POWER_IN)
+      etaEl == getQuant(parameter["etaEl"], StandardUnits.EFFICIENCY)
+      etaThermal == getQuant(parameter["etaThermal"], StandardUnits.EFFICIENCY)
+      pThermal == getQuant(parameter["pThermal"], StandardUnits.ACTIVE_POWER_IN)
+      pOwn == getQuant(parameter["pOwn"], StandardUnits.ACTIVE_POWER_IN)
     }
   }
 
   def "A SystemParticipantTypeInputFactory should parse a valid StorageTypeInput correctly"() {
     given: "a system participant input type factory and model data"
-    def typeInputFactory = new SystemParticipantTypeInputFactory()
+    def typeInputFactory = new SystemParticipantTypeInputFactory(StorageTypeInput)
     Map<String, String> parameter = [
       "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "id" : "blablub",
       "capex" : "3",
       "opex" : "4",
-      "srated" : "5",
+      "sRated" : "5",
       "cosPhiRated" : "6",
-
-      "estorage" : "6",
-      "pmax" : "8",
-      "activepowergradient" : "1",
+      "eStorage" : "6",
+      "pMax" : "8",
+      "activePowerGradient" : "1",
       "eta" : "9"
     ]
-    def typeInputClass = StorageTypeInput
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new EntityData(parameter, typeInputClass))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new HashMap<>(parameter))
 
     then:
     typeInput.success
-    typeInput.data.get().getClass() == typeInputClass
+    typeInput.data.get().getClass() == StorageTypeInput
 
     ((StorageTypeInput) typeInput.data.get()).with {
       uuid == UUID.fromString(parameter["uuid"])
       id == parameter["id"]
       capex == getQuant(parameter["capex"], StandardUnits.CAPEX)
       opex == getQuant(parameter["opex"], StandardUnits.ENERGY_PRICE)
-      sRated == getQuant(parameter["srated"], StandardUnits.S_RATED)
+      sRated == getQuant(parameter["sRated"], StandardUnits.S_RATED)
       cosPhiRated == Double.parseDouble(parameter["cosPhiRated"])
 
-      eStorage == getQuant(parameter["estorage"], StandardUnits.ENERGY_IN)
-      pMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_IN)
-      activePowerGradient == getQuant(parameter["activepowergradient"], StandardUnits.ACTIVE_POWER_GRADIENT)
+      eStorage == getQuant(parameter["eStorage"], StandardUnits.ENERGY_IN)
+      pMax == getQuant(parameter["pMax"], StandardUnits.ACTIVE_POWER_IN)
+      activePowerGradient == getQuant(parameter["activePowerGradient"], StandardUnits.ACTIVE_POWER_GRADIENT)
       eta == getQuant(parameter["eta"], StandardUnits.EFFICIENCY)
     }
   }

@@ -17,6 +17,7 @@ import edu.ie3.datamodel.models.input.system.type.HpTypeInput
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
+import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
@@ -24,9 +25,32 @@ import java.time.ZonedDateTime
 import javax.measure.quantity.Dimensionless
 
 class HpInputFactoryTest extends Specification implements FactoryTestHelper {
+
+  @Shared private UUID nodeUuid = UUID.randomUUID()
+  @Shared private def nodeInput = Mock(NodeInput)
+  @Shared private UUID operatorUuid = UUID.randomUUID()
+  @Shared private def operatorInput = Mock(OperatorInput)
+  @Shared private UUID emUuid = UUID.randomUUID()
+  @Shared private def emUnit = Mock(EmInput)
+  @Shared private UUID typeUuid = UUID.randomUUID()
+  @Shared private def typeInput = Mock(HpTypeInput)
+  @Shared private UUID busUuid = UUID.randomUUID()
+  @Shared private def thermalBusInput = Mock(ThermalBusInput)
+
+  @Shared private HpInputFactory inputFactory
+
+  def setupSpec() {
+    nodeInput.getUuid() >> nodeUuid
+    operatorInput.getUuid() >> operatorUuid
+    emUnit.getUuid() >> emUuid
+    typeInput.getUuid() >> typeUuid
+    thermalBusInput.getUuid() >> busUuid
+
+    inputFactory = new HpInputFactory(map(operatorInput), map(nodeInput), map(emUnit), map(typeInput), map(thermalBusInput))
+  }
+
   def "A HpInputFactory should contain exactly the expected class for parsing"() {
     given:
-    def inputFactory = new HpInputFactory()
     def expectedClasses = [HpInput]
 
     expect:
@@ -35,34 +59,31 @@ class HpInputFactoryTest extends Specification implements FactoryTestHelper {
 
   def "A HpInputFactory should parse a valid HpInput correctly"() {
     given: "a system participant input type factory and model data"
-    def inputFactory = new HpInputFactory()
     Map<String, String> parameter = [
       "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "operatesuntil" : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
+      "operatesFrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesUntil" : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
       "id" : "TestID",
-      "qcharacteristics": "cosPhiFixed:{(0.0,1.0)}"
+      "qCharacteristics": "cosPhiFixed:{(0.0,1.0)}",
+      "operator": operatorUuid.toString(),
+      "node": nodeUuid.toString(),
+      "controllingEm": emUuid.toString(),
+      "type": typeUuid.toString(),
+      "thermalBus": busUuid.toString()
     ]
-    def inputClass = HpInput
-    def nodeInput = Mock(NodeInput)
-    def operatorInput = Mock(OperatorInput)
-    def emUnit = Mock(EmInput)
-    def typeInput = Mock(HpTypeInput)
-    def thermalBusInput = Mock(ThermalBusInput)
 
     when:
-    Try<HpInput, FactoryException> input = inputFactory.get(
-        new HpInputEntityData(parameter, operatorInput, nodeInput, emUnit, typeInput, thermalBusInput))
+    Try<HpInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
 
     then:
     input.success
-    input.data.get().getClass() == inputClass
+    input.data.get().getClass() == HpInput
     input.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       operationTime.startDate.present
-      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesfrom"])
+      operationTime.startDate.get() == ZonedDateTime.parse(parameter["operatesFrom"])
       operationTime.endDate.present
-      operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesuntil"])
+      operationTime.endDate.get() == ZonedDateTime.parse(parameter["operatesUntil"])
       operator == operatorInput
       id == parameter["id"]
       node == nodeInput

@@ -5,7 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
-import edu.ie3.datamodel.io.factory.SimpleFactoryData
+
 import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.input.IdCoordinateInput
 import edu.ie3.datamodel.utils.CollectionUtils
@@ -59,11 +59,10 @@ class IconIdCoordinateFactoryTest extends Specification {
       "latitude": "52.312",
       "longitude": "12.812",
       "coordinateType": "ICON"]
-    def validSimpleFactoryData = new SimpleFactoryData(parameter, IdCoordinateInput)
     IdCoordinateInput expectedIdCoordinate = new IdCoordinateInput(477295, GeoUtils.buildPoint(52.312, 12.812))
 
     when:
-    def actual = factory.get(validSimpleFactoryData)
+    def actual = factory.get(parameter)
 
     then:
     actual.success
