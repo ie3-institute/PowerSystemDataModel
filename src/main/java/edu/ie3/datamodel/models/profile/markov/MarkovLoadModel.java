@@ -229,6 +229,30 @@ public class MarkovLoadModel {
     return Optional.of(profileEnergyScaling);
   }
 
+  /**
+   * Returns the expected power of the steps following the step at the given time, e.g. to be used
+   * as forecast.
+   *
+   * @param time of the current step
+   * @param state next state returned by the current step
+   * @param steps number of following steps
+   * @return the expected power of each following step
+   */
+  public List<ComparableQuantity<Power>> getExpectedPowers(
+      ZonedDateTime time, int state, int steps) {
+    if (state < 0 || state >= stateCount) {
+      throw new IllegalArgumentException("State out of bounds: " + state);
+    }
+    double[] distribution = new double[stateCount];
+    distribution[state] = 1d;
+
+    return Arrays.stream(
+            expectedNormalizedValues(
+                distribution, time.plusMinutes(samplingIntervalMinutes), steps))
+        .mapToObj(this::scale)
+        .toList();
+  }
+
   private PowerValueSource.MarkovOutputValue computeStep(PowerValueSource.MarkovIdentifier data) {
     int bucket = bucketId(data.time());
     int currentState = resolveState(data);
