@@ -5,10 +5,13 @@
 */
 package edu.ie3.datamodel.io.source;
 
+import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.container.SoilLayer;
 import edu.ie3.datamodel.models.input.container.SoilType;
+import edu.ie3.datamodel.utils.validation.SoilValidationUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -17,7 +20,7 @@ import java.util.stream.Stream;
  * Abstract base for soil data sources (csv and sql). It holds the source agnostic reading logic and
  * delegates the transport specific row access to the concrete implementations.
  */
-public abstract class SoilDataSource {
+public abstract class SoilDataSource extends EntitySource {
   /**
    * Reads all soil types from the underlying source.
    *
@@ -47,4 +50,14 @@ public abstract class SoilDataSource {
    */
   protected abstract Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass)
       throws SourceException;
+
+  @Override
+  public void validate() throws ValidationException {
+    try {
+      SoilValidationUtils.validateAll(getSoilLayers(), getSoilTypes());
+    } catch (SourceException e) {
+      throw new FailedValidationException(
+          "Unable to validate soil source because it could not be read.", e);
+    }
+  }
 }
