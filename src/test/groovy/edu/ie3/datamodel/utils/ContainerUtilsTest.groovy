@@ -300,7 +300,7 @@ class ContainerUtilsTest extends Specification {
     HashMap<Integer, SubGridContainer> expectedSubGrids = ComplexTopology.expectedSubGrids
 
     when:
-    HashMap<Integer, SubGridContainer> actual = ContainerUtils.buildSubGridContainers(
+    Map<Integer, SubGridContainer> actual = ContainerUtils.buildSubGridContainers(
         gridName,
         subNetNumbers,
         rawGrid,
@@ -329,7 +329,7 @@ class ContainerUtilsTest extends Specification {
 
     HashMap<Integer, SubGridContainer> unmodifiedSubGrids = ComplexTopology.expectedSubGrids
 
-    HashMap<Integer, SubGridContainer> subgrids = ContainerUtils.buildSubGridContainers(
+    Map<Integer, SubGridContainer> subgrids = ContainerUtils.buildSubGridContainers(
         gridName,
         subNetNumbers,
         rawGridInput,

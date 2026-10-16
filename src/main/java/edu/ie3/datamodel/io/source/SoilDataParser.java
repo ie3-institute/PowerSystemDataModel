@@ -24,8 +24,6 @@ import java.util.stream.Stream;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
@@ -34,7 +32,6 @@ import tools.jackson.databind.ObjectMapper;
  * the CSV and SQL sources. This class cannot be instantiated.
  */
 public final class SoilDataParser {
-  private static final Logger log = LoggerFactory.getLogger(SoilDataParser.class);
   private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
   private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
@@ -87,7 +84,6 @@ public final class SoilDataParser {
       }
       return List.copyOf(parsed);
     } catch (RuntimeException e) {
-      log.error("Failed to read {}", sourceName, e);
       throw new SourceException("Failed to read " + sourceName, e);
     }
   }
@@ -177,11 +173,7 @@ public final class SoilDataParser {
         throw new ParsingException("Expected closed polygon of soil layer: " + geoJson);
       }
       return GEOMETRY_FACTORY.createPolygon(points);
-    } catch (ParsingException e) {
-      log.error("Unable to parse geometry from GeoJSON: {}", geoJson, e);
-      throw e;
     } catch (Exception e) {
-      log.error("Unable to parse geometry from GeoJSON: {}", geoJson, e);
       throw new ParsingException("Unable to parse geometry from GeoJSON: " + geoJson, e);
     }
   }
@@ -228,7 +220,6 @@ public final class SoilDataParser {
     try {
       parsed.add(rowParser.parse(row));
     } catch (ParsingException e) {
-      log.error("Failed to parse {} row {}", sourceName, rowNumber, e);
       throw new SourceException("Failed to parse " + sourceName + " row " + rowNumber, e);
     }
   }

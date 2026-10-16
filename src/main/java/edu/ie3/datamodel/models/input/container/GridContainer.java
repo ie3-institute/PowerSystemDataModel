@@ -121,7 +121,7 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     private RawGridElements rawGrid;
     private SystemParticipants systemParticipants;
     private EnergyManagementUnits emUnits;
-    private transient SoilData soilData;
+    private SoilData soilData;
 
     /**
      * Constructor for {@link GridContainerCopyBuilder}.
