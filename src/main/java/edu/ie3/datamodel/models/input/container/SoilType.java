@@ -127,31 +127,6 @@ public class SoilType extends UniqueInputEntity {
   }
 
   /**
-   * Returns the current thermal resistivity based on the over-temperature of the cable surface
-   * relative to the undisturbed soil temperature.
-   *
-   * @param temperatureDifference the difference between the cable outer surface temperature and the
-   *     undisturbed soil temperature
-   * @return the dry thermal resistivity if the critical temperature difference is reached or
-   *     exceeded, otherwise the wet thermal resistivity
-   */
-  public ComparableQuantity<ThermalResistivity> currentThermalResistivity(
-      ComparableQuantity<Temperature> temperatureDifference) {
-    if (temperatureDifference == null) {
-      throw new IllegalArgumentException("temperatureDifference must not be null");
-    }
-    if (criticalTemperatureDifference == null) {
-      throw new IllegalStateException(
-          "Cannot determine current thermal resistivity: criticalTemperatureDifference is not set for SoilType '"
-              + getUuid()
-              + "'.");
-    }
-    return temperatureDifference.compareTo(criticalTemperatureDifference) >= 0
-        ? thermalResistivityDry
-        : thermalResistivityWet;
-  }
-
-  /**
    * Creates a copy builder pre-populated with the current field values of this soil type.
    *
    * @return a copy builder for this soil type

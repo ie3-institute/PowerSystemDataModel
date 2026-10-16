@@ -110,31 +110,4 @@ class SoilModelSpec extends Specification {
     2d || 1d || false
     3d || 0.5d || true
   }
-
-  def "SoilType selects wet/dry resistivity and copy builder works; null handling"() {
-    given:
-    ComparableQuantity<ThermalResistivity> wet = Quantities.getQuantity(0.30, KELVIN_METRE_PER_WATT).asType(ThermalResistivity.class)
-    ComparableQuantity<ThermalResistivity> dry = Quantities.getQuantity(0.40, KELVIN_METRE_PER_WATT).asType(ThermalResistivity.class)
-    ComparableQuantity<ThermalCapacitance> capacity = Quantities.getQuantity(0.0015, JOULE_PER_CUBIC_METRE_KELVIN)
-    ComparableQuantity<Temperature> critical = Quantities.getQuantity(15, TEMPERATURE)
-
-    def soilType = new SoilType(UUID_VALUE, "loam", wet, dry, capacity, critical)
-
-    expect:
-    soilType.id == "loam"
-    soilType.currentThermalResistivity(Quantities.getQuantity(14.9, TEMPERATURE)) == wet
-    soilType.currentThermalResistivity(critical) == dry
-    soilType.currentThermalResistivity(Quantities.getQuantity(50, TEMPERATURE)) == dry
-
-    when: "critical missing"
-    def missingCritical = new SoilType(UUID_VALUE, "loam", wet, dry, capacity, null)
-    missingCritical.currentThermalResistivity(Quantities.getQuantity(10, TEMPERATURE))
-    then:
-    thrown(IllegalStateException)
-
-    when: "argument null"
-    soilType.currentThermalResistivity(null)
-    then:
-    thrown(IllegalArgumentException)
-  }
 }
