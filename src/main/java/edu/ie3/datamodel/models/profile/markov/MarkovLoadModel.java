@@ -5,12 +5,16 @@
 */
 package edu.ie3.datamodel.models.profile.markov;
 
+import de.lmu.ifi.dbs.elki.math.statistics.distribution.NormalDistribution;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.source.PowerValueSource;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.value.PValue;
 import edu.ie3.datamodel.utils.Try.TrySupplier;
+import edu.ie3.util.quantities.PowerSystemUnits;
 import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -24,6 +28,7 @@ import java.util.function.IntToDoubleFunction;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
 
 /**
  * Container for Markov-chain-based load models produced by simonaMarkovLoad.
@@ -36,6 +41,12 @@ public class MarkovLoadModel {
   private static final int QUARTER_HOURS_PER_DAY = 96;
   private static final int WEEKEND_FACTOR = QUARTER_HOURS_PER_DAY;
   private static final int MONTH_FACTOR = QUARTER_HOURS_PER_DAY * 2;
+
+  /** Year the energy scaling refers to, same as for the random load profile. */
+  private static final int ENERGY_SCALING_YEAR = 2019;
+
+  /** Period ahead of the reference year, in which the distribution over the states settles. */
+  private static final Duration ENERGY_SCALING_WARM_UP = Duration.ofDays(7);
 
   private final String schema;
   private final ZonedDateTime generatedAt;
@@ -62,6 +73,14 @@ public class MarkovLoadModel {
 
   private final ComparableQuantity<Power> maxPowerFromModel;
   private final ComparableQuantity<Power> minPowerFromModel;
+
+  /**
+   * Expected normalized value of the GMM at {@code [bucket][state]}, taking into account that
+   * samples are clamped to {@code [0, 1]}. States without GMM yield 0.
+   */
+  private final double[][] expectedGmmValues;
+
+  private final ComparableQuantity<Energy> profileEnergyScaling;
 
   /**
    * Builds a model from the parsed JSON sections and prepares the runtime lookup arrays.
@@ -122,6 +141,9 @@ public class MarkovLoadModel {
 
     MarkovModelValidation.validateNormalizationRange(minPowerFromModel, maxPowerFromModel);
     MarkovModelValidation.validateTransitionDimensions(transitions, bucketCount, stateCount);
+
+    this.expectedGmmValues = buildExpectedGmmValues();
+    this.profileEnergyScaling = calculateProfileEnergyScaling();
   }
 
   /**
@@ -199,11 +221,12 @@ public class MarkovLoadModel {
   }
 
   /**
-   * Not implemented yet. Energy scaling is not supported by the Markov based load model, see <a
-   * href="https://github.com/ie3-institute/PowerSystemDataModel/issues/1696">#1696</a>.
+   * Returns the energy the model consumes on average within one year. Like for the other load
+   * profiles, this allows to scale the model to the annual energy consumption of a load. The value
+   * is calculated from the expected values of the model for the year 2019.
    */
   public Optional<ComparableQuantity<Energy>> getProfileEnergyScaling() {
-    return Optional.empty();
+    return Optional.of(profileEnergyScaling);
   }
 
   private PowerValueSource.MarkovOutputValue computeStep(PowerValueSource.MarkovIdentifier data) {
@@ -312,6 +335,94 @@ public class MarkovLoadModel {
   private ComparableQuantity<Power> scale(double normalizedValue) {
     ComparableQuantity<Power> range = maxPowerFromModel.subtract(minPowerFromModel);
     return minPowerFromModel.add(range.multiply(normalizedValue)).asType(Power.class);
+  }
+
+  private double[][] buildExpectedGmmValues() {
+    double[][] expectedValues = new double[bucketCount][stateCount];
+    for (int bucket = 0; bucket < bucketCount; bucket++) {
+      for (int state = 0; state < stateCount; state++) {
+        GmmBuckets.GmmState gmm = gmmStates[bucket][state];
+        expectedValues[bucket][state] = gmm == null ? 0d : gmm.expectedValue();
+      }
+    }
+    return expectedValues;
+  }
+
+  private ComparableQuantity<Energy> calculateProfileEnergyScaling() {
+    ZonedDateTime yearStart = LocalDate.of(ENERGY_SCALING_YEAR, 1, 1).atStartOfDay(zoneId);
+    long yearMinutes = Duration.between(yearStart, yearStart.plusYears(1)).toMinutes();
+    int warmUpSteps = (int) (ENERGY_SCALING_WARM_UP.toMinutes() / samplingIntervalMinutes);
+    int yearSteps = (int) (yearMinutes / samplingIntervalMinutes);
+
+    double[] distribution = new double[stateCount];
+    Arrays.fill(distribution, 1d / stateCount);
+
+    double[] expectedValues =
+        expectedNormalizedValues(
+            distribution,
+            yearStart.minusMinutes((long) warmUpSteps * samplingIntervalMinutes),
+            warmUpSteps + yearSteps);
+    double averageValue =
+        Arrays.stream(expectedValues, warmUpSteps, expectedValues.length).average().orElseThrow();
+
+    double averagePower =
+        scale(averageValue).to(PowerSystemUnits.KILOWATT).getValue().doubleValue();
+    return Quantities.getQuantity(averagePower * yearMinutes / 60d, PowerSystemUnits.KILOWATTHOUR);
+  }
+
+  /**
+   * Returns the expected normalized value of each step, beginning with the step at {@code start}.
+   * Before the first step, the states are distributed according to {@code distribution}.
+   */
+  private double[] expectedNormalizedValues(double[] distribution, ZonedDateTime start, int steps) {
+    double[] expectedValues = new double[steps];
+    double[] current = distribution;
+    for (int step = 0; step < steps; step++) {
+      int bucket = bucketId(start.plusMinutes((long) step * samplingIntervalMinutes));
+      current = propagate(current, transitions[bucket]);
+
+      double expectedValue = 0d;
+      for (int state = 0; state < stateCount; state++) {
+        expectedValue += current[state] * expectedGmmValues[bucket][state];
+      }
+      expectedValues[step] = expectedValue;
+    }
+    return expectedValues;
+  }
+
+  /**
+   * Returns the distribution over the next states. As transition rows only sum up to one within a
+   * tolerance, the result is normalized again.
+   */
+  private static double[] propagate(double[] distribution, double[][] transitionMatrix) {
+    double[] next = new double[distribution.length];
+    for (int current = 0; current < distribution.length; current++) {
+      for (int state = 0; state < next.length; state++) {
+        next[state] += distribution[current] * transitionMatrix[current][state];
+      }
+    }
+    double sum = Arrays.stream(next).sum();
+    for (int state = 0; state < next.length; state++) {
+      next[state] /= sum;
+    }
+    return next;
+  }
+
+  /** Expected value of a normally distributed value that is clamped to {@code [0, 1]}. */
+  private static double expectedClampedValue(double mean, double standardDeviation) {
+    if (standardDeviation == 0d) {
+      return Math.clamp(mean, 0d, 1d);
+    }
+    double lower = -mean / standardDeviation;
+    double upper = (1d - mean) / standardDeviation;
+
+    double probabilityWithin =
+        NormalDistribution.standardNormalCDF(upper) - NormalDistribution.standardNormalCDF(lower);
+    double densityDifference =
+        NormalDistribution.standardNormalPDF(upper) - NormalDistribution.standardNormalPDF(lower);
+    double probabilityAbove = 1d - NormalDistribution.standardNormalCDF(upper);
+
+    return mean * probabilityWithin - standardDeviation * densityDifference + probabilityAbove;
   }
 
   private record StepResult(int nextState, double normalizedValue) {}
@@ -425,6 +536,18 @@ public class MarkovLoadModel {
           return mean;
         }
         return mean + Math.sqrt(variance) * rng.nextGaussian();
+      }
+
+      /** Expected value of a sample from this mixture, which is clamped to {@code [0, 1]}. */
+      private double expectedValue() {
+        double expectedValue = 0d;
+        for (int component = 0; component < weights.size(); component++) {
+          double standardDeviation = Math.sqrt(Math.max(0d, variances.get(component)));
+          expectedValue +=
+              weights.get(component)
+                  * expectedClampedValue(means.get(component), standardDeviation);
+        }
+        return expectedValue;
       }
     }
   }
