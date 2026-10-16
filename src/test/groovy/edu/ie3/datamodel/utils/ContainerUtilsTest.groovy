@@ -295,6 +295,7 @@ class ContainerUtilsTest extends Specification {
     RawGridElements rawGrid = ComplexTopology.grid.rawGrid
     SystemParticipants systemParticipants = ComplexTopology.grid.systemParticipants
     EnergyManagementUnits energyManagementUnits = ComplexTopology.grid.emUnits
+    Set evs = ComplexTopology.grid.evs
 
     HashMap<Integer, SubGridContainer> expectedSubGrids = ComplexTopology.expectedSubGrids
 
@@ -304,7 +305,8 @@ class ContainerUtilsTest extends Specification {
         subNetNumbers,
         rawGrid,
         systemParticipants,
-        energyManagementUnits)
+        energyManagementUnits,
+        evs)
 
     then:
     actual.size() == 6
@@ -324,6 +326,7 @@ class ContainerUtilsTest extends Specification {
     RawGridElements rawGridInput = ComplexTopology.grid.rawGrid
     SystemParticipants systemParticipantsInput = ComplexTopology.grid.systemParticipants
     EnergyManagementUnits energyManagementUnits = ComplexTopology.grid.emUnits
+    Set evs = ComplexTopology.grid.evs
 
     HashMap<Integer, SubGridContainer> unmodifiedSubGrids = ComplexTopology.expectedSubGrids
 
@@ -332,7 +335,8 @@ class ContainerUtilsTest extends Specification {
         subNetNumbers,
         rawGridInput,
         systemParticipantsInput,
-        energyManagementUnits)
+        energyManagementUnits,
+        evs)
 
     when:
     def computableSubgrids = subgrids.collectEntries {
@@ -389,13 +393,15 @@ class ContainerUtilsTest extends Specification {
     RawGridElements rawGrid = ComplexTopology.grid.rawGrid
     SystemParticipants systemParticipants = ComplexTopology.grid.systemParticipants
     EnergyManagementUnits energyManagementUnits = ComplexTopology.grid.emUnits
+    Set evs = ComplexTopology.grid.evs
 
     Map<Integer, SubGridContainer> subgrids = ContainerUtils.buildSubGridContainers(
         gridName,
         subNetNumbers,
         rawGrid,
         systemParticipants,
-        energyManagementUnits)
+        energyManagementUnits,
+        evs)
     SubGridTopologyGraph expectedSubGridTopology = ComplexTopology.expectedSubGridTopology
 
     when:
@@ -413,6 +419,7 @@ class ContainerUtilsTest extends Specification {
     RawGridElements rawGrid = ComplexTopology.grid.rawGrid
     SystemParticipants systemParticpants = ComplexTopology.grid.systemParticipants
     EnergyManagementUnits energyManagementUnits = ComplexTopology.grid.emUnits
+    Set evs = ComplexTopology.grid.evs
     SubGridTopologyGraph expectedSubGridTopology = ComplexTopology.expectedSubGridTopology
 
     when:
@@ -420,7 +427,8 @@ class ContainerUtilsTest extends Specification {
         gridName,
         rawGrid,
         systemParticpants,
-        energyManagementUnits)
+        energyManagementUnits,
+        evs)
 
     then:
     actual == expectedSubGridTopology

@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.utils;
 
 import edu.ie3.datamodel.exceptions.InvalidGridException;
+import edu.ie3.datamodel.models.input.EvInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
@@ -68,13 +69,15 @@ public class ContainerNodeUpdateUtil {
       JointGridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes)
       throws InvalidGridException {
     UpdatedEntities updatedEntities =
-        updateEntities(grid.getRawGrid(), grid.getSystemParticipants(), oldToNewNodes);
+        updateEntities(
+            grid.getRawGrid(), grid.getSystemParticipants(), grid.getEvs(), oldToNewNodes);
 
     return new JointGridContainer(
         grid.getGridName(),
         updatedEntities.rawGridElements(),
         updatedEntities.systemParticipants(),
-        grid.getEmUnits());
+        grid.getEmUnits(),
+        updatedEntities.evs());
   }
 
   /**
@@ -101,14 +104,16 @@ public class ContainerNodeUpdateUtil {
       SubGridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes) throws InvalidGridException {
 
     UpdatedEntities updatedEntities =
-        updateEntities(grid.getRawGrid(), grid.getSystemParticipants(), oldToNewNodes);
+        updateEntities(
+            grid.getRawGrid(), grid.getSystemParticipants(), grid.getEvs(), oldToNewNodes);
 
     return new SubGridContainer(
         grid.getGridName(),
         grid.getSubnet(),
         updatedEntities.rawGridElements(),
         updatedEntities.systemParticipants(),
-        grid.getEmUnits());
+        grid.getEmUnits(),
+        updatedEntities.evs());
   }
 
   /**
@@ -116,6 +121,7 @@ public class ContainerNodeUpdateUtil {
    *
    * @param rawGridElements the {@link RawGridElements} instance of the grid to be updated
    * @param systemParticipants the {@link SystemParticipants} instance of the grid to be updated
+   * @param evs the {@link EvInput} set of the grid to be updated
    * @param oldToNewNodes a mapping of old nodes to their corresponding new or updated nodes
    * @return instance of {@link UpdatedEntities} with copies of the provided grid parts with updated
    *     nodes as provided
@@ -123,6 +129,7 @@ public class ContainerNodeUpdateUtil {
   private static UpdatedEntities updateEntities(
       RawGridElements rawGridElements,
       SystemParticipants systemParticipants,
+      Set<EvInput> evs,
       Map<NodeInput, NodeInput> oldToNewNodes) {
     /* RawGridElements */
     RawGridElementsNodeUpdateResult rawGridUpdateResult =
@@ -135,7 +142,10 @@ public class ContainerNodeUpdateUtil {
     SystemParticipants updatedSystemParticipants =
         updateSystemParticipantsWithNodes(systemParticipants, updatedOldToNewNodes);
 
-    return new UpdatedEntities(updatedRawGridElements, updatedSystemParticipants);
+    /* Electric Vehicles – no node reference, so just pass through */
+    Set<EvInput> updatedEvs = evs;
+
+    return new UpdatedEntities(updatedRawGridElements, updatedSystemParticipants, updatedEvs);
   }
 
   /**
@@ -562,5 +572,5 @@ public class ContainerNodeUpdateUtil {
 
   /** Wrapper class for updated entities hold by an instance of {@link GridContainer} */
   private record UpdatedEntities(
-      RawGridElements rawGridElements, SystemParticipants systemParticipants) {}
+      RawGridElements rawGridElements, SystemParticipants systemParticipants, Set<EvInput> evs) {}
 }

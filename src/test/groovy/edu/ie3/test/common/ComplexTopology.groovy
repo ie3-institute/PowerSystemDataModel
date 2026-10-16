@@ -45,7 +45,8 @@ class ComplexTopology extends GridTestData {
   gridName,
   rawGrid,
   emptySystemParticipants,
-  emptyEnergyManagementUnits)
+  emptyEnergyManagementUnits,
+  Set.of())
 
   public static final HashMap<Integer, SubGridContainer> expectedSubGrids = new HashMap<>()
 
@@ -64,6 +65,7 @@ class ComplexTopology extends GridTestData {
                 [] as Set),
             emptySystemParticipants,
             emptyEnergyManagementUnits,
+            Set.of()
             )
     )
     expectedSubGrids.put(2, new SubGridContainer(
@@ -78,6 +80,7 @@ class ComplexTopology extends GridTestData {
                 [] as Set),
             emptySystemParticipants,
             emptyEnergyManagementUnits,
+            Set.of()
             )
     )
     expectedSubGrids.put(3, new SubGridContainer(
@@ -92,6 +95,7 @@ class ComplexTopology extends GridTestData {
                 [] as Set),
             emptySystemParticipants,
             emptyEnergyManagementUnits,
+            Set.of()
             )
     )
     expectedSubGrids.put(4, new SubGridContainer(
@@ -106,6 +110,7 @@ class ComplexTopology extends GridTestData {
                 [] as Set),
             emptySystemParticipants,
             emptyEnergyManagementUnits,
+            Set.of()
             )
     )
     expectedSubGrids.put(5, new SubGridContainer(
@@ -123,6 +128,7 @@ class ComplexTopology extends GridTestData {
                 [] as Set),
             emptySystemParticipants,
             emptyEnergyManagementUnits,
+            Set.of()
             )
     )
     expectedSubGrids.put(6, new SubGridContainer(
@@ -140,7 +146,7 @@ class ComplexTopology extends GridTestData {
                 [] as Set),
             emptySystemParticipants,
             emptyEnergyManagementUnits,
-            )
+            Set.of())
     )
 
     DirectedMultigraph<SubGridContainer, SubGridGate> mutableGraph =

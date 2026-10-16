@@ -40,7 +40,8 @@ class SampleJointGrid extends SystemParticipantTestData {
         "sampleGrid",
         rawGridElements,
         systemParticipants(rawGridElements),
-        new EnergyManagementUnits(Collections.singleton(emInput)))
+        new EnergyManagementUnits(Collections.singleton(emInput)),
+        Set.of())
   }
 
   private static SystemParticipants systemParticipants(RawGridElements rawGridElements)
@@ -117,7 +118,6 @@ class SampleJointGrid extends SystemParticipantTestData {
         storageTypeInput)
 
     return new SystemParticipants(
-        Collections.emptySet(),
         Collections.emptySet(),
         Collections.emptySet(),
         Collections.emptySet(),

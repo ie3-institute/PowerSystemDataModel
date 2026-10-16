@@ -71,8 +71,6 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
       exceptions.addAll(checkAc((AcInput) systemParticipant));
     } else if (ChpInput.class.isAssignableFrom(systemParticipant.getClass())) {
       exceptions.addAll(checkChp((ChpInput) systemParticipant));
-    } else if (EvInput.class.isAssignableFrom(systemParticipant.getClass())) {
-      exceptions.addAll(checkEv((EvInput) systemParticipant));
     } else if (FixedFeedInInput.class.isAssignableFrom(systemParticipant.getClass())) {
       exceptions.addAll(checkFixedFeedIn((FixedFeedInInput) systemParticipant));
     } else if (HpInput.class.isAssignableFrom(systemParticipant.getClass())) {
@@ -160,8 +158,6 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
       exceptions.addAll(checkBmType((BmTypeInput) systemParticipantTypeInput));
     } else if (ChpTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
       exceptions.addAll(checkChpType((ChpTypeInput) systemParticipantTypeInput));
-    } else if (EvTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
-      exceptions.add(checkEvType((EvTypeInput) systemParticipantTypeInput));
     } else if (HpTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
       exceptions.add(checkHpType((HpTypeInput) systemParticipantTypeInput));
     } else if (AcTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
@@ -260,42 +256,6 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         () ->
             isBetweenZeroAndHundredPercent(
                 chpTypeInput, chpTypeInput.getEtaThermal(), "Thermal efficiency"));
-  }
-
-  /**
-   * Validates a EvInput if:
-   *
-   * <ul>
-   *   <li>{@link SystemParticipantValidationUtils#checkEvType(EvTypeInput)} confirms a valid type
-   *       properties
-   * </ul>
-   *
-   * @param evInput EvInput to validate
-   * @return a list of try objects either containing an {@link InvalidEntityException} or an empty
-   *     Success
-   */
-  private static List<Try<Void, InvalidEntityException>> checkEv(EvInput evInput) {
-    return checkType(evInput.getType());
-  }
-
-  /**
-   * Validates a EvTypeInput if:
-   *
-   * <ul>
-   *   <li>its available battery capacity is positive
-   *   <li>its energy consumption per driven kilometre is positive
-   * </ul>
-   *
-   * @param evTypeInput EvTypeInput to validate
-   * @return a try object either containing an {@link InvalidEntityException} or an empty Success
-   */
-  private static Try<Void, InvalidEntityException> checkEvType(EvTypeInput evTypeInput) {
-    return Try.ofVoid(
-        () ->
-            detectZeroOrNegativeQuantities(
-                quantities(E_STORAGE, evTypeInput.geteStorage(), E_CONS, evTypeInput.geteCons()),
-                evTypeInput),
-        InvalidEntityException.class);
   }
 
   /**

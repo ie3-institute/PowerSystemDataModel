@@ -5,11 +5,9 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
+import edu.ie3.datamodel.models.input.EvInput;
 import edu.ie3.datamodel.models.input.UniqueInputEntity;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public abstract class GridContainer implements InputContainer<UniqueInputEntity> {
   /** Name of this grid */
@@ -24,16 +22,21 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
   /** Accumulated energy management units */
   protected final EnergyManagementUnits emUnits;
 
+  // ** Accumulated electric vehicles */
+  protected final Set<EvInput> evs;
+
   protected GridContainer(
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
-      EnergyManagementUnits emUnits) {
+      EnergyManagementUnits emUnits,
+      Set<EvInput> evs) {
     this.gridName = gridName;
 
     this.rawGrid = rawGrid;
     this.systemParticipants = systemParticipants;
     this.emUnits = emUnits;
+    this.evs = evs;
   }
 
   @Override
@@ -45,6 +48,7 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
         .forEach(allEntities::add);
     allEntities.addAll(systemParticipants.allEntitiesAsList());
     allEntities.addAll(emUnits.allEntitiesAsList());
+    allEntities.addAll(evs);
     return Collections.unmodifiableList(allEntities);
   }
 
@@ -68,6 +72,10 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     return emUnits;
   }
 
+  public Set<EvInput> getEvs() {
+    return Collections.unmodifiableSet(evs);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -75,12 +83,13 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     return gridName.equals(that.gridName)
         && rawGrid.equals(that.rawGrid)
         && systemParticipants.equals(that.systemParticipants)
-        && emUnits.equals(that.emUnits);
+        && emUnits.equals(that.emUnits)
+        && evs.equals(that.evs);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(gridName, rawGrid, systemParticipants, emUnits);
+    return Objects.hash(gridName, rawGrid, systemParticipants, emUnits, evs);
   }
 
   @Override
@@ -101,6 +110,7 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     private RawGridElements rawGrid;
     private SystemParticipants systemParticipants;
     private EnergyManagementUnits emUnits;
+    private Set<EvInput> evs;
 
     /**
      * Constructor for {@link GridContainerCopyBuilder}.
@@ -112,6 +122,7 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
       this.rawGrid = gridContainer.getRawGrid();
       this.systemParticipants = gridContainer.getSystemParticipants();
       this.emUnits = gridContainer.getEmUnits();
+      this.evs = gridContainer.getEvs();
     }
 
     /** Returns grid name */
@@ -132,6 +143,11 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     /** Returns {@link EnergyManagementUnits} */
     public EnergyManagementUnits getEmUnits() {
       return emUnits;
+    }
+
+    /** Returns {@link EvInput} set */
+    public Set<EvInput> getEvs() {
+      return evs;
     }
 
     /**
