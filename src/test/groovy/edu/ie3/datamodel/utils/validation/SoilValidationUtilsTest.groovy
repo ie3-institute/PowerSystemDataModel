@@ -12,8 +12,8 @@ import static tech.units.indriya.unit.Units.METRE
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.exceptions.ValidationException
-import edu.ie3.datamodel.models.input.grid.SoilLayer
-import edu.ie3.datamodel.models.input.grid.SoilType
+import edu.ie3.datamodel.models.input.container.SoilLayer
+import edu.ie3.datamodel.models.input.container.SoilType
 import edu.ie3.util.quantities.interfaces.ThermalCapacitance
 import edu.ie3.util.quantities.interfaces.ThermalResistivity
 import org.locationtech.jts.geom.Coordinate

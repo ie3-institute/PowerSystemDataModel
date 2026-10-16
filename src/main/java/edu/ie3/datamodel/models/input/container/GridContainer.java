@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.models.input.UniqueInputEntity;
-import edu.ie3.datamodel.models.input.grid.SoilData;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;

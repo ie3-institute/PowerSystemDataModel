@@ -18,7 +18,7 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.container.*;
-import edu.ie3.datamodel.models.input.grid.SoilData;
+import edu.ie3.datamodel.models.input.container.SoilData;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
 import java.util.*;

@@ -7,8 +7,8 @@ package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.models.Entity;
-import edu.ie3.datamodel.models.input.grid.SoilLayer;
-import edu.ie3.datamodel.models.input.grid.SoilType;
+import edu.ie3.datamodel.models.input.container.SoilLayer;
+import edu.ie3.datamodel.models.input.container.SoilType;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
