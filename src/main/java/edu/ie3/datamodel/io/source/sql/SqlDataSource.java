@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.exceptions.InvalidColumnNameException;
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.source.DataSource;
@@ -16,13 +17,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Stream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** Contains all functions that are needed to read a SQL data source. */
 public class SqlDataSource implements DataSource {
-
-  protected static final Logger log = LoggerFactory.getLogger(SqlDataSource.class);
 
   protected final SqlConnector connector;
   protected final DatabaseNamingStrategy databaseNamingStrategy;
@@ -109,7 +106,8 @@ public class SqlDataSource implements DataSource {
   }
 
   @Override
-  public Optional<Set<String>> getSourceFields(Class<? extends Entity> entityClass) {
+  public Optional<Set<String>> getSourceFields(Class<? extends Entity> entityClass)
+      throws SourceException {
     String tableName = databaseNamingStrategy.getEntityName(entityClass).orElseThrow();
     return getSourceFields(tableName);
   }
@@ -118,9 +116,10 @@ public class SqlDataSource implements DataSource {
    * Method that uses the table name to retrieve all field names.
    *
    * @param tableName to be used
-   * @return an option for a set of found fields
+   * @return an option for a set of found fields, empty if the table does not exist
+   * @throws SourceException if the fields of the table could not be read
    */
-  public Optional<Set<String>> getSourceFields(String tableName) {
+  public Optional<Set<String>> getSourceFields(String tableName) throws SourceException {
     try {
       ResultSet rs =
           connector.getConnection().getMetaData().getColumns(null, null, tableName, null);
@@ -131,16 +130,20 @@ public class SqlDataSource implements DataSource {
         columnNames.add(StringUtils.snakeCaseToCamelCase(name));
       }
 
+      if (columnNames.isEmpty()) {
+        log.debug("The table '{}' couldn't be found!", tableName);
+        return Optional.empty();
+      }
+
       return Optional.of(columnNames);
     } catch (SQLException e) {
-      log.warn("The table '{}' couldn't be read and therefore not be validated!", tableName, e);
-      // FIXME only return empty if table not found. Throw exception if error occurred
-      return Optional.empty();
+      throw new SourceException("Error while trying to read the fields of table " + tableName, e);
     }
   }
 
   @Override
-  public Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass) {
+  public Stream<Map<String, String>> getSourceData(Class<? extends Entity> entityClass)
+      throws SourceException {
     String explicitTableName = databaseNamingStrategy.getEntityName(entityClass).orElseThrow();
     return buildStreamByTableName(explicitTableName);
   }
@@ -167,7 +170,8 @@ public class SqlDataSource implements DataSource {
    * Creates a stream with maps representing a data point in the SQL data source using an explicit
    * table name.
    */
-  protected Stream<Map<String, String>> buildStreamByTableName(String tableName) {
+  protected Stream<Map<String, String>> buildStreamByTableName(String tableName)
+      throws SourceException {
     String query = createBaseQueryString(schemaName, tableName);
     return executeQuery(query);
   }
@@ -176,7 +180,8 @@ public class SqlDataSource implements DataSource {
    * Creates a stream with maps representing a data point in the SQL data source using an explicit
    * table name.
    */
-  protected Stream<Map<String, String>> executeQuery(String query, AddParams addParams) {
+  protected Stream<Map<String, String>> executeQuery(String query, AddParams addParams)
+      throws SourceException {
     try {
       PreparedStatement ps = connector.getConnection().prepareStatement(query);
       addParams.addParams(ps);
@@ -187,12 +192,11 @@ public class SqlDataSource implements DataSource {
 
       return connector.toStream(ps, 1000);
     } catch (SQLException e) {
-      log.error("Error during execution of query {}", query, e);
+      throw new SourceException("Error during execution of query " + query, e);
     }
-    return Stream.empty();
   }
 
-  protected Stream<Map<String, String>> executeQuery(String query) {
+  protected Stream<Map<String, String>> executeQuery(String query) throws SourceException {
     return executeQuery(query, x -> {});
   }
 }

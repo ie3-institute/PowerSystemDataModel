@@ -71,6 +71,7 @@ CREATE TABLE public.energy_boundaries_flex_options_res
     input_model UUID NOT NULL,
     p_max DOUBLE PRECISION NOT NULL,
     p_min DOUBLE PRECISION NOT NULL,
+    e_state DOUBLE PRECISION NOT NULL,
     e_max DOUBLE PRECISION NOT NULL,
     e_min DOUBLE PRECISION NOT NULL,
     time TIMESTAMP WITH TIME ZONE NOT NULL,

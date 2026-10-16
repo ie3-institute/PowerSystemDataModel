@@ -26,19 +26,15 @@ public class TimeSeriesProcessorKey {
 
   public TimeSeriesProcessorKey(TimeSeries<? extends TimeSeriesEntry<?>, ?, ?> timeSeries) {
     this.timeSeriesClass = timeSeries.getClass();
-    this.entryClass =
-        timeSeries.getEntries().stream()
-            .findFirst()
-            .orElseThrow(
-                () -> new IllegalArgumentException("Cannot find entries in the time series."))
-            .getClass();
 
-    Value value =
-        timeSeries.getEntries().stream()
-            .findFirst()
+    TimeSeriesEntry<?> first =
+        timeSeries
+            .first()
             .orElseThrow(
-                () -> new IllegalArgumentException("Cannot find entries in the time series."))
-            .getValue();
+                () -> new IllegalArgumentException("Cannot find entries in the time series."));
+
+    this.entryClass = first.getClass();
+    Value value = first.getValue();
 
     this.valueClass = value.getClass();
 

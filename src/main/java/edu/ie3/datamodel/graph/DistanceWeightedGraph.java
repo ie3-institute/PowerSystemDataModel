@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.graph;
 
 import edu.ie3.datamodel.models.input.NodeInput;
+import java.io.Serial;
 import java.util.function.Supplier;
 import javax.measure.Quantity;
 import javax.measure.quantity.Length;
@@ -15,7 +16,7 @@ import tech.units.indriya.ComparableQuantity;
 /** A distance weighted graph that uses {@link DistanceWeightedEdge}s as edge type. */
 public class DistanceWeightedGraph extends SimpleWeightedGraph<NodeInput, DistanceWeightedEdge> {
 
-  private static final long serialVersionUID = -2797654003980753341L;
+  @Serial private static final long serialVersionUID = -2797654003980753341L;
 
   public DistanceWeightedGraph() {
     super(DistanceWeightedEdge.class);

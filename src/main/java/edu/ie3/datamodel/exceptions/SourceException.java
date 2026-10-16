@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.exceptions;
 
 import edu.ie3.datamodel.utils.ExceptionUtils;
+import java.io.Serial;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class SourceException extends Exception {
 
-  private static final long serialVersionUID = -1861732230033172395L;
+  @Serial private static final long serialVersionUID = -1861732230033172395L;
 
   public SourceException(final String message, final Throwable cause) {
     super(message, cause);

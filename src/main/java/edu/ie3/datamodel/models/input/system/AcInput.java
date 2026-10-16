@@ -171,7 +171,7 @@ public class AcInput extends SystemParticipantInput implements HasType, HasTherm
 
   /**
    * A builder pattern based approach to create copies of {@link AcInput} entities with altered
-   * field values. For detailed field descriptions refer to java docs of {@link AcInput}
+   * field values. For detailed field descriptions refer to Javadocs of {@link AcInput}
    *
    * @version 0.1
    * @since 05.06.20

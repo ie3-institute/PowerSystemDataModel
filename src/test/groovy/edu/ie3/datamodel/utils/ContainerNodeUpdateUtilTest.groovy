@@ -42,17 +42,21 @@ class ContainerNodeUpdateUtilTest extends Specification {
     trafoNodeUpdateResult.with {
       updatedOldToNewNodes.size() == 3
       // all nodes should have the expected geoPosition
-      updatedOldToNewNodes.values().stream().map({ node -> node.geoPosition }).collect(Collectors.toSet()) == Collections.singleton(expectedGeoPosition)
+      updatedOldToNewNodes.values().stream().map({ node ->
+        node.geoPosition
+      }).collect(Collectors.toSet()) == Collections.singleton(expectedGeoPosition)
 
 
       updatedTransformer2WInputs.size() == 2
       // transformers nodes should end up to be the updated nodes
-      updatedTransformer2WInputs.stream().flatMap({ trafo2w -> Stream.of(trafo2w.getNodeA(), trafo2w.getNodeB()) })
+      updatedTransformer2WInputs.stream().flatMap({ trafo2w ->
+        Stream.of(trafo2w.getNodeA(), trafo2w.getNodeB())
+      })
       .collect(Collectors.toSet()) == updatedOldToNewNodes.values() as Set
     }
 
     where:
-    oldNode               | newNode                                                                                                                                                           || expectedGeoPosition
+    oldNode | newNode || expectedGeoPosition
     SampleJointGrid.nodeA | SampleJointGrid.nodeA.copy().geoPosition((Point) geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [16.592276813887139, 49.37770599548332] }")).build() || (Point) geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [16.592276813887139, 49.37770599548332] }")
     SampleJointGrid.nodeD | SampleJointGrid.nodeD.copy().geoPosition((Point) geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [16.592276813887139, 50.37770599548332] }")).build() || (Point) geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [16.592276813887139, 50.37770599548332] }")
     SampleJointGrid.nodeG | SampleJointGrid.nodeG.copy().geoPosition((Point) geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [16.592276813887139, 25.37770599548332] }")).build() || (Point) geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [16.592276813887139, 25.37770599548332] }")
@@ -98,7 +102,9 @@ class ContainerNodeUpdateUtilTest extends Specification {
 
       updatedTransformer2WInputs.size() == 2
       // transformer nodes should end up to be the updated nodes
-      updatedTransformer2WInputs.stream().flatMap({ trafo2w -> Stream.of(trafo2w.getNodeA(), trafo2w.getNodeB()) })
+      updatedTransformer2WInputs.stream().flatMap({ trafo2w ->
+        Stream.of(trafo2w.getNodeA(), trafo2w.getNodeB())
+      })
       .collect(Collectors.toSet()) == updatedOldToNewNodes.values() as Set
     }
   }
@@ -123,18 +129,24 @@ class ContainerNodeUpdateUtilTest extends Specification {
     trafoNodeUpdateResult.with {
       updatedOldToNewNodes.size() == 7
       // all nodes should have the expected geoPosition
-      updatedOldToNewNodes.values().stream().map({ node -> node.geoPosition }).collect(Collectors.toSet()) == Collections.singleton(expectedGeoPosition)
+      updatedOldToNewNodes.values().stream().map({ node ->
+        node.geoPosition
+      }).collect(Collectors.toSet()) == Collections.singleton(expectedGeoPosition)
 
 
       updatedTransformer2WInputs.size() == 5
       // transformer nodes should end up to be the updated nodes
-      Stream.of(updatedTransformer2WInputs.stream().flatMap({ trafo2w -> Stream.of(trafo2w.getNodeA(), trafo2w.getNodeB()) }),
-      updatedTransformer3WInputs.stream().flatMap({ trafo3w -> Stream.of(trafo3w.getNodeA(), trafo3w.getNodeB(), trafo3w.getNodeC()) })).flatMap(Function.identity())
+      Stream.of(updatedTransformer2WInputs.stream().flatMap({ trafo2w ->
+        Stream.of(trafo2w.getNodeA(), trafo2w.getNodeB())
+      }),
+      updatedTransformer3WInputs.stream().flatMap({ trafo3w ->
+        Stream.of(trafo3w.getNodeA(), trafo3w.getNodeB(), trafo3w.getNodeC())
+      })).flatMap(Function.identity())
       .collect(Collectors.toSet()) == updatedOldToNewNodes.values() as Set
     }
 
     where:
-    oldNode               || expectedGeoPosition
+    oldNode || expectedGeoPosition
     ComplexTopology.nodeA || (Point) geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [6.592276813887139, 10.37770599548332] }")
     ComplexTopology.nodeB || (Point) geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [7.592276813887139, 10.37770599548332] }")
     ComplexTopology.nodeC || (Point) geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [9.592276813887139, 10.37770599548332] }")
@@ -164,17 +176,23 @@ class ContainerNodeUpdateUtilTest extends Specification {
     trafoNodeUpdateResult.with {
       updatedOldToNewNodes.size() == 7
       // all nodes should have the expected geoPosition
-      updatedOldToNewNodes.values().stream().map({ node -> node.geoPosition }).collect(Collectors.toSet()) == Collections.singleton(expectedGeoPosition)
+      updatedOldToNewNodes.values().stream().map({ node ->
+        node.geoPosition
+      }).collect(Collectors.toSet()) == Collections.singleton(expectedGeoPosition)
 
       updatedTransformer2WInputs.size() == 5
       // transformer nodes should end up to be the updated nodes
-      Stream.of(updatedTransformer2WInputs.stream().flatMap({ trafo2w -> Stream.of(trafo2w.getNodeA(), trafo2w.getNodeB()) }),
-      updatedTransformer3WInputs.stream().flatMap({ trafo3w -> Stream.of(trafo3w.getNodeA(), trafo3w.getNodeB(), trafo3w.getNodeC()) })).flatMap(Function.identity())
+      Stream.of(updatedTransformer2WInputs.stream().flatMap({ trafo2w ->
+        Stream.of(trafo2w.getNodeA(), trafo2w.getNodeB())
+      }),
+      updatedTransformer3WInputs.stream().flatMap({ trafo3w ->
+        Stream.of(trafo3w.getNodeA(), trafo3w.getNodeB(), trafo3w.getNodeC())
+      })).flatMap(Function.identity())
       .collect(Collectors.toSet()) == updatedOldToNewNodes.values() as Set
     }
 
     where:
-    oldNode               | updatedGeoPosition                                                                                             || expectedGeoPosition
+    oldNode | updatedGeoPosition || expectedGeoPosition
     ComplexTopology.nodeB | (Point) geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [7.592276813887139, 10.37770599548332] }") || ComplexTopology.nodeA.geoPosition
     ComplexTopology.nodeC | (Point) geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [9.592276813887139, 10.37770599548332] }") || ComplexTopology.nodeA.geoPosition
     ComplexTopology.nodeD | (Point) geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [8.592276813887139, 10.37770599548332] }") || ComplexTopology.nodeA.geoPosition
@@ -199,23 +217,43 @@ class ContainerNodeUpdateUtilTest extends Specification {
 
     then:
     // all assets are connected to nodeA -> all geoPositions should be the same
-    resultingGrid.systemParticipants.allEntitiesAsList().stream().map({ x -> x.getNode().geoPosition }).collect(Collectors.toSet()) == [alteredGeoPos] as Set
+    resultingGrid.systemParticipants.allEntitiesAsList().stream().map({ x ->
+      x.getNode().geoPosition
+    }).collect(Collectors.toSet()) == [alteredGeoPos] as Set
 
     // all transformers are connected to nodeA -> all geoPositions should be the same
-    resultingGrid.rawGrid.transformer2Ws.stream().flatMap({ trafo2w -> Stream.of(trafo2w.getNodeA().geoPosition, trafo2w.getNodeB().geoPosition)}).collect(Collectors.toSet()) == [alteredGeoPos] as Set
+    resultingGrid.rawGrid.transformer2Ws.stream().flatMap({ trafo2w ->
+      Stream.of(trafo2w.getNodeA().geoPosition, trafo2w.getNodeB().geoPosition)
+    }).collect(Collectors.toSet()) == [alteredGeoPos] as Set
 
     // some lines also needed to get an update
-    resultingGrid.rawGrid.lines.find {line -> line.getId().equals("lineAtoC")}.nodeA.geoPosition == alteredGeoPos
-    resultingGrid.rawGrid.lines.find {line -> line.getId().equals("lineAtoC")}.geoPosition.coordinates.contains(alteredGeoPos.coordinate)
+    resultingGrid.rawGrid.lines.find {line ->
+      line.getId().equals("lineAtoC")
+    }.nodeA.geoPosition == alteredGeoPos
+    resultingGrid.rawGrid.lines.find {line ->
+      line.getId().equals("lineAtoC")
+    }.geoPosition.coordinates.contains(alteredGeoPos.coordinate)
 
-    resultingGrid.rawGrid.lines.find {line -> line.getId().equals("lineAtoB")}.nodeA.geoPosition == alteredGeoPos
-    resultingGrid.rawGrid.lines.find {line -> line.getId().equals("lineAtoB")}.geoPosition.coordinates.contains(alteredGeoPos.coordinate)
+    resultingGrid.rawGrid.lines.find {line ->
+      line.getId().equals("lineAtoB")
+    }.nodeA.geoPosition == alteredGeoPos
+    resultingGrid.rawGrid.lines.find {line ->
+      line.getId().equals("lineAtoB")
+    }.geoPosition.coordinates.contains(alteredGeoPos.coordinate)
 
     // lines got an update because their transformer node D got an update
-    resultingGrid.rawGrid.lines.find {line -> line.getId().equals("lineDtoE")}.nodeA.geoPosition == alteredGeoPos
-    resultingGrid.rawGrid.lines.find {line -> line.getId().equals("lineDtoE")}.geoPosition.coordinates.contains(alteredGeoPos.coordinate)
+    resultingGrid.rawGrid.lines.find {line ->
+      line.getId().equals("lineDtoE")
+    }.nodeA.geoPosition == alteredGeoPos
+    resultingGrid.rawGrid.lines.find {line ->
+      line.getId().equals("lineDtoE")
+    }.geoPosition.coordinates.contains(alteredGeoPos.coordinate)
 
-    resultingGrid.rawGrid.lines.find {line -> line.getId().equals("lineDtoF")}.nodeA.geoPosition == alteredGeoPos
-    resultingGrid.rawGrid.lines.find {line -> line.getId().equals("lineDtoF")}.geoPosition.coordinates.contains(alteredGeoPos.coordinate)
+    resultingGrid.rawGrid.lines.find {line ->
+      line.getId().equals("lineDtoF")
+    }.nodeA.geoPosition == alteredGeoPos
+    resultingGrid.rawGrid.lines.find {line ->
+      line.getId().equals("lineDtoF")
+    }.geoPosition.coordinates.contains(alteredGeoPos.coordinate)
   }
 }

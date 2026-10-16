@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.processor;
 
 import edu.ie3.datamodel.exceptions.EntityProcessorException;
+import edu.ie3.datamodel.io.factory.typeinput.json.CableTypeJsonCodec;
 import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.io.processor.result.ResultEntityProcessor;
 import edu.ie3.datamodel.models.OperationTime;
@@ -13,7 +14,11 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.SwitchInput;
+import edu.ie3.datamodel.models.input.connector.type.ConductorInput;
+import edu.ie3.datamodel.models.input.connector.type.LayerInput;
+import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
+import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType;
 import edu.ie3.datamodel.models.profile.LoadProfile;
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.result.CongestionResult;
@@ -33,6 +38,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.geojson.GeoJsonWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
 
 /**
  * Basic sketch and skeleton for a processors including all functions that apply for all needed
@@ -59,12 +65,14 @@ public abstract class Processor<T> {
           "pThermal",
           "pRef",
           "pMin",
+          "eState",
           "eMin",
           "eMax");
 
   protected static final String ADDITIONAL_INFORMATION = "additionalInformation";
 
   private static final GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
+  private static final CableTypeJsonCodec CABLE_JSON_CODEC = new CableTypeJsonCodec();
 
   private static final String OPERATION_TIME_FIELD_NAME = OperationTime.class.getSimpleName();
   private static final String OPERATES_FROM = FieldNamingStrategy.OPERATES_FROM;
@@ -234,8 +242,7 @@ public abstract class Processor<T> {
           "String",
           "DayOfWeek",
           "Season",
-          "ChargingPointType",
-          "EvcsLocationType" ->
+          "ChargingPointType" ->
           resultStringBuilder.append(methodReturnObject.toString());
       case "Quantity", "ComparableQuantity" ->
           resultStringBuilder.append(handleQuantity((Quantity<?>) methodReturnObject, fieldName));
@@ -251,15 +258,22 @@ public abstract class Processor<T> {
                           return Try.of(
                               () -> handleQuantity(quantity, fieldName),
                               EntityProcessorException.class);
-                        } else if (o instanceof UniqueEntity entity) {
-                          return Try.of(entity::getUuid, EntityProcessorException.class);
-                        } else {
-                          return Failure.of(
-                              new EntityProcessorException(
-                                  "Handling of "
-                                      + o.getClass().getSimpleName()
-                                      + ".class instance wrapped into Optional is currently not supported by entity processors!"));
                         }
+
+                        if (o instanceof ScreenLayerInput screenLayer) {
+                          return Try.of(
+                              () -> serializeCableToJson(screenLayer, fieldName),
+                              EntityProcessorException.class);
+                        }
+
+                        if (o instanceof UniqueEntity entity) {
+                          return Try.of(entity::getUuid, EntityProcessorException.class);
+                        }
+                        return Failure.of(
+                            new EntityProcessorException(
+                                "Handling of "
+                                    + o.getClass().getSimpleName()
+                                    + ".class instance wrapped into Optional is currently not supported by entity processors!"));
                       })
                   .orElse(Success.of("")) // (in case of empty optional)
                   .getOrThrow());
@@ -311,7 +325,11 @@ public abstract class Processor<T> {
       case "InputModelType" ->
           resultStringBuilder.append(((CongestionResult.InputModelType) methodReturnObject).type);
       case "PowerProfileKey" ->
-          resultStringBuilder.append(((PowerProfileKey) methodReturnObject).getValue());
+          resultStringBuilder.append(((PowerProfileKey) methodReturnObject).serialize());
+      case "ArrayList", "List" ->
+          resultStringBuilder.append(processList(methodReturnObject, fieldName));
+      case "ConductorInput" ->
+          resultStringBuilder.append(serializeCableToJson(methodReturnObject, fieldName));
       default ->
           throw new EntityProcessorException(
               "Unable to process value for attribute/field '"
@@ -461,4 +479,69 @@ public abstract class Processor<T> {
    * @return The unmodifiable {@link List} of eligible classes
    */
   protected abstract List<Class<? extends T>> getEligibleEntityClasses();
+
+  /**
+   * Processes a list-valued field to its String representation. A list of {@link EvcsLocationType}s
+   * is comma-joined, a list of {@link LayerInput}s (cable layers) is serialized to embedded JSON
+   * and any other list is rejected.
+   *
+   * @param methodReturnObject The value returned by the getter (expected to be a {@link List})
+   * @param fieldName Name of the foreseen field
+   * @return A String representation of the list
+   * @throws EntityProcessorException if the list is neither a list of {@link EvcsLocationType}s nor
+   *     a list of {@link LayerInput}s
+   */
+  private String processList(Object methodReturnObject, String fieldName)
+      throws EntityProcessorException {
+    return switch (methodReturnObject) {
+      case List<?> list when list.stream().allMatch(EvcsLocationType.class::isInstance) ->
+          list.stream().map(Object::toString).collect(Collectors.joining(",", "[", "]"));
+      case List<?> list -> serializeCableToJson(list, fieldName);
+      case null, default -> methodReturnObject == null ? "" : methodReturnObject.toString();
+    };
+  }
+
+  /**
+   * Serializes a cable component ({@link ScreenLayerInput}, {@link ConductorInput} or a {@link
+   * List} of {@link LayerInput}) into its embedded JSON string representation.
+   *
+   * @param cableObject cable component to serialize
+   * @param fieldName name of the field the value is assigned to
+   * @return the resulting JSON string
+   * @throws EntityProcessorException if the object is not a supported cable component or the JSON
+   *     cannot be written
+   */
+  private String serializeCableToJson(Object cableObject, String fieldName)
+      throws EntityProcessorException {
+    try {
+      if (cableObject instanceof ScreenLayerInput screenLayer) {
+        return CABLE_JSON_CODEC.writeScreenLayer(screenLayer);
+      }
+      if (cableObject instanceof ConductorInput conductor) {
+        return CABLE_JSON_CODEC.writeConductor(conductor);
+      }
+      if (cableObject instanceof List<?> list) {
+        if (list.stream().anyMatch(element -> !(element instanceof LayerInput))) {
+          throw new EntityProcessorException(
+              "Only lists of "
+                  + LayerInput.class.getSimpleName()
+                  + " are supported, but a list was provided for field: "
+                  + fieldName);
+        }
+        return CABLE_JSON_CODEC.writeLayers(list.stream().map(LayerInput.class::cast).toList());
+      }
+      throw new EntityProcessorException(
+          "Unable to serialize "
+              + cableObject.getClass().getSimpleName()
+              + " as cable JSON for field: "
+              + fieldName);
+    } catch (JacksonException e) {
+      throw new EntityProcessorException(
+          "Failed to serialize "
+              + cableObject.getClass().getSimpleName()
+              + " to JSON string for field: "
+              + fieldName,
+          e);
+    }
+  }
 }

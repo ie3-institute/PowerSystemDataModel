@@ -77,6 +77,7 @@ For a load input a {code}`PowerProfileKey` can be specified. This key is used to
 during a simulation. The key is normally provided as a {code}`String`. If this key matches the {code}`PowerProfileKey` of
 one of the built-in load {code}`LoadProfile`, the corresponding load profile will be applied. If no profile should be used,
 for example when using primary data via a time series, the field needs to be left empty.
+A [Markov load profile](/io/markov) is referenced with the prefix {code}`markov_`, e.g. {code}`markov_h0`.
 
 
 ## Power Profiles
@@ -95,3 +96,7 @@ The profiles rely on the VDN description for interruptable loads.
 For more details see [here (German only)](https://www.bdew.de/media/documents/LPuVe-Praxisleitfaden.pdf).
 {code}`NbwTemperatureDependantLoadProfiles` provides sample temperature dependant load profiles that can be used.
 The `NbwTemperatureDependantLoadProfiles` consists of load profiles "ep1" for heat pumps and "ez2" for night storage heating.
+
+Markov-chain-based load profiles can be used for stochastic load simulation. These profiles are produced
+by an external Python trainer and loaded from JSON files. For details on the JSON schema and the simulation pipeline,
+see the {ref}`Markov-based Load Profiles <markov-load-model>` documentation.

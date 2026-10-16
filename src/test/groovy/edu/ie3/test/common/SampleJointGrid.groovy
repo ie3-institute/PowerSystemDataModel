@@ -13,13 +13,8 @@ import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
-import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
-import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
-import edu.ie3.datamodel.models.input.container.EnergyManagementUnits
-import edu.ie3.datamodel.models.input.container.GraphicElements
-import edu.ie3.datamodel.models.input.container.JointGridContainer
-import edu.ie3.datamodel.models.input.container.RawGridElements
-import edu.ie3.datamodel.models.input.container.SystemParticipants
+import edu.ie3.datamodel.models.input.connector.type.*
+import edu.ie3.datamodel.models.input.container.*
 import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
 import edu.ie3.datamodel.models.input.system.StorageInput
@@ -32,24 +27,20 @@ import org.locationtech.jts.io.geojson.GeoJsonReader
 import tech.units.indriya.quantity.Quantities
 
 import java.util.stream.Collectors
-
 /**
  * //ToDo: Class Description
  *
- * @version 0.1* @since 08.06.20
  */
 class SampleJointGrid extends SystemParticipantTestData {
 
   static JointGridContainer grid() throws ParseException, ParsingException {
 
     RawGridElements rawGridElements = jointSampleRawGridElements()
-
     return new JointGridContainer(
         "sampleGrid",
         rawGridElements,
         systemParticipants(rawGridElements),
-        new EnergyManagementUnits(Collections.singleton(emInput)),
-        new GraphicElements(Collections.emptySet()))
+        new EnergyManagementUnits(Collections.singleton(emInput)))
   }
 
   private static SystemParticipants systemParticipants(RawGridElements rawGridElements)
@@ -58,7 +49,9 @@ class SampleJointGrid extends SystemParticipantTestData {
     // set the participant node to nodeA
     NodeInput participantNode =
         rawGridElements.getNodes().stream()
-        .filter({ node -> node.getId().equalsIgnoreCase("nodeA") })
+        .filter({ node ->
+          node.getId().equalsIgnoreCase("nodeA")
+        })
         .collect(Collectors.toList())
         .get(0)
 
@@ -148,6 +141,9 @@ class SampleJointGrid extends SystemParticipantTestData {
         Collections.emptySet())
   }
 
+
+  public static final CableTypeInput cableTypeInput = GridTestData.cableTypeInput
+
   private static final GeoJsonReader geoJsonReader = new GeoJsonReader()
 
   // LV
@@ -160,7 +156,7 @@ class SampleJointGrid extends SystemParticipantTestData {
   Quantities.getQuantity(1, PU),
   false,
   (Point) geoJsonReader.read(
-  "{ \"type\": \"Point\", \"coordinates\": [6.592276813887139, 49.37770599548332] }"),
+      "{ \"type\": \"Point\", \"coordinates\": [6.592276813887139, 49.37770599548332] }"),
   GermanVoltageLevelUtils.LV,
   1)
 
@@ -173,7 +169,7 @@ class SampleJointGrid extends SystemParticipantTestData {
   Quantities.getQuantity(1, PU),
   false,
   (Point) geoJsonReader.read(
-  "{ \"type\": \"Point\", \"coordinates\": [6.593358228545043, 49.377139554965595] }"),
+      "{ \"type\": \"Point\", \"coordinates\": [6.593358228545043, 49.377139554965595] }"),
   GermanVoltageLevelUtils.LV,
   1)
 
@@ -186,7 +182,7 @@ class SampleJointGrid extends SystemParticipantTestData {
   Quantities.getQuantity(1, PU),
   false,
   (Point) geoJsonReader.read(
-  "{ \"type\": \"Point\", \"coordinates\": [6.592850044965246, 49.37684839141148] }"),
+      "{ \"type\": \"Point\", \"coordinates\": [6.592850044965246, 49.37684839141148] }"),
   GermanVoltageLevelUtils.LV,
   1)
 
@@ -199,7 +195,8 @@ class SampleJointGrid extends SystemParticipantTestData {
   Quantities.getQuantity(0.253899991512299, OHM_PER_KILOMETRE),
   Quantities.getQuantity(0.0691149979829788, OHM_PER_KILOMETRE),
   Quantities.getQuantity(265, AMPERE),
-  Quantities.getQuantity(0.4, KILOVOLT))
+  Quantities.getQuantity(0.4, KILOVOLT),
+  Optional.of(cableTypeInput))
 
   public static final LineInput lineAB =
   new LineInput(
@@ -253,7 +250,7 @@ class SampleJointGrid extends SystemParticipantTestData {
   Quantities.getQuantity(1, PU),
   false,
   (Point) geoJsonReader.read(
-  "{ \"type\": \"Point\", \"coordinates\": [6.592276813887139, 49.37770599548332] }"),
+      "{ \"type\": \"Point\", \"coordinates\": [6.592276813887139, 49.37770599548332] }"),
   GermanVoltageLevelUtils.MV_10KV,
   2)
 
@@ -266,7 +263,7 @@ class SampleJointGrid extends SystemParticipantTestData {
   Quantities.getQuantity(1, PU),
   false,
   (Point) geoJsonReader.read(
-  "{ \"type\": \"Point\", \"coordinates\": [6.572286813887139, 49.39770699548332] }"),
+      "{ \"type\": \"Point\", \"coordinates\": [6.572286813887139, 49.39770699548332] }"),
   GermanVoltageLevelUtils.MV_10KV,
   2)
 
@@ -279,7 +276,7 @@ class SampleJointGrid extends SystemParticipantTestData {
   Quantities.getQuantity(1, PU),
   false,
   (Point) geoJsonReader.read(
-  "{ \"type\": \"Point\", \"coordinates\": [6.572286813887139, 49.38770799548332] }"),
+      "{ \"type\": \"Point\", \"coordinates\": [6.572286813887139, 49.38770799548332] }"),
   GermanVoltageLevelUtils.MV_10KV,
   2)
 
@@ -293,7 +290,7 @@ class SampleJointGrid extends SystemParticipantTestData {
   Quantities.getQuantity(1, PU),
   false,
   (Point) geoJsonReader.read(
-  "{ \"type\": \"Point\", \"coordinates\": [6.592276813887139, 49.37770599548332] }"),
+      "{ \"type\": \"Point\", \"coordinates\": [6.592276813887139, 49.37770599548332] }"),
   GermanVoltageLevelUtils.HV,
   4)
 

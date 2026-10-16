@@ -167,7 +167,7 @@ public class UniquenessValidationUtils extends ValidationUtils {
   protected static DuplicateEntitiesException buildDuplicationException(
       String entityClass, List<Set<Object>> notUniqueElements) {
     String fieldName =
-        notUniqueElements.get(0).stream()
+        notUniqueElements.getFirst().stream()
             .map(f -> f.getClass().getSimpleName())
             .collect(Collectors.joining("-"));
 

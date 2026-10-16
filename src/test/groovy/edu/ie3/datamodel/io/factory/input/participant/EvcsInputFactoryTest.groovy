@@ -24,7 +24,6 @@ import javax.measure.quantity.Dimensionless
 /**
  * Testing EvcsInputFactory
  *
- * @version 0.1* @since 26.07.20
  */
 class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
 
@@ -41,16 +40,16 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
     given: "a system participant input type factory and model data"
     def inputFactory = new EvcsInputFactory()
     Map<String, String> parameter = [
-      "uuid"            : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesfrom"    : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "operatesuntil"   : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
-      "id"              : "TestID",
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesuntil" : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
+      "id" : "TestID",
       "qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
-      "type"            : "Household",
-      "chargingpoints"  : "4",
-      "cosphirated"     : "0.95",
-      "locationtype"    : "CHARGING_HUB_TOWN",
-      "v2gsupport"     : "false"
+      "type" : "Household",
+      "chargingpoints" : "4",
+      "cosphirated" : "0.95",
+      "locationtypes" : "CHARGING_HUB_TOWN, STREET",
+      "v2gsupport" : "false"
     ]
     def inputClass = EvcsInput
     def nodeInput = Mock(NodeInput)
@@ -83,7 +82,10 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
       type == ChargingPointTypeUtils.HouseholdSocket
       chargingPoints == Integer.parseInt(parameter["chargingpoints"])
       cosPhiRated == Double.parseDouble(parameter["cosphirated"])
-      locationType == EvcsLocationType.CHARGING_HUB_TOWN
+      locationTypes == [
+        EvcsLocationType.CHARGING_HUB_TOWN,
+        EvcsLocationType.STREET
+      ]
       !v2gSupport
     }
   }
@@ -92,16 +94,16 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
     given: "a system participant input type factory and model data"
     def inputFactory = new EvcsInputFactory()
     Map<String, String> parameter = [
-      "uuid"            : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesfrom"    : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "operatesuntil"   : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
-      "id"              : "TestID",
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesuntil" : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
+      "id" : "TestID",
       "qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
-      "type"            : "-- invalid --",
-      "chargingpoints"  : "4",
-      "cosphirated"     : "0.95",
-      "locationtype"    : "CHARGING_HUB_TOWN",
-      "v2gsupport"     : "false"
+      "type" : "-- invalid --",
+      "chargingpoints" : "4",
+      "cosphirated" : "0.95",
+      "locationtypes" : "[CHARGING_HUB_TOWN]",
+      "v2gsupport" : "false"
     ]
     def inputClass = EvcsInput
     def nodeInput = Mock(NodeInput)
@@ -121,16 +123,16 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
     given: "a system participant input type factory and model data"
     def inputFactory = new EvcsInputFactory()
     Map<String, String> parameter = [
-      "uuid"            : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesfrom"    : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "operatesuntil"   : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
-      "id"              : "TestID",
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesuntil" : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
+      "id" : "TestID",
       "qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
-      "type"            : "Household",
-      "chargingpoints"  : "4",
-      "cosphirated"     : "0.95",
-      "locationType"    : "-- invalid --",
-      "v2gsupport"     : "false"
+      "type" : "Household",
+      "chargingpoints" : "4",
+      "cosphirated" : "0.95",
+      "locationtypes" : "-- invalid --",
+      "v2gsupport" : "false"
     ]
     def inputClass = EvcsInput
     def nodeInput = Mock(NodeInput)
@@ -143,6 +145,6 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
 
     then:
     input.failure
-    input.exception.get().cause.message == "Exception while trying to parse field \"locationType\" with supposed int value \"-- invalid --\""
+    input.exception.get().cause.message == "Exception while trying to parse field \"locationTypes\" with supposed value \"-- invalid --\""
   }
 }

@@ -24,7 +24,7 @@ public class RandomLoadProfileTimeSeries extends LoadProfileTimeSeries<RandomLoa
       Set<LoadProfileEntry<RandomLoadValues>> entries,
       ComparableQuantity<Power> maxPower,
       ComparableQuantity<Energy> profileEnergyScaling) {
-    super(powerProfileKey, entries, maxPower, profileEnergyScaling);
+    super(powerProfileKey, entries, RandomLoadValues.class, maxPower, profileEnergyScaling);
   }
 
   @Override

@@ -39,13 +39,13 @@ class FixedFeedInInputFactoryTest extends Specification implements FactoryTestHe
     given: "a system participant input type factory and model data"
     def inputFactory = new FixedFeedInInputFactory()
     Map<String, String> parameter = [
-      "uuid"            : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesfrom"    : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "operatesuntil"   : "",
-      "id"              : "TestID",
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesuntil" : "",
+      "id" : "TestID",
       "qcharacteristics": "cosPhiFixed:{(0.0,1.0)}",
-      "srated"          : "3",
-      "cosphirated"     : "4"
+      "srated" : "3",
+      "cosphirated" : "4"
     ]
     def inputClass = FixedFeedInInput
     def nodeInput = Mock(NodeInput)

@@ -85,7 +85,11 @@ class BufferedCsvWriterTest extends Specification {
   def "The buffered csv writer writes out content in the order specified by the headline elements"() {
     given:
     def targetFile = tmpDirectory.resolve("order_test.csv")
-    def writer = new BufferedCsvWriter(targetFile, ["third_header", "second_header", "first_header"] as String[], ",", false)
+    def writer = new BufferedCsvWriter(targetFile, [
+      "third_header",
+      "second_header",
+      "first_header"
+    ] as String[], ",", false)
     writer.writeFileHeader()
     def content = [
       "third_header": "third_value",

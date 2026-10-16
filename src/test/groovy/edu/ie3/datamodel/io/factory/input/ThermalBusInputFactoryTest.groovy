@@ -28,10 +28,10 @@ class ThermalBusInputFactoryTest extends Specification implements FactoryTestHel
     given: "a system participant input type factory and model data"
     def inputFactory = new ThermalBusInputFactory()
     Map<String, String> parameter = [
-      "uuid"         : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
       "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
       "operatesuntil": "",
-      "id"           : "TestID"
+      "id" : "TestID"
     ]
     def inputClass = ThermalBusInput
     def operatorInput = Mock(OperatorInput)

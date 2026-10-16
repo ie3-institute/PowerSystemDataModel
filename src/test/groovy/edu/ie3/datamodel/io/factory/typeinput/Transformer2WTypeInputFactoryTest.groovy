@@ -28,21 +28,21 @@ class Transformer2WTypeInputFactoryTest extends Specification implements Factory
     given: "a system participant input type factory and model data"
     def typeInputFactory = new Transformer2WTypeInputFactory()
     Map<String, String> parameter = [
-      "uuid":     "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id":       "blablub",
-      "rsc":      "3",
-      "xsc":      "4",
-      "srated":   "5",
-      "vrateda":  "6",
-      "vratedb":  "7",
-      "gm":       "8",
-      "bm":       "9",
-      "dv":       "10",
-      "dphi":     "11",
-      "tapside":  "1",
+      "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id": "blablub",
+      "rsc": "3",
+      "xsc": "4",
+      "srated": "5",
+      "vrateda": "6",
+      "vratedb": "7",
+      "gm": "8",
+      "bm": "9",
+      "dv": "10",
+      "dphi": "11",
+      "tapside": "1",
       "tapneutr": "12",
-      "tapmin":   "13",
-      "tapmax":   "14"
+      "tapmin": "13",
+      "tapmax": "14"
     ]
     def typeInputClass = Transformer2WTypeInput
 

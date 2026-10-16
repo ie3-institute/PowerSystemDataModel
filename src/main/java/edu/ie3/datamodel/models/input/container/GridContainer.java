@@ -6,7 +6,10 @@
 package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.models.input.UniqueInputEntity;
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 public abstract class GridContainer implements InputContainer<UniqueInputEntity> {
   /** Name of this grid */
@@ -21,36 +24,33 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
   /** Accumulated energy management units */
   protected final EnergyManagementUnits emUnits;
 
-  /** Accumulated graphic data entities (node graphics, line graphics) */
-  protected final GraphicElements graphics;
-
   protected GridContainer(
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
-      EnergyManagementUnits emUnits,
-      GraphicElements graphics) {
+      EnergyManagementUnits emUnits) {
     this.gridName = gridName;
 
     this.rawGrid = rawGrid;
     this.systemParticipants = systemParticipants;
     this.emUnits = emUnits;
-    this.graphics = graphics;
   }
 
   @Override
   public List<UniqueInputEntity> allEntitiesAsList() {
     List<UniqueInputEntity> allEntities = new LinkedList<>();
     allEntities.addAll(rawGrid.allEntitiesAsList());
+    rawGrid.getCableDeploymentsByLine().values().stream()
+        .flatMap(java.util.Collection::stream)
+        .forEach(allEntities::add);
     allEntities.addAll(systemParticipants.allEntitiesAsList());
     allEntities.addAll(emUnits.allEntitiesAsList());
-    allEntities.addAll(graphics.allEntitiesAsList());
     return Collections.unmodifiableList(allEntities);
   }
 
   /**
    * @return true, as we are positive people and believe in what we do. Just kidding. Checks are
-   *     made during initialisation.
+   *     made during initialization.
    */
   public String getGridName() {
     return gridName;
@@ -68,10 +68,6 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     return emUnits;
   }
 
-  public GraphicElements getGraphics() {
-    return graphics;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -79,13 +75,12 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     return gridName.equals(that.gridName)
         && rawGrid.equals(that.rawGrid)
         && systemParticipants.equals(that.systemParticipants)
-        && emUnits.equals(that.emUnits)
-        && graphics.equals(that.graphics);
+        && emUnits.equals(that.emUnits);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(gridName, rawGrid, systemParticipants, emUnits, graphics);
+    return Objects.hash(gridName, rawGrid, systemParticipants, emUnits);
   }
 
   @Override
@@ -106,7 +101,6 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     private RawGridElements rawGrid;
     private SystemParticipants systemParticipants;
     private EnergyManagementUnits emUnits;
-    private GraphicElements graphics;
 
     /**
      * Constructor for {@link GridContainerCopyBuilder}.
@@ -118,7 +112,6 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
       this.rawGrid = gridContainer.getRawGrid();
       this.systemParticipants = gridContainer.getSystemParticipants();
       this.emUnits = gridContainer.getEmUnits();
-      this.graphics = gridContainer.getGraphics();
     }
 
     /** Returns grid name */
@@ -139,11 +132,6 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     /** Returns {@link EnergyManagementUnits} */
     public EnergyManagementUnits getEmUnits() {
       return emUnits;
-    }
-
-    /** Returns {@link GraphicElements} */
-    protected GraphicElements getGraphics() {
-      return graphics;
     }
 
     /**
@@ -187,17 +175,6 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
      */
     public B emUnits(EnergyManagementUnits emUnits) {
       this.emUnits = emUnits;
-      return thisInstance();
-    }
-
-    /**
-     * Method to alter the {@link GraphicElements}.
-     *
-     * @param graphics altered graphics
-     * @return this instance of {@link GridContainerCopyBuilder}
-     */
-    public B graphics(GraphicElements graphics) {
-      this.graphics = graphics;
       return thisInstance();
     }
 

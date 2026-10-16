@@ -22,7 +22,7 @@ public class OperatorInput extends UniqueInputEntity {
    * Constructor for an Operator
    *
    * @param uuid Unique identifier
-   * @param id Human readable identifier
+   * @param id Human-readable identifier
    */
   public OperatorInput(UUID uuid, String id) {
     super(uuid);

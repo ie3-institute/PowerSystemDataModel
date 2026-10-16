@@ -41,7 +41,7 @@ CREATE TABLE public.evcs_input
     controlling_em UUID,
     cos_phi_rated TEXT NOT NULL,
     id TEXT NOT NULL,
-    location_type TEXT NOT NULL,
+    location_types TEXT NOT NULL,
     node UUID NOT NULL,
     operates_from TIMESTAMP WITH TIME ZONE,
     operates_until TIMESTAMP WITH TIME ZONE,
@@ -50,29 +50,6 @@ CREATE TABLE public.evcs_input
     type TEXT NOT NULL,
     v_2g_support BOOL NOT NULL,
     grid_uuid UUID NOT NULL
-)
-    WITHOUT OIDS
-	TABLESPACE pg_default;
-
-CREATE TABLE public.line_graphic_input
-(
-    uuid UUID PRIMARY KEY,
-    graphic_layer TEXT NOT NULL,
-    line UUID NOT NULL,
-    path TEXT,
-    grid_uuid UUID NOT NULL REFERENCES grids(uuid)
-)
-    WITHOUT OIDS
-	TABLESPACE pg_default;
-
-CREATE TABLE public.node_graphic_input
-(
-    uuid UUID PRIMARY KEY,
-    graphic_layer TEXT NOT NULL,
-    node UUID NOT NULL,
-    path TEXT,
-    point TEXT NOT NULL,
-    grid_uuid UUID NOT NULL REFERENCES grids(uuid)
 )
     WITHOUT OIDS
 	TABLESPACE pg_default;

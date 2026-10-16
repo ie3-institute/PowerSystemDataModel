@@ -434,7 +434,7 @@ public final class BdewLoadValues implements LoadValues {
 
     /**
      * Returns a {@link Set} view of the keys contained in this map. The set is backed by the map,
-     * so changes to the map are reflected in the set, and vice-versa. If the map is modified while
+     * so changes to the map are reflected in the set, and vice versa. If the map is modified while
      * an iteration over the set is in progress (except through the iterator's own {@code remove}
      * operation), the results of the iteration are undefined. The set supports element removal,
      * which removes the corresponding mapping from the map, via the {@code Iterator.remove}, {@code
@@ -449,7 +449,7 @@ public final class BdewLoadValues implements LoadValues {
 
     /**
      * Returns a {@link Collection} view of the values contained in this map. The collection is
-     * backed by the map, so changes to the map are reflected in the collection, and vice-versa. If
+     * backed by the map, so changes to the map are reflected in the collection, and vice versa. If
      * the map is modified while an iteration over the collection is in progress (except through the
      * iterator's own {@code remove} operation), the results of the iteration are undefined. The
      * collection supports element removal, which removes the corresponding mapping from the map,

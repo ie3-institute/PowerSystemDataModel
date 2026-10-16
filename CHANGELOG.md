@@ -7,11 +7,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+- Register `ThermalLineSegmentResult` at `ResultEntityProcessor` [#1759](https://github.com/ie3-institute/PowerSystemDataModel/issues/1759)
+- Allow `LoadInput` to reference Markov load profiles [#1765](https://github.com/ie3-institute/PowerSystemDataModel/issues/1765)
+- Energy scaling for Markov-based load models [#1696](https://github.com/ie3-institute/PowerSystemDataModel/issues/1696)
 
 ### Fixed
+- Fixed recurring `gradlew.bat` modifications [#1757](https://github.com/ie3-institute/PowerSystemDataModel/issues/1757)
+- Throw a `SourceException` instead of silently swallowing SQL errors in `SqlDataSource` [#914](https://github.com/ie3-institute/PowerSystemDataModel/issues/914)
+- Throw a `SourceException` in `SqlDataSource.getSourceFields` if the fields of a table cannot be read [#1761](https://github.com/ie3-institute/PowerSystemDataModel/issues/1761)
+- Use `FileSystems.getFileSystem` before newFileSystem in `EntitySource.getBuildInSource` [#1775](https://github.com/ie3-institute/PowerSystemDataModel/issues/1775)
+
+### Changed
+- Change Evcs.locationType from single element to list [#1460](https://github.com/ie3-institute/PowerSystemDataModel/issues/1460)
+- Updated ci.yml and get_versions.sh [#1763](https://github.com/ie3-institute/PowerSystemDataModel/issues/1763)
+- Exclude `shadowJar`-Files from maven-release process [#1781](https://github.com/ie3-institute/PowerSystemDataModel/issues/1781)
+
+## [9.2.0] - 2026-09-30
+
+### Added
+- Introduce data model for cable types [#1669](https://github.com/ie3-institute/PowerSystemDataModel/issues/1669)
+- Added support for Markov-chain-based load profiles loaded from JSON [#1472](https://github.com/ie3-institute/PowerSystemDataModel/issues/1472)
+- Enhance data model by cable type information [#1670](https://github.com/ie3-institute/PowerSystemDataModel/issues/1670)
+- Added ThermalLineSegmentResult [#1728](https://github.com/ie3-institute/PowerSystemDataModel/issues/1728)
+- Increase test coverage for TimeBasedWeatherValueData [#1609](https://github.com/ie3-institute/PowerSystemDataModel/issues/1609)
+
+### Fixed
+- Fixed issues regarding determination of additional parameters [#1661](https://github.com/ie3-institute/PowerSystemDataModel/issues/1661)
+- Fixed overshadowed `ParsingException` in system participant factories [#1722](https://github.com/ie3-institute/PowerSystemDataModel/issues/1722)
+- Throw exceptions instead of silently swallowing errors in `FileDataSource` [#927](https://github.com/ie3-institute/PowerSystemDataModel/issues/927)
+- Fixed poor performance of `TimeSeries` interval operations. [#1736](https://github.com/ie3-institute/PowerSystemDataModel/issues/1736)
+- Fixed version number in `version.properties` [#1750](https://github.com/ie3-institute/PowerSystemDataModel/issues/1750)
+
+### Changed
+- Switched trait `WeatherSourceTestHelper` to class and more code clean up [#1657](https://github.com/ie3-institute/PowerSystemDataModel/issues/1657)
+- Removed graphic related code [#1655](https://github.com/ie3-institute/PowerSystemDataModel/issues/1655)
+- Minor clean up [#1667](https://github.com/ie3-institute/PowerSystemDataModel/issues/1667)
+- Clean up of `jackson` dependencies [#1724](https://github.com/ie3-institute/PowerSystemDataModel/issues/1724)
+- Harmonized loggers in sources to only use the one of the respective base class [#1597](https://github.com/ie3-institute/PowerSystemDataModel/issues/1597)
+
+## [9.1.0] - 2026-06-04
+
+### Added
+- Added explicit handling for cases where no weather data is received from any source [#554](https://github.com/ie3-institute/PowerSystemDataModel/issues/554)
+- Adapted `EnergyBoundariesFlexOptionsResult` to include current SOE [#1640](https://github.com/ie3-institute/PowerSystemDataModel/issues/1640)
+
+### Fixed
+- Fixed determination of unused fields [#1644](https://github.com/ie3-institute/PowerSystemDataModel/issues/1644)
 
 ### Changed
 - Updated load documentation [#1608](https://github.com/ie3-institute/PowerSystemDataModel/issues/1608)
+- Change spotless to use latest version of googleJavaFormat [#1632](https://github.com/ie3-institute/PowerSystemDataModel/issues/1632)
+- Removed `GraphicElements` from `GridContainer` [#1601](https://github.com/ie3-institute/PowerSystemDataModel/issues/1601)
 
 ## [9.0.0] - 2026-04-13
 
@@ -47,6 +93,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Correctly persist EmInput entities in CsvFileSink [#1337](https://github.com/ie3-institute/PowerSystemDataModel/issues/1337)
 - Proper handle duplicated headline exceptions in CsvDataSource [#1595](https://github.com/ie3-institute/PowerSystemDataModel/issues/1595)
 - Align CSV header formatting to RFC 4180 standards in tests [1544](https://github.com/ie3-institute/PowerSystemDataModel/issues/1544)
+- Fix false positive tests in csvidcoordinatesourcecosmoit and csvidcoordinatesourceiconit [#1594](https://github.com/ie3-institute/PowerSystemDataModel/issues/1594)
 
 ### Changed
 - Updated CI-Pipeline to run task `Deploy` and `Staging` only for `Main` [#1403](https://github.com/ie3-institute/PowerSystemDataModel/issues/1403)
@@ -458,7 +505,9 @@ coordinates or multiple exactly equal coordinates possible
 -   CsvDataSource now stops trying to get an operator for empty operator uuid field in entities
 -   CsvDataSource now parsing multiple geoJson strings correctly
 
-[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/9.0.0...HEAD
+[Unreleased/Snapshot]: https://github.com/ie3-institute/powersystemdatamodel/compare/9.2.0...HEAD
+[9.2.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/9.1.0...9.2.0
+[9.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/9.0.0...9.1.0
 [9.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/8.1.0...9.0.0
 [8.1.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/8.0.0...8.1.0
 [8.0.0]: https://github.com/ie3-institute/powersystemdatamodel/compare/7.0.0...8.0.0

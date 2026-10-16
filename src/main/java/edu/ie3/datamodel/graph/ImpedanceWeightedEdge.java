@@ -7,6 +7,7 @@ package edu.ie3.datamodel.graph;
 
 import static tech.units.indriya.unit.Units.OHM;
 
+import java.io.Serial;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.ElectricResistance;
@@ -22,7 +23,7 @@ import tech.units.indriya.quantity.Quantities;
  * @since 04.06.20
  */
 public class ImpedanceWeightedEdge extends DefaultWeightedEdge {
-  private static final long serialVersionUID = -3331046813188425729L;
+  @Serial private static final long serialVersionUID = -3331046813188425729L;
 
   protected static final Unit<ElectricResistance> DEFAULT_IMPEDANCE_UNIT = OHM;
 

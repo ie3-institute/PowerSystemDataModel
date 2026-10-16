@@ -62,7 +62,7 @@ public abstract class LoadProfileSource<V extends LoadValues> extends EntitySour
   }
 
   /** Returns the load profile entries as a set. */
-  public abstract Set<LoadProfileEntry<V>> getEntries();
+  public abstract Set<LoadProfileEntry<V>> getEntries() throws SourceException;
 
   @Override
   public PowerProfileKey getProfileKey() {

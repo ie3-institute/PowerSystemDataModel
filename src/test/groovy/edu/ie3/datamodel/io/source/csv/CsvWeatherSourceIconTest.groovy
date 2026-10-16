@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.exceptions.NoDataException
 import edu.ie3.datamodel.io.factory.timeseries.IconTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
@@ -21,7 +22,7 @@ import org.locationtech.jts.geom.Point
 import spock.lang.Shared
 import spock.lang.Specification
 
-class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta, WeatherSourceTestHelper {
+class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta {
 
   @Shared
   CsvWeatherSource source
@@ -43,8 +44,8 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
     def optTimeBasedValue = source.getWeather(IconWeatherTestData.TIME_15H, IconWeatherTestData.COORDINATE_67775)
 
     then:
-    optTimeBasedValue.present
-    equalsIgnoreUUID(optTimeBasedValue.get(), expectedTimeBasedValue)
+    optTimeBasedValue != null
+    WeatherSourceTestHelper.equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
   }
 
   def "A CsvWeatherSource can read multiple time series values for multiple coordinates"() {
@@ -70,8 +71,8 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 
     then:
     coordinateToTimeSeries.keySet().size() == 2
-    equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775), timeSeries67775)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776), timeSeries67776)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775), timeSeries67775)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776), timeSeries67776)
   }
 
 
@@ -95,50 +96,52 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
 
     then:
     coordinateToTimeSeries.keySet().size() == 2
-    equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775).entries, timeSeries67775.entries)
-    equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776).entries, timeSeries67776.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67775).entries, timeSeries67775.entries)
+    WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(IconWeatherTestData.COORDINATE_67776).entries, timeSeries67776.entries)
   }
 
   def "The CsvWeatherSource is able to extract correct coordinate from field to value mapping"() {
     given:
     def expectedCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
     def coordinateSource = Mock(IdCoordinateSource)
-    coordinateSource.getCoordinate(_) >> { args -> args[0] == 67775 ? Optional.of(expectedCoordinate) : Optional.empty() }
+    coordinateSource.getCoordinate(_) >> { args ->
+      args[0] == 67775 ? Optional.of(expectedCoordinate) : Optional.empty()
+    }
     def weatherFactory = new IconTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(",", weatherIconFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
     def fieldToValues = new TreeMap<>(String.CASE_INSENSITIVE_ORDER)
     fieldToValues.putAll(
         [
-          "datum"       : "2019-08-01 01:00:00",
-          "albRad"      : "13.015240669",
-          "asobS"       : "3.555093673828124",
-          "aswdifdS"    : "1.8088226191406245",
-          "aswdifuS"    : "0.5713421484374998",
-          "aswdirS"     : "2.317613203124999",
-          "t2m"         : "289.1179319051744",
-          "tg1"         : "288.4101691197649",
-          "tg2"         : "288.4101691197649",
-          "u10m"        : "0.3021732864307963",
-          "u131m"       : "2.6058700426057797",
-          "u20m"        : "0.32384365019387784",
-          "u216m"       : "3.9015497418041756",
-          "u65m"        : "1.2823686334340363",
-          "v10m"        : "1.3852550649486943",
-          "v131m"       : "3.8391590569599927",
-          "v20m"        : "1.3726831152710628",
-          "v216m"       : "4.339362039492466",
-          "v65m"        : "2.809877942347672",
-          "w131m"       : "-0.02633474740256081",
-          "w20m"        : "-0.0100060345167524",
-          "w216m"       : "-0.030348050471342078",
-          "w65m"        : "-0.01817112027569893",
-          "z0"          : "0.955323922526438",
+          "datum" : "2019-08-01 01:00:00",
+          "albRad" : "13.015240669",
+          "asobS" : "3.555093673828124",
+          "aswdifdS" : "1.8088226191406245",
+          "aswdifuS" : "0.5713421484374998",
+          "aswdirS" : "2.317613203124999",
+          "t2m" : "289.1179319051744",
+          "tg1" : "288.4101691197649",
+          "tg2" : "288.4101691197649",
+          "u10m" : "0.3021732864307963",
+          "u131m" : "2.6058700426057797",
+          "u20m" : "0.32384365019387784",
+          "u216m" : "3.9015497418041756",
+          "u65m" : "1.2823686334340363",
+          "v10m" : "1.3852550649486943",
+          "v131m" : "3.8391590569599927",
+          "v20m" : "1.3726831152710628",
+          "v216m" : "4.339362039492466",
+          "v65m" : "2.809877942347672",
+          "w131m" : "-0.02633474740256081",
+          "w20m" : "-0.0100060345167524",
+          "w216m" : "-0.030348050471342078",
+          "w65m" : "-0.01817112027569893",
+          "z0" : "0.955323922526438",
           "coordinateId": "67775",
-          "p131m"       : "",
-          "p20m"        : "",
-          "p65m"        : "",
-          "sobsRad"     : "",
-          "t131m"       : ""
+          "p131m" : "",
+          "p20m" : "",
+          "p65m" : "",
+          "sobsRad" : "",
+          "t131m" : ""
         ])
 
     when:
@@ -155,36 +158,36 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
     def weatherFactory = new IconTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(",", weatherIconFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
     def fieldToValues = [
-      "datum"       : "2019-08-01 01:00:00",
-      "albRad"      : "13.015240669",
-      "asobS"       : "3.555093673828124",
-      "aswdifdS"    : "1.8088226191406245",
-      "aswdifuS"    : "0.5713421484374998",
-      "aswdirS"     : "2.317613203124999",
-      "t2m"         : "289.1179319051744",
-      "tg1"         : "288.4101691197649",
-      "tg2"         : "288.4101691197649",
-      "u10m"        : "0.3021732864307963",
-      "u131m"       : "2.6058700426057797",
-      "u20m"        : "0.32384365019387784",
-      "u216m"       : "3.9015497418041756",
-      "u65m"        : "1.2823686334340363",
-      "v10m"        : "1.3852550649486943",
-      "v131m"       : "3.8391590569599927",
-      "v20m"        : "1.3726831152710628",
-      "v216m"       : "4.339362039492466",
-      "v65m"        : "2.809877942347672",
-      "w131m"       : "-0.02633474740256081",
-      "w20m"        : "-0.0100060345167524",
-      "w216m"       : "-0.030348050471342078",
-      "w65m"        : "-0.01817112027569893",
-      "z0"          : "0.955323922526438",
+      "datum" : "2019-08-01 01:00:00",
+      "albRad" : "13.015240669",
+      "asobS" : "3.555093673828124",
+      "aswdifdS" : "1.8088226191406245",
+      "aswdifuS" : "0.5713421484374998",
+      "aswdirS" : "2.317613203124999",
+      "t2m" : "289.1179319051744",
+      "tg1" : "288.4101691197649",
+      "tg2" : "288.4101691197649",
+      "u10m" : "0.3021732864307963",
+      "u131m" : "2.6058700426057797",
+      "u20m" : "0.32384365019387784",
+      "u216m" : "3.9015497418041756",
+      "u65m" : "1.2823686334340363",
+      "v10m" : "1.3852550649486943",
+      "v131m" : "3.8391590569599927",
+      "v20m" : "1.3726831152710628",
+      "v216m" : "4.339362039492466",
+      "v65m" : "2.809877942347672",
+      "w131m" : "-0.02633474740256081",
+      "w20m" : "-0.0100060345167524",
+      "w216m" : "-0.030348050471342078",
+      "w65m" : "-0.01817112027569893",
+      "z0" : "0.955323922526438",
       "coordinateId": "",
-      "p131m"       : "",
-      "p20m"        : "",
-      "p65m"        : "",
-      "sobsRad"     : "",
-      "t131m"       : ""
+      "p131m" : "",
+      "p20m" : "",
+      "p65m" : "",
+      "sobsRad" : "",
+      "t131m" : ""
     ]
 
     when:
@@ -200,35 +203,35 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
     def weatherFactory = new IconTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(",", weatherIconFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
     def fieldToValues = [
-      "datum"   : "2019-08-01 01:00:00",
-      "albRad"  : "13.015240669",
-      "asobS"   : "3.555093673828124",
+      "datum" : "2019-08-01 01:00:00",
+      "albRad" : "13.015240669",
+      "asobS" : "3.555093673828124",
       "aswdifdS": "1.8088226191406245",
       "aswdifuS": "0.5713421484374998",
       "aswdirS" : "2.317613203124999",
-      "t2m"     : "289.1179319051744",
-      "tg1"     : "288.4101691197649",
-      "tg2"     : "288.4101691197649",
-      "u10m"    : "0.3021732864307963",
-      "u131m"   : "2.6058700426057797",
-      "u20m"    : "0.32384365019387784",
-      "u216m"   : "3.9015497418041756",
-      "u65m"    : "1.2823686334340363",
-      "v10m"    : "1.3852550649486943",
-      "v131m"   : "3.8391590569599927",
-      "v20m"    : "1.3726831152710628",
-      "v216m"   : "4.339362039492466",
-      "v65m"    : "2.809877942347672",
-      "w131m"   : "-0.02633474740256081",
-      "w20m"    : "-0.0100060345167524",
-      "w216m"   : "-0.030348050471342078",
-      "w65m"    : "-0.01817112027569893",
-      "z0"      : "0.955323922526438",
-      "p131m"   : "",
-      "p20m"    : "",
-      "p65m"    : "",
+      "t2m" : "289.1179319051744",
+      "tg1" : "288.4101691197649",
+      "tg2" : "288.4101691197649",
+      "u10m" : "0.3021732864307963",
+      "u131m" : "2.6058700426057797",
+      "u20m" : "0.32384365019387784",
+      "u216m" : "3.9015497418041756",
+      "u65m" : "1.2823686334340363",
+      "v10m" : "1.3852550649486943",
+      "v131m" : "3.8391590569599927",
+      "v20m" : "1.3726831152710628",
+      "v216m" : "4.339362039492466",
+      "v65m" : "2.809877942347672",
+      "w131m" : "-0.02633474740256081",
+      "w20m" : "-0.0100060345167524",
+      "w216m" : "-0.030348050471342078",
+      "w65m" : "-0.01817112027569893",
+      "z0" : "0.955323922526438",
+      "p131m" : "",
+      "p20m" : "",
+      "p65m" : "",
       "sobsRad" : "",
-      "t131m"   : ""
+      "t131m" : ""
     ]
 
     when:
@@ -244,36 +247,36 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
     def weatherFactory = new IconTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(",", weatherIconFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
     def fieldToValues = [
-      "datum"       : "2019-08-01 01:00:00",
-      "albRad"      : "13.015240669",
-      "asobS"       : "3.555093673828124",
-      "aswdifdS"    : "1.8088226191406245",
-      "aswdifuS"    : "0.5713421484374998",
-      "aswdirS"     : "2.317613203124999",
-      "t2m"         : "289.1179319051744",
-      "tg1"         : "288.4101691197649",
-      "tg2"         : "288.4101691197649",
-      "u10m"        : "0.3021732864307963",
-      "u131m"       : "2.6058700426057797",
-      "u20m"        : "0.32384365019387784",
-      "u216m"       : "3.9015497418041756",
-      "u65m"        : "1.2823686334340363",
-      "v10m"        : "1.3852550649486943",
-      "v131m"       : "3.8391590569599927",
-      "v20m"        : "1.3726831152710628",
-      "v216m"       : "4.339362039492466",
-      "v65m"        : "2.809877942347672",
-      "w131m"       : "-0.02633474740256081",
-      "w20m"        : "-0.0100060345167524",
-      "w216m"       : "-0.030348050471342078",
-      "w65m"        : "-0.01817112027569893",
-      "z0"          : "0.955323922526438",
+      "datum" : "2019-08-01 01:00:00",
+      "albRad" : "13.015240669",
+      "asobS" : "3.555093673828124",
+      "aswdifdS" : "1.8088226191406245",
+      "aswdifuS" : "0.5713421484374998",
+      "aswdirS" : "2.317613203124999",
+      "t2m" : "289.1179319051744",
+      "tg1" : "288.4101691197649",
+      "tg2" : "288.4101691197649",
+      "u10m" : "0.3021732864307963",
+      "u131m" : "2.6058700426057797",
+      "u20m" : "0.32384365019387784",
+      "u216m" : "3.9015497418041756",
+      "u65m" : "1.2823686334340363",
+      "v10m" : "1.3852550649486943",
+      "v131m" : "3.8391590569599927",
+      "v20m" : "1.3726831152710628",
+      "v216m" : "4.339362039492466",
+      "v65m" : "2.809877942347672",
+      "w131m" : "-0.02633474740256081",
+      "w20m" : "-0.0100060345167524",
+      "w216m" : "-0.030348050471342078",
+      "w65m" : "-0.01817112027569893",
+      "z0" : "0.955323922526438",
       "coordinateId": "67777",
-      "p131m"       : "",
-      "p20m"        : "",
-      "p65m"        : "",
-      "sobsRad"     : "",
-      "t131m"       : ""
+      "p131m" : "",
+      "p20m" : "",
+      "p65m" : "",
+      "sobsRad" : "",
+      "t131m" : ""
     ]
 
     when:
@@ -298,5 +301,113 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta,
       IconWeatherTestData.TIME_17H
     ]
     actual.get(IconWeatherTestData.COORDINATE_67776) == [IconWeatherTestData.TIME_16H]
+  }
+
+  def "A CsvWeatherSource throws NoDataException when no weather data is found for coordinate"() {
+    given:
+    def unknownCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(0.0, 0.0))
+
+    when:
+    source.getWeather(IconWeatherTestData.TIME_15H, unknownCoordinate)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No coordinate ID found for the given point")
+    ex.message.contains(unknownCoordinate.toString())
+  }
+
+  def "A CsvWeatherSource falls back to the last known value when no exact weather data is found for a coordinate at a specific time"() {
+    given:
+    def futureTime = IconWeatherTestData.TIME_17H.plusHours(3)
+    def expectedFallback = new TimeBasedValue(IconWeatherTestData.TIME_17H, IconWeatherTestData.WEATHER_VALUE_67775_17H)
+
+    when:
+    def result = source.getWeather(futureTime, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    result != null
+    WeatherSourceTestHelper.equalsIgnoreUUID(result, expectedFallback)
+  }
+
+  def "A CsvWeatherSource throws NoDataException when no weather data is found for a coordinate at a specific time and no earlier data is available"() {
+    given:
+    def timeBeforeAllData = IconWeatherTestData.TIME_15H.minusHours(1)
+
+    when:
+    source.getWeather(timeBeforeAllData, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data found for coordinate")
+    ex.message.contains("no earlier data available")
+  }
+
+  def "A CsvWeatherSource throws NoDataException when the fallback is beyond the maximum allowed steps"() {
+    given:
+    def farFutureTime = IconWeatherTestData.TIME_17H.plusHours(4)
+
+    when:
+    source.getWeather(farFutureTime, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    def ex = thrown(NoDataException)
+    ex.message.contains("No weather data found for coordinate")
+    ex.message.contains("exceeds the maximum fallback")
+  }
+
+  def "A CsvWeatherSource returns partial results when one coordinate has a valid ID but no data in the CSV files"() {
+    given:
+    def phantomPoint = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(99d, 99d))
+    def extendedSource = new WeatherTestData.DummyIdCoordinateSource() {
+          Optional<Integer> getId(Point point) {
+            if (point == phantomPoint) return Optional.of(99999)
+            return super.getId(point)
+          }
+        }
+    def partialSource = new CsvWeatherSource(",", weatherIconFolderPath, new FileNamingStrategy(), extendedSource, new IconTimeBasedWeatherValueFactory())
+    def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H, IconWeatherTestData.TIME_17H)
+
+    when:
+    def result = partialSource.getWeather(timeInterval, [
+      IconWeatherTestData.COORDINATE_67775,
+      phantomPoint
+    ])
+
+    then: "only the coordinate with actual CSV data is returned, no exception is thrown"
+    result.keySet().size() == 1
+    result.containsKey(IconWeatherTestData.COORDINATE_67775)
+    !result.containsKey(phantomPoint)
+  }
+
+  def "The CsvWeatherSource returns all time keys after a given time for a specific coordinate"() {
+    given:
+    def time = IconWeatherTestData.TIME_15H
+
+    when:
+    def actual = source.getTimeKeysAfter(time, IconWeatherTestData.COORDINATE_67775)
+
+    then:
+    actual == [
+      IconWeatherTestData.TIME_16H,
+      IconWeatherTestData.TIME_17H
+    ]
+  }
+
+  def "A CsvWeatherSource returns partial results for mixed valid and invalid coordinates"() {
+    given:
+    def validCoordinate = IconWeatherTestData.COORDINATE_67775
+    def invalidCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(999d, 999d))
+    def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H, IconWeatherTestData.TIME_17H)
+
+    when:
+    def result = source.getWeather(timeInterval, [
+      validCoordinate,
+      invalidCoordinate
+    ])
+
+    then:
+    result.size() == 1
+    result.containsKey(validCoordinate)
+    !result.containsKey(invalidCoordinate)
   }
 }

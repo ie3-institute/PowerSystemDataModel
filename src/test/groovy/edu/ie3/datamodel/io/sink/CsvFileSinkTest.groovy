@@ -22,10 +22,9 @@ import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
+import edu.ie3.datamodel.models.input.connector.type.CableTypeInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
-import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
-import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.EvcsInput
 import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
@@ -72,7 +71,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     def csvFileSink = new CsvFileSink(testBaseFolderPath)
     def input = [
       "hello, whats up?": "nothing",
-      "okay"            : "that's fine"
+      "okay" : "that's fine"
     ]
 
     when:
@@ -81,7 +80,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     then:
     actual == [
       "\"hello, whats up?\"": "nothing",
-      "okay"                : "that's fine"
+      "okay" : "that's fine"
     ]
 
     cleanup:
@@ -92,7 +91,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     given:
     def csvFileSink = new CsvFileSink(testBaseFolderPath)
     def input = [
-      "what is \"this\"?"    : "nothing",
+      "what is \"this\"?" : "nothing",
       "\"what is \"this\"?\"": "something"
     ]
 
@@ -122,8 +121,6 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
           new InputEntityProcessor(NodeInput),
           new InputEntityProcessor(EvcsInput),
           new InputEntityProcessor(Transformer2WTypeInput),
-          new InputEntityProcessor(LineGraphicInput),
-          new InputEntityProcessor(NodeGraphicInput),
           new InputEntityProcessor(CylindricalStorageInput),
           new InputEntityProcessor(DomesticHotWaterStorageInput),
           new InputEntityProcessor(ThermalHouseInput),
@@ -131,9 +128,10 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
           new InputEntityProcessor(LineInput),
           new InputEntityProcessor(ThermalBusInput),
           new InputEntityProcessor(LineTypeInput),
+          new InputEntityProcessor(CableTypeInput),
           new InputEntityProcessor(LoadInput),
           new InputEntityProcessor(EmInput)
-        ], [] as Map),
+        ], [:] as Map),
         new FileNamingStrategy(),
         ",")
 
@@ -148,10 +146,11 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     Quantity<Power> pRef = Quantities.getQuantity(5.1, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMin = Quantities.getQuantity(-6, StandardUnits.ACTIVE_POWER_RESULT)
     Quantity<Power> pMax = Quantities.getQuantity(6, StandardUnits.ACTIVE_POWER_RESULT)
+    Quantity<Energy> eState = Quantities.getQuantity(0.01, StandardUnits.ENERGY_RESULT)
     Quantity<Energy> eMin = Quantities.getQuantity(-0.05, StandardUnits.ENERGY_RESULT)
     Quantity<Energy> eMax = Quantities.getQuantity(0.06, StandardUnits.ENERGY_RESULT)
     PowerLimitFlexOptionsResult powerLimitFlexOptionsResult = new PowerLimitFlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, pRef, pMin, pMax)
-    EnergyBoundariesFlexOptionsResult energyBoundariesFlexOptionsResult = new EnergyBoundariesFlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, eMin, eMax, pMin, pMax)
+    EnergyBoundariesFlexOptionsResult energyBoundariesFlexOptionsResult = new EnergyBoundariesFlexOptionsResult(TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"), inputModel, eState, eMin, eMax, pMin, pMax)
 
     when:
     csvFileSink.persistAll([
@@ -162,8 +161,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
       powerLimitFlexOptionsResult,
       energyBoundariesFlexOptionsResult,
       GridTestData.transformerCtoG,
-      GridTestData.lineGraphicCtoD,
-      GridTestData.nodeGraphicC,
+      GridTestData.lineCtoD,
       ThermalUnitInputTestData.cylindricalStorageInput,
       ThermalUnitInputTestData.domesticHotWaterStorageInput,
       ThermalUnitInputTestData.thermalHouseInput,
@@ -187,10 +185,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     testBaseFolderPath.resolve("operator_input.csv").toFile().exists()
     testBaseFolderPath.resolve("cylindrical_storage_input.csv").toFile().exists()
     testBaseFolderPath.resolve("domestic_hot_water_storage_input.csv").toFile().exists()
-    testBaseFolderPath.resolve("line_graphic_input.csv").toFile().exists()
     testBaseFolderPath.resolve("line_input.csv").toFile().exists()
     testBaseFolderPath.resolve("operator_input.csv").toFile().exists()
-    testBaseFolderPath.resolve("node_graphic_input.csv").toFile().exists()
     testBaseFolderPath.resolve("thermal_bus_input.csv").toFile().exists()
     testBaseFolderPath.resolve("thermal_house_input.csv").toFile().exists()
     testBaseFolderPath.resolve("load_input.csv").toFile().exists()
@@ -261,7 +257,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         1,
         Quantities.getQuantity(25d, KILOVOLTAMPERE),
         0.95
-        )
+    )
 
     when:
     csvFileSink.persist(nestedInput)
@@ -295,7 +291,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
         1,
         Quantities.getQuantity(25d, KILOVOLTAMPERE),
         0.95
-        )
+    )
 
     when:
     csvFileSink.persistIgnoreNested(nestedInput)
@@ -315,8 +311,8 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     def csvFileSink = new CsvFileSink(
         testBaseFolderPath,
         new ProcessorProvider(
-        ProcessorProvider.allEntityProcessors(),
-        new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value, Value>, TimeSeriesEntry<Value>, Value, Value>>()),
+            ProcessorProvider.allEntityProcessors(),
+            new HashMap<TimeSeriesProcessorKey, TimeSeriesProcessor<TimeSeries<TimeSeriesEntry<Value>, Value, Value>, TimeSeriesEntry<Value>, Value, Value>>()),
         new FileNamingStrategy(),
         ",")
 
@@ -345,6 +341,7 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     then:
     testBaseFolderPath.resolve("line_input.csv").toFile().exists()
     testBaseFolderPath.resolve("line_type_input.csv").toFile().exists()
+    testBaseFolderPath.resolve("cable_type_input.csv").toFile().exists()
     testBaseFolderPath.resolve("load_input.csv").toFile().exists()
     testBaseFolderPath.resolve("node_input.csv").toFile().exists()
     testBaseFolderPath.resolve("operator_input.csv").toFile().exists()

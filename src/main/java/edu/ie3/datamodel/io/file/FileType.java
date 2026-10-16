@@ -10,7 +10,8 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public enum FileType {
-  CSV(".csv");
+  CSV(".csv"),
+  JSON(".json");
 
   public final String fileEnding;
 

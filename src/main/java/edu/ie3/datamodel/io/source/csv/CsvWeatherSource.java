@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.csv;
 import static edu.ie3.datamodel.utils.validation.UniquenessValidationUtils.checkWeatherUniqueness;
 
 import edu.ie3.datamodel.exceptions.DuplicateEntitiesException;
+import edu.ie3.datamodel.exceptions.NoDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
@@ -22,10 +23,8 @@ import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
-import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.datamodel.utils.ExceptionUtils;
-import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
 import edu.ie3.util.interval.ClosedInterval;
@@ -35,7 +34,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.locationtech.jts.geom.Point;
@@ -79,31 +77,86 @@ public class CsvWeatherSource extends WeatherSource {
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval) {
-    return trimMapToInterval(coordinateToTimeSeries, timeInterval);
+      ClosedInterval<ZonedDateTime> timeInterval) throws NoDataException {
+
+    Map<Point, IndividualTimeSeries<WeatherValue>> result =
+        trimMapToInterval(coordinateToTimeSeries, timeInterval);
+
+    if (result.isEmpty()) {
+      throw new NoDataException(
+          "No weather data found for the given time interval: " + timeInterval);
+    }
+
+    return result;
   }
 
   @Override
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates) {
-    Map<Point, IndividualTimeSeries<WeatherValue>> filteredMap =
-        coordinateToTimeSeries.entrySet().stream()
-            .filter(entry -> coordinates.contains(entry.getKey()))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    return trimMapToInterval(filteredMap, timeInterval);
+      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
+      throws NoDataException {
+
+    if (coordinates.isEmpty())
+      throw new NoDataException("No coordinates provided for weather data query.");
+
+    Map<Point, IndividualTimeSeries<WeatherValue>> result = new HashMap<>();
+
+    for (Point coordinate : coordinates) {
+      if (coordinateToTimeSeries.containsKey(coordinate)) {
+        IndividualTimeSeries<WeatherValue> ts =
+            coordinateToTimeSeries.get(coordinate).getSubTimeSeries(timeInterval);
+
+        if (ts.nonEmpty()) {
+          result.put(coordinate, ts);
+        }
+      }
+    }
+
+    return validateAndWarnMissing(result, coordinates, timeInterval);
   }
 
   @Override
-  public Optional<TimeBasedValue<WeatherValue>> getWeather(ZonedDateTime date, Point coordinate) {
+  public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
+      throws SourceException, NoDataException {
     IndividualTimeSeries<WeatherValue> timeSeries = coordinateToTimeSeries.get(coordinate);
-    if (timeSeries == null) return Optional.empty();
-    return timeSeries.getTimeBasedValue(date);
+
+    if (timeSeries == null) {
+      if (idCoordinateSource.getId(coordinate).isEmpty())
+        throw new NoDataException("No coordinate ID found for the given point: " + coordinate);
+      throw new NoDataException("No weather data found for the given coordinate: " + coordinate);
+    }
+
+    Optional<TimeBasedValue<WeatherValue>> exact = timeSeries.getTimeBasedValue(date);
+    if (exact.isPresent()) {
+      return exact.get();
+    }
+
+    List<TimeBasedValue<WeatherValue>> fallbacks = new ArrayList<>(2);
+    ZonedDateTime cursor = date;
+    for (int i = 0; i < 2; i++) {
+      Optional<TimeBasedValue<WeatherValue>> previous =
+          timeSeries.getPreviousDateTime(cursor).flatMap(timeSeries::getTimeBasedValue);
+      if (previous.isEmpty()) break;
+      fallbacks.add(previous.get());
+      cursor = previous.get().getTime();
+    }
+    return applyFallbackOrThrow(date, coordinate, fallbacks);
   }
 
   @Override
   public Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time) {
     return coordinateToTimeSeries.entrySet().stream()
-        .collect(Collectors.toMap(Map.Entry::getKey, t -> t.getValue().getTimeKeysAfter(time)));
+        .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getTimeKeysAfter(time)))
+        .entrySet()
+        .stream()
+        .filter(e -> !e.getValue().isEmpty())
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
+
+  @Override
+  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time, Point coordinate) {
+    IndividualTimeSeries<WeatherValue> series = coordinateToTimeSeries.get(coordinate);
+    if (series == null) return Collections.emptyList();
+    return series.getTimeKeysAfter(time);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -120,25 +173,17 @@ public class CsvWeatherSource extends WeatherSource {
       ClosedInterval<ZonedDateTime> timeInterval) {
     // decided against parallel mode here as it likely wouldn't pay off as the expected coordinate
     // count is too low
-    return map.entrySet().stream()
-        .collect(
-            Collectors.toMap(
-                Map.Entry::getKey,
-                entry -> TimeSeriesUtils.trimTimeSeriesToInterval(entry.getValue(), timeInterval)));
-  }
+    Map<Point, IndividualTimeSeries<WeatherValue>> trimmed = new HashMap<>();
+    map.forEach(
+        (point, timeSeries) -> {
+          IndividualTimeSeries<WeatherValue> trimmedSeries =
+              timeSeries.getSubTimeSeries(timeInterval);
 
-  /**
-   * Merge two individual time series into a new time series with the UUID of the first parameter
-   *
-   * @param a the first time series to merge
-   * @param b the second time series to merge
-   * @return merged time series with a's UUID
-   */
-  protected <V extends Value> IndividualTimeSeries<V> mergeTimeSeries(
-      IndividualTimeSeries<V> a, IndividualTimeSeries<V> b) {
-    SortedSet<TimeBasedValue<V>> entries = a.getEntries();
-    entries.addAll(b.getEntries());
-    return new IndividualTimeSeries<>(a.getUuid(), entries);
+          if (trimmedSeries.nonEmpty()) {
+            trimmed.put(point, trimmedSeries);
+          }
+        });
+    return trimmed;
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -162,17 +207,21 @@ public class CsvWeatherSource extends WeatherSource {
       CsvFileConnector connector)
       throws SourceException {
     final Map<Point, IndividualTimeSeries<WeatherValue>> weatherTimeSeries = new HashMap<>();
-    Function<Map<String, String>, Optional<TimeBasedValue<WeatherValue>>> fieldToValueFunction =
-        this::buildWeatherValue;
     /* Reading in weather time series */
     for (FileIndividualTimeSeriesMetaInformation data : weatherMetaInformation) {
       Path path = data.getFullFilePath();
 
       // we need a reader for each file
       try (BufferedReader reader = connector.initReader(path)) {
-        buildStreamWithFieldsToAttributesMap(reader, path.getFileName())
+        Try.scanStream(
+                buildStreamWithFieldsToAttributesMap(reader, path.getFileName())
+                    .getOrThrow()
+                    .map(
+                        fieldToValues ->
+                            Try.of(() -> buildWeatherValue(fieldToValues), SourceException.class)),
+                "weather value",
+                SourceException::new)
             .getOrThrow()
-            .map(fieldToValueFunction)
             .flatMap(Optional::stream)
             .collect(Collectors.groupingBy(tbv -> tbv.getValue().getCoordinate()))
             .forEach(
@@ -181,11 +230,9 @@ public class CsvWeatherSource extends WeatherSource {
                   // issues
                   // otherwise
                   IndividualTimeSeries<WeatherValue> timeSeries =
-                      new IndividualTimeSeries<>(UUID.randomUUID(), new HashSet<>(timeBasedValues));
+                      new IndividualTimeSeries<>(UUID.randomUUID(), new TreeSet<>(timeBasedValues));
                   if (weatherTimeSeries.containsKey(point)) {
-                    IndividualTimeSeries<WeatherValue> mergedTimeSeries =
-                        mergeTimeSeries(weatherTimeSeries.get(point), timeSeries);
-                    weatherTimeSeries.put(point, mergedTimeSeries);
+                    weatherTimeSeries.put(point, weatherTimeSeries.get(point).add(timeSeries));
                   } else {
                     weatherTimeSeries.put(point, timeSeries);
                   }
@@ -248,7 +295,7 @@ public class CsvWeatherSource extends WeatherSource {
    * @return Optional time based weather value
    */
   private Optional<TimeBasedValue<WeatherValue>> buildWeatherValue(
-      Map<String, String> fieldToValues) {
+      Map<String, String> fieldToValues) throws SourceException {
     /* Try to get the coordinate from entries */
     Optional<Point> maybeCoordinate = extractCoordinate(fieldToValues);
     return maybeCoordinate
@@ -276,7 +323,8 @@ public class CsvWeatherSource extends WeatherSource {
    * @param fieldToValues "flat " input information as a mapping from field to value
    * @return Optional time based weather value
    */
-  private Optional<Point> extractCoordinate(Map<String, String> fieldToValues) {
+  private Optional<Point> extractCoordinate(Map<String, String> fieldToValues)
+      throws SourceException {
     String coordinateString = fieldToValues.get(weatherFactory.getCoordinateIdFieldString());
     if (Objects.isNull(coordinateString) || coordinateString.isEmpty()) {
       log.error(

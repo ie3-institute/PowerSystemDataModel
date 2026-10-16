@@ -12,6 +12,7 @@ Effective handling of geographic information related to power grids is also poss
 gettingstarted
 models/models
 io/basiciousage
+references
 ```
 
 ## Contact the (Main) Maintainers

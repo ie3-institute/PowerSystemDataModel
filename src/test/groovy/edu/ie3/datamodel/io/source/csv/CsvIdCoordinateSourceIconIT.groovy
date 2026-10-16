@@ -31,14 +31,14 @@ class CsvIdCoordinateSourceIconIT extends Specification implements CsvTestDataMe
         ["id": "531137", "latitude": "51.5", "longitude": "7.375", "coordinateType": "ICON"],
         ["id": "551525", "latitude": "51.438", "longitude": "7.438", "coordinateType": "ICON"],
         ["id": "278150", "latitude": "51.438", "longitude": "7.375", "coordinateType": "ICON"]
-        )
+    )
 
     when:
     def actualStream = source.buildStreamWithFieldsToAttributesMap()
 
     then:
     actualStream.success
-    actualStream.data.get().collect(Collectors.toList()).containsAll(expectedStream.collect(Collectors.toList()))
+    actualStream.data.get().toList() == expectedStream.toList()
   }
 
   def "The CsvIdCoordinateSource is able to look up a specific point or an empty Optional otherwise" () {

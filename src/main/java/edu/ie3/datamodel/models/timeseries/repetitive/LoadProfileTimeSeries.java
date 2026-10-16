@@ -12,7 +12,6 @@ import edu.ie3.datamodel.utils.TimeSeriesUtils;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -23,7 +22,6 @@ import tech.units.indriya.ComparableQuantity;
 public class LoadProfileTimeSeries<V extends LoadValues>
     extends RepetitiveTimeSeries<LoadProfileEntry<V>, V, PValue> {
   protected final PowerProfileKey powerProfileKey;
-  protected final Map<Integer, V> valueMapping;
 
   /**
    * The maximum average power consumption per quarter-hour calculated over all seasons and weekday
@@ -37,15 +35,11 @@ public class LoadProfileTimeSeries<V extends LoadValues>
   public LoadProfileTimeSeries(
       PowerProfileKey powerProfileKey,
       Set<LoadProfileEntry<V>> entries,
+      Class<V> valueClass,
       ComparableQuantity<Power> maxPower,
       ComparableQuantity<Energy> profileEnergyScaling) {
-    super(entries);
+    super(entries, valueClass, LoadProfileEntry::getQuarterHour);
     this.powerProfileKey = powerProfileKey;
-    this.valueMapping =
-        entries.stream()
-            .collect(
-                Collectors.toMap(LoadProfileEntry::getQuarterHour, LoadProfileEntry::getValue));
-
     this.maxPower = maxPower;
     this.profileEnergyScaling = profileEnergyScaling;
   }
@@ -68,15 +62,6 @@ public class LoadProfileTimeSeries<V extends LoadValues>
     return powerProfileKey;
   }
 
-  @Override
-  public Set<LoadProfileEntry<V>> getEntries() {
-    // to ensure that the entries are ordered by their quarter-hour
-    TreeSet<LoadProfileEntry<V>> set =
-        new TreeSet<>(Comparator.comparing(LoadProfileEntry::getQuarterHour));
-    set.addAll(super.getEntries());
-    return set;
-  }
-
   /**
    * Method to get a supplier for the next power value based on the provided input time. Depending
    * on the implementation the supplier will either always return the same value or each time a
@@ -86,9 +71,7 @@ public class LoadProfileTimeSeries<V extends LoadValues>
    * @return A supplier for an option on the value at the given time step.
    */
   public Supplier<Optional<PValue>> supplyValue(ZonedDateTime time) {
-    int quarterHour = TimeSeriesUtils.calculateQuarterHourOfDay(time);
-    LoadValues loadValue = valueMapping.get(quarterHour);
-    return () -> Optional.ofNullable(loadValue.getValue(time, powerProfileKey));
+    return () -> getValue(time);
   }
 
   @Override
@@ -101,15 +84,10 @@ public class LoadProfileTimeSeries<V extends LoadValues>
     return Optional.of(time.plusMinutes(15));
   }
 
-  /** Returns the value mapping. */
-  protected Map<Integer, V> getValueMapping() {
-    return valueMapping;
-  }
-
   @Override
   protected PValue calc(ZonedDateTime time) {
     int quarterHour = TimeSeriesUtils.calculateQuarterHourOfDay(time);
-    return valueMapping.get(quarterHour).getValue(time, powerProfileKey);
+    return get(quarterHour).getValue(time, powerProfileKey);
   }
 
   @Override
@@ -118,7 +96,7 @@ public class LoadProfileTimeSeries<V extends LoadValues>
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     LoadProfileTimeSeries<?> that = (LoadProfileTimeSeries<?>) o;
-    return powerProfileKey.equals(that.powerProfileKey) && valueMapping.equals(that.valueMapping);
+    return powerProfileKey.equals(that.powerProfileKey);
   }
 
   @Override
@@ -131,8 +109,8 @@ public class LoadProfileTimeSeries<V extends LoadValues>
     return "LoadProfileTimeSeries{"
         + "loadProfile="
         + getPowerProfileKey().getValue()
-        + ", valueMapping="
-        + getValueMapping()
+        + ", #entries="
+        + size()
         + '}';
   }
 }

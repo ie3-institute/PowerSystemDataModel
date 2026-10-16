@@ -34,7 +34,7 @@ class FileTimeSeriesMetaInformationSourceIT extends Specification implements Csv
         new FileIndividualTimeSeriesMetaInformation(UUID.fromString("46be1e57-e4ed-4ef7-95f1-b2b321cb2047"), ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND, Path.of('its_pqh_46be1e57-e4ed-4ef7-95f1-b2b321cb2047'), FileType.CSV),
         new FileIndividualTimeSeriesMetaInformation(UUID.fromString("1061af70-1c03-46e1-b960-940b956c429f"), ColumnScheme.APPARENT_POWER, Path.of('its_pq_1061af70-1c03-46e1-b960-940b956c429f'), FileType.CSV),
         new FileIndividualTimeSeriesMetaInformation(UUID.fromString("eeccbe3c-a47e-448e-8eca-1f369d3c24e6"), ColumnScheme.VOLTAGE, Path.of("its_v_eeccbe3c-a47e-448e-8eca-1f369d3c24e6"), FileType.CSV)
-        )
+    )
 
     when:
     def actual = source.timeSeriesMetaInformation
@@ -58,7 +58,7 @@ class FileTimeSeriesMetaInformationSourceIT extends Specification implements Csv
     result.get().columnScheme.scheme == columnScheme
 
     where:
-    uuid                                   || columnScheme
+    uuid || columnScheme
     "2fcb3e53-b94a-4b96-bea4-c469e499f1a1" || "c"
     "76c9d846-797c-4f07-b7ec-2245f679f5c7" || "ph"
     "c8fe6547-fd85-4fdf-a169-e4da6ce5c3d0" || "h"

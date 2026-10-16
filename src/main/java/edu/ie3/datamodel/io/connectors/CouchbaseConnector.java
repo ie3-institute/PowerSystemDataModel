@@ -70,7 +70,7 @@ public class CouchbaseConnector implements DataConnector {
     cluster.bucket(bucketName).waitUntilReady(Duration.ofSeconds(30));
 
     QueryResult queryResult = query(query).join();
-    JsonObject jsonObject = queryResult.rowsAsObject().get(0);
+    JsonObject jsonObject = queryResult.rowsAsObject().getFirst();
     Object columns = jsonObject.toMap().get("column");
 
     Set<String> set = new HashSet<>();

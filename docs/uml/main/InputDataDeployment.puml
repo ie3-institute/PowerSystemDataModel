@@ -11,8 +11,6 @@ database psql [
     --
     types
     --
-    graphics
-    --
     weather
     __
     time series
@@ -42,7 +40,6 @@ file asset_xyz.csv
 }
 folder grid
 folder types
-folder graphics
 }
 folder resources {
 file projName_model.conf
@@ -61,7 +58,6 @@ interface grid_source
 interface assets_source
 interface types_source
 interface thermal_source
-interface graphics_source
 interface weather_source
 interface time_series_source
 interface config_source
@@ -80,9 +76,6 @@ types_source --> types
 thermal_source --> psql
 thermal_source --> types
 
-graphics_source --> psql
-graphics_source --> graphics
-
 weather_source --> psql
 weather_source --> influxdb
 
@@ -94,7 +87,6 @@ config_source --> inputAccumulator
 inputAccumulator --> grid_source
 inputAccumulator --> assets_source
 inputAccumulator --> types_source
-inputAccumulator --> graphics_source
 inputAccumulator --> weather_source
 inputAccumulator --> time_series_source
 inputAccumulator --> thermal_source

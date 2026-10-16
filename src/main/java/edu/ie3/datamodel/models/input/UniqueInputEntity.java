@@ -26,6 +26,9 @@ public abstract class UniqueInputEntity extends UniqueEntity implements InputEnt
    * @param additionalInformation That were provided by the source
    */
   protected void setAdditionalInformation(Map<String, String> additionalInformation) {
+    if (additionalInformation == null) {
+      return;
+    }
     this.additionalInformation.putAll(additionalInformation);
   }
 

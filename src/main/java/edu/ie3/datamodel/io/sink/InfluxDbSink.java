@@ -151,12 +151,12 @@ public class InfluxDbSink implements OutputDataSink {
   private <E extends TimeSeriesEntry<V>, V extends Value, R extends Value>
       Set<Point> transformToPoints(TimeSeries<E, V, R> timeSeries)
           throws ProcessorProviderException {
-    if (timeSeries.getEntries().isEmpty()) return Collections.emptySet();
+    if (timeSeries.isEmpty()) return Collections.emptySet();
 
     Optional<String> measurementName = entityPersistenceNamingStrategy.getEntityName(timeSeries);
     if (measurementName.isEmpty()) {
       String valueClassName =
-          timeSeries.getEntries().iterator().next().getValue().getClass().getSimpleName();
+          timeSeries.getEntries().getFirst().getValue().getClass().getSimpleName();
       log.warn(
           "I could not get a measurement name for TimeSeries value class {}. I am using its value's simple name instead.",
           valueClassName);

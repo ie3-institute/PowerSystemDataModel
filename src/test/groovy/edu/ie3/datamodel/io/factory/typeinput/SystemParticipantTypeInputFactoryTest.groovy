@@ -46,16 +46,16 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     given: "a system participant input type factory and model data"
     def typeInputFactory = new SystemParticipantTypeInputFactory()
     Map<String, String> parameter = [
-      "uuid":	    "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id":	    "blablub",
-      "capex":    "3",
-      "opex":	    "4",
-      "srated":   "5",
-      "cosPhiRated":	"6",
+      "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id": "blablub",
+      "capex": "3",
+      "opex": "4",
+      "srated": "5",
+      "cosPhiRated": "6",
 
-      "estorage":	"7",
-      "econs":	"8",
-      "srateddc":	"9",
+      "estorage": "7",
+      "econs": "8",
+      "srateddc": "9",
     ]
     def typeInputClass = EvTypeInput
 
@@ -84,14 +84,14 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     given: "a system participant input type factory and model data"
     def typeInputFactory = new SystemParticipantTypeInputFactory()
     Map<String, String> parameter = [
-      "uuid":	    "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id":	    "blablub",
-      "capex":    "3",
-      "opex":	    "4",
-      "srated":   "5",
-      "cosPhiRated":	"6",
+      "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id": "blablub",
+      "capex": "3",
+      "opex": "4",
+      "srated": "5",
+      "cosPhiRated": "6",
 
-      "pthermal":	"7",
+      "pthermal": "7",
     ]
     def typeInputClass = HpTypeInput
 
@@ -118,14 +118,14 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     given: "a system participant input type factory and model data"
     def typeInputFactory = new SystemParticipantTypeInputFactory()
     Map<String, String> parameter = [
-      "uuid":	        "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id":	        "blablub",
-      "capex":        "3",
-      "opex":	        "4",
-      "srated":       "5",
-      "cosPhiRated":	    "6",
-      "activepowergradient":	"7",
-      "etaconv":      "8"
+      "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id": "blablub",
+      "capex": "3",
+      "opex": "4",
+      "srated": "5",
+      "cosPhiRated": "6",
+      "activepowergradient": "7",
+      "etaconv": "8"
     ]
     def typeInputClass = BmTypeInput
 
@@ -153,17 +153,17 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     given: "a system participant input type factory and model data"
     def typeInputFactory = new SystemParticipantTypeInputFactory()
     Map<String, String> parameter = [
-      "uuid":	        "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id":	        "blablub",
-      "capex":        "3",
-      "opex":	        "4",
-      "srated":       "5",
-      "cosPhiRated":	    "6",
+      "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id": "blablub",
+      "capex": "3",
+      "opex": "4",
+      "srated": "5",
+      "cosPhiRated": "6",
 
       "cpCharacteristic": "cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}",
-      "etaconv":  	"7",
-      "rotorarea":    "8",
-      "hubheight":    "9"
+      "etaconv": "7",
+      "rotorarea": "8",
+      "hubheight": "9"
     ]
     def typeInputClass = WecTypeInput
 
@@ -200,17 +200,17 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     given: "a system participant input type factory and model data"
     def typeInputFactory = new SystemParticipantTypeInputFactory()
     Map<String, String> parameter = [
-      "uuid":	                "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id":	                "blablub",
-      "capex":                "3",
-      "opex":	                "4",
-      "srated":               "5",
-      "cosPhiRated":	            "6",
+      "uuid": "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id": "blablub",
+      "capex": "3",
+      "opex": "4",
+      "srated": "5",
+      "cosPhiRated": "6",
 
-      "etael":	            "7",
-      "etathermal":           "8",
-      "pthermal":	            "9",
-      "pown":	                "10"
+      "etael": "7",
+      "etathermal": "8",
+      "pthermal": "9",
+      "pown": "10"
     ]
     def typeInputClass = ChpTypeInput
 
@@ -240,17 +240,17 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     given: "a system participant input type factory and model data"
     def typeInputFactory = new SystemParticipantTypeInputFactory()
     Map<String, String> parameter = [
-      "uuid"                  : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "id"                    : "blablub",
-      "capex"                 : "3",
-      "opex"                  : "4",
-      "srated"                : "5",
-      "cosPhiRated"                : "6",
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "id" : "blablub",
+      "capex" : "3",
+      "opex" : "4",
+      "srated" : "5",
+      "cosPhiRated" : "6",
 
-      "estorage"              : "6",
-      "pmax"                  : "8",
-      "activepowergradient"   : "1",
-      "eta"                   : "9"
+      "estorage" : "6",
+      "pmax" : "8",
+      "activepowergradient" : "1",
+      "eta" : "9"
     ]
     def typeInputClass = StorageTypeInput
 

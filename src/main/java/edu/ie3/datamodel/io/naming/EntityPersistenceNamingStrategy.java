@@ -10,15 +10,18 @@ import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformatio
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.Entity;
-import edu.ie3.datamodel.models.input.*;
-import edu.ie3.datamodel.models.input.graphics.GraphicInput;
+import edu.ie3.datamodel.models.input.AssetInput;
+import edu.ie3.datamodel.models.input.AssetTypeInput;
+import edu.ie3.datamodel.models.input.InputEntity;
+import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.connector.CableDeploymentInput;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
-import edu.ie3.datamodel.models.value.*;
+import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.util.StringUtils;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Provides an easy to use standard way to name files, tables or any other persistent representation
+ * Provides an easy-to-use standard way to name files, tables or any other persistent representation
  * of models. Normal use cases are e.g., I/O operations with .csv files or databases.
  *
  * @version 0.1
@@ -57,11 +60,11 @@ public class EntityPersistenceNamingStrategy {
   protected final Pattern individualTimeSeriesPattern;
 
   /**
-   * Regex to match the naming convention of a file for a repetitive load profile time series. The
-   * profile is accessible via the named capturing group "profile", the uuid by the group "uuid"
+   * Regex to match the naming convention of a load profile source file. The profile type is
+   * accessible via the named capturing group "type", the profile by the group "profile"
    */
   private static final String LOAD_PROFILE_TIME_SERIES =
-      "lpts_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})";
+      "(?<type>lpts|markov)_(?<profile>[a-zA-Z]{1,11}[0-9]{0,3})";
 
   /**
    * Pattern to identify load profile time series in this instance of the naming strategy (takes
@@ -163,7 +166,7 @@ public class EntityPersistenceNamingStrategy {
       throw new IllegalArgumentException(
           "Cannot extract meta information on load profile time series from '" + fileName + "'.");
 
-    return new LoadProfileMetaInformation(matcher.group("profile"));
+    return new LoadProfileMetaInformation(matcher.group("profile"), matcher.group("type"));
   }
 
   /**
@@ -210,12 +213,12 @@ public class EntityPersistenceNamingStrategy {
    * @return The entity name
    */
   public Optional<String> getInputEntityName(Class<? extends InputEntity> cls) {
+    if (CableDeploymentInput.class.isAssignableFrom(cls))
+      return Optional.of(addPrefixAndSuffix(camelCaseToSnakeCase(cls.getSimpleName())));
     if (AssetTypeInput.class.isAssignableFrom(cls))
       return getTypeEntityName(cls.asSubclass(AssetTypeInput.class));
     if (AssetInput.class.isAssignableFrom(cls))
       return getAssetInputEntityName(cls.asSubclass(AssetInput.class));
-    if (GraphicInput.class.isAssignableFrom(cls))
-      return getGraphicsInputEntityName(cls.asSubclass(GraphicInput.class));
     if (OperatorInput.class.isAssignableFrom(cls))
       return getOperatorInputEntityName(cls.asSubclass(OperatorInput.class));
     if (TimeSeriesMappingSource.MappingEntry.class.isAssignableFrom(cls))
@@ -303,17 +306,6 @@ public class EntityPersistenceNamingStrategy {
   }
 
   /**
-   * Get the entity name for all {@link GraphicInput}s
-   *
-   * @param graphicClass the graphic input class an entity name string should be generated from
-   * @return the entity name string
-   */
-  public Optional<String> getGraphicsInputEntityName(Class<? extends GraphicInput> graphicClass) {
-    String assetInputString = camelCaseToSnakeCase(graphicClass.getSimpleName());
-    return Optional.of(addPrefixAndSuffix(assetInputString));
-  }
-
-  /**
    * Get the entity name for all {@link OperatorInput}s
    *
    * @param operatorClass the asset input class an entity name string should be generated from
@@ -350,7 +342,7 @@ public class EntityPersistenceNamingStrategy {
           R extends Value>
       Optional<String> getEntityName(T timeSeries) {
     if (timeSeries instanceof IndividualTimeSeries<?> its) {
-      Optional<E> maybeFirstElement = timeSeries.getEntries().stream().findFirst();
+      Optional<E> maybeFirstElement = timeSeries.first();
       if (maybeFirstElement.isPresent()) {
         Class<? extends Value> valueClass = maybeFirstElement.get().getValue().getClass();
         Optional<ColumnScheme> mayBeColumnScheme = ColumnScheme.parse(valueClass);

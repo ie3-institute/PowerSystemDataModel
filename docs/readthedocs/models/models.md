@@ -118,14 +118,15 @@ input/operator
 maxdepth: 1
 ---
 input/grid/node
-input/grid/nodegraphic
 input/grid/line
-input/grid/linegraphic
 input/grid/switch
 input/grid/transformer2w
 input/grid/transformer3w
 input/grid/measurementunit
 input/grid/gridcontainer
+input/grid/cableMaterial
+input/grid/cableType
+input/grid/cableDeployment
 ```
 
 #### Thermal Grid
@@ -197,6 +198,7 @@ result/grid/transformer
 result/grid/transformer2w
 result/grid/transformer3w
 result/grid/congestion
+result/grid/thermallinesegment
 ```
 
 ### Participant Related Models

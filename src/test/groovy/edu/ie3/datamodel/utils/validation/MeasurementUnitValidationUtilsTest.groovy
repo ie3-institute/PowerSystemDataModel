@@ -35,7 +35,7 @@ class MeasurementUnitValidationUtilsTest extends Specification {
     ex.message == expectedException.message
 
     where:
-    invalidMeasurementUnit                                                                     || expectedException
+    invalidMeasurementUnit || expectedException
     GridTestData.measurementUnitInput.copy().vMag(false).vAng(false).p(false).q(false).build() || new UnsafeEntityException("Measurement Unit does not measure any values", invalidMeasurementUnit)
   }
 }

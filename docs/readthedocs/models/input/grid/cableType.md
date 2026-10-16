@@ -1,0 +1,236 @@
+# Cable Type
+
+Representation of a cable type.
+
+## Attributes, Units and Remarks
+
+### Type Model
+
+Type model of a cable.
+
+```{list-table}
+   :widths: auto
+   :class: wrapping
+   :header-rows: 1
+
+   * - Attribute
+     - Unit
+     - Remarks
+
+   * - uuid
+     - –
+     - Identifier
+
+   * - id
+     - –
+     - Human readable identifier
+     
+   * - core number
+     - –
+     - Number of conductor cores in the cable
+
+   * - conductor
+     - ConductorInput
+     - Layer model that represents the attributes and geometry of the conductor.
+
+   * - isolation
+     - List of LayerInput
+     - List of insulation layers (from inner to outer)
+
+   * - screen
+     - Optional ScreenLayerInput
+     - Optional cable screen layer
+
+   * - filler
+     - List of LayerInput
+     - List of filler layers (from inner to outer)
+
+   * - armor
+     - List of LayerInput
+     - List of armor layers (from inner to outer)
+     
+   * - jack
+     - List of LayerInput
+     - List of outer sheath or jack layers (from inner to outer)
+     
+   * - limit temperature
+     - °C
+     - Maximum permissible operating temperature
+        
+   * - frequency
+     - Hz
+     - Rated frequency of the system
+
+   * - skin effect coefficient
+     - -
+     - Skin effect coefficient
+
+   * - proximity effect coefficient
+     -
+     - Proximity effect coefficient
+   
+   * - electrical capacitance
+     - F/m
+     - Capacitance per unit length
+   
+   * - Dielectric loss factor tanDelta
+     - -
+     - Dielectric loss factor tan(δ)
+   
+   * - circulatingLossFactor
+     - -
+     - Circulating loss factor
+     
+   * - eddyCurrentLossFactor
+     - -
+     - Eddy current loss factor
+```
+
+A list with some standard cable types can be found here: [Standard Cable Type Parameter](#standard-cable-type-parameter)
+
+### Cable Layers
+
+Cables are modeled as a series of concentric layers. These layers—which include insulation, filler, armor, and outer sheaths—are defined using the LayerInput class. Each layer tracks its physical dimensions and thermal properties to support precise electrical and thermal simulations.
+
+#### LayerInput Attributes
+
+The following table details the attributes required to define a single cable
+
+```{list-table}
+   :widths: auto
+   :class: wrapping
+   :header-rows: 1
+
+* - Layer Attribute
+  - Type
+  - Description
+    
+* - name
+  - String
+  - Designation of the layer (e.g., "Main insulation")
+    
+* - material
+  - CableMaterial
+  - Material of the layer
+      
+* - innerDiameter
+  - Length
+  - Inner diameter of the layer
+    
+* - outerDiameter
+  - Length
+  - Outer diameter of the layer
+    
+* - thermalResistivity
+  - (K·m/W)
+  - Thermal resistivity of the material
+    
+* - thermalCapacitance
+  - J/(m³·K)
+  - Thermal capacitance of the material
+    
+* - area
+  - Optional Area
+  - Real cross-sectional area. If none, area will be calculated from geometry.
+```
+
+Different cable materials and their thermal and electrical parameter are also given as described in [cableMaterial](#cable-material)
+
+## Standard Cable Type Parameter
+
+Following there are some standard cable types with their source.
+A ``csv file`` containing the types listed below can be found [here](https://github.com/ie3-institute/PowerSystemDataModel/tree/dev/input/StandardAssetTypes).
+This file can be used directly for any simulation with ``simona``.
+
+### Cables
+
+Some standard cables type parameter and geometries.
+
+```{list-table}
+   :widths: auto
+   :class: wrapping
+   :header-rows: 1
+
+* - uuid
+  - id
+  - core_number
+  - conductor
+  - isolation
+  - screen
+  - filler
+  - armor
+  - jack
+  - limit_temperature
+  - frequency
+  - skin_effect_coefficient
+  - proximity_effect_coefficient
+  - electrical_capacitance
+  - tan_delta
+  - circulating_loss_factor
+  - eddy_current_loss_factor
+  - source
+
+* - b8152c3f-d12f-4857-9746-a30aef6aee08
+  - CigreT880_33kVLandCable
+  - 1
+  - "{""id"":""conductor"",""uuid"":""fbf23859-b88f-58d5-8b54-4b9468c7ab60"",""material"":""COPPER"",""crossSection"":""240.0"",""diameter"":""18.4"",""thermalResistivity"":""0.0026"",""thermalCapacitance"":""3.4496e6"",""area"":""240.0"",""isCompacted"":true}"
+  - "[{""id"":""conductorScreen"",""uuid"":""e50bded2-1372-5a6c-8430-ec768742164e"",""material"":""SEMI_COND_SCREEN"",""innerDiameter"":""18.4"",""outerDiameter"":""19.4"",""thermalResistivity"":""2.5"",""thermalCapacitance"":""2.4e6"",""area"":null},{""id"":""insulation"",""uuid"":""b13f4943-ab7c-53eb-a9d1-e4711f8ff4ba"",""material"":""XLPE"",""innerDiameter"":""19.4"",""outerDiameter"":""34.8"",""thermalResistivity"":""3.5"",""thermalCapacitance"":""2.4e6"",""area"":null},{""id"":""insulationScreen"",""uuid"":""8e5d91de-5d83-5838-b269-2e2e8000d4f7"",""material"":""SEMI_COND_SCREEN"",""innerDiameter"":""34.8"",""outerDiameter"":""35.8"",""thermalResistivity"":""2.5"",""thermalCapacitance"":""2.4e6"",""area"":null},{""id"":""screenTape"",""uuid"":""229496ce-b084-5975-9918-7c49dbbf678c"",""material"":""SC_TAPE"",""innerDiameter"":""35.8"",""outerDiameter"":""36.8"",""thermalResistivity"":""6.0"",""thermalCapacitance"":""2.4e6"",""area"":null}]",
+  - "{""id"":""screen"",""uuid"":""73dde224-622d-52ec-9c58-2ea442720175"",""material"":""COPPER"",""innerDiameter"":""36.8"",""outerDiameter"":""38.6"",""thermalResistivity"":""0.0026"",""thermalCapacitance"":""3.4496e6"",""area"":""35.62566"",""wiresNumber"":56,""wireDiameter"":""0.9"",""lengthOfLay"":""240.0"",""electricalResistivity"":""1.7241e-8""}"
+  - -
+  - -
+  - "[{""id"":""jackTape"",""uuid"":""19895925-1b44-518e-a5f2-176b690d77d6"",""material"":""SC_TAPE"",""innerDiameter"":""38.6"",""outerDiameter"":""39.2"",""thermalResistivity"":""6.0"",""thermalCapacitance"":""2.4e6"",""area"":null},{""id"":""jack"",""uuid"":""ae5a63f4-6f66-5be9-bedd-b7a709842984"",""material"":""PE"",""innerDiameter"":""39.2"",""outerDiameter"":""43.6"",""thermalResistivity"":""3.5"",""thermalCapacitance"":""2.4e6"",""area"":null},{""id"":""outerCover"",""uuid"":""8dd70f91-ca8f-503e-8952-4c553238e782"",""material"":""SEMI_COND_SCREEN"",""innerDiameter"":""43.6"",""outerDiameter"":""44.0"",""thermalResistivity"":""2.5"",""thermalCapacitance"":""2.4e6"",""area"":null}]"
+  - 90.0
+  - 50.0
+  - 1.0
+  - 1.0
+  - 0.000000000237683304
+  - 0.004
+  - 0.0435122656
+  - 0.0
+  - CIGRE TB880 B1.56 Power cable rating examples for calculation tool verification
+
+```
+
+## Canonical JSON field units
+
+The cable type JSON fields are written and expected in the following canonical, unitless numeric formats (the numeric value corresponds to the stated unit):
+
+```{list-table}
+   :widths: auto
+   :class: wrapping
+   :header-rows: 1
+
+ * - Field
+   - Unit (persisted numeric interpretation)
+   - Notes
+
+ * - diameter, innerDiameter, outerDiameter, wireDiameter, lengthOfLay
+   - millimetre (mm)
+   - Length fields are serialized as millimetres
+
+ * - crossSection, area
+   - square millimetre (mm²)
+   - Areas and cross sections are serialized as mm²
+
+ * - electricalResistivity
+   - ohm metre (Ω·m)
+   - Electrical resistivity
+
+ * - thermalResistivity
+   - kelvin metre per watt (K·m/W)
+   - Thermal resistivity
+
+ * - thermalCapacitance
+   - joule per cubic metre kelvin (J/(m³·K))
+   - Volumetric thermal capacitance
+
+ * - other numeric top-level fields (limitTemperature, frequency, skinEffectCoefficient, proximityEffectCoefficient, electricalCapacitance, tanDelta, circulatingLossFactor, eddyCurrentLossFactor)
+   - keep units as documented in the Type Model table
+   - e.g., limitTemperature: °C, frequency: Hz, electricalCapacitance: F/m
+
+```
+
+## Caveats
+
+Nothing - at least not known.
+If you found something, please contact us!

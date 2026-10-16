@@ -18,7 +18,7 @@ class EmInputTest extends Specification {
         "test_emInput",
         SystemParticipantTestData.emControlStrategy,
         SystemParticipantTestData.parentEm
-        )
+    )
 
     then:
     emInput.with {
@@ -37,9 +37,9 @@ class EmInputTest extends Specification {
     (emInputA == emInputB) == isEqual
 
     where:
-    emInputB                                                       || isEqual
-    SystemParticipantTestData.emInput                              || true
-    SystemParticipantTestData.emInput.copy().build()               || true
+    emInputB || isEqual
+    SystemParticipantTestData.emInput || true
+    SystemParticipantTestData.emInput.copy().build() || true
     SystemParticipantTestData.emInput.copy().id("otherId").build() || false
   }
 
@@ -75,7 +75,7 @@ class EmInputTest extends Specification {
         "testParent",
         "controlStrat",
         null
-        )
+    )
 
     when:
     def alteredUnit = emInput.copy().controlStrategy(newStrat).parentEm(givenParentEm).build()

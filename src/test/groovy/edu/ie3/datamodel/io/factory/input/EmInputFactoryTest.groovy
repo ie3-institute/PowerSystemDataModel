@@ -102,10 +102,10 @@ class EmInputFactoryTest extends Specification {
     given:
     def inputFactory = new EmInputFactory()
     Map<String, String> parameter = [
-      "uuid"            : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesfrom"    : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "operatesuntil"   : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
-      "id"              : "TestID",
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesuntil" : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
+      "id" : "TestID",
       "controlstrategy" : "no_control"
     ]
     def inputClass = EmInput
@@ -136,10 +136,10 @@ class EmInputFactoryTest extends Specification {
     given:
     def inputFactory = new EmInputFactory()
     Map<String, String> parameter = [
-      "uuid"            : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
-      "operatesfrom"    : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
-      "operatesuntil"   : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
-      "id"              : "TestID",
+      "uuid" : "91ec3bcf-1777-4d38-af67-0bf7c9fa73c7",
+      "operatesfrom" : "2019-01-01T00:00:00+01:00[Europe/Berlin]",
+      "operatesuntil" : "2019-12-31T23:59:00+01:00[Europe/Berlin]",
+      "id" : "TestID",
       "controlstrategy" : "no_control"
     ]
     def inputClass = EmInput
@@ -169,8 +169,8 @@ class EmInputFactoryTest extends Specification {
     given:
     def inputFactory = new EmInputFactory()
     Map<String, String> parameter = [
-      "uuid"            : "- broken -",
-      "id"              : "TestID",
+      "uuid" : "- broken -",
+      "id" : "TestID",
       "controlstrategy" : "no_control"
     ]
     def inputClass = EmInput

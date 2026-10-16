@@ -17,18 +17,17 @@ import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
-import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
-import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
-import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
-import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
-import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
+import edu.ie3.datamodel.models.input.connector.type.*
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.util.TimeUtil
+import edu.ie3.util.quantities.interfaces.SpecificCapacitance
 import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.geom.Point
 import org.locationtech.jts.io.geojson.GeoJsonReader
 import tech.units.indriya.quantity.Quantities
+import tech.units.indriya.unit.ProductUnit
+import tech.units.indriya.unit.Units
 
 /**
  * This class contains a collection of different model instances that can be used for testing purposes.
@@ -172,14 +171,6 @@ class GridTestData {
   GermanVoltageLevelUtils.MV_20KV,
   3)
 
-  public static final NodeGraphicInput nodeGraphicC = new NodeGraphicInput(
-  UUID.fromString("09aec636-791b-45aa-b981-b14edf171c4c"),
-  "main",
-  null,
-  nodeC,
-  geoJsonReader.read("{ \"type\": \"Point\", \"coordinates\": [0, 10] }") as Point
-  )
-
   public static final NodeInput nodeD = new NodeInput(
   UUID.fromString("6e0980e0-10f2-4e18-862b-eb2b7c90509b"), "node_d", OperatorInput.NO_OPERATOR_ASSIGNED,
   OperationTime.notLimited(),
@@ -188,13 +179,6 @@ class GridTestData {
   NodeInput.DEFAULT_GEO_POSITION,
   GermanVoltageLevelUtils.MV_20KV,
   4)
-  public static final NodeGraphicInput nodeGraphicD = new NodeGraphicInput(
-  UUID.fromString("9ecad435-bd16-4797-a732-762c09d4af25"),
-  "main",
-  geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[-1, 0], [1, 0]]}") as LineString,
-  nodeD,
-  null
-  )
 
   public static final NodeInput nodeE = new NodeInput(
   UUID.fromString("98a3e7fa-c456-455b-a5ea-bb19e7cbeb63"),
@@ -325,9 +309,46 @@ class GridTestData {
   Quantities.getQuantity(0.437d, OHM_PER_KILOMETRE),
   Quantities.getQuantity(0.356d, OHM_PER_KILOMETRE),
   Quantities.getQuantity(300d, ELECTRIC_CURRENT_MAGNITUDE),
-  Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE)
+  Quantities.getQuantity(20d, RATED_VOLTAGE_MAGNITUDE))
 
-  )
+
+  public static final CableTypeInput cableTypeInput = new CableTypeInput(
+  UUID.fromString("994dcc32-d6ec-4d0f-9941-7c25be942aa6"),
+  "test cable type input",
+  1,
+  new ConductorInput(
+      UUID.randomUUID(),
+      "conductor",
+      CableMaterial.COPPER,
+      Quantities.getQuantity(400.0e-6, Units.SQUARE_METRE),
+      Quantities.getQuantity(0.0225, Units.METRE),
+      false,
+      Quantities.getQuantity(1.0 / 384.0, KELVIN_METRE_PER_WATT),
+      Quantities.getQuantity(3449600.0d, JOULE_PER_CUBIC_METRE_KELVIN),
+      Quantities.getQuantity(1.0, Units.SQUARE_METRE)),
+  [
+    new LayerInput(
+        UUID.randomUUID(),
+        "Main insulation",
+        CableMaterial.XLPE,
+        Quantities.getQuantity(0.0225, Units.METRE),
+        Quantities.getQuantity(0.027, Units.METRE),
+        Quantities.getQuantity(3.5, KELVIN_METRE_PER_WATT),
+        Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN),
+        Quantities.getQuantity(1.0, Units.SQUARE_METRE))
+  ],
+  null,
+  new ArrayList<>(),
+  new ArrayList<>(),
+  new ArrayList<>(),
+  Quantities.getQuantity(90.0, Units.CELSIUS),
+  Quantities.getQuantity(50.0, Units.HERTZ),
+  1.0,
+  1.0,
+  Quantities.getQuantity(350e-12, new ProductUnit<SpecificCapacitance>(Units.FARAD.divide(Units.METRE))),
+  0.1,
+  0.0,
+  0.0)
 
   public static final LineInput lineCtoD = new LineInput(
   UUID.fromString("91ec3bcf-1777-4d38-af67-0bf7c9fa73c7"),
@@ -341,12 +362,6 @@ class GridTestData {
   Quantities.getQuantity(0.003d, LINE_LENGTH),
   geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[7.411111, 51.492528], [7.414116, 51.484136]]}") as LineString,
   OlmCharacteristicInput.CONSTANT_CHARACTERISTIC
-  )
-  public static final LineGraphicInput lineGraphicCtoD = new LineGraphicInput(
-  UUID.fromString("ece86139-3238-4a35-9361-457ecb4258b0"),
-  "main",
-  geoJsonReader.read("{ \"type\": \"LineString\", \"coordinates\": [[0, 0], [0, 10]]}") as LineString,
-  lineCtoD
   )
 
   public static final LineInput lineAtoB = new LineInput(

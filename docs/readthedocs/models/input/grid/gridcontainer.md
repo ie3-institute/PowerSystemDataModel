@@ -56,10 +56,6 @@ A synoptic overview of both classes' attributes is given here:
      - –
      - see below
 
-   * - graphics
-     - –
-     - see below
-
    * - subGridTopologyGraph
      - –
      - topology of sub grids - only
@@ -86,6 +82,7 @@ This sub container simply holds:
 * [two winding transformers](/models/input/grid/transformer2w)
 * [three winding transformers](/models/input/grid/transformer3w)
 * [measurement units](/models/input/grid/measurementunit)
+* [cable deployments](/models/input/grid/cableDeployment)
 
 
 ### SystemParticipants
@@ -103,13 +100,6 @@ This sub container simply holds:
 - [wind energy converters](/models/input/participant/wec)
 
 and the needed nested thermal models.
-
-
-### Graphics
-This sub container simply holds:
-
-* [schematic node graphics](/models/input/grid/nodegraphic)
-* [schematic line graphics](/models/input/grid/linegraphic)
 
 
 ## Container Concept

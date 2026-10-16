@@ -11,13 +11,13 @@ class DataSourceTest extends Specification {
 
   def "A DataSource can return unused fields correctly"() {
     when:
-    def unused = DataSource.getUnusedFields(actualFields as Set<String>, validFieldSets)
+    def unused = DataSource.getUnusedFields(actualFields as Set<String>, validFieldSets, optionalFields as Set<String>)
 
     then:
     unused == expected as Set<String>
 
     where:
-    actualFields | validFieldSets | expected
+    actualFields | validFieldSets | optionalFields | expected
     [
       "uuid",
       "id",
@@ -26,7 +26,7 @@ class DataSourceTest extends Specification {
     ] | [
       ["uuid", "value_1"] as Set<String>,
       ["id", "time", "value_1"] as Set<String>
-    ] | ["uuid"]
+    ] | [] | ["uuid"]
     [
       "uuid",
       "id",
@@ -37,7 +37,7 @@ class DataSourceTest extends Specification {
     ] | [
       ["uuid", "value_1", "value_3"] as Set<String>,
       ["id", "time", "value_1"] as Set<String>
-    ] | ["id", "time", "value_2"]
+    ] | [] | ["id", "time", "value_2"]
     [
       "uuid",
       "id",
@@ -58,6 +58,36 @@ class DataSourceTest extends Specification {
         "value_1",
         "value_3"
       ] as Set<String>
-    ] | []
+    ] | [] | []
+    [
+      "uuid",
+      "id",
+      "time",
+      "value_1",
+      "value_2",
+      "value_4"
+    ] | [
+      [
+        "uuid",
+        "id",
+        "time",
+        "value_1"
+      ] as Set<String>
+    ] | ["value_2"] | ["value_4"]
+    [
+      "uuid",
+      "id",
+      "time",
+      "value_1",
+      "value_2",
+      "value_4"
+    ] | [
+      [
+        "uuid",
+        "id",
+        "time",
+        "value_1"
+      ] as Set<String>
+    ] | ["value_2", "value_4"] | []
   }
 }

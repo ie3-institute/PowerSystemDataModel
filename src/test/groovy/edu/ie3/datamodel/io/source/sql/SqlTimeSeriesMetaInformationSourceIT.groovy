@@ -66,7 +66,7 @@ class SqlTimeSeriesMetaInformationSourceIT extends Specification implements Test
         new IndividualTimeSeriesMetaInformation(UUID.fromString("3fbfaa97-cff4-46d4-95ba-a95665e87c26"), ColumnScheme.APPARENT_POWER),
         new IndividualTimeSeriesMetaInformation(UUID.fromString("46be1e57-e4ed-4ef7-95f1-b2b321cb2047"), ColumnScheme.APPARENT_POWER_AND_HEAT_DEMAND),
         new IndividualTimeSeriesMetaInformation(UUID.fromString("b669e4bf-a351-4067-860d-d5f224b62247"), ColumnScheme.ACTIVE_POWER)
-        )
+    )
     def result = source.timeSeriesMetaInformation
 
     then:
@@ -88,7 +88,7 @@ class SqlTimeSeriesMetaInformationSourceIT extends Specification implements Test
     result.get().columnScheme.scheme == columnScheme
 
     where:
-    uuid                                   || columnScheme
+    uuid || columnScheme
     "2fcb3e53-b94a-4b96-bea4-c469e499f1a1" || "c"
     "76c9d846-797c-4f07-b7ec-2245f679f5c7" || "ph"
     "c8fe6547-fd85-4fdf-a169-e4da6ce5c3d0" || "h"

@@ -18,13 +18,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** Class that provides all functionalities to build asset entities */
 public abstract class AssetEntitySource extends EntitySource {
-
-  protected static final Logger log = LoggerFactory.getLogger(AssetEntitySource.class);
 
   protected final DataSource dataSource;
 

@@ -65,6 +65,12 @@ if (project.hasProperty('mavenCentralUser') && project.hasProperty('mavenCentral
         artifactId = 'PowerSystemDataModel'
         version = versionString
 
+        // exclude the shadow (fat) jar variant from the publication
+        afterEvaluate {
+          components.java.withVariantsFromConfiguration(configurations.shadowRuntimeElements) {
+            skip()
+          }
+        }
         from components.java
         artifact sourcesJar
         artifact javadocJar
@@ -84,7 +90,7 @@ if (project.hasProperty('mavenCentralUser') && project.hasProperty('mavenCentral
       useInMemoryPgpKeys(
           findProperty('signingKey') as String,
           findProperty('signingPassword') as String
-          )
+      )
       sign publications.mavenJava
     }
   }

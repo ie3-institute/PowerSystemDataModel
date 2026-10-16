@@ -28,8 +28,6 @@ import java.util.stream.Stream;
 import javax.measure.quantity.Length;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Point;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
@@ -39,8 +37,6 @@ import tech.units.indriya.unit.Units;
  * coordinate from csv file and build a mapping from it.
  */
 public class CsvIdCoordinateSource extends IdCoordinateSource {
-
-  protected static final Logger log = LoggerFactory.getLogger(CsvIdCoordinateSource.class);
 
   /** Mapping in both ways (id -> coordinate) and (coordinate -> id) have to be unique */
   private final Map<Integer, Point> idToCoordinate;

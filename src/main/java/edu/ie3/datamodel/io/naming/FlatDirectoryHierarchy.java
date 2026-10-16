@@ -13,10 +13,10 @@ import java.util.Optional;
 public class FlatDirectoryHierarchy implements FileHierarchy {
 
   /**
-   * Gives empty sub directory.
+   * Gives empty subdirectory.
    *
-   * @param cls Class to define the sub directory for
-   * @return An Option to the regarding sub directory as a string
+   * @param cls Class to define the subdirectory for
+   * @return An Option to the regarding subdirectory as a string
    */
   @Override
   public Optional<Path> getSubDirectory(Class<? extends Entity> cls) {

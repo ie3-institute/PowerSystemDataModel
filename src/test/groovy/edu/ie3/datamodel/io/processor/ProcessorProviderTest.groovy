@@ -12,15 +12,11 @@ import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.*
-import edu.ie3.datamodel.models.input.connector.LineInput
-import edu.ie3.datamodel.models.input.connector.SwitchInput
-import edu.ie3.datamodel.models.input.connector.Transformer2WInput
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput
+import edu.ie3.datamodel.models.input.connector.*
+import edu.ie3.datamodel.models.input.connector.type.CableTypeInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
-import edu.ie3.datamodel.models.input.graphics.LineGraphicInput
-import edu.ie3.datamodel.models.input.graphics.NodeGraphicInput
 import edu.ie3.datamodel.models.input.system.*
 import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
@@ -37,6 +33,7 @@ import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
+import edu.ie3.datamodel.models.result.thermal.ThermalLineSegmentResult
 import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.TimeSeries
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry
@@ -75,6 +72,7 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
       SwitchInput,
       MeasurementUnitInput,
       ThermalBusInput,
+      ThermalLineSegmentResult,
       /* -- SystemParticipantInput */
       AcInput,
       BmInput,
@@ -92,9 +90,6 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
       ThermalHouseInput,
       CylindricalStorageInput,
       DomesticHotWaterStorageInput,
-      /* - GraphicInput */
-      NodeGraphicInput,
-      LineGraphicInput,
       /* - AssetTypeInput */
       BmTypeInput,
       ChpTypeInput,
@@ -102,6 +97,8 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
       AcTypeInput,
       HpTypeInput,
       LineTypeInput,
+      CableTypeInput,
+      CableDeploymentInput,
       Transformer2WTypeInput,
       Transformer3WTypeInput,
       StorageTypeInput,
@@ -223,9 +220,9 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
 
     Map expectedMap = [
       "inputModel": "22bea5fc-2cb2-4c61-beb9-b476e0107f52",
-      "p"         : "0.01",
-      "q"         : "0.01",
-      "time"      : "2020-01-30T17:26:44Z"]
+      "p" : "0.01",
+      "q" : "0.01",
+      "time" : "2020-01-30T17:26:44Z"]
 
     when:
     UUID inputModel = UUID.fromString("22bea5fc-2cb2-4c61-beb9-b476e0107f52")

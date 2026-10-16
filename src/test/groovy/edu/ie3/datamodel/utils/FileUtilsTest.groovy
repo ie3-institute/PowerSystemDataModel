@@ -46,8 +46,8 @@ class FileUtilsTest extends Specification {
     }
 
     where:
-    manipulatedDirectory                                                       || expected
-    Path.of(this.directory.toString(), "/")                                    || this.directory
+    manipulatedDirectory || expected
+    Path.of(this.directory.toString(), "/") || this.directory
     Path.of(this.directory.toString().replaceAll("[\\\\/]", File.separator == "/" ? "\\\\" : "/")) || this.directory
   }
 

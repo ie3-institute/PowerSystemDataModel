@@ -11,6 +11,8 @@ import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Describes a Series of {@link edu.ie3.datamodel.models.value.Value values}
@@ -22,20 +24,45 @@ import java.util.*;
 public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value, R extends Value>
     implements Entity, Uniqueness {
   private final UUID uuid;
-  private final Set<E> entries;
+  private final NavigableSet<E> entries;
 
-  protected TimeSeries(Set<E> entries) {
-    this(UUID.randomUUID(), entries);
+  protected TimeSeries(Set<E> entries, Comparator<E> comparator, Function<E, ?> keyExtractor) {
+    this(UUID.randomUUID(), entries, comparator, keyExtractor);
   }
 
-  protected TimeSeries(UUID uuid, Set<E> entries) {
+  protected TimeSeries(
+      UUID uuid, Collection<E> entries, Comparator<E> comparator, Function<E, ?> keyExtractor) {
     this.uuid = uuid;
-    this.entries = Collections.unmodifiableSet(entries);
+
+    // check for duplicates
+    int uniqueKeys = entries.stream().map(keyExtractor).collect(Collectors.toSet()).size();
+
+    if (uniqueKeys != entries.size()) {
+      throw new IllegalStateException("Duplicate keys present!");
+    }
+
+    this.entries = new TreeSet<>(comparator);
+    this.entries.addAll(entries);
   }
 
   @Override
   public UUID getUuid() {
     return uuid;
+  }
+
+  /** Returns {@code true} if the time series has no entries. */
+  public boolean isEmpty() {
+    return entries.isEmpty();
+  }
+
+  /** Returns {@code true} if the time series has at least one entry. */
+  public boolean nonEmpty() {
+    return !isEmpty();
+  }
+
+  /** Returns the number of entries in the time series. */
+  public int size() {
+    return entries.size();
   }
 
   /**
@@ -45,12 +72,15 @@ public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value, 
    * @return the value at the given time step as a TimeBasedValue
    */
   public Optional<TimeBasedValue<R>> getTimeBasedValue(ZonedDateTime time) {
-    R content = getValue(time).orElse(null);
+    return getValue(time).map(v -> new TimeBasedValue<>(time, v));
+  }
 
-    if (content != null) {
-      return Optional.of(new TimeBasedValue<>(time, content));
-    } else {
+  /** Returns an option for the first value of the time series. */
+  public Optional<E> first() {
+    if (entries.isEmpty()) {
       return Optional.empty();
+    } else {
+      return Optional.of(entries.first());
     }
   }
 
@@ -104,8 +134,8 @@ public abstract class TimeSeries<E extends TimeSeriesEntry<V>, V extends Value, 
    *
    * @return all unique entries
    */
-  public Set<E> getEntries() {
-    return entries;
+  public NavigableSet<E> getEntries() {
+    return Collections.unmodifiableNavigableSet(entries);
   }
 
   @Override

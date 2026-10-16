@@ -16,11 +16,8 @@ import edu.ie3.datamodel.io.processor.ProcessorProvider;
 import edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessorKey;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.*;
-import edu.ie3.datamodel.models.input.connector.LineInput;
-import edu.ie3.datamodel.models.input.connector.SwitchInput;
-import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
-import edu.ie3.datamodel.models.input.connector.Transformer3WInput;
-import edu.ie3.datamodel.models.input.container.GraphicElements;
+import edu.ie3.datamodel.models.input.connector.*;
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
@@ -110,15 +107,14 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   @Override
   public <T extends Entity> void persist(T entity) {
     /* Distinguish between "regular" input / result models and time series */
-    if (entity instanceof InputEntity inputEntity) {
-      persistIncludeNested(inputEntity);
-    } else if (entity instanceof ResultEntity) {
-      write(entity);
-    } else if (entity instanceof TimeSeries<?, ?, ?> timeSeries) {
-      persistTimeSeries(timeSeries);
-    } else {
-      log.error(
-          "I don't know how to handle an entity of class {}", entity.getClass().getSimpleName());
+    switch (entity) {
+      case InputEntity inputEntity -> persistIncludeNested(inputEntity);
+      case ResultEntity resultEntity -> write(resultEntity);
+      case TimeSeries<?, ?, ?> timeSeries -> persistTimeSeries(timeSeries);
+      default ->
+          log.error(
+              "I don't know how to handle an entity of class {}",
+              entity.getClass().getSimpleName());
     }
   }
 
@@ -142,9 +138,8 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
         }
       } catch (ExtractorException e) {
         log.error(
-            String.format(
-                "An error occurred during extraction of nested entity'%s': ",
-                entity.getClass().getSimpleName()),
+            "An error occurred during extraction of nested entity'{}': ",
+            entity.getClass().getSimpleName(),
             e);
       }
     } else {
@@ -167,6 +162,10 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     Set<Transformer3WInput> transformer3Ws = rawGridElements.getTransformer3Ws();
     Set<SwitchInput> switches = rawGridElements.getSwitches();
     Set<MeasurementUnitInput> measurementUnits = rawGridElements.getMeasurementUnits();
+    List<CableDeploymentInput> cableDeployments =
+        rawGridElements.getCableDeploymentsByLine().values().stream()
+            .flatMap(Collection::stream)
+            .toList();
 
     // get system participants with types or operators
     SystemParticipants systemParticipants = jointGridContainer.getSystemParticipants();
@@ -181,10 +180,6 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     Set<PvInput> pvPlants = systemParticipants.getPvPlants();
     Set<StorageInput> storages = systemParticipants.getStorages();
     Set<WecInput> wecPlants = systemParticipants.getWecPlants();
-
-    // get graphic elements (just for better readability, we could also just get them directly
-    // below)
-    GraphicElements graphicElements = jointGridContainer.getGraphics();
 
     // extract types
     Set<AssetTypeInput> types =
@@ -202,6 +197,13 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
             .flatMap(Collection::stream)
             .map(Extractor::extractType)
             .collect(Collectors.toSet());
+
+    // add also cable types
+    lines.stream()
+        .map(LineInput::getType)
+        .map(LineTypeInput::getCableType)
+        .flatMap(Optional::stream)
+        .forEach(types::add);
 
     // extract operators
     Set<OperatorInput> operators =
@@ -231,8 +233,8 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     // persist all entities
     Stream.of(
             rawGridElements.allEntitiesAsList(),
+            cableDeployments,
             systemParticipants.allEntitiesAsList(),
-            graphicElements.allEntitiesAsList(),
             jointGridContainer.getEmUnits().getEmUnits().stream().toList(),
             types,
             operators)
@@ -334,8 +336,8 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   }
 
   /**
-   * Transforms a provided map of string to string to valid csv formatted strings (according to csv
-   * specification RFC 4180)
+   * Transforms a provided map of string to string into valid csv formatted strings (according to
+   * csv specification RFC 4180)
    *
    * @param entityFieldData a string to string map that should be processed
    * @return a new map with valid csv formatted keys and values strings
