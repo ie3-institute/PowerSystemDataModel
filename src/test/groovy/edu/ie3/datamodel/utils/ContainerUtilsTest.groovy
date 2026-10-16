@@ -19,7 +19,6 @@ import edu.ie3.datamodel.models.input.connector.SwitchInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.Transformer3WInput
 import edu.ie3.datamodel.models.input.container.*
-import edu.ie3.datamodel.models.input.grid.SoilData
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel
 import edu.ie3.test.common.ComplexTopology
 import edu.ie3.test.common.GridTestData
@@ -300,7 +299,7 @@ class ContainerUtilsTest extends Specification {
     HashMap<Integer, SubGridContainer> expectedSubGrids = ComplexTopology.expectedSubGrids
 
     when:
-    HashMap<Integer, SubGridContainer> actual = ContainerUtils.buildSubGridContainers(
+    Map<Integer, SubGridContainer> actual = ContainerUtils.buildSubGridContainers(
         gridName,
         subNetNumbers,
         rawGrid,
@@ -329,7 +328,7 @@ class ContainerUtilsTest extends Specification {
 
     HashMap<Integer, SubGridContainer> unmodifiedSubGrids = ComplexTopology.expectedSubGrids
 
-    HashMap<Integer, SubGridContainer> subgrids = ContainerUtils.buildSubGridContainers(
+    Map<Integer, SubGridContainer> subgrids = ContainerUtils.buildSubGridContainers(
         gridName,
         subNetNumbers,
         rawGridInput,

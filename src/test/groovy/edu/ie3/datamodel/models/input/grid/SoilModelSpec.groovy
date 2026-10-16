@@ -10,6 +10,8 @@ import static edu.ie3.util.quantities.PowerSystemUnits.JOULE_PER_CUBIC_METRE_KEL
 import static edu.ie3.util.quantities.PowerSystemUnits.KELVIN_METRE_PER_WATT
 import static tech.units.indriya.unit.Units.METRE
 
+import edu.ie3.datamodel.models.input.container.SoilLayer
+import edu.ie3.datamodel.models.input.container.SoilType
 import edu.ie3.util.quantities.interfaces.ThermalCapacitance
 import edu.ie3.util.quantities.interfaces.ThermalResistivity
 import spock.lang.Specification

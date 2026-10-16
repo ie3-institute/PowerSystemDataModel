@@ -6,6 +6,8 @@
 package edu.ie3.datamodel.io.naming
 
 import edu.ie3.datamodel.models.input.connector.CableDeploymentInput
+import edu.ie3.datamodel.models.input.container.SoilLayer
+import edu.ie3.datamodel.models.input.container.SoilType
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel
 import edu.ie3.datamodel.models.result.thermal.ThermalLineSegmentResult
 import spock.lang.Specification
@@ -77,5 +79,38 @@ class ModelFieldsTest extends Specification {
       FieldNamingStrategy.LINE_SEGMENT_TEMPERATURE,
       FieldNamingStrategy.GROUND_TEMPERATURE
     ] as Set
+  }
+
+  def "getMandatoryFields returns registered fields for SoilType"() {
+    when:
+    def fields = ModelFields.getMandatoryFields(SoilType)
+
+    then:
+    fields == [
+      [
+        FieldNamingStrategy.UUID,
+        FieldNamingStrategy.ID,
+        FieldNamingStrategy.THERMAL_RESISTIVITY_WET,
+        FieldNamingStrategy.THERMAL_RESISTIVITY_DRY,
+        FieldNamingStrategy.SPECIFIC_HEAT_CAPACITY,
+        FieldNamingStrategy.CRITICAL_TEMPERATURE_DIFFERENCE
+      ] as Set
+    ]
+  }
+
+  def "getMandatoryFields returns registered fields for SoilLayer"() {
+    when:
+    def fields = ModelFields.getMandatoryFields(SoilLayer)
+
+    then:
+    fields == [
+      [
+        FieldNamingStrategy.UUID,
+        FieldNamingStrategy.GEOMETRY,
+        FieldNamingStrategy.Z_FROM,
+        FieldNamingStrategy.Z_TO,
+        FieldNamingStrategy.SOIL_TYPE
+      ] as Set
+    ]
   }
 }

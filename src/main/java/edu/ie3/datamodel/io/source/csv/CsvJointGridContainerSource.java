@@ -18,17 +18,13 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.container.*;
-import edu.ie3.datamodel.models.input.grid.SoilData;
+import edu.ie3.datamodel.models.input.container.SoilData;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
 import java.util.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** Convenience class for cases where all used data comes from CSV sources */
 public class CsvJointGridContainerSource {
-  private static final Logger logger = LoggerFactory.getLogger(CsvJointGridContainerSource.class);
-
   private CsvJointGridContainerSource() {}
 
   public static JointGridContainer read(
@@ -67,6 +63,7 @@ public class CsvJointGridContainerSource {
       thermalSource.validate();
       emSource.validate();
       systemParticipantSource.validate();
+      soilDataSource.validate();
     } catch (ValidationException ve) {
       throw new SourceException("Could not read source because validation failed", ve);
     }
@@ -97,26 +94,18 @@ public class CsvJointGridContainerSource {
                     new HashSet<>(soilDataSource.getSoilTypes()),
                     new HashSet<>(soilDataSource.getSoilLayers())),
             SourceException.class);
-    List<? extends Exception> exceptions = Try.getExceptions(rawGridElements, systemParticipants);
+    List<? extends Exception> exceptions =
+        Try.getExceptions(rawGridElements, systemParticipants, emUnits, soilData);
 
     if (!exceptions.isEmpty()) {
       throw new SourceException("Some exception(s) occurred while reading the grid.", exceptions);
     } else {
-      SoilData resolvedSoilData =
-          soilData.getOrElse(
-              () -> {
-                logger.debug(
-                    "No soil data could be read from the source, continuing without soil data.");
-                return SoilData.empty();
-              });
-      // getOrThrow should not throw an exception in this context, because all exception are
-      // filtered and thrown before
       return new JointGridContainer(
           gridName,
           rawGridElements.getOrThrow(),
           systemParticipants.getOrThrow(),
           emUnits.getOrThrow(),
-          resolvedSoilData);
+          soilData.getOrThrow());
     }
   }
 }

@@ -9,6 +9,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.KELVIN_METRE_PER_WATT
 import static tech.units.indriya.unit.Units.METRE
 
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.exceptions.FailedValidationException
 import edu.ie3.datamodel.exceptions.ParsingException
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
@@ -148,6 +149,52 @@ class SoilDataParserSpec extends Specification {
     soilType.uuid == TYPE_UUID
     soilLayer.uuid == LAYER_UUID
     soilLayer.geometry.equals(GEOMETRY)
+  }
+
+  def "CsvSoilDataSource validates valid soil data"() {
+    given:
+    writeSoilTypesFile()
+    writeSoilLayersFile()
+    def source = new CsvSoilDataSource(",", tempDir, new FileNamingStrategy())
+
+    when:
+    source.validate()
+
+    then:
+    noExceptionThrown()
+  }
+
+  def "CsvSoilDataSource rejects semantically invalid soil data"() {
+    given:
+    writeSoilLayersFile()
+    Files.writeString(
+        tempDir.resolve("soil_type.csv"),
+        "uuid,id,thermal_resistivity_wet,thermal_resistivity_dry,specific_heat_capacity,critical_temperature_difference\n" +
+        TYPE_UUID + ",loam,-0.30,0.40,0.0015,15.0\n")
+    def source = new CsvSoilDataSource(",", tempDir, new FileNamingStrategy())
+
+    when:
+    source.validate()
+
+    then:
+    def exception = thrown(FailedValidationException)
+    exception.message.contains("positive")
+  }
+
+  def "CsvSoilDataSource wraps source read failures during validation"() {
+    given:
+    writeSoilTypesFile()
+    Files.writeString(
+        tempDir.resolve("soil_layer.csv"),
+        "uuid,geometry,z_from,z_to,soil_type\ninvalid,not-json,0,-1,invalid\n")
+    def source = new CsvSoilDataSource(",", tempDir, new FileNamingStrategy())
+
+    when:
+    source.validate()
+
+    then:
+    def exception = thrown(FailedValidationException)
+    exception.cause instanceof SourceException
   }
 
   private void writeSoilTypesFile() {

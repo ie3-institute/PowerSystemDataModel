@@ -17,7 +17,7 @@ import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.container.*;
-import edu.ie3.datamodel.models.input.grid.SoilData;
+import edu.ie3.datamodel.models.input.container.SoilData;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
 import edu.ie3.util.quantities.interfaces.SpecificResistance;
@@ -490,7 +490,7 @@ public class ContainerUtils {
     SortedSet<Integer> subnetNumbers = determineSubnetNumbers(rawGrid.getNodes());
 
     /* Build the single sub grid models */
-    HashMap<Integer, SubGridContainer> subGrids =
+    Map<Integer, SubGridContainer> subGrids =
         buildSubGridContainers(
             gridName, subnetNumbers, rawGrid, systemParticipants, energyManagementUnits, soilData);
 
@@ -518,7 +518,7 @@ public class ContainerUtils {
    * @param energyManagementUnits Container model with all energy management unit inputs
    * @return A mapping from subnet number to container model with sub grid elements
    */
-  public static HashMap<Integer, SubGridContainer> buildSubGridContainers(
+  public static Map<Integer, SubGridContainer> buildSubGridContainers(
       String gridName,
       SortedSet<Integer> subnetNumbers,
       RawGridElements rawGrid,
@@ -544,7 +544,7 @@ public class ContainerUtils {
    * @param energyManagementUnits Container model with all energy management unit inputs
    * @return A mapping from subnet number to container model with sub grid elements
    */
-  public static HashMap<Integer, SubGridContainer> buildSubGridContainers(
+  public static Map<Integer, SubGridContainer> buildSubGridContainers(
       String gridName,
       SortedSet<Integer> subnetNumbers,
       RawGridElements rawGrid,
