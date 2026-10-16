@@ -233,6 +233,8 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     // persist all entities
     Stream.of(
             rawGridElements.allEntitiesAsList(),
+            jointGridContainer.getSoilData().getSoilTypes(),
+            jointGridContainer.getSoilData().getSoilLayers(),
             cableDeployments,
             systemParticipants.allEntitiesAsList(),
             jointGridContainer.getEmUnits().getEmUnits().stream().toList(),
