@@ -148,7 +148,7 @@ class GridContainerValidationUtilsTest extends Specification {
         [(lineUuid): [deployment]])
 
     when:
-    def results = GridContainerValidationUtils.checkRawGridElements(rawGrid)
+    def results = GridContainerValidationUtils.checkRawGridElements(rawGrid, [] as Set)
 
     then:
     results.findAll {
@@ -162,5 +162,49 @@ class GridContainerValidationUtilsTest extends Specification {
     GTD.lineAtoB.uuid || "TREFOIL" || false || "Cable deployment"
     GTD.lineAtoB.uuid || "" || true || "Layout formation cannot be empty"
     UUID.randomUUID() || "TREFOIL" || true || "Cable deployment references unknown line"
+  }
+
+  def "The GridContainerValidationUtils validates the soil type referenced by a cable bed"() {
+    given:
+    def line = GTD.lineAtoB
+    def deployment = new CableDeploymentInput(
+        UUID.randomUUID(),
+        line.uuid,
+        "FLAT",
+        Quantities.getQuantity(-0.5d, METRE),
+        Quantities.getQuantity(0.1d, METRE),
+        Quantities.getQuantity(0.8d, METRE),
+        Quantities.getQuantity(0.3d, METRE),
+        referencedSoilTypeUuid)
+    def rawGrid = new RawGridElements(
+        [line.nodeA, line.nodeB] as Set,
+        [line] as Set,
+        [] as Set,
+        [] as Set,
+        [] as Set,
+        [] as Set,
+        [(line.uuid): [deployment]])
+
+    when:
+    def results = GridContainerValidationUtils.checkRawGridElements(rawGrid, availableSoilTypeUuids as Set)
+
+    then:
+    results.findAll {
+      it.failure
+    }.any {
+      it.exception.get().message.contains(expectedMessage)
+    } == failureExpected
+
+    where:
+    referencedSoilTypeUuid || availableSoilTypeUuids || failureExpected || expectedMessage
+    UUID.fromString("11111111-1111-1111-1111-111111111111") ||
+        [
+          UUID.fromString("11111111-1111-1111-1111-111111111111")
+        ] || false || "unavailable soil type"
+    UUID.fromString("11111111-1111-1111-1111-111111111111") || [] || true || "unavailable soil type"
+    UUID.fromString("11111111-1111-1111-1111-111111111111") ||
+        [
+          UUID.fromString("22222222-2222-2222-2222-222222222222")
+        ] || true || "unavailable soil type"
   }
 }

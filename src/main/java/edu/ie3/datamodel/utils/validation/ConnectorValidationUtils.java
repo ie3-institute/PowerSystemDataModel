@@ -235,6 +235,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
    *   <li>its layout formation is not empty
    *   <li>its depth is provided and less than or equal to zero (i.e. below ground level)
    *   <li>its distance between cables is provided and greater than zero
+   *   <li>its cable bed fields form a valid optional group: either all are absent, or, when any is
+   *       present, width and height are finite and positive and a soil-type UUID is provided
    * </ul>
    *
    * @param deployment Cable deployment to validate
@@ -262,7 +264,49 @@ public class ConnectorValidationUtils extends ValidationUtils {
           }
           detectZeroOrNegativeQuantities(
               quantities("distanceCables", deployment.getDistanceCables()), deployment);
-        });
+        },
+        () -> checkCableBed(deployment));
+  }
+
+  /**
+   * Validates the cable bed fields of a cable deployment as an optional group. If none of the bed
+   * fields is set, the group is considered valid. Otherwise, the bed width and height must be
+   * finite and positive, and a soil-type UUID must be provided.
+   *
+   * @param deployment Cable deployment to validate
+   * @throws InvalidEntityException if a defined cable bed is incomplete or has invalid dimensions
+   */
+  private static void checkCableBed(CableDeploymentInput deployment) throws InvalidEntityException {
+    boolean anySet =
+        deployment.getCableBedWidth() != null
+            || deployment.getCableBedHeight() != null
+            || deployment.getCableBedSoilType() != null;
+
+    if (!anySet) {
+      return;
+    }
+
+    checkCableBedDimension(deployment, "width", deployment.getCableBedWidth());
+    checkCableBedDimension(deployment, "height", deployment.getCableBedHeight());
+
+    if (deployment.getCableBedSoilType() == null) {
+      throw new InvalidEntityException(
+          "Cable bed soil type must be provided when a cable bed is defined", deployment);
+    }
+  }
+
+  private static void checkCableBedDimension(
+      CableDeploymentInput deployment, String dimension, ComparableQuantity<Length> value)
+      throws InvalidEntityException {
+    if (value == null) {
+      throw new InvalidEntityException(
+          "Cable bed " + dimension + " must be provided when a cable bed is defined", deployment);
+    }
+    double valueAsDouble = value.getValue().doubleValue();
+    if (!Double.isFinite(valueAsDouble) || valueAsDouble <= 0d) {
+      throw new InvalidEntityException(
+          "Cable bed " + dimension + " must be finite and positive", deployment);
+    }
   }
 
   private static void checkCableDepth(CableDeploymentInput deployment, LineInput line)
