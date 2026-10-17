@@ -37,10 +37,10 @@ public class CableDeploymentInputFactory
         data.getQuantityOptional(FieldNamingStrategy.CABLE_BED_WIDTH, Units.METRE).orElse(null);
     ComparableQuantity<Length> cableBedHeight =
         data.getQuantityOptional(FieldNamingStrategy.CABLE_BED_HEIGHT, Units.METRE).orElse(null);
-    UUID cableBedSoilTypeUuid =
-        data.getFieldOptional(FieldNamingStrategy.CABLE_BED_SOIL_TYPE_UUID)
+    UUID cableBedSoilType =
+        data.getFieldOptional(FieldNamingStrategy.CABLE_BED_SOIL_TYPE)
             .filter(value -> !value.isBlank())
-            .map(value -> fromString(value))
+            .map(java.util.UUID::fromString)
             .orElse(null);
 
     return new CableDeploymentInput(
@@ -51,7 +51,7 @@ public class CableDeploymentInputFactory
         distanceCables,
         cableBedWidth,
         cableBedHeight,
-        cableBedSoilTypeUuid,
+        cableBedSoilType,
         data.getFieldsToValues());
   }
 }

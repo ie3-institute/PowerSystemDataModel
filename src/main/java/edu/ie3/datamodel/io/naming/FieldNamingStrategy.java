@@ -140,7 +140,7 @@ public class FieldNamingStrategy {
   public static final String DISTANCE_CABLES = "distanceCables";
   public static final String CABLE_BED_WIDTH = "cableBedWidth";
   public static final String CABLE_BED_HEIGHT = "cableBedHeight";
-  public static final String CABLE_BED_SOIL_TYPE_UUID = "cableBedSoilTypeUuid";
+  public static final String CABLE_BED_SOIL_TYPE = "cableBedSoilType";
 
   // efficiency
   public static final String ETA = "eta";

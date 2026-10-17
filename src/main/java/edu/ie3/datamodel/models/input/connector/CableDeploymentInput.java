@@ -207,7 +207,7 @@ public class CableDeploymentInput extends UniqueInputEntity {
         + cableBedWidth
         + ", cableBedHeight="
         + cableBedHeight
-        + ", cableBedSoilTypeUuid="
+        + ", cableBedSoilType="
         + cableBedSoilType
         + ", additionalInformation="
         + getAdditionalInformation()
@@ -223,7 +223,7 @@ public class CableDeploymentInput extends UniqueInputEntity {
     private ComparableQuantity<Length> distanceCables;
     private ComparableQuantity<Length> cableBedWidth;
     private ComparableQuantity<Length> cableBedHeight;
-    private UUID cableBedSoilTypeUuid;
+    private UUID cableBedSoilType;
     private final Map<String, String> additionalInformation;
 
     private CableDeploymentInputCopyBuilder(CableDeploymentInput entity) {
@@ -234,7 +234,7 @@ public class CableDeploymentInput extends UniqueInputEntity {
       this.distanceCables = entity.getDistanceCables();
       this.cableBedWidth = entity.getCableBedWidth();
       this.cableBedHeight = entity.getCableBedHeight();
-      this.cableBedSoilTypeUuid = entity.getCableBedSoilType();
+      this.cableBedSoilType = entity.getCableBedSoilType();
       this.additionalInformation = entity.getAdditionalInformation();
     }
 
@@ -248,7 +248,7 @@ public class CableDeploymentInput extends UniqueInputEntity {
           distanceCables,
           cableBedWidth,
           cableBedHeight,
-          cableBedSoilTypeUuid,
+          cableBedSoilType,
           additionalInformation);
     }
 
@@ -284,8 +284,8 @@ public class CableDeploymentInput extends UniqueInputEntity {
       return thisInstance();
     }
 
-    public CableDeploymentInputCopyBuilder cableBedSoilTypeUuid(UUID cableBedSoilTypeUuid) {
-      this.cableBedSoilTypeUuid = cableBedSoilTypeUuid;
+    public CableDeploymentInputCopyBuilder cableBedSoilType(UUID cableBedSoilType) {
+      this.cableBedSoilType = cableBedSoilType;
       return thisInstance();
     }
 

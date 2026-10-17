@@ -34,7 +34,7 @@ class CableDeploymentInputFactoryTest extends Specification implements FactoryTe
       "distanceCables" : "0.5",
       "cableBedWidth" : "0.8",
       "cableBedHeight" : "0.3",
-      "cableBedSoilTypeUuid" : "ca5f58dd-e444-4daf-83a7-78529548fa77",
+      "cableBedSoilType" : "ca5f58dd-e444-4daf-83a7-78529548fa77",
     ]
     def inputClass = CableDeploymentInput
 
@@ -53,7 +53,7 @@ class CableDeploymentInputFactoryTest extends Specification implements FactoryTe
       distanceCables == getQuant(parameter["distanceCables"], Units.METRE)
       cableBedWidth == getQuant(parameter["cableBedWidth"], Units.METRE)
       cableBedHeight == getQuant(parameter["cableBedHeight"], Units.METRE)
-      cableBedSoilType == UUID.fromString(parameter["cableBedSoilTypeUuid"])
+      cableBedSoilType == UUID.fromString(parameter["cableBedSoilType"])
     }
   }
 
@@ -129,7 +129,7 @@ class CableDeploymentInputFactoryTest extends Specification implements FactoryTe
       "depthCables" : "-0.5",
       "distanceCables" : "0.1",
       "cableBedWidth" : "0.8",
-      "cableBedSoilTypeUuid" : "ca5f58dd-e444-4daf-83a7-78529548fa77",
+      "cableBedSoilType" : "ca5f58dd-e444-4daf-83a7-78529548fa77",
     ]
 
     when:
@@ -151,7 +151,7 @@ class CableDeploymentInputFactoryTest extends Specification implements FactoryTe
       "distanceCables" : "0.1",
       "cableBedWidth" : "0.8",
       "cableBedHeight" : "0.3",
-      "cableBedSoilTypeUuid" : "not-a-valid-uuid",
+      "cableBedSoilType" : "not-a-valid-uuid",
     ]
 
     when:

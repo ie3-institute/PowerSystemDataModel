@@ -63,7 +63,7 @@ class ModelFieldsTest extends Specification {
     optionalFields == [
       FieldNamingStrategy.CABLE_BED_WIDTH,
       FieldNamingStrategy.CABLE_BED_HEIGHT,
-      FieldNamingStrategy.CABLE_BED_SOIL_TYPE_UUID
+      FieldNamingStrategy.CABLE_BED_SOIL_TYPE
     ] as Set
   }
 

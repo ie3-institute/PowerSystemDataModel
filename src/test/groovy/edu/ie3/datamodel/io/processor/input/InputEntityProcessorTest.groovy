@@ -698,7 +698,7 @@ class InputEntityProcessorTest extends Specification {
       "distanceCables" : "0.2",
       "cableBedWidth" : "0.8",
       "cableBedHeight" : "0.3",
-      "cableBedSoilTypeUuid" : "33333333-3333-3333-3333-333333333333"
+      "cableBedSoilType" : "33333333-3333-3333-3333-333333333333"
     ]
 
     when:

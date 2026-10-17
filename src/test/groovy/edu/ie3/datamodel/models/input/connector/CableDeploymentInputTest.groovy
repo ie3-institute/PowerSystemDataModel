@@ -18,15 +18,15 @@ class CableDeploymentInputTest extends Specification {
     def distance = Quantities.getQuantity(0.1, METRE)
     def uuid = UUID.randomUUID()
     def lineUuid = UUID.randomUUID()
-    def cableBedSoilTypeUuid = UUID.randomUUID()
+    def cableBedSoilType = UUID.randomUUID()
     def cableBedWidth = Quantities.getQuantity(0.8, METRE)
     def cableBedHeight = Quantities.getQuantity(0.3, METRE)
     def firstDeployment = new CableDeploymentInput(
         uuid, lineUuid, "TREFOIL", depth, distance, cableBedWidth, cableBedHeight,
-        cableBedSoilTypeUuid)
+        cableBedSoilType)
     def secondDeployment = new CableDeploymentInput(
         uuid, lineUuid, "TREFOIL", depth, distance, cableBedWidth, cableBedHeight,
-        cableBedSoilTypeUuid)
+        cableBedSoilType)
 
     expect:
     firstDeployment == secondDeployment
@@ -36,7 +36,7 @@ class CableDeploymentInputTest extends Specification {
     firstDeployment.lineUuid == lineUuid
     firstDeployment.cableBedWidth == cableBedWidth
     firstDeployment.cableBedHeight == cableBedHeight
-    firstDeployment.cableBedSoilType == cableBedSoilTypeUuid
+    firstDeployment.cableBedSoilType == cableBedSoilType
   }
 
   def "Cable deployments with different values are not equal"() {
@@ -72,7 +72,7 @@ class CableDeploymentInputTest extends Specification {
     result.contains("depthCables") || result.contains("-0.5") || result.contains("lineUuid")
     result.contains("cableBedWidth")
     result.contains("cableBedHeight")
-    result.contains("cableBedSoilTypeUuid")
+    result.contains("cableBedSoilType")
   }
 
   def "CableDeploymentInput copy preserves all fields and allows modification"() {
@@ -83,10 +83,10 @@ class CableDeploymentInputTest extends Specification {
     def distance = Quantities.getQuantity(0.1, METRE)
     def cableBedWidth = Quantities.getQuantity(0.8, METRE)
     def cableBedHeight = Quantities.getQuantity(0.3, METRE)
-    def cableBedSoilTypeUuid = UUID.randomUUID()
+    def cableBedSoilType = UUID.randomUUID()
     def original = new CableDeploymentInput(
         uuid, lineUuid, "TREFOIL", depth, distance, cableBedWidth, cableBedHeight,
-        cableBedSoilTypeUuid)
+        cableBedSoilType)
 
     when: "copy with no changes"
     def copy = original.copy().build()
@@ -100,7 +100,7 @@ class CableDeploymentInputTest extends Specification {
     copy.distanceCables == distance
     copy.cableBedWidth == cableBedWidth
     copy.cableBedHeight == cableBedHeight
-    copy.cableBedSoilType == cableBedSoilTypeUuid
+    copy.cableBedSoilType == cableBedSoilType
 
     when: "copy with modified fields"
     def newLineUuid = UUID.randomUUID()
@@ -111,7 +111,7 @@ class CableDeploymentInputTest extends Specification {
         .distanceCables(Quantities.getQuantity(0.2, METRE))
         .cableBedWidth(Quantities.getQuantity(1.0, METRE))
         .cableBedHeight(Quantities.getQuantity(0.5, METRE))
-        .cableBedSoilTypeUuid(UUID.randomUUID())
+        .cableBedSoilType(UUID.randomUUID())
         .build()
 
     then:
@@ -122,7 +122,7 @@ class CableDeploymentInputTest extends Specification {
     modifiedCopy.distanceCables == Quantities.getQuantity(0.2, METRE)
     modifiedCopy.cableBedWidth == Quantities.getQuantity(1.0, METRE)
     modifiedCopy.cableBedHeight == Quantities.getQuantity(0.5, METRE)
-    modifiedCopy.cableBedSoilType != cableBedSoilTypeUuid
+    modifiedCopy.cableBedSoilType != cableBedSoilType
   }
 
   def "Cable bed parameters must be supplied together"() {
