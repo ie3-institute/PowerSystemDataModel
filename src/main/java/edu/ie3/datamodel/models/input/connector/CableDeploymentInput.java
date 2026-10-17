@@ -26,7 +26,7 @@ public class CableDeploymentInput extends UniqueInputEntity {
   private final ComparableQuantity<Length> distanceCables;
   private final ComparableQuantity<Length> cableBedWidth;
   private final ComparableQuantity<Length> cableBedHeight;
-  private final UUID cableBedSoilTypeUuid;
+  private final UUID cableBedSoilType;
 
   /**
    * @param uuid unique identifier of this cable deployment
@@ -75,7 +75,7 @@ public class CableDeploymentInput extends UniqueInputEntity {
    *     flat parallel formation or the center of a trefoil formation.
    * @param cableBedHeight Height of the rectangular cable bed centered around the middle cable in a
    *     flat parallel formation or the center of a trefoil formation.
-   * @param cableBedSoilTypeUuid UUID of the soil type used for the cable bed.
+   * @param cableBedSoilType UUID of the soil type used for the cable bed.
    */
   public CableDeploymentInput(
       UUID uuid,
@@ -85,7 +85,7 @@ public class CableDeploymentInput extends UniqueInputEntity {
       ComparableQuantity<Length> distanceCables,
       ComparableQuantity<Length> cableBedWidth,
       ComparableQuantity<Length> cableBedHeight,
-      UUID cableBedSoilTypeUuid) {
+      UUID cableBedSoilType) {
     this(
         uuid,
         lineUuid,
@@ -94,7 +94,7 @@ public class CableDeploymentInput extends UniqueInputEntity {
         distanceCables,
         cableBedWidth,
         cableBedHeight,
-        cableBedSoilTypeUuid,
+        cableBedSoilType,
         null);
   }
 
@@ -106,7 +106,7 @@ public class CableDeploymentInput extends UniqueInputEntity {
       ComparableQuantity<Length> distanceCables,
       ComparableQuantity<Length> cableBedWidth,
       ComparableQuantity<Length> cableBedHeight,
-      UUID cableBedSoilTypeUuid,
+      UUID cableBedSoilType,
       Map<String, String> additionalInformation) {
     super(uuid);
     if (cableBedWidth != null && !(cableBedWidth.getValue().doubleValue() > 0)) {
@@ -115,8 +115,8 @@ public class CableDeploymentInput extends UniqueInputEntity {
     if (cableBedHeight != null && !(cableBedHeight.getValue().doubleValue() > 0)) {
       throw new IllegalArgumentException("Cable bed height must be positive");
     }
-    if (!((cableBedWidth == null && cableBedHeight == null && cableBedSoilTypeUuid == null)
-        || (cableBedWidth != null && cableBedHeight != null && cableBedSoilTypeUuid != null))) {
+    if (!((cableBedWidth == null && cableBedHeight == null && cableBedSoilType == null)
+        || (cableBedWidth != null && cableBedHeight != null && cableBedSoilType != null))) {
       throw new IllegalArgumentException(
           "Cable bed width, height, and soil type UUID must either all be set or all be null");
     }
@@ -126,7 +126,7 @@ public class CableDeploymentInput extends UniqueInputEntity {
     this.distanceCables = distanceCables;
     this.cableBedWidth = cableBedWidth;
     this.cableBedHeight = cableBedHeight;
-    this.cableBedSoilTypeUuid = cableBedSoilTypeUuid;
+    this.cableBedSoilType = cableBedSoilType;
     setAdditionalInformation(additionalInformation);
   }
 
@@ -154,8 +154,8 @@ public class CableDeploymentInput extends UniqueInputEntity {
     return cableBedHeight;
   }
 
-  public UUID getCableBedSoilTypeUuid() {
-    return cableBedSoilTypeUuid;
+  public UUID getCableBedSoilType() {
+    return cableBedSoilType;
   }
 
   public CableDeploymentInputCopyBuilder copy() {
@@ -173,7 +173,7 @@ public class CableDeploymentInput extends UniqueInputEntity {
         && Objects.equals(distanceCables, that.distanceCables)
         && Objects.equals(cableBedWidth, that.cableBedWidth)
         && Objects.equals(cableBedHeight, that.cableBedHeight)
-        && Objects.equals(cableBedSoilTypeUuid, that.cableBedSoilTypeUuid);
+        && Objects.equals(cableBedSoilType, that.cableBedSoilType);
   }
 
   @Override
@@ -186,7 +186,7 @@ public class CableDeploymentInput extends UniqueInputEntity {
         distanceCables,
         cableBedWidth,
         cableBedHeight,
-        cableBedSoilTypeUuid);
+        cableBedSoilType);
   }
 
   @Override
@@ -208,7 +208,7 @@ public class CableDeploymentInput extends UniqueInputEntity {
         + ", cableBedHeight="
         + cableBedHeight
         + ", cableBedSoilTypeUuid="
-        + cableBedSoilTypeUuid
+        + cableBedSoilType
         + ", additionalInformation="
         + getAdditionalInformation()
         + '}';
@@ -234,7 +234,7 @@ public class CableDeploymentInput extends UniqueInputEntity {
       this.distanceCables = entity.getDistanceCables();
       this.cableBedWidth = entity.getCableBedWidth();
       this.cableBedHeight = entity.getCableBedHeight();
-      this.cableBedSoilTypeUuid = entity.getCableBedSoilTypeUuid();
+      this.cableBedSoilTypeUuid = entity.getCableBedSoilType();
       this.additionalInformation = entity.getAdditionalInformation();
     }
 

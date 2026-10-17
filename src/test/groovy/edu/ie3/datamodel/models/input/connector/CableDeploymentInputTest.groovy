@@ -36,7 +36,7 @@ class CableDeploymentInputTest extends Specification {
     firstDeployment.lineUuid == lineUuid
     firstDeployment.cableBedWidth == cableBedWidth
     firstDeployment.cableBedHeight == cableBedHeight
-    firstDeployment.cableBedSoilTypeUuid == cableBedSoilTypeUuid
+    firstDeployment.cableBedSoilType == cableBedSoilTypeUuid
   }
 
   def "Cable deployments with different values are not equal"() {
@@ -100,7 +100,7 @@ class CableDeploymentInputTest extends Specification {
     copy.distanceCables == distance
     copy.cableBedWidth == cableBedWidth
     copy.cableBedHeight == cableBedHeight
-    copy.cableBedSoilTypeUuid == cableBedSoilTypeUuid
+    copy.cableBedSoilType == cableBedSoilTypeUuid
 
     when: "copy with modified fields"
     def newLineUuid = UUID.randomUUID()
@@ -122,7 +122,7 @@ class CableDeploymentInputTest extends Specification {
     modifiedCopy.distanceCables == Quantities.getQuantity(0.2, METRE)
     modifiedCopy.cableBedWidth == Quantities.getQuantity(1.0, METRE)
     modifiedCopy.cableBedHeight == Quantities.getQuantity(0.5, METRE)
-    modifiedCopy.cableBedSoilTypeUuid != cableBedSoilTypeUuid
+    modifiedCopy.cableBedSoilType != cableBedSoilTypeUuid
   }
 
   def "Cable bed parameters must be supplied together"() {

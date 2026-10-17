@@ -53,7 +53,7 @@ class CableDeploymentInputFactoryTest extends Specification implements FactoryTe
       distanceCables == getQuant(parameter["distanceCables"], Units.METRE)
       cableBedWidth == getQuant(parameter["cableBedWidth"], Units.METRE)
       cableBedHeight == getQuant(parameter["cableBedHeight"], Units.METRE)
-      cableBedSoilTypeUuid == UUID.fromString(parameter["cableBedSoilTypeUuid"])
+      cableBedSoilType == UUID.fromString(parameter["cableBedSoilTypeUuid"])
     }
   }
 
@@ -115,7 +115,7 @@ class CableDeploymentInputFactoryTest extends Specification implements FactoryTe
     input.data.get().with {
       cableBedWidth == null
       cableBedHeight == null
-      cableBedSoilTypeUuid == null
+      cableBedSoilType == null
     }
   }
 
