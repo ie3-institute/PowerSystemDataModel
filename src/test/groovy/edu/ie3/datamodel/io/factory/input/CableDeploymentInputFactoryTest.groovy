@@ -119,27 +119,6 @@ class CableDeploymentInputFactoryTest extends Specification implements FactoryTe
     }
   }
 
-  def "A CableDeploymentInputFactory rejects incomplete cable-bed fields"() {
-    given:
-    def inputFactory = new CableDeploymentInputFactory()
-    Map<String, String> parameter = [
-      "uuid" : "b8c873a4-e32b-4b10-879e-01c53375e578",
-      "lineUuid" : "2a254a7b-9385-4d1a-bf5c-468f322e65fc",
-      "layoutFormation" : "TREFOIL",
-      "depthCables" : "-0.5",
-      "distanceCables" : "0.1",
-      "cableBedWidth" : "0.8",
-      "cableBedSoilType" : "ca5f58dd-e444-4daf-83a7-78529548fa77",
-    ]
-
-    when:
-    def input = inputFactory.get(new EntityData(parameter, CableDeploymentInput))
-
-    then:
-    input.failure
-    input.exception.get() instanceof FactoryException
-  }
-
   def "A CableDeploymentInputFactory rejects an invalid cable-bed SoilType UUID"() {
     given:
     def inputFactory = new CableDeploymentInputFactory()

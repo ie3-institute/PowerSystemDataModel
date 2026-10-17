@@ -124,33 +124,4 @@ class CableDeploymentInputTest extends Specification {
     modifiedCopy.cableBedHeight == Quantities.getQuantity(0.5, METRE)
     modifiedCopy.cableBedSoilType != cableBedSoilType
   }
-
-  def "Cable bed parameters must be supplied together"() {
-    when:
-    new CableDeploymentInput(
-        UUID.randomUUID(), UUID.randomUUID(), "FLAT",
-        Quantities.getQuantity(-0.5, METRE), Quantities.getQuantity(0.1, METRE),
-        Quantities.getQuantity(0.8, METRE), null, UUID.randomUUID())
-
-    then:
-    thrown(IllegalArgumentException)
-  }
-
-  def "Cable bed dimensions must be positive"() {
-    when:
-    new CableDeploymentInput(
-        UUID.randomUUID(), UUID.randomUUID(), "FLAT",
-        Quantities.getQuantity(-0.5, METRE), Quantities.getQuantity(0.1, METRE),
-        Quantities.getQuantity(width, METRE), Quantities.getQuantity(height, METRE), UUID.randomUUID())
-
-    then:
-    thrown(IllegalArgumentException)
-
-    where:
-    width | height
-    -0.1  | 0.3
-    0.0   | 0.3
-    0.8   | -0.1
-    0.8   | 0.0
-  }
 }

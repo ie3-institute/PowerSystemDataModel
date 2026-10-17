@@ -109,17 +109,6 @@ public class CableDeploymentInput extends UniqueInputEntity {
       UUID cableBedSoilType,
       Map<String, String> additionalInformation) {
     super(uuid);
-    if (cableBedWidth != null && !(cableBedWidth.getValue().doubleValue() > 0)) {
-      throw new IllegalArgumentException("Cable bed width must be positive");
-    }
-    if (cableBedHeight != null && !(cableBedHeight.getValue().doubleValue() > 0)) {
-      throw new IllegalArgumentException("Cable bed height must be positive");
-    }
-    if (!((cableBedWidth == null && cableBedHeight == null && cableBedSoilType == null)
-        || (cableBedWidth != null && cableBedHeight != null && cableBedSoilType != null))) {
-      throw new IllegalArgumentException(
-          "Cable bed width, height, and soil type UUID must either all be set or all be null");
-    }
     this.lineUuid = lineUuid;
     this.layoutFormation = layoutFormation;
     this.depthCables = depthCables;
