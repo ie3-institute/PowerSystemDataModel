@@ -61,7 +61,8 @@ public class GridContainerValidationUtils extends ValidationUtils {
             () -> checkUniqueEntities(gridContainer.allEntitiesAsList()),
             DuplicateEntitiesException.class));
 
-    exceptions.addAll(checkRawGridElements(gridContainer.getRawGrid()));
+    exceptions.addAll(
+        checkRawGridElements(gridContainer.getRawGrid(), availableSoilTypeUuids(gridContainer)));
     exceptions.addAll(
         checkSystemParticipants(
             gridContainer.getSystemParticipants(), gridContainer.getRawGrid().getNodes()));
@@ -75,14 +76,17 @@ public class GridContainerValidationUtils extends ValidationUtils {
 
   /**
    * Checks the validity of given {@link RawGridElements}. The single elements are checked as well
-   * as the fact, that none of the assets is connected to a node, that is not in the set of nodes.
+   * as the fact, that none of the assets is connected to a node, that is not in the set of nodes. A
+   * cable deployment referencing a soil type is validated against the set of soil types available
+   * in the owning container.
    *
    * @param rawGridElements Raw grid elements
+   * @param availableSoilTypeUuids set of soil-type UUIDs available in the owning container
    * @return a list of try objects either containing an {@link ValidationException} or an empty
    *     Success
    */
   protected static List<Try<Void, ? extends ValidationException>> checkRawGridElements(
-      RawGridElements rawGridElements) {
+      RawGridElements rawGridElements, Set<UUID> availableSoilTypeUuids) {
     Try<Void, InvalidEntityException> isNull = checkNonNull(rawGridElements, "raw grid elements");
 
     if (isNull.isFailure()) {
@@ -171,6 +175,9 @@ public class GridContainerValidationUtils extends ValidationUtils {
                 } else {
                   exceptions.addAll(
                       ConnectorValidationUtils.checkCableDeployment(deployment, line));
+                  if (deployment.getCableBedSoilType() != null) {
+                    exceptions.add(checkCableBedSoilType(deployment, availableSoilTypeUuids));
+                  }
                 }
               }
             });
@@ -375,5 +382,34 @@ public class GridContainerValidationUtils extends ValidationUtils {
                     + " "
                     + input
                     + " is connected to a node that is not in the set of nodes."));
+  }
+
+  /**
+   * Checks if the cable bed soil type of the given {@link CableDeploymentInput} is in the set of
+   * available soil types.
+   *
+   * @param deployment the cable deployment input
+   * @param availableSoilTypeUuids the set of available soil-type UUIDs
+   * @return a try
+   */
+  private static Try<Void, InvalidGridException> checkCableBedSoilType(
+      CableDeploymentInput deployment, Set<UUID> availableSoilTypeUuids) {
+    boolean unavailable = !availableSoilTypeUuids.contains(deployment.getCableBedSoilType());
+
+    return Try.ofVoid(
+        unavailable,
+        () -> new InvalidGridException("Cable deployment references an unavailable soil type"));
+  }
+
+  /**
+   * Extracts the set of soil-type UUIDs available in the given container.
+   *
+   * @param gridContainer the container whose soil data should be inspected
+   * @return the set of soil-type UUIDs available in the container
+   */
+  private static Set<UUID> availableSoilTypeUuids(GridContainer gridContainer) {
+    return gridContainer.getSoilData().getSoilTypes().stream()
+        .map(SoilType::getUuid)
+        .collect(Collectors.toSet());
   }
 }
