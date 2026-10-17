@@ -5,8 +5,6 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
-import static java.util.UUID.fromString;
-
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.UniqueEntityFactory;
 import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
