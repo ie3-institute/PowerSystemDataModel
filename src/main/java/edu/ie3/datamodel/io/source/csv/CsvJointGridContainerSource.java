@@ -18,10 +18,12 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.container.*;
-import edu.ie3.datamodel.models.input.container.SoilData;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /** Convenience class for cases where all used data comes from CSV sources */
 public class CsvJointGridContainerSource {
@@ -54,7 +56,7 @@ public class CsvJointGridContainerSource {
     EnergyManagementSource emSource = new EnergyManagementSource(typeSource, dataSource);
     SystemParticipantSource systemParticipantSource =
         new SystemParticipantSource(typeSource, thermalSource, rawGridSource, emSource, dataSource);
-    CsvSoilDataSource soilDataSource = new CsvSoilDataSource(csvSep, directoryPath, namingStrategy);
+    SoilDataSource soilDataSource = new SoilDataSource(dataSource);
 
     /* validating sources */
     try {

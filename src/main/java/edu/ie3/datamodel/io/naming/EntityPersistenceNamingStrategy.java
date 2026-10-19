@@ -215,9 +215,9 @@ public class EntityPersistenceNamingStrategy {
    * @return The entity name
    */
   public Optional<String> getInputEntityName(Class<? extends InputEntity> cls) {
-    if (SoilLayer.class.isAssignableFrom(cls) || SoilType.class.isAssignableFrom(cls))
-      return Optional.of(addPrefixAndSuffix(camelCaseToSnakeCase(cls.getSimpleName())));
-    if (CableDeploymentInput.class.isAssignableFrom(cls))
+    if (SoilLayer.class.isAssignableFrom(cls)
+        || SoilType.class.isAssignableFrom(cls)
+        || CableDeploymentInput.class.isAssignableFrom(cls))
       return Optional.of(addPrefixAndSuffix(camelCaseToSnakeCase(cls.getSimpleName())));
     if (AssetTypeInput.class.isAssignableFrom(cls))
       return getTypeEntityName(cls.asSubclass(AssetTypeInput.class));

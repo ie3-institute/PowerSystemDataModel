@@ -13,13 +13,7 @@ import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.models.input.container.SoilLayer;
 import edu.ie3.datamodel.models.input.container.SoilType;
 import edu.ie3.datamodel.utils.Try;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.measure.quantity.Length;
@@ -117,8 +111,7 @@ public class SoilValidationUtils extends ValidationUtils {
     problems.addAll(collectCheckProblems(layers, SoilValidationUtils::check));
 
     if (layers != null) {
-      problems.addAll(validateNonOverlappingPerCoordinate(layers));
-      problems.addAll(validateNoGapsPerCoordinate(layers));
+      problems.addAll(validatePerCoordinate(layers));
     }
 
     if (!problems.isEmpty()) {
@@ -149,80 +142,50 @@ public class SoilValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Checks that no two soil layers with the same geometry overlap in depth.
+   * Checks that soil layers sharing the same geometry neither overlap nor leave gaps in their depth
+   * intervals.
    *
    * @param layers the soil layers to check
-   * @return the detected overlaps as exceptions; an empty list if none were found
+   * @return the detected overlaps and gaps as exceptions; an empty list if none were found
    */
-  private static List<Exception> validateNonOverlappingPerCoordinate(List<SoilLayer> layers) {
+  private static List<Exception> validatePerCoordinate(List<SoilLayer> layers) {
     List<Exception> problems = new ArrayList<>();
 
-    Map<String, List<SoilLayer>> grouped =
+    Map<Geometry, List<SoilLayer>> grouped =
         layers.stream()
+            .filter(l -> l.getGeometry() != null)
             .collect(
-                Collectors.groupingBy(
-                    l -> geometryKey(l.getGeometry()), Collectors.toUnmodifiableList()));
+                Collectors.groupingBy(SoilLayer::getGeometry, Collectors.toUnmodifiableList()));
 
-    for (Map.Entry<String, List<SoilLayer>> e : grouped.entrySet()) {
-      List<SoilLayer> group = e.getValue();
-      for (int i = 0; i < group.size(); i++) {
-        SoilLayer a = group.get(i);
-        if (a.getZFrom() == null || a.getZTo() == null) continue;
-        SoilLayer.ZInterval aInterval = a.zInterval();
-        for (int j = i + 1; j < group.size(); j++) {
-          SoilLayer b = group.get(j);
-          if (b.getZFrom() == null || b.getZTo() == null) continue;
-          SoilLayer.ZInterval bInterval = b.zInterval();
-
-          if (aInterval.overlaps(bInterval)) {
-            problems.add(
-                new InvalidEntityException(
-                    String.format(
-                        "Overlapping soil layers detected at coordinate '%s': %s ([%fm,%fm]) vs %s ([%fm,%fm])",
-                        e.getKey(),
-                        a.getUuid(),
-                        aInterval.lower(),
-                        aInterval.upper(),
-                        b.getUuid(),
-                        bInterval.lower(),
-                        bInterval.upper()),
-                    a));
-          }
-        }
-      }
-    }
-    return problems;
-  }
-
-  /**
-   * Checks that the soil layers with the same geometry cover their depth range without gaps.
-   *
-   * @param layers the soil layers to check
-   * @return the detected gaps as exceptions; an empty list if none were found
-   */
-  private static List<Exception> validateNoGapsPerCoordinate(List<SoilLayer> layers) {
-    List<Exception> problems = new ArrayList<>();
-
-    Map<String, List<SoilLayer>> grouped =
-        layers.stream()
-            .collect(
-                Collectors.groupingBy(
-                    l -> geometryKey(l.getGeometry()), Collectors.toUnmodifiableList()));
-
-    for (Map.Entry<String, List<SoilLayer>> e : grouped.entrySet()) {
-      List<SoilLayer> group =
+    for (Map.Entry<Geometry, List<SoilLayer>> e : grouped.entrySet()) {
+      List<SoilLayer> sorted =
           e.getValue().stream()
               .filter(l -> l.getZFrom() != null && l.getZTo() != null)
               .sorted(Comparator.comparingDouble(l -> l.zInterval().lower()))
               .toList();
 
-      if (group.isEmpty()) continue;
+      if (sorted.isEmpty()) continue;
 
-      for (int i = 1; i < group.size(); i++) {
-        SoilLayer cur = group.get(i);
-        SoilLayer prev = group.get(i - 1);
+      for (int i = 1; i < sorted.size(); i++) {
+        SoilLayer cur = sorted.get(i);
+        SoilLayer prev = sorted.get(i - 1);
+        SoilLayer.ZInterval curInterval = cur.zInterval();
+        SoilLayer.ZInterval prevInterval = prev.zInterval();
 
-        if (cur.zInterval().gapAbove(prev.zInterval())) {
+        if (prevInterval.overlaps(curInterval)) {
+          problems.add(
+              new InvalidEntityException(
+                  String.format(
+                      "Overlapping soil layers detected at coordinate '%s': %s ([%fm,%fm]) vs %s ([%fm,%fm])",
+                      e.getKey(),
+                      prev.getUuid(),
+                      prevInterval.lower(),
+                      prevInterval.upper(),
+                      cur.getUuid(),
+                      curInterval.lower(),
+                      curInterval.upper()),
+                  prev));
+        } else if (curInterval.gapAbove(prevInterval)) {
           problems.add(
               new InvalidEntityException(
                   String.format(
@@ -232,7 +195,6 @@ public class SoilValidationUtils extends ValidationUtils {
         }
       }
     }
-
     return problems;
   }
 
@@ -286,20 +248,5 @@ public class SoilValidationUtils extends ValidationUtils {
     }
 
     return mapping;
-  }
-
-  /**
-   * Derives a stable string key from a geometry to group soil layers by their horizontal footprint.
-   *
-   * @param g the geometry, may be {@code null}
-   * @return a string representation of the geometry used as a grouping key
-   */
-  private static String geometryKey(Geometry g) {
-    if (g == null) return "<null>";
-    try {
-      return g.toText();
-    } catch (Exception ex) {
-      return g.getGeometryType() + "@" + System.identityHashCode(g);
-    }
   }
 }
