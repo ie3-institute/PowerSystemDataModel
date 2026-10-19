@@ -5,19 +5,32 @@
  */
 package edu.ie3.datamodel.utils.validation
 
+import static edu.ie3.datamodel.models.StandardUnits.TEMPERATURE
+import static edu.ie3.util.quantities.PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN
+import static edu.ie3.util.quantities.PowerSystemUnits.KELVIN_METRE_PER_WATT
 import static tech.units.indriya.unit.Units.METRE
 
 import edu.ie3.datamodel.exceptions.InvalidGridException
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.connector.CableDeploymentInput
 import edu.ie3.datamodel.models.input.container.RawGridElements
+import edu.ie3.datamodel.models.input.container.SoilData
+import edu.ie3.datamodel.models.input.container.SoilLayer
+import edu.ie3.datamodel.models.input.container.SoilType
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData as GTD
+import edu.ie3.util.quantities.interfaces.ThermalCapacitance
+import edu.ie3.util.quantities.interfaces.ThermalResistivity
+import org.locationtech.jts.geom.Coordinate
+import org.locationtech.jts.geom.Geometry
+import org.locationtech.jts.geom.GeometryFactory
 import spock.lang.Shared
 import spock.lang.Specification
+import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
 
 import java.time.ZonedDateTime
+import javax.measure.quantity.Temperature
 
 class GridContainerValidationUtilsTest extends Specification {
   @Shared
@@ -162,5 +175,103 @@ class GridContainerValidationUtilsTest extends Specification {
     GTD.lineAtoB.uuid || "TREFOIL" || false || "Cable deployment"
     GTD.lineAtoB.uuid || "" || true || "Layout formation cannot be empty"
     UUID.randomUUID() || "TREFOIL" || true || "Cable deployment references unknown line"
+  }
+
+  def "checkSoilData accepts consistent, gap-free and non-overlapping soil data"() {
+    given:
+    def type = validSoilType()
+    def layer1 = soilLayer(type.uuid, 0d, -2d)
+    def layer2 = soilLayer(type.uuid, -2d, -4d)
+    def soilData = new SoilData([type] as Set, [layer1, layer2] as Set)
+
+    when:
+    def results = GridContainerValidationUtils.checkSoilData(soilData)
+
+    then:
+    results.size() == 1
+    !results.any { it.failure }
+  }
+
+  def "checkSoilData reports overlapping soil layers at the same coordinate"() {
+    given:
+    def type = validSoilType()
+    def layer1 = soilLayer(type.uuid, 0d, -2d)
+    def layer2 = soilLayer(type.uuid, -1d, -3d)
+    def soilData = new SoilData([type] as Set, [layer1, layer2] as Set)
+
+    when:
+    def results = GridContainerValidationUtils.checkSoilData(soilData)
+
+    then:
+    def failure = results.find { it.failure }
+    failure.exception.get().message.contains("Overlapping soil layers")
+  }
+
+  def "checkSoilData reports gaps in soil coverage at the same coordinate"() {
+    given:
+    def type = validSoilType()
+    def layer1 = soilLayer(type.uuid, 0d, -2d)
+    def layer2 = soilLayer(type.uuid, -3d, -5d)
+    def soilData = new SoilData([type] as Set, [layer1, layer2] as Set)
+
+    when:
+    def results = GridContainerValidationUtils.checkSoilData(soilData)
+
+    then:
+    def failure = results.find { it.failure }
+    failure.exception.get().message.contains("Gap in soil coverage")
+  }
+
+  def "checkSoilData reports invalid soil types"() {
+    given:
+    def type = validSoilType().copy().id(null).build()
+    def soilData = new SoilData([type] as Set, [] as Set)
+
+    when:
+    def results = GridContainerValidationUtils.checkSoilData(soilData)
+
+    then:
+    def failure = results.find { it.failure }
+    failure.exception.get().message.contains("No ID assigned")
+  }
+
+  def "checkSoilData reports null soil data"() {
+    when:
+    def results = GridContainerValidationUtils.checkSoilData(null)
+
+    then:
+    results.size() == 1
+    results.first().failure
+  }
+
+  private static Geometry soilGeometry() {
+    return new GeometryFactory().createPolygon(
+        ([
+          new Coordinate(0d, 0d),
+          new Coordinate(1d, 0d),
+          new Coordinate(1d, 1d),
+          new Coordinate(0d, 1d),
+          new Coordinate(0d, 0d)
+        ] as Coordinate[]))
+  }
+
+  private static SoilLayer soilLayer(UUID soilType, double zFrom, double zTo) {
+    return new SoilLayer(
+        UUID.randomUUID(),
+        soilGeometry(),
+        Quantities.getQuantity(zFrom, METRE),
+        Quantities.getQuantity(zTo, METRE),
+        soilType)
+  }
+
+  private static SoilType validSoilType() {
+    ComparableQuantity<ThermalResistivity> wet =
+        Quantities.getQuantity(0.30d, KELVIN_METRE_PER_WATT).asType(ThermalResistivity.class)
+    ComparableQuantity<ThermalResistivity> dry =
+        Quantities.getQuantity(0.40d, KELVIN_METRE_PER_WATT).asType(ThermalResistivity.class)
+    ComparableQuantity<ThermalCapacitance> capacity =
+        Quantities.getQuantity(1.5d, JOULE_PER_CUBIC_METRE_KELVIN)
+    ComparableQuantity<Temperature> critical = Quantities.getQuantity(15d, TEMPERATURE)
+    return new SoilType(UUID.randomUUID(), "loam", wet, dry, capacity, critical)
   }
 }

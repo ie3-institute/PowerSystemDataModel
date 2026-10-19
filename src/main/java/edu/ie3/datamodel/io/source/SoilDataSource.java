@@ -51,6 +51,7 @@ public class SoilDataSource extends EntitySource {
 
   @Override
   public void validate() throws ValidationException {
+    validate(dataSource, SoilType.class, SoilLayer.class);
     try {
       SoilValidationUtils.validateAll(getSoilLayers(), getSoilTypes());
     } catch (SourceException e) {
