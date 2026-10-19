@@ -13,6 +13,7 @@ import static tech.units.indriya.unit.Units.METRE
 import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy
 import edu.ie3.datamodel.io.naming.EntityPersistenceNamingStrategy
+import edu.ie3.datamodel.io.source.SoilDataSource
 import edu.ie3.test.helper.TestContainerHelper
 import org.testcontainers.containers.Container
 import org.testcontainers.postgresql.PostgreSQLContainer
@@ -30,7 +31,7 @@ class SqlSoilDataSourceIT extends Specification implements TestContainerHelper {
   SqlConnector connector
 
   @Shared
-  SqlSoilDataSource source
+  SoilDataSource source
 
   def setupSpec() {
     MountableFile sqlImportFile = getMountableFile("_soil/")
@@ -46,8 +47,8 @@ class SqlSoilDataSourceIT extends Specification implements TestContainerHelper {
         postgreSQLContainer.username,
         postgreSQLContainer.password)
     source =
-        new SqlSoilDataSource(
-        connector, "public", new DatabaseNamingStrategy(new EntityPersistenceNamingStrategy()))
+        new SoilDataSource(
+        new SqlDataSource(connector, "public", new DatabaseNamingStrategy(new EntityPersistenceNamingStrategy())))
   }
 
   def cleanupSpec() {

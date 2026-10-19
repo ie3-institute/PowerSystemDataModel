@@ -54,7 +54,7 @@ public class CsvJointGridContainerSource {
     EnergyManagementSource emSource = new EnergyManagementSource(typeSource, dataSource);
     SystemParticipantSource systemParticipantSource =
         new SystemParticipantSource(typeSource, thermalSource, rawGridSource, emSource, dataSource);
-    CsvSoilDataSource soilDataSource = new CsvSoilDataSource(csvSep, directoryPath, namingStrategy);
+    SoilDataSource soilDataSource = new SoilDataSource(dataSource);
 
     /* validating sources */
     try {

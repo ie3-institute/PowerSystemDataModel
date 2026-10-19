@@ -13,7 +13,7 @@ import edu.ie3.datamodel.exceptions.FailedValidationException
 import edu.ie3.datamodel.exceptions.ParsingException
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
-import edu.ie3.datamodel.io.source.csv.CsvSoilDataSource
+import edu.ie3.datamodel.io.source.csv.CsvDataSource
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.Geometry
 import org.locationtech.jts.geom.GeometryFactory
@@ -39,11 +39,15 @@ class SoilDataParserSpec extends Specification {
   @TempDir
   Path tempDir
 
-  def "CsvSoilDataSource reads soil types and layers"() {
+  private SoilDataSource soilSource() {
+    return new SoilDataSource(new CsvDataSource(",", tempDir, new FileNamingStrategy()))
+  }
+
+  def "SoilDataSource with CsvDataSource reads soil types and layers"() {
     given:
     writeSoilTypesFile()
     writeSoilLayersFile()
-    def source = new CsvSoilDataSource(",", tempDir, new FileNamingStrategy())
+    def source = soilSource()
 
     when:
     def types = source.getSoilTypes()
@@ -59,13 +63,13 @@ class SoilDataParserSpec extends Specification {
     Math.abs(layers.first().thickness().to(METRE).value.doubleValue() - 2.0d) < 1e-12
   }
 
-  def "CsvSoilDataSource reports malformed soil rows"() {
+  def "SoilDataSource with CsvDataSource reports malformed soil rows"() {
     given:
     Files.writeString(tempDir.resolve("soil_type.csv"), "uuid,id\ninvalid,bad\n")
     Files.writeString(
         tempDir.resolve("soil_layer.csv"),
         "uuid,geometry,z_from,z_to,soil_type\ninvalid,not-json,0,-1,invalid\n")
-    def source = new CsvSoilDataSource(",", tempDir, new FileNamingStrategy())
+    def source = soilSource()
 
     when:
     source.getSoilTypes()
@@ -78,14 +82,14 @@ class SoilDataParserSpec extends Specification {
     thrown(SourceException)
   }
 
-  def "CsvSoilDataSource reports malformed rows with row context and cause"() {
+  def "SoilDataSource with CsvDataSource reports malformed rows with row context and cause"() {
     given:
     Files.writeString(
         tempDir.resolve("soil_type.csv"),
         "uuid,id,thermal_resistivity_wet,thermal_resistivity_dry,specific_heat_capacity,critical_temperature_difference\n" +
         TYPE_UUID + ",loam,0.3,0.4,0.0015,15\n" +
         TYPE_UUID + ",sand,invalid,0.4,0.0015,15\n")
-    def source = new CsvSoilDataSource(",", tempDir, new FileNamingStrategy())
+    def source = soilSource()
 
     when:
     source.getSoilTypes()
@@ -151,11 +155,11 @@ class SoilDataParserSpec extends Specification {
     soilLayer.geometry.equals(GEOMETRY)
   }
 
-  def "CsvSoilDataSource validates valid soil data"() {
+  def "SoilDataSource with CsvDataSource validates valid soil data"() {
     given:
     writeSoilTypesFile()
     writeSoilLayersFile()
-    def source = new CsvSoilDataSource(",", tempDir, new FileNamingStrategy())
+    def source = soilSource()
 
     when:
     source.validate()
@@ -164,14 +168,14 @@ class SoilDataParserSpec extends Specification {
     noExceptionThrown()
   }
 
-  def "CsvSoilDataSource rejects semantically invalid soil data"() {
+  def "SoilDataSource with CsvDataSource rejects semantically invalid soil data"() {
     given:
     writeSoilLayersFile()
     Files.writeString(
         tempDir.resolve("soil_type.csv"),
         "uuid,id,thermal_resistivity_wet,thermal_resistivity_dry,specific_heat_capacity,critical_temperature_difference\n" +
         TYPE_UUID + ",loam,-0.30,0.40,0.0015,15.0\n")
-    def source = new CsvSoilDataSource(",", tempDir, new FileNamingStrategy())
+    def source = soilSource()
 
     when:
     source.validate()
@@ -181,13 +185,13 @@ class SoilDataParserSpec extends Specification {
     exception.message.contains("positive")
   }
 
-  def "CsvSoilDataSource wraps source read failures during validation"() {
+  def "SoilDataSource with CsvDataSource wraps source read failures during validation"() {
     given:
     writeSoilTypesFile()
     Files.writeString(
         tempDir.resolve("soil_layer.csv"),
         "uuid,geometry,z_from,z_to,soil_type\ninvalid,not-json,0,-1,invalid\n")
-    def source = new CsvSoilDataSource(",", tempDir, new FileNamingStrategy())
+    def source = soilSource()
 
     when:
     source.validate()
