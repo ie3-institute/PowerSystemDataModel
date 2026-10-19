@@ -145,26 +145,7 @@ class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
 
   def "energy scaling uses the transitions and GMMs of the same bucket, as when sampling"() {
     given: "two buckets alternating every quarter-hour, moving to state 0 in bucket 0 and to state 1 in bucket 1"
-    def template = loadModel(deterministicTransitions(), deterministicStates())
-    def transitions = [
-      [[1d, 0d], [1d, 0d]],
-      [[0d, 1d], [0d, 1d]]
-    ] as double[][][]
-    // the GMMs with 0.6 and 0.3 are never reached and would only be used with a wrong bucket or state
-    def gmms = new MarkovLoadModel.GmmBuckets([
-      new MarkovLoadModel.GmmBuckets.GmmBucket([gmm(0.2d), gmm(0.6d)]),
-      new MarkovLoadModel.GmmBuckets.GmmBucket([gmm(0.3d), gmm(0.9d)])
-    ])
-    def model = new MarkovLoadModel(
-        template.schema(),
-        template.generatedAt(),
-        template.generator(),
-        new MarkovLoadModel.TimeModel(2, "quarter_hour", 15, "UTC"),
-        template.valueModel(),
-        template.parameters(),
-        new MarkovLoadModel.TransitionData("float32", "nested_lists", transitions),
-        Optional.of(gmms)
-    )
+    def model = alternatingBucketsModel()
 
     when:
     def energyScaling = model.getProfileEnergyScaling().get()
@@ -208,6 +189,46 @@ class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
     Math.abs(sampledEnergy - energyScaling) / energyScaling < 0.01
   }
 
+  def "expected powers of the following steps start from the given state"() {
+    given: "a chain with stationary distribution [0.25, 0.75]"
+    def model = loadModel(defaultTransitionValues(), deterministicStates())
+
+    when:
+    def expectedPowers = model.getExpectedPowers(ZonedDateTime.parse("2025-01-01T00:00:00Z"), 0, 50)
+        .collect { it.to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() }
+
+    then: "state 0 goes from 1 towards 0.25, the difference shrinks by a factor of 0.1 - 0.3 = -0.2 each step"
+    // after k steps state 0 has 0.25 + 0.75 * (-0.2)^k and the power is 4.2 - 1.6 * that, so 3.8 - 1.2 * (-0.2)^k
+    expectedPowers.size() == 50
+    expectedPowers.indexed().every { step, power ->
+      Math.abs(power - (3.8d - 1.2d * Math.pow(-0.2d, step + 1))) < 1e-9
+    }
+  }
+
+  def "expected powers use the buckets of the following steps"() {
+    given: "two buckets alternating every quarter-hour, moving to state 0 in bucket 0 and to state 1 in bucket 1"
+    def model = alternatingBucketsModel()
+
+    when: "the current step at 00:00 is in bucket 0"
+    def expectedPowers = model.getExpectedPowers(ZonedDateTime.parse("2025-01-01T00:00:00Z"), 0, 2)
+        .collect { it.to(StandardUnits.ACTIVE_POWER_IN).value.doubleValue() }
+
+    then: "the following steps are in bucket 1 with normalized value 0.9 and in bucket 0 with 0.2"
+    Math.abs(expectedPowers[0] - 4.6d) < 1e-9
+    Math.abs(expectedPowers[1] - 1.8d) < 1e-9
+  }
+
+  def "expected powers reject an out-of-bounds state"() {
+    given:
+    def model = loadModel(deterministicTransitions(), deterministicStates())
+
+    when:
+    model.getExpectedPowers(ZonedDateTime.parse("2025-01-01T00:00:00Z"), 2, 1)
+
+    then:
+    thrown(IllegalArgumentException)
+  }
+
   private static double sampleYear(MarkovLoadModel model, long seed) {
     def start = ZonedDateTime.parse("2019-01-01T00:00:00Z")
     def energy = 0d
@@ -220,6 +241,29 @@ class MarkovLoadModelTest extends MarkovModelJsonTestSupport {
       previousState = OptionalInt.of(output.nextState())
     }
     return energy
+  }
+
+  private alternatingBucketsModel() {
+    def template = loadModel(deterministicTransitions(), deterministicStates())
+    def transitions = [
+      [[1d, 0d], [1d, 0d]],
+      [[0d, 1d], [0d, 1d]]
+    ] as double[][][]
+    // the GMMs with 0.6 and 0.3 are never reached and would only be used with a wrong bucket or state
+    def gmms = new MarkovLoadModel.GmmBuckets([
+      new MarkovLoadModel.GmmBuckets.GmmBucket([gmm(0.2d), gmm(0.6d)]),
+      new MarkovLoadModel.GmmBuckets.GmmBucket([gmm(0.3d), gmm(0.9d)])
+    ])
+    return new MarkovLoadModel(
+        template.schema(),
+        template.generatedAt(),
+        template.generator(),
+        new MarkovLoadModel.TimeModel(2, "quarter_hour", 15, "UTC"),
+        template.valueModel(),
+        template.parameters(),
+        new MarkovLoadModel.TransitionData("float32", "nested_lists", transitions),
+        Optional.of(gmms)
+    )
   }
 
   private loadModel(String transitions, String states) {
