@@ -14,6 +14,7 @@ import edu.ie3.datamodel.exceptions.ParsingException
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.csv.CsvDataSource
+import edu.ie3.datamodel.utils.validation.ValidationUtils
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.Geometry
 import org.locationtech.jts.geom.GeometryFactory
@@ -168,24 +169,7 @@ class SoilDataParserSpec extends Specification {
     noExceptionThrown()
   }
 
-  def "SoilDataSource with CsvDataSource rejects semantically invalid soil data"() {
-    given:
-    writeSoilLayersFile()
-    Files.writeString(
-        tempDir.resolve("soil_type.csv"),
-        "uuid,id,thermal_resistivity_wet,thermal_resistivity_dry,specific_heat_capacity,critical_temperature_difference\n" +
-        TYPE_UUID + ",loam,-0.30,0.40,0.0015,15.0\n")
-    def source = soilSource()
-
-    when:
-    source.validate()
-
-    then:
-    def exception = thrown(FailedValidationException)
-    exception.message.contains("positive")
-  }
-
-  def "SoilDataSource with CsvDataSource wraps source read failures during validation"() {
+  def "SoilDataSource with CsvDataSource validates headers"() {
     given:
     writeSoilTypesFile()
     Files.writeString(
@@ -197,8 +181,53 @@ class SoilDataParserSpec extends Specification {
     source.validate()
 
     then:
+    noExceptionThrown()
+  }
+
+  def "SoilDataSource with CsvDataSource rejects missing required headers"() {
+    given:
+    Files.writeString(tempDir.resolve("soil_type.csv"), "uuid,id\n")
+    writeSoilLayersFile()
+    def source = soilSource()
+
+    when:
+    source.validate()
+
+    then:
+    thrown(FailedValidationException)
+  }
+
+  def "ValidationUtils rejects semantically invalid soil types"() {
+    given:
+    Files.writeString(
+        tempDir.resolve("soil_type.csv"),
+        "uuid,id,thermal_resistivity_wet,thermal_resistivity_dry,specific_heat_capacity,critical_temperature_difference\n" +
+        TYPE_UUID + ",loam,-0.30,0.40,0.0015,15.0\n")
+    def soilType = soilSource().getSoilTypes().first()
+
+    when:
+    ValidationUtils.check(soilType)
+
+    then:
     def exception = thrown(FailedValidationException)
-    exception.cause instanceof SourceException
+    exception.message.contains("positive")
+  }
+
+  def "ValidationUtils rejects semantically invalid soil layers"() {
+    given:
+    String escapedGeometry = POLYGON_JSON.replace("\"", "\"\"")
+    Files.writeString(
+        tempDir.resolve("soil_layer.csv"),
+        "uuid,geometry,z_from,z_to,soil_type\n" +
+        LAYER_UUID + ",\"" + escapedGeometry + "\",0.0,0.0," + TYPE_UUID + "\n")
+    def soilLayer = soilSource().getSoilLayers().first()
+
+    when:
+    ValidationUtils.check(soilLayer)
+
+    then:
+    def exception = thrown(FailedValidationException)
+    exception.message.contains("non-positive thickness")
   }
 
   private void writeSoilTypesFile() {
