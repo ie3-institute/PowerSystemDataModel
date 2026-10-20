@@ -15,6 +15,20 @@ import spock.lang.Specification
 
 class EnergyManagementSourceTest extends Specification {
 
+  def "An EnergyManagementSource should not fail if no em data is present"() {
+    given:
+    def emUnits = new HashMap<>()
+    def emFactory = new EmInputFactory(Collections.emptyMap(), emUnits)
+
+    def assetData = []
+
+    when:
+    EnergyManagementSource.createEmsRecursively(assetData, emUnits, emFactory)
+
+    then:
+    emUnits.isEmpty()
+  }
+
   def "An EnergyManagementSource should construct hierarchical EmInputs with two branches as expected"() {
     given:
     def emUnits = new HashMap<>()

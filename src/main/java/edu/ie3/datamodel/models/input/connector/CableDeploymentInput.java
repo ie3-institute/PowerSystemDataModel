@@ -136,7 +136,12 @@ public class CableDeploymentInput extends UniqueInputEntity {
     @Override
     public CableDeploymentInput build() {
       return new CableDeploymentInput(
-          getUuid(), lineUuid, layoutFormation, depthCables, distanceCables, getAdditionalInformation());
+          getUuid(),
+          lineUuid,
+          layoutFormation,
+          depthCables,
+          distanceCables,
+          getAdditionalInformation());
     }
 
     public CableDeploymentInputCopyBuilder lineUuid(UUID lineUuid) {

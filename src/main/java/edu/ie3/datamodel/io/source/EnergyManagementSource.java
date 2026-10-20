@@ -99,15 +99,23 @@ public class EnergyManagementSource extends AssetEntitySource {
           }
         });
 
+    Try.scanStream(currentLevel.stream().map(factory::get), "EmInput", SourceException::new)
+        .getOrThrow()
+        .forEach(
+            em -> {
+              UUID uuid = em.getUuid();
+              if (!emUnits.containsKey(uuid)) {
+                emUnits.put(em.getUuid(), em);
+              } else {
+                exceptions.add(new FactoryException("Duplicate em uuid: " + uuid));
+              }
+            });
+
     if (!exceptions.isEmpty()) {
       // throw all exceptions at once
       throw new SourceException(
           "Could not process em inputs due to: " + ExceptionUtils.combineExceptions(exceptions));
     }
-
-    Try.scanStream(currentLevel.stream().map(factory::get), "EmInput", SourceException::new)
-        .getOrThrow()
-        .forEach(em -> emUnits.put(em.getUuid(), em));
 
     if (currentLevel.isEmpty() && !others.isEmpty()) {
       String errorUuids =
