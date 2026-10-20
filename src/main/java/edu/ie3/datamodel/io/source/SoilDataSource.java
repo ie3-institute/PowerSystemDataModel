@@ -7,9 +7,12 @@ package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.io.factory.input.SoilLayerInputFactory;
+import edu.ie3.datamodel.io.factory.input.SoilTypeInputFactory;
 import edu.ie3.datamodel.models.input.SoilLayer;
 import edu.ie3.datamodel.models.input.SoilType;
-import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Source for soil layers and soil types. It holds the source agnostic reading logic and delegates
@@ -17,6 +20,8 @@ import java.util.List;
  */
 public class SoilDataSource extends EntitySource {
   private final DataSource dataSource;
+  private final SoilTypeInputFactory soilTypeFactory;
+  private final SoilLayerInputFactory soilLayerFactory;
 
   /**
    * Constructor for a soil data source.
@@ -25,26 +30,28 @@ public class SoilDataSource extends EntitySource {
    */
   public SoilDataSource(DataSource dataSource) {
     this.dataSource = dataSource;
+    this.soilTypeFactory = new SoilTypeInputFactory();
+    this.soilLayerFactory = new SoilLayerInputFactory();
   }
 
   /**
    * Reads all soil types from the underlying source.
    *
-   * @return the soil types
+   * @return a map from uuid to soil type
    * @throws SourceException if the source cannot be read
    */
-  public List<SoilType> getSoilTypes() throws SourceException {
-    return SoilDataParser.readSoilTypes(dataSource.getSourceData(SoilType.class));
+  public Map<UUID, SoilType> getSoilTypes() throws SourceException {
+    return getEntities(SoilType.class, dataSource, soilTypeFactory);
   }
 
   /**
    * Reads all soil layers from the underlying source.
    *
-   * @return the soil layers
+   * @return a map from uuid to soil layer
    * @throws SourceException if the source cannot be read
    */
-  public List<SoilLayer> getSoilLayers() throws SourceException {
-    return SoilDataParser.readSoilLayers(dataSource.getSourceData(SoilLayer.class));
+  public Map<UUID, SoilLayer> getSoilLayers() throws SourceException {
+    return getEntities(SoilLayer.class, dataSource, soilLayerFactory);
   }
 
   @Override

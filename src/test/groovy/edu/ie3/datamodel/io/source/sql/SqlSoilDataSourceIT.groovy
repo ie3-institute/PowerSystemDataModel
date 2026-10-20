@@ -62,17 +62,17 @@ class SqlSoilDataSourceIT extends Specification implements TestContainerHelper {
 
     then:
     types.size() == 1
-    types.first().id == "loam"
-    types.first().thermalResistivityWet.to(KELVIN_METRE_PER_WATT).value.doubleValue() == 0.3d
-    types.first().thermalResistivityDry.to(KELVIN_METRE_PER_WATT).value.doubleValue() == 0.4d
-    types.first().specificHeatCapacity.to(KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE).value.doubleValue() == 0.0015d
-    types.first().criticalTemperatureDifference.to(TEMPERATURE).value.doubleValue() == 15.0d
+    types.values().first().id == "loam"
+    types.values().first().thermalResistivityWet.to(KELVIN_METRE_PER_WATT).value.doubleValue() == 0.3d
+    types.values().first().thermalResistivityDry.to(KELVIN_METRE_PER_WATT).value.doubleValue() == 0.4d
+    types.values().first().specificHeatCapacity.to(KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE).value.doubleValue() == 0.0015d
+    types.values().first().criticalTemperatureDifference.to(TEMPERATURE).value.doubleValue() == 15.0d
 
     layers.size() == 1
-    layers.first().geometry.area == 1.0d
-    layers.first().soilType == types.first().uuid
-    layers.first().zFrom.to(METRE).value.doubleValue() == 0.0d
-    layers.first().zTo.to(METRE).value.doubleValue() == -2.0d
-    layers.first().thickness().to(METRE).value.doubleValue() == 2.0d
+    layers.values().first().geometry.area == 1.0d
+    layers.values().first().soilType == types.values().first().uuid
+    layers.values().first().zFrom.to(METRE).value.doubleValue() == 0.0d
+    layers.values().first().zTo.to(METRE).value.doubleValue() == -2.0d
+    layers.values().first().thickness().to(METRE).value.doubleValue() == 2.0d
   }
 }
