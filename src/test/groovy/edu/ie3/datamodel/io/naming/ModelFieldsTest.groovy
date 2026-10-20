@@ -5,9 +5,9 @@
  */
 package edu.ie3.datamodel.io.naming
 
+import edu.ie3.datamodel.models.input.SoilLayer
+import edu.ie3.datamodel.models.input.SoilType
 import edu.ie3.datamodel.models.input.connector.CableDeploymentInput
-import edu.ie3.datamodel.models.input.container.SoilLayer
-import edu.ie3.datamodel.models.input.container.SoilType
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel
 import edu.ie3.datamodel.models.result.thermal.ThermalLineSegmentResult
 import spock.lang.Specification

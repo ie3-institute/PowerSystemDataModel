@@ -5,20 +5,12 @@
  */
 package edu.ie3.datamodel.models.input.grid
 
-import static edu.ie3.datamodel.models.StandardUnits.TEMPERATURE
-import static edu.ie3.util.quantities.PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN
-import static edu.ie3.util.quantities.PowerSystemUnits.KELVIN_METRE_PER_WATT
+
 import static tech.units.indriya.unit.Units.METRE
 
-import edu.ie3.datamodel.models.input.container.SoilLayer
-import edu.ie3.datamodel.models.input.container.SoilType
-import edu.ie3.util.quantities.interfaces.ThermalCapacitance
-import edu.ie3.util.quantities.interfaces.ThermalResistivity
+import edu.ie3.datamodel.models.input.SoilLayer
 import spock.lang.Specification
-import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
-
-import javax.measure.quantity.Temperature
 
 class SoilModelSpec extends Specification {
   static final UUID UUID_VALUE = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")

@@ -8,12 +8,11 @@ package edu.ie3.datamodel.io.source
 import static edu.ie3.util.quantities.PowerSystemUnits.KELVIN_METRE_PER_WATT
 import static tech.units.indriya.unit.Units.METRE
 
-import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.exceptions.FailedValidationException
-import edu.ie3.datamodel.exceptions.ParsingException
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.csv.CsvDataSource
+import edu.ie3.datamodel.utils.validation.ValidationUtils
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.Geometry
 import org.locationtech.jts.geom.GeometryFactory
@@ -23,7 +22,7 @@ import spock.lang.TempDir
 import java.nio.file.Files
 import java.nio.file.Path
 
-class SoilDataParserSpec extends Specification {
+class SoilDataSourceSpec extends Specification {
   static final UUID LAYER_UUID = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")
   static final UUID TYPE_UUID = UUID.fromString("32b43a78-7721-431d-b1c2-56975a123670")
   static final String POLYGON_JSON = '{"type":"Polygon","coordinates":[[[0,0],[1,0],[1,1],[0,1],[0,0]]]}'
@@ -43,7 +42,7 @@ class SoilDataParserSpec extends Specification {
     return new SoilDataSource(new CsvDataSource(",", tempDir, new FileNamingStrategy()))
   }
 
-  def "SoilDataSource with CsvDataSource reads soil types and layers"() {
+  def "SoilDataSource reads soil types and layers"() {
     given:
     writeSoilTypesFile()
     writeSoilLayersFile()
@@ -55,15 +54,14 @@ class SoilDataParserSpec extends Specification {
 
     then:
     types.size() == 1
-    types.first().uuid == TYPE_UUID
-    types.first().id == "loam"
-    Math.abs(types.first().thermalResistivityWet.to(KELVIN_METRE_PER_WATT).value.doubleValue() - 0.30d) < 1e-12
+    types[TYPE_UUID].id == "loam"
+    Math.abs(types[TYPE_UUID].thermalResistivityWet.to(KELVIN_METRE_PER_WATT).value.doubleValue() - 0.30d) < 1e-12
     layers.size() == 1
-    layers.first().geometry.equals(GEOMETRY)
-    Math.abs(layers.first().thickness().to(METRE).value.doubleValue() - 2.0d) < 1e-12
+    layers[LAYER_UUID].geometry.equals(GEOMETRY)
+    Math.abs(layers[LAYER_UUID].thickness().to(METRE).value.doubleValue() - 2.0d) < 1e-12
   }
 
-  def "SoilDataSource with CsvDataSource reports malformed soil rows"() {
+  def "SoilDataSource reports malformed soil rows"() {
     given:
     Files.writeString(tempDir.resolve("soil_type.csv"), "uuid,id\ninvalid,bad\n")
     Files.writeString(
@@ -82,13 +80,12 @@ class SoilDataParserSpec extends Specification {
     thrown(SourceException)
   }
 
-  def "SoilDataSource with CsvDataSource reports malformed rows with row context and cause"() {
+  def "SoilDataSource reports a source error that references the soil type entity"() {
     given:
     Files.writeString(
         tempDir.resolve("soil_type.csv"),
         "uuid,id,thermal_resistivity_wet,thermal_resistivity_dry,specific_heat_capacity,critical_temperature_difference\n" +
-        TYPE_UUID + ",loam,0.3,0.4,0.0015,15\n" +
-        TYPE_UUID + ",sand,invalid,0.4,0.0015,15\n")
+        TYPE_UUID + ",loam,invalid,0.4,0.0015,15\n")
     def source = soilSource()
 
     when:
@@ -96,71 +93,14 @@ class SoilDataParserSpec extends Specification {
 
     then:
     def exception = thrown(SourceException)
-    exception.message.contains("soil types row 2")
-    def parsingException = exception.cause as ParsingException
-    parsingException.message.contains("soil type")
-    parsingException.cause instanceof FactoryException
+    exception.message.contains("SoilType")
   }
 
-  def "parseSoilType includes factory field details and cause for invalid uuid"() {
-    given:
-    def data = new HashMap<>(soilTypeRow())
-    data.put("uuid", "invalid")
-
-    when:
-    SoilDataParser.parseSoilType(data)
-
-    then:
-    def exception = thrown(ParsingException)
-    exception.message.contains("soil type")
-    exception.message.contains("UUID")
-    exception.cause instanceof FactoryException
-  }
-
-  def "parseSoilType rejects blank required text fields"() {
-    given:
-    def data = new HashMap<>(soilTypeRow())
-    data.put("id", "  ")
-
-    when:
-    SoilDataParser.parseSoilType(data)
-
-    then:
-    def exception = thrown(ParsingException)
-    exception.message.contains("Missing or empty field id")
-  }
-
-  def "parseSoilLayer rejects malformed soil polygon geo json"() {
-    given:
-    def data = new HashMap<>(soilLayerRow())
-    data.put("geometry", "not-json")
-
-    when:
-    SoilDataParser.parseSoilLayer(data)
-
-    then:
-    def exception = thrown(ParsingException)
-    exception.message.contains("Unable to parse geometry")
-    exception.cause != null
-  }
-
-  def "parser decodes mapped soil rows"() {
-    when:
-    def soilType = SoilDataParser.parseSoilType(soilTypeRow())
-    def soilLayer = SoilDataParser.parseSoilLayer(soilLayerRow())
-
-    then:
-    soilType.uuid == TYPE_UUID
-    soilLayer.uuid == LAYER_UUID
-    soilLayer.geometry.equals(GEOMETRY)
-  }
-
-  def "SoilDataSource with CsvDataSource validates valid soil data"() {
+  def "SoilDataSource validates valid soil data"() {
     given:
     writeSoilTypesFile()
     writeSoilLayersFile()
     def source = soilSource()
-
     when:
     source.validate()
 
@@ -168,24 +108,7 @@ class SoilDataParserSpec extends Specification {
     noExceptionThrown()
   }
 
-  def "SoilDataSource with CsvDataSource rejects semantically invalid soil data"() {
-    given:
-    writeSoilLayersFile()
-    Files.writeString(
-        tempDir.resolve("soil_type.csv"),
-        "uuid,id,thermal_resistivity_wet,thermal_resistivity_dry,specific_heat_capacity,critical_temperature_difference\n" +
-        TYPE_UUID + ",loam,-0.30,0.40,0.0015,15.0\n")
-    def source = soilSource()
-
-    when:
-    source.validate()
-
-    then:
-    def exception = thrown(FailedValidationException)
-    exception.message.contains("positive")
-  }
-
-  def "SoilDataSource with CsvDataSource wraps source read failures during validation"() {
+  def "SoilDataSource validates headers"() {
     given:
     writeSoilTypesFile()
     Files.writeString(
@@ -197,8 +120,49 @@ class SoilDataParserSpec extends Specification {
     source.validate()
 
     then:
+    noExceptionThrown()
+  }
+
+  def "SoilDataSource rejects missing required headers"() {
+    given:
+    Files.writeString(tempDir.resolve("soil_type.csv"), "uuid,id\n")
+    writeSoilLayersFile()
+    def source = soilSource()
+
+    when:
+    source.validate()
+
+    then:
+    thrown(FailedValidationException)
+  }
+
+  def "ValidationUtils rejects semantically invalid soil types"() {
+    given:
+    Files.writeString(
+        tempDir.resolve("soil_type.csv"),
+        "uuid,id,thermal_resistivity_wet,thermal_resistivity_dry,specific_heat_capacity,critical_temperature_difference\n" +
+        TYPE_UUID + ",loam,-0.30,0.40,0.0015,15.0\n")
+    def soilType = soilSource().getSoilTypes()[TYPE_UUID]
+    when:
+    ValidationUtils.check(soilType)
+    then:
     def exception = thrown(FailedValidationException)
-    exception.cause instanceof SourceException
+    exception.message.contains("positive")
+  }
+
+  def "ValidationUtils rejects semantically invalid soil layers"() {
+    given:
+    String escapedGeometry = POLYGON_JSON.replace("\"", "\"\"")
+    Files.writeString(
+        tempDir.resolve("soil_layer.csv"),
+        "uuid,geometry,z_from,z_to,soil_type\n" +
+        LAYER_UUID + ",\"" + escapedGeometry + "\",0.0,0.0," + TYPE_UUID + "\n")
+    def soilLayer = soilSource().getSoilLayers()[LAYER_UUID]
+    when:
+    ValidationUtils.check(soilLayer)
+    then:
+    def exception = thrown(FailedValidationException)
+    exception.message.contains("non-positive thickness")
   }
 
   private void writeSoilTypesFile() {
@@ -214,26 +178,5 @@ class SoilDataParserSpec extends Specification {
         tempDir.resolve("soil_layer.csv"),
         "uuid,geometry,z_from,z_to,soil_type\n" +
         LAYER_UUID + ",\"" + escapedGeometry + "\",0.0,-2.0," + TYPE_UUID + "\n")
-  }
-
-  private static Map<String, String> soilTypeRow() {
-    [
-      uuid                          : TYPE_UUID.toString(),
-      id                            : "loam",
-      thermalResistivityWet         : "0.3",
-      thermalResistivityDry         : "0.4",
-      specificHeatCapacity          : "0.0015",
-      criticalTemperatureDifference : "15"
-    ]
-  }
-
-  private static Map<String, String> soilLayerRow() {
-    [
-      uuid    : LAYER_UUID.toString(),
-      geometry: POLYGON_JSON,
-      zFrom   : "0",
-      zTo     : "-2",
-      soilType: TYPE_UUID.toString()
-    ]
   }
 }

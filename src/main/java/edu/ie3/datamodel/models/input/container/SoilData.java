@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.models.input.container;
 
+import edu.ie3.datamodel.models.input.SoilLayer;
+import edu.ie3.datamodel.models.input.SoilType;
 import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import java.util.*;
 

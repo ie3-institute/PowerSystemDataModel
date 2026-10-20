@@ -10,12 +10,12 @@ import static edu.ie3.util.quantities.PowerSystemUnits.KELVIN_METRE_PER_WATT
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE
 import static tech.units.indriya.unit.Units.METRE
 
+import edu.ie3.datamodel.models.input.SoilLayer
+import edu.ie3.datamodel.models.input.SoilType
 import edu.ie3.datamodel.models.input.container.EnergyManagementUnits
 import edu.ie3.datamodel.models.input.container.JointGridContainer
 import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.datamodel.models.input.container.SoilData
-import edu.ie3.datamodel.models.input.container.SoilLayer
-import edu.ie3.datamodel.models.input.container.SoilType
 import edu.ie3.datamodel.models.input.container.SystemParticipants
 import edu.ie3.util.quantities.interfaces.ThermalCapacitance
 import edu.ie3.util.quantities.interfaces.ThermalResistivity

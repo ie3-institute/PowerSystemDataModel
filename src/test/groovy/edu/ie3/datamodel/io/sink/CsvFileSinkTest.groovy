@@ -21,14 +21,14 @@ import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.SoilLayer
+import edu.ie3.datamodel.models.input.SoilType
 import edu.ie3.datamodel.models.input.connector.LineInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
 import edu.ie3.datamodel.models.input.connector.type.CableTypeInput
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
 import edu.ie3.datamodel.models.input.container.SoilData
-import edu.ie3.datamodel.models.input.container.SoilLayer
-import edu.ie3.datamodel.models.input.container.SoilType
 import edu.ie3.datamodel.models.input.system.EvcsInput
 import edu.ie3.datamodel.models.input.system.LoadInput
 import edu.ie3.datamodel.models.input.system.PvInput
