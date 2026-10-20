@@ -3,11 +3,10 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
-package edu.ie3.datamodel.models.input.container;
+package edu.ie3.datamodel.models.input;
 
 import static edu.ie3.util.quantities.PowerSystemUnits.METRE;
 
-import edu.ie3.datamodel.models.input.UniqueInputEntity;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;

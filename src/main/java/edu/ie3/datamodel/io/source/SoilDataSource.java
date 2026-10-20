@@ -5,12 +5,10 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
-import edu.ie3.datamodel.models.input.container.SoilLayer;
-import edu.ie3.datamodel.models.input.container.SoilType;
-import edu.ie3.datamodel.utils.validation.SoilValidationUtils;
+import edu.ie3.datamodel.models.input.SoilLayer;
+import edu.ie3.datamodel.models.input.SoilType;
 import java.util.List;
 
 /**

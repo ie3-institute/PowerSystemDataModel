@@ -12,11 +12,11 @@ import static tech.units.indriya.unit.Units.METRE
 
 import edu.ie3.datamodel.exceptions.InvalidGridException
 import edu.ie3.datamodel.models.OperationTime
+import edu.ie3.datamodel.models.input.SoilLayer
+import edu.ie3.datamodel.models.input.SoilType
 import edu.ie3.datamodel.models.input.connector.CableDeploymentInput
 import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.datamodel.models.input.container.SoilData
-import edu.ie3.datamodel.models.input.container.SoilLayer
-import edu.ie3.datamodel.models.input.container.SoilType
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData as GTD
 import edu.ie3.util.quantities.interfaces.ThermalCapacitance
