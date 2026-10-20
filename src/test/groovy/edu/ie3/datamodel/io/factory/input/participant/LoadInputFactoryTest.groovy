@@ -4,10 +4,11 @@
  * Research group Distribution grid planning and operation
  */
 package edu.ie3.datamodel.io.factory.input.participant
-
+import static edu.ie3.test.helper.EntityMap.*
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.EmInput
@@ -67,7 +68,7 @@ class LoadInputFactoryTest extends Specification implements FactoryTestHelper {
       "node": nodeUuid.toString(),
       "controllingEm": emUuid.toString()
     ]
-    Try<LoadInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<LoadInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success

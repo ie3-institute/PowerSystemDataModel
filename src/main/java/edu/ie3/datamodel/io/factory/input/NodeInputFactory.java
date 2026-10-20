@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -24,19 +25,24 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput> {
 
   @Override
   protected NodeInput buildModel(
-      Map<String, String> data,
-      UUID uuid,
-      String id,
-      OperatorInput operator,
-      OperationTime operationTime) {
+      FieldMap data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
     ComparableQuantity<Dimensionless> vTarget =
-        getQuantity(data, V_TARGET, StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
-    boolean slack = getBoolean(data, SLACK);
-    Point geoPosition = getPoint(data, GEO_POSITION).orElse(NodeInput.DEFAULT_GEO_POSITION);
-    VoltageLevel voltLvl = getVoltageLvl(data, VOLT_LVL, V_RATED);
-    int subnet = getInt(data, SUBNET);
+        data.getQuantity(V_TARGET, StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
+    boolean slack = data.getBoolean(SLACK);
+    Point geoPosition = data.getPoint(GEO_POSITION).orElse(NodeInput.DEFAULT_GEO_POSITION);
+    VoltageLevel voltLvl = data.getVoltageLvl(VOLT_LVL, V_RATED);
+    int subnet = data.getInt(SUBNET);
 
     return new NodeInput(
-        uuid, id, operator, operationTime, vTarget, slack, geoPosition, voltLvl, subnet, data);
+        uuid,
+        id,
+        operator,
+        operationTime,
+        vTarget,
+        slack,
+        geoPosition,
+        voltLvl,
+        subnet,
+        data.additionalInformation());
   }
 }

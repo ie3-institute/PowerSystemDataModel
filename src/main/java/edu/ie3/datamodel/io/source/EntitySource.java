@@ -10,6 +10,7 @@ import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
 import edu.ie3.datamodel.io.factory.EntityFactory;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.source.csv.CsvDataSource;
 import edu.ie3.datamodel.models.Entity;
@@ -197,22 +198,8 @@ public abstract class EntitySource {
   protected static <E extends Entity, R extends E> Stream<R> getEntities(
       Class<R> entityClass, DataSource dataSource, EntityFactory<E, R> factory)
       throws SourceException {
-    return unpack(read(entityClass, dataSource).map(factory::get), entityClass);
-  }
-
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-  /**
-   * Method for reading in data.
-   *
-   * @param entityClass class of the entity
-   * @param dataSource source for the entity
-   * @return a stream of fieldsToAttributes maps
-   * @throws SourceException - if an error happen during reading
-   */
-  protected static Stream<Try<Map<String, String>, SourceException>> read(
-      Class<? extends Entity> entityClass, DataSource dataSource) throws SourceException {
-    return dataSource.getSourceData(entityClass).map(Try.Success::new);
+    return unpack(
+        dataSource.getSourceData(entityClass).map(d -> factory.get(new FieldMap(d))), entityClass);
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

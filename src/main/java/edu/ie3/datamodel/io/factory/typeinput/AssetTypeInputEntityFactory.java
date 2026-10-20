@@ -5,9 +5,9 @@
 */
 package edu.ie3.datamodel.io.factory.typeinput;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.UniqueEntityFactory;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -23,11 +23,11 @@ abstract class AssetTypeInputEntityFactory<T extends AssetTypeInput, R extends T
     super(allowedClasses);
   }
 
-  protected UUID getUUID(Map<String, String> data) {
-    return getUUID(data, UUID);
+  protected UUID getUUID(FieldMap data) {
+    return data.getUUID(UUID_FIELD);
   }
 
-  protected String getID(Map<String, String> data) {
-    return getField(data, ID);
+  protected String getID(FieldMap data) {
+    return data.getField(ID);
   }
 }

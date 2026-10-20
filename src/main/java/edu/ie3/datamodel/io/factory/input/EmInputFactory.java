@@ -5,10 +5,12 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import java.util.*;
+import java.util.Map;
+import java.util.UUID;
 
 public class EmInputFactory extends AssetInputEntityFactory<EmInput> {
 
@@ -21,14 +23,11 @@ public class EmInputFactory extends AssetInputEntityFactory<EmInput> {
 
   @Override
   protected EmInput buildModel(
-      Map<String, String> data,
-      UUID uuid,
-      String id,
-      OperatorInput operator,
-      OperationTime operationTime) {
-    String controlStrategy = getField(data, CONTROL_STRATEGY);
-    EmInput parentEm = getEntity(data, CONTROLLING_EM, emUnits, null);
+      FieldMap data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
+    String controlStrategy = data.getField(CONTROL_STRATEGY);
+    EmInput parentEm = data.getEntity(CONTROLLING_EM, emUnits, null);
 
-    return new EmInput(uuid, id, operator, operationTime, controlStrategy, parentEm, data);
+    return new EmInput(
+        uuid, id, operator, operationTime, controlStrategy, parentEm, data.additionalInformation());
   }
 }

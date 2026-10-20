@@ -5,7 +5,10 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
+import static edu.ie3.test.helper.EntityMap.*
+
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput
@@ -59,7 +62,7 @@ class Transformer3WInputFactoryTest extends Specification implements FactoryTest
     ]
 
     when:
-    Try<Transformer3WInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<Transformer3WInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success
@@ -94,7 +97,7 @@ class Transformer3WInputFactoryTest extends Specification implements FactoryTest
     ]
 
     when:
-    Try<Transformer3WInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<Transformer3WInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.failure

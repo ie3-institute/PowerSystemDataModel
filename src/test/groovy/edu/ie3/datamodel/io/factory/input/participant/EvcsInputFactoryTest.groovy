@@ -5,7 +5,10 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import static edu.ie3.test.helper.EntityMap.*
+
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -73,7 +76,7 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
     ]
 
     when:
-    Try<EvcsInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<EvcsInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success
@@ -124,7 +127,7 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
     ]
 
     when:
-    Try<EvcsInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<EvcsInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.failure
@@ -150,7 +153,7 @@ class EvcsInputFactoryTest extends Specification implements FactoryTestHelper {
     ]
 
     when:
-    Try<EvcsInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<EvcsInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.failure

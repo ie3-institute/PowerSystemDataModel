@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.UniqueEntityFactory;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
@@ -38,11 +39,11 @@ public abstract class AssetInputEntityFactory<T extends AssetInput>
   }
 
   @Override
-  protected T buildModel(Map<String, String> data) {
-    UUID uuid = getUUID(data, UUID);
-    String id = getField(data, ID);
+  protected T buildModel(FieldMap data) {
+    UUID uuid = data.getUUID(UUID_FIELD);
+    String id = data.getField(ID);
     OperatorInput operator =
-        getEntity(data, OPERATOR, operators, OperatorInput.NO_OPERATOR_ASSIGNED);
+        data.getEntity(OPERATOR, operators, OperatorInput.NO_OPERATOR_ASSIGNED);
     OperationTime operationTime = buildOperationTime(data);
 
     return buildModel(data, uuid, id, operator, operationTime);
@@ -51,7 +52,7 @@ public abstract class AssetInputEntityFactory<T extends AssetInput>
   /**
    * Creates asset input entity with given parameters
    *
-   * @param data entity data
+   * @param data field data
    * @param uuid UUID of the input entity
    * @param id ID
    * @param operator Operator of the asset
@@ -59,22 +60,18 @@ public abstract class AssetInputEntityFactory<T extends AssetInput>
    * @return newly created asset object
    */
   protected abstract T buildModel(
-      Map<String, String> data,
-      UUID uuid,
-      String id,
-      OperatorInput operator,
-      OperationTime operationTime);
+      FieldMap data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime);
 
   /**
    * Creates an {@link OperationTime} from the entity data from attributes OPERATES_FROM and
    * OPERATES_UNTIL. Both or one of these can be empty or non-existing.
    *
-   * @param data entity data to take the dates from
+   * @param data field data to take the dates from
    * @return Operation time object
    */
-  private OperationTime buildOperationTime(Map<String, String> data) {
-    final String from = getFieldOptional(data, OPERATES_FROM).orElse(null);
-    final String until = getFieldOptional(data, OPERATES_UNTIL).orElse(null);
+  private OperationTime buildOperationTime(FieldMap data) {
+    final String from = data.getFieldOptional(OPERATES_FROM).orElse(null);
+    final String until = data.getFieldOptional(OPERATES_UNTIL).orElse(null);
 
     OperationTime.OperationTimeBuilder builder = new OperationTime.OperationTimeBuilder();
     if (from != null && !from.trim().isEmpty()) builder.withStart(ZonedDateTime.parse(from));

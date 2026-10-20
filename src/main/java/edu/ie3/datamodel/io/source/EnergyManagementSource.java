@@ -6,10 +6,12 @@
 package edu.ie3.datamodel.io.source;
 
 import static edu.ie3.datamodel.io.factory.input.EmInputFactory.CONTROLLING_EM;
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.UUID_FIELD;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.input.EmInputFactory;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -64,26 +66,24 @@ public class EnergyManagementSource extends AssetEntitySource {
   public Map<UUID, EmInput> getEmUnits(Map<UUID, OperatorInput> operators) throws SourceException {
     Map<UUID, EmInput> allEms = new HashMap<>();
     EmInputFactory factory = new EmInputFactory(operators, allEms);
-    createEmsRecursively(dataSource.getSourceData(EmInput.class).toList(), allEms, factory);
+    createEmsRecursively(
+        dataSource.getSourceData(EmInput.class).map(FieldMap::new).toList(), allEms, factory);
     return allEms;
   }
 
   private static void createEmsRecursively(
-      List<Map<String, String>> rawData, Map<UUID, EmInput> emUnits, EmInputFactory factory)
+      List<FieldMap> rawData, Map<UUID, EmInput> emUnits, EmInputFactory factory)
       throws SourceException {
     List<FactoryException> exceptions = new ArrayList<>();
 
-    List<Map<String, String>> currentLevel = new ArrayList<>();
-    List<Map<String, String>> others = new ArrayList<>();
+    List<FieldMap> currentLevel = new ArrayList<>();
+    List<FieldMap> others = new ArrayList<>();
 
     rawData.forEach(
         t -> {
           try {
-            if (!factory.isFieldBlank(t, CONTROLLING_EM)) {
-              UUID controllingEm = factory.getUUID(t, CONTROLLING_EM);
-
-              // we have to re-add the field to the map to prevent issues
-              t.put(CONTROLLING_EM, controllingEm.toString());
+            if (!t.isFieldBlank(CONTROLLING_EM)) {
+              UUID controllingEm = t.viewUUID(CONTROLLING_EM);
 
               if (emUnits.containsKey(controllingEm)) {
                 currentLevel.add(t);
@@ -109,9 +109,13 @@ public class EnergyManagementSource extends AssetEntitySource {
         .getOrThrow()
         .forEach(em -> emUnits.put(em.getUuid(), em));
 
-    if (currentLevel.isEmpty()) {
+    if (currentLevel.isEmpty() && !others.isEmpty()) {
+      String errorUuids =
+          String.join(",", others.stream().map(d -> d.viewUUID(UUID_FIELD).toString()).toList());
+
       throw new SourceException(
-          "There are em inputs, where controlling ems are assigned that don't exist.");
+          "There are em inputs, where controlling ems are assigned that don't exist. These are: "
+              + errorUuids);
     }
 
     if (!others.isEmpty()) {

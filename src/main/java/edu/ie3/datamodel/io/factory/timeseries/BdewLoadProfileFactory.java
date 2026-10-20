@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.factory.timeseries;
 import static edu.ie3.datamodel.models.profile.BdewStandardLoadProfile.*;
 import static tech.units.indriya.unit.Units.WATT;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.BdewLoadProfileTimeSeries;
@@ -17,7 +18,6 @@ import edu.ie3.datamodel.models.value.load.BdewLoadValues.BdewKey;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues.BdewScheme;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import java.util.Comparator;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import javax.measure.quantity.Energy;
@@ -39,8 +39,8 @@ public class BdewLoadProfileFactory extends LoadProfileFactory<BdewLoadValues> {
   }
 
   @Override
-  protected LoadProfileEntry<BdewLoadValues> buildModel(Map<String, String> data) {
-    int quarterHour = getInt(data, QUARTER_HOUR);
+  protected LoadProfileEntry<BdewLoadValues> buildModel(FieldMap data) {
+    int quarterHour = data.getInt(QUARTER_HOUR);
 
     boolean is1999Scheme =
         data.containsKey("SuSa") || data.containsKey("su_sa") || data.containsKey("suSa");
@@ -48,12 +48,10 @@ public class BdewLoadProfileFactory extends LoadProfileFactory<BdewLoadValues> {
     BdewLoadValues values;
 
     if (is1999Scheme) {
-      values =
-          new BdewLoadValues(BdewScheme.BDEW1999, BDEW1999_FIELDS.map(d -> getDouble(data, d)));
+      values = new BdewLoadValues(BdewScheme.BDEW1999, BDEW1999_FIELDS.map(data::getDouble));
 
     } else {
-      values =
-          new BdewLoadValues(BdewScheme.BDEW2025, BDEW2025_FIELDS.map(d -> getDouble(data, d)));
+      values = new BdewLoadValues(BdewScheme.BDEW2025, BDEW2025_FIELDS.map(data::getDouble));
     }
 
     return new LoadProfileEntry<>(values, quarterHour);

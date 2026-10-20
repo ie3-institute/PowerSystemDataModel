@@ -5,7 +5,10 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
+import static edu.ie3.test.helper.EntityMap.*
+
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.input.connector.CableDeploymentInput
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
@@ -34,7 +37,7 @@ class CableDeploymentInputFactoryTest extends Specification implements FactoryTe
     ]
 
     when:
-    Try<CableDeploymentInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<CableDeploymentInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success
@@ -59,7 +62,7 @@ class CableDeploymentInputFactoryTest extends Specification implements FactoryTe
     ]
 
     when:
-    Try<CableDeploymentInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<CableDeploymentInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.failure
@@ -78,7 +81,7 @@ class CableDeploymentInputFactoryTest extends Specification implements FactoryTe
     ]
 
     when:
-    Try<CableDeploymentInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<CableDeploymentInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.failure

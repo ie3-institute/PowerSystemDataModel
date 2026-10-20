@@ -5,10 +5,10 @@
 */
 package edu.ie3.datamodel.io.factory.result;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.NodeResult;
 import java.time.ZonedDateTime;
-import java.util.Map;
 import java.util.UUID;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
@@ -21,10 +21,10 @@ public class NodeResultFactory extends ResultEntityFactory<NodeResult, NodeResul
   }
 
   @Override
-  protected NodeResult buildModel(Map<String, String> data, ZonedDateTime time, UUID inputModel) {
+  protected NodeResult buildModel(FieldMap data, ZonedDateTime time, UUID inputModel) {
     ComparableQuantity<Dimensionless> vMagValue =
-        getQuantity(data, V_MAG, StandardUnits.VOLTAGE_MAGNITUDE);
-    ComparableQuantity<Angle> vAngValue = getQuantity(data, V_ANG, StandardUnits.VOLTAGE_ANGLE);
+        data.getQuantity(V_MAG, StandardUnits.VOLTAGE_MAGNITUDE);
+    ComparableQuantity<Angle> vAngValue = data.getQuantity(V_ANG, StandardUnits.VOLTAGE_ANGLE);
 
     return new NodeResult(time, inputModel, vMagValue, vAngValue);
   }

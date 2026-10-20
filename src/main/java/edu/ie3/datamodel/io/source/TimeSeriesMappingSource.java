@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
@@ -39,7 +40,9 @@ public abstract class TimeSeriesMappingSource extends EntitySource {
    */
   public Map<UUID, UUID> getMapping() throws SourceException {
     return Try.scanStream(
-            getMappingSourceData().map(mappingFactory::get), "MappingEntry", SourceException::new)
+            getMappingSourceData().map(d -> mappingFactory.get(new FieldMap(d))),
+            "MappingEntry",
+            SourceException::new)
         .transformS(
             s -> s.collect(Collectors.toMap(MappingEntry::getAsset, MappingEntry::getTimeSeries)))
         .getOrThrow();

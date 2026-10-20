@@ -5,10 +5,10 @@
 */
 package edu.ie3.datamodel.io.factory.result;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.system.PowerLimitFlexOptionsResult;
 import java.time.ZonedDateTime;
-import java.util.Map;
 import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -22,10 +22,10 @@ public class PowerLimitFlexOptionsResultFactory
 
   @Override
   protected PowerLimitFlexOptionsResult buildModel(
-      Map<String, String> data, ZonedDateTime time, UUID inputModel) {
-    ComparableQuantity<Power> pRef = getQuantity(data, P_REF, StandardUnits.ACTIVE_POWER_RESULT);
-    ComparableQuantity<Power> pMin = getQuantity(data, P_MIN, StandardUnits.ACTIVE_POWER_RESULT);
-    ComparableQuantity<Power> pMax = getQuantity(data, P_MAX, StandardUnits.ACTIVE_POWER_RESULT);
+      FieldMap data, ZonedDateTime time, UUID inputModel) {
+    ComparableQuantity<Power> pRef = data.getQuantity(P_REF, StandardUnits.ACTIVE_POWER_RESULT);
+    ComparableQuantity<Power> pMin = data.getQuantity(P_MIN, StandardUnits.ACTIVE_POWER_RESULT);
+    ComparableQuantity<Power> pMax = data.getQuantity(P_MAX, StandardUnits.ACTIVE_POWER_RESULT);
 
     return new PowerLimitFlexOptionsResult(time, inputModel, pRef, pMin, pMax);
   }

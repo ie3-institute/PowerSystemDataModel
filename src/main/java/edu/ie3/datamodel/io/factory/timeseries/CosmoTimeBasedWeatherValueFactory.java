@@ -5,13 +5,13 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.WeatherValue;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.time.ZonedDateTime;
-import java.util.Map;
 import java.util.Optional;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
@@ -33,25 +33,25 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
   @Override
   protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData tbd) {
     Point coordinate = tbd.getCoordinate();
-    Map<String, String> data = tbd.getFieldsToAttributes();
+    FieldMap data = tbd.getFieldsToAttributes();
 
-    ZonedDateTime time = timeUtil.toZonedDateTime(getField(data, TIME));
+    ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
     ComparableQuantity<Irradiance> directIrradiance =
-        getQuantity(data, COSMO_DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
+        data.getQuantity(COSMO_DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
     ComparableQuantity<Irradiance> diffuseIrradiance =
-        getQuantity(data, COSMO_DIFFUSE_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
+        data.getQuantity(COSMO_DIFFUSE_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE);
     ComparableQuantity<Temperature> temperature =
-        getQuantity(data, COSMO_TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE);
+        data.getQuantity(COSMO_TEMPERATURE, Units.KELVIN, StandardUnits.TEMPERATURE);
     ComparableQuantity<Angle> windDirection =
-        getQuantity(data, COSMO_WIND_DIRECTION, StandardUnits.WIND_DIRECTION);
+        data.getQuantity(COSMO_WIND_DIRECTION, StandardUnits.WIND_DIRECTION);
     ComparableQuantity<Speed> windVelocity =
-        getQuantity(data, COSMO_WIND_VELOCITY, StandardUnits.WIND_VELOCITY);
+        data.getQuantity(COSMO_WIND_VELOCITY, StandardUnits.WIND_VELOCITY);
     Optional<ComparableQuantity<Temperature>> groundTemperatureLevel1 =
-        getQuantityOptional(data, COSMO_GROUND_TEMPERATURE_LEVEL_1, Units.KELVIN)
-            .map(quantity -> quantity.to(StandardUnits.TEMPERATURE));
+        data.getQuantityOptional(
+            COSMO_GROUND_TEMPERATURE_LEVEL_1, Units.KELVIN, StandardUnits.TEMPERATURE);
     Optional<ComparableQuantity<Temperature>> groundTemperatureLevel2 =
-        getQuantityOptional(data, COSMO_GROUND_TEMPERATURE_LEVEL_2, Units.KELVIN)
-            .map(quantity -> quantity.to(StandardUnits.TEMPERATURE));
+        data.getQuantityOptional(
+            COSMO_GROUND_TEMPERATURE_LEVEL_2, Units.KELVIN, StandardUnits.TEMPERATURE);
     WeatherValue weatherValue =
         new WeatherValue(
             coordinate,

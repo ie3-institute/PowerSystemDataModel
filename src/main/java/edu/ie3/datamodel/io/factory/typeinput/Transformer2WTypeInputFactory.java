@@ -5,9 +5,9 @@
 */
 package edu.ie3.datamodel.io.factory.typeinput;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
-import java.util.Map;
 import javax.measure.quantity.*;
 import tech.units.indriya.ComparableQuantity;
 
@@ -19,22 +19,22 @@ public class Transformer2WTypeInputFactory
   }
 
   @Override
-  protected Transformer2WTypeInput buildModel(Map<String, String> data) {
-    ComparableQuantity<ElectricResistance> rSc = getQuantity(data, R_SC, StandardUnits.RESISTANCE);
-    ComparableQuantity<ElectricResistance> xSc = getQuantity(data, X_SC, StandardUnits.REACTANCE);
-    ComparableQuantity<Power> sRated = getQuantity(data, S_RATED, StandardUnits.S_RATED);
+  protected Transformer2WTypeInput buildModel(FieldMap data) {
+    ComparableQuantity<ElectricResistance> rSc = data.getQuantity(R_SC, StandardUnits.RESISTANCE);
+    ComparableQuantity<ElectricResistance> xSc = data.getQuantity(X_SC, StandardUnits.REACTANCE);
+    ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
     ComparableQuantity<ElectricPotential> vRatedA =
-        getQuantity(data, V_RATED_A, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+        data.getQuantity(V_RATED_A, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
     ComparableQuantity<ElectricPotential> vRatedB =
-        getQuantity(data, V_RATED_B, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
-    ComparableQuantity<ElectricConductance> gM = getQuantity(data, G_M, StandardUnits.CONDUCTANCE);
-    ComparableQuantity<ElectricConductance> bM = getQuantity(data, B_M, StandardUnits.SUSCEPTANCE);
-    ComparableQuantity<Dimensionless> dV = getQuantity(data, D_V, StandardUnits.DV_TAP);
-    ComparableQuantity<Angle> dPhi = getQuantity(data, D_PHI, StandardUnits.DPHI_TAP);
-    boolean tapSide = getBoolean(data, TAP_SIDE);
-    int tapNeutr = getInt(data, TAP_NEUTR);
-    int tapMin = getInt(data, TAP_MIN);
-    int tapMax = getInt(data, TAP_MAX);
+        data.getQuantity(V_RATED_B, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+    ComparableQuantity<ElectricConductance> gM = data.getQuantity(G_M, StandardUnits.CONDUCTANCE);
+    ComparableQuantity<ElectricConductance> bM = data.getQuantity(B_M, StandardUnits.SUSCEPTANCE);
+    ComparableQuantity<Dimensionless> dV = data.getQuantity(D_V, StandardUnits.DV_TAP);
+    ComparableQuantity<Angle> dPhi = data.getQuantity(D_PHI, StandardUnits.DPHI_TAP);
+    boolean tapSide = data.getBoolean(TAP_SIDE);
+    int tapNeutr = data.getInt(TAP_NEUTR);
+    int tapMin = data.getInt(TAP_MIN);
+    int tapMax = data.getInt(TAP_MAX);
 
     return new Transformer2WTypeInput(
         getUUID(data),
@@ -52,6 +52,6 @@ public class Transformer2WTypeInputFactory
         tapNeutr,
         tapMin,
         tapMax,
-        data);
+        data.additionalInformation());
   }
 }

@@ -6,8 +6,8 @@
 package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.io.factory.EntityFactory;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource.MappingEntry;
-import java.util.Map;
 import java.util.UUID;
 
 public class TimeSeriesMappingFactory extends EntityFactory<MappingEntry, MappingEntry> {
@@ -17,9 +17,9 @@ public class TimeSeriesMappingFactory extends EntityFactory<MappingEntry, Mappin
   }
 
   @Override
-  protected MappingEntry buildModel(Map<String, String> data) {
-    UUID asset = getUUID(data, ASSET);
-    UUID timeSeries = getUUID(data, TIME_SERIES);
+  protected MappingEntry buildModel(FieldMap data) {
+    UUID asset = data.getUUID(ASSET);
+    UUID timeSeries = data.getUUID(TIME_SERIES);
     return new MappingEntry(asset, timeSeries);
   }
 }

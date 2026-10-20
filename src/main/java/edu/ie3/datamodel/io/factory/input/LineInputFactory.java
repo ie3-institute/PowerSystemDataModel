@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.factory.input;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -35,23 +36,23 @@ public class LineInputFactory extends ConnectorInputEntityFactory<LineInput> {
 
   @Override
   protected LineInput buildModel(
-      Map<String, String> data,
+      FieldMap data,
       UUID uuid,
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
       OperatorInput operator,
       OperationTime operationTime) {
-    int parallelDevices = getInt(data, PARALLEL_DEVICES);
-    LineTypeInput type = getType(data, types);
-    ComparableQuantity<Length> length = getQuantity(data, LENGTH, StandardUnits.LINE_LENGTH);
+    int parallelDevices = data.getInt(PARALLEL_DEVICES);
+    LineTypeInput type = data.getType(types);
+    ComparableQuantity<Length> length = data.getQuantity(LENGTH, StandardUnits.LINE_LENGTH);
     LineString geoPosition =
-        getLineString(data, GEO_POSITION)
+        data.getLineString(GEO_POSITION)
             .orElse(GridAndGeoUtils.buildSafeLineStringBetweenNodes(nodeA, nodeB));
     OlmCharacteristicInput olmCharacteristic;
 
-    if (!isFieldEmpty(data, OLM_CHARACTERISTIC)) {
-      String value = getField(data, OLM_CHARACTERISTIC);
+    if (!data.isFieldEmpty(OLM_CHARACTERISTIC)) {
+      String value = data.getField(OLM_CHARACTERISTIC);
 
       try {
         olmCharacteristic = new OlmCharacteristicInput(value);
@@ -77,6 +78,6 @@ public class LineInputFactory extends ConnectorInputEntityFactory<LineInput> {
         length,
         geoPosition,
         olmCharacteristic,
-        data);
+        data.additionalInformation());
   }
 }

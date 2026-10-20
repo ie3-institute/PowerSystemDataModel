@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -24,17 +25,13 @@ public class MeasurementUnitInputFactory extends AssetInputEntityFactory<Measure
 
   @Override
   protected MeasurementUnitInput buildModel(
-      Map<String, String> data,
-      UUID uuid,
-      String id,
-      OperatorInput operator,
-      OperationTime operationTime) {
-    NodeInput node = getEntity(data, NODE, nodes);
-    boolean vMag = getBoolean(data, V_MAG);
-    boolean vAng = getBoolean(data, V_ANG);
-    boolean p = getBoolean(data, P);
-    boolean q = getBoolean(data, Q);
+      FieldMap data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
+    NodeInput node = data.getEntity(NODE, nodes);
+    boolean vMag = data.getBoolean(V_MAG);
+    boolean vAng = data.getBoolean(V_ANG);
+    boolean p = data.getBoolean(P);
+    boolean q = data.getBoolean(Q);
     return new MeasurementUnitInput(
-        uuid, id, operator, operationTime, node, vMag, vAng, p, q, data);
+        uuid, id, operator, operationTime, node, vMag, vAng, p, q, data.additionalInformation());
   }
 }

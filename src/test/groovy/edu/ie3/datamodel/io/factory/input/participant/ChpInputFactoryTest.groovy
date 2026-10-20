@@ -5,9 +5,11 @@
  */
 package edu.ie3.datamodel.io.factory.input.participant
 
+import static edu.ie3.test.helper.EntityMap.*
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -78,7 +80,7 @@ class ChpInputFactoryTest extends Specification implements FactoryTestHelper {
     ]
 
     when:
-    Try<ChpInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<ChpInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success

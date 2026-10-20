@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.exceptions.ValidationException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.system.PowerLimitFlexOptionsResult
@@ -38,7 +39,7 @@ class PowerLimitFlexOptionsResultFactoryTest extends Specification implements Fa
     ]
 
     when:
-    Try<? extends PowerLimitFlexOptionsResult, FactoryException> result = resultFactory.get(new HashMap<>(parameter))
+    Try<? extends PowerLimitFlexOptionsResult, FactoryException> result = resultFactory.get(new FieldMap(parameter))
 
     then:
     result.success

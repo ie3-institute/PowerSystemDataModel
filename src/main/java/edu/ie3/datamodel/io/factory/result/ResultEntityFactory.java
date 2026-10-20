@@ -6,10 +6,10 @@
 package edu.ie3.datamodel.io.factory.result;
 
 import edu.ie3.datamodel.io.factory.EntityFactory;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.result.ResultEntity;
 import edu.ie3.util.TimeUtil;
 import java.time.ZonedDateTime;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -28,10 +28,10 @@ public abstract class ResultEntityFactory<T extends ResultEntity, R extends T>
   }
 
   @Override
-  protected R buildModel(Map<String, String> data) {
+  protected R buildModel(FieldMap data) {
     return buildModel(
-        data, timeUtil.toZonedDateTime(getField(data, TIME)), getUUID(data, INPUT_MODEL));
+        data, timeUtil.toZonedDateTime(data.getField(TIME)), data.getUUID(INPUT_MODEL));
   }
 
-  protected abstract R buildModel(Map<String, String> data, ZonedDateTime time, UUID inputModel);
+  protected abstract R buildModel(FieldMap data, ZonedDateTime time, UUID inputModel);
 }

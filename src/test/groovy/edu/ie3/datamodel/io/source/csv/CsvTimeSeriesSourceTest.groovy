@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.csv
 import static edu.ie3.datamodel.models.StandardUnits.ENERGY_PRICE
 
 import edu.ie3.datamodel.exceptions.SourceException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
 import edu.ie3.datamodel.io.file.FileType
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
@@ -39,7 +40,7 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
     )
 
     when:
-    def actual = factory.get(fieldToValue)
+    def actual = factory.get(new FieldMap(fieldToValue))
 
     then:
     actual.success

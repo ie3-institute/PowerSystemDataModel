@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.factory.timeseries
 import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.*
 
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
@@ -91,7 +92,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     )
 
     expect:
-    Objects.equals(factory.buildModel(new HashMap<>(data)), expected)
+    Objects.equals(factory.buildModel(new FieldMap(data)), expected)
   }
 
   def "The simple time based value factory builds correct heat and apparent power value"() {
@@ -111,7 +112,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     )
 
     expect:
-    Objects.equals(factory.buildModel(new HashMap<>(data)), expected)
+    Objects.equals(factory.buildModel(new FieldMap(data)), expected)
   }
 
   def "The simple time based value factory builds correct heat and active power value"() {
@@ -129,7 +130,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     )
 
     expect:
-    Objects.equals(factory.buildModel(new HashMap<>(data)), expected)
+    Objects.equals(factory.buildModel(new FieldMap(data)), expected)
   }
 
   def "The simple time based value factory builds correct heat demand value"() {
@@ -146,7 +147,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     )
 
     expect:
-    Objects.equals(factory.buildModel(new HashMap<>(data)), expected)
+    Objects.equals(factory.buildModel(new FieldMap(data)), expected)
   }
 
   def "The simple time based value factory builds correct apparent power value"() {
@@ -164,7 +165,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     )
 
     expect:
-    Objects.equals(factory.buildModel(new HashMap<>(data)), expected)
+    Objects.equals(factory.buildModel(new FieldMap(data)), expected)
   }
 
   def "The simple time based value factory builds correct active power value"() {
@@ -181,7 +182,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     )
 
 
-    def obj = factory.buildModel(new HashMap<>(data))
+    def obj = factory.buildModel(new FieldMap(data))
 
     expect:
     Objects.equals(obj, expected)
@@ -196,7 +197,7 @@ class TimeBasedSimpleValueFactoryTest extends Specification {
     ]
 
     when:
-    factory.buildModel(new HashMap<>(data))
+    factory.buildModel(new FieldMap(data))
 
     then:
     def e = thrown(FactoryException)

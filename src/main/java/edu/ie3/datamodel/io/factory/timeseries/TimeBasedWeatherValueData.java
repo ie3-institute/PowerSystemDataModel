@@ -5,14 +5,13 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
-import java.util.Map;
-import java.util.TreeMap;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import org.locationtech.jts.geom.Point;
 
 public class TimeBasedWeatherValueData {
 
   private final Point coordinate;
-  private final Map<String, String> fieldsToAttributes;
+  private final FieldMap fieldsToAttributes;
 
   /**
    * Creates a new TimeBasedEntryData object
@@ -20,10 +19,9 @@ public class TimeBasedWeatherValueData {
    * @param fieldsToAttributes attribute map: field name to value
    * @param coordinate coordinate for this WeatherValue
    */
-  public TimeBasedWeatherValueData(Map<String, String> fieldsToAttributes, Point coordinate) {
+  public TimeBasedWeatherValueData(FieldMap fieldsToAttributes, Point coordinate) {
     // this does the magic: case-insensitive get/set calls on keys
-    this.fieldsToAttributes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    this.fieldsToAttributes.putAll(fieldsToAttributes);
+    this.fieldsToAttributes = fieldsToAttributes;
     this.coordinate = coordinate;
   }
 
@@ -31,7 +29,7 @@ public class TimeBasedWeatherValueData {
     return coordinate;
   }
 
-  public Map<String, String> getFieldsToAttributes() {
+  public FieldMap getFieldsToAttributes() {
     return fieldsToAttributes;
   }
 

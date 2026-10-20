@@ -8,10 +8,10 @@ package edu.ie3.datamodel.io.factory.result;
 import static tech.units.indriya.unit.Units.PERCENT;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.system.*;
 import java.time.ZonedDateTime;
-import java.util.Map;
 import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
@@ -43,10 +43,10 @@ public class SystemParticipantResultFactory<R extends SystemParticipantResult>
   }
 
   @Override
-  protected R buildModel(Map<String, String> data, ZonedDateTime time, UUID inputModel) {
-    ComparableQuantity<Power> p = getQuantity(data, POWER, StandardUnits.ACTIVE_POWER_RESULT);
+  protected R buildModel(FieldMap data, ZonedDateTime time, UUID inputModel) {
+    ComparableQuantity<Power> p = data.getQuantity(POWER, StandardUnits.ACTIVE_POWER_RESULT);
     ComparableQuantity<Power> q =
-        getQuantity(data, REACTIVE_POWER, StandardUnits.REACTIVE_POWER_RESULT);
+        data.getQuantity(REACTIVE_POWER, StandardUnits.REACTIVE_POWER_RESULT);
 
     if (SystemParticipantWithHeatResult.class.isAssignableFrom(targetClass)) {
       return buildModelWithHeat(data, time, inputModel, p, q);
@@ -84,13 +84,13 @@ public class SystemParticipantResultFactory<R extends SystemParticipantResult>
 
   @SuppressWarnings("unchecked")
   private R buildModelWithHeat(
-      Map<String, String> data,
+      FieldMap data,
       ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> p,
       ComparableQuantity<Power> q) {
     /* The following classes all have a heat component as well */
-    ComparableQuantity<Power> qDot = getQuantity(data, Q_DOT, StandardUnits.Q_DOT_RESULT);
+    ComparableQuantity<Power> qDot = data.getQuantity(Q_DOT, StandardUnits.Q_DOT_RESULT);
 
     if (targetClass.equals(ChpResult.class)) {
       return (R) new ChpResult(time, inputModel, p, q, qDot);
@@ -105,13 +105,13 @@ public class SystemParticipantResultFactory<R extends SystemParticipantResult>
 
   @SuppressWarnings("unchecked")
   private R buildModelWithSoc(
-      Map<String, String> data,
+      FieldMap data,
       ZonedDateTime time,
       UUID inputModel,
       ComparableQuantity<Power> p,
       ComparableQuantity<Power> q) {
     /* The following classes all have a soc component as well */
-    ComparableQuantity<Dimensionless> socQuantity = getQuantity(data, SOC, PERCENT);
+    ComparableQuantity<Dimensionless> socQuantity = data.getQuantity(SOC, PERCENT);
 
     if (targetClass.equals(EvResult.class)) {
       return (R) new EvResult(time, inputModel, p, q, socQuantity);

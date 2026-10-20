@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.sql;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMetaInformationFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
@@ -49,6 +50,7 @@ public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
     this.timeSeriesMetaInformation =
         dataSource
             .executeQuery(queryComplete)
+            .map(FieldMap::new)
             .map(individualMetaInformationFactory::get)
             .map(Try::getData)
             .flatMap(Optional::stream)
@@ -59,6 +61,7 @@ public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
     this.loadProfileMetaInformation =
         dataSource
             .executeQuery(loadMetaInformationQuery)
+            .map(FieldMap::new)
             .map(loadProfileMetaInformationFactory::get)
             .map(Try::getData)
             .flatMap(Optional::stream)

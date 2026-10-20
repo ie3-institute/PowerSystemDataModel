@@ -29,22 +29,13 @@ public abstract class TimeBasedValueFactory<D, V extends Value>
   }
 
   /**
-   * Return the field name for the date time
-   *
-   * @return the field name for the date time
-   */
-  public String getTimeFieldString() {
-    return TIME;
-  }
-
-  /**
    * Method to extract a time string from a given map and convert into a {@link ZonedDateTime}.
    *
    * @param fieldsToAttributes map with time field
    * @return a {@link ZonedDateTime}
    */
   public ZonedDateTime extractTime(Map<String, String> fieldsToAttributes) {
-    return toZonedDateTime(fieldsToAttributes.get(getTimeFieldString()));
+    return toZonedDateTime(fieldsToAttributes.get(TIME));
   }
 
   /**

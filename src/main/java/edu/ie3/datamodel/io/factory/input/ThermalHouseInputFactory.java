@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.factory.input;
 
 import static edu.ie3.datamodel.models.StandardUnits.*;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
@@ -30,28 +31,24 @@ public class ThermalHouseInputFactory extends AssetInputEntityFactory<ThermalHou
 
   @Override
   protected ThermalHouseInput buildModel(
-      Map<String, String> data,
-      UUID uuid,
-      String id,
-      OperatorInput operator,
-      OperationTime operationTime) {
+      FieldMap data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
     ComparableQuantity<ThermalConductance> ethLosses =
-        getQuantity(data, ETH_LOSSES, THERMAL_TRANSMISSION);
-    ComparableQuantity<HeatCapacity> ethCapa = getQuantity(data, ETH_CAPA, HEAT_CAPACITY);
+        data.getQuantity(ETH_LOSSES, THERMAL_TRANSMISSION);
+    ComparableQuantity<HeatCapacity> ethCapa = data.getQuantity(ETH_CAPA, HEAT_CAPACITY);
     ComparableQuantity<Temperature> targetTemperature =
-        getQuantity(data, TARGET_TEMPERATURE, TEMPERATURE);
+        data.getQuantity(TARGET_TEMPERATURE, TEMPERATURE);
     ComparableQuantity<Temperature> upperTemperatureLimit =
-        getQuantity(data, UPPER_TEMPERATURE_LIMIT, TEMPERATURE);
+        data.getQuantity(UPPER_TEMPERATURE_LIMIT, TEMPERATURE);
     ComparableQuantity<Temperature> lowerTemperatureLimit =
-        getQuantity(data, LOWER_TEMPERATURE_LIMIT, TEMPERATURE);
-    String housingType = getField(data, HOUSING_TYPE);
-    double numberInhabitants = getDouble(data, NUMBER_INHABITANTS);
+        data.getQuantity(LOWER_TEMPERATURE_LIMIT, TEMPERATURE);
+    String housingType = data.getField(HOUSING_TYPE);
+    double numberInhabitants = data.getDouble(NUMBER_INHABITANTS);
     return new ThermalHouseInput(
         uuid,
         id,
         operator,
         operationTime,
-        getEntity(data, THERMAL_BUS, thermalBuses),
+        data.getEntity(THERMAL_BUS, thermalBuses),
         ethLosses,
         ethCapa,
         targetTemperature,
@@ -59,6 +56,6 @@ public class ThermalHouseInputFactory extends AssetInputEntityFactory<ThermalHou
         lowerTemperatureLimit,
         housingType,
         numberInhabitants,
-        data);
+        data.additionalInformation());
   }
 }

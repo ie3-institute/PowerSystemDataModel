@@ -6,11 +6,11 @@
 package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.io.factory.EntityFactory;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
 import edu.ie3.datamodel.io.naming.timeseries.TimeSeriesMetaInformation;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -20,9 +20,9 @@ import java.util.UUID;
 public class TimeSeriesMetaInformationFactory<R extends TimeSeriesMetaInformation>
     extends EntityFactory<TimeSeriesMetaInformation, R> {
 
-  private final Class<? extends TimeSeriesMetaInformation> targetClass;
+  private final Class<R> targetClass;
 
-  public TimeSeriesMetaInformationFactory(Class<? extends TimeSeriesMetaInformation> targetClass) {
+  public TimeSeriesMetaInformationFactory(Class<R> targetClass) {
     super(IndividualTimeSeriesMetaInformation.class, LoadProfileMetaInformation.class);
     this.targetClass = targetClass;
 
@@ -31,14 +31,14 @@ public class TimeSeriesMetaInformationFactory<R extends TimeSeriesMetaInformatio
 
   @Override
   @SuppressWarnings("unchecked")
-  protected R buildModel(Map<String, String> data) {
+  protected R buildModel(FieldMap data) {
     if (LoadProfileMetaInformation.class.isAssignableFrom(targetClass)) {
-      String profile = getField(data, LOAD_PROFILE);
+      String profile = data.getField(LOAD_PROFILE);
       return (R) new LoadProfileMetaInformation(profile);
     } else {
-      UUID timeSeries = getUUID(data, TIME_SERIES);
+      UUID timeSeries = data.getUUID(TIME_SERIES);
 
-      ColumnScheme columnScheme = ColumnScheme.parse(getField(data, COLUMN_SCHEME)).orElseThrow();
+      ColumnScheme columnScheme = ColumnScheme.parse(data.getField(COLUMN_SCHEME)).orElseThrow();
       return (R) new IndividualTimeSeriesMetaInformation(timeSeries, columnScheme);
     }
   }

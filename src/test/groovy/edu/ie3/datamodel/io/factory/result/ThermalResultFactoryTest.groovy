@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult
@@ -42,7 +43,7 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
       "fillLevel" : "20"
     ]
     when:
-    Try<? extends ThermalUnitResult, FactoryException> result = resultFactory.get(new HashMap<>(parameter))
+    Try<? extends ThermalUnitResult, FactoryException> result = resultFactory.get(new FieldMap(parameter))
 
     then:
     result.success
@@ -67,7 +68,7 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
       "fillLevel" : "20"
     ]
     when:
-    Try<? extends ThermalUnitResult, FactoryException> result = resultFactory.get(new HashMap<>(parameter))
+    Try<? extends ThermalUnitResult, FactoryException> result = resultFactory.get(new FieldMap(parameter))
 
     then:
     result.success
@@ -91,7 +92,7 @@ class ThermalResultFactoryTest extends Specification implements FactoryTestHelpe
       "indoorTemperature": "21"
     ]
     when:
-    Try<? extends ThermalUnitResult, FactoryException> result = resultFactory.get(new HashMap<>(parameter))
+    Try<? extends ThermalUnitResult, FactoryException> result = resultFactory.get(new FieldMap(parameter))
 
     then:
     result.success

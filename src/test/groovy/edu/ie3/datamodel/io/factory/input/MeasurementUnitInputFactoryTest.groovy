@@ -5,7 +5,10 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
+import static edu.ie3.test.helper.EntityMap.*
+
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.MeasurementUnitInput
 import edu.ie3.datamodel.models.input.NodeInput
@@ -53,7 +56,7 @@ class MeasurementUnitInputFactoryTest extends Specification implements FactoryTe
     ]
 
     when:
-    Try<MeasurementUnitInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<MeasurementUnitInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success

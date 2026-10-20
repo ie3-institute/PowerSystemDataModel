@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.DomesticHotWaterStorageInput;
@@ -22,11 +23,7 @@ public class DomesticHotWaterStorageInputFactory
 
   @Override
   protected DomesticHotWaterStorageInput buildModel(
-      Map<String, String> data,
-      UUID uuid,
-      String id,
-      OperatorInput operator,
-      OperationTime operationTime) {
+      FieldMap data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
 
     return new DomesticHotWaterStorageInput(
         uuid,
@@ -39,6 +36,6 @@ public class DomesticHotWaterStorageInputFactory
         getReturnTemp(data),
         getSpecificHeatCapacity(data),
         getMaxThermalPower(data),
-        data);
+        data.additionalInformation());
   }
 }

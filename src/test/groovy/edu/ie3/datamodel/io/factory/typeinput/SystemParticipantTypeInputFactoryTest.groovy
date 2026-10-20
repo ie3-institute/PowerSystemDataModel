@@ -9,6 +9,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicPoint
@@ -57,7 +58,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     ]
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new HashMap<>(parameter))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new FieldMap(parameter))
 
     then:
     typeInput.success
@@ -91,7 +92,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     ]
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new HashMap<>(parameter))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new FieldMap(parameter))
 
     then:
     typeInput.success
@@ -124,7 +125,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     ]
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new HashMap<>(parameter))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new FieldMap(parameter))
 
     then:
     typeInput.success
@@ -160,7 +161,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     ]
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new HashMap<>(parameter))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new FieldMap(parameter))
 
     then:
     typeInput.success
@@ -205,7 +206,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     ]
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new HashMap<>(parameter))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new FieldMap(parameter))
 
     then:
     typeInput.success
@@ -242,7 +243,7 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     ]
 
     when:
-    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new HashMap<>(parameter))
+    Try<? extends SystemParticipantTypeInput, FactoryException> typeInput = typeInputFactory.get(new FieldMap(parameter))
 
     then:
     typeInput.success

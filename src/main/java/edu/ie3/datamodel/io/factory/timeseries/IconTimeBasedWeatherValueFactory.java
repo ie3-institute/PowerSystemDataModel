@@ -5,12 +5,12 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import java.time.ZonedDateTime;
-import java.util.Map;
 import java.util.Optional;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
@@ -34,24 +34,24 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   @Override
   protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData tbd) {
     Point coordinate = tbd.getCoordinate();
-    Map<String, String> data = tbd.getFieldsToAttributes();
+    FieldMap data = tbd.getFieldsToAttributes();
 
-    ZonedDateTime time = timeUtil.toZonedDateTime(getField(data, TIME));
+    ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
 
     SolarIrradianceValue solarIrradianceValue =
         new SolarIrradianceValue(
-            getQuantity(data, ICON_DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE),
-            getQuantity(data, ICON_DIFFUSE_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE));
+            data.getQuantity(ICON_DIRECT_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE),
+            data.getQuantity(ICON_DIFFUSE_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE));
     TemperatureValue temperatureValue =
         new TemperatureValue(
-            getQuantity(data, ICON_TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE));
+            data.getQuantity(ICON_TEMPERATURE, Units.KELVIN, StandardUnits.TEMPERATURE));
     WindValue windValue = getWindValue(data);
     Optional<ComparableQuantity<Temperature>> groundTemperatureLevel1 =
-        getQuantityOptional(data, ICON_GROUND_TEMPERATURE_LEVEL_1, Units.KELVIN)
-            .map(quantity -> quantity.to(StandardUnits.TEMPERATURE));
+        data.getQuantityOptional(
+            ICON_GROUND_TEMPERATURE_LEVEL_1, Units.KELVIN, StandardUnits.TEMPERATURE);
     Optional<ComparableQuantity<Temperature>> groundTemperatureLevel2 =
-        getQuantityOptional(data, ICON_GROUND_TEMPERATURE_LEVEL_2, Units.KELVIN)
-            .map(quantity -> quantity.to(StandardUnits.TEMPERATURE));
+        data.getQuantityOptional(
+            ICON_GROUND_TEMPERATURE_LEVEL_2, Units.KELVIN, StandardUnits.TEMPERATURE);
     WeatherValue weatherValue =
         new WeatherValue(
             coordinate,
@@ -82,14 +82,13 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
    * @param data Collective information to convert
    * @return The wind value.
    */
-  private WindValue getWindValue(Map<String, String> data) {
+  private WindValue getWindValue(FieldMap data) {
     /* Get the three-dimensional parts of the wind velocity vector in Cartesian coordinates */
     double u =
-        getDouble(
-            data, ICON_WIND_VELOCITY_U); // Wind component from west to east (parallel to latitudes)
+        data.getDouble(
+            ICON_WIND_VELOCITY_U); // Wind component from west to east (parallel to latitudes)
     double v =
-        getDouble(
-            data,
+        data.getDouble(
             ICON_WIND_VELOCITY_V); // Wind component from south to north (parallel to longitudes)
 
     double angle = Math.toDegrees(Math.atan2(-u, -v));

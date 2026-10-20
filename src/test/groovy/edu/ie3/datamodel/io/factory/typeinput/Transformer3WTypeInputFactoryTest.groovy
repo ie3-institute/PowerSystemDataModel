@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory.typeinput
 
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.utils.Try
@@ -51,7 +52,7 @@ class Transformer3WTypeInputFactoryTest extends Specification implements Factory
     ]
 
     when:
-    Try<Transformer3WTypeInput, FactoryException> typeInput = typeInputFactory.get(new HashMap<>(parameter))
+    Try<Transformer3WTypeInput, FactoryException> typeInput = typeInputFactory.get(new FieldMap(parameter))
 
     then:
     typeInput.success

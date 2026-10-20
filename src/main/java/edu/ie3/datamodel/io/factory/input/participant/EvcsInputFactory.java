@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.factory.input.participant;
 import edu.ie3.datamodel.exceptions.ChargingPointTypeException;
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -32,7 +33,7 @@ public class EvcsInputFactory extends SystemParticipantInputEntityFactory<EvcsIn
 
   @Override
   protected EvcsInput buildModel(
-      Map<String, String> data,
+      FieldMap data,
       UUID uuid,
       String id,
       NodeInput node,
@@ -41,7 +42,7 @@ public class EvcsInputFactory extends SystemParticipantInputEntityFactory<EvcsIn
       OperationTime operationTime,
       EmInput controllingEm) {
     ChargingPointType type;
-    String typeFieldValue = getField(data, TYPE);
+    String typeFieldValue = data.getField(TYPE);
 
     try {
       type = ChargingPointTypeUtils.parse(typeFieldValue);
@@ -52,11 +53,11 @@ public class EvcsInputFactory extends SystemParticipantInputEntityFactory<EvcsIn
               TYPE, typeFieldValue),
           e);
     }
-    int chargingPoints = getInt(data, CHARGING_POINTS);
-    double cosPhi = getDouble(data, COS_PHI_RATED);
+    int chargingPoints = data.getInt(CHARGING_POINTS);
+    double cosPhi = data.getDouble(COS_PHI_RATED);
 
     List<EvcsLocationType> locationTypes;
-    String locationFieldValue = getField(data, LOCATION_TYPES);
+    String locationFieldValue = data.getField(LOCATION_TYPES);
     try {
       locationTypes = EvcsLocationTypeUtils.parse(locationFieldValue);
     } catch (ParsingException e) {
@@ -67,7 +68,7 @@ public class EvcsInputFactory extends SystemParticipantInputEntityFactory<EvcsIn
           e);
     }
 
-    boolean v2gSupport = getBoolean(data, V2G_SUPPORT);
+    boolean v2gSupport = data.getBoolean(V2G_SUPPORT);
 
     return new EvcsInput(
         uuid,
@@ -82,6 +83,6 @@ public class EvcsInputFactory extends SystemParticipantInputEntityFactory<EvcsIn
         cosPhi,
         locationTypes,
         v2gSupport,
-        data);
+        data.additionalInformation());
   }
 }

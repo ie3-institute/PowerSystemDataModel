@@ -5,7 +5,10 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
+import static edu.ie3.test.helper.EntityMap.*
+
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.utils.Try
 import spock.lang.Specification
@@ -30,7 +33,7 @@ class OperatorInputFactoryTest extends Specification {
     ]
 
     when:
-    Try<OperatorInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<OperatorInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.EmInput;
@@ -27,7 +28,7 @@ public class FixedFeedInInputFactory extends SystemParticipantInputEntityFactory
 
   @Override
   protected FixedFeedInInput buildModel(
-      Map<String, String> data,
+      FieldMap data,
       UUID uuid,
       String id,
       NodeInput node,
@@ -35,8 +36,8 @@ public class FixedFeedInInputFactory extends SystemParticipantInputEntityFactory
       OperatorInput operator,
       OperationTime operationTime,
       EmInput controllingEm) {
-    ComparableQuantity<Power> sRated = getQuantity(data, S_RATED, StandardUnits.S_RATED);
-    double cosPhiRated = getDouble(data, COS_PHI_RATED);
+    ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
+    double cosPhiRated = data.getDouble(COS_PHI_RATED);
 
     return new FixedFeedInInput(
         uuid,
@@ -48,6 +49,6 @@ public class FixedFeedInInputFactory extends SystemParticipantInputEntityFactory
         controllingEm,
         sRated,
         cosPhiRated,
-        data);
+        data.additionalInformation());
   }
 }

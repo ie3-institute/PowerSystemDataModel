@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.factory.typeinput;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.system.characteristic.WecCharacteristicInput;
 import edu.ie3.datamodel.models.input.system.type.*;
@@ -14,7 +15,6 @@ import edu.ie3.util.quantities.interfaces.Currency;
 import edu.ie3.util.quantities.interfaces.DimensionlessRate;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
 import edu.ie3.util.quantities.interfaces.SpecificEnergy;
-import java.util.Map;
 import java.util.UUID;
 import javax.measure.quantity.*;
 import tech.units.indriya.ComparableQuantity;
@@ -40,13 +40,13 @@ public class SystemParticipantTypeInputFactory<T extends SystemParticipantTypeIn
 
   @Override
   @SuppressWarnings("unchecked")
-  protected T buildModel(Map<String, String> data) {
-    UUID uuid = getUUID(data, UUID);
-    String id = getField(data, ID);
-    ComparableQuantity<Currency> capEx = getQuantity(data, CAP_EX, StandardUnits.CAPEX);
-    ComparableQuantity<EnergyPrice> opEx = getQuantity(data, OP_EX, StandardUnits.ENERGY_PRICE);
-    ComparableQuantity<Power> sRated = getQuantity(data, S_RATED, StandardUnits.S_RATED);
-    double cosPhi = getDouble(data, COS_PHI_RATED);
+  protected T buildModel(FieldMap data) {
+    UUID uuid = data.getUUID(UUID_FIELD);
+    String id = data.getField(ID);
+    ComparableQuantity<Currency> capEx = data.getQuantity(CAP_EX, StandardUnits.CAPEX);
+    ComparableQuantity<EnergyPrice> opEx = data.getQuantity(OP_EX, StandardUnits.ENERGY_PRICE);
+    ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
+    double cosPhi = data.getDouble(COS_PHI_RATED);
 
     if (targetClass.equals(EvTypeInput.class))
       return (T) buildEvTypeInput(data, uuid, id, capEx, opEx, sRated, cosPhi);
@@ -69,52 +69,62 @@ public class SystemParticipantTypeInputFactory<T extends SystemParticipantTypeIn
   }
 
   private EvTypeInput buildEvTypeInput(
-      Map<String, String> data,
+      FieldMap data,
       UUID uuid,
       String id,
       ComparableQuantity<Currency> capEx,
       ComparableQuantity<EnergyPrice> opEx,
       ComparableQuantity<Power> sRated,
       double cosPhi) {
-    ComparableQuantity<Energy> eStorage = getQuantity(data, E_STORAGE, StandardUnits.ENERGY_IN);
+    ComparableQuantity<Energy> eStorage = data.getQuantity(E_STORAGE, StandardUnits.ENERGY_IN);
     ComparableQuantity<SpecificEnergy> eCons =
-        getQuantity(data, E_CONS, StandardUnits.ENERGY_PER_DISTANCE);
+        data.getQuantity(E_CONS, StandardUnits.ENERGY_PER_DISTANCE);
     ComparableQuantity<Power> sRatedDC =
-        getQuantity(data, S_RATED_DC, StandardUnits.ACTIVE_POWER_IN);
+        data.getQuantity(S_RATED_DC, StandardUnits.ACTIVE_POWER_IN);
 
-    return new EvTypeInput(uuid, id, capEx, opEx, eStorage, eCons, sRated, cosPhi, sRatedDC, data);
+    return new EvTypeInput(
+        uuid,
+        id,
+        capEx,
+        opEx,
+        eStorage,
+        eCons,
+        sRated,
+        cosPhi,
+        sRatedDC,
+        data.additionalInformation());
   }
 
   private HpTypeInput buildHpTypeInput(
-      Map<String, String> data,
+      FieldMap data,
       UUID uuid,
       String id,
       ComparableQuantity<Currency> capEx,
       ComparableQuantity<EnergyPrice> opEx,
       ComparableQuantity<Power> sRated,
       double cosPhi) {
-    ComparableQuantity<Power> pThermal =
-        getQuantity(data, P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
+    ComparableQuantity<Power> pThermal = data.getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
 
-    return new HpTypeInput(uuid, id, capEx, opEx, sRated, cosPhi, pThermal, data);
+    return new HpTypeInput(
+        uuid, id, capEx, opEx, sRated, cosPhi, pThermal, data.additionalInformation());
   }
 
   private AcTypeInput buildAcTypeInput(
-      Map<String, String> data,
+      FieldMap data,
       UUID uuid,
       String id,
       ComparableQuantity<Currency> capEx,
       ComparableQuantity<EnergyPrice> opEx,
       ComparableQuantity<Power> sRated,
       double cosPhi) {
-    ComparableQuantity<Power> pThermal =
-        getQuantity(data, P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
+    ComparableQuantity<Power> pThermal = data.getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
 
-    return new AcTypeInput(uuid, id, capEx, opEx, sRated, cosPhi, pThermal, data);
+    return new AcTypeInput(
+        uuid, id, capEx, opEx, sRated, cosPhi, pThermal, data.additionalInformation());
   }
 
   private BmTypeInput buildBmTypeInput(
-      Map<String, String> data,
+      FieldMap data,
       UUID uuid,
       String id,
       ComparableQuantity<Currency> capEx,
@@ -122,15 +132,16 @@ public class SystemParticipantTypeInputFactory<T extends SystemParticipantTypeIn
       ComparableQuantity<Power> sRated,
       double cosPhi) {
     ComparableQuantity<DimensionlessRate> loadGradient =
-        getQuantity(data, ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT);
+        data.getQuantity(ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT);
     ComparableQuantity<Dimensionless> etaConv =
-        getQuantity(data, ETA_CONV, StandardUnits.EFFICIENCY);
+        data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY);
 
-    return new BmTypeInput(uuid, id, capEx, opEx, loadGradient, sRated, cosPhi, etaConv, data);
+    return new BmTypeInput(
+        uuid, id, capEx, opEx, loadGradient, sRated, cosPhi, etaConv, data.additionalInformation());
   }
 
   private WecTypeInput buildWecTypeInput(
-      Map<String, String> data,
+      FieldMap data,
       UUID uuid,
       String id,
       ComparableQuantity<Currency> capEx,
@@ -138,11 +149,11 @@ public class SystemParticipantTypeInputFactory<T extends SystemParticipantTypeIn
       ComparableQuantity<Power> sRated,
       double cosPhi) {
     ComparableQuantity<Dimensionless> etaConv =
-        getQuantity(data, ETA_CONV, StandardUnits.EFFICIENCY);
-    ComparableQuantity<Area> rotorArea = getQuantity(data, ROTOR_AREA, StandardUnits.ROTOR_AREA);
-    ComparableQuantity<Length> hubHeight = getQuantity(data, HUB_HEIGHT, StandardUnits.HUB_HEIGHT);
+        data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY);
+    ComparableQuantity<Area> rotorArea = data.getQuantity(ROTOR_AREA, StandardUnits.ROTOR_AREA);
+    ComparableQuantity<Length> hubHeight = data.getQuantity(HUB_HEIGHT, StandardUnits.HUB_HEIGHT);
 
-    String cpCharacteristicValue = getField(data, CP_CHARACTERISTIC);
+    String cpCharacteristicValue = data.getField(CP_CHARACTERISTIC);
 
     WecCharacteristicInput cpCharacteristic;
     try {
@@ -163,43 +174,62 @@ public class SystemParticipantTypeInputFactory<T extends SystemParticipantTypeIn
         etaConv,
         rotorArea,
         hubHeight,
-        data);
+        data.additionalInformation());
   }
 
   private ChpTypeInput buildChpTypeInput(
-      Map<String, String> data,
+      FieldMap data,
       UUID uuid,
       String id,
       ComparableQuantity<Currency> capEx,
       ComparableQuantity<EnergyPrice> opEx,
       ComparableQuantity<Power> sRated,
       double cosPhi) {
-    ComparableQuantity<Dimensionless> etaEl = getQuantity(data, ETA_EL, StandardUnits.EFFICIENCY);
+    ComparableQuantity<Dimensionless> etaEl = data.getQuantity(ETA_EL, StandardUnits.EFFICIENCY);
     ComparableQuantity<Dimensionless> etaThermal =
-        getQuantity(data, ETA_THERMAL, StandardUnits.EFFICIENCY);
-    ComparableQuantity<Power> pThermal =
-        getQuantity(data, P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
-    ComparableQuantity<Power> pOwn = getQuantity(data, P_OWN, StandardUnits.ACTIVE_POWER_IN);
+        data.getQuantity(ETA_THERMAL, StandardUnits.EFFICIENCY);
+    ComparableQuantity<Power> pThermal = data.getQuantity(P_THERMAL, StandardUnits.ACTIVE_POWER_IN);
+    ComparableQuantity<Power> pOwn = data.getQuantity(P_OWN, StandardUnits.ACTIVE_POWER_IN);
 
     return new ChpTypeInput(
-        uuid, id, capEx, opEx, etaEl, etaThermal, sRated, cosPhi, pThermal, pOwn, data);
+        uuid,
+        id,
+        capEx,
+        opEx,
+        etaEl,
+        etaThermal,
+        sRated,
+        cosPhi,
+        pThermal,
+        pOwn,
+        data.additionalInformation());
   }
 
   private StorageTypeInput buildStorageTypeInput(
-      Map<String, String> data,
+      FieldMap data,
       UUID uuid,
       String id,
       ComparableQuantity<Currency> capEx,
       ComparableQuantity<EnergyPrice> opEx,
       ComparableQuantity<Power> sRated,
       double cosPhi) {
-    ComparableQuantity<Energy> eStorage = getQuantity(data, E_STORAGE, StandardUnits.ENERGY_IN);
-    ComparableQuantity<Power> pMax = getQuantity(data, P_MAX, StandardUnits.ACTIVE_POWER_IN);
+    ComparableQuantity<Energy> eStorage = data.getQuantity(E_STORAGE, StandardUnits.ENERGY_IN);
+    ComparableQuantity<Power> pMax = data.getQuantity(P_MAX, StandardUnits.ACTIVE_POWER_IN);
     ComparableQuantity<DimensionlessRate> activePowerGradient =
-        getQuantity(data, ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT);
-    ComparableQuantity<Dimensionless> eta = getQuantity(data, ETA, StandardUnits.EFFICIENCY);
+        data.getQuantity(ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT);
+    ComparableQuantity<Dimensionless> eta = data.getQuantity(ETA, StandardUnits.EFFICIENCY);
 
     return new StorageTypeInput(
-        uuid, id, capEx, opEx, eStorage, sRated, cosPhi, pMax, activePowerGradient, eta, data);
+        uuid,
+        id,
+        capEx,
+        opEx,
+        eStorage,
+        sRated,
+        cosPhi,
+        pMax,
+        activePowerGradient,
+        eta,
+        data.additionalInformation());
   }
 }

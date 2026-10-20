@@ -5,7 +5,10 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
+import static edu.ie3.test.helper.EntityMap.*
+
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
 import edu.ie3.datamodel.models.input.connector.SwitchInput
@@ -60,7 +63,7 @@ class SwitchInputFactoryTest extends Specification implements FactoryTestHelper 
     ]
 
     when:
-    Try<SwitchInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<SwitchInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success
@@ -93,7 +96,7 @@ class SwitchInputFactoryTest extends Specification implements FactoryTestHelper 
     ]
 
     expect:
-    Try<SwitchInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<SwitchInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
     input.success
     input.data.get().getClass() == SwitchInput
     input.data.get().with {

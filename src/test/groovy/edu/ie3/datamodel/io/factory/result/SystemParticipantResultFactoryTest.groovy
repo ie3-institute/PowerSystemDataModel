@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.exceptions.ValidationException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.system.*
@@ -59,7 +60,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
 
     when:
     def resultFactory = new SystemParticipantResultFactory(modelClass)
-    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new HashMap<>(parameter))
+    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new FieldMap(parameter))
 
     then:
     result.success
@@ -118,7 +119,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     ]
     when:
     def resultFactory = new SystemParticipantResultFactory(StorageResult)
-    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new HashMap<>(parameter))
+    Try<? extends SystemParticipantResult, FactoryException> result = resultFactory.get(new FieldMap(parameter))
 
     then:
     result.success
@@ -159,7 +160,7 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     expect: "that the factory should not need more than 3 seconds for processing 10.000 entities"
     Long startTime = System.currentTimeMillis()
     10000.times {
-      resultFactory.get(parameter)
+      resultFactory.get(new FieldMap(parameter))
     }
     BigDecimal elapsedTime = (System
         .currentTimeMillis() - startTime) / 1000.0

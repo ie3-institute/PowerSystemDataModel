@@ -65,6 +65,6 @@ class EntitySourceTest extends Specification {
     then:
     SourceException ex = thrown()
     ex.message == "1 exception(s) occurred within \"OperatorInput\" data: \n" +
-        "        An error occurred in OperatorInputFactory. Caused by: Field \"id\" not found in EntityData"
+        "        An error occurred in OperatorInputFactory. Caused by: Field \"id\" not found in source."
   }
 }

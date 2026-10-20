@@ -8,11 +8,10 @@ package edu.ie3.datamodel.io.source
 import static edu.ie3.test.helper.EntityMap.map
 
 import edu.ie3.datamodel.exceptions.SourceException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.io.factory.input.EmInputFactory
 import edu.ie3.datamodel.models.input.EmInput
 import spock.lang.Specification
-
-import java.util.stream.Stream
 
 class EnergyManagementSourceTest extends Specification {
 
@@ -22,26 +21,26 @@ class EnergyManagementSourceTest extends Specification {
     def emFactory = new EmInputFactory(Collections.emptyMap(), emUnits)
 
     def assetData = [
-      ["uuid": "0-0-0-0-0",
+      new FieldMap(["uuid": "0-0-0-0-0",
         "id": "root",
         "controllingEm" : "",
-        "controlStrategy" : ""],
-      ["uuid": "0-0-0-0-1",
+        "controlStrategy" : ""]),
+      new FieldMap(["uuid": "0-0-0-0-1",
         "id": "child 1",
         "controllingEm" : "0-0-0-0-0",
-        "controlStrategy" : ""],
-      ["uuid": "0-0-0-0-11",
+        "controlStrategy" : ""]),
+      new FieldMap(["uuid": "0-0-0-0-11",
         "id": "child 1-1",
         "controllingEm" : "0-0-0-0-1",
-        "controlStrategy" : ""],
-      ["uuid": "0-0-0-0-2",
+        "controlStrategy" : ""]),
+      new FieldMap(["uuid": "0-0-0-0-2",
         "id": "child 2",
         "controllingEm" : "0-0-0-0-0",
-        "controlStrategy" : ""],
-      ["uuid": "0-0-0-0-21",
+        "controlStrategy" : ""]),
+      new FieldMap(["uuid": "0-0-0-0-21",
         "id": "child 2-1",
         "controllingEm" : "0-0-0-0-2",
-        "controlStrategy" : ""]
+        "controlStrategy" : ""])
     ]
 
     expect:
@@ -99,20 +98,19 @@ class EnergyManagementSourceTest extends Specification {
     def emFactory = new EmInputFactory(Collections.emptyMap(), emUnits)
 
     def assetData = [
-      ["uuid": "0-0-0-0-1",
+      new FieldMap(["uuid": "0-0-0-0-1",
         "id": "em 1",
         "controllingEm" : "",
-        "controlStrategy" : ""],
-      ["uuid": "0-0-0-0-2",
+        "controlStrategy" : ""]),
+      new FieldMap(["uuid": "0-0-0-0-2",
         "id": "em 2",
         "controllingEm" : "",
-        "controlStrategy" : "strat_b"],
-      ["uuid": "0-0-0-0-3",
+        "controlStrategy" : "strat_b"]),
+      new FieldMap(["uuid": "0-0-0-0-3",
         "id": "em 3",
         "controllingEm" : "",
-        "controlStrategy" : "other"]
+        "controlStrategy" : "other"])
     ]
-
 
     expect:
     EnergyManagementSource.createEmsRecursively(assetData, emUnits, emFactory)
@@ -149,14 +147,14 @@ class EnergyManagementSourceTest extends Specification {
     def emFactory = new EmInputFactory(Collections.emptyMap(), emUnits)
 
     def assetData = [
-      ["uuid": "0-0-0-0-1",
+      new FieldMap(["uuid": "0-0-0-0-1",
         "id": "em 1",
         "controllingEm" : "",
-        "controlStrategy" : ""],
-      ["uuid": "0-0-0-0-2",
+        "controlStrategy" : ""]),
+      new FieldMap(["uuid": "0-0-0-0-2",
         "id": "em 2",
         "controllingEm" : "not-a-uuid",
-        "controlStrategy" : ""]
+        "controlStrategy" : ""])
     ]
 
     when:
@@ -173,13 +171,13 @@ class EnergyManagementSourceTest extends Specification {
     def emFactory = new EmInputFactory(Collections.emptyMap(), emUnits)
 
     def assetData = [
-      ["uuid": "0-0-0-0-1",
+      new FieldMap(["uuid": "0-0-0-0-1",
         "id": "em 1",
         "controllingEm" : "",
-        "controlStrategy" : ""],
-      ["uuid": "0-0-0-0-2", // id is missing
+        "controlStrategy" : ""]),
+      new FieldMap(["uuid": "0-0-0-0-2", // id is missing
         "controllingEm" : "",
-        "controlStrategy" : ""]
+        "controlStrategy" : ""])
     ]
 
     when:
@@ -188,7 +186,7 @@ class EnergyManagementSourceTest extends Specification {
     then:
     def exc = thrown(SourceException)
     exc.message == "1 exception(s) occurred within \"EmInput\" data: \n" +
-        "        An error occurred in EmInputFactory. Caused by: Field \"id\" not found in EntityData"
+        "        An error occurred in EmInputFactory. Caused by: Field \"id\" not found in source."
   }
 
   def "An EnergyManagementSource should fail if a parent em is not provided"() {
@@ -197,14 +195,14 @@ class EnergyManagementSourceTest extends Specification {
     def emFactory = new EmInputFactory(Collections.emptyMap(), emUnits)
 
     def assetData = [
-      ["uuid": "0-0-0-0-1",
+      new FieldMap(["uuid": "0-0-0-0-1",
         "id": "em 1",
         "controllingEm" : "",
-        "controlStrategy" : ""],
-      ["uuid": "0-0-0-0-2",
+        "controlStrategy" : ""]),
+      new FieldMap(["uuid": "0-0-0-0-2",
         "id": "em 2",
         "controllingEm" : "1-2-3-4-5", // does not exist
-        "controlStrategy" : ""]
+        "controlStrategy" : ""])
     ]
 
     when:
@@ -212,7 +210,7 @@ class EnergyManagementSourceTest extends Specification {
 
     then:
     def exc = thrown(SourceException)
-    exc.message == "There are em inputs, where controlling ems are assigned that don't exist."
+    exc.message == "There are em inputs, where controlling ems are assigned that don't exist. These are: 00000000-0000-0000-0000-000000000002"
   }
 
   def "An EnergyManagementSource should fail if no parent ems are provided"() {
@@ -221,14 +219,14 @@ class EnergyManagementSourceTest extends Specification {
     def emFactory = new EmInputFactory(Collections.emptyMap(), emUnits)
 
     def assetData = [
-      ["uuid": "0-0-0-0-1",
+      new FieldMap(["uuid": "0-0-0-0-1",
         "id": "em 1",
         "controllingEm" : "1-2-3-4-5", // does not exist
-        "controlStrategy" : ""],
-      ["uuid": "0-0-0-0-2",
+        "controlStrategy" : ""]),
+      new FieldMap(["uuid": "0-0-0-0-2",
         "id": "em 2",
         "controllingEm" : "1-2-3-4-5", // does not exist
-        "controlStrategy" : ""]
+        "controlStrategy" : ""])
     ]
 
     when:
@@ -236,6 +234,6 @@ class EnergyManagementSourceTest extends Specification {
 
     then:
     def exc = thrown(SourceException)
-    exc.message == "There are em inputs, where controlling ems are assigned that don't exist."
+    exc.message == "There are em inputs, where controlling ems are assigned that don't exist. These are: 00000000-0000-0000-0000-000000000001,00000000-0000-0000-0000-000000000002"
   }
 }

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.EmInput;
@@ -34,7 +35,7 @@ public class BmInputFactory extends SystemParticipantInputEntityFactory<BmInput>
 
   @Override
   protected BmInput buildModel(
-      Map<String, String> data,
+      FieldMap data,
       UUID uuid,
       String id,
       NodeInput node,
@@ -42,9 +43,9 @@ public class BmInputFactory extends SystemParticipantInputEntityFactory<BmInput>
       OperatorInput operator,
       OperationTime operationTime,
       EmInput controllingEm) {
-    boolean costControlled = getBoolean(data, COST_CONTROLLED);
+    boolean costControlled = data.getBoolean(COST_CONTROLLED);
     ComparableQuantity<EnergyPrice> feedInTariff =
-        getQuantity(data, FEED_IN_TARIFF, StandardUnits.ENERGY_PRICE);
+        data.getQuantity(FEED_IN_TARIFF, StandardUnits.ENERGY_PRICE);
 
     return new BmInput(
         uuid,
@@ -54,9 +55,9 @@ public class BmInputFactory extends SystemParticipantInputEntityFactory<BmInput>
         node,
         qCharacteristics,
         controllingEm,
-        getEntity(data, TYPE, types),
+        data.getEntity(TYPE, types),
         costControlled,
         feedInTariff,
-        data);
+        data.additionalInformation());
   }
 }

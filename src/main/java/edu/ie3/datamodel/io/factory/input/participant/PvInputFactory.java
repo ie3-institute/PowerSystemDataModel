@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.EmInput;
@@ -29,7 +30,7 @@ public class PvInputFactory extends SystemParticipantInputEntityFactory<PvInput>
 
   @Override
   protected PvInput buildModel(
-      Map<String, String> data,
+      FieldMap data,
       UUID uuid,
       String id,
       NodeInput node,
@@ -37,16 +38,16 @@ public class PvInputFactory extends SystemParticipantInputEntityFactory<PvInput>
       OperatorInput operator,
       OperationTime operationTime,
       EmInput controllingEm) {
-    double albedo = getDouble(data, ALBEDO);
-    ComparableQuantity<Angle> azimuth = getQuantity(data, AZIMUTH, StandardUnits.AZIMUTH);
+    double albedo = data.getDouble(ALBEDO);
+    ComparableQuantity<Angle> azimuth = data.getQuantity(AZIMUTH, StandardUnits.AZIMUTH);
     ComparableQuantity<Dimensionless> etaConv =
-        getQuantity(data, ETA_CONV, StandardUnits.EFFICIENCY);
+        data.getQuantity(ETA_CONV, StandardUnits.EFFICIENCY);
     ComparableQuantity<Angle> elevationAngle =
-        getQuantity(data, ELEVATION_ANGLE, StandardUnits.SOLAR_ELEVATION_ANGLE);
-    double kG = getDouble(data, KG);
-    double kT = getDouble(data, KT);
-    ComparableQuantity<Power> sRated = getQuantity(data, S_RATED, StandardUnits.S_RATED);
-    double cosPhi = getDouble(data, COS_PHI_RATED);
+        data.getQuantity(ELEVATION_ANGLE, StandardUnits.SOLAR_ELEVATION_ANGLE);
+    double kG = data.getDouble(KG);
+    double kT = data.getDouble(KT);
+    ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
+    double cosPhi = data.getDouble(COS_PHI_RATED);
 
     return new PvInput(
         uuid,
@@ -64,6 +65,6 @@ public class PvInputFactory extends SystemParticipantInputEntityFactory<PvInput>
         kT,
         sRated,
         cosPhi,
-        data);
+        data.additionalInformation());
   }
 }

@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.factory.input.participant;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.input.AssetInputEntityFactory;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.EmInput;
@@ -42,15 +43,11 @@ public abstract class SystemParticipantInputEntityFactory<T extends SystemPartic
 
   @Override
   protected T buildModel(
-      Map<String, String> data,
-      UUID uuid,
-      String id,
-      OperatorInput operator,
-      OperationTime operationTime) {
-    NodeInput node = getEntity(data, NODE, nodes);
-    EmInput controllingEm = getEntity(data, CONTROLLING_EM, emUnits, null);
+      FieldMap data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
+    NodeInput node = data.getEntity(NODE, nodes);
+    EmInput controllingEm = data.getEntity(CONTROLLING_EM, emUnits, null);
 
-    String qCharacteristicsValue = getField(data, Q_CHARACTERISTICS);
+    String qCharacteristicsValue = data.getField(Q_CHARACTERISTICS);
 
     ReactivePowerCharacteristic qCharacteristics;
     try {
@@ -70,7 +67,7 @@ public abstract class SystemParticipantInputEntityFactory<T extends SystemPartic
   /**
    * Creates SystemParticipantInput entity with given parameters
    *
-   * @param data entity data
+   * @param data field data
    * @param uuid UUID of the input entity
    * @param id ID
    * @param node Node that the asset is connected to
@@ -80,7 +77,7 @@ public abstract class SystemParticipantInputEntityFactory<T extends SystemPartic
    * @return newly created asset object
    */
   protected abstract T buildModel(
-      Map<String, String> data,
+      FieldMap data,
       UUID uuid,
       String id,
       NodeInput node,

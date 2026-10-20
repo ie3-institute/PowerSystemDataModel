@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -35,19 +36,15 @@ public abstract class ConnectorInputEntityFactory<T extends ConnectorInput>
 
   @Override
   protected T buildModel(
-      Map<String, String> data,
-      UUID uuid,
-      String id,
-      OperatorInput operator,
-      OperationTime operationTime) {
-    final NodeInput nodeA = getEntity(data, NODE_A, nodes);
-    final NodeInput nodeB = getEntity(data, NODE_B, nodes);
+      FieldMap data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
+    final NodeInput nodeA = data.getEntity(NODE_A, nodes);
+    final NodeInput nodeB = data.getEntity(NODE_B, nodes);
 
     return buildModel(data, uuid, id, nodeA, nodeB, operator, operationTime);
   }
 
   protected abstract T buildModel(
-      Map<String, String> data,
+      FieldMap data,
       UUID uuid,
       String id,
       NodeInput nodeA,

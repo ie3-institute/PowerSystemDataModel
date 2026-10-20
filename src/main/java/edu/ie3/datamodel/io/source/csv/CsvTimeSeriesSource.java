@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.FileIndividualTimeSeriesMetaInformation;
@@ -163,7 +164,7 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
   protected IndividualTimeSeries<V> buildIndividualTimeSeries(
       UUID timeSeriesUuid,
       Path filePath,
-      Function<Map<String, String>, Try<TimeBasedValue<V>, FactoryException>> fieldToValueFunction)
+      Function<FieldMap, Try<TimeBasedValue<V>, FactoryException>> fieldToValueFunction)
       throws SourceException {
     Try<Stream<TimeBasedValue<V>>, SourceException> timeBasedValues =
         dataSource
@@ -171,7 +172,7 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
             .flatMap(
                 stream ->
                     Try.scanStream(
-                        stream.map(fieldToValueFunction),
+                        stream.map(d -> fieldToValueFunction.apply(new FieldMap(d))),
                         "TimeBasedValue<V>",
                         SourceException::new));
     return new IndividualTimeSeries<>(

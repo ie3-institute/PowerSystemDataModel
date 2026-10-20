@@ -6,9 +6,9 @@
 package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.input.IdCoordinateInput;
 import edu.ie3.util.geo.GeoUtils;
-import java.util.Map;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
@@ -21,10 +21,10 @@ public class SqlIdCoordinateFactory extends IdCoordinateFactory {
   }
 
   @Override
-  protected IdCoordinateInput buildModel(Map<String, String> data) {
+  protected IdCoordinateInput buildModel(FieldMap data) {
     try {
-      int coordinateId = getInt(data, COORDINATE_ID);
-      byte[] byteArr = WKBReader.hexToBytes(getField(data, COORDINATE));
+      int coordinateId = data.getInt(COORDINATE_ID);
+      byte[] byteArr = WKBReader.hexToBytes(data.getField(COORDINATE));
       WKBReader reader = new WKBReader();
 
       Coordinate coordinate = reader.read(byteArr).getCoordinate();

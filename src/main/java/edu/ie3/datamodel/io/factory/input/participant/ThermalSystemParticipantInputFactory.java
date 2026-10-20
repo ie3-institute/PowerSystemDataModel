@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -43,7 +44,7 @@ public abstract class ThermalSystemParticipantInputFactory<
 
   @Override
   protected final M buildModel(
-      Map<String, String> data,
+      FieldMap data,
       UUID uuid,
       String id,
       NodeInput node,
@@ -58,11 +59,11 @@ public abstract class ThermalSystemParticipantInputFactory<
         operator,
         operationTime,
         node,
-        getEntity(data, THERMAL_BUS, thermalBuses),
+        data.getEntity(THERMAL_BUS, thermalBuses),
         qCharacteristics,
         controllingEm,
-        getEntity(data, TYPE, types),
-        data);
+        data.getType(types),
+        data.additionalInformation());
   }
 
   /**

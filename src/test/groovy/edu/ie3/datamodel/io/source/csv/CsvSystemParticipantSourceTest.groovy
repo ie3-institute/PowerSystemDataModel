@@ -30,6 +30,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
         new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
 
     when:
+    typeSource.validate()
     def systemParticipants = csvSystemParticipantSource.systemParticipants
 
     then:

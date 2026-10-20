@@ -5,10 +5,9 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.UniqueEntityFactory;
-import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.models.input.connector.CableDeploymentInput;
-import java.util.Map;
 import java.util.UUID;
 import javax.measure.quantity.Length;
 import tech.units.indriya.ComparableQuantity;
@@ -23,14 +22,14 @@ public class CableDeploymentInputFactory
   }
 
   @Override
-  protected CableDeploymentInput buildModel(Map<String, String> data) {
-    UUID uuid = getUUID(data, FieldNamingStrategy.UUID);
-    UUID lineUuid = getUUID(data, LINE_UUID);
-    String layoutFormation = getField(data, LAYOUT_FORMATION);
-    ComparableQuantity<Length> depthCables = getQuantity(data, DEPTH_CABLES, Units.METRE);
-    ComparableQuantity<Length> distanceCables = getQuantity(data, DISTANCE_CABLES, Units.METRE);
+  protected CableDeploymentInput buildModel(FieldMap data) {
+    UUID uuid = data.getUUID(UUID_FIELD);
+    UUID lineUuid = data.getUUID(LINE_UUID);
+    String layoutFormation = data.getField(LAYOUT_FORMATION);
+    ComparableQuantity<Length> depthCables = data.getQuantity(DEPTH_CABLES, Units.METRE);
+    ComparableQuantity<Length> distanceCables = data.getQuantity(DISTANCE_CABLES, Units.METRE);
 
     return new CableDeploymentInput(
-        uuid, lineUuid, layoutFormation, depthCables, distanceCables, data);
+        uuid, lineUuid, layoutFormation, depthCables, distanceCables, data.additionalInformation());
   }
 }

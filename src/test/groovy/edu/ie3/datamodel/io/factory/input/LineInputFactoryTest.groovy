@@ -5,10 +5,12 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
+import static edu.ie3.test.helper.EntityMap.*
 import static edu.ie3.util.quantities.PowerSystemUnits.METRE_PER_SECOND
 import static edu.ie3.util.quantities.PowerSystemUnits.PU
 
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
@@ -79,7 +81,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
     ]
 
     when:
-    Try<LineInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<LineInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success
@@ -126,7 +128,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
     ]
 
     when:
-    Try<LineInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<LineInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success
@@ -173,7 +175,7 @@ class LineInputFactoryTest extends Specification implements FactoryTestHelper {
     ]
 
     when:
-    Try<LineInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<LineInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success

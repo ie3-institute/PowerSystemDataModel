@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -39,7 +40,7 @@ public class ChpInputFactory extends SystemParticipantInputEntityFactory<ChpInpu
 
   @Override
   protected ChpInput buildModel(
-      Map<String, String> data,
+      FieldMap data,
       UUID uuid,
       String id,
       NodeInput node,
@@ -53,11 +54,11 @@ public class ChpInputFactory extends SystemParticipantInputEntityFactory<ChpInpu
         operator,
         operationTime,
         node,
-        getEntity(data, THERMAL_BUS, thermalBuses),
+        data.getEntity(THERMAL_BUS, thermalBuses),
         qCharacteristics,
         controllingEm,
-        getEntity(data, TYPE, types),
-        getEntity(data, THERMAL_STORAGE, thermalStorages),
-        data);
+        data.getEntity(TYPE, types),
+        data.getEntity(THERMAL_STORAGE, thermalStorages),
+        data.additionalInformation());
   }
 }

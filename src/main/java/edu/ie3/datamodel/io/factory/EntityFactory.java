@@ -6,7 +6,6 @@
 package edu.ie3.datamodel.io.factory;
 
 import edu.ie3.datamodel.models.Entity;
-import java.util.Map;
 
 /**
  * Universal factory class for creating entities.
@@ -14,8 +13,7 @@ import java.util.Map;
  * @param <T> Type of entity that this factory can create. Can be a subclass of the entities that
  *     this factory creates.
  */
-public abstract class EntityFactory<T extends Entity, R extends T>
-    extends Factory<T, Map<String, String>, R> {
+public abstract class EntityFactory<T extends Entity, R extends T> extends Factory<T, FieldMap, R> {
   /**
    * Constructor for an EntityFactory for given classes
    *

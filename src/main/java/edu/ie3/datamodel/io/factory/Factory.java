@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * @param <R> Type of the intended return type (might differ slightly from target class (cf. {@link
  *     edu.ie3.datamodel.io.factory.timeseries.TimeBasedValueFactory})).
  */
-public abstract class Factory<C, D, R> extends FieldNamingStrategy implements FactoryHelperMethods {
+public abstract class Factory<C, D, R> extends FieldNamingStrategy {
   public static final Logger log = LoggerFactory.getLogger(Factory.class);
 
   private final List<Class<? extends C>> supportedClasses;

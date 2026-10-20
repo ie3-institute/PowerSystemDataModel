@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory.typeinput
 
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.connector.type.CableMaterial
 import edu.ie3.datamodel.models.input.connector.type.CableTypeInput
@@ -58,7 +59,7 @@ class CableTypeInputFactoryTest extends Specification implements FactoryTestHelp
     ]
 
     when:
-    Try<CableTypeInput, FactoryException> typeInput = typeInputFactory.get(new HashMap<>(parameter))
+    Try<CableTypeInput, FactoryException> typeInput = typeInputFactory.get(new FieldMap(parameter))
 
     then:
     typeInput.success
@@ -115,7 +116,7 @@ class CableTypeInputFactoryTest extends Specification implements FactoryTestHelp
     ]
 
     when:
-    typeInputFactory.get(parameter).getOrThrow()
+    typeInputFactory.get(new FieldMap(parameter)).getOrThrow()
 
     then:
     FactoryException e = thrown()

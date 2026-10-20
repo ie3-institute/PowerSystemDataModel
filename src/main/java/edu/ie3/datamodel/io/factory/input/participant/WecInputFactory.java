@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -31,7 +32,7 @@ public class WecInputFactory extends SystemParticipantInputEntityFactory<WecInpu
 
   @Override
   protected WecInput buildModel(
-      Map<String, String> data,
+      FieldMap data,
       UUID uuid,
       String id,
       NodeInput node,
@@ -47,7 +48,7 @@ public class WecInputFactory extends SystemParticipantInputEntityFactory<WecInpu
         node,
         qCharacteristics,
         controllingEm,
-        getEntity(data, TYPE, types),
-        data);
+        data.getType(types),
+        data.additionalInformation());
   }
 }

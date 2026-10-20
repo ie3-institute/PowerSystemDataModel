@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.connector.ConnectorResult
 import edu.ie3.datamodel.models.result.connector.LineResult
@@ -52,7 +53,7 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
 
     when:
     def resultFactory = new ConnectorResultFactory(modelClass)
-    Try<? extends ConnectorResult, FactoryException> result = resultFactory.get(new HashMap<>(parameter))
+    Try<? extends ConnectorResult, FactoryException> result = resultFactory.get(new FieldMap(parameter))
 
     then:
     result.success

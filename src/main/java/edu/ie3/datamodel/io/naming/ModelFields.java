@@ -15,6 +15,7 @@ import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.*;
+import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
@@ -201,7 +202,7 @@ public final class ModelFields extends FieldNamingStrategy {
   // code for registering the fields for known assets
 
   // basic asset fields
-  private static final Set<String> assetFields = newSet(UUID, ID);
+  private static final Set<String> assetFields = newSet(UUID_FIELD, ID);
   private static final Set<String> assetOptionalFields =
       newSet(OPERATOR, OPERATES_FROM, OPERATES_UNTIL);
 
@@ -266,6 +267,25 @@ public final class ModelFields extends FieldNamingStrategy {
     register(OperatorInput.class, assetFields);
 
     registerMandatory(LineTypeInput.class, assetFields, B, G, R, X, I_MAX, V_RATED);
+
+    registerMandatory(
+        CableTypeInput.class,
+        assetFields,
+        CORE_NUMBER,
+        CONDUCTOR,
+        ISOLATION_STRING,
+        SCREEN_STRING,
+        FILLER_STRING,
+        ARMOR_STRING,
+        JACK_STRING,
+        LIMIT_TEMPERATURE,
+        FREQUENCY,
+        SKIN_EFFECT_COEFFICIENT,
+        PROXIMITY_EFFECT_COEFFICIENT,
+        ELECTRICAL_CAPACITANCE,
+        TAN_DELTA,
+        CIRCULATING_LOSS_FACTOR,
+        EDDY_CURRENT_LOSS_FACTOR);
 
     Stream.of(Transformer2WTypeInput.class, Transformer3WTypeInput.class)
         .forEach(
@@ -343,7 +363,7 @@ public final class ModelFields extends FieldNamingStrategy {
 
     register(
         CableDeploymentInput.class,
-        newSet(UUID, LINE_UUID, LAYOUT_FORMATION, DEPTH_CABLES, DISTANCE_CABLES),
+        newSet(UUID_FIELD, LINE_UUID, LAYOUT_FORMATION, DEPTH_CABLES, DISTANCE_CABLES),
         Set.of());
 
     Stream.of(LineInput.class, Transformer2WInput.class, Transformer3WInput.class)
@@ -355,7 +375,7 @@ public final class ModelFields extends FieldNamingStrategy {
     addMandatory(MeasurementUnitInput.class, NODE, V_MAG, V_ANG, P, Q);
 
     // adding unsupported fields
-    ModelFields.unsupportedFields.put(SwitchInput.class, newSet(PARALLEL_DEVICES));
+    registerUnsupported(SwitchInput.class, newSet(PARALLEL_DEVICES));
 
     Stream.of(
             NodeInput.class,

@@ -7,11 +7,12 @@ package edu.ie3.datamodel.io.factory.input
 
 import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.*
 import static edu.ie3.datamodel.utils.CollectionUtils.newSet
+import static edu.ie3.test.helper.EntityMap.*
 
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.exceptions.NotImplementedException
 import edu.ie3.datamodel.exceptions.ValidationException
-import edu.ie3.datamodel.io.naming.FieldNamingStrategy
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.io.naming.ModelFields
 import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.OperationTime
@@ -36,7 +37,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
 
   def setupSpec() {
     // registering fields for the asset
-    ModelFields.register(TestAssetInput, newSet(FieldNamingStrategy.UUID, ID), newSet(OPERATOR, OPERATES_FROM, OPERATES_UNTIL))
+    ModelFields.register(TestAssetInput, newSet(UUID_FIELD, ID), newSet(OPERATOR, OPERATES_FROM, OPERATES_UNTIL))
 
     operatorInput.getUuid() >> operatorUuid
 
@@ -60,7 +61,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     ]
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success
@@ -83,7 +84,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     ]
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success
@@ -108,7 +109,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     ]
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success
@@ -139,7 +140,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     ]
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success
@@ -164,7 +165,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     ]
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success
@@ -190,7 +191,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     ]
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success
@@ -215,7 +216,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     ]
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success
@@ -237,7 +238,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     ]
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success
@@ -261,7 +262,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     ]
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success
@@ -286,7 +287,7 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     ]
 
     when:
-    Try<TestAssetInput, FactoryException> input = inputFactory.get(new HashMap<>(parameter))
+    Try<TestAssetInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success
@@ -342,8 +343,8 @@ class AssetInputEntityFactoryTest extends Specification implements FactoryTestHe
     }
 
     @Override
-    protected TestAssetInput buildModel(Map<String, String> data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
-      return new TestAssetInput(uuid, id, operator, operationTime, data)
+    protected TestAssetInput buildModel(FieldMap data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
+      return new TestAssetInput(uuid, id, operator, operationTime, data.additionalInformation())
     }
   }
 }

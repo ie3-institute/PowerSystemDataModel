@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -20,17 +21,17 @@ public class SwitchInputFactory extends ConnectorInputEntityFactory<SwitchInput>
 
   @Override
   protected SwitchInput buildModel(
-      Map<String, String> data,
+      FieldMap data,
       UUID uuid,
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
       OperatorInput operator,
       OperationTime operationTime) {
-    boolean closed = getBoolean(data, CLOSED);
+    boolean closed = data.getBoolean(CLOSED);
 
     if (data.containsKey(PARALLEL_DEVICES)) {
-      String parallelDevices = getField(data, PARALLEL_DEVICES);
+      String parallelDevices = data.getField(PARALLEL_DEVICES);
 
       log.warn(
           "The SwitchInput with id `{}` specifies the unused parameter `parallelDevices` with a value of `{}`."
@@ -40,6 +41,7 @@ public class SwitchInputFactory extends ConnectorInputEntityFactory<SwitchInput>
           parallelDevices);
     }
 
-    return new SwitchInput(uuid, id, operator, operationTime, nodeA, nodeB, closed, data);
+    return new SwitchInput(
+        uuid, id, operator, operationTime, nodeA, nodeB, closed, data.additionalInformation());
   }
 }

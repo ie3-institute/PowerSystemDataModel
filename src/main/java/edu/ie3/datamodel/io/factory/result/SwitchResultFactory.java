@@ -5,9 +5,9 @@
 */
 package edu.ie3.datamodel.io.factory.result;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.result.connector.SwitchResult;
 import java.time.ZonedDateTime;
-import java.util.Map;
 import java.util.UUID;
 
 public class SwitchResultFactory extends ResultEntityFactory<SwitchResult, SwitchResult> {
@@ -17,8 +17,8 @@ public class SwitchResultFactory extends ResultEntityFactory<SwitchResult, Switc
   }
 
   @Override
-  protected SwitchResult buildModel(Map<String, String> data, ZonedDateTime time, UUID inputModel) {
-    boolean closed = getBoolean(data, CLOSED);
+  protected SwitchResult buildModel(FieldMap data, ZonedDateTime time, UUID inputModel) {
+    boolean closed = data.getBoolean(CLOSED);
     return new SwitchResult(time, inputModel, closed);
   }
 }

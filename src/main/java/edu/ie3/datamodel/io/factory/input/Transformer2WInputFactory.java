@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -27,17 +28,17 @@ public class Transformer2WInputFactory extends ConnectorInputEntityFactory<Trans
 
   @Override
   protected Transformer2WInput buildModel(
-      Map<String, String> data,
+      FieldMap data,
       UUID uuid,
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
       OperatorInput operator,
       OperationTime operationTime) {
-    int parallelDevices = getInt(data, PARALLEL_DEVICES);
-    Transformer2WTypeInput type = getType(data, types);
-    int tapPos = getInt(data, TAP_POS);
-    boolean autoTap = getBoolean(data, AUTO_TAP);
+    int parallelDevices = data.getInt(PARALLEL_DEVICES);
+    Transformer2WTypeInput type = data.getType(types);
+    int tapPos = data.getInt(TAP_POS);
+    boolean autoTap = data.getBoolean(AUTO_TAP);
 
     return new Transformer2WInput(
         uuid,
@@ -50,6 +51,6 @@ public class Transformer2WInputFactory extends ConnectorInputEntityFactory<Trans
         type,
         tapPos,
         autoTap,
-        data);
+        data.additionalInformation());
   }
 }

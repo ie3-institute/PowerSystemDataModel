@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
@@ -18,11 +19,7 @@ public class ThermalBusInputFactory extends AssetInputEntityFactory<ThermalBusIn
 
   @Override
   protected ThermalBusInput buildModel(
-      Map<String, String> data,
-      UUID uuid,
-      String id,
-      OperatorInput operator,
-      OperationTime operationTime) {
-    return new ThermalBusInput(uuid, id, operator, operationTime, data);
+      FieldMap data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
+    return new ThermalBusInput(uuid, id, operator, operationTime, data.additionalInformation());
   }
 }

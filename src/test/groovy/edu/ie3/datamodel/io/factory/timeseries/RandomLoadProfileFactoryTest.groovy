@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.profile.LoadProfile
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
@@ -65,9 +66,9 @@ class RandomLoadProfileFactoryTest extends Specification {
     ]
 
     allEntries = [
-      factory.buildModel(data0),
-      factory.buildModel(data1),
-      factory.buildModel(data2)
+      factory.buildModel(new FieldMap(data0)),
+      factory.buildModel(new FieldMap(data1)),
+      factory.buildModel(new FieldMap(data2))
     ].flatten() as Set<LoadProfileEntry<RandomLoadValues>>
   }
 
@@ -124,7 +125,7 @@ class RandomLoadProfileFactoryTest extends Specification {
     ] as Map
 
     when:
-    def entry = factory.buildModel(data)
+    def entry = factory.buildModel(new FieldMap(data))
 
     then:
     entry.value.class == RandomLoadValues

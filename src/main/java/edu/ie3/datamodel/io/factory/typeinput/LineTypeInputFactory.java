@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.typeinput;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
@@ -35,24 +36,24 @@ public class LineTypeInputFactory
   }
 
   @Override
-  protected LineTypeInput buildModel(Map<String, String> data) {
-    UUID uuid = getUUID(data, UUID);
-    String id = getField(data, ID);
+  protected LineTypeInput buildModel(FieldMap data) {
+    UUID uuid = data.getUUID(UUID_FIELD);
+    String id = data.getField(ID);
     ComparableQuantity<SpecificConductance> b =
-        getQuantity(data, B, StandardUnits.SUSCEPTANCE_PER_LENGTH);
+        data.getQuantity(B, StandardUnits.SUSCEPTANCE_PER_LENGTH);
     ComparableQuantity<SpecificConductance> g =
-        getQuantity(data, G, StandardUnits.CONDUCTANCE_PER_LENGTH);
+        data.getQuantity(G, StandardUnits.CONDUCTANCE_PER_LENGTH);
     ComparableQuantity<SpecificResistance> r =
-        getQuantity(data, R, StandardUnits.RESISTANCE_PER_LENGTH);
+        data.getQuantity(R, StandardUnits.RESISTANCE_PER_LENGTH);
     ComparableQuantity<SpecificResistance> x =
-        getQuantity(data, X, StandardUnits.REACTANCE_PER_LENGTH);
+        data.getQuantity(X, StandardUnits.REACTANCE_PER_LENGTH);
     ComparableQuantity<ElectricCurrent> iMax =
-        getQuantity(data, I_MAX, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
+        data.getQuantity(I_MAX, StandardUnits.ELECTRIC_CURRENT_MAGNITUDE);
     ComparableQuantity<ElectricPotential> vRated =
-        getQuantity(data, V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
+        data.getQuantity(V_RATED, StandardUnits.RATED_VOLTAGE_MAGNITUDE);
 
     String cableUuidStr =
-        getFieldOptional(data, FieldNamingStrategy.CABLE_TYPE)
+        data.getFieldOptional(FieldNamingStrategy.CABLE_TYPE)
             .map(String::trim)
             .filter(s -> !s.isBlank())
             .orElse(null);
@@ -85,6 +86,7 @@ public class LineTypeInputFactory
       cableType = Optional.of(resolvedCableType);
     }
 
-    return new LineTypeInput(uuid, id, b, g, r, x, iMax, vRated, cableType, data);
+    return new LineTypeInput(
+        uuid, id, b, g, r, x, iMax, vRated, cableType, data.additionalInformation());
   }
 }
