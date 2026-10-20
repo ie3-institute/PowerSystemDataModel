@@ -18,10 +18,12 @@ import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.container.*;
-import edu.ie3.datamodel.models.input.container.SoilData;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /** Convenience class for cases where all used data comes from CSV sources */
 public class CsvJointGridContainerSource {
