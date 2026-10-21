@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.models.input;
 
-import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
+import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
 import java.util.Map;
 import java.util.Objects;
@@ -20,7 +20,7 @@ public class SoilType extends UniqueInputEntity {
   private final String id;
   private final ComparableQuantity<ThermalResistivity> thermalResistivityWet;
   private final ComparableQuantity<ThermalResistivity> thermalResistivityDry;
-  private final ComparableQuantity<ThermalCapacitance> specificHeatCapacity;
+  private final ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity;
   private final ComparableQuantity<Temperature> criticalTemperatureDifference;
 
   /**
@@ -39,7 +39,7 @@ public class SoilType extends UniqueInputEntity {
       String id,
       ComparableQuantity<ThermalResistivity> thermalResistivityWet,
       ComparableQuantity<ThermalResistivity> thermalResistivityDry,
-      ComparableQuantity<ThermalCapacitance> specificHeatCapacity,
+      ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity,
       ComparableQuantity<Temperature> criticalTemperatureDifference) {
     this(
         uuid,
@@ -68,7 +68,7 @@ public class SoilType extends UniqueInputEntity {
       String id,
       ComparableQuantity<ThermalResistivity> thermalResistivityWet,
       ComparableQuantity<ThermalResistivity> thermalResistivityDry,
-      ComparableQuantity<ThermalCapacitance> specificHeatCapacity,
+      ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity,
       ComparableQuantity<Temperature> criticalTemperatureDifference,
       Map<String, String> additionalInformation) {
     super(uuid);
@@ -112,7 +112,7 @@ public class SoilType extends UniqueInputEntity {
    *
    * @return the volumetric specific heat capacity of the soil
    */
-  public ComparableQuantity<ThermalCapacitance> getSpecificHeatCapacity() {
+  public ComparableQuantity<SpecificHeatCapacity> getSpecificHeatCapacity() {
     return specificHeatCapacity;
   }
 
@@ -183,7 +183,7 @@ public class SoilType extends UniqueInputEntity {
     private String id;
     private ComparableQuantity<ThermalResistivity> thermalResistivityWet;
     private ComparableQuantity<ThermalResistivity> thermalResistivityDry;
-    private ComparableQuantity<ThermalCapacitance> specificHeatCapacity;
+    private ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity;
     private ComparableQuantity<Temperature> criticalTemperatureDifference;
     private Map<String, String> additionalInformation;
 
@@ -215,7 +215,7 @@ public class SoilType extends UniqueInputEntity {
     }
 
     public SoilTypeCopyBuilder specificHeatCapacity(
-        ComparableQuantity<ThermalCapacitance> specificHeatCapacity) {
+        ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity) {
       this.specificHeatCapacity = specificHeatCapacity;
       return thisInstance();
     }
