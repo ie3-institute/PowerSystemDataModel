@@ -11,6 +11,8 @@ import edu.ie3.datamodel.io.factory.input.SoilLayerInputFactory;
 import edu.ie3.datamodel.io.factory.input.SoilTypeInputFactory;
 import edu.ie3.datamodel.models.input.SoilLayer;
 import edu.ie3.datamodel.models.input.SoilType;
+import edu.ie3.datamodel.models.input.container.SoilData;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 
@@ -52,6 +54,17 @@ public class SoilDataSource extends EntitySource {
    */
   public Map<UUID, SoilLayer> getSoilLayers() throws SourceException {
     return getEntities(SoilLayer.class, dataSource, soilLayerFactory);
+  }
+
+  /**
+   * Reads all soil types and layers from the underlying source.
+   *
+   * @return the soil data
+   * @throws SourceException if the source cannot be read
+   */
+  public SoilData getSoilData() throws SourceException {
+    return new SoilData(
+        new HashSet<>(getSoilTypes().values()), new HashSet<>(getSoilLayers().values()));
   }
 
   @Override
