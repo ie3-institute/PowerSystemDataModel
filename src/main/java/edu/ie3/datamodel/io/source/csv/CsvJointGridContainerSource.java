@@ -90,12 +90,7 @@ public class CsvJointGridContainerSource {
             () -> new EnergyManagementUnits(new HashSet<>(emSource.getEmUnits(operators).values())),
             SourceException.class);
     Try<SoilData, SourceException> soilData =
-        Try.of(
-            () ->
-                new SoilData(
-                    new HashSet<>(soilDataSource.getSoilTypes().values()),
-                    new HashSet<>(soilDataSource.getSoilLayers().values())),
-            SourceException.class);
+        Try.of(soilDataSource::getSoilData, SourceException.class);
     List<? extends Exception> exceptions =
         Try.getExceptions(rawGridElements, systemParticipants, emUnits, soilData);
 

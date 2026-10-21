@@ -12,6 +12,7 @@ import edu.ie3.datamodel.exceptions.FailedValidationException
 import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.csv.CsvDataSource
+import edu.ie3.datamodel.models.input.container.SoilData
 import edu.ie3.datamodel.utils.validation.ValidationUtils
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.Geometry
@@ -51,6 +52,7 @@ class SoilDataSourceSpec extends Specification {
     when:
     def types = source.getSoilTypes()
     def layers = source.getSoilLayers()
+    SoilData soilData = source.getSoilData()
 
     then:
     types.size() == 1
@@ -59,6 +61,8 @@ class SoilDataSourceSpec extends Specification {
     layers.size() == 1
     layers[LAYER_UUID].geometry.equals(GEOMETRY)
     Math.abs(layers[LAYER_UUID].thickness().to(METRE).value.doubleValue() - 2.0d) < 1e-12
+    soilData.soilTypes == [types[TYPE_UUID]] as Set
+    soilData.soilLayers == [layers[LAYER_UUID]] as Set
   }
 
   def "SoilDataSource reports malformed soil rows"() {
