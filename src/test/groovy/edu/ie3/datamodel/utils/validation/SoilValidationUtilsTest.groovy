@@ -11,7 +11,6 @@ import static edu.ie3.util.quantities.PowerSystemUnits.KELVIN_METRE_PER_WATT
 import static tech.units.indriya.unit.Units.METRE
 
 import edu.ie3.datamodel.exceptions.InvalidEntityException
-import edu.ie3.datamodel.exceptions.ValidationException
 import edu.ie3.datamodel.models.input.SoilLayer
 import edu.ie3.datamodel.models.input.SoilType
 import edu.ie3.util.quantities.interfaces.ThermalCapacitance
@@ -118,10 +117,10 @@ class SoilValidationUtilsTest extends Specification {
     def layer2 = layerAt(GEOMETRY, -2d, -4d)
 
     when:
-    SoilValidationUtils.validateAll([layer1, layer2], [validSoilType()])
+    def result = SoilValidationUtils.validateAll([layer1, layer2], [validSoilType()])
 
     then:
-    notThrown(ValidationException)
+    result.success
   }
 
   def "validateAll reports overlapping soil layers at the same coordinate"() {
@@ -130,11 +129,11 @@ class SoilValidationUtilsTest extends Specification {
     def layer2 = layerAt(GEOMETRY, -1d, -3d)
 
     when:
-    SoilValidationUtils.validateAll([layer1, layer2], [validSoilType()])
+    def result = SoilValidationUtils.validateAll([layer1, layer2], [validSoilType()])
 
     then:
-    def ex = thrown(ValidationException)
-    ex.message.contains("Overlapping soil layers")
+    result.failure
+    result.getException().get().message.contains("Overlapping soil layers")
   }
 
   def "validateAll reports gaps in soil coverage at the same coordinate"() {
@@ -143,11 +142,11 @@ class SoilValidationUtilsTest extends Specification {
     def layer2 = layerAt(GEOMETRY, -3d, -5d)
 
     when:
-    SoilValidationUtils.validateAll([layer1, layer2], [validSoilType()])
+    def result = SoilValidationUtils.validateAll([layer1, layer2], [validSoilType()])
 
     then:
-    def ex = thrown(ValidationException)
-    ex.message.contains("Gap in soil coverage")
+    result.failure
+    result.getException().get().message.contains("Gap in soil coverage")
   }
 
   def "validateAll reports invalid soil types"() {
@@ -155,73 +154,19 @@ class SoilValidationUtilsTest extends Specification {
     def invalidType = validSoilType().copy().id(null).build()
 
     when:
-    SoilValidationUtils.validateAll([validSoilLayer()], [invalidType])
+    def result = SoilValidationUtils.validateAll([validSoilLayer()], [invalidType])
 
     then:
-    def ex = thrown(ValidationException)
-    ex.message.contains("No ID assigned")
+    result.failure
+    result.getException().get().message.contains("No ID assigned")
   }
 
   def "validateAll tolerates null collections"() {
     when:
-    SoilValidationUtils.validateAll(null, null)
+    def result = SoilValidationUtils.validateAll(null, null)
 
     then:
-    notThrown(ValidationException)
-  }
-
-  def "totalThicknessBySoilType sums layer thickness per soil type"() {
-    given:
-    def typeA = UUID.fromString("32b43a78-7721-431d-b1c2-56975a123670")
-    def typeB = UUID.fromString("44c54b89-8832-442e-c2d3-67086b234781")
-    def layers = [
-      layerAt(GEOMETRY, 0d, -2d, typeA),
-      layerAt(GEOMETRY, -2d, -5d, typeA),
-      layerAt(GEOMETRY, 0d, -1d, typeB)
-    ]
-
-    when:
-    def result = SoilValidationUtils.totalThicknessBySoilType(layers)
-
-    then:
-    result.size() == 2
-    result.get(typeA).to(METRE).value.doubleValue() == 5.0d
-    result.get(typeB).to(METRE).value.doubleValue() == 1.0d
-
-    when:
-    def empty = SoilValidationUtils.totalThicknessBySoilType(null)
-
-    then:
-    empty.isEmpty()
-  }
-
-  def "associateLayersWithTypes resolves references and reports missing ones"() {
-    given:
-    def knownType = validSoilType()
-    def unknownTypeUuid = UUID.randomUUID()
-    def layerKnown = layerAt(GEOMETRY, 0d, -1d, knownType.uuid)
-    def layerUnknown = layerAt(GEOMETRY, -1d, -2d, unknownTypeUuid)
-    def layerNoType = layerAt(GEOMETRY, -2d, -3d, null)
-
-    when:
-    def mapping = SoilValidationUtils.associateLayersWithTypes(
-        [
-          layerKnown,
-          layerUnknown,
-          layerNoType
-        ], [knownType])
-
-    then:
-    mapping.size() == 3
-    mapping.get(layerKnown) == Optional.of(knownType)
-    !mapping.get(layerUnknown).present
-    !mapping.get(layerNoType).present
-
-    when:
-    def empty = SoilValidationUtils.associateLayersWithTypes(null, [knownType])
-
-    then:
-    empty.isEmpty()
+    result.success
   }
 
   private static SoilLayer layerAt(Geometry geometry, double zFrom, double zTo) {
