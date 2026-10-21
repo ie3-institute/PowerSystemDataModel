@@ -90,13 +90,9 @@ public class GridContainerValidationUtils extends ValidationUtils {
       return List.of(isNull);
     }
 
-    try {
-      SoilValidationUtils.validateAll(
-          new ArrayList<>(soilData.getSoilLayers()), new ArrayList<>(soilData.getSoilTypes()));
-      return List.of(Success.empty());
-    } catch (ValidationException e) {
-      return List.of(Failure.ofVoid(e));
-    }
+    return List.of(
+        SoilValidationUtils.validateAll(
+            new ArrayList<>(soilData.getSoilLayers()), new ArrayList<>(soilData.getSoilTypes())));
   }
 
   /**

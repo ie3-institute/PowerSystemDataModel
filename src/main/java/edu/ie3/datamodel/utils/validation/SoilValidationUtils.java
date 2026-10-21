@@ -5,8 +5,6 @@
 */
 package edu.ie3.datamodel.utils.validation;
 
-import static edu.ie3.util.quantities.PowerSystemUnits.METRE;
-
 import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.ValidationException;
@@ -16,10 +14,7 @@ import edu.ie3.datamodel.utils.Try;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import javax.measure.quantity.Length;
 import org.locationtech.jts.geom.Geometry;
-import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.quantity.Quantities;
 
 /**
  * Utility class holding validation helpers for soil related input entities. This class cannot be
@@ -99,11 +94,13 @@ public class SoilValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Runs coverage and per-entity soil validations and throws a {@link ValidationException} with
-   * aggregated issues when failures are found.
+   * Runs coverage and per-entity soil validations and returns aggregated issues when failures are
+   * found.
+   *
+   * @return a success if all soil validations pass, or a failure containing aggregated issues
    */
-  public static void validateAll(List<SoilLayer> layers, List<SoilType> types)
-      throws ValidationException {
+  public static Try<Void, ValidationException> validateAll(
+      List<SoilLayer> layers, List<SoilType> types) {
     List<Exception> problems = new ArrayList<>();
 
     // Per-type and per-layer checks
@@ -115,8 +112,9 @@ public class SoilValidationUtils extends ValidationUtils {
     }
 
     if (!problems.isEmpty()) {
-      throw new FailedValidationException(problems);
+      return Try.Failure.ofVoid(new FailedValidationException(problems));
     }
+    return Try.Success.empty();
   }
 
   /**
