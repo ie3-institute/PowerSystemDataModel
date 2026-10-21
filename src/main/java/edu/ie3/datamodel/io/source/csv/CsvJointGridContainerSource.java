@@ -102,6 +102,8 @@ public class CsvJointGridContainerSource {
     if (!exceptions.isEmpty()) {
       throw new SourceException("Some exception(s) occurred while reading the grid.", exceptions);
     } else {
+      // getOrThrow should not throw an exception in this context, because all exception are
+      // filtered and thrown before
       return new JointGridContainer(
           gridName,
           rawGridElements.getOrThrow(),
