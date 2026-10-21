@@ -17,7 +17,7 @@ import edu.ie3.datamodel.models.input.container.JointGridContainer
 import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.datamodel.models.input.container.SoilData
 import edu.ie3.datamodel.models.input.container.SystemParticipants
-import edu.ie3.util.quantities.interfaces.ThermalCapacitance
+import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity
 import edu.ie3.util.quantities.interfaces.ThermalResistivity
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.GeometryFactory
@@ -31,9 +31,9 @@ class SoilDataSpec extends Specification {
     def soilType = new SoilType(
         uuid,
         "s1",
-        Quantities.getQuantity(1d, KELVIN_METRE_PER_WATT).asType(ThermalResistivity.class),
-        Quantities.getQuantity(2d, KELVIN_METRE_PER_WATT).asType(ThermalResistivity.class),
-        Quantities.getQuantity(3d, KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE).asType(ThermalCapacitance.class),
+        Quantities.getQuantity(1d, KELVIN_METRE_PER_WATT),
+        Quantities.getQuantity(2d, KELVIN_METRE_PER_WATT),
+        Quantities.getQuantity(3d, KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE),
         Quantities.getQuantity(4d, TEMPERATURE)
     )
 
@@ -119,9 +119,9 @@ class SoilDataSpec extends Specification {
     new SoilType(
         UUID.randomUUID(),
         "s1",
-        Quantities.getQuantity(1d, KELVIN_METRE_PER_WATT).asType(ThermalResistivity.class),
-        Quantities.getQuantity(2d, KELVIN_METRE_PER_WATT).asType(ThermalResistivity.class),
-        Quantities.getQuantity(3d, KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE).asType(ThermalCapacitance.class),
+        Quantities.getQuantity(1d, KELVIN_METRE_PER_WATT),
+        Quantities.getQuantity(2d, KELVIN_METRE_PER_WATT),
+        Quantities.getQuantity(3d, KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE),
         Quantities.getQuantity(4d, TEMPERATURE)
     )
   }

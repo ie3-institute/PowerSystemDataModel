@@ -129,10 +129,10 @@ public class StandardUnits {
   /** Heat demand, that is delivered via a profile in kW */
   public static final Unit<Power> HEAT_DEMAND_PROFILE = KILOWATT;
 
-  /** Thermal capacity of a given mass in kWh/K */
+  /** Heat capacity of a given mass or volume in kWh/K */
   public static final Unit<HeatCapacity> HEAT_CAPACITY = KILOWATTHOUR_PER_KELVIN;
 
-  /** Thermal capacity per mass kWh*m³/K */
+  /** Heat capacity per volume kWh*m³/K */
   public static final Unit<SpecificHeatCapacity> SPECIFIC_HEAT_CAPACITY =
       KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE;
 
@@ -145,7 +145,7 @@ public class StandardUnits {
   /** Area covered by the rotor of a wind energy converter in m² */
   public static final Unit<Area> ROTOR_AREA = SQUARE_METRE;
 
-  /** Height of the hub of an wind energy converter in metre */
+  /** Height of the hub of a wind energy converter in metre */
   public static final Unit<Length> HUB_HEIGHT = METRE;
 
   /** Price per energy in euro per megawatt hour */

@@ -8,7 +8,7 @@ package edu.ie3.datamodel.models.input.connector.type;
 import static edu.ie3.util.quantities.PowerSystemUnits.*;
 
 import edu.ie3.util.quantities.interfaces.ElectricalResistivity;
-import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
+import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
@@ -40,48 +40,57 @@ public enum CableMaterial {
   POLYPROPYLENE;
 
   /**
-   * Get the default thermal properties resistivity and capacitance for this material.
+   * Get the default thermal properties resistivity and specific heat capacity for this material.
    *
-   * @return A pair of thermal resistivity and thermal capacitance
+   * @return A pair of thermal resistivity and specific heat capacity
    */
   public ThermalProperties getThermalProperties() {
     return switch (this) {
       case COPPER ->
           new ThermalProperties(
               Quantities.getQuantity(1.0 / 384.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(3449600.0, JOULE_PER_CUBIC_METRE_KELVIN));
+              Quantities.getQuantity(3449600.0, JOULE_PER_CUBIC_METRE_KELVIN)
+                  .asType(SpecificHeatCapacity.class)); // TODO DF remove casting with PSU >3.2.3
       case ALUMINIUM ->
           new ThermalProperties(
               Quantities.getQuantity(1.0 / 237.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(2420913.3, JOULE_PER_CUBIC_METRE_KELVIN));
+              Quantities.getQuantity(2420913.3, JOULE_PER_CUBIC_METRE_KELVIN)
+                  .asType(SpecificHeatCapacity.class)); // TODO DF remove casting with PSU >3.2.3
       case XLPE, PE ->
           new ThermalProperties(
               Quantities.getQuantity(3.5, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN));
+              Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN)
+                  .asType(SpecificHeatCapacity.class)); // TODO DF remove casting with PSU >3.2.3
       case PVC ->
           new ThermalProperties(
               Quantities.getQuantity(5.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(1.7e6, JOULE_PER_CUBIC_METRE_KELVIN));
+              Quantities.getQuantity(1.7e6, JOULE_PER_CUBIC_METRE_KELVIN)
+                  .asType(SpecificHeatCapacity.class)); // TODO DF remove casting with PSU >3.2.3
       case SEMI_COND_SCREEN ->
           new ThermalProperties(
               Quantities.getQuantity(2.5, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN));
+              Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN)
+                  .asType(SpecificHeatCapacity.class));
       case SC_TAPE ->
           new ThermalProperties(
               Quantities.getQuantity(6.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN));
+              Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN)
+                  .asType(SpecificHeatCapacity.class)); // TODO DF remove casting with PSU >3.2.3
       case LEAD ->
           new ThermalProperties(
               Quantities.getQuantity(1.0 / 35.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(1463892.0, JOULE_PER_CUBIC_METRE_KELVIN));
+              Quantities.getQuantity(1463892.0, JOULE_PER_CUBIC_METRE_KELVIN)
+                  .asType(SpecificHeatCapacity.class)); // TODO DF remove casting with PSU >3.2.3
       case STEEL ->
           new ThermalProperties(
               Quantities.getQuantity(1.0 / 45.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(3756000.0, JOULE_PER_CUBIC_METRE_KELVIN));
+              Quantities.getQuantity(3756000.0, JOULE_PER_CUBIC_METRE_KELVIN)
+                  .asType(SpecificHeatCapacity.class)); // TODO DF remove casting with PSU >3.2.3
       case POLYPROPYLENE ->
           new ThermalProperties(
               Quantities.getQuantity(6.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(2.0e6, JOULE_PER_CUBIC_METRE_KELVIN));
+              Quantities.getQuantity(2.0e6, JOULE_PER_CUBIC_METRE_KELVIN)
+                  .asType(SpecificHeatCapacity.class)); // TODO DF remove casting with PSU >3.2.3
     };
   }
 
@@ -126,7 +135,7 @@ public enum CableMaterial {
   /** Container class for thermal properties of a cable material. */
   public record ThermalProperties(
       ComparableQuantity<ThermalResistivity> resistivity,
-      ComparableQuantity<ThermalCapacitance> capacitance) {
+      ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity) {
 
     /**
      * Compact constructor for validation of record components.
@@ -134,7 +143,7 @@ public enum CableMaterial {
      * @throws IllegalArgumentException if any property is null
      */
     public ThermalProperties {
-      if (resistivity == null || capacitance == null) {
+      if (resistivity == null || specificHeatCapacity == null) {
         throw new IllegalArgumentException("Thermal properties must not be null.");
       }
     }

@@ -13,7 +13,7 @@ import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.EntityData;
 import edu.ie3.datamodel.io.factory.UniqueEntityFactory;
 import edu.ie3.datamodel.models.input.SoilType;
-import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
+import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
 import java.util.UUID;
 import javax.measure.quantity.Temperature;
@@ -34,14 +34,11 @@ public class SoilTypeInputFactory extends UniqueEntityFactory<SoilType, EntityDa
       throw new FactoryException("Missing or empty field " + ID + ".");
     }
     ComparableQuantity<ThermalResistivity> thermalResistivityWet =
-        data.getQuantity(THERMAL_RESISTIVITY_WET, KELVIN_METRE_PER_WATT)
-            .asType(ThermalResistivity.class);
+        data.getQuantity(THERMAL_RESISTIVITY_WET, KELVIN_METRE_PER_WATT);
     ComparableQuantity<ThermalResistivity> thermalResistivityDry =
-        data.getQuantity(THERMAL_RESISTIVITY_DRY, KELVIN_METRE_PER_WATT)
-            .asType(ThermalResistivity.class);
-    ComparableQuantity<ThermalCapacitance> specificHeatCapacity =
-        data.getQuantity(SPECIFIC_HEAT_CAPACITY, KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE)
-            .asType(ThermalCapacitance.class);
+        data.getQuantity(THERMAL_RESISTIVITY_DRY, KELVIN_METRE_PER_WATT);
+    ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity =
+        data.getQuantity(SPECIFIC_HEAT_CAPACITY, KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE);
     ComparableQuantity<Temperature> criticalTemperatureDifference =
         data.getQuantity(CRITICAL_TEMPERATURE_DIFFERENCE, TEMPERATURE);
 

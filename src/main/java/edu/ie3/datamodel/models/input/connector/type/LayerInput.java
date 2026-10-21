@@ -8,7 +8,7 @@ package edu.ie3.datamodel.models.input.connector.type;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
+import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
 import java.io.Serializable;
 import java.util.Map;
@@ -28,7 +28,7 @@ public class LayerInput extends AssetInput implements Serializable {
   private final ComparableQuantity<Length> innerDiameter;
   private final ComparableQuantity<Length> outerDiameter;
   private final ComparableQuantity<ThermalResistivity> thermalResistivity;
-  private final ComparableQuantity<ThermalCapacitance> thermalCapacitance;
+  private final ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity;
   private final ComparableQuantity<Area> area;
 
   /**
@@ -40,7 +40,7 @@ public class LayerInput extends AssetInput implements Serializable {
    * @param innerDiameter Inner diameter of this layer
    * @param outerDiameter Outer diameter of this layer
    * @param thermalResistivity Thermal resistivity of the material
-   * @param thermalCapacitance Thermal capacitance of the material
+   * @param specificHeatCapacity Specific heat capacity of the material
    * @param area Real cross-sectional area (if different from geometry)
    */
   public LayerInput(
@@ -50,7 +50,7 @@ public class LayerInput extends AssetInput implements Serializable {
       ComparableQuantity<Length> innerDiameter,
       ComparableQuantity<Length> outerDiameter,
       ComparableQuantity<ThermalResistivity> thermalResistivity,
-      ComparableQuantity<ThermalCapacitance> thermalCapacitance,
+      ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity,
       ComparableQuantity<Area> area) {
     this(
         uuid,
@@ -61,7 +61,7 @@ public class LayerInput extends AssetInput implements Serializable {
         innerDiameter,
         outerDiameter,
         thermalResistivity,
-        thermalCapacitance,
+        specificHeatCapacity,
         area,
         null);
   }
@@ -73,7 +73,7 @@ public class LayerInput extends AssetInput implements Serializable {
       ComparableQuantity<Length> innerDiameter,
       ComparableQuantity<Length> outerDiameter,
       ComparableQuantity<ThermalResistivity> thermalResistivity,
-      ComparableQuantity<ThermalCapacitance> thermalCapacitance,
+      ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity,
       Optional<ComparableQuantity<Area>> area) {
     this(
         uuid,
@@ -84,7 +84,7 @@ public class LayerInput extends AssetInput implements Serializable {
         innerDiameter,
         outerDiameter,
         thermalResistivity,
-        thermalCapacitance,
+        specificHeatCapacity,
         area.orElse(null),
         null);
   }
@@ -98,7 +98,7 @@ public class LayerInput extends AssetInput implements Serializable {
       ComparableQuantity<Length> innerDiameter,
       ComparableQuantity<Length> outerDiameter,
       ComparableQuantity<ThermalResistivity> thermalResistivity,
-      ComparableQuantity<ThermalCapacitance> thermalCapacitance,
+      ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity,
       ComparableQuantity<Area> area) {
     this(
         uuid,
@@ -109,7 +109,7 @@ public class LayerInput extends AssetInput implements Serializable {
         innerDiameter,
         outerDiameter,
         thermalResistivity,
-        thermalCapacitance,
+        specificHeatCapacity,
         area,
         null);
   }
@@ -123,7 +123,7 @@ public class LayerInput extends AssetInput implements Serializable {
       ComparableQuantity<Length> innerDiameter,
       ComparableQuantity<Length> outerDiameter,
       ComparableQuantity<ThermalResistivity> thermalResistivity,
-      ComparableQuantity<ThermalCapacitance> thermalCapacitance,
+      ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity,
       ComparableQuantity<Area> area,
       Map<String, String> additionalInformation) {
     super(uuid, id, operator, operationTime);
@@ -131,7 +131,7 @@ public class LayerInput extends AssetInput implements Serializable {
     this.innerDiameter = innerDiameter;
     this.outerDiameter = outerDiameter;
     this.thermalResistivity = thermalResistivity;
-    this.thermalCapacitance = thermalCapacitance;
+    this.specificHeatCapacity = specificHeatCapacity;
     this.area = area;
     setAdditionalInformation(additionalInformation);
   }
@@ -145,7 +145,7 @@ public class LayerInput extends AssetInput implements Serializable {
       ComparableQuantity<Length> innerDiameter,
       ComparableQuantity<Length> outerDiameter,
       ComparableQuantity<ThermalResistivity> thermalResistivity,
-      ComparableQuantity<ThermalCapacitance> thermalCapacitance,
+      ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity,
       Optional<ComparableQuantity<Area>> area,
       Map<String, String> additionalInformation) {
     this(
@@ -157,7 +157,7 @@ public class LayerInput extends AssetInput implements Serializable {
         innerDiameter,
         outerDiameter,
         thermalResistivity,
-        thermalCapacitance,
+        specificHeatCapacity,
         area.orElse(null),
         additionalInformation);
   }
@@ -186,8 +186,8 @@ public class LayerInput extends AssetInput implements Serializable {
     return thermalResistivity;
   }
 
-  public ComparableQuantity<ThermalCapacitance> thermalCapacitance() {
-    return thermalCapacitance;
+  public ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity() {
+    return specificHeatCapacity;
   }
 
   public Optional<ComparableQuantity<Area>> area() {
@@ -204,7 +204,7 @@ public class LayerInput extends AssetInput implements Serializable {
         && innerDiameter.equals(that.innerDiameter)
         && outerDiameter.equals(that.outerDiameter)
         && thermalResistivity.equals(that.thermalResistivity)
-        && thermalCapacitance.equals(that.thermalCapacitance)
+        && specificHeatCapacity.equals(that.specificHeatCapacity)
         && Objects.equals(area, that.area);
   }
 
@@ -216,7 +216,7 @@ public class LayerInput extends AssetInput implements Serializable {
         innerDiameter,
         outerDiameter,
         thermalResistivity,
-        thermalCapacitance,
+        specificHeatCapacity,
         area);
   }
 
@@ -231,7 +231,7 @@ public class LayerInput extends AssetInput implements Serializable {
     private ComparableQuantity<Length> innerDiameter;
     private ComparableQuantity<Length> outerDiameter;
     private ComparableQuantity<ThermalResistivity> thermalResistivity;
-    private ComparableQuantity<ThermalCapacitance> thermalCapacitance;
+    private ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity;
     private ComparableQuantity<Area> area;
 
     protected LayerInputCopyBuilder(LayerInput entity) {
@@ -240,7 +240,7 @@ public class LayerInput extends AssetInput implements Serializable {
       this.innerDiameter = entity.innerDiameter;
       this.outerDiameter = entity.outerDiameter;
       this.thermalResistivity = entity.thermalResistivity;
-      this.thermalCapacitance = entity.thermalCapacitance;
+      this.specificHeatCapacity = entity.specificHeatCapacity;
       this.area = entity.area;
     }
 
@@ -264,8 +264,9 @@ public class LayerInput extends AssetInput implements Serializable {
       return thisInstance();
     }
 
-    public LayerInputCopyBuilder thermalCapacitance(ComparableQuantity<ThermalCapacitance> tc) {
-      this.thermalCapacitance = tc;
+    public LayerInputCopyBuilder specificHeatCapacity(
+        ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity) {
+      this.specificHeatCapacity = specificHeatCapacity;
       return thisInstance();
     }
 
@@ -285,7 +286,7 @@ public class LayerInput extends AssetInput implements Serializable {
           innerDiameter,
           outerDiameter,
           thermalResistivity,
-          thermalCapacitance,
+          specificHeatCapacity,
           area);
     }
 
