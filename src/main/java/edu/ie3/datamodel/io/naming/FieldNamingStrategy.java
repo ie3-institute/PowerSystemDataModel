@@ -78,6 +78,16 @@ public class FieldNamingStrategy {
   public static final String CROSS_SECTION = "crossSection";
   public static final String ADDITIONAL_INFORMATION = "additionalInformation";
 
+  // soil data
+  public static final String THERMAL_RESISTIVITY_WET = "thermalResistivityWet";
+  public static final String THERMAL_RESISTIVITY_DRY = "thermalResistivityDry";
+  public static final String SPECIFIC_HEAT_CAPACITY = "specificHeatCapacity";
+  public static final String CRITICAL_TEMPERATURE_DIFFERENCE = "criticalTemperatureDifference";
+  public static final String GEOMETRY = "geometry";
+  public static final String Z_FROM = "zFrom";
+  public static final String Z_TO = "zTo";
+  public static final String SOIL_TYPE = "soilType";
+
   /**
    * Attribute that _can_, but does not _have to_ be present for the creation of {@link
    * ConnectorInput}s.
@@ -128,6 +138,9 @@ public class FieldNamingStrategy {
   public static final String LAYOUT_FORMATION = "layoutFormation";
   public static final String DEPTH_CABLES = "depthCables";
   public static final String DISTANCE_CABLES = "distanceCables";
+  public static final String CABLE_BED_WIDTH = "cableBedWidth";
+  public static final String CABLE_BED_HEIGHT = "cableBedHeight";
+  public static final String CABLE_BED_SOIL_TYPE = "cableBedSoilType";
 
   // efficiency
   public static final String ETA = "eta";

@@ -31,8 +31,25 @@ public class CableDeploymentInputFactory
         data.getQuantity(FieldNamingStrategy.DEPTH_CABLES, Units.METRE);
     ComparableQuantity<Length> distanceCables =
         data.getQuantity(FieldNamingStrategy.DISTANCE_CABLES, Units.METRE);
+    ComparableQuantity<Length> cableBedWidth =
+        data.getQuantityOptional(FieldNamingStrategy.CABLE_BED_WIDTH, Units.METRE).orElse(null);
+    ComparableQuantity<Length> cableBedHeight =
+        data.getQuantityOptional(FieldNamingStrategy.CABLE_BED_HEIGHT, Units.METRE).orElse(null);
+    UUID cableBedSoilType =
+        data.getFieldOptional(FieldNamingStrategy.CABLE_BED_SOIL_TYPE)
+            .filter(value -> !value.isBlank())
+            .map(java.util.UUID::fromString)
+            .orElse(null);
 
     return new CableDeploymentInput(
-        uuid, lineUuid, layoutFormation, depthCables, distanceCables, data.getFieldsToValues());
+        uuid,
+        lineUuid,
+        layoutFormation,
+        depthCables,
+        distanceCables,
+        cableBedWidth,
+        cableBedHeight,
+        cableBedSoilType,
+        data.getFieldsToValues());
   }
 }
