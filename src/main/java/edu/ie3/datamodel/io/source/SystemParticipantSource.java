@@ -29,22 +29,21 @@ import java.util.UUID;
 import java.util.function.BiFunction;
 
 /**
- * Implementation that provides the capability to build entities of type {@link
- * SystemParticipantInput} as well as {@link SystemParticipants} and {@link
- * ExtendedSystemParticipants} containers.
+ * Provides the capability to build {@link SystemParticipantInput} entities and the {@link
+ * SystemParticipants} and {@link ExtendedSystemParticipants} containers.
  */
 public class SystemParticipantSource extends AssetEntitySource {
 
   private static final String THERMAL_STORAGE = "thermalstorage";
   private static final String THERMAL_BUS = "thermalbus";
 
-  // general fields
+  // General fields
   private final TypeSource typeSource;
   private final RawGridSource rawGridSource;
   private final ThermalSource thermalSource;
   private final EnergyManagementSource energyManagementSource;
 
-  // factories
+  // Factories
   private final AcInputFactory acInputFactory;
   private final BmInputFactory bmInputFactory;
   private final ChpInputFactory chpInputFactory;
@@ -57,7 +56,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   private final WecInputFactory wecInputFactory;
   private final EvcsInputFactory evcsInputFactory;
 
-  // enriching function
+  // Enriching function
   protected static final TriEnrichFunction<
           EntityData, OperatorInput, NodeInput, EmInput, SystemParticipantEntityData>
       participantEnricher =
@@ -85,7 +84,6 @@ public class SystemParticipantSource extends AssetEntitySource {
     this.thermalSource = thermalSource;
     this.energyManagementSource = energyManagementSource;
 
-    // init factories
     this.acInputFactory = new AcInputFactory();
     this.bmInputFactory = new BmInputFactory();
     this.chpInputFactory = new ChpInputFactory();
@@ -117,26 +115,15 @@ public class SystemParticipantSource extends AssetEntitySource {
   }
 
   /**
-   * Should return either a consistent instance of {@link SystemParticipants} or throw a {@link
-   * SourceException}. The decision to throw a {@link SourceException} instead of returning the
-   * incomplete {@link SystemParticipants} instance is motivated by the fact, that a {@link
-   * SystemParticipants} is a container instance that depends on several other entities. Without
-   * being complete, it is useless for further processing.
+   * Loads electric vehicle participants and returns them as a {@link SystemParticipants} container.
    *
-   * <p>Hence, whenever at least one entity {@link SystemParticipants} depends on cannot be
-   * provided, {@link SourceException} should be thrown. The thrown exception should provide enough
-   * information to debug the error and fix the persistent data that has been failed to processed.
+   * <p>This container contains only {@link EvInput} entities. Other participant types are provided
+   * by {@link #getExtendedSystemParticipants()}.
    *
-   * <p>Furthermore, it is expected, that the specific implementation of this method ensures not
-   * only the completeness of the resulting {@link SystemParticipants} instance, but also its
-   * validity e.g. in the sense that not duplicate UUIDs exist within all entities contained in the
-   * returning instance.
-   *
-   * @return a valid, complete {@link SystemParticipants}
-   * @throws SourceException on error
+   * @return a complete container of electric vehicle participants
+   * @throws SourceException if the EV participants or their required dependencies cannot be loaded
    */
   public SystemParticipants getSystemParticipants() throws SourceException {
-
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
     Map<UUID, NodeInput> nodes = rawGridSource.getNodes(operators);
 
@@ -144,29 +131,15 @@ public class SystemParticipantSource extends AssetEntitySource {
   }
 
   /**
-   * Should return either a consistent instance of {@link SystemParticipants} or throw a {@link
-   * SourceException}. The decision to throw a {@link SourceException} instead of returning the
-   * incomplete {@link SystemParticipants} instance is motivated by the fact, that a {@link
-   * SystemParticipants} is a container instance that depends on several other entities. Without
-   * being complete, it is useless for further processing.
+   * Builds a {@link SystemParticipants} container from the provided operators and nodes.
    *
-   * <p>Hence, whenever at least one entity {@link SystemParticipants} depends on cannot be
-   * provided, {@link SourceException} should be thrown. The thrown exception should provide enough
-   * information to debug the error and fix the persistent data that has been failed to processed.
+   * <p>This container contains only {@link EvInput} entities. Other participant types are provided
+   * by {@link #getExtendedSystemParticipants(Map, Map)}.
    *
-   * <p>Furthermore, it is expected, that the specific implementation of this method ensures not
-   * only the completeness of the resulting {@link SystemParticipants} instance, but also its
-   * validity e.g. in the sense that not duplicate UUIDs exist within all entities contained in the
-   * returning instance.
-   *
-   * <p>In contrast to {@link #getSystemParticipants()}, this method provides the ability to pass in
-   * already existing input objects that this method depends on. Doing so, already loaded operators
-   * and nodes can be recycled to improve performance and prevent unnecessary loading operations.
-   *
-   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
-   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
-   * @return a valid, complete {@link SystemParticipants}
-   * @throws SourceException on error
+   * @param operators known operators
+   * @param nodes known nodes
+   * @return a complete container of electric vehicle participants
+   * @throws SourceException if the EV participants cannot be loaded consistently
    */
   public SystemParticipants getSystemParticipants(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) throws SourceException {
@@ -191,26 +164,17 @@ public class SystemParticipantSource extends AssetEntitySource {
   }
 
   /**
-   * Should return either a consistent instance of {@link ExtendedSystemParticipants} or throw a
-   * {@link SourceException}. The decision to throw a {@link SourceException} instead of returning
-   * the incomplete {@link ExtendedSystemParticipants} instance is motivated by the fact, that a
-   * {@link ExtendedSystemParticipants} is a container instance that depends on several other
-   * entities. Without being complete, it is useless for further processing.
+   * Loads non-EV system participants and returns them as an {@link ExtendedSystemParticipants}
+   * container.
    *
-   * <p>Hence, whenever at least one entity {@link ExtendedSystemParticipants} depends on cannot be
-   * provided, {@link SourceException} should be thrown. The thrown exception should provide enough
-   * information to debug the error and fix the persistent data that has been failed to processed.
+   * <p>This container contains the supported participant types other than {@link EvInput}. Electric
+   * vehicle participants are provided by {@link #getSystemParticipants()}.
    *
-   * <p>Furthermore, it is expected, that the specific implementation of this method ensures not
-   * only the completeness of the resulting {@link ExtendedSystemParticipants} instance, but also
-   * its validity e.g. in the sense that not duplicate UUIDs exist within all entities contained in
-   * the returning instance.
-   *
-   * @return a valid, complete {@link ExtendedSystemParticipants}
-   * @throws SourceException on error
+   * @return a complete container of extended system participants
+   * @throws SourceException if one or more participant types or their required dependencies cannot
+   *     be loaded
    */
   public ExtendedSystemParticipants getExtendedSystemParticipants() throws SourceException {
-
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
     Map<UUID, NodeInput> nodes = rawGridSource.getNodes(operators);
 
@@ -218,36 +182,20 @@ public class SystemParticipantSource extends AssetEntitySource {
   }
 
   /**
-   * Should return either a consistent instance of {@link ExtendedSystemParticipants} or throw a
-   * {@link SourceException}. The decision to throw a {@link SourceException} instead of returning
-   * the incomplete {@link ExtendedSystemParticipants} instance is motivated by the fact, that a
-   * {@link ExtendedSystemParticipants} is a container instance that depends on several other
-   * entities. Without being complete, it is useless for further processing.
+   * Builds an {@link ExtendedSystemParticipants} container from the provided operators and nodes.
    *
-   * <p>Hence, whenever at least one entity {@link ExtendedSystemParticipants} depends on cannot be
-   * provided, {@link SourceException} should be thrown. The thrown exception should provide enough
-   * information to debug the error and fix the persistent data that has been failed to processed.
+   * <p>This container contains the supported participant types other than {@link EvInput}. Electric
+   * vehicle participants are provided by {@link #getSystemParticipants(Map, Map)}.
    *
-   * <p>Furthermore, it is expected, that the specific implementation of this method ensures not
-   * only the completeness of the resulting {@link ExtendedSystemParticipants} instance, but also
-   * its validity e.g. in the sense that not duplicate UUIDs exist within all entities contained in
-   * the returning instance.
-   *
-   * <p>In contrast to {@link #getExtendedSystemParticipants()}, this method provides the ability to
-   * pass in already existing input objects that this method depends on. Doing so, already loaded
-   * operators and nodes can be recycled to improve performance and prevent unnecessary loading
-   * operations.
-   *
-   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
-   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
-   * @return a valid, complete {@link ExtendedSystemParticipants}
-   * @throws SourceException on error
+   * @param operators known operators
+   * @param nodes known nodes
+   * @return a complete container of extended system participants
+   * @throws SourceException if one or more participant types cannot be loaded consistently
    */
   public ExtendedSystemParticipants getExtendedSystemParticipants(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) throws SourceException {
 
-    // read all needed entities
-    /// start with types and operators
+    // Load the required participant types
     Map<UUID, BmTypeInput> bmTypes = typeSource.getBmTypes();
     Map<UUID, ChpTypeInput> chpTypes = typeSource.getChpTypes();
     Map<UUID, HpTypeInput> hpTypes = typeSource.getHpTypes();
@@ -256,7 +204,7 @@ public class SystemParticipantSource extends AssetEntitySource {
     Map<UUID, WecTypeInput> wecTypes = typeSource.getWecTypes();
     Map<UUID, EmInput> emUnits = energyManagementSource.getEmUnits();
 
-    /// go on with the thermal assets
+    // Load the required thermal dependencies
     Map<UUID, ThermalBusInput> thermalBuses = thermalSource.getThermalBuses(operators);
     Map<UUID, ThermalStorageInput> thermalStorages =
         thermalSource.getThermalStorages(operators, thermalBuses);
@@ -308,9 +256,6 @@ public class SystemParticipantSource extends AssetEntitySource {
               + " input file(s) while initializing extended system participants.",
           exceptions);
     } else {
-      // if everything is fine, return an extended system participants container
-      // getOrThrow should not throw an exception in this context, because all exception are
-      // filtered and thrown before
       return new ExtendedSystemParticipants(
           bmInputs.getOrThrow(),
           chpInputs.getOrThrow(),
@@ -328,12 +273,10 @@ public class SystemParticipantSource extends AssetEntitySource {
   /**
    * Returns a unique set of {@link FixedFeedInInput} instances.
    *
-   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link FixedFeedInInput} which has to be checked
-   * manually, as {@link FixedFeedInInput#equals(Object)} is NOT restricted on the uuid of {@link
-   * FixedFeedInInput}.
+   * <p>The set is unique both by object identity and by UUID. UUID uniqueness has to be checked
+   * manually because {@link FixedFeedInInput#equals(Object)} is not restricted to the entity UUID.
    *
-   * @return a set of object- and uuid-unique {@link FixedFeedInInput} entities
+   * @return a set of object- and UUID-unique fixed feed-in entities
    */
   public Set<FixedFeedInInput> getFixedFeedIns() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -342,23 +285,12 @@ public class SystemParticipantSource extends AssetEntitySource {
   }
 
   /**
-   * Returns a set of {@link FixedFeedInInput} instances. This set has to be unique in the sense of
-   * object uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided
-   * {@link FixedFeedInInput} which has to be checked manually, as {@link
-   * FixedFeedInInput#equals(Object)} is NOT restricted on the uuid of {@link FixedFeedInInput}.
+   * Returns fixed feed-in entities using the provided operators, nodes and energy management units.
    *
-   * <p>In contrast to {@link #getFixedFeedIns()} this method provides the ability to pass in an
-   * already existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link
-   * FixedFeedInInput} instances depend on. Doing so, already loaded nodes can be recycled to
-   * improve performance and prevent unnecessary loading operations.
-   *
-   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
-   * set with all entities that has been able to be build is returned.
-   *
-   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
-   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
-   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
-   * @return a set of object- and uuid-unique {@link FixedFeedInInput} entities
+   * @param operators known operators
+   * @param nodes known nodes
+   * @param emUnits known energy management units
+   * @return a set of object- and UUID-unique fixed feed-in entities
    */
   public Set<FixedFeedInInput> getFixedFeedIns(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
@@ -374,11 +306,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   /**
    * Returns a unique set of {@link PvInput} instances.
    *
-   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link PvInput} which has to be checked manually, as
-   * {@link PvInput#equals(Object)} is NOT restricted on the uuid of {@link PvInput}.
-   *
-   * @return a set of object- and uuid-unique {@link PvInput} entities
+   * @return a set of object- and UUID-unique PV entities
    */
   public Set<PvInput> getPvPlants() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -387,23 +315,12 @@ public class SystemParticipantSource extends AssetEntitySource {
   }
 
   /**
-   * Returns a set of {@link PvInput} instances. This set has to be unique in the sense of object
-   * uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided {@link
-   * PvInput} which has to be checked manually, as {@link PvInput#equals(Object)} is NOT restricted
-   * on the uuid of {@link PvInput}.
+   * Returns PV entities using the provided operators, nodes and energy management units.
    *
-   * <p>In contrast to {@link #getPvPlants()} this method provides the ability to pass in an already
-   * existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link PvInput}
-   * instances depend on. Doing so, already loaded nodes can be recycled to improve performance and
-   * prevent unnecessary loading operations.
-   *
-   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
-   * set with all entities that has been able to be build is returned.
-   *
-   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
-   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
-   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
-   * @return a set of object- and uuid-unique {@link PvInput} entities
+   * @param operators known operators
+   * @param nodes known nodes
+   * @param emUnits known energy management units
+   * @return a set of object- and UUID-unique PV entities
    */
   public Set<PvInput> getPvPlants(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
@@ -419,11 +336,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   /**
    * Returns a unique set of {@link LoadInput} instances.
    *
-   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link LoadInput} which has to be checked manually,
-   * as {@link LoadInput#equals(Object)} is NOT restricted on the uuid of {@link LoadInput}.
-   *
-   * @return a set of object- and uuid-unique {@link LoadInput} entities
+   * @return a set of object- and UUID-unique load entities
    */
   public Set<LoadInput> getLoads() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -432,23 +345,12 @@ public class SystemParticipantSource extends AssetEntitySource {
   }
 
   /**
-   * Returns a set of {@link LoadInput} instances. This set has to be unique in the sense of object
-   * uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided {@link
-   * LoadInput} which has to be checked manually, as {@link LoadInput#equals(Object)} is NOT
-   * restricted on the uuid of {@link LoadInput}.
+   * Returns load entities using the provided operators, nodes and energy management units.
    *
-   * <p>In contrast to {@link #getLoads()} this method provides the ability to pass in an already
-   * existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link LoadInput}
-   * instances depend on. Doing so, already loaded nodes can be recycled to improve performance and
-   * prevent unnecessary loading operations.
-   *
-   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
-   * set with all entities that has been able to be build is returned.
-   *
-   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
-   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
-   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
-   * @return a set of object- and uuid-unique {@link LoadInput} entities
+   * @param operators known operators
+   * @param nodes known nodes
+   * @param emUnits known energy management units
+   * @return a set of object- and UUID-unique load entities
    */
   public Set<LoadInput> getLoads(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
@@ -464,11 +366,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   /**
    * Returns a unique set of {@link EvcsInput} instances.
    *
-   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link EvcsInput} which has to be checked manually,
-   * as {@link EvcsInput#equals(Object)} is NOT restricted on the uuid of {@link EvcsInput}.
-   *
-   * @return a set of object- and uuid-unique {@link EvcsInput} entities
+   * @return a set of object- and UUID-unique EV charging station entities
    */
   public Set<EvcsInput> getEvcs() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -477,23 +375,13 @@ public class SystemParticipantSource extends AssetEntitySource {
   }
 
   /**
-   * Returns a set of {@link EvcsInput} instances. This set has to be unique in the sense of object
-   * uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided {@link
-   * EvcsInput} which has to be checked manually, as {@link EvcsInput#equals(Object)} is NOT
-   * restricted on the uuid of {@link EvcsInput}.
+   * Returns EV charging station entities using the provided operators, nodes and energy management
+   * units.
    *
-   * <p>In contrast to {@link #getEvcs()} this method provides the ability to pass in an already
-   * existing set of {@link NodeInput} and {@link OperatorInput} entities, the {@link EvcsInput}
-   * instances depend on. Doing so, already loaded nodes can be recycled to improve performance and
-   * prevent unnecessary loading operations.
-   *
-   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
-   * set with all entities that has been able to be build is returned.
-   *
-   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
-   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
-   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
-   * @return a set of object- and uuid-unique {@link EvcsInput} entities
+   * @param operators known operators
+   * @param nodes known nodes
+   * @param emUnits known energy management units
+   * @return a set of object- and UUID-unique EV charging station entities
    */
   public Set<EvcsInput> getEvcs(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
@@ -509,11 +397,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   /**
    * Returns a unique set of {@link BmInput} instances.
    *
-   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link BmInput} which has to be checked manually, as
-   * {@link BmInput#equals(Object)} is NOT restricted on the uuid of {@link BmInput}.
-   *
-   * @return a set of object- and uuid-unique {@link BmInput} entities
+   * @return a set of object- and UUID-unique biomass plant entities
    */
   public Set<BmInput> getBmPlants() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -523,24 +407,14 @@ public class SystemParticipantSource extends AssetEntitySource {
   }
 
   /**
-   * Returns a set of {@link BmInput} instances. This set has to be unique in the sense of object
-   * uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided {@link
-   * BmInput} which has to be checked manually, as {@link BmInput#equals(Object)} is NOT restricted
-   * on the uuid of {@link BmInput}.
+   * Returns biomass plant entities using the provided operators, nodes, energy management units and
+   * types.
    *
-   * <p>In contrast to {@link #getBmPlants()} this method provides the ability to pass in an already
-   * existing set of {@link NodeInput}, {@link BmTypeInput} and {@link OperatorInput} entities, the
-   * {@link BmInput} instances depend on. Doing so, already loaded nodes can be recycled to improve
-   * performance and prevent unnecessary loading operations.
-   *
-   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
-   * set with all entities that has been able to be build is returned.
-   *
-   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
-   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
-   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
-   * @param types a map of UUID to object- and uuid-unique {@link BmTypeInput} entities
-   * @return a set of object- and uuid-unique {@link BmInput} entities
+   * @param operators known operators
+   * @param nodes known nodes
+   * @param emUnits known energy management units
+   * @param types known biomass plant types
+   * @return a set of object- and UUID-unique biomass plant entities
    */
   public Set<BmInput> getBmPlants(
       Map<UUID, OperatorInput> operators,
@@ -562,12 +436,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   /**
    * Returns a unique set of {@link StorageInput} instances.
    *
-   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link StorageInput} which has to be checked
-   * manually, as {@link StorageInput#equals(Object)} is NOT restricted on the uuid of {@link
-   * StorageInput}.
-   *
-   * @return a set of object- and uuid-unique {@link StorageInput} entities
+   * @return a set of object- and UUID-unique storage entities
    */
   public Set<StorageInput> getStorages() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -577,25 +446,14 @@ public class SystemParticipantSource extends AssetEntitySource {
   }
 
   /**
-   * Returns a set of {@link StorageInput} instances. This set has to be unique in the sense of
-   * object uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided
-   * {@link StorageInput} which has to be checked manually, as {@link StorageInput#equals(Object)}
-   * is NOT restricted on the uuid of {@link StorageInput}.
+   * Returns storage entities using the provided operators, nodes, energy management units and
+   * types.
    *
-   * <p>In contrast to {@link #getStorages()} this method provides the ability to pass in an already
-   * existing set of {@link NodeInput}, {@link StorageTypeInput} and {@link OperatorInput} entities,
-   * the {@link StorageInput} instances depend on. Doing so, already loaded nodes can be recycled to
-   * improve performance and prevent unnecessary loading operations.
-   *
-   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
-   * set with all entities that has been able to be build is returned.
-   *
-   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} that should be
-   *     used for the returning instances
-   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
-   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
-   * @param types a map of UUID to object- and uuid-unique {@link StorageTypeInput} entities
-   * @return a set of object- and uuid-unique {@link StorageInput} entities
+   * @param operators known operators
+   * @param nodes known nodes
+   * @param emUnits known energy management units
+   * @param types known storage types
+   * @return a set of object- and UUID-unique storage entities
    */
   public Set<StorageInput> getStorages(
       Map<UUID, OperatorInput> operators,
@@ -617,11 +475,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   /**
    * Returns a unique set of {@link WecInput} instances.
    *
-   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link WecInput} which has to be checked manually,
-   * as {@link WecInput#equals(Object)} is NOT restricted on the uuid of {@link WecInput}.
-   *
-   * @return a set of object- and uuid-unique {@link WecInput} entities
+   * @return a set of object- and UUID-unique WEC entities
    */
   public Set<WecInput> getWecPlants() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -631,24 +485,13 @@ public class SystemParticipantSource extends AssetEntitySource {
   }
 
   /**
-   * Returns a set of {@link WecInput} instances. This set has to be unique in the sense of object
-   * uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided {@link
-   * WecInput} which has to be checked manually, as {@link WecInput#equals(Object)} is NOT
-   * restricted on the uuid of {@link WecInput}.
+   * Returns WEC entities using the provided operators, nodes, energy management units and types.
    *
-   * <p>In contrast to {@link #getWecPlants()} this method provides the ability to pass in an
-   * already existing set of {@link NodeInput}, {@link WecTypeInput} and {@link OperatorInput}
-   * entities, the {@link WecInput} instances depend on. Doing so, already loaded nodes can be
-   * recycled to improve performance and prevent unnecessary loading operations.
-   *
-   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
-   * set with all entities that has been able to be build is returned.
-   *
-   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
-   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
-   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
-   * @param types a map of UUID to object- and uuid-unique {@link WecTypeInput} entities
-   * @return a set of object- and uuid-unique {@link WecInput} entities
+   * @param operators known operators
+   * @param nodes known nodes
+   * @param emUnits known energy management units
+   * @param types known WEC types
+   * @return a set of object- and UUID-unique WEC entities
    */
   public Set<WecInput> getWecPlants(
       Map<UUID, OperatorInput> operators,
@@ -670,11 +513,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   /**
    * Returns a unique set of {@link EvInput} instances.
    *
-   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link EvInput} which has to be checked manually, as
-   * {@link EvInput#equals(Object)} is NOT restricted on the uuid of {@link EvInput}.
-   *
-   * @return a set of object- and uuid-unique {@link EvInput} entities
+   * @return a set of object- and UUID-unique electric vehicle entities
    */
   public Set<EvInput> getEvs() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
@@ -683,24 +522,14 @@ public class SystemParticipantSource extends AssetEntitySource {
   }
 
   /**
-   * Returns a set of {@link EvInput} instances. This set has to be unique in the sense of object
-   * uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided {@link
-   * EvInput} which has to be checked manually, as {@link EvInput#equals(Object)} is NOT restricted
-   * on the uuid of {@link EvInput}.
+   * Returns electric vehicle entities using the provided operators, nodes, energy management units
+   * and types.
    *
-   * <p>In contrast to {@link #getEvs()} this method provides the ability to pass in an already
-   * existing set of {@link NodeInput}, {@link EvTypeInput} and {@link OperatorInput} entities, the
-   * {@link EvInput} instances depend on. Doing so, already loaded nodes can be recycled to improve
-   * performance and prevent unnecessary loading operations.
-   *
-   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
-   * set with all entities that has been able to be build is returned.
-   *
-   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
-   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
-   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
-   * @param types a map of UUID to object- and uuid-unique {@link EvTypeInput} entities
-   * @return a set of object- and uuid-unique {@link EvInput} entities
+   * @param operators known operators
+   * @param nodes known nodes
+   * @param emUnits known energy management units
+   * @param types known EV types
+   * @return a set of object- and UUID-unique electric vehicle entities
    */
   public Set<EvInput> getEvs(
       Map<UUID, OperatorInput> operators,
@@ -723,6 +552,7 @@ public class SystemParticipantSource extends AssetEntitySource {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
     Map<UUID, EmInput> emUnits = energyManagementSource.getEmUnits(operators);
     Map<UUID, ThermalBusInput> thermalBuses = thermalSource.getThermalBuses(operators);
+
     return getChpPlants(
         operators,
         rawGridSource.getNodes(operators),
@@ -733,23 +563,16 @@ public class SystemParticipantSource extends AssetEntitySource {
   }
 
   /**
-   * If one of the sets of {@link NodeInput}, {@link ThermalBusInput}, {@link ThermalStorageInput}
-   * or {@link ChpTypeInput} entities is not exhaustive for all available {@link ChpInput} entities
-   * (e.g. a {@link NodeInput} or {@link ChpTypeInput} entity is missing) or if an error during the
-   * building process occurs a {@link SourceException} is thrown, else all entities that are able to
-   * be built will be returned.
+   * Returns CHP entities using the provided operators, nodes, energy management units, types and
+   * thermal dependencies.
    *
-   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
-   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
-   *
-   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
-   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
-   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
-   * @param types a map of UUID to object- and uuid-unique {@link ChpTypeInput} entities
-   * @param thermalBuses a map of UUID to object- and uuid-unique {@link ThermalBusInput} entities
-   * @param thermalStorages a map of UUID to object- and uuid-unique {@link ThermalStorageInput}
-   *     entities
-   * @return a set of object- and uuid-unique {@link ChpInput} entities
+   * @param operators known operators
+   * @param nodes known nodes
+   * @param emUnits known energy management units
+   * @param types known CHP types
+   * @param thermalBuses known thermal buses
+   * @param thermalStorages known thermal storages
+   * @return a set of object- and UUID-unique CHP entities
    */
   public Set<ChpInput> getChpPlants(
       Map<UUID, OperatorInput> operators,
@@ -779,6 +602,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   public Set<HpInput> getHeatPumps() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
     Map<UUID, EmInput> emUnits = energyManagementSource.getEmUnits(operators);
+
     return getHeatPumps(
         operators,
         rawGridSource.getNodes(operators),
@@ -788,21 +612,15 @@ public class SystemParticipantSource extends AssetEntitySource {
   }
 
   /**
-   * If one of the sets of {@link NodeInput}, {@link ThermalBusInput} or {@link HpTypeInput}
-   * entities is not exhaustive for all available {@link HpInput} entities (e.g. a {@link NodeInput}
-   * or {@link HpTypeInput} entity is missing) or if an error during the building process occurs a
-   * {@link SourceException} is thrown, else all entities that are able to be built will be
-   * returned.
+   * Returns heat pump entities using the provided operators, nodes, energy management units, types
+   * and thermal buses.
    *
-   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
-   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
-   *
-   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
-   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
-   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
-   * @param types a map of UUID to object- and uuid-unique {@link HpTypeInput} entities
-   * @param thermalBuses a map of UUID to object- and uuid-unique {@link ThermalBusInput} entities
-   * @return a set of object- and uuid-unique {@link HpInput} entities
+   * @param operators known operators
+   * @param nodes known nodes
+   * @param emUnits known energy management units
+   * @param types known heat pump types
+   * @param thermalBuses known thermal buses
+   * @return a set of object- and UUID-unique heat pump entities
    */
   public Set<HpInput> getHeatPumps(
       Map<UUID, OperatorInput> operators,
@@ -818,25 +636,20 @@ public class SystemParticipantSource extends AssetEntitySource {
                 .andThen(enrichTypes(types))
                 .andThen(enrich(THERMAL_BUS, thermalBuses, HpInputEntityData::new))
                 .apply(data, operators, nodes, emUnits);
+
     return getEntities(HpInput.class, dataSource, hpInputFactory, builder).collect(toSet());
   }
 
   /**
-   * If one of the sets of {@link NodeInput}, {@link ThermalBusInput} or {@link AcTypeInput}
-   * entities is not exhaustive for all available {@link AcInput} entities (e.g. a {@link NodeInput}
-   * or {@link AcTypeInput} entity is missing) or if an error during the building process occurs a
-   * {@link SourceException} is thrown, else all entities that are able to be built will be
-   * returned.
+   * Returns air conditioning entities using the provided operators, nodes, energy management units,
+   * types and thermal buses.
    *
-   * <p>If the set with {@link OperatorInput} is not exhaustive, the corresponding operator is set
-   * to {@link OperatorInput#NO_OPERATOR_ASSIGNED}
-   *
-   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
-   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
-   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
-   * @param types a map of UUID to object- and uuid-unique {@link AcTypeInput} entities
-   * @param thermalBuses a map of UUID to object- and uuid-unique {@link ThermalBusInput} entities
-   * @return a set of object- and uuid-unique {@link AcInput} entities
+   * @param operators known operators
+   * @param nodes known nodes
+   * @param emUnits known energy management units
+   * @param types known air conditioning types
+   * @param thermalBuses known thermal buses
+   * @return a set of object- and UUID-unique air conditioning entities
    */
   public Set<AcInput> getAirConditions(
       Map<UUID, OperatorInput> operators,
@@ -852,17 +665,17 @@ public class SystemParticipantSource extends AssetEntitySource {
                 .andThen(enrichTypes(types))
                 .andThen(enrich(THERMAL_BUS, thermalBuses, AcInputEntityData::new))
                 .apply(data, operators, nodes, emUnits);
+
     return getEntities(AcInput.class, dataSource, acInputFactory, builder).collect(toSet());
   }
-
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   /**
    * Builds a function for enriching {@link SystemParticipantEntityData} with types.
    *
    * @param types all known types
-   * @return a typed entity data
-   * @param <T> type of types
+   * @return a function that creates typed entity data
+   * @param <T> type of the participant type entities
+   * @param <D> type of the participant entity data
    */
   private static <T extends SystemParticipantTypeInput, D extends SystemParticipantEntityData>
       WrappedFunction<D, SystemParticipantTypedEntityData<T>> enrichTypes(Map<UUID, T> types) {
