@@ -15,6 +15,10 @@ import java.util.UUID;
 /**
  * Internal API for building {@link ResultEntity}s. This additional abstraction layer is necessary
  * to create generic reader for {@link ResultEntity}s only and furthermore removes code duplicates.
+ *
+ * @param <T> Type of result entity that this factory can create.
+ * @param <R> Type of actually created result entity. Can be a subclass of the entities that this
+ *     factory creates.
  */
 public abstract class ResultEntityFactory<T extends ResultEntity, R extends T>
     extends EntityFactory<T, R> {

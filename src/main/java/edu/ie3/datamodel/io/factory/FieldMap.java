@@ -29,6 +29,10 @@ import org.slf4j.LoggerFactory;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
+/**
+ * Container class that contains a fields to attributes map that was provided by a {@link
+ * edu.ie3.datamodel.io.source.DataSource} and some method for parsing field values.
+ */
 public class FieldMap {
 
   private static final Logger logger = LoggerFactory.getLogger(FieldMap.class);

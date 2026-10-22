@@ -71,6 +71,14 @@ public class EnergyManagementSource extends AssetEntitySource {
     return allEms;
   }
 
+  /**
+   * Method for creating em units recursively.
+   *
+   * @param rawData provided by the source.
+   * @param emUnits map that contains all created em units.
+   * @param factory for build an em unit.
+   * @throws SourceException - if an error occurred in the source
+   */
   private static void createEmsRecursively(
       List<FieldMap> rawData, Map<UUID, EmInput> emUnits, EmInputFactory factory)
       throws SourceException {
@@ -99,6 +107,28 @@ public class EnergyManagementSource extends AssetEntitySource {
           }
         });
 
+    exceptions.addAll(processData(currentLevel, emUnits, factory));
+    checkData(exceptions, currentLevel.isEmpty(), others);
+
+    if (!others.isEmpty()) {
+      createEmsRecursively(others, emUnits, factory);
+    }
+  }
+
+  /**
+   * Method for building em units.
+   *
+   * @param currentLevel the em units that can be built on the current level.
+   * @param emUnits map that contains all created em units.
+   * @param factory for build an em unit.
+   * @return a list with found errors
+   * @throws SourceException - if an error occurred in the source
+   */
+  private static List<FactoryException> processData(
+      List<FieldMap> currentLevel, Map<UUID, EmInput> emUnits, EmInputFactory factory)
+      throws SourceException {
+    List<FactoryException> exceptions = new ArrayList<>();
+
     Try.scanStream(currentLevel.stream().map(factory::get), "EmInput", SourceException::new)
         .getOrThrow()
         .forEach(
@@ -111,23 +141,33 @@ public class EnergyManagementSource extends AssetEntitySource {
               }
             });
 
+    return exceptions;
+  }
+
+  /**
+   * Checks the processed data.
+   *
+   * @param exceptions a list of found exceptions.
+   * @param emptyCurrentLevel true, if the current level has no em units.
+   * @param others the em units that can be built on one of the next levels.
+   * @throws SourceException - if an error occurred in the source
+   */
+  private static void checkData(
+      List<FactoryException> exceptions, boolean emptyCurrentLevel, List<FieldMap> others)
+      throws SourceException {
     if (!exceptions.isEmpty()) {
       // throw all exceptions at once
       throw new SourceException(
           "Could not process em inputs due to: " + ExceptionUtils.combineExceptions(exceptions));
     }
 
-    if (currentLevel.isEmpty() && !others.isEmpty()) {
+    if (emptyCurrentLevel && !others.isEmpty()) {
       String errorUuids =
           String.join(",", others.stream().map(d -> d.viewUUID(UUID_FIELD).toString()).toList());
 
       throw new SourceException(
           "There are em inputs, where controlling ems are assigned that don't exist. These are: "
               + errorUuids);
-    }
-
-    if (!others.isEmpty()) {
-      createEmsRecursively(others, emUnits, factory);
     }
   }
 }

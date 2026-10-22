@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
  * class instances.
  *
  * @param <C> Type of the intended target class.
+ * @param <D> Type of input data that is used to create entities.
  * @param <R> Type of the intended return type (might differ slightly from target class (cf. {@link
  *     edu.ie3.datamodel.io.factory.timeseries.TimeBasedValueFactory})).
  */
@@ -41,15 +42,13 @@ public abstract class Factory<C, D, R> extends FieldNamingStrategy {
   }
 
   /**
-   * Builds entity with data from given EntityData object after doing all kinds of checks on the
-   * data
+   * Builds entity with data from given input.
    *
    * @param data of the model
    * @return An entity wrapped in a {@link Success} if successful, or an exception wrapped in a
    *     {@link Failure}
    */
   public Try<R, FactoryException> get(D data) {
-
     try {
       // build the model
       return Success.of(buildModel(data));
@@ -60,8 +59,7 @@ public abstract class Factory<C, D, R> extends FieldNamingStrategy {
   }
 
   /**
-   * Builds entity with data from given EntityData object after doing all kinds of checks on the
-   * data
+   * Builds entity with data from given input.
    *
    * @param data of the model
    * @return An entity wrapped in a {@link Success} if successful, or an exception wrapped in a

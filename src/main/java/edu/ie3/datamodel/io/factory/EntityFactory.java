@@ -10,8 +10,9 @@ import edu.ie3.datamodel.models.Entity;
 /**
  * Universal factory class for creating entities.
  *
- * @param <T> Type of entity that this factory can create. Can be a subclass of the entities that
- *     this factory creates.
+ * @param <T> Type of entity that this factory can create.
+ * @param <R> Type of actually created entity. Can be a subclass of the entities that this factory
+ *     creates.
  */
 public abstract class EntityFactory<T extends Entity, R extends T> extends Factory<T, FieldMap, R> {
   /**
