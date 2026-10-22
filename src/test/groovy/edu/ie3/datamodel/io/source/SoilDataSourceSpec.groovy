@@ -166,7 +166,7 @@ class SoilDataSourceSpec extends Specification {
     ValidationUtils.check(soilLayer)
     then:
     def exception = thrown(FailedValidationException)
-    exception.message.contains("non-positive thickness")
+    exception.message.contains("zFrom must be greater than zTo")
   }
 
   private void writeSoilTypesFile() {

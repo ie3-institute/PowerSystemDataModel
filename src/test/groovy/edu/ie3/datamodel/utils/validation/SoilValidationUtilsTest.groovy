@@ -108,7 +108,10 @@ class SoilValidationUtilsTest extends Specification {
         new InvalidEntityException("Soil layer has incomplete data", validSoilLayer().copy().geometry(null).build()).message
     validSoilLayer().copy().zFrom(Quantities.getQuantity(-2d, METRE)).build() ||
         new InvalidEntityException(
-        "Soil layer has a non-positive thickness", validSoilLayer().copy().zFrom(Quantities.getQuantity(-2d, METRE)).build()).message
+        "Soil layer zFrom must be greater than zTo", validSoilLayer().copy().zFrom(Quantities.getQuantity(-2d, METRE)).build()).message
+    validSoilLayer().copy().zFrom(Quantities.getQuantity(-3d, METRE)).build() ||
+        new InvalidEntityException(
+        "Soil layer zFrom must be greater than zTo", validSoilLayer().copy().zFrom(Quantities.getQuantity(-3d, METRE)).build()).message
   }
 
   def "validateAll accepts a consistent, gap free and non overlapping soil model"() {
