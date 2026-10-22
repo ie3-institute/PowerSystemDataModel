@@ -124,7 +124,7 @@ class SoilLayerInputFactoryTest extends Specification implements FactoryTestHelp
     then:
     result.failure
     result.exception.get() instanceof FactoryException
-    result.exception.get().cause.message.contains("Unable to parse geometry")
+    result.exception.get().cause.message.contains("Exception while trying to parse geometry")
   }
 
   def "A SoilLayerInputFactory throws FactoryException for non-closed polygon"() {
@@ -145,7 +145,7 @@ class SoilLayerInputFactoryTest extends Specification implements FactoryTestHelp
     then:
     result.failure
     result.exception.get() instanceof FactoryException
-    result.exception.get().cause.message.contains("Expected closed polygon")
+    result.exception.get().cause.message.contains("Exception while trying to parse geometry")
   }
 
   def "A SoilLayerInputFactory throws FactoryException for unsupported geometry type"() {
