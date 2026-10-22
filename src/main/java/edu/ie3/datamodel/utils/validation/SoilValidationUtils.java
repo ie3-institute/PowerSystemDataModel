@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.utils.validation;
 
+import static edu.ie3.util.quantities.PowerSystemUnits.METRE;
+
 import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.InvalidEntityException;
 import edu.ie3.datamodel.exceptions.ValidationException;
@@ -87,9 +89,11 @@ public class SoilValidationUtils extends ValidationUtils {
         Try.ofVoid(
             soilLayer.getZFrom() != null
                 && soilLayer.getZTo() != null
-                && soilLayer.thickness().getValue().doubleValue() <= 0d,
+                && soilLayer.getZFrom().to(METRE).getValue().doubleValue()
+                    <= soilLayer.getZTo().to(METRE).getValue().doubleValue(),
             () ->
-                new InvalidEntityException("Soil layer has a non-positive thickness", soilLayer)));
+                new InvalidEntityException(
+                    "Soil layer zFrom must be greater than zTo", soilLayer)));
     return exceptions;
   }
 
