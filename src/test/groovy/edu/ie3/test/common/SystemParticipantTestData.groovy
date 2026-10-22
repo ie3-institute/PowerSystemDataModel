@@ -11,6 +11,7 @@ import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.EmInput
 import edu.ie3.datamodel.models.input.NodeInput
 import edu.ie3.datamodel.models.input.OperatorInput
+import edu.ie3.datamodel.models.input.container.ExtendedSystemParticipants
 import edu.ie3.datamodel.models.input.container.SystemParticipants
 import edu.ie3.datamodel.models.input.system.*
 import edu.ie3.datamodel.models.input.system.characteristic.CosPhiFixed
@@ -360,7 +361,10 @@ class SystemParticipantTestData {
 
   public static SystemParticipants emptySystemParticipants =
   new SystemParticipants(
-  [] as Set,
+  [] as Set)
+
+  public static ExtendedSystemParticipants emptyExtendedSystemParticipants =
+  new ExtendedSystemParticipants(
   [] as Set,
   [] as Set,
   [] as Set,

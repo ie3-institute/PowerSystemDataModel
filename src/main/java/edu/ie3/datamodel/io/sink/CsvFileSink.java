@@ -18,6 +18,7 @@ import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.*;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
+import edu.ie3.datamodel.models.input.container.ExtendedSystemParticipants;
 import edu.ie3.datamodel.models.input.container.JointGridContainer;
 import edu.ie3.datamodel.models.input.container.RawGridElements;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
@@ -169,17 +170,20 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
 
     // get system participants with types or operators
     SystemParticipants systemParticipants = jointGridContainer.getSystemParticipants();
-    Set<AcInput> airConditions = systemParticipants.getAirConditions();
-    Set<BmInput> bmPlants = systemParticipants.getBmPlants();
-    Set<ChpInput> chpPlants = systemParticipants.getChpPlants();
-    Set<EvcsInput> evcs = systemParticipants.getEvcs();
+    ExtendedSystemParticipants extendedSystemParticipants =
+        jointGridContainer.getExtendedSystemParticipants();
+
     Set<EvInput> evs = systemParticipants.getEvs();
-    Set<FixedFeedInInput> fixedFeedIns = systemParticipants.getFixedFeedIns();
-    Set<HpInput> heatPumps = systemParticipants.getHeatPumps();
-    Set<LoadInput> loads = systemParticipants.getLoads();
-    Set<PvInput> pvPlants = systemParticipants.getPvPlants();
-    Set<StorageInput> storages = systemParticipants.getStorages();
-    Set<WecInput> wecPlants = systemParticipants.getWecPlants();
+    Set<AcInput> airConditions = extendedSystemParticipants.getAirConditions();
+    Set<BmInput> bmPlants = extendedSystemParticipants.getBmPlants();
+    Set<ChpInput> chpPlants = extendedSystemParticipants.getChpPlants();
+    Set<EvcsInput> evcs = extendedSystemParticipants.getEvcs();
+    Set<FixedFeedInInput> fixedFeedIns = extendedSystemParticipants.getFixedFeedIns();
+    Set<HpInput> heatPumps = extendedSystemParticipants.getHeatPumps();
+    Set<LoadInput> loads = extendedSystemParticipants.getLoads();
+    Set<PvInput> pvPlants = extendedSystemParticipants.getPvPlants();
+    Set<StorageInput> storages = extendedSystemParticipants.getStorages();
+    Set<WecInput> wecPlants = extendedSystemParticipants.getWecPlants();
 
     // extract types
     Set<AssetTypeInput> types =
@@ -235,6 +239,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
             rawGridElements.allEntitiesAsList(),
             cableDeployments,
             systemParticipants.allEntitiesAsList(),
+            extendedSystemParticipants.allEntitiesAsList(),
             jointGridContainer.getEmUnits().getEmUnits().stream().toList(),
             types,
             operators)

@@ -217,7 +217,7 @@ class ContainerNodeUpdateUtilTest extends Specification {
 
     then:
     // all assets are connected to nodeA -> all geoPositions should be the same
-    resultingGrid.systemParticipants.allEntitiesAsList().stream().map({ x ->
+    resultingGrid.extendedSystemParticipants.allEntitiesAsList().stream().map({ x ->
       x.getNode().geoPosition
     }).collect(Collectors.toSet()) == [alteredGeoPos] as Set
 

@@ -31,74 +31,96 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 
     when:
     def systemParticipants = csvSystemParticipantSource.systemParticipants
+    def extendedSystemParticipants = csvSystemParticipantSource.extendedSystemParticipants
 
     then:
-    systemParticipants.allEntitiesAsList().size() == 11
-    systemParticipants.pvPlants.first().uuid == sptd.pvInput.uuid
-    systemParticipants.bmPlants.first().uuid == sptd.bmInput.uuid
-    systemParticipants.chpPlants.first().uuid == sptd.chpInput.uuid
+    systemParticipants.allEntitiesAsList().size() == 1
     systemParticipants.evs.first().uuid == sptd.evInput.uuid
-    systemParticipants.fixedFeedIns.first().uuid == sptd.fixedFeedInInput.uuid
-    systemParticipants.heatPumps.first().uuid == sptd.hpInput.uuid
-    systemParticipants.airConditions.first().uuid == sptd.acInput.uuid
-    systemParticipants.loads.first().uuid == sptd.loadInput.uuid
-    systemParticipants.wecPlants.first().uuid == sptd.wecInput.uuid
-    systemParticipants.storages.first().uuid == sptd.storageInput.uuid
-    systemParticipants.evcs.first().uuid == sptd.evcsInput.uuid
+
+    extendedSystemParticipants.allEntitiesAsList().size() == 10
+    extendedSystemParticipants.pvPlants.first().uuid == sptd.pvInput.uuid
+    extendedSystemParticipants.bmPlants.first().uuid == sptd.bmInput.uuid
+    extendedSystemParticipants.chpPlants.first().uuid == sptd.chpInput.uuid
+    extendedSystemParticipants.fixedFeedIns.first().uuid == sptd.fixedFeedInInput.uuid
+    extendedSystemParticipants.heatPumps.first().uuid == sptd.hpInput.uuid
+    extendedSystemParticipants.airConditions.first().uuid == sptd.acInput.uuid
+    extendedSystemParticipants.loads.first().uuid == sptd.loadInput.uuid
+    extendedSystemParticipants.wecPlants.first().uuid == sptd.wecInput.uuid
+    extendedSystemParticipants.storages.first().uuid == sptd.storageInput.uuid
+    extendedSystemParticipants.evcs.first().uuid == sptd.evcsInput.uuid
   }
 
-  def "A SystemParticipantSource with csv input should process invalid input data as expected when requested to provide an instance of SystemParticipants"() {
+  def "A SystemParticipantSource with csv input should process invalid input data separately for EVs and extended participants"() {
     given:
-    def typeSource = new TypeSource(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy))
-    def thermalSource = new ThermalSource(typeSource, new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+    def typeSource =
+        new TypeSource(new CsvDataSource(csvSep, typeFolderPath, fileNamingStrategy))
+    def thermalSource =
+        new ThermalSource(typeSource, new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
     def rawGridSource = Spy(RawGridSource, constructorArgs: [
       typeSource,
       new CsvDataSource(csvSep, gridDefaultFolderPath, fileNamingStrategy)
     ]) {
-      // partly fake the return method of the csv raw grid source to always return empty node sets
+      // Fake the raw grid source so that it always returns empty node sets.
       getNodes() >> [:]
       getNodes(_) >> [:]
     } as RawGridSource
-    def energyManagementSource = new EnergyManagementSource(typeSource, new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+    def energyManagementSource =
+        new EnergyManagementSource(typeSource, new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+
     def csvSystemParticipantSource = new SystemParticipantSource(
         typeSource,
         thermalSource,
         rawGridSource,
         energyManagementSource,
-        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy))
+        new CsvDataSource(csvSep, participantsFolderPath, fileNamingStrategy)
+    )
 
     when:
-    def systemParticipants = Try.of(() -> csvSystemParticipantSource.systemParticipants, SystemParticipantsException)
+    def systemParticipants = Try.of(
+        () -> csvSystemParticipantSource.systemParticipants,
+        SystemParticipantsException
+    )
+    def extendedSystemParticipants = Try.of(
+        () -> csvSystemParticipantSource.extendedSystemParticipants,
+        SystemParticipantsException
+    )
 
     then:
     systemParticipants.failure
     systemParticipants.data == Optional.empty()
+    systemParticipants.exception.get().class == SystemParticipantsException
+    systemParticipants.exception.get().message.contains(
+        "Exception(s) occurred in 1 input file(s)"
+    )
+    systemParticipants.exception.get().message.contains('"EvInput" data')
+    !systemParticipants.exception.get().message.contains('"BmInput" data')
 
-    Exception ex = systemParticipants.exception.get()
-    ex.class == SystemParticipantsException
-    ex.message == "Exception(s) occurred in 11 input file(s) while initializing system participants.\n" +
-        "        1 exception(s) occurred within \"FixedFeedInInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-        "        1 exception(s) occurred within \"PvInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-        "        1 exception(s) occurred within \"LoadInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-        "        1 exception(s) occurred within \"BmInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-        "        1 exception(s) occurred within \"StorageInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-        "        1 exception(s) occurred within \"WecInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-        "        1 exception(s) occurred within \"EvInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-        "        1 exception(s) occurred within \"EvcsInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-        "        1 exception(s) occurred within \"ChpInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-        "        1 exception(s) occurred within \"HpInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-        "        1 exception(s) occurred within \"AcInput\" data: \n" +
-        "               Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided."
+    extendedSystemParticipants.failure
+    extendedSystemParticipants.data == Optional.empty()
+    extendedSystemParticipants.exception.get().class == SystemParticipantsException
+    extendedSystemParticipants.exception.get().message.contains(
+        "Exception(s) occurred in 10 input file(s)"
+    )
+
+    and:
+    [
+      "FixedFeedInInput",
+      "PvInput",
+      "LoadInput",
+      "BmInput",
+      "StorageInput",
+      "WecInput",
+      "EvcsInput",
+      "ChpInput",
+      "HpInput",
+      "AcInput"
+    ].each { participantType ->
+      assert extendedSystemParticipants.exception.get().message.contains(
+      "\"${participantType}\" data"
+      )
+    }
+
+    !extendedSystemParticipants.exception.get().message.contains('"EvInput" data')
   }
 
   def "A SystemParticipantSource with csv input should return data from valid input file as expected"() {

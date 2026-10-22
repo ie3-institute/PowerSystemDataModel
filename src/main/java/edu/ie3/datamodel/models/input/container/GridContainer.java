@@ -21,6 +21,9 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
   /** Accumulated system participant elements */
   protected final SystemParticipants systemParticipants;
 
+  /** Accumulated extended system participant elements */
+  protected final ExtendedSystemParticipants extendedSystemParticipants;
+
   /** Accumulated energy management units */
   protected final EnergyManagementUnits emUnits;
 
@@ -28,11 +31,13 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
+      ExtendedSystemParticipants extendedSystemParticipants,
       EnergyManagementUnits emUnits) {
     this.gridName = gridName;
 
     this.rawGrid = rawGrid;
     this.systemParticipants = systemParticipants;
+    this.extendedSystemParticipants = extendedSystemParticipants;
     this.emUnits = emUnits;
   }
 
@@ -44,6 +49,7 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
         .flatMap(java.util.Collection::stream)
         .forEach(allEntities::add);
     allEntities.addAll(systemParticipants.allEntitiesAsList());
+    allEntities.addAll(extendedSystemParticipants.allEntitiesAsList());
     allEntities.addAll(emUnits.allEntitiesAsList());
     return Collections.unmodifiableList(allEntities);
   }
@@ -64,6 +70,10 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     return systemParticipants;
   }
 
+  public ExtendedSystemParticipants getExtendedSystemParticipants() {
+    return extendedSystemParticipants;
+  }
+
   public EnergyManagementUnits getEmUnits() {
     return emUnits;
   }
@@ -75,12 +85,13 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     return gridName.equals(that.gridName)
         && rawGrid.equals(that.rawGrid)
         && systemParticipants.equals(that.systemParticipants)
+        && extendedSystemParticipants.equals(that.extendedSystemParticipants)
         && emUnits.equals(that.emUnits);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(gridName, rawGrid, systemParticipants, emUnits);
+    return Objects.hash(gridName, rawGrid, systemParticipants, extendedSystemParticipants, emUnits);
   }
 
   @Override
@@ -100,6 +111,7 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     private String gridName;
     private RawGridElements rawGrid;
     private SystemParticipants systemParticipants;
+    private ExtendedSystemParticipants extendedSystemParticipants;
     private EnergyManagementUnits emUnits;
 
     /**
@@ -111,6 +123,7 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
       this.gridName = gridContainer.getGridName();
       this.rawGrid = gridContainer.getRawGrid();
       this.systemParticipants = gridContainer.getSystemParticipants();
+      this.extendedSystemParticipants = gridContainer.getExtendedSystemParticipants();
       this.emUnits = gridContainer.getEmUnits();
     }
 
@@ -127,6 +140,11 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     /** Returns {@link SystemParticipants} */
     protected SystemParticipants getSystemParticipants() {
       return systemParticipants;
+    }
+
+    /** Returns {@link ExtendedSystemParticipants}. */
+    protected ExtendedSystemParticipants getExtendedSystemParticipants() {
+      return extendedSystemParticipants;
     }
 
     /** Returns {@link EnergyManagementUnits} */
@@ -164,6 +182,17 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
      */
     public B systemParticipants(SystemParticipants systemParticipants) {
       this.systemParticipants = systemParticipants;
+      return thisInstance();
+    }
+
+    /**
+     * Method to alter the {@link ExtendedSystemParticipants}.
+     *
+     * @param extendedSystemParticipants altered systemParticipants
+     * @return this instance of {@link GridContainerCopyBuilder}
+     */
+    public B extendedSystemParticipants(ExtendedSystemParticipants extendedSystemParticipants) {
+      this.extendedSystemParticipants = extendedSystemParticipants;
       return thisInstance();
     }
 

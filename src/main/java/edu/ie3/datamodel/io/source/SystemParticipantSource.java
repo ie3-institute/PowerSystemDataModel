@@ -15,6 +15,7 @@ import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.container.ExtendedSystemParticipants;
 import edu.ie3.datamodel.models.input.container.SystemParticipants;
 import edu.ie3.datamodel.models.input.system.*;
 import edu.ie3.datamodel.models.input.system.type.*;
@@ -29,7 +30,8 @@ import java.util.function.BiFunction;
 
 /**
  * Implementation that provides the capability to build entities of type {@link
- * SystemParticipantInput} as well as {@link SystemParticipants} container.
+ * SystemParticipantInput} as well as {@link SystemParticipants} and {@link
+ * ExtendedSystemParticipants} containers.
  */
 public class SystemParticipantSource extends AssetEntitySource {
 
@@ -169,11 +171,85 @@ public class SystemParticipantSource extends AssetEntitySource {
   public SystemParticipants getSystemParticipants(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) throws SourceException {
 
+    Map<UUID, EvTypeInput> evTypes = typeSource.getEvTypes();
+    Map<UUID, EmInput> emUnits = energyManagementSource.getEmUnits();
+
+    Try<Set<EvInput>, SourceException> evs =
+        Try.of(() -> getEvs(operators, nodes, emUnits, evTypes), SourceException.class);
+
+    List<SourceException> exceptions = Try.getExceptions(evs);
+
+    if (!exceptions.isEmpty()) {
+      throw new SystemParticipantsException(
+          "Exception(s) occurred in "
+              + exceptions.size()
+              + " input file(s) while initializing system participants.",
+          exceptions);
+    } else {
+      return new SystemParticipants(evs.getOrThrow());
+    }
+  }
+
+  /**
+   * Should return either a consistent instance of {@link ExtendedSystemParticipants} or throw a
+   * {@link SourceException}. The decision to throw a {@link SourceException} instead of returning
+   * the incomplete {@link ExtendedSystemParticipants} instance is motivated by the fact, that a
+   * {@link ExtendedSystemParticipants} is a container instance that depends on several other
+   * entities. Without being complete, it is useless for further processing.
+   *
+   * <p>Hence, whenever at least one entity {@link ExtendedSystemParticipants} depends on cannot be
+   * provided, {@link SourceException} should be thrown. The thrown exception should provide enough
+   * information to debug the error and fix the persistent data that has been failed to processed.
+   *
+   * <p>Furthermore, it is expected, that the specific implementation of this method ensures not
+   * only the completeness of the resulting {@link ExtendedSystemParticipants} instance, but also
+   * its validity e.g. in the sense that not duplicate UUIDs exist within all entities contained in
+   * the returning instance.
+   *
+   * @return a valid, complete {@link ExtendedSystemParticipants}
+   * @throws SourceException on error
+   */
+  public ExtendedSystemParticipants getExtendedSystemParticipants() throws SourceException {
+
+    Map<UUID, OperatorInput> operators = typeSource.getOperators();
+    Map<UUID, NodeInput> nodes = rawGridSource.getNodes(operators);
+
+    return getExtendedSystemParticipants(operators, nodes);
+  }
+
+  /**
+   * Should return either a consistent instance of {@link ExtendedSystemParticipants} or throw a
+   * {@link SourceException}. The decision to throw a {@link SourceException} instead of returning
+   * the incomplete {@link ExtendedSystemParticipants} instance is motivated by the fact, that a
+   * {@link ExtendedSystemParticipants} is a container instance that depends on several other
+   * entities. Without being complete, it is useless for further processing.
+   *
+   * <p>Hence, whenever at least one entity {@link ExtendedSystemParticipants} depends on cannot be
+   * provided, {@link SourceException} should be thrown. The thrown exception should provide enough
+   * information to debug the error and fix the persistent data that has been failed to processed.
+   *
+   * <p>Furthermore, it is expected, that the specific implementation of this method ensures not
+   * only the completeness of the resulting {@link ExtendedSystemParticipants} instance, but also
+   * its validity e.g. in the sense that not duplicate UUIDs exist within all entities contained in
+   * the returning instance.
+   *
+   * <p>In contrast to {@link #getExtendedSystemParticipants()}, this method provides the ability to
+   * pass in already existing input objects that this method depends on. Doing so, already loaded
+   * operators and nodes can be recycled to improve performance and prevent unnecessary loading
+   * operations.
+   *
+   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
+   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
+   * @return a valid, complete {@link ExtendedSystemParticipants}
+   * @throws SourceException on error
+   */
+  public ExtendedSystemParticipants getExtendedSystemParticipants(
+      Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes) throws SourceException {
+
     // read all needed entities
     /// start with types and operators
     Map<UUID, BmTypeInput> bmTypes = typeSource.getBmTypes();
     Map<UUID, ChpTypeInput> chpTypes = typeSource.getChpTypes();
-    Map<UUID, EvTypeInput> evTypes = typeSource.getEvTypes();
     Map<UUID, HpTypeInput> hpTypes = typeSource.getHpTypes();
     Map<UUID, AcTypeInput> acTypes = typeSource.getAcTypes();
     Map<UUID, StorageTypeInput> storageTypes = typeSource.getStorageTypes();
@@ -197,8 +273,6 @@ public class SystemParticipantSource extends AssetEntitySource {
         Try.of(() -> getStorages(operators, nodes, emUnits, storageTypes), SourceException.class);
     Try<Set<WecInput>, SourceException> wecInputs =
         Try.of(() -> getWecPlants(operators, nodes, emUnits, wecTypes), SourceException.class);
-    Try<Set<EvInput>, SourceException> evs =
-        Try.of(() -> getEvs(operators, nodes, emUnits, evTypes), SourceException.class);
     Try<Set<EvcsInput>, SourceException> evcs =
         Try.of(() -> getEvcs(operators, nodes, emUnits), SourceException.class);
     Try<Set<ChpInput>, SourceException> chpInputs =
@@ -222,7 +296,6 @@ public class SystemParticipantSource extends AssetEntitySource {
             bmInputs,
             storages,
             wecInputs,
-            evs,
             evcs,
             chpInputs,
             hpInputs,
@@ -232,17 +305,16 @@ public class SystemParticipantSource extends AssetEntitySource {
       throw new SystemParticipantsException(
           "Exception(s) occurred in "
               + exceptions.size()
-              + " input file(s) while initializing system participants.",
+              + " input file(s) while initializing extended system participants.",
           exceptions);
     } else {
-      // if everything is fine, return a system participants container
+      // if everything is fine, return an extended system participants container
       // getOrThrow should not throw an exception in this context, because all exception are
       // filtered and thrown before
-      return new SystemParticipants(
+      return new ExtendedSystemParticipants(
           bmInputs.getOrThrow(),
           chpInputs.getOrThrow(),
           evcs.getOrThrow(),
-          evs.getOrThrow(),
           fixedFeedInInputs.getOrThrow(),
           hpInputs.getOrThrow(),
           acInputs.getOrThrow(),

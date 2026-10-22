@@ -68,12 +68,17 @@ public class ContainerNodeUpdateUtil {
       JointGridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes)
       throws InvalidGridException {
     UpdatedEntities updatedEntities =
-        updateEntities(grid.getRawGrid(), grid.getSystemParticipants(), oldToNewNodes);
+        updateEntities(
+            grid.getRawGrid(),
+            grid.getSystemParticipants(),
+            grid.getExtendedSystemParticipants(),
+            oldToNewNodes);
 
     return new JointGridContainer(
         grid.getGridName(),
         updatedEntities.rawGridElements(),
         updatedEntities.systemParticipants(),
+        updatedEntities.extendedSystemParticipants(),
         grid.getEmUnits());
   }
 
@@ -101,13 +106,18 @@ public class ContainerNodeUpdateUtil {
       SubGridContainer grid, Map<NodeInput, NodeInput> oldToNewNodes) throws InvalidGridException {
 
     UpdatedEntities updatedEntities =
-        updateEntities(grid.getRawGrid(), grid.getSystemParticipants(), oldToNewNodes);
+        updateEntities(
+            grid.getRawGrid(),
+            grid.getSystemParticipants(),
+            grid.getExtendedSystemParticipants(),
+            oldToNewNodes);
 
     return new SubGridContainer(
         grid.getGridName(),
         grid.getSubnet(),
         updatedEntities.rawGridElements(),
         updatedEntities.systemParticipants(),
+        updatedEntities.extendedSystemParticipants(),
         grid.getEmUnits());
   }
 
@@ -116,6 +126,8 @@ public class ContainerNodeUpdateUtil {
    *
    * @param rawGridElements the {@link RawGridElements} instance of the grid to be updated
    * @param systemParticipants the {@link SystemParticipants} instance of the grid to be updated
+   * @param extendedSystemParticipants the {@link ExtendedSystemParticipants} instance of the grid
+   *     to be updated
    * @param oldToNewNodes a mapping of old nodes to their corresponding new or updated nodes
    * @return instance of {@link UpdatedEntities} with copies of the provided grid parts with updated
    *     nodes as provided
@@ -123,6 +135,7 @@ public class ContainerNodeUpdateUtil {
   private static UpdatedEntities updateEntities(
       RawGridElements rawGridElements,
       SystemParticipants systemParticipants,
+      ExtendedSystemParticipants extendedSystemParticipants,
       Map<NodeInput, NodeInput> oldToNewNodes) {
     /* RawGridElements */
     RawGridElementsNodeUpdateResult rawGridUpdateResult =
@@ -135,7 +148,12 @@ public class ContainerNodeUpdateUtil {
     SystemParticipants updatedSystemParticipants =
         updateSystemParticipantsWithNodes(systemParticipants, updatedOldToNewNodes);
 
-    return new UpdatedEntities(updatedRawGridElements, updatedSystemParticipants);
+    /* ExtendedSystemParticipants */
+    ExtendedSystemParticipants updatedExtendedSystemParticipants =
+        updateExtendedSystemParticipantsWithNodes(extendedSystemParticipants, updatedOldToNewNodes);
+
+    return new UpdatedEntities(
+        updatedRawGridElements, updatedSystemParticipants, updatedExtendedSystemParticipants);
   }
 
   /**
@@ -152,7 +170,7 @@ public class ContainerNodeUpdateUtil {
         systemParticipants.allEntitiesAsList().parallelStream()
             .map(
                 sysPart -> {
-                  if (oldToNewNodes.containsKey(sysPart.getNode())) {
+                  if (sysPart.getNode() != null && oldToNewNodes.containsKey(sysPart.getNode())) {
                     return sysPart.copy().node(oldToNewNodes.get(sysPart.getNode())).build();
                   } else {
                     return sysPart;
@@ -160,6 +178,31 @@ public class ContainerNodeUpdateUtil {
                 })
             .toList();
     return new SystemParticipants(sysParts);
+  }
+
+  /**
+   * Update the provided {@link ExtendedSystemParticipants} with the provided oldToNew nodes mapping
+   *
+   * @param extendedSystemParticipants the extended system participants that should be updated
+   * @param oldToNewNodes mapping of old nodes to their corresponding new or updated nodes
+   * @return copy of the provided extended system participants with updated nodes as provided
+   */
+  private static ExtendedSystemParticipants updateExtendedSystemParticipantsWithNodes(
+      ExtendedSystemParticipants extendedSystemParticipants,
+      Map<NodeInput, NodeInput> oldToNewNodes) {
+
+    List<SystemParticipantInput> sysParts =
+        extendedSystemParticipants.allEntitiesAsList().parallelStream()
+            .map(
+                sysPart -> {
+                  if (oldToNewNodes.containsKey(sysPart.getNode())) {
+                    return sysPart.copy().node(oldToNewNodes.get(sysPart.getNode())).build();
+                  } else {
+                    return sysPart;
+                  }
+                })
+            .toList();
+    return new ExtendedSystemParticipants(sysParts);
   }
 
   /**
@@ -562,5 +605,7 @@ public class ContainerNodeUpdateUtil {
 
   /** Wrapper class for updated entities hold by an instance of {@link GridContainer} */
   private record UpdatedEntities(
-      RawGridElements rawGridElements, SystemParticipants systemParticipants) {}
+      RawGridElements rawGridElements,
+      SystemParticipants systemParticipants,
+      ExtendedSystemParticipants extendedSystemParticipants) {}
 }
