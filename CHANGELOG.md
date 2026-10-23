@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Throw a `SourceException` instead of silently swallowing SQL errors in `SqlDataSource` [#914](https://github.com/ie3-institute/PowerSystemDataModel/issues/914)
 - Throw a `SourceException` in `SqlDataSource.getSourceFields` if the fields of a table cannot be read [#1761](https://github.com/ie3-institute/PowerSystemDataModel/issues/1761)
 - Use `FileSystems.getFileSystem` before newFileSystem in `EntitySource.getBuildInSource` [#1775](https://github.com/ie3-institute/PowerSystemDataModel/issues/1775)
+- consider additional parameters in copy builders [#1685](https://github.com/ie3-institute/PowerSystemDataModel/issues/1685)
 
 ### Changed
 - Change Evcs.locationType from single element to list [#1460](https://github.com/ie3-institute/PowerSystemDataModel/issues/1460)

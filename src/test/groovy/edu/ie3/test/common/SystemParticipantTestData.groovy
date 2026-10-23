@@ -95,6 +95,7 @@ class SystemParticipantTestData {
   static final ComparableQuantity<Angle> elevationAngle = Quantities.getQuantity(41.01871871948242d, SOLAR_ELEVATION_ANGLE)
   static double kT = 1d
   static double kG = 0.8999999761581421d
+  public static final Map<String, String> pvAdditionalInfo = ["a": "b", "c": "d"]
   public static final PvInput pvInput = new PvInput(
   UUID.fromString("d56f15b7-8293-4b98-b5bd-58f6273ce229"),
   "test_pvInput",
@@ -110,7 +111,8 @@ class SystemParticipantTestData {
   kG,
   kT,
   sRated,
-  cosPhiRated
+  cosPhiRated,
+  pvAdditionalInfo
   )
 
 
