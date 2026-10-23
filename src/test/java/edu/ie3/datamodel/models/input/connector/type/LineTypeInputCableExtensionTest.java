@@ -14,6 +14,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.SpecificCapacitance;
 import edu.ie3.util.quantities.interfaces.SpecificConductance;
+import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
 import edu.ie3.util.quantities.interfaces.SpecificResistance;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,8 @@ class LineTypeInputCableExtensionTest {
               Quantities.getQuantity(0.0225, METRE),
               false,
               Quantities.getQuantity(1.0 / 384.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(3449600.0, JOULE_PER_CUBIC_METRE_KELVIN),
+              Quantities.getQuantity(3449600.0, JOULE_PER_CUBIC_METRE_KELVIN)
+                  .asType(SpecificHeatCapacity.class), // TODO DF remove casting with PSU >3.2.3
               null),
           List.of(
               new LayerInput(
@@ -76,7 +78,9 @@ class LineTypeInputCableExtensionTest {
                   Quantities.getQuantity(0.0225, METRE),
                   Quantities.getQuantity(0.027, METRE),
                   Quantities.getQuantity(3.5, KELVIN_METRE_PER_WATT),
-                  Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN),
+                  Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN)
+                      .asType(
+                          SpecificHeatCapacity.class), // TODO DF remove casting with PSU >3.2.3,
                   Optional.<ComparableQuantity<Area>>empty())),
           null,
           new ArrayList<>(),
@@ -103,7 +107,8 @@ class LineTypeInputCableExtensionTest {
               Quantities.getQuantity(0.0225, METRE),
               false,
               Quantities.getQuantity(1.0 / 384.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(3449600.0, JOULE_PER_CUBIC_METRE_KELVIN),
+              Quantities.getQuantity(3449600.0, JOULE_PER_CUBIC_METRE_KELVIN)
+                  .asType(SpecificHeatCapacity.class), // TODO DF remove casting with PSU >3.2.3,
               null),
           List.of(
               new LayerInput(
@@ -113,7 +118,9 @@ class LineTypeInputCableExtensionTest {
                   Quantities.getQuantity(0.0225, METRE),
                   Quantities.getQuantity(0.027, METRE),
                   Quantities.getQuantity(3.5, KELVIN_METRE_PER_WATT),
-                  Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN),
+                  Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN)
+                      .asType(
+                          SpecificHeatCapacity.class), // TODO DF remove casting with PSU >3.2.3,
                   Optional.<ComparableQuantity<Area>>empty())),
           null,
           new ArrayList<>(),

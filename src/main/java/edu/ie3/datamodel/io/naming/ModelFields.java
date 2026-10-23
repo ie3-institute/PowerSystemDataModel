@@ -14,6 +14,8 @@ import edu.ie3.datamodel.io.naming.timeseries.TimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.*;
+import edu.ie3.datamodel.models.input.SoilLayer;
+import edu.ie3.datamodel.models.input.SoilType;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
@@ -211,6 +213,7 @@ public final class ModelFields extends FieldNamingStrategy {
     registerGridAssetFields();
     registerParticipantFields();
     registerThermalFields();
+    registerSoilFields();
     registerResultFields();
     registerTimeSeriesRelatedFields();
     registerValueFields();
@@ -436,6 +439,19 @@ public final class ModelFields extends FieldNamingStrategy {
             c ->
                 addMandatory(
                     c, STORAGE_VOLUME_LVL, INLET_TEMP, RETURN_TEMP, C, P_THERMAL_MAX, THERMAL_BUS));
+  }
+
+  /** Method for registering all soil fields. */
+  private static void registerSoilFields() {
+    registerMandatory(
+        SoilType.class,
+        newSet(UUID, ID),
+        THERMAL_RESISTIVITY_WET,
+        THERMAL_RESISTIVITY_DRY,
+        SPECIFIC_HEAT_CAPACITY,
+        CRITICAL_TEMPERATURE_DIFFERENCE);
+
+    registerMandatory(SoilLayer.class, newSet(UUID), GEOMETRY, Z_FROM, Z_TO, SOIL_TYPE);
   }
 
   /** Method for registering all result fields. */

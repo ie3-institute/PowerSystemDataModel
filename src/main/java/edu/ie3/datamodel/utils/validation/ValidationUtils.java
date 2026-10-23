@@ -14,6 +14,8 @@ import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
+import edu.ie3.datamodel.models.input.SoilLayer;
+import edu.ie3.datamodel.models.input.SoilType;
 import edu.ie3.datamodel.models.input.connector.ConnectorInput;
 import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
@@ -104,6 +106,10 @@ public class ValidationUtils {
       exceptions.addAll(checkAssetType((AssetTypeInput) obj));
     } else if (ThermalGrid.class.isAssignableFrom(obj.getClass())) {
       exceptions.addAll(ThermalValidationUtils.check((ThermalGrid) obj));
+    } else if (SoilType.class.isAssignableFrom(obj.getClass())) {
+      exceptions.addAll(SoilValidationUtils.check((SoilType) obj));
+    } else if (SoilLayer.class.isAssignableFrom(obj.getClass())) {
+      exceptions.addAll(SoilValidationUtils.check((SoilLayer) obj));
     } else {
       logNotImplemented(obj);
     }
