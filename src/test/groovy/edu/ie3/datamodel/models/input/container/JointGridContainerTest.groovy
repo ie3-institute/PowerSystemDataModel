@@ -26,7 +26,7 @@ class JointGridContainerTest extends Specification {
 
   def "A single subgrid can be used to build a JointGridContainer"() {
     when:
-    def jointGridContainer = new JointGridContainer(GRID_NAME, RAW_GRID, emptySystemParticipants, emptyEnergyManagementUnits)
+    def jointGridContainer = new JointGridContainer(GRID_NAME, RAW_GRID, emptySystemParticipants, emptyEnergyManagementUnits, Set.of())
 
     then:
     noExceptionThrown()
@@ -35,7 +35,7 @@ class JointGridContainerTest extends Specification {
 
   def "A JointGridContainer's copy method should work as expected"() {
     given:
-    def jointGridContainer = new JointGridContainer(GRID_NAME, RAW_GRID, emptySystemParticipants, emptyEnergyManagementUnits)
+    def jointGridContainer = new JointGridContainer(GRID_NAME, RAW_GRID, emptySystemParticipants, emptyEnergyManagementUnits, Set.of())
     def rawGrid = new RawGridElements(List.of(GridTestData.lineAtoB, GridTestData.transformerAtoBtoC))
     def systemParticipants = new SystemParticipants(List.of(SystemParticipantTestData.bmInput))
     def emUnits = new EnergyManagementUnits(Set.of(EnergyManagementTestData.emInput))
@@ -53,5 +53,6 @@ class JointGridContainerTest extends Specification {
     modifiedJointGridContainer.rawGrid == rawGrid
     modifiedJointGridContainer.systemParticipants == systemParticipants
     modifiedJointGridContainer.emUnits == emUnits
+    modifiedJointGridContainer.evs == Set.of()
   }
 }

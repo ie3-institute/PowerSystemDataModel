@@ -210,26 +210,13 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
   def "Smoke Test: Correct EV type throws no exception"() {
     given:
-    def evType = SystemParticipantTestData.evTypeInput
+    def evInput = SystemParticipantTestData.evInput
 
     when:
-    ValidationUtils.check(evType)
+    ValidationUtils.check(evInput)
 
     then:
     noExceptionThrown()
-  }
-
-  def "SystemParticipantValidationUtils.checkEvType() recognizes all potential errors for an EV type"() {
-    when:
-    SystemParticipantValidationUtils.check(invalidEvType)
-
-    then:
-    Throwable ex = thrown()
-    ex.message.contains(expectedException.message)
-
-    where:
-    invalidEvType || expectedException
-    new EvTypeInput(uuid, id, capex, opex, Quantities.getQuantity(0, ENERGY_IN), Quantities.getQuantity(0, ENERGY_PER_DISTANCE), sRated, cosPhiRated, Quantities.getQuantity(20, ACTIVE_POWER_IN)) || new InvalidEntityException("The following quantities have to be positive: eStorage=0 kWh, eCons=0 kWh/km", invalidEvType)
   }
 
   // Fixed Feed In

@@ -13,6 +13,7 @@ import static tech.units.indriya.unit.Units.OHM;
 import edu.ie3.datamodel.exceptions.InvalidGridException;
 import edu.ie3.datamodel.exceptions.TopologyException;
 import edu.ie3.datamodel.graph.*;
+import edu.ie3.datamodel.models.input.EvInput;
 import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
@@ -366,7 +367,6 @@ public class ContainerUtils {
     Set<BmInput> bmPlants = filterParticipants(input.getBmPlants(), subnet);
     Set<ChpInput> chpPlants = filterParticipants(input.getChpPlants(), subnet);
     Set<EvcsInput> evcsInputs = filterParticipants(input.getEvcs(), subnet);
-    Set<EvInput> evs = filterParticipants(input.getEvs(), subnet);
     Set<FixedFeedInInput> fixedFeedIns = filterParticipants(input.getFixedFeedIns(), subnet);
     Set<HpInput> heatpumps = filterParticipants(input.getHeatPumps(), subnet);
     Set<AcInput> airConditions = filterParticipants(input.getAirConditions(), subnet);
@@ -379,7 +379,6 @@ public class ContainerUtils {
         bmPlants,
         chpPlants,
         evcsInputs,
-        evs,
         fixedFeedIns,
         heatpumps,
         airConditions,
@@ -454,13 +453,15 @@ public class ContainerUtils {
    * @param rawGrid Container model of raw grid elements
    * @param systemParticipants Container model of system participants
    * @param energyManagementUnits Container model of energy system units
+   * @param evs Set of electric vehicles
    * @return An immutable, directed graph of sub grid topologies.
    */
   public static SubGridTopologyGraph buildSubGridTopologyGraph(
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
-      EnergyManagementUnits energyManagementUnits)
+      EnergyManagementUnits energyManagementUnits,
+      Set<EvInput> evs)
       throws InvalidGridException {
     /* Collect the different subnets. Through the validation of lines, it is ensured, that no galvanically connected
      * grid has more than one subnet number assigned */
@@ -469,7 +470,7 @@ public class ContainerUtils {
     /* Build the single sub grid models */
     HashMap<Integer, SubGridContainer> subGrids =
         buildSubGridContainers(
-            gridName, subnetNumbers, rawGrid, systemParticipants, energyManagementUnits);
+            gridName, subnetNumbers, rawGrid, systemParticipants, energyManagementUnits, evs);
 
     /* Build the graph structure denoting the topology of the grid */
     return buildSubGridTopologyGraph(subGrids, rawGrid);
@@ -493,6 +494,7 @@ public class ContainerUtils {
    * @param rawGrid Container model with all raw grid elements
    * @param systemParticipants Container model with all system participant inputs
    * @param energyManagementUnits Container model with all energy management unit inputs
+   * @param evs Set of electric vehicles
    * @return A mapping from subnet number to container model with sub grid elements
    */
   private static HashMap<Integer, SubGridContainer> buildSubGridContainers(
@@ -500,7 +502,8 @@ public class ContainerUtils {
       SortedSet<Integer> subnetNumbers,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
-      EnergyManagementUnits energyManagementUnits)
+      EnergyManagementUnits energyManagementUnits,
+      Set<EvInput> evs)
       throws InvalidGridException {
     HashMap<Integer, SubGridContainer> subGrids = new HashMap<>(subnetNumbers.size());
     for (int subnetNumber : subnetNumbers) {
@@ -515,7 +518,8 @@ public class ContainerUtils {
               subnetNumber,
               rawGridElements,
               systemParticipantElements,
-              energyManagementUnits));
+              energyManagementUnits,
+              evs));
     }
     return subGrids;
   }
@@ -705,6 +709,11 @@ public class ContainerUtils {
     EnergyManagementUnits energyManagementUnits =
         new EnergyManagementUnits(
             subGridContainers.stream().map(GridContainer::getEmUnits).collect(Collectors.toSet()));
+    Set<EvInput> evs =
+        subGridContainers.stream()
+            .map(GridContainer::getEvs)
+            .flatMap(Set::stream)
+            .collect(Collectors.toSet());
 
     Map<Integer, SubGridContainer> subGridMapping =
         subGridContainers.stream()
@@ -713,7 +722,7 @@ public class ContainerUtils {
     SubGridTopologyGraph subGridTopologyGraph = buildSubGridTopologyGraph(subGridMapping, rawGrid);
 
     return new JointGridContainer(
-        gridName, rawGrid, systemParticipants, energyManagementUnits, subGridTopologyGraph);
+        gridName, rawGrid, systemParticipants, energyManagementUnits, evs, subGridTopologyGraph);
   }
 
   /**
@@ -855,6 +864,7 @@ public class ContainerUtils {
             subGridContainer.getRawGrid().getMeasurementUnits(),
             subGridContainer.getRawGrid().getCableDeploymentsByLine()),
         subGridContainer.getSystemParticipants(),
-        subGridContainer.getEmUnits());
+        subGridContainer.getEmUnits(),
+        subGridContainer.getEvs());
   }
 }

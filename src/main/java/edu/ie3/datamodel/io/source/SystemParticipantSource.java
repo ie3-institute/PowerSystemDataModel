@@ -46,7 +46,6 @@ public class SystemParticipantSource extends AssetEntitySource {
   private final AcInputFactory acInputFactory;
   private final BmInputFactory bmInputFactory;
   private final ChpInputFactory chpInputFactory;
-  private final EvInputFactory evInputFactory;
   private final FixedFeedInInputFactory fixedFeedInInputFactory;
   private final HpInputFactory hpInputFactory;
   private final LoadInputFactory loadInputFactory;
@@ -87,7 +86,6 @@ public class SystemParticipantSource extends AssetEntitySource {
     this.acInputFactory = new AcInputFactory();
     this.bmInputFactory = new BmInputFactory();
     this.chpInputFactory = new ChpInputFactory();
-    this.evInputFactory = new EvInputFactory();
     this.fixedFeedInInputFactory = new FixedFeedInInputFactory();
     this.hpInputFactory = new HpInputFactory();
     this.loadInputFactory = new LoadInputFactory();
@@ -104,7 +102,6 @@ public class SystemParticipantSource extends AssetEntitySource {
         AcInput.class,
         BmInput.class,
         ChpInput.class,
-        EvInput.class,
         FixedFeedInInput.class,
         HpInput.class,
         LoadInput.class,
@@ -173,7 +170,6 @@ public class SystemParticipantSource extends AssetEntitySource {
     /// start with types and operators
     Map<UUID, BmTypeInput> bmTypes = typeSource.getBmTypes();
     Map<UUID, ChpTypeInput> chpTypes = typeSource.getChpTypes();
-    Map<UUID, EvTypeInput> evTypes = typeSource.getEvTypes();
     Map<UUID, HpTypeInput> hpTypes = typeSource.getHpTypes();
     Map<UUID, AcTypeInput> acTypes = typeSource.getAcTypes();
     Map<UUID, StorageTypeInput> storageTypes = typeSource.getStorageTypes();
@@ -197,8 +193,6 @@ public class SystemParticipantSource extends AssetEntitySource {
         Try.of(() -> getStorages(operators, nodes, emUnits, storageTypes), SourceException.class);
     Try<Set<WecInput>, SourceException> wecInputs =
         Try.of(() -> getWecPlants(operators, nodes, emUnits, wecTypes), SourceException.class);
-    Try<Set<EvInput>, SourceException> evs =
-        Try.of(() -> getEvs(operators, nodes, emUnits, evTypes), SourceException.class);
     Try<Set<EvcsInput>, SourceException> evcs =
         Try.of(() -> getEvcs(operators, nodes, emUnits), SourceException.class);
     Try<Set<ChpInput>, SourceException> chpInputs =
@@ -222,7 +216,6 @@ public class SystemParticipantSource extends AssetEntitySource {
             bmInputs,
             storages,
             wecInputs,
-            evs,
             evcs,
             chpInputs,
             hpInputs,
@@ -242,7 +235,6 @@ public class SystemParticipantSource extends AssetEntitySource {
           bmInputs.getOrThrow(),
           chpInputs.getOrThrow(),
           evcs.getOrThrow(),
-          evs.getOrThrow(),
           fixedFeedInInputs.getOrThrow(),
           hpInputs.getOrThrow(),
           acInputs.getOrThrow(),
@@ -588,58 +580,6 @@ public class SystemParticipantSource extends AssetEntitySource {
             WecInput.class,
             dataSource,
             wecInputFactory,
-            data ->
-                participantEnricher
-                    .andThen(enrichTypes(types))
-                    .apply(data, operators, nodes, emUnits))
-        .collect(toSet());
-  }
-
-  /**
-   * Returns a unique set of {@link EvInput} instances.
-   *
-   * <p>This set has to be unique in the sense of object uniqueness but also in the sense of {@link
-   * java.util.UUID} uniqueness of the provided {@link EvInput} which has to be checked manually, as
-   * {@link EvInput#equals(Object)} is NOT restricted on the uuid of {@link EvInput}.
-   *
-   * @return a set of object- and uuid-unique {@link EvInput} entities
-   */
-  public Set<EvInput> getEvs() throws SourceException {
-    Map<UUID, OperatorInput> operators = typeSource.getOperators();
-    Map<UUID, EmInput> emUnits = energyManagementSource.getEmUnits(operators);
-    return getEvs(operators, rawGridSource.getNodes(operators), emUnits, typeSource.getEvTypes());
-  }
-
-  /**
-   * Returns a set of {@link EvInput} instances. This set has to be unique in the sense of object
-   * uniqueness but also in the sense of {@link java.util.UUID} uniqueness of the provided {@link
-   * EvInput} which has to be checked manually, as {@link EvInput#equals(Object)} is NOT restricted
-   * on the uuid of {@link EvInput}.
-   *
-   * <p>In contrast to {@link #getEvs()} this method provides the ability to pass in an already
-   * existing set of {@link NodeInput}, {@link EvTypeInput} and {@link OperatorInput} entities, the
-   * {@link EvInput} instances depend on. Doing so, already loaded nodes can be recycled to improve
-   * performance and prevent unnecessary loading operations.
-   *
-   * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
-   * set with all entities that has been able to be build is returned.
-   *
-   * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
-   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
-   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
-   * @param types a map of UUID to object- and uuid-unique {@link EvTypeInput} entities
-   * @return a set of object- and uuid-unique {@link EvInput} entities
-   */
-  public Set<EvInput> getEvs(
-      Map<UUID, OperatorInput> operators,
-      Map<UUID, NodeInput> nodes,
-      Map<UUID, EmInput> emUnits,
-      Map<UUID, EvTypeInput> types)
-      throws SourceException {
-    return getEntities(
-            EvInput.class,
-            dataSource,
-            evInputFactory,
             data ->
                 participantEnricher
                     .andThen(enrichTypes(types))

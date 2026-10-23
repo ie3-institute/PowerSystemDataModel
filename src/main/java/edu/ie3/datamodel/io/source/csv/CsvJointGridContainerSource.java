@@ -95,7 +95,8 @@ public class CsvJointGridContainerSource {
           gridName,
           rawGridElements.getOrThrow(),
           systemParticipants.getOrThrow(),
-          emUnits.getOrThrow());
+          emUnits.getOrThrow(),
+          Collections.emptySet());
     }
   }
 }

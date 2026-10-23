@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.models.input.system
 
+import edu.ie3.datamodel.models.input.EvInput
 import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Specification
 
@@ -24,9 +25,7 @@ class EvInputTest extends Specification {
       operationTime == ev.operationTime
       operator == ev.operator
       id == ev.id
-      qCharacteristics == ev.qCharacteristics
       type == SystemParticipantTestData.evTypeInput
-      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
   }
 
@@ -43,13 +42,49 @@ class EvInputTest extends Specification {
       operationTime == ev.operationTime
       operator == ev.operator
       id == ev.id
-      qCharacteristics == ev.qCharacteristics
       type.sRated == ev.type.sRated * 2d
       sRated() == ev.type.sRated * 2d
       type.sRatedDC == ev.type.sRatedDC * 2d
       type.eStorage == ev.type.eStorage * 2d
       type.eCons == ev.type.eCons * 2d
-      controllingEm == Optional.of(SystemParticipantTestData.emInput)
     }
+  }
+
+  def "An EvInput always-on constructor should work as expected"() {
+    given:
+    def uuid = UUID.randomUUID()
+    def ev = new EvInput(uuid, "ev_always_on", SystemParticipantTestData.evTypeInput)
+
+    expect:
+    ev.uuid == uuid
+    ev.id == "ev_always_on"
+    ev.type == SystemParticipantTestData.evTypeInput
+    ev.operator != null
+    ev.operationTime != null
+  }
+
+  def "An EvInput equals and hashCode should work as expected"() {
+    given:
+    def ev1 = SystemParticipantTestData.evInput
+    def ev2 = SystemParticipantTestData.evInput.copy().build()
+    def evDifferentType = SystemParticipantTestData.evInput.copy()
+        .type(SystemParticipantTestData.evTypeInput.copy().id("other").build())
+        .build()
+    def evDifferentUuid = new EvInput(
+        UUID.randomUUID(),
+        SystemParticipantTestData.evInput.id,
+        SystemParticipantTestData.evInput.operator,
+        SystemParticipantTestData.evInput.operationTime,
+        SystemParticipantTestData.evTypeInput
+    )
+
+    expect:
+    ev1 == ev1
+    ev1 == ev2
+    ev1.hashCode() == ev2.hashCode()
+    ev1 != null
+    ev1 != "string"
+    ev1 != evDifferentType
+    ev1 != evDifferentUuid
   }
 }
