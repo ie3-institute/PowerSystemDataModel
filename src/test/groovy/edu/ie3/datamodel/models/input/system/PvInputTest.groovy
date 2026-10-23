@@ -41,6 +41,7 @@ class PvInputTest extends Specification {
       kG == 10
       kT == 5
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == pvInput.additionalInformation
     }
   }
 
@@ -67,6 +68,20 @@ class PvInputTest extends Specification {
       kG == pvInput.kG
       kT == pvInput.kT
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == pvInput.additionalInformation
     }
+  }
+
+  def "A PvInput copy builder should allow modifying additionalInformation"() {
+    given:
+    def pvInput = SystemParticipantTestData.pvInput
+    def newInfo = ["a": "b", "c": "d"]
+
+    when:
+    def modified = pvInput.copy().additionalInformation(newInfo).build()
+
+    then:
+    modified.additionalInformation == newInfo
+    pvInput.additionalInformation == SystemParticipantTestData.pvInput.additionalInformation
   }
 }
