@@ -7,8 +7,10 @@ package edu.ie3.datamodel.io.source;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
-import edu.ie3.datamodel.io.factory.EntityData;
-import edu.ie3.datamodel.io.factory.input.*;
+import edu.ie3.datamodel.io.factory.input.CylindricalStorageInputFactory;
+import edu.ie3.datamodel.io.factory.input.DomesticHotWaterStorageInputFactory;
+import edu.ie3.datamodel.io.factory.input.ThermalBusInputFactory;
+import edu.ie3.datamodel.io.factory.input.ThermalHouseInputFactory;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.*;
 import java.util.Collection;
@@ -29,29 +31,9 @@ public class ThermalSource extends AssetEntitySource {
   // general fields
   private final TypeSource typeSource;
 
-  // factories
-  private final ThermalBusInputFactory thermalBusInputFactory;
-  private final CylindricalStorageInputFactory cylindricalStorageInputFactory;
-  private final DomesticHotWaterStorageInputFactory domesticHotWaterStorageInputFactory;
-  private final ThermalHouseInputFactory thermalHouseInputFactory;
-
-  // enriching function
-  protected static final BiEnrichFunction<
-          EntityData, OperatorInput, ThermalBusInput, ThermalUnitInputEntityData>
-      thermalUnitEnricher =
-          (data, operators, buses) ->
-              assetEnricher
-                  .andThen(enrich("thermalbus", buses, ThermalUnitInputEntityData::new))
-                  .apply(data, operators);
-
   public ThermalSource(TypeSource typeSource, DataSource dataSource) {
     super(dataSource);
     this.typeSource = typeSource;
-
-    this.thermalBusInputFactory = new ThermalBusInputFactory();
-    this.cylindricalStorageInputFactory = new CylindricalStorageInputFactory();
-    this.domesticHotWaterStorageInputFactory = new DomesticHotWaterStorageInputFactory();
-    this.thermalHouseInputFactory = new ThermalHouseInputFactory();
   }
 
   @Override
@@ -99,12 +81,7 @@ public class ThermalSource extends AssetEntitySource {
    */
   public Map<UUID, ThermalBusInput> getThermalBuses(Map<UUID, OperatorInput> operators)
       throws SourceException {
-    return getEntities(
-            ThermalBusInput.class,
-            dataSource,
-            thermalBusInputFactory,
-            data -> assetEnricher.apply(data, operators))
-        .collect(toMap());
+    return getEntityMap(ThermalBusInput.class, dataSource, new ThermalBusInputFactory(operators));
   }
 
   /**
@@ -193,12 +170,8 @@ public class ThermalSource extends AssetEntitySource {
   public Map<UUID, ThermalHouseInput> getThermalHouses(
       Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses)
       throws SourceException {
-    return getEntities(
-            ThermalHouseInput.class,
-            dataSource,
-            thermalHouseInputFactory,
-            data -> thermalUnitEnricher.apply(data, operators, thermalBuses))
-        .collect(toMap());
+    return getEntityMap(
+        ThermalHouseInput.class, dataSource, new ThermalHouseInputFactory(operators, thermalBuses));
   }
 
   /**
@@ -261,8 +234,7 @@ public class ThermalSource extends AssetEntitySource {
     return getEntities(
             CylindricalStorageInput.class,
             dataSource,
-            cylindricalStorageInputFactory,
-            data -> thermalUnitEnricher.apply(data, operators, thermalBuses))
+            new CylindricalStorageInputFactory(operators, thermalBuses))
         .collect(toSet());
   }
 
@@ -292,8 +264,7 @@ public class ThermalSource extends AssetEntitySource {
     return getEntities(
             DomesticHotWaterStorageInput.class,
             dataSource,
-            domesticHotWaterStorageInputFactory,
-            data -> thermalUnitEnricher.apply(data, operators, thermalBuses))
+            new DomesticHotWaterStorageInputFactory(operators, thermalBuses))
         .collect(toSet());
   }
 }

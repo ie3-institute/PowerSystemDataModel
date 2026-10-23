@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.profile.BdewStandardLoadProfile
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
@@ -25,49 +26,49 @@ class BdewLoadProfileFactoryTest extends Specification {
   def setupSpec() {
     factory = new BdewLoadProfileFactory()
 
-    def data0 = new LoadProfileData([
-      "SuSa": "74.6",
-      "SuSu": "68.8",
-      "SuWd": "71.5",
-      "TrSa": "75.8",
-      "TrSu": "68.3",
-      "TrWd": "73.0",
-      "WiSa": "70.0",
-      "WiSu": "63.2",
-      "WiWd": "65.5",
+    def data0 = [
+      "suSa": "74.6",
+      "suSu": "68.8",
+      "suWd": "71.5",
+      "trSa": "75.8",
+      "trSu": "68.3",
+      "trWd": "73.0",
+      "wiSa": "70.0",
+      "wiSu": "63.2",
+      "wiWd": "65.5",
       "quarterHour": "0"
-    ] as Map, BdewLoadValues)
+    ]
 
-    def data1 = new LoadProfileData([
-      "SuSa": "76.2",
-      "SuSu": "67.4",
-      "SuWd": "69.0",
-      "TrSa": "76.7",
-      "TrSu": "66.5",
-      "TrWd": "70.1",
-      "WiSa": "73.0",
-      "WiSu": "61.0",
-      "WiWd": "62.6",
+    def data1 = [
+      "suSa": "76.2",
+      "suSu": "67.4",
+      "suWd": "69.0",
+      "trSa": "76.7",
+      "trSu": "66.5",
+      "trWd": "70.1",
+      "wiSa": "73.0",
+      "wiSu": "61.0",
+      "wiWd": "62.6",
       "quarterHour": "1"
-    ] as Map, BdewLoadValues)
+    ]
 
-    def data2 = new LoadProfileData([
-      "SuSa": "77.7",
-      "SuSu": "65.7",
-      "SuWd": "66.3",
-      "TrSa": "77.7",
-      "TrSu": "64.6",
-      "TrWd": "67.1",
-      "WiSa": "75.9",
-      "WiSu": "58.9",
-      "WiWd": "59.6",
+    def data2 = [
+      "suSa": "77.7",
+      "suSu": "65.7",
+      "suWd": "66.3",
+      "trSa": "77.7",
+      "trSu": "64.6",
+      "trWd": "67.1",
+      "wiSa": "75.9",
+      "wiSu": "58.9",
+      "wiWd": "59.6",
       "quarterHour": "2"
-    ] as Map, BdewLoadValues)
+    ]
 
     allEntries = [
-      factory.buildModel(data0),
-      factory.buildModel(data1),
-      factory.buildModel(data2)
+      factory.buildModel(new FieldMap(data0)),
+      factory.buildModel(new FieldMap(data1)),
+      factory.buildModel(new FieldMap(data2))
     ].flatten() as Set<LoadProfileEntry<BdewLoadValues>>
   }
 
@@ -97,27 +98,27 @@ class BdewLoadProfileFactoryTest extends Specification {
     actual.failure
     actual.exception.get().message == "The provided fields [Sa, Su, Wd] are invalid for instance of 'BdewLoadValues'. \n" +
         "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'BdewLoadValues' are possible (NOT case-sensitive!):\n" +
-        "0: [quarterHour, SuSa, SuSu, SuWd, TrSa, TrSu, TrWd, WiSa, WiSu, WiWd] or [quarter_hour, su_sa, su_su, su_wd, tr_sa, tr_su, tr_wd, wi_sa, wi_su, wi_wd]\n" +
-        "1: [AprSa, AprSu, AprWd, AugSa, AugSu, AugWd, DecSa, DecSu, DecWd, FebSa, FebSu, FebWd, JanSa, JanSu, JanWd, JulSa, JulSu, JulWd, JunSa, JunSu, JunWd, MarSa, MarSu, MarWd, MaySa, MaySu, MayWd, NovSa, NovSu, NovWd, OctSa, OctSu, OctWd, quarterHour, SepSa, SepSu, SepWd] or [apr_sa, apr_su, apr_wd, aug_sa, aug_su, aug_wd, dec_sa, dec_su, dec_wd, feb_sa, feb_su, feb_wd, jan_sa, jan_su, jan_wd, jul_sa, jul_su, jul_wd, jun_sa, jun_su, jun_wd, mar_sa, mar_su, mar_wd, may_sa, may_su, may_wd, nov_sa, nov_su, nov_wd, oct_sa, oct_su, oct_wd, quarter_hour, sep_sa, sep_su, sep_wd]\n"
+        "0: [quarterHour, suSa, suSu, suWd, trSa, trSu, trWd, wiSa, wiSu, wiWd] or [quarter_hour, su_sa, su_su, su_wd, tr_sa, tr_su, tr_wd, wi_sa, wi_su, wi_wd]\n" +
+        "1: [aprSa, aprSu, aprWd, augSa, augSu, augWd, decSa, decSu, decWd, febSa, febSu, febWd, janSa, janSu, janWd, julSa, julSu, julWd, junSa, junSu, junWd, marSa, marSu, marWd, maySa, maySu, mayWd, novSa, novSu, novWd, octSa, octSu, octWd, quarterHour, sepSa, sepSu, sepWd] or [apr_sa, apr_su, apr_wd, aug_sa, aug_su, aug_wd, dec_sa, dec_su, dec_wd, feb_sa, feb_su, feb_wd, jan_sa, jan_su, jan_wd, jul_sa, jul_su, jul_wd, jun_sa, jun_su, jun_wd, mar_sa, mar_su, mar_wd, may_sa, may_su, may_wd, nov_sa, nov_su, nov_wd, oct_sa, oct_su, oct_wd, quarter_hour, sep_sa, sep_su, sep_wd]\n"
   }
 
   def "A BDEWLoadProfileFactory builds model from valid data"() {
     given:
     def data = [
-      "SuSa": "74.6",
-      "SuSu": "68.8",
-      "SuWd": "71.5",
-      "TrSa": "75.8",
-      "TrSu": "68.3",
-      "TrWd": "73.0",
-      "WiSa": "70.0",
-      "WiSu": "63.2",
-      "WiWd": "65.5",
+      "suSa": "74.6",
+      "suSu": "68.8",
+      "suWd": "71.5",
+      "trSa": "75.8",
+      "trSu": "68.3",
+      "trWd": "73.0",
+      "wiSa": "70.0",
+      "wiSu": "63.2",
+      "wiWd": "65.5",
       "quarterHour": "0"
     ] as Map
 
     when:
-    def entry = factory.buildModel(new LoadProfileData<>(data, BdewLoadValues))
+    def entry = factory.buildModel(new FieldMap(data))
 
     then:
     entry.value.class == BdewLoadValues

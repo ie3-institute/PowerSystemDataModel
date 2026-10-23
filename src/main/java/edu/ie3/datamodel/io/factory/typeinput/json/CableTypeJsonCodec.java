@@ -144,7 +144,7 @@ public final class CableTypeJsonCodec {
 
   private void writeCommonHeader(JsonGenerator generator, String uuid, String name, String material)
       throws JacksonException {
-    generator.writeName(UUID);
+    generator.writeName(UUID_FIELD);
     generator.writeString(uuid);
     generator.writeName(NAME);
     generator.writeString(name);

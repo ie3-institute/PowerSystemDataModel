@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.result;
 
-import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.NodeResult;
 import java.time.ZonedDateTime;
@@ -14,20 +14,18 @@ import javax.measure.quantity.Angle;
 import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 
-public class NodeResultFactory extends ResultEntityFactory<NodeResult> {
+public class NodeResultFactory extends ResultEntityFactory<NodeResult, NodeResult> {
 
   public NodeResultFactory() {
     super(NodeResult.class);
   }
 
   @Override
-  protected NodeResult buildModel(EntityData data) {
-    ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
-    UUID inputModelUuid = data.getUUID(INPUT_MODEL);
+  protected NodeResult buildModel(FieldMap data, ZonedDateTime time, UUID inputModel) {
     ComparableQuantity<Dimensionless> vMagValue =
         data.getQuantity(V_MAG, StandardUnits.VOLTAGE_MAGNITUDE);
     ComparableQuantity<Angle> vAngValue = data.getQuantity(V_ANG, StandardUnits.VOLTAGE_ANGLE);
 
-    return new NodeResult(zdtTime, inputModelUuid, vMagValue, vAngValue);
+    return new NodeResult(time, inputModel, vMagValue, vAngValue);
   }
 }

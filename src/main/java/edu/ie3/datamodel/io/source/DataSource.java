@@ -5,14 +5,15 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import static edu.ie3.datamodel.utils.CollectionUtils.*;
+import static edu.ie3.datamodel.utils.CollectionUtils.expandSet;
+import static edu.ie3.datamodel.utils.CollectionUtils.toSnakeCase;
 
 import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.io.naming.ModelFields;
 import edu.ie3.datamodel.models.Entity;
-import edu.ie3.datamodel.utils.CollectionUtils;
 import edu.ie3.datamodel.utils.Try;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -98,16 +99,15 @@ public interface DataSource {
               "Could not validate the source because no mandatory fields were provided!"));
     }
 
-    Set<String> harmonizedOptionalFields = toCamelCase(optionalFields);
-    Set<String> harmonizedActualFields = toCamelCase(actualFields);
+    Set<String> harmonizedOptionalFields =
+        optionalFields.stream().map(FieldNamingStrategy::harmonize).collect(Collectors.toSet());
+    Set<String> harmonizedActualFields =
+        actualFields.stream().map(FieldNamingStrategy::harmonize).collect(Collectors.toSet());
 
     // check if the actual set is equal to at least one set of mandatory fields
     // allows snake, camel and mixed cases
     List<Set<String>> validSchemes =
-        mandatoryFields.stream()
-            .map(CollectionUtils::toCamelCase)
-            .filter(harmonizedActualFields::containsAll)
-            .toList();
+        mandatoryFields.stream().filter(harmonizedActualFields::containsAll).toList();
 
     if (validSchemes.isEmpty()) {
       // build the exception string with extensive debug information
@@ -130,11 +130,9 @@ public interface DataSource {
     } else {
       if (!unsupportedFields.isEmpty()) {
         // check for unsupported fields
-        Set<String> harmonizedUnsupportedFields = toCamelCase(unsupportedFields);
-
         Set<String> unsupported =
             harmonizedActualFields.stream()
-                .filter(harmonizedUnsupportedFields::contains)
+                .filter(unsupportedFields::contains)
                 .collect(Collectors.toSet());
 
         if (!unsupported.isEmpty()) {

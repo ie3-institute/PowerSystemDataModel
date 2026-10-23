@@ -10,8 +10,10 @@ import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryStrin
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
+import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.ColumnScheme;
 import edu.ie3.datamodel.io.naming.timeseries.IndividualTimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesSource;
@@ -62,8 +64,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
 
     String schemaName = sqlDataSource.schemaName;
 
-    String dbTimeColumnName =
-        sqlDataSource.getDbColumnName(factory.getTimeFieldString(), tableName);
+    String dbTimeColumnName = sqlDataSource.getDbColumnName(FieldNamingStrategy.TIME, tableName);
 
     this.queryFull = createQueryFull(schemaName, tableName);
     this.queryTimeInterval = createQueryForTimeInterval(schemaName, tableName, dbTimeColumnName);
@@ -217,7 +218,7 @@ public class SqlTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
    */
   private Optional<TimeBasedValue<V>> createEntity(Map<String, String> fieldToValues) {
     fieldToValues.remove("timeSeries");
-    return createTimeBasedValue(fieldToValues).getData();
+    return valueFactory.get(new FieldMap(fieldToValues)).getData();
   }
 
   /**
