@@ -243,20 +243,17 @@ public class CouchbaseWeatherSource extends WeatherSource {
       log.error("Querying weather inputs failed!", ex);
     }
     if (jsonWeatherInputs != null && !jsonWeatherInputs.isEmpty()) {
-      List<Pair<Optional<Point>, ZonedDateTime>> timeKeys = new ArrayList<>();
+      List<Pair<Integer, ZonedDateTime>> timeKeys = new ArrayList<>();
 
       for (JsonObject json : jsonWeatherInputs) {
         int coordinateId = json.getInt(WEATHER_COORDINATE_ID.toLowerCase());
-        Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
         ZonedDateTime timestamp =
             weatherFactory.toZonedDateTime(json.getString(weatherFactory.getTimeFieldString()));
-        if (coordinate.isEmpty()) {
-          log.warn("Unable to match coordinate ID {} to a point", coordinateId);
-        }
-        timeKeys.add(Pair.of(coordinate, timestamp));
+        timeKeys.add(Pair.of(coordinateId, timestamp));
       }
 
-      return groupTime(timeKeys.stream().filter(value -> value.getValue().isAfter(time)));
+      return toCoordinateKeys(
+          groupTime(timeKeys.stream().filter(value -> value.getValue().isAfter(time))));
     }
     return Collections.emptyMap();
   }

@@ -196,10 +196,11 @@ public class SqlWeatherSource extends WeatherSource {
   @Override
   public Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time)
       throws SourceException {
-    return toTimeKeys(
-        dataSource.executeQuery(
-            queryTimeKeysAfter, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant()))),
-        weatherFactory);
+    return toCoordinateKeys(
+        toTimeKeys(
+            dataSource.executeQuery(
+                queryTimeKeysAfter, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant()))),
+            weatherFactory));
   }
 
   @Override
