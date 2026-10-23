@@ -363,10 +363,23 @@ public class ContainerUtils {
    * @return A {@link SystemParticipants} filtered for the subnet
    */
   public static SystemParticipants filterForSubnet(SystemParticipants input, int subnet) {
+    Set<EvInput> evs = filterParticipants(input.getEvs(), subnet);
+
+    return new SystemParticipants(evs);
+  }
+
+  /**
+   * Filters all extended system participants for the provided subnet.
+   *
+   * @param input The model to filter
+   * @param subnet The filter criterion
+   * @return A {@link ExtendedSystemParticipants} filtered for the subnet
+   */
+  public static ExtendedSystemParticipants filterForSubnet(
+      ExtendedSystemParticipants input, int subnet) {
     Set<BmInput> bmPlants = filterParticipants(input.getBmPlants(), subnet);
     Set<ChpInput> chpPlants = filterParticipants(input.getChpPlants(), subnet);
     Set<EvcsInput> evcsInputs = filterParticipants(input.getEvcs(), subnet);
-    Set<EvInput> evs = filterParticipants(input.getEvs(), subnet);
     Set<FixedFeedInInput> fixedFeedIns = filterParticipants(input.getFixedFeedIns(), subnet);
     Set<HpInput> heatpumps = filterParticipants(input.getHeatPumps(), subnet);
     Set<AcInput> airConditions = filterParticipants(input.getAirConditions(), subnet);
@@ -375,11 +388,10 @@ public class ContainerUtils {
     Set<StorageInput> storages = filterParticipants(input.getStorages(), subnet);
     Set<WecInput> wecPlants = filterParticipants(input.getWecPlants(), subnet);
 
-    return new SystemParticipants(
+    return new ExtendedSystemParticipants(
         bmPlants,
         chpPlants,
         evcsInputs,
-        evs,
         fixedFeedIns,
         heatpumps,
         airConditions,
@@ -453,6 +465,7 @@ public class ContainerUtils {
    * @param gridName Name of the grid
    * @param rawGrid Container model of raw grid elements
    * @param systemParticipants Container model of system participants
+   * @param extendedSystemParticipants Container model of extended system participants
    * @param energyManagementUnits Container model of energy system units
    * @return An immutable, directed graph of sub grid topologies.
    */
@@ -460,6 +473,7 @@ public class ContainerUtils {
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
+      ExtendedSystemParticipants extendedSystemParticipants,
       EnergyManagementUnits energyManagementUnits)
       throws InvalidGridException {
     /* Collect the different subnets. Through the validation of lines, it is ensured, that no galvanically connected
@@ -469,7 +483,12 @@ public class ContainerUtils {
     /* Build the single sub grid models */
     HashMap<Integer, SubGridContainer> subGrids =
         buildSubGridContainers(
-            gridName, subnetNumbers, rawGrid, systemParticipants, energyManagementUnits);
+            gridName,
+            subnetNumbers,
+            rawGrid,
+            systemParticipants,
+            extendedSystemParticipants,
+            energyManagementUnits);
 
     /* Build the graph structure denoting the topology of the grid */
     return buildSubGridTopologyGraph(subGrids, rawGrid);
@@ -492,6 +511,7 @@ public class ContainerUtils {
    * @param subnetNumbers Set of available subnet numbers
    * @param rawGrid Container model with all raw grid elements
    * @param systemParticipants Container model with all system participant inputs
+   * @param extendedSystemParticipants Container model with all extended system participant inputs
    * @param energyManagementUnits Container model with all energy management unit inputs
    * @return A mapping from subnet number to container model with sub grid elements
    */
@@ -500,6 +520,7 @@ public class ContainerUtils {
       SortedSet<Integer> subnetNumbers,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
+      ExtendedSystemParticipants extendedSystemParticipants,
       EnergyManagementUnits energyManagementUnits)
       throws InvalidGridException {
     HashMap<Integer, SubGridContainer> subGrids = new HashMap<>(subnetNumbers.size());
@@ -507,6 +528,8 @@ public class ContainerUtils {
       RawGridElements rawGridElements = ContainerUtils.filterForSubnet(rawGrid, subnetNumber);
       SystemParticipants systemParticipantElements =
           ContainerUtils.filterForSubnet(systemParticipants, subnetNumber);
+      ExtendedSystemParticipants extendedSystemParticipantElements =
+          ContainerUtils.filterForSubnet(extendedSystemParticipants, subnetNumber);
 
       subGrids.put(
           subnetNumber,
@@ -515,6 +538,7 @@ public class ContainerUtils {
               subnetNumber,
               rawGridElements,
               systemParticipantElements,
+              extendedSystemParticipantElements,
               energyManagementUnits));
     }
     return subGrids;
@@ -702,6 +726,11 @@ public class ContainerUtils {
             subGridContainers.stream()
                 .map(GridContainer::getSystemParticipants)
                 .collect(Collectors.toSet()));
+    ExtendedSystemParticipants extendedSystemParticipants =
+        new ExtendedSystemParticipants(
+            subGridContainers.stream()
+                .map(GridContainer::getExtendedSystemParticipants)
+                .collect(Collectors.toSet()));
     EnergyManagementUnits energyManagementUnits =
         new EnergyManagementUnits(
             subGridContainers.stream().map(GridContainer::getEmUnits).collect(Collectors.toSet()));
@@ -713,7 +742,12 @@ public class ContainerUtils {
     SubGridTopologyGraph subGridTopologyGraph = buildSubGridTopologyGraph(subGridMapping, rawGrid);
 
     return new JointGridContainer(
-        gridName, rawGrid, systemParticipants, energyManagementUnits, subGridTopologyGraph);
+        gridName,
+        rawGrid,
+        systemParticipants,
+        extendedSystemParticipants,
+        energyManagementUnits,
+        subGridTopologyGraph);
   }
 
   /**
@@ -855,6 +889,7 @@ public class ContainerUtils {
             subGridContainer.getRawGrid().getMeasurementUnits(),
             subGridContainer.getRawGrid().getCableDeploymentsByLine()),
         subGridContainer.getSystemParticipants(),
+        subGridContainer.getExtendedSystemParticipants(),
         subGridContainer.getEmUnits());
   }
 }

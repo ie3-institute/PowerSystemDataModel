@@ -40,10 +40,18 @@ class SampleJointGrid extends SystemParticipantTestData {
         "sampleGrid",
         rawGridElements,
         systemParticipants(rawGridElements),
+        extendedSystemParticipants(rawGridElements),
         new EnergyManagementUnits(Collections.singleton(emInput)))
   }
 
   private static SystemParticipants systemParticipants(RawGridElements rawGridElements)
+  throws ParsingException {
+
+    return new SystemParticipants(
+        Collections.emptySet())
+  }
+
+  private static ExtendedSystemParticipants extendedSystemParticipants(RawGridElements rawGridElements)
   throws ParsingException {
 
     // set the participant node to nodeA
@@ -116,8 +124,7 @@ class SampleJointGrid extends SystemParticipantTestData {
         emInput,
         storageTypeInput)
 
-    return new SystemParticipants(
-        Collections.emptySet(),
+    return new ExtendedSystemParticipants(
         Collections.emptySet(),
         Collections.emptySet(),
         Collections.emptySet(),

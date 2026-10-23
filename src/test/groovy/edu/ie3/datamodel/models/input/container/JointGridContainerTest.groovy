@@ -22,11 +22,21 @@ class JointGridContainerTest extends Specification {
   [] as Set,
   [] as Set,
   [] as Set,
-  [] as Set)
+  [] as Set
+  )
+
+  private static final ExtendedSystemParticipants EMPTY_EXTENDED_SYSTEM_PARTICIPANTS =
+  new ExtendedSystemParticipants(Collections.emptyList())
 
   def "A single subgrid can be used to build a JointGridContainer"() {
     when:
-    def jointGridContainer = new JointGridContainer(GRID_NAME, RAW_GRID, emptySystemParticipants, emptyEnergyManagementUnits)
+    def jointGridContainer = new JointGridContainer(
+        GRID_NAME,
+        RAW_GRID,
+        emptySystemParticipants,
+        EMPTY_EXTENDED_SYSTEM_PARTICIPANTS,
+        emptyEnergyManagementUnits
+    )
 
     then:
     noExceptionThrown()
@@ -35,16 +45,31 @@ class JointGridContainerTest extends Specification {
 
   def "A JointGridContainer's copy method should work as expected"() {
     given:
-    def jointGridContainer = new JointGridContainer(GRID_NAME, RAW_GRID, emptySystemParticipants, emptyEnergyManagementUnits)
-    def rawGrid = new RawGridElements(List.of(GridTestData.lineAtoB, GridTestData.transformerAtoBtoC))
-    def systemParticipants = new SystemParticipants(List.of(SystemParticipantTestData.bmInput))
-    def emUnits = new EnergyManagementUnits(Set.of(EnergyManagementTestData.emInput))
+    def jointGridContainer = new JointGridContainer(
+        GRID_NAME,
+        RAW_GRID,
+        emptySystemParticipants,
+        EMPTY_EXTENDED_SYSTEM_PARTICIPANTS,
+        emptyEnergyManagementUnits
+    )
+
+    def rawGrid =
+        new RawGridElements(List.of(GridTestData.lineAtoB, GridTestData.transformerAtoBtoC))
+    def systemParticipants =
+        new SystemParticipants(Set.of(SystemParticipantTestData.evInput))
+    def extendedSystemParticipants =
+        new ExtendedSystemParticipants([
+          SystemParticipantTestData.bmInput
+        ])
+    def emUnits =
+        new EnergyManagementUnits(Set.of(EnergyManagementTestData.emInput))
 
     when:
     def modifiedJointGridContainer = jointGridContainer.copy()
         .gridName("new grid name")
         .rawGrid(rawGrid)
         .systemParticipants(systemParticipants)
+        .extendedSystemParticipants(extendedSystemParticipants)
         .emUnits(emUnits)
         .build()
 
@@ -52,6 +77,7 @@ class JointGridContainerTest extends Specification {
     modifiedJointGridContainer.gridName == "new grid name"
     modifiedJointGridContainer.rawGrid == rawGrid
     modifiedJointGridContainer.systemParticipants == systemParticipants
+    modifiedJointGridContainer.extendedSystemParticipants == extendedSystemParticipants
     modifiedJointGridContainer.emUnits == emUnits
   }
 }

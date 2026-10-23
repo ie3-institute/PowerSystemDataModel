@@ -294,6 +294,7 @@ class ContainerUtilsTest extends Specification {
     Set<Integer> subNetNumbers = ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.rawGrid.nodes)
     RawGridElements rawGrid = ComplexTopology.grid.rawGrid
     SystemParticipants systemParticipants = ComplexTopology.grid.systemParticipants
+    ExtendedSystemParticipants extendedSystemParticipants = ComplexTopology.grid.extendedSystemParticipants
     EnergyManagementUnits energyManagementUnits = ComplexTopology.grid.emUnits
 
     HashMap<Integer, SubGridContainer> expectedSubGrids = ComplexTopology.expectedSubGrids
@@ -304,6 +305,7 @@ class ContainerUtilsTest extends Specification {
         subNetNumbers,
         rawGrid,
         systemParticipants,
+        extendedSystemParticipants,
         energyManagementUnits)
 
     then:
@@ -323,6 +325,7 @@ class ContainerUtilsTest extends Specification {
     Set<Integer> subNetNumbers = ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.rawGrid.nodes)
     RawGridElements rawGridInput = ComplexTopology.grid.rawGrid
     SystemParticipants systemParticipantsInput = ComplexTopology.grid.systemParticipants
+    ExtendedSystemParticipants extendedSystemParticipantsInput = ComplexTopology.grid.extendedSystemParticipants
     EnergyManagementUnits energyManagementUnits = ComplexTopology.grid.emUnits
 
     HashMap<Integer, SubGridContainer> unmodifiedSubGrids = ComplexTopology.expectedSubGrids
@@ -332,6 +335,7 @@ class ContainerUtilsTest extends Specification {
         subNetNumbers,
         rawGridInput,
         systemParticipantsInput,
+        extendedSystemParticipantsInput,
         energyManagementUnits)
 
     when:
@@ -388,6 +392,7 @@ class ContainerUtilsTest extends Specification {
     Set<Integer> subNetNumbers = ContainerUtils.determineSubnetNumbers(ComplexTopology.grid.rawGrid.nodes)
     RawGridElements rawGrid = ComplexTopology.grid.rawGrid
     SystemParticipants systemParticipants = ComplexTopology.grid.systemParticipants
+    ExtendedSystemParticipants extendedSystemParticipants = ComplexTopology.grid.extendedSystemParticipants
     EnergyManagementUnits energyManagementUnits = ComplexTopology.grid.emUnits
 
     Map<Integer, SubGridContainer> subgrids = ContainerUtils.buildSubGridContainers(
@@ -395,6 +400,7 @@ class ContainerUtilsTest extends Specification {
         subNetNumbers,
         rawGrid,
         systemParticipants,
+        extendedSystemParticipants,
         energyManagementUnits)
     SubGridTopologyGraph expectedSubGridTopology = ComplexTopology.expectedSubGridTopology
 
@@ -412,6 +418,7 @@ class ContainerUtilsTest extends Specification {
     String gridName = ComplexTopology.gridName
     RawGridElements rawGrid = ComplexTopology.grid.rawGrid
     SystemParticipants systemParticpants = ComplexTopology.grid.systemParticipants
+    ExtendedSystemParticipants extendedSystemParticipants = ComplexTopology.grid.extendedSystemParticipants
     EnergyManagementUnits energyManagementUnits = ComplexTopology.grid.emUnits
     SubGridTopologyGraph expectedSubGridTopology = ComplexTopology.expectedSubGridTopology
 
@@ -420,6 +427,7 @@ class ContainerUtilsTest extends Specification {
         gridName,
         rawGrid,
         systemParticpants,
+        extendedSystemParticipants,
         energyManagementUnits)
 
     then:

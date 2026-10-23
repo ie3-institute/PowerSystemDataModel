@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allow `LoadInput` to reference Markov load profiles [#1765](https://github.com/ie3-institute/PowerSystemDataModel/issues/1765)
 - Energy scaling for Markov-based load models [#1696](https://github.com/ie3-institute/PowerSystemDataModel/issues/1696)
 - Expected values of Markov-based load models for forecasts [#1767](https://github.com/ie3-institute/PowerSystemDataModel/issues/1767)
+- Move input parameter node and controlling_em in new ExtendedSystemParticipant [#1386](https://github.com/ie3-institute/PowerSystemDataModel/issues/1386)
 
 ### Fixed
 - Fixed recurring `gradlew.bat` modifications [#1757](https://github.com/ie3-institute/PowerSystemDataModel/issues/1757)

@@ -80,11 +80,16 @@ public class CsvJointGridContainerSource {
         Try.of(
             () -> systemParticipantSource.getSystemParticipants(operators, nodes),
             SourceException.class);
+    Try<ExtendedSystemParticipants, SourceException> extendedSystemParticipants =
+        Try.of(
+            () -> systemParticipantSource.getExtendedSystemParticipants(operators, nodes),
+            SourceException.class);
     Try<EnergyManagementUnits, SourceException> emUnits =
         Try.of(
             () -> new EnergyManagementUnits(new HashSet<>(emSource.getEmUnits(operators).values())),
             SourceException.class);
-    List<? extends Exception> exceptions = Try.getExceptions(rawGridElements, systemParticipants);
+    List<? extends Exception> exceptions =
+        Try.getExceptions(rawGridElements, systemParticipants, extendedSystemParticipants);
 
     if (!exceptions.isEmpty()) {
       throw new SourceException("Some exception(s) occurred while reading the grid.", exceptions);
@@ -95,6 +100,7 @@ public class CsvJointGridContainerSource {
           gridName,
           rawGridElements.getOrThrow(),
           systemParticipants.getOrThrow(),
+          extendedSystemParticipants.getOrThrow(),
           emUnits.getOrThrow());
     }
   }

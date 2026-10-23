@@ -65,6 +65,9 @@ public class GridContainerValidationUtils extends ValidationUtils {
     exceptions.addAll(
         checkSystemParticipants(
             gridContainer.getSystemParticipants(), gridContainer.getRawGrid().getNodes()));
+    exceptions.addAll(
+        checkExtendedSystemParticipants(
+            gridContainer.getExtendedSystemParticipants(), gridContainer.getRawGrid().getNodes()));
 
     if (gridContainer instanceof SubGridContainer subGridContainer) {
       exceptions.add(ConnectorValidationUtils.checkConnectivity(subGridContainer));
@@ -296,16 +299,43 @@ public class GridContainerValidationUtils extends ValidationUtils {
     /* sanity check to ensure uniqueness */
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
 
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getAirConditions(), nodes));
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getBmPlants(), nodes));
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getChpPlants(), nodes));
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getEvcs(), nodes));
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getFixedFeedIns(), nodes));
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getHeatPumps(), nodes));
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getLoads(), nodes));
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getPvPlants(), nodes));
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getStorages(), nodes));
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getWecPlants(), nodes));
+    exceptions.addAll(checkSystemParticipants(systemParticipants.getEvs(), nodes));
+
+    return exceptions;
+  }
+
+  /**
+   * Checks the validity of each and every extended system participant. Moreover, it checks, if the
+   * systems are connected to a node that is not in the provided set
+   *
+   * @param extendedSystemParticipants The extended system participants
+   * @param nodes Set of already known nodes
+   * @return a list of try objects either containing an {@link ValidationException} or an empty
+   *     Success
+   */
+  protected static List<Try<Void, ? extends ValidationException>> checkExtendedSystemParticipants(
+      ExtendedSystemParticipants extendedSystemParticipants, Set<NodeInput> nodes) {
+    Try<Void, InvalidEntityException> isNull =
+        checkNonNull(extendedSystemParticipants, "extended system participants");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
+    }
+
+    /* sanity check to ensure uniqueness */
+    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
+
+    exceptions.addAll(
+        checkSystemParticipants(extendedSystemParticipants.getAirConditions(), nodes));
+    exceptions.addAll(checkSystemParticipants(extendedSystemParticipants.getBmPlants(), nodes));
+    exceptions.addAll(checkSystemParticipants(extendedSystemParticipants.getChpPlants(), nodes));
+    exceptions.addAll(checkSystemParticipants(extendedSystemParticipants.getEvcs(), nodes));
+    exceptions.addAll(checkSystemParticipants(extendedSystemParticipants.getFixedFeedIns(), nodes));
+    exceptions.addAll(checkSystemParticipants(extendedSystemParticipants.getHeatPumps(), nodes));
+    exceptions.addAll(checkSystemParticipants(extendedSystemParticipants.getLoads(), nodes));
+    exceptions.addAll(checkSystemParticipants(extendedSystemParticipants.getPvPlants(), nodes));
+    exceptions.addAll(checkSystemParticipants(extendedSystemParticipants.getStorages(), nodes));
+    exceptions.addAll(checkSystemParticipants(extendedSystemParticipants.getWecPlants(), nodes));
 
     return exceptions;
   }
