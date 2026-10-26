@@ -8,7 +8,7 @@ package edu.ie3.datamodel.io.factory.input
 import static tech.units.indriya.unit.Units.METRE
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.EntityData
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.input.SoilLayer
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
@@ -53,7 +53,7 @@ class SoilLayerInputFactoryTest extends Specification implements FactoryTestHelp
 
     when:
     Try<SoilLayer, FactoryException> result =
-        inputFactory.get(new EntityData(parameter, inputClass))
+        inputFactory.get(new FieldMap(parameter))
 
     then:
     result.success
@@ -79,7 +79,7 @@ class SoilLayerInputFactoryTest extends Specification implements FactoryTestHelp
 
     when:
     Try<SoilLayer, FactoryException> result =
-        inputFactory.get(new EntityData(parameter, SoilLayer))
+        inputFactory.get(new FieldMap(parameter))
 
     then:
     result.failure
@@ -99,7 +99,7 @@ class SoilLayerInputFactoryTest extends Specification implements FactoryTestHelp
 
     when:
     Try<SoilLayer, FactoryException> result =
-        inputFactory.get(new EntityData(parameter, SoilLayer))
+        inputFactory.get(new FieldMap(parameter))
 
     then:
     result.failure
@@ -119,7 +119,7 @@ class SoilLayerInputFactoryTest extends Specification implements FactoryTestHelp
 
     when:
     Try<SoilLayer, FactoryException> result =
-        inputFactory.get(new EntityData(parameter, SoilLayer))
+        inputFactory.get(new FieldMap(parameter))
 
     then:
     result.failure
@@ -140,7 +140,7 @@ class SoilLayerInputFactoryTest extends Specification implements FactoryTestHelp
 
     when:
     Try<SoilLayer, FactoryException> result =
-        inputFactory.get(new EntityData(parameter, SoilLayer))
+        inputFactory.get(new FieldMap(parameter))
 
     then:
     result.failure
@@ -161,7 +161,7 @@ class SoilLayerInputFactoryTest extends Specification implements FactoryTestHelp
 
     when:
     Try<SoilLayer, FactoryException> result =
-        inputFactory.get(new EntityData(parameter, SoilLayer))
+        inputFactory.get(new FieldMap(parameter))
 
     then:
     result.failure
@@ -183,7 +183,7 @@ class SoilLayerInputFactoryTest extends Specification implements FactoryTestHelp
 
     when:
     Try<SoilLayer, FactoryException> result =
-        inputFactory.get(new EntityData(parameter, SoilLayer))
+        inputFactory.get(new FieldMap(parameter))
 
     then:
     result.success

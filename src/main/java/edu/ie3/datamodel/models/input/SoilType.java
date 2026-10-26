@@ -178,7 +178,8 @@ public class SoilType extends UniqueInputEntity {
         + '}';
   }
 
-  public static class SoilTypeCopyBuilder extends UniqueEntityCopyBuilder<SoilTypeCopyBuilder> {
+  public static class SoilTypeCopyBuilder
+      extends UniqueInputEntityCopyBuilder<SoilTypeCopyBuilder> {
 
     private String id;
     private ComparableQuantity<ThermalResistivity> thermalResistivityWet;

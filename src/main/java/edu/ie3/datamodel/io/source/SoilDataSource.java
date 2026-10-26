@@ -43,7 +43,7 @@ public class SoilDataSource extends EntitySource {
    * @throws SourceException if the source cannot be read
    */
   public Map<UUID, SoilType> getSoilTypes() throws SourceException {
-    return getEntities(SoilType.class, dataSource, soilTypeFactory);
+    return getEntityMap(SoilType.class, dataSource, soilTypeFactory);
   }
 
   /**
@@ -53,7 +53,7 @@ public class SoilDataSource extends EntitySource {
    * @throws SourceException if the source cannot be read
    */
   public Map<UUID, SoilLayer> getSoilLayers() throws SourceException {
-    return getEntities(SoilLayer.class, dataSource, soilLayerFactory);
+    return getEntityMap(SoilLayer.class, dataSource, soilLayerFactory);
   }
 
   /**

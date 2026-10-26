@@ -8,7 +8,7 @@ package edu.ie3.datamodel.io.factory.input;
 import static edu.ie3.util.quantities.PowerSystemUnits.METRE;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.UniqueEntityFactory;
 import edu.ie3.datamodel.models.input.SoilLayer;
 import java.util.UUID;
@@ -18,14 +18,14 @@ import org.locationtech.jts.geom.Polygon;
 import tech.units.indriya.ComparableQuantity;
 
 /** Factory for building {@link SoilLayer} instances from raw entity data. */
-public class SoilLayerInputFactory extends UniqueEntityFactory<SoilLayer, EntityData> {
+public class SoilLayerInputFactory extends UniqueEntityFactory<SoilLayer, SoilLayer> {
   public SoilLayerInputFactory() {
     super(SoilLayer.class);
   }
 
   @Override
-  protected SoilLayer buildModel(EntityData data) {
-    UUID uuid = data.getUUID(UUID);
+  protected SoilLayer buildModel(FieldMap data) {
+    UUID uuid = data.getUUID(UUID_FIELD);
     Geometry parsedGeometry =
         data.getGeometry(GEOMETRY)
             .orElseThrow(() -> new FactoryException("Expected polygon geometry of soil layer"));
@@ -39,6 +39,6 @@ public class SoilLayerInputFactory extends UniqueEntityFactory<SoilLayer, Entity
     ComparableQuantity<Length> zTo = data.getQuantity(Z_TO, METRE);
     UUID soilType = data.getUUID(SOIL_TYPE);
 
-    return new SoilLayer(uuid, polygon, zFrom, zTo, soilType, data.getFieldsToValues());
+    return new SoilLayer(uuid, polygon, zFrom, zTo, soilType, data.additionalInformation());
   }
 }

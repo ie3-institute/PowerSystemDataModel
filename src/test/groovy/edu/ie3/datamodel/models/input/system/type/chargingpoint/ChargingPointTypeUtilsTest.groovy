@@ -14,9 +14,7 @@ import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
 
 /**
- * //ToDo: Class Description
- *
- * @version 0.1* @since 25.07.20
+ * Tests parsing of common and custom charging point types, invalid input handling, and utility-class instantiation.
  */
 class ChargingPointTypeUtilsTest extends Specification {
 
