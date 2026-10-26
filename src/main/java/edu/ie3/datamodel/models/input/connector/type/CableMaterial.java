@@ -49,48 +49,39 @@ public enum CableMaterial {
       case COPPER ->
           new ThermalProperties(
               Quantities.getQuantity(1.0 / 384.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(3449600.0, JOULE_PER_CUBIC_METRE_KELVIN)
-                  .asType(SpecificHeatCapacity.class)); // TODO DF remove casting with PSU >3.2.3
+              Quantities.getQuantity(3449600.0, JOULE_PER_CUBIC_METRE_KELVIN));
       case ALUMINIUM ->
           new ThermalProperties(
               Quantities.getQuantity(1.0 / 237.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(2420913.3, JOULE_PER_CUBIC_METRE_KELVIN)
-                  .asType(SpecificHeatCapacity.class)); // TODO DF remove casting with PSU >3.2.3
+              Quantities.getQuantity(2420913.3, JOULE_PER_CUBIC_METRE_KELVIN));
       case XLPE, PE ->
           new ThermalProperties(
               Quantities.getQuantity(3.5, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN)
-                  .asType(SpecificHeatCapacity.class)); // TODO DF remove casting with PSU >3.2.3
+              Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN));
       case PVC ->
           new ThermalProperties(
               Quantities.getQuantity(5.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(1.7e6, JOULE_PER_CUBIC_METRE_KELVIN)
-                  .asType(SpecificHeatCapacity.class)); // TODO DF remove casting with PSU >3.2.3
+              Quantities.getQuantity(1.7e6, JOULE_PER_CUBIC_METRE_KELVIN));
       case SEMI_COND_SCREEN ->
           new ThermalProperties(
               Quantities.getQuantity(2.5, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN)
-                  .asType(SpecificHeatCapacity.class));
+              Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN));
       case SC_TAPE ->
           new ThermalProperties(
               Quantities.getQuantity(6.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN)
-                  .asType(SpecificHeatCapacity.class)); // TODO DF remove casting with PSU >3.2.3
+              Quantities.getQuantity(2.4e6, JOULE_PER_CUBIC_METRE_KELVIN));
       case LEAD ->
           new ThermalProperties(
               Quantities.getQuantity(1.0 / 35.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(1463892.0, JOULE_PER_CUBIC_METRE_KELVIN)
-                  .asType(SpecificHeatCapacity.class)); // TODO DF remove casting with PSU >3.2.3
+              Quantities.getQuantity(1463892.0, JOULE_PER_CUBIC_METRE_KELVIN));
       case STEEL ->
           new ThermalProperties(
               Quantities.getQuantity(1.0 / 45.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(3756000.0, JOULE_PER_CUBIC_METRE_KELVIN)
-                  .asType(SpecificHeatCapacity.class)); // TODO DF remove casting with PSU >3.2.3
+              Quantities.getQuantity(3756000.0, JOULE_PER_CUBIC_METRE_KELVIN));
       case POLYPROPYLENE ->
           new ThermalProperties(
               Quantities.getQuantity(6.0, KELVIN_METRE_PER_WATT),
-              Quantities.getQuantity(2.0e6, JOULE_PER_CUBIC_METRE_KELVIN)
-                  .asType(SpecificHeatCapacity.class)); // TODO DF remove casting with PSU >3.2.3
+              Quantities.getQuantity(2.0e6, JOULE_PER_CUBIC_METRE_KELVIN));
     };
   }
 

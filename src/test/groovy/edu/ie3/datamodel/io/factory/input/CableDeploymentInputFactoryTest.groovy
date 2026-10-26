@@ -5,8 +5,6 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
-import static edu.ie3.test.helper.EntityMap.*
-
 import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.input.connector.CableDeploymentInput
@@ -106,7 +104,7 @@ class CableDeploymentInputFactoryTest extends Specification implements FactoryTe
     ]
 
     when:
-    def input = inputFactory.get(new EntityData(parameter, CableDeploymentInput))
+    def input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success
@@ -132,7 +130,7 @@ class CableDeploymentInputFactoryTest extends Specification implements FactoryTe
     ]
 
     when:
-    def input = inputFactory.get(new EntityData(parameter, CableDeploymentInput))
+    def input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.failure

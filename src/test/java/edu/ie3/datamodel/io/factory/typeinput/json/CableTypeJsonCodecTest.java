@@ -12,7 +12,6 @@ import edu.ie3.datamodel.models.input.connector.type.CableMaterial;
 import edu.ie3.datamodel.models.input.connector.type.ConductorInput;
 import edu.ie3.datamodel.models.input.connector.type.LayerInput;
 import edu.ie3.util.quantities.PowerSystemUnits;
-import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import tech.units.indriya.quantity.Quantities;
@@ -36,8 +35,7 @@ class CableTypeJsonCodecTest {
             Quantities.getQuantity(5.0, PowerSystemUnits.MILLIMETRE),
             false,
             Quantities.getQuantity(1.0, PowerSystemUnits.KELVIN_METRE_PER_WATT),
-            Quantities.getQuantity(2.0, PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN)
-                .asType(SpecificHeatCapacity.class), // TODO DF remove casting with PSU >3.2.3,
+            Quantities.getQuantity(2.0, PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN),
             null);
 
     String json = codec.writeConductor(conductor);
@@ -77,8 +75,7 @@ class CableTypeJsonCodecTest {
             Quantities.getQuantity(0.005, Units.METRE),
             false,
             Quantities.getQuantity(1.0, PowerSystemUnits.KELVIN_METRE_PER_WATT),
-            Quantities.getQuantity(2.0, PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN)
-                .asType(SpecificHeatCapacity.class), // TODO DF remove casting with PSU >3.2.3,
+            Quantities.getQuantity(2.0, PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN),
             null);
 
     String json = codec.writeConductor(conductor);
@@ -117,8 +114,7 @@ class CableTypeJsonCodecTest {
             Quantities.getQuantity(0.0225, Units.METRE),
             Quantities.getQuantity(0.027, Units.METRE),
             Quantities.getQuantity(3.5, PowerSystemUnits.KELVIN_METRE_PER_WATT),
-            Quantities.getQuantity(2.4, PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN)
-                .asType(SpecificHeatCapacity.class), // TODO DF remove casting with PSU >3.2.3,
+            Quantities.getQuantity(2.4, PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN),
             Quantities.getQuantity(1.0, Units.SQUARE_METRE));
 
     JsonNode serializedLayer = mapper.readTree(codec.writeLayers(java.util.List.of(layer))).get(0);
