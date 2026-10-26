@@ -12,6 +12,7 @@ import edu.ie3.datamodel.exceptions.NoDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
@@ -306,7 +307,7 @@ public class CsvWeatherSource extends WeatherSource {
 
               /* Build factory data */
               TimeBasedWeatherValueData factoryData =
-                  new TimeBasedWeatherValueData(fieldToValues, coordinate);
+                  new TimeBasedWeatherValueData(new FieldMap(fieldToValues), coordinate);
               return weatherFactory.get(factoryData).getData();
             })
         .orElseGet(

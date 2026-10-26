@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
-import edu.ie3.datamodel.io.factory.SimpleFactoryData;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.input.IdCoordinateInput;
 
 /**
@@ -19,7 +19,7 @@ public class IconIdCoordinateFactory extends IdCoordinateFactory {
   }
 
   @Override
-  protected IdCoordinateInput buildModel(SimpleFactoryData data) {
+  protected IdCoordinateInput buildModel(FieldMap data) {
     int coordinateId = data.getInt(COORDINATE_ID);
     double lat = data.getDouble(LAT);
     double lon = data.getDouble(LONG);

@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.*;
@@ -31,8 +32,10 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
   }
 
   @Override
-  protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData data) {
-    Point coordinate = data.getCoordinate();
+  protected TimeBasedValue<WeatherValue> buildModel(TimeBasedWeatherValueData tbd) {
+    Point coordinate = tbd.getCoordinate();
+    FieldMap data = tbd.getFieldsToAttributes();
+
     ZonedDateTime time = timeUtil.toZonedDateTime(data.getField(TIME));
 
     SolarIrradianceValue solarIrradianceValue =
@@ -41,14 +44,14 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
             data.getQuantity(ICON_DIFFUSE_IRRADIANCE, PowerSystemUnits.WATT_PER_SQUAREMETRE));
     TemperatureValue temperatureValue =
         new TemperatureValue(
-            data.getQuantity(ICON_TEMPERATURE, Units.KELVIN).to(StandardUnits.TEMPERATURE));
+            data.getQuantity(ICON_TEMPERATURE, Units.KELVIN, StandardUnits.TEMPERATURE));
     WindValue windValue = getWindValue(data);
     Optional<ComparableQuantity<Temperature>> groundTemperatureLevel1 =
-        data.getQuantityOptional(ICON_GROUND_TEMPERATURE_LEVEL_1, Units.KELVIN)
-            .map(quantity -> quantity.to(StandardUnits.TEMPERATURE));
+        data.getQuantityOptional(
+            ICON_GROUND_TEMPERATURE_LEVEL_1, Units.KELVIN, StandardUnits.TEMPERATURE);
     Optional<ComparableQuantity<Temperature>> groundTemperatureLevel2 =
-        data.getQuantityOptional(ICON_GROUND_TEMPERATURE_LEVEL_2, Units.KELVIN)
-            .map(quantity -> quantity.to(StandardUnits.TEMPERATURE));
+        data.getQuantityOptional(
+            ICON_GROUND_TEMPERATURE_LEVEL_2, Units.KELVIN, StandardUnits.TEMPERATURE);
     WeatherValue weatherValue =
         new WeatherValue(
             coordinate,
@@ -79,7 +82,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
    * @param data Collective information to convert
    * @return The wind value.
    */
-  private static WindValue getWindValue(TimeBasedWeatherValueData data) {
+  private WindValue getWindValue(FieldMap data) {
     /* Get the three-dimensional parts of the wind velocity vector in Cartesian coordinates */
     double u =
         data.getDouble(
