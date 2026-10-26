@@ -5,8 +5,9 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.*;
-import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.timeseries.TimeSeriesMappingFactory;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.timeseries.TimeSeries;
@@ -39,7 +40,7 @@ public abstract class TimeSeriesMappingSource extends EntitySource {
    */
   public Map<UUID, UUID> getMapping() throws SourceException {
     return Try.scanStream(
-            getMappingSourceData().map(this::createMappingEntry),
+            getMappingSourceData().map(d -> mappingFactory.get(new FieldMap(d))),
             "MappingEntry",
             SourceException::new)
         .transformS(
@@ -66,14 +67,6 @@ public abstract class TimeSeriesMappingSource extends EntitySource {
 
   /** Returns the option for fields found in the source */
   public abstract Optional<Set<String>> getSourceFields() throws SourceException;
-
-  // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-  private Try<MappingEntry, FactoryException> createMappingEntry(
-      Map<String, String> fieldToValues) {
-    EntityData entityData = new EntityData(fieldToValues, MappingEntry.class);
-    return mappingFactory.get(entityData);
-  }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 

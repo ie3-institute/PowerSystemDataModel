@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change Evcs.locationType from single element to list [#1460](https://github.com/ie3-institute/PowerSystemDataModel/issues/1460)
 - Updated ci.yml and get_versions.sh [#1763](https://github.com/ie3-institute/PowerSystemDataModel/issues/1763)
 - Exclude `shadowJar`-Files from maven-release process [#1781](https://github.com/ie3-institute/PowerSystemDataModel/issues/1781)
+- Removed `FactoryData` and subclasses [#976](https://github.com/ie3-institute/PowerSystemDataModel/issues/976)
 
 ## [9.2.0] - 2026-09-30
 

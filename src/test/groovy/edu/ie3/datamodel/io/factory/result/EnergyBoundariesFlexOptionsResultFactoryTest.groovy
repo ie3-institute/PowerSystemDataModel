@@ -6,7 +6,8 @@
 package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.EntityData
+import edu.ie3.datamodel.exceptions.ValidationException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.system.EnergyBoundariesFlexOptionsResult
@@ -34,25 +35,25 @@ class EnergyBoundariesFlexOptionsResultFactoryTest extends Specification impleme
     Map<String, String> parameter = [
       "time" : "2020-01-30T17:26:44Z",
       "inputModel": "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
-      "estate" : "0",
-      "emin" : "-0.05",
-      "emax" : "0.05",
-      "pmin" : "-1",
-      "pmax" : "10",
+      "eState" : "0",
+      "eMin" : "-0.05",
+      "eMax" : "0.05",
+      "pMin" : "-1",
+      "pMax" : "10",
     ]
 
     when:
-    Try<? extends EnergyBoundariesFlexOptionsResult, FactoryException> result = resultFactory.get(new EntityData(parameter, EnergyBoundariesFlexOptionsResult))
+    Try<? extends EnergyBoundariesFlexOptionsResult, FactoryException> result = resultFactory.get(new FieldMap(parameter))
 
     then:
     result.success
     result.data.get().getClass() == EnergyBoundariesFlexOptionsResult
     ((EnergyBoundariesFlexOptionsResult) result.data.get()).with {
-      eState == getQuant(parameter["estate"], StandardUnits.ENERGY_RESULT)
-      eMin == getQuant(parameter["emin"], StandardUnits.ENERGY_RESULT)
-      eMax == getQuant(parameter["emax"], StandardUnits.ENERGY_RESULT)
-      pMin == getQuant(parameter["pmin"], StandardUnits.ACTIVE_POWER_RESULT)
-      pMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_RESULT)
+      eState == getQuant(parameter["eState"], StandardUnits.ENERGY_RESULT)
+      eMin == getQuant(parameter["eMin"], StandardUnits.ENERGY_RESULT)
+      eMax == getQuant(parameter["eMax"], StandardUnits.ENERGY_RESULT)
+      pMin == getQuant(parameter["pMin"], StandardUnits.ACTIVE_POWER_RESULT)
+      pMax == getQuant(parameter["pMax"], StandardUnits.ACTIVE_POWER_RESULT)
       time == TIME_UTIL.toZonedDateTime(parameter["time"])
       inputModel == UUID.fromString(parameter["inputModel"])
     }
@@ -63,7 +64,7 @@ class EnergyBoundariesFlexOptionsResultFactoryTest extends Specification impleme
     def actualFields = CollectionUtils.newSet("time", "input_model", "e_max", "p_min", "p_max")
 
     when:
-    Try<Void, FactoryException> input = DataSource.validate(actualFields, EnergyBoundariesFlexOptionsResult)
+    Try<Void, ValidationException> input = DataSource.validate(actualFields, EnergyBoundariesFlexOptionsResult)
 
     then:
     input.failure

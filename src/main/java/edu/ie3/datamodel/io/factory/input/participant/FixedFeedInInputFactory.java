@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.EmInput;
@@ -12,29 +13,31 @@ import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.FixedFeedInInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
+import java.util.Map;
 import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-public class FixedFeedInInputFactory
-    extends SystemParticipantInputEntityFactory<FixedFeedInInput, SystemParticipantEntityData> {
+/** Factory to create instances of {@link FixedFeedInInput}s. */
+public class FixedFeedInInputFactory extends SystemParticipantInputEntityFactory<FixedFeedInInput> {
 
-  public FixedFeedInInputFactory() {
-    super(FixedFeedInInput.class);
+  public FixedFeedInInputFactory(
+      Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits) {
+    super(operators, nodes, emUnits, FixedFeedInInput.class);
   }
 
   @Override
   protected FixedFeedInInput buildModel(
-      SystemParticipantEntityData data,
+      FieldMap data,
       UUID uuid,
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
-      OperationTime operationTime) {
-    final EmInput em = data.getControllingEm().orElse(null);
-    final ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
-    final double cosPhiRated = data.getDouble(COS_PHI_RATED);
+      OperationTime operationTime,
+      EmInput controllingEm) {
+    ComparableQuantity<Power> sRated = data.getQuantity(S_RATED, StandardUnits.S_RATED);
+    double cosPhiRated = data.getDouble(COS_PHI_RATED);
 
     return new FixedFeedInInput(
         uuid,
@@ -43,9 +46,9 @@ public class FixedFeedInInputFactory
         operationTime,
         node,
         qCharacteristics,
-        em,
+        controllingEm,
         sRated,
         cosPhiRated,
-        data.getFieldsToValues());
+        data.additionalInformation());
   }
 }
