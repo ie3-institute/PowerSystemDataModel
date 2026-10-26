@@ -103,12 +103,79 @@ public abstract class WeatherSource extends EntitySource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  public abstract Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
+  /**
+   * Returns the weather for the given time interval, mapped against the coordinate ids.
+   *
+   * <p>Preferable over {@link #getWeather(ClosedInterval)}, as matching coordinates relies on the
+   * hash code of {@link Point} and therefore on the exact double values of its coordinates.
+   *
+   * @param timeInterval the queried time interval
+   * @return a map of coordinate id to time series
+   */
+  public abstract Map<Integer, IndividualTimeSeries<WeatherValue>> getWeatherById(
       ClosedInterval<ZonedDateTime> timeInterval) throws SourceException, NoDataException;
 
-  public abstract Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
+  /**
+   * Returns the weather for the given time interval, mapped against the coordinates. Coordinate ids
+   * that cannot be matched to a coordinate are logged and skipped.
+   *
+   * @param timeInterval the queried time interval
+   * @return a map of coordinate to time series
+   */
+  public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
+      ClosedInterval<ZonedDateTime> timeInterval) throws SourceException, NoDataException {
+    return toCoordinateKeys(getWeatherById(timeInterval));
+  }
+
+  /**
+   * Returns the weather for the given time interval and coordinate ids.
+   *
+   * <p>Preferable over {@link #getWeather(ClosedInterval, Collection)}, as matching coordinates
+   * relies on the hash code of {@link Point}.
+   *
+   * @param timeInterval the queried time interval
+   * @param coordinateIds the queried coordinate ids
+   * @return a map of coordinate id to time series
+   */
+  public abstract Map<Integer, IndividualTimeSeries<WeatherValue>> getWeatherById(
+      ClosedInterval<ZonedDateTime> timeInterval, Collection<Integer> coordinateIds)
       throws SourceException, NoDataException;
+
+  /**
+   * Returns the weather for the given time interval and coordinates. Coordinates that cannot be
+   * matched to an id are logged and skipped.
+   *
+   * @param timeInterval the queried time interval
+   * @param coordinates the queried coordinates
+   * @return a map of coordinate to time series
+   */
+  public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
+      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
+      throws SourceException, NoDataException {
+    if (coordinates.isEmpty())
+      throw new NoDataException("No coordinates provided for weather data query.");
+
+    List<Integer> coordinateIds = new ArrayList<>();
+    List<Point> unknownCoordinates = new ArrayList<>();
+
+    for (Point coordinate : coordinates) {
+      Optional<Integer> id = idCoordinateSource.getId(coordinate);
+
+      if (id.isPresent()) {
+        coordinateIds.add(id.get());
+      } else {
+        unknownCoordinates.add(coordinate);
+      }
+    }
+
+    if (!unknownCoordinates.isEmpty())
+      log.warn(
+          "Unable to find coordinate IDs for the following coordinates, skipping: {}",
+          unknownCoordinates);
+
+    return validateAndWarnMissing(
+        toCoordinateKeys(getWeatherById(timeInterval, coordinateIds)), coordinates, timeInterval);
+  }
 
   /**
    * Returns the weather value for the given date and coordinate.
@@ -130,8 +197,37 @@ public abstract class WeatherSource extends EntitySource {
   public abstract TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
       throws SourceException, NoDataException;
 
-  public abstract Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time)
+  /**
+   * Returns all time keys after the given timestamp, mapped against the coordinate ids.
+   *
+   * @param time the timestamp to start from
+   * @return a map of coordinate id to time keys
+   */
+  public abstract Map<Integer, List<ZonedDateTime>> getTimeKeysAfterById(ZonedDateTime time)
       throws SourceException;
+
+  /**
+   * Returns all time keys after the given timestamp for the given coordinate id.
+   *
+   * @param time the timestamp to start from
+   * @param coordinateId the queried coordinate id
+   * @return the time keys of that coordinate id
+   */
+  public List<ZonedDateTime> getTimeKeysAfterById(ZonedDateTime time, int coordinateId)
+      throws SourceException {
+    return getTimeKeysAfterById(time).getOrDefault(coordinateId, Collections.emptyList());
+  }
+
+  /**
+   * Returns all time keys after the given timestamp, mapped against the coordinates.
+   *
+   * @param time the timestamp to start from
+   * @return a map of coordinate to time keys
+   */
+  public Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time)
+      throws SourceException {
+    return toCoordinateKeys(getTimeKeysAfterById(time));
+  }
 
   public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time, Point coordinate)
       throws SourceException {

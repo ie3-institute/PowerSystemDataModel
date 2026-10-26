@@ -299,6 +299,77 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     !result.containsKey(phantomPoint)
   }
 
+  def "A CsvWeatherSource can read all weather data in a given time interval mapped to the coordinate ids"() {
+    given:
+    def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.TIME_17H)
+
+    when:
+    Map<Integer, IndividualTimeSeries<WeatherValue>> idToTimeSeries = source.getWeatherById(timeInterval)
+
+    then:
+    idToTimeSeries.keySet() == [193186, 193187, 193188] as Set
+    idToTimeSeries.get(193186).entries.size() == 3
+    idToTimeSeries.get(193187).entries.size() == 2
+    idToTimeSeries.get(193188).entries.size() == 1
+  }
+
+  def "A CsvWeatherSource can read multiple time series values for multiple coordinate ids"() {
+    given:
+    def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.TIME_17H)
+    def timeSeries193186 = new IndividualTimeSeries(null,
+        [
+          new TimeBasedValue(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.WEATHER_VALUE_193186_16H),
+          new TimeBasedValue(CosmoWeatherTestData.TIME_17H, CosmoWeatherTestData.WEATHER_VALUE_193186_17H)
+        ] as Set<TimeBasedValue>)
+    def timeSeries193187 = new IndividualTimeSeries(null,
+        [
+          new TimeBasedValue(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.WEATHER_VALUE_193187_16H)
+        ] as Set<TimeBasedValue>)
+
+    when:
+    Map<Integer, IndividualTimeSeries<WeatherValue>> idToTimeSeries = source.getWeatherById(timeInterval, [193186, 193187])
+
+    then:
+    idToTimeSeries.keySet() == [193186, 193187] as Set
+    WeatherSourceTestHelper.equalsIgnoreUUID(idToTimeSeries.get(193186), timeSeries193186)
+    WeatherSourceTestHelper.equalsIgnoreUUID(idToTimeSeries.get(193187), timeSeries193187)
+  }
+
+  def "A CsvWeatherSource skips coordinate ids without data instead of failing"() {
+    given:
+    def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.TIME_17H)
+
+    when:
+    def actual = source.getWeatherById(timeInterval, [193186, 99999])
+
+    then:
+    actual.keySet() == [193186] as Set
+  }
+
+  def "The CsvWeatherSource returns all time keys after a given time for a specific coordinate id"() {
+    when:
+    def actual = source.getTimeKeysAfterById(CosmoWeatherTestData.TIME_15H, 193186)
+
+    then:
+    actual == [
+      CosmoWeatherTestData.TIME_16H,
+      CosmoWeatherTestData.TIME_17H
+    ]
+  }
+
+  def "The CsvWeatherSource returns all time keys after a given time key mapped to the coordinate ids"() {
+    when:
+    def actual = source.getTimeKeysAfterById(CosmoWeatherTestData.TIME_15H)
+
+    then:
+    actual.keySet() == [193186, 193187] as Set
+    actual.get(193186) == [
+      CosmoWeatherTestData.TIME_16H,
+      CosmoWeatherTestData.TIME_17H
+    ]
+    actual.get(193187) == [CosmoWeatherTestData.TIME_16H]
+  }
+
   def "The CsvWeatherSource returns all time keys after a given time for a specific coordinate"() {
     given:
     def time = CosmoWeatherTestData.TIME_15H

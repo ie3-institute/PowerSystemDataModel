@@ -97,7 +97,7 @@ public class SqlWeatherSource extends WeatherSource {
   }
 
   @Override
-  public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
+  public Map<Integer, IndividualTimeSeries<WeatherValue>> getWeatherById(
       ClosedInterval<ZonedDateTime> timeInterval) throws NoDataException, SourceException {
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
         buildTimeBasedValues(
@@ -112,31 +112,13 @@ public class SqlWeatherSource extends WeatherSource {
       throw new NoDataException(
           "No weather data found for the given time interval: " + timeInterval);
     }
-    return toCoordinateKeys(mapWeatherValuesToIds(timeBasedValues));
+    return mapWeatherValuesToIds(timeBasedValues);
   }
 
   @Override
-  public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
+  public Map<Integer, IndividualTimeSeries<WeatherValue>> getWeatherById(
+      ClosedInterval<ZonedDateTime> timeInterval, Collection<Integer> coordinateIds)
       throws SourceException, NoDataException {
-
-    if (coordinates.isEmpty())
-      throw new NoDataException("No coordinates provided for weather data query.");
-
-    Map<Point, Integer> knownCoordinates = new HashMap<>();
-    for (Point c : coordinates) {
-      idCoordinateSource.getId(c).ifPresent(id -> knownCoordinates.put(c, id));
-    }
-
-    List<Point> unknownCoordinates =
-        coordinates.stream().filter(c -> !knownCoordinates.containsKey(c)).toList();
-
-    if (!unknownCoordinates.isEmpty())
-      log.warn(
-          "Unable to find coordinate IDs for the following coordinates, skipping: {}",
-          unknownCoordinates);
-
-    Set<Integer> coordinateIds = new HashSet<>(knownCoordinates.values());
 
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
         buildTimeBasedValues(
@@ -151,8 +133,7 @@ public class SqlWeatherSource extends WeatherSource {
                   ps.setTimestamp(3, Timestamp.from(timeInterval.getUpper().toInstant()));
                 }));
 
-    return validateAndWarnMissing(
-        toCoordinateKeys(mapWeatherValuesToIds(timeBasedValues)), coordinates, timeInterval);
+    return mapWeatherValuesToIds(timeBasedValues);
   }
 
   @Override
@@ -194,13 +175,12 @@ public class SqlWeatherSource extends WeatherSource {
   }
 
   @Override
-  public Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time)
+  public Map<Integer, List<ZonedDateTime>> getTimeKeysAfterById(ZonedDateTime time)
       throws SourceException {
-    return toCoordinateKeys(
-        toTimeKeys(
-            dataSource.executeQuery(
-                queryTimeKeysAfter, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant()))),
-            weatherFactory));
+    return toTimeKeys(
+        dataSource.executeQuery(
+            queryTimeKeysAfter, ps -> ps.setTimestamp(1, Timestamp.from(time.toInstant()))),
+        weatherFactory);
   }
 
   @Override
