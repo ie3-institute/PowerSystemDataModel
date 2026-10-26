@@ -358,7 +358,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
   public String createQueryStringForFollowingTimeKeys(ZonedDateTime time) {
     String basicQuery =
         "SELECT a."
-            + WEATHER_COORDINATE_ID
+            + coordinateIdColumnName
             + ", a."
             + TIME
             + " FROM "

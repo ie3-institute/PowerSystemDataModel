@@ -25,7 +25,8 @@ public class FieldNamingStrategy {
    * @return the harmonized field
    */
   public static String harmonize(String field) {
-    String converted = StringUtils.snakeCaseToCamelCase(field);
+    String asSnakeCase = StringUtils.camelCaseToSnakeCase(field);
+    String converted = StringUtils.snakeCaseToCamelCase(asSnakeCase);
     return specialFields.getOrDefault(converted, converted);
   }
 

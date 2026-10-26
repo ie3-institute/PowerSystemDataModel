@@ -371,7 +371,7 @@ public class FieldMap {
       return defaultValue;
     }
 
-    return entities.getOrDefault(getUUID(field), defaultValue);
+    return getEntity(field, entities);
   }
 
   /**
