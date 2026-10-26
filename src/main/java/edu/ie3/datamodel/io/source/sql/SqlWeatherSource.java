@@ -112,7 +112,7 @@ public class SqlWeatherSource extends WeatherSource {
       throw new NoDataException(
           "No weather data found for the given time interval: " + timeInterval);
     }
-    return mapWeatherValuesToPoints(timeBasedValues);
+    return toCoordinateKeys(mapWeatherValuesToIds(timeBasedValues));
   }
 
   @Override
@@ -152,7 +152,7 @@ public class SqlWeatherSource extends WeatherSource {
                 }));
 
     return validateAndWarnMissing(
-        mapWeatherValuesToPoints(timeBasedValues), coordinates, timeInterval);
+        toCoordinateKeys(mapWeatherValuesToIds(timeBasedValues)), coordinates, timeInterval);
   }
 
   @Override

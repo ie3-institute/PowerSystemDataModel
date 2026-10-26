@@ -301,12 +301,14 @@ public class CsvWeatherSource extends WeatherSource {
     return maybeCoordinate
         .map(
             coordinate -> {
-              /* Remove coordinate entry from fields */
-              fieldToValues.remove(weatherFactory.getCoordinateIdFieldString());
+              /* Remove coordinate entry from fields, but retain its id */
+              String coordinateValue =
+                  fieldToValues.remove(weatherFactory.getCoordinateIdFieldString());
+              Integer coordinateId = Integer.parseInt(coordinateValue);
 
               /* Build factory data */
               TimeBasedWeatherValueData factoryData =
-                  new TimeBasedWeatherValueData(fieldToValues, coordinate);
+                  new TimeBasedWeatherValueData(fieldToValues, coordinate, coordinateId);
               return weatherFactory.get(factoryData).getData();
             })
         .orElseGet(

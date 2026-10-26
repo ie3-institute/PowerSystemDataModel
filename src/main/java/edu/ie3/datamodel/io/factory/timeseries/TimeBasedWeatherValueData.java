@@ -7,11 +7,15 @@ package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.models.value.WeatherValue;
 import java.util.Map;
+import java.util.Optional;
 import org.locationtech.jts.geom.Point;
 
 public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> {
 
   private final Point coordinate;
+
+  /** Id of the coordinate, or {@code null} if it is not known */
+  private final Integer coordinateId;
 
   /**
    * Creates a new TimeBasedEntryData object
@@ -20,12 +24,34 @@ public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> 
    * @param coordinate coordinate for this WeatherValue
    */
   public TimeBasedWeatherValueData(Map<String, String> fieldsToAttributes, Point coordinate) {
+    this(fieldsToAttributes, coordinate, null);
+  }
+
+  /**
+   * Creates a new TimeBasedEntryData object, additionally retaining the id of the coordinate.
+   *
+   * @param fieldsToAttributes attribute map: field name to value
+   * @param coordinate coordinate for this WeatherValue
+   * @param coordinateId id of that coordinate (can be null)
+   */
+  public TimeBasedWeatherValueData(
+      Map<String, String> fieldsToAttributes, Point coordinate, Integer coordinateId) {
     super(fieldsToAttributes, WeatherValue.class);
     this.coordinate = coordinate;
+    this.coordinateId = coordinateId;
   }
 
   public Point getCoordinate() {
     return coordinate;
+  }
+
+  /**
+   * Returns the id of the coordinate, if it is known.
+   *
+   * @return an option on the coordinate id
+   */
+  public Optional<Integer> coordinateId() {
+    return Optional.ofNullable(coordinateId);
   }
 
   @Override

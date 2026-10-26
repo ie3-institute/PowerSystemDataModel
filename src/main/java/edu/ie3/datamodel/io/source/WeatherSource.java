@@ -157,7 +157,7 @@ public abstract class WeatherSource extends EntitySource {
       log.warn("Unable to match coordinate ID {} to a point", coordinateId);
       return Optional.empty();
     }
-    return Optional.of(new TimeBasedWeatherValueData(fieldMap, coordinate.get()));
+    return Optional.of(new TimeBasedWeatherValueData(fieldMap, coordinate.get(), coordinateId));
   }
 
   /**
@@ -166,22 +166,27 @@ public abstract class WeatherSource extends EntitySource {
    * @param timeBasedValues the values to map
    * @return a map of coordinate point to time series
    */
-  protected Map<Point, IndividualTimeSeries<WeatherValue>> mapWeatherValuesToPoints(
+  protected Map<Integer, IndividualTimeSeries<WeatherValue>> mapWeatherValuesToIds(
       Collection<TimeBasedValue<WeatherValue>> timeBasedValues) {
-    Map<Point, Set<TimeBasedValue<WeatherValue>>> coordinateToValues =
-        timeBasedValues.stream()
-            .collect(
-                Collectors.groupingBy(
-                    timeBasedWeatherValue -> timeBasedWeatherValue.getValue().getCoordinate(),
-                    Collectors.toSet()));
-    Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeriesMap = new HashMap<>();
-    for (Map.Entry<Point, Set<TimeBasedValue<WeatherValue>>> entry :
-        coordinateToValues.entrySet()) {
-      Set<TimeBasedValue<WeatherValue>> values = entry.getValue();
-      IndividualTimeSeries<WeatherValue> timeSeries = new IndividualTimeSeries<>(values);
-      coordinateToTimeSeriesMap.put(entry.getKey(), timeSeries);
+    Map<Integer, Set<TimeBasedValue<WeatherValue>>> idToValues = new HashMap<>();
+
+    for (TimeBasedValue<WeatherValue> timeBasedValue : timeBasedValues) {
+      Optional<Integer> coordinateId = timeBasedValue.getValue().coordinateId();
+
+      if (coordinateId.isEmpty()) {
+        log.warn(
+            "Skipping weather value at {} because its coordinate id is unknown",
+            timeBasedValue.getTime());
+      } else {
+        idToValues.computeIfAbsent(coordinateId.get(), id -> new HashSet<>()).add(timeBasedValue);
+      }
     }
-    return coordinateToTimeSeriesMap;
+
+    Map<Integer, IndividualTimeSeries<WeatherValue>> idToTimeSeriesMap = new HashMap<>();
+    for (Map.Entry<Integer, Set<TimeBasedValue<WeatherValue>>> entry : idToValues.entrySet()) {
+      idToTimeSeriesMap.put(entry.getKey(), new IndividualTimeSeries<>(entry.getValue()));
+    }
+    return idToTimeSeriesMap;
   }
 
   protected Map<Integer, List<ZonedDateTime>> toTimeKeys(

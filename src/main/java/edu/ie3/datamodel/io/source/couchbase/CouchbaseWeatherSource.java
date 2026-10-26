@@ -378,7 +378,8 @@ public class CouchbaseWeatherSource extends WeatherSource {
             .collect(
                 Collectors.toMap(Map.Entry::getKey, entry -> String.valueOf(entry.getValue())));
     fieldToValueMap.putIfAbsent("uuid", UUID.randomUUID().toString());
-    return Optional.of(new TimeBasedWeatherValueData(fieldToValueMap, coordinate.get()));
+    return Optional.of(
+        new TimeBasedWeatherValueData(fieldToValueMap, coordinate.get(), coordinateId));
   }
 
   /**
