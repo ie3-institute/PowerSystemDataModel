@@ -146,6 +146,7 @@ public abstract class AssetInput extends UniqueInputEntity implements Operable {
       return operationTime;
     }
 
+    @Override
     protected Map<String, String> getAdditionalInformation() {
       return additionalInformation;
     }

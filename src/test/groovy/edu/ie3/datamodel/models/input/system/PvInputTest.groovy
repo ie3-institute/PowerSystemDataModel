@@ -75,7 +75,7 @@ class PvInputTest extends Specification {
   def "A PvInput copy builder should allow modifying additionalInformation"() {
     given:
     def pvInput = SystemParticipantTestData.pvInput
-    def newInfo = ["a": "b", "c": "d"]
+    def newInfo = ["a": "new_value", "c": "new_value"]
 
     when:
     def modified = pvInput.copy().additionalInformation(newInfo).build()
