@@ -10,7 +10,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.KELVIN_METRE_PER_WATT
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.EntityData
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.input.SoilType
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
@@ -41,7 +41,7 @@ class SoilTypeInputFactoryTest extends Specification implements FactoryTestHelpe
 
     when:
     Try<SoilType, FactoryException> result =
-        inputFactory.get(new EntityData(parameter, inputClass))
+        inputFactory.get(new FieldMap(parameter))
 
     then:
     result.success
@@ -71,7 +71,7 @@ class SoilTypeInputFactoryTest extends Specification implements FactoryTestHelpe
 
     when:
     Try<SoilType, FactoryException> result =
-        inputFactory.get(new EntityData(parameter, SoilType))
+        inputFactory.get(new FieldMap(parameter))
 
     then:
     result.failure
@@ -92,7 +92,7 @@ class SoilTypeInputFactoryTest extends Specification implements FactoryTestHelpe
 
     when:
     Try<SoilType, FactoryException> result =
-        inputFactory.get(new EntityData(parameter, SoilType))
+        inputFactory.get(new FieldMap(parameter))
 
     then:
     result.failure
@@ -113,7 +113,7 @@ class SoilTypeInputFactoryTest extends Specification implements FactoryTestHelpe
 
     when:
     Try<SoilType, FactoryException> result =
-        inputFactory.get(new EntityData(parameter, SoilType))
+        inputFactory.get(new FieldMap(parameter))
 
     then:
     result.failure
@@ -136,7 +136,7 @@ class SoilTypeInputFactoryTest extends Specification implements FactoryTestHelpe
 
     when:
     Try<SoilType, FactoryException> result =
-        inputFactory.get(new EntityData(parameter, SoilType))
+        inputFactory.get(new FieldMap(parameter))
 
     then:
     result.success

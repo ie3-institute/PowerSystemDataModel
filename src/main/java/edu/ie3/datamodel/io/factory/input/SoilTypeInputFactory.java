@@ -10,7 +10,7 @@ import static edu.ie3.util.quantities.PowerSystemUnits.KELVIN_METRE_PER_WATT;
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.UniqueEntityFactory;
 import edu.ie3.datamodel.models.input.SoilType;
 import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
@@ -20,19 +20,17 @@ import javax.measure.quantity.Temperature;
 import tech.units.indriya.ComparableQuantity;
 
 /** Factory for building {@link SoilType} instances from raw entity data. */
-public class SoilTypeInputFactory extends UniqueEntityFactory<SoilType, EntityData> {
+public class SoilTypeInputFactory extends UniqueEntityFactory<SoilType, SoilType> {
 
   public SoilTypeInputFactory() {
     super(SoilType.class);
   }
 
   @Override
-  protected SoilType buildModel(EntityData data) {
-    UUID uuid = data.getUUID(UUID);
+  protected SoilType buildModel(FieldMap data) {
+    UUID uuid = data.getUUID(UUID_FIELD);
     String id = data.getField(ID);
-    if (id.isBlank()) {
-      throw new FactoryException("Missing or empty field " + ID + ".");
-    }
+
     ComparableQuantity<ThermalResistivity> thermalResistivityWet =
         data.getQuantity(THERMAL_RESISTIVITY_WET, KELVIN_METRE_PER_WATT);
     ComparableQuantity<ThermalResistivity> thermalResistivityDry =
@@ -49,6 +47,6 @@ public class SoilTypeInputFactory extends UniqueEntityFactory<SoilType, EntityDa
         thermalResistivityDry,
         specificHeatCapacity,
         criticalTemperatureDifference,
-        data.getFieldsToValues());
+        data.additionalInformation());
   }
 }

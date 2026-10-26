@@ -210,7 +210,8 @@ public class SoilLayer extends UniqueInputEntity {
         + '}';
   }
 
-  public static class SoilLayerCopyBuilder extends UniqueEntityCopyBuilder<SoilLayerCopyBuilder> {
+  public static class SoilLayerCopyBuilder
+      extends UniqueInputEntityCopyBuilder<SoilLayerCopyBuilder> {
 
     private Geometry geometry;
     private ComparableQuantity<Length> zFrom;
@@ -254,7 +255,7 @@ public class SoilLayer extends UniqueInputEntity {
 
     @Override
     public SoilLayer build() {
-      return new SoilLayer(getUuid(), geometry, zFrom, zTo, soilType, additionalInformation);
+      return new SoilLayer(getUuid(), geometry, zFrom, zTo, soilType, getAdditionalInformation());
     }
   }
 }

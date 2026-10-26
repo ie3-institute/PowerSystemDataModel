@@ -84,7 +84,7 @@ class ModelFieldsTest extends Specification {
     then:
     fields == [
       [
-        FieldNamingStrategy.UUID,
+        FieldNamingStrategy.UUID_FIELD,
         FieldNamingStrategy.ID,
         FieldNamingStrategy.THERMAL_RESISTIVITY_WET,
         FieldNamingStrategy.THERMAL_RESISTIVITY_DRY,
@@ -101,7 +101,7 @@ class ModelFieldsTest extends Specification {
     then:
     fields == [
       [
-        FieldNamingStrategy.UUID,
+        FieldNamingStrategy.UUID_FIELD,
         FieldNamingStrategy.GEOMETRY,
         FieldNamingStrategy.Z_FROM,
         FieldNamingStrategy.Z_TO,

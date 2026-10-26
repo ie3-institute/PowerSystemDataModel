@@ -396,7 +396,7 @@ public class FieldMap {
    * @param field field name
    * @return Geometry if field value is not empty, empty Optional otherwise
    */
-  private Optional<Geometry> getGeometry(String field) {
+  public Optional<Geometry> getGeometry(String field) {
     String value = getField(field);
 
     try {
