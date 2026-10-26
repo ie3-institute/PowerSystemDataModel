@@ -136,4 +136,30 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     then:
     !Objects.equals(model, expectedResults)
   }
+
+  def "A CosmoTimeBasedWeatherValueFactory retains the coordinate id handed in with the data"() {
+    given:
+    def factory = new CosmoTimeBasedWeatherValueFactory()
+    def coordinate = CosmoWeatherTestData.COORDINATE_193186
+    def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
+
+    Map<String, String> parameter = [
+      "time" : TimeUtil.withDefaults.toString(time),
+      "diffuseIrradiance" : "282.671997070312",
+      "directIrradiance" : "286.872985839844",
+      "temperature" : "278.019012451172",
+      "windDirection" : "0",
+      "windVelocity" : "1.66103506088257",
+      "groundTemperatureLevel1": "",
+      "groundTemperatureLevel2": ""
+    ]
+
+    when:
+    def withId = factory.buildModel(new TimeBasedWeatherValueData(parameter, coordinate, 193186))
+    def withoutId = factory.buildModel(new TimeBasedWeatherValueData(parameter, coordinate))
+
+    then:
+    withId.value.coordinateId() == Optional.of(193186)
+    withoutId.value.coordinateId() == Optional.empty()
+  }
 }

@@ -159,6 +159,21 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
     actual == individualWeatherTimeSeriesProcessed
   }
 
+  def "A TimeSeriesProcessor does not persist the coordinate id of a WeatherValue"() {
+    given:
+    TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, WeatherValue, WeatherValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, WeatherValue)
+
+    when:
+    Set<Map<String, String>> actual = processor.handleTimeSeries(individualWeatherTimeSeries)
+
+    then:
+    /* The coordinate id is deliberately exposed via coordinateId() instead of getCoordinateId(), so
+     * that the JavaBeans Introspector used by Processor does not pick it up. Renaming that accessor
+     * would silently add a column to every persisted weather time series. */
+    actual.every { !it.containsKey("coordinateId") }
+    actual.every { it.containsKey("coordinate") }
+  }
+
   def "A TimeSeriesProcessors handles a complete time series with HeatDemandValues correctly"() {
     given:
     TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, HeatDemandValue, HeatDemandValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, HeatDemandValue)
