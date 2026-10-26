@@ -236,7 +236,7 @@ public class CableDeploymentInput extends UniqueInputEntity {
           cableBedWidth,
           cableBedHeight,
           cableBedSoilType,
-          getAdditionalInformation();
+          getAdditionalInformation());
     }
 
     public CableDeploymentInputCopyBuilder lineUuid(UUID lineUuid) {

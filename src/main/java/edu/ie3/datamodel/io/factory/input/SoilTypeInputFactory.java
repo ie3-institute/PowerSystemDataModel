@@ -9,7 +9,6 @@ import static edu.ie3.datamodel.models.StandardUnits.TEMPERATURE;
 import static edu.ie3.util.quantities.PowerSystemUnits.KELVIN_METRE_PER_WATT;
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.UniqueEntityFactory;
 import edu.ie3.datamodel.models.input.SoilType;
