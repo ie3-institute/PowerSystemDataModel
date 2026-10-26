@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.typeinput
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.EntityData
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.connector.type.CableMaterial
 import edu.ie3.datamodel.models.input.connector.type.CableTypeInput
@@ -57,15 +57,13 @@ class CableTypeInputFactoryTest extends Specification implements FactoryTestHelp
       "circulatingLossFactor": "0.0435122656",
       "eddyCurrentLossFactor": "0.0",
     ]
-    def typeInputClass = CableTypeInput
 
     when:
-    Try<CableTypeInput, FactoryException> typeInput =
-        typeInputFactory.get(new EntityData(parameter, typeInputClass))
+    Try<CableTypeInput, FactoryException> typeInput = typeInputFactory.get(new FieldMap(parameter))
 
     then:
     typeInput.success
-    typeInput.data.get().getClass() == typeInputClass
+    typeInput.data.get().getClass() == CableTypeInput
     typeInput.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       id == parameter["id"]
@@ -118,7 +116,7 @@ class CableTypeInputFactoryTest extends Specification implements FactoryTestHelp
     ]
 
     when:
-    typeInputFactory.get(new EntityData(parameter, CableTypeInput)).getOrThrow()
+    typeInputFactory.get(new FieldMap(parameter)).getOrThrow()
 
     then:
     FactoryException e = thrown()

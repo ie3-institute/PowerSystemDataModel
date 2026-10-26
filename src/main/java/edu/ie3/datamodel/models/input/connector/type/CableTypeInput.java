@@ -8,10 +8,7 @@ package edu.ie3.datamodel.models.input.connector.type;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.util.quantities.interfaces.SpecificCapacitance;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Temperature;
 import org.jspecify.annotations.NonNull;
@@ -83,9 +80,7 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
       double tanDelta,
       double circulatingLossFactor,
       double eddyCurrentLossFactor) {
-
     super(uuid, id);
-
     this.coreNumber = coreNumber;
     this.conductor = conductor;
     this.isolation = List.copyOf(isolation);
@@ -101,6 +96,70 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
     this.tanDelta = tanDelta;
     this.circulatingLossFactor = circulatingLossFactor;
     this.eddyCurrentLossFactor = eddyCurrentLossFactor;
+  }
+
+  /**
+   * Represents detailed cable construction data at the type/catalog level. This class contains the
+   * complete specification of a cable type including conductors, insulation layers, screens, armor,
+   * and jacket elements, as well as electrical and thermal parameters.
+   *
+   * @param uuid Unique identifier for this cable type
+   * @param id Human-readable identifier/name for this cable type (e.g., "NA2XS2Y 1x120 RM/25 12/20
+   *     kV")
+   * @param coreNumber Number of cores/conductors in the cable (e.g., 1 for single-core, 3 for
+   *     three-phase)
+   * @param conductor The innermost conductor/core
+   * @param isolation List of insulation layers (from inner to outer)
+   * @param screen Optional cable screen layer
+   * @param filler List of filler layers (from inner to outer)
+   * @param armor List of armor layers (from inner to outer)
+   * @param jack List of jacket/outer sheath layers (from inner to outer)
+   * @param limitTemperature Maximum permissible operating temperature (°C)
+   * @param frequency Rated frequency
+   * @param skinEffectCoefficient Skin effect coefficient
+   * @param proximityEffectCoefficient Proximity effect coefficient
+   * @param electricalCapacitance Capacitance per unit length
+   * @param tanDelta Dielectric loss factor tan(δ)
+   * @param circulatingLossFactor Circulating loss factor
+   * @param eddyCurrentLossFactor Eddy current loss factor
+   * @param additionalInformation Additional information provided by the source.
+   */
+  public CableTypeInput(
+      UUID uuid,
+      String id,
+      int coreNumber,
+      ConductorInput conductor,
+      List<LayerInput> isolation,
+      ScreenLayerInput screen,
+      List<LayerInput> filler,
+      List<LayerInput> armor,
+      List<LayerInput> jack,
+      ComparableQuantity<Temperature> limitTemperature,
+      ComparableQuantity<Frequency> frequency,
+      double skinEffectCoefficient,
+      double proximityEffectCoefficient,
+      ComparableQuantity<SpecificCapacitance> electricalCapacitance,
+      double tanDelta,
+      double circulatingLossFactor,
+      double eddyCurrentLossFactor,
+      Map<String, String> additionalInformation) {
+    super(uuid, id);
+    this.coreNumber = coreNumber;
+    this.conductor = conductor;
+    this.isolation = List.copyOf(isolation);
+    this.screen = screen;
+    this.filler = List.copyOf(filler);
+    this.armor = List.copyOf(armor);
+    this.jack = List.copyOf(jack);
+    this.limitTemperature = limitTemperature;
+    this.frequency = frequency;
+    this.skinEffectCoefficient = skinEffectCoefficient;
+    this.proximityEffectCoefficient = proximityEffectCoefficient;
+    this.electricalCapacitance = electricalCapacitance;
+    this.tanDelta = tanDelta;
+    this.circulatingLossFactor = circulatingLossFactor;
+    this.eddyCurrentLossFactor = eddyCurrentLossFactor;
+    setAdditionalInformation(additionalInformation);
   }
 
   public int getCoreNumber() {
@@ -257,7 +316,7 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
    * CableTypeInput}
    */
   public static final class CableTypeInputCopyBuilder
-      extends AssetTypeInput.AssetTypeInputCopyBuilder<CableTypeInputCopyBuilder> {
+      extends AssetTypeInputCopyBuilder<CableTypeInputCopyBuilder> {
 
     private int coreNumber;
     private ConductorInput conductor;
@@ -390,7 +449,8 @@ public class CableTypeInput extends AssetTypeInput implements InputEntity {
           electricalCapacitance,
           tanDelta,
           circulatingLossFactor,
-          eddyCurrentLossFactor);
+          eddyCurrentLossFactor,
+          getAdditionalInformation());
     }
 
     @Override

@@ -277,7 +277,7 @@ public class CableTypeParser {
    * @throws ParsingException if the uuid is missing or not a valid UUID
    */
   private UUID parseUuid(ObjectNode node, String context) throws ParsingException {
-    String uuidText = optionalText(node, UUID);
+    String uuidText = optionalText(node, UUID_FIELD);
     if (uuidText == null) {
       throw new ParsingException(CANNOT_PARSE + context + ": missing uuid in " + node);
     }

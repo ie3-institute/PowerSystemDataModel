@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.typeinput;
 
 import edu.ie3.datamodel.exceptions.ParsingException;
-import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.typeinput.parser.CableTypeParser;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
@@ -16,7 +16,6 @@ import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput;
 import edu.ie3.util.quantities.interfaces.SpecificCapacitance;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 import javax.measure.Unit;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Temperature;
@@ -30,7 +29,8 @@ import tools.jackson.databind.json.JsonMapper;
  * strings of the individual cable components (conductor, layers, screen layer) are parsed with a
  * {@link CableTypeParser}.
  */
-public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableTypeInput> {
+public class CableTypeInputFactory
+    extends AssetTypeInputEntityFactory<CableTypeInput, CableTypeInput> {
 
   private static final Unit<SpecificCapacitance> FARAD_PER_METRE =
       new ProductUnit<>(Units.FARAD.divide(Units.METRE));
@@ -53,9 +53,8 @@ public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableType
   }
 
   @Override
-  protected CableTypeInput buildModel(EntityData data) {
-    UUID uuid = data.getUUID(UUID);
-    String id = data.getField(ID);
+  protected CableTypeInput buildModel(FieldMap data) {
+    String id = getID(data);
     int cores = data.getInt(CORE_NUMBER);
 
     final ConductorInput conductor;
@@ -93,7 +92,7 @@ public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableType
     double eddyCurrentLossFactor = data.getDouble(EDDY_CURRENT_LOSS_FACTOR);
 
     return new CableTypeInput(
-        uuid,
+        getUUID(data),
         id,
         cores,
         conductor,
@@ -109,6 +108,7 @@ public class CableTypeInputFactory extends AssetTypeInputEntityFactory<CableType
         electricalCapacitance,
         tanDelta,
         circulatingLossFactor,
-        eddyCurrentLossFactor);
+        eddyCurrentLossFactor,
+        data.additionalInformation());
   }
 }

@@ -5,8 +5,10 @@
  */
 package edu.ie3.datamodel.io.factory.input
 
+import static edu.ie3.test.helper.EntityMap.*
+
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.EntityData
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.input.connector.CableDeploymentInput
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.helper.FactoryTestHelper
@@ -36,15 +38,13 @@ class CableDeploymentInputFactoryTest extends Specification implements FactoryTe
       "cableBedHeight" : "0.3",
       "cableBedSoilType" : "ca5f58dd-e444-4daf-83a7-78529548fa77",
     ]
-    def inputClass = CableDeploymentInput
 
     when:
-    Try<CableDeploymentInput, FactoryException> input =
-        inputFactory.get(new EntityData(parameter, inputClass))
+    Try<CableDeploymentInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.success
-    input.data.get().getClass() == inputClass
+    input.data.get().getClass() == CableDeploymentInput
     input.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       lineUuid == UUID.fromString(parameter["lineUuid"])
@@ -68,8 +68,7 @@ class CableDeploymentInputFactoryTest extends Specification implements FactoryTe
     ]
 
     when:
-    Try<CableDeploymentInput, FactoryException> input =
-        inputFactory.get(new EntityData(parameter, CableDeploymentInput))
+    Try<CableDeploymentInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.failure
@@ -88,8 +87,7 @@ class CableDeploymentInputFactoryTest extends Specification implements FactoryTe
     ]
 
     when:
-    Try<CableDeploymentInput, FactoryException> input =
-        inputFactory.get(new EntityData(parameter, CableDeploymentInput))
+    Try<CableDeploymentInput, FactoryException> input = inputFactory.get(new FieldMap(parameter))
 
     then:
     input.failure
