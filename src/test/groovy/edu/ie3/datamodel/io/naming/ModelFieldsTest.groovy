@@ -53,7 +53,7 @@ class ModelFieldsTest extends Specification {
     then:
     mandatoryFields == [
       [
-        FieldNamingStrategy.UUID,
+        FieldNamingStrategy.UUID_FIELD,
         FieldNamingStrategy.LINE_UUID,
         FieldNamingStrategy.LAYOUT_FORMATION,
         FieldNamingStrategy.DEPTH_CABLES,

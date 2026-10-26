@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.io.factory.Factory;
-import edu.ie3.datamodel.io.factory.SimpleFactoryData;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.input.IdCoordinateInput;
 
 /**
@@ -14,7 +14,7 @@ import edu.ie3.datamodel.models.input.IdCoordinateInput;
  * coordinate identifier to actual coordinate
  */
 public abstract class IdCoordinateFactory
-    extends Factory<IdCoordinateInput, SimpleFactoryData, IdCoordinateInput> {
+    extends Factory<IdCoordinateInput, FieldMap, IdCoordinateInput> {
   protected IdCoordinateFactory(Class<? extends IdCoordinateInput> clazz) {
     super(clazz, IdCoordinateInput.class);
   }
