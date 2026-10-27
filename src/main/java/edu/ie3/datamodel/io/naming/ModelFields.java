@@ -468,7 +468,7 @@ public final class ModelFields extends FieldNamingStrategy {
         newSet(UUID_FIELD, ID),
         THERMAL_RESISTIVITY_WET,
         THERMAL_RESISTIVITY_DRY,
-        SPECIFIC_HEAT_CAPACITY,
+        VOLUMETRIC_HEAT_CAPACITY,
         CRITICAL_TEMPERATURE_DIFFERENCE);
 
     registerMandatory(SoilLayer.class, newSet(UUID_FIELD), GEOMETRY, Z_FROM, Z_TO, SOIL_TYPE);

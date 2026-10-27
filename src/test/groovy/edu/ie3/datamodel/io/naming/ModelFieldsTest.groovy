@@ -92,7 +92,7 @@ class ModelFieldsTest extends Specification {
         FieldNamingStrategy.ID,
         FieldNamingStrategy.THERMAL_RESISTIVITY_WET,
         FieldNamingStrategy.THERMAL_RESISTIVITY_DRY,
-        FieldNamingStrategy.SPECIFIC_HEAT_CAPACITY,
+        FieldNamingStrategy.VOLUMETRIC_HEAT_CAPACITY,
         FieldNamingStrategy.CRITICAL_TEMPERATURE_DIFFERENCE
       ] as Set
     ]

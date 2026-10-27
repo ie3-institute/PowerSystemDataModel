@@ -34,19 +34,19 @@ class CableMaterialTest {
   void testThermalProperties(
       CableMaterial material,
       double expectedResistivity,
-      double expectedSpecificHeatCapacity,
+      double expectedVolumetricHeatCapacity,
       double resistivityDelta,
-      double specificHeatCapacityDelta) {
+      double volumetricHeatCapacityDelta) {
     CableMaterial.ThermalProperties props = material.getThermalProperties();
     assertNotNull(props);
     assertNotNull(props.resistivity());
-    assertNotNull(props.specificHeatCapacity());
+    assertNotNull(props.volumetricHeatCapacity());
     assertEquals(
         expectedResistivity, props.resistivity().getValue().doubleValue(), resistivityDelta);
     assertEquals(
-        expectedSpecificHeatCapacity,
-        props.specificHeatCapacity().getValue().doubleValue(),
-        specificHeatCapacityDelta);
+        expectedVolumetricHeatCapacity,
+        props.volumetricHeatCapacity().getValue().doubleValue(),
+        volumetricHeatCapacityDelta);
   }
 
   @Test

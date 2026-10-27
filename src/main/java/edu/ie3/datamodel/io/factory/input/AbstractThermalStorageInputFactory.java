@@ -10,7 +10,7 @@ import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.AbstractStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
-import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
+import edu.ie3.util.quantities.interfaces.VolumetricHeatCapacity;
 import java.util.Map;
 import java.util.UUID;
 import javax.measure.quantity.Power;
@@ -45,8 +45,8 @@ public abstract class AbstractThermalStorageInputFactory<T extends AbstractStora
     return data.getQuantity(RETURN_TEMP, StandardUnits.TEMPERATURE);
   }
 
-  protected ComparableQuantity<SpecificHeatCapacity> getSpecificHeatCapacity(FieldMap data) {
-    return data.getQuantity(C, StandardUnits.SPECIFIC_HEAT_CAPACITY);
+  protected ComparableQuantity<VolumetricHeatCapacity> getVolumetricHeatCapacity(FieldMap data) {
+    return data.getQuantity(C, StandardUnits.VOLUMETRIC_HEAT_CAPACITY);
   }
 
   protected ComparableQuantity<Power> getMaxThermalPower(FieldMap data) {

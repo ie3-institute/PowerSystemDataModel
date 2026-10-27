@@ -19,8 +19,8 @@ import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.datamodel.models.input.container.SoilData
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData as GTD
-import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity
 import edu.ie3.util.quantities.interfaces.ThermalResistivity
+import edu.ie3.util.quantities.interfaces.VolumetricHeatCapacity
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.Geometry
 import org.locationtech.jts.geom.GeometryFactory
@@ -267,7 +267,7 @@ class GridContainerValidationUtilsTest extends Specification {
   private static SoilType validSoilType() {
     ComparableQuantity<ThermalResistivity> wet = Quantities.getQuantity(0.30d, KELVIN_METRE_PER_WATT)
     ComparableQuantity<ThermalResistivity> dry = Quantities.getQuantity(0.40d, KELVIN_METRE_PER_WATT)
-    ComparableQuantity<SpecificHeatCapacity> capacity = Quantities.getQuantity(1.5d, JOULE_PER_CUBIC_METRE_KELVIN)
+    ComparableQuantity<VolumetricHeatCapacity> capacity = Quantities.getQuantity(1.5d, JOULE_PER_CUBIC_METRE_KELVIN)
     ComparableQuantity<Temperature> critical = Quantities.getQuantity(15d, TEMPERATURE)
     return new SoilType(UUID.randomUUID(), "loam", wet, dry, capacity, critical)
   }

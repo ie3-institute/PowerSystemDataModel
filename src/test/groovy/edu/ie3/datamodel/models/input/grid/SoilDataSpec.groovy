@@ -12,13 +12,7 @@ import static tech.units.indriya.unit.Units.METRE
 
 import edu.ie3.datamodel.models.input.SoilLayer
 import edu.ie3.datamodel.models.input.SoilType
-import edu.ie3.datamodel.models.input.container.EnergyManagementUnits
-import edu.ie3.datamodel.models.input.container.JointGridContainer
-import edu.ie3.datamodel.models.input.container.RawGridElements
-import edu.ie3.datamodel.models.input.container.SoilData
-import edu.ie3.datamodel.models.input.container.SystemParticipants
-import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity
-import edu.ie3.util.quantities.interfaces.ThermalResistivity
+import edu.ie3.datamodel.models.input.container.*
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.GeometryFactory
 import spock.lang.Specification

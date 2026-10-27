@@ -473,8 +473,8 @@ class InputEntityProcessorTest extends Specification {
       "filler" : "[]",
       "jack" : "[]",
       "screen" : "",
-      "conductor" : '{"uuid":"' + type.getConductor().getUuid() + '","name":"conductor","material":"COPPER","crossSection":"4.0E-4","diameter":"0.0225","isCompacted":false,"thermalResistivity":"0.0026041667","specificHeatCapacity":"3449600.0","area":"1.0","additionalInformation":{}}',
-      "isolation" : '[{"uuid":"' + type.getIsolation().get(0).getUuid() + '","name":"Main insulation","material":"XLPE","innerDiameter":"0.0225","outerDiameter":"0.027","thermalResistivity":"3.5","specificHeatCapacity":"2.4E6","area":"1.0","additionalInformation":{}}]'
+      "conductor" : '{"uuid":"' + type.getConductor().getUuid() + '","name":"conductor","material":"COPPER","crossSection":"4.0E-4","diameter":"0.0225","isCompacted":false,"thermalResistivity":"0.0026041667","volumetricHeatCapacity":"3449600.0","area":"1.0","additionalInformation":{}}',
+      "isolation" : '[{"uuid":"' + type.getIsolation().get(0).getUuid() + '","name":"Main insulation","material":"XLPE","innerDiameter":"0.0225","outerDiameter":"0.027","thermalResistivity":"3.5","volumetricHeatCapacity":"2.4E6","area":"1.0","additionalInformation":{}}]'
     ]
 
     when:

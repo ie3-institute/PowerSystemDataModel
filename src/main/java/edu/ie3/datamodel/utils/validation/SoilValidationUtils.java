@@ -40,13 +40,13 @@ public class SoilValidationUtils extends ValidationUtils {
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
     exceptions.add(
         Try.ofVoid(
-            soilType.getId() == null,
+            soilType.getId() == null || soilType.getId().isBlank(),
             () -> new InvalidEntityException("No ID assigned", soilType)));
     exceptions.add(
         Try.ofVoid(
             soilType.getThermalResistivityWet() == null
                 || soilType.getThermalResistivityDry() == null
-                || soilType.getSpecificHeatCapacity() == null
+                || soilType.getVolumetricHeatCapacity() == null
                 || soilType.getCriticalTemperatureDifference() == null,
             () ->
                 new InvalidEntityException(
@@ -58,7 +58,7 @@ public class SoilValidationUtils extends ValidationUtils {
             quantities(
                 "thermalResistivityWet", soilType.getThermalResistivityWet(),
                 "thermalResistivityDry", soilType.getThermalResistivityDry(),
-                "specificHeatCapacity", soilType.getSpecificHeatCapacity()),
+                "volumetricHeatCapacity", soilType.getVolumetricHeatCapacity()),
             soilType);
       } catch (InvalidEntityException e) {
         exceptions.add(new Try.Failure<>(e));

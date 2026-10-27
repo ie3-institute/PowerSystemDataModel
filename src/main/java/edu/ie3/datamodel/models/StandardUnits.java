@@ -132,8 +132,8 @@ public class StandardUnits {
   /** Heat capacity of a given mass or volume in kWh/K */
   public static final Unit<HeatCapacity> HEAT_CAPACITY = KILOWATTHOUR_PER_KELVIN;
 
-  /** Heat capacity per volume kWh*m³/K */
-  public static final Unit<SpecificHeatCapacity> SPECIFIC_HEAT_CAPACITY =
+  /** Volumetric heat capacity per volume kWh*m³/K */
+  public static final Unit<VolumetricHeatCapacity> VOLUMETRIC_HEAT_CAPACITY =
       KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE;
 
   /** Thermal transmission through an insulation in kW/K */
