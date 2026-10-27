@@ -216,7 +216,7 @@ public class AcInput extends SystemParticipantInput implements HasType, HasTherm
           getqCharacteristics(),
           getEm(),
           type,
-              getAdditionalInformation());
+          getAdditionalInformation());
     }
 
     @Override

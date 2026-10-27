@@ -212,7 +212,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
           getEm(),
           sRated,
           cosPhiRated,
-      getAdditionalInformation());
+          getAdditionalInformation());
     }
 
     @Override

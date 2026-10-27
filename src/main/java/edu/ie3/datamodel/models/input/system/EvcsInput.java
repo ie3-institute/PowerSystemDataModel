@@ -351,7 +351,7 @@ public class EvcsInput extends SystemParticipantInput {
           cosPhiRated,
           locationTypes,
           v2gSupport,
-              getAdditionalInformation());
+          getAdditionalInformation());
     }
 
     @Override

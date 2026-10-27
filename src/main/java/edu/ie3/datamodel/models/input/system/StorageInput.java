@@ -187,7 +187,7 @@ public class StorageInput extends SystemParticipantInput implements HasType {
           getqCharacteristics(),
           getEm(),
           type,
-              getAdditionalInformation());
+          getAdditionalInformation());
     }
 
     @Override

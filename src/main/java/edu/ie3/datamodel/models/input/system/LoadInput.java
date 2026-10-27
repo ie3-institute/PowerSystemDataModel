@@ -358,7 +358,7 @@ public class LoadInput extends SystemParticipantInput {
           eConsAnnual,
           sRated,
           cosPhiRated,
-              getAdditionalInformation());
+          getAdditionalInformation());
     }
 
     @Override
