@@ -69,8 +69,9 @@ class SoilValidationUtilsTest extends Specification {
     where:
     invalidSoilType || expectedMessage
     validSoilType().copy().id(null).build() || new InvalidEntityException("No ID assigned", validSoilType().copy().id(null).build()).message
-    validSoilType().copy().specificHeatCapacity(null).build() ||
-        new InvalidEntityException("Soil type has incomplete thermal properties", validSoilType().copy().specificHeatCapacity(null).build()).message
+    validSoilType().copy().id("  ").build() || new InvalidEntityException("No ID assigned", validSoilType().copy().id("  ").build()).message
+    validSoilType().copy().volumetricHeatCapacity(null).build() ||
+        new InvalidEntityException("Soil type has incomplete thermal properties", validSoilType().copy().volumetricHeatCapacity(null).build()).message
   }
 
   def "The check method reports non-positive thermal properties of a soil type"() {

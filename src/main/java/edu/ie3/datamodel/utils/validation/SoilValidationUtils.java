@@ -40,7 +40,7 @@ public class SoilValidationUtils extends ValidationUtils {
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
     exceptions.add(
         Try.ofVoid(
-            soilType.getId() == null,
+            soilType.getId() == null || soilType.getId().isBlank(),
             () -> new InvalidEntityException("No ID assigned", soilType)));
     exceptions.add(
         Try.ofVoid(
