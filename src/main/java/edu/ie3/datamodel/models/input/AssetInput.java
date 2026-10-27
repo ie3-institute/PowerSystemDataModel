@@ -7,7 +7,6 @@ package edu.ie3.datamodel.models.input;
 
 import edu.ie3.datamodel.models.Operable;
 import edu.ie3.datamodel.models.OperationTime;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -104,14 +103,12 @@ public abstract class AssetInput extends UniqueInputEntity implements Operable {
     private String id;
     private OperatorInput operator;
     private OperationTime operationTime;
-    private Map<String, String> additionalInformation;
 
     protected AssetInputCopyBuilder(AssetInput entity) {
       super(entity);
       this.id = entity.getId();
       this.operator = entity.getOperator();
       this.operationTime = entity.getOperationTime();
-      this.additionalInformation = entity.getAdditionalInformation();
     }
 
     public B id(String id) {
@@ -129,11 +126,6 @@ public abstract class AssetInput extends UniqueInputEntity implements Operable {
       return thisInstance();
     }
 
-    public B additionalInformation(Map<String, String> additionalInformation) {
-      this.additionalInformation = additionalInformation;
-      return thisInstance();
-    }
-
     protected String getId() {
       return id;
     }
@@ -144,11 +136,6 @@ public abstract class AssetInput extends UniqueInputEntity implements Operable {
 
     protected OperationTime getOperationTime() {
       return operationTime;
-    }
-
-    @Override
-    protected Map<String, String> getAdditionalInformation() {
-      return additionalInformation;
     }
 
     @Override
