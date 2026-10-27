@@ -186,7 +186,8 @@ public class EvInput extends SystemParticipantInput implements HasType {
           getNode(),
           getqCharacteristics(),
           getEm(),
-          type);
+          type,
+          getAdditionalInformation());
     }
 
     @Override

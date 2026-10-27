@@ -88,6 +88,7 @@ class EmInputTest extends Specification {
       id == emInput.id
       controlStrategy == newStrat
       controllingEm == Optional.of(givenParentEm)
+      additionalInformation == emInput.additionalInformation
     }
   }
 }

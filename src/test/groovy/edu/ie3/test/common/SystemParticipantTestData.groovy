@@ -58,6 +58,7 @@ class SystemParticipantTestData {
 
   // EmInput
   public static final String emControlStrategy = "self_optimization"
+  public static final Map<String, String> emAdditionalInfo = ["source": "test", "note": "hello"]
   public static final EmInput parentEm = new EmInput(
   UUID.fromString("897bfc17-8e54-43d0-8d98-740786fd94dd"),
   "test_parentEmInput",
@@ -77,6 +78,7 @@ class SystemParticipantTestData {
   )
 
   // FixedFeedInput
+  public static final Map<String, String> ffinAdditionalInfo = ["source": "test", "note": "hello"]
   public static final FixedFeedInInput fixedFeedInInput = new FixedFeedInInput(
   UUID.fromString("717af017-cc69-406f-b452-e022d7fb516a"),
   "test_fixedFeedInInput",
@@ -95,7 +97,7 @@ class SystemParticipantTestData {
   static final ComparableQuantity<Angle> elevationAngle = Quantities.getQuantity(41.01871871948242d, SOLAR_ELEVATION_ANGLE)
   static double kT = 1d
   static double kG = 0.8999999761581421d
-  public static final Map<String, String> pvAdditionalInfo = ["a": "b", "c": "d"]
+  public static final Map<String, String> pvAdditionalInfo = ["source": "test", "note": "hello"]
   public static final PvInput pvInput = new PvInput(
   UUID.fromString("d56f15b7-8293-4b98-b5bd-58f6273ce229"),
   "test_pvInput",
@@ -120,6 +122,7 @@ class SystemParticipantTestData {
   private static final WecCharacteristicInput wecCharacteristic = new WecCharacteristicInput("cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
   private static final ComparableQuantity<Area> rotorArea = Quantities.getQuantity(20, ROTOR_AREA)
   private static final ComparableQuantity<Length> hubHeight = Quantities.getQuantity(200, HUB_HEIGHT)
+  public static final Map<String, String> wecAdditionalInfo = ["source": "test", "note": "hello"]
   public static final WecTypeInput wecType = new WecTypeInput(
   typeUuid,
   "test_wecType",
@@ -149,6 +152,7 @@ class SystemParticipantTestData {
   private static final ComparableQuantity<Dimensionless> etaThermal = Quantities.getQuantity(76, EFFICIENCY)
   private static final ComparableQuantity<Power> pOwn = Quantities.getQuantity(0, ACTIVE_POWER_IN)
   private static final ComparableQuantity<Power> pThermal = Quantities.getQuantity(9, ACTIVE_POWER_IN)
+  public static final Map<String, String> chpAdditionalInfo = ["source": "test", "note": "hello"]
   public static final ChpTypeInput chpTypeInput = new ChpTypeInput(
   typeUuid,
   "test_chpType",
@@ -204,6 +208,7 @@ class SystemParticipantTestData {
 
   // BM
   private static final ComparableQuantity<DimensionlessRate> loadGradient = Quantities.getQuantity(25, ACTIVE_POWER_GRADIENT)
+  public static final Map<String, String> bmAdditionalInfo = ["source": "test", "note": "hello"]
   public static final BmTypeInput bmTypeInput = new BmTypeInput(
   typeUuid,
   "test_bmTypeInput",
@@ -233,6 +238,7 @@ class SystemParticipantTestData {
   private static final ComparableQuantity<Energy> eStorage = Quantities.getQuantity(100, ENERGY_IN)
   private static final ComparableQuantity<SpecificEnergy> eCons = Quantities.getQuantity(5, ENERGY_PER_DISTANCE)
   private static final ComparableQuantity<Power> sRatedDC = Quantities.getQuantity(20, ACTIVE_POWER_IN)
+  public static final Map<String, String> evAdditionalInfo = ["source": "test", "note": "hello"]
   public static final EvTypeInput evTypeInput = new EvTypeInput(
   typeUuid,
   "test_evTypeInput",
@@ -257,6 +263,7 @@ class SystemParticipantTestData {
   // Load
   protected static final ComparableQuantity<Energy> eConsAnnual = Quantities.getQuantity(4000, ENERGY_IN)
   protected static final PowerProfileKey powerProfileKey = BdewStandardLoadProfile.H0.key
+  public static final Map<String, String> loadAdditionalInfo = ["source": "test", "note": "hello"]
   public static final LoadInput loadInput = new LoadInput(
   UUID.fromString("eaf77f7e-9001-479f-94ca-7fb657766f5f"),
   "test_loadInput",
@@ -275,6 +282,7 @@ class SystemParticipantTestData {
   private static final ComparableQuantity<Power> pMax = Quantities.getQuantity(15, ACTIVE_POWER_IN)
   private static final ComparableQuantity<Dimensionless> eta = Quantities.getQuantity(95, EFFICIENCY)
   private static final ComparableQuantity<DimensionlessRate> cpRate = Quantities.getQuantity(100, ACTIVE_POWER_GRADIENT)
+  public static final Map<String, String> storageAdditionalInfo = ["source": "test", "note": "hello"]
   public static final StorageTypeInput storageTypeInput = new StorageTypeInput(
   typeUuid,
   "test_storageTypeInput",
@@ -299,6 +307,7 @@ class SystemParticipantTestData {
   )
 
   // HP
+  public static final Map<String, String> hpAdditionalInfo = ["source": "test", "note": "hello"]
   public static final HpTypeInput hpTypeInput = new HpTypeInput(
   typeUuid,
   "test_hpTypeInput",
@@ -331,6 +340,7 @@ class SystemParticipantTestData {
   pThermal
   )
 
+  public static final Map<String, String> acAdditionalInfo = ["source": "test", "note": "hello"]
   public static final AcInput acInput = new AcInput(
   UUID.fromString("42e538e7-f29d-48ad-b376-277f24200ae0"),
   "test_acInput",
@@ -345,6 +355,7 @@ class SystemParticipantTestData {
 
   // charging station
   public static final boolean v2gSupport = false
+  public static final Map<String, String> evcsAdditionalInfo = ["source": "test", "note": "hello"]
   public static final evcsInput = new EvcsInput(
   UUID.fromString("798028b5-caff-4da7-bcd9-1750fdd8742c"),
   "test_csInput",

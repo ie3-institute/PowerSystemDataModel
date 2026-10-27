@@ -27,6 +27,7 @@ class StorageInputTest extends Specification {
       qCharacteristics == storageInput.qCharacteristics
       type == SystemParticipantTestData.storageTypeInput
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == storageInput.additionalInformation
     }
   }
 
@@ -49,6 +50,7 @@ class StorageInputTest extends Specification {
       type.eStorage == storageInput.type.eStorage * 2d
       type.pMax == storageInput.type.pMax * 2d
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == storageInput.additionalInformation
     }
   }
 }
