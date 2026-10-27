@@ -217,7 +217,6 @@ public class SoilLayer extends UniqueInputEntity {
     private ComparableQuantity<Length> zFrom;
     private ComparableQuantity<Length> zTo;
     private UUID soilType;
-    private Map<String, String> additionalInformation;
 
     private SoilLayerCopyBuilder(SoilLayer entity) {
       super(entity);
@@ -225,7 +224,6 @@ public class SoilLayer extends UniqueInputEntity {
       this.zFrom = entity.getZFrom();
       this.zTo = entity.getZTo();
       this.soilType = entity.getSoilType();
-      this.additionalInformation = entity.getAdditionalInformation();
     }
 
     public SoilLayerCopyBuilder geometry(Geometry geometry) {
