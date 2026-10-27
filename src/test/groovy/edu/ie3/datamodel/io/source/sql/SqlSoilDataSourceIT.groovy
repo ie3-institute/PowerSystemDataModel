@@ -65,7 +65,7 @@ class SqlSoilDataSourceIT extends Specification implements TestContainerHelper {
     types.values().first().id == "loam"
     types.values().first().thermalResistivityWet.to(KELVIN_METRE_PER_WATT).value.doubleValue() == 0.3d
     types.values().first().thermalResistivityDry.to(KELVIN_METRE_PER_WATT).value.doubleValue() == 0.4d
-    types.values().first().specificHeatCapacity.to(KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE).value.doubleValue() == 0.0015d
+    types.values().first().volumetricHeatCapacity.to(KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE).value.doubleValue() == 0.0015d
     types.values().first().criticalTemperatureDifference.to(TEMPERATURE).value.doubleValue() == 15.0d
 
     layers.size() == 1

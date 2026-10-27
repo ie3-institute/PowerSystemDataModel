@@ -8,8 +8,8 @@ package edu.ie3.datamodel.models.input.connector.type;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
+import edu.ie3.util.quantities.interfaces.VolumetricHeatCapacity;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
@@ -32,7 +32,7 @@ public class ConductorInput extends AssetInput implements Serializable {
   private final ComparableQuantity<Length> diameter;
   private final boolean isCompacted;
   private final ComparableQuantity<ThermalResistivity> thermalResistivity;
-  private final ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity;
+  private final ComparableQuantity<VolumetricHeatCapacity> volumetricHeatCapacity;
   private final ComparableQuantity<Area> area;
 
   /**
@@ -45,7 +45,7 @@ public class ConductorInput extends AssetInput implements Serializable {
    * @param diameter Geometric outer diameter of the conductor
    * @param isCompacted Whether the conductor is compacted
    * @param thermalResistivity Thermal resistivity of the conductor material
-   * @param specificHeatCapacity Specific heat capacity of the conductor material
+   * @param volumetricHeatCapacity Volumetric heat capacity of the conductor material
    * @param area Optional real cross-sectional area (if different from geometric calculation)
    */
   public ConductorInput(
@@ -56,7 +56,7 @@ public class ConductorInput extends AssetInput implements Serializable {
       ComparableQuantity<Length> diameter,
       boolean isCompacted,
       ComparableQuantity<ThermalResistivity> thermalResistivity,
-      ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity,
+      ComparableQuantity<VolumetricHeatCapacity> volumetricHeatCapacity,
       ComparableQuantity<Area> area) {
     this(
         uuid,
@@ -68,7 +68,7 @@ public class ConductorInput extends AssetInput implements Serializable {
         diameter,
         isCompacted,
         thermalResistivity,
-        specificHeatCapacity,
+        volumetricHeatCapacity,
         area,
         null);
   }
@@ -83,7 +83,7 @@ public class ConductorInput extends AssetInput implements Serializable {
       ComparableQuantity<Length> diameter,
       boolean isCompacted,
       ComparableQuantity<ThermalResistivity> thermalResistivity,
-      ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity,
+      ComparableQuantity<VolumetricHeatCapacity> volumetricHeatCapacity,
       ComparableQuantity<Area> area) {
     this(
         uuid,
@@ -95,7 +95,7 @@ public class ConductorInput extends AssetInput implements Serializable {
         diameter,
         isCompacted,
         thermalResistivity,
-        specificHeatCapacity,
+        volumetricHeatCapacity,
         area,
         null);
   }
@@ -110,7 +110,7 @@ public class ConductorInput extends AssetInput implements Serializable {
       ComparableQuantity<Length> diameter,
       boolean isCompacted,
       ComparableQuantity<ThermalResistivity> thermalResistivity,
-      ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity,
+      ComparableQuantity<VolumetricHeatCapacity> volumetricHeatCapacity,
       ComparableQuantity<Area> area,
       Map<String, String> additionalInformation) {
     super(uuid, id, operator, operationTime);
@@ -119,13 +119,13 @@ public class ConductorInput extends AssetInput implements Serializable {
     this.diameter = diameter;
     this.isCompacted = isCompacted;
     this.thermalResistivity = thermalResistivity;
-    this.specificHeatCapacity = specificHeatCapacity;
+    this.volumetricHeatCapacity = volumetricHeatCapacity;
     this.area = area;
     setAdditionalInformation(additionalInformation);
   }
 
-  public ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity() {
-    return specificHeatCapacity;
+  public ComparableQuantity<VolumetricHeatCapacity> volumetricHeatCapacity() {
+    return volumetricHeatCapacity;
   }
 
   public Optional<ComparableQuantity<Area>> area() {
@@ -177,8 +177,8 @@ public class ConductorInput extends AssetInput implements Serializable {
         + isCompacted
         + ", thermalResistivity="
         + thermalResistivity
-        + ", specificHeatCapacity="
-        + specificHeatCapacity
+        + ", volumetricHeatCapacity="
+        + volumetricHeatCapacity
         + ", area="
         + area()
         + '}';
@@ -195,7 +195,7 @@ public class ConductorInput extends AssetInput implements Serializable {
         && crossSection.equals(that.crossSection)
         && diameter.equals(that.diameter)
         && thermalResistivity.equals(that.thermalResistivity)
-        && specificHeatCapacity.equals(that.specificHeatCapacity)
+        && volumetricHeatCapacity.equals(that.volumetricHeatCapacity)
         && Objects.equals(area, that.area);
   }
 
@@ -208,7 +208,7 @@ public class ConductorInput extends AssetInput implements Serializable {
         diameter,
         isCompacted,
         thermalResistivity,
-        specificHeatCapacity,
+        volumetricHeatCapacity,
         area);
   }
 
@@ -225,7 +225,7 @@ public class ConductorInput extends AssetInput implements Serializable {
     private ComparableQuantity<Length> diameter;
     private boolean isCompacted;
     private ComparableQuantity<ThermalResistivity> thermalResistivity;
-    private ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity;
+    private ComparableQuantity<VolumetricHeatCapacity> volumetricHeatCapacity;
     private ComparableQuantity<Area> area;
 
     protected ConductorInputCopyBuilder(ConductorInput entity) {
@@ -235,7 +235,7 @@ public class ConductorInput extends AssetInput implements Serializable {
       this.diameter = entity.diameter;
       this.isCompacted = entity.isCompacted;
       this.thermalResistivity = entity.thermalResistivity;
-      this.specificHeatCapacity = entity.specificHeatCapacity;
+      this.volumetricHeatCapacity = entity.volumetricHeatCapacity;
       this.area = entity.area;
     }
 
@@ -264,9 +264,9 @@ public class ConductorInput extends AssetInput implements Serializable {
       return thisInstance();
     }
 
-    public ConductorInputCopyBuilder specificHeatCapacity(
-        ComparableQuantity<SpecificHeatCapacity> tc) {
-      this.specificHeatCapacity = tc;
+    public ConductorInputCopyBuilder volumetricHeatCapacity(
+        ComparableQuantity<VolumetricHeatCapacity> tc) {
+      this.volumetricHeatCapacity = tc;
       return thisInstance();
     }
 
@@ -287,7 +287,7 @@ public class ConductorInput extends AssetInput implements Serializable {
           diameter,
           isCompacted,
           thermalResistivity,
-          specificHeatCapacity,
+          volumetricHeatCapacity,
           area);
     }
 

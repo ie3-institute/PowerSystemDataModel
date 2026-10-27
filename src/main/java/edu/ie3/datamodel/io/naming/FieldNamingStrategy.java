@@ -82,7 +82,7 @@ public class FieldNamingStrategy {
   public static final String MATERIAL = "material";
   public static final String AREA = "area";
   public static final String THERMAL_RESISTIVITY = "thermalResistivity";
-  public static final String SPECIFIC_HEAT_CAPACITY = "specificHeatCapacity";
+  public static final String VOLUMETRIC_HEAT_CAPACITY = "volumetricHeatCapacity";
   public static final String WIRES_NUMBER = "wiresNumber";
   public static final String LENGTH_OF_LAY = "lengthOfLay";
   public static final String IS_COMPACTED = "isCompacted";

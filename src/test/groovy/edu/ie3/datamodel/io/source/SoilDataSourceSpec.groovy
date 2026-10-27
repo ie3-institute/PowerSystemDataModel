@@ -88,7 +88,7 @@ class SoilDataSourceSpec extends Specification {
     given:
     Files.writeString(
         tempDir.resolve("soil_type.csv"),
-        "uuid,id,thermal_resistivity_wet,thermal_resistivity_dry,specific_heat_capacity,critical_temperature_difference\n" +
+        "uuid,id,thermal_resistivity_wet,thermal_resistivity_dry,volumetric_heat_capacity,critical_temperature_difference\n" +
         TYPE_UUID + ",loam,invalid,0.4,0.0015,15\n")
     def source = soilSource()
 
@@ -144,7 +144,7 @@ class SoilDataSourceSpec extends Specification {
     given:
     Files.writeString(
         tempDir.resolve("soil_type.csv"),
-        "uuid,id,thermal_resistivity_wet,thermal_resistivity_dry,specific_heat_capacity,critical_temperature_difference\n" +
+        "uuid,id,thermal_resistivity_wet,thermal_resistivity_dry,volumetric_heat_capacity,critical_temperature_difference\n" +
         TYPE_UUID + ",loam,-0.30,0.40,0.0015,15.0\n")
     def soilType = soilSource().getSoilTypes()[TYPE_UUID]
     when:
@@ -172,7 +172,7 @@ class SoilDataSourceSpec extends Specification {
   private void writeSoilTypesFile() {
     Files.writeString(
         tempDir.resolve("soil_type.csv"),
-        "uuid,id,thermal_resistivity_wet,thermal_resistivity_dry,specific_heat_capacity,critical_temperature_difference\n" +
+        "uuid,id,thermal_resistivity_wet,thermal_resistivity_dry,volumetric_heat_capacity,critical_temperature_difference\n" +
         TYPE_UUID + ",loam,0.30,0.40,0.0015,15.0\n")
   }
 

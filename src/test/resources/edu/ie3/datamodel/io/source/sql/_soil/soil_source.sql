@@ -4,7 +4,7 @@ CREATE TABLE public.soil_type
     id text NOT NULL,
     thermal_resistivity_wet double precision NOT NULL,
     thermal_resistivity_dry double precision NOT NULL,
-    specific_heat_capacity double precision NOT NULL,
+    volumetric_heat_capacity double precision NOT NULL,
     critical_temperature_difference double precision NOT NULL
 );
 
@@ -18,7 +18,7 @@ CREATE TABLE public.soil_layer
 );
 
 INSERT INTO public.soil_type
-    (uuid, id, thermal_resistivity_wet, thermal_resistivity_dry, specific_heat_capacity, critical_temperature_difference)
+    (uuid, id, thermal_resistivity_wet, thermal_resistivity_dry, volumetric_heat_capacity, critical_temperature_difference)
 VALUES
     ('32b43a78-7721-431d-b1c2-56975a123670', 'loam', 0.3, 0.4, 0.0015, 15.0);
 

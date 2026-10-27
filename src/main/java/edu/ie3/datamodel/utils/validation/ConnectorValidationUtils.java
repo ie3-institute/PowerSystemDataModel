@@ -308,8 +308,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
                     conductor.diameter(),
                     THERMAL_RESISTIVITY,
                     conductor.thermalResistivity(),
-                    SPECIFIC_HEAT_CAPACITY,
-                    conductor.specificHeatCapacity()),
+                    VOLUMETRIC_HEAT_CAPACITY,
+                    conductor.volumetricHeatCapacity()),
                 cableType),
         () -> checkConductorArea(conductor, cableType));
   }
@@ -375,8 +375,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
                     layer.outerDiameter(),
                     THERMAL_RESISTIVITY,
                     layer.thermalResistivity(),
-                    SPECIFIC_HEAT_CAPACITY,
-                    layer.specificHeatCapacity()),
+                    VOLUMETRIC_HEAT_CAPACITY,
+                    layer.volumetricHeatCapacity()),
                 cableType),
         () -> checkLayerArea(layer, cableType),
         () -> checkLayerDiameters(layer, cableType));
@@ -434,8 +434,8 @@ public class ConnectorValidationUtils extends ValidationUtils {
                     screenLayer.outerDiameter(),
                     THERMAL_RESISTIVITY,
                     screenLayer.thermalResistivity(),
-                    SPECIFIC_HEAT_CAPACITY,
-                    screenLayer.specificHeatCapacity(),
+                    VOLUMETRIC_HEAT_CAPACITY,
+                    screenLayer.volumetricHeatCapacity(),
                     "wireDiameter",
                     screenLayer.wireDiameter(),
                     "electricalResistivity",

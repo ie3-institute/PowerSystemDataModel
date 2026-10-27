@@ -13,8 +13,8 @@ import static tech.units.indriya.unit.Units.METRE
 import edu.ie3.datamodel.exceptions.InvalidEntityException
 import edu.ie3.datamodel.models.input.SoilLayer
 import edu.ie3.datamodel.models.input.SoilType
-import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity
 import edu.ie3.util.quantities.interfaces.ThermalResistivity
+import edu.ie3.util.quantities.interfaces.VolumetricHeatCapacity
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.Geometry
 import org.locationtech.jts.geom.GeometryFactory
@@ -190,7 +190,7 @@ class SoilValidationUtilsTest extends Specification {
         Quantities.getQuantity(0.30d, KELVIN_METRE_PER_WATT)
     ComparableQuantity<ThermalResistivity> dry =
         Quantities.getQuantity(0.40d, KELVIN_METRE_PER_WATT)
-    ComparableQuantity<SpecificHeatCapacity> capacity =
+    ComparableQuantity<VolumetricHeatCapacity> capacity =
         Quantities.getQuantity(1.5d, JOULE_PER_CUBIC_METRE_KELVIN)
     ComparableQuantity<Temperature> critical = Quantities.getQuantity(15d, TEMPERATURE)
     return new SoilType(UUID_VALUE, "loam", wet, dry, capacity, critical)

@@ -17,8 +17,8 @@ import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData
 import edu.ie3.util.quantities.interfaces.ElectricalResistivity
 import edu.ie3.util.quantities.interfaces.SpecificCapacitance
-import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity
 import edu.ie3.util.quantities.interfaces.ThermalResistivity
+import edu.ie3.util.quantities.interfaces.VolumetricHeatCapacity
 import spock.lang.Specification
 import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
@@ -137,7 +137,7 @@ class ConnectorValidationUtilsTest extends Specification {
     validCableType(conductor: validConductor(crossSection: area(-1d))) || "crossSection"
     validCableType(conductor: validConductor(diameter: length(-1d))) || "diameter"
     validCableType(conductor: validConductor(thermalResistivity: thermalResistivity(-1d))) || "thermalResistivity"
-    validCableType(conductor: validConductor(specificHeatCapacity: specificHeatCapacity(-1d))) || "specificHeatCapacity"
+    validCableType(conductor: validConductor(volumetricHeatCapacity: volumetricHeatCapacity(-1d))) || "volumetricHeatCapacity"
     validCableType(conductor: validConductor(area: Optional.of(area(-1d)))) || "area"
     validCableType(isolation: [validLayer(name: "")]) || "Layer name cannot be empty"
     validCableType(isolation: [
@@ -150,8 +150,8 @@ class ConnectorValidationUtilsTest extends Specification {
       validLayer(thermalResistivity: thermalResistivity(-1d))
     ]) || "thermalResistivity"
     validCableType(isolation: [
-      validLayer(specificHeatCapacity: specificHeatCapacity(-1d))
-    ]) || "specificHeatCapacity"
+      validLayer(volumetricHeatCapacity: volumetricHeatCapacity(-1d))
+    ]) || "volumetricHeatCapacity"
     validCableType(isolation: [
       validLayer(area: Optional.of(area(-1d)))
     ]) || "area"
@@ -169,7 +169,7 @@ class ConnectorValidationUtilsTest extends Specification {
     validCableType(screen: validScreenLayer(wireDiameter: length(-1d))) || "wireDiameter"
     validCableType(screen: validScreenLayer(electricalResistivity: electricalResistivity(-1d))) || "electricalResistivity"
     validCableType(screen: validScreenLayer(thermalResistivity: thermalResistivity(-1d))) || "thermalResistivity"
-    validCableType(screen: validScreenLayer(specificHeatCapacity: specificHeatCapacity(-1d))) || "specificHeatCapacity"
+    validCableType(screen: validScreenLayer(volumetricHeatCapacity: volumetricHeatCapacity(-1d))) || "volumetricHeatCapacity"
     validCableType(screen: validScreenLayer(area: Optional.of(area(-1d)))) || "area"
     validCableType(screen: validScreenLayer(lengthOfLay: Optional.of(length(-1d)))) || "lengthOfLay"
   }
@@ -413,7 +413,7 @@ class ConnectorValidationUtilsTest extends Specification {
         overrides.get("diameter", length(0.0225d)),
         overrides.get("isCompacted", false),
         overrides.get("thermalResistivity", thermalResistivity(1.0d / 384.0d)),
-        overrides.get("specificHeatCapacity", specificHeatCapacity(3449600.0d)),
+        overrides.get("volumetricHeatCapacity", volumetricHeatCapacity(3449600.0d)),
         areaParam as ComparableQuantity<Area>)
   }
 
@@ -451,7 +451,7 @@ class ConnectorValidationUtilsTest extends Specification {
         overrides.get("innerDiameter", length(0.0225d)),
         overrides.get("outerDiameter", length(0.027d)),
         overrides.get("thermalResistivity", thermalResistivity(3.5d)),
-        overrides.get("specificHeatCapacity", specificHeatCapacity(2.4e6d)),
+        overrides.get("volumetricHeatCapacity", volumetricHeatCapacity(2.4e6d)),
         overrides.get("area", Optional.<ComparableQuantity<Area>>empty()))
   }
 
@@ -463,7 +463,7 @@ class ConnectorValidationUtilsTest extends Specification {
         overrides.get("innerDiameter", length(0.027d)),
         overrides.get("outerDiameter", length(0.028d)),
         overrides.get("thermalResistivity", thermalResistivity(2.5d)),
-        overrides.get("specificHeatCapacity", specificHeatCapacity(2.4e6d)),
+        overrides.get("volumetricHeatCapacity", volumetricHeatCapacity(2.4e6d)),
         overrides.get("area", Optional.<ComparableQuantity<Area>>empty()),
         overrides.get("wiresNumber", 20),
         overrides.get("wireDiameter", length(0.0005d)),
@@ -500,7 +500,7 @@ class ConnectorValidationUtilsTest extends Specification {
     Quantities.getQuantity(value, KELVIN_METRE_PER_WATT)
   }
 
-  private static ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity(double value) {
+  private static ComparableQuantity<VolumetricHeatCapacity> volumetricHeatCapacity(double value) {
     Quantities.getQuantity(value, JOULE_PER_CUBIC_METRE_KELVIN)
   }
 

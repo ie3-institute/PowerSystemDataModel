@@ -9,12 +9,11 @@ import static edu.ie3.datamodel.models.StandardUnits.TEMPERATURE;
 import static edu.ie3.util.quantities.PowerSystemUnits.KELVIN_METRE_PER_WATT;
 import static edu.ie3.util.quantities.PowerSystemUnits.KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.UniqueEntityFactory;
 import edu.ie3.datamodel.models.input.SoilType;
-import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
+import edu.ie3.util.quantities.interfaces.VolumetricHeatCapacity;
 import java.util.UUID;
 import javax.measure.quantity.Temperature;
 import tech.units.indriya.ComparableQuantity;
@@ -35,8 +34,8 @@ public class SoilTypeInputFactory extends UniqueEntityFactory<SoilType, SoilType
         data.getQuantity(THERMAL_RESISTIVITY_WET, KELVIN_METRE_PER_WATT);
     ComparableQuantity<ThermalResistivity> thermalResistivityDry =
         data.getQuantity(THERMAL_RESISTIVITY_DRY, KELVIN_METRE_PER_WATT);
-    ComparableQuantity<SpecificHeatCapacity> specificHeatCapacity =
-        data.getQuantity(SPECIFIC_HEAT_CAPACITY, KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE);
+    ComparableQuantity<VolumetricHeatCapacity> volumetricHeatCapacity =
+        data.getQuantity(VOLUMETRIC_HEAT_CAPACITY, KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE);
     ComparableQuantity<Temperature> criticalTemperatureDifference =
         data.getQuantity(CRITICAL_TEMPERATURE_DIFFERENCE, TEMPERATURE);
 
@@ -45,7 +44,7 @@ public class SoilTypeInputFactory extends UniqueEntityFactory<SoilType, SoilType
         id,
         thermalResistivityWet,
         thermalResistivityDry,
-        specificHeatCapacity,
+        volumetricHeatCapacity,
         criticalTemperatureDifference,
         data.additionalInformation());
   }

@@ -45,9 +45,9 @@ immutable `SoilData` holder, which is attached to a grid container (see
     - $\mathrm{K}\cdot\mathrm{m}/\mathrm{W}$
     - thermal resistivity of the soil in the dry state
 
-  * - specificHeatCapacity
+  * - volumetricHeatCapacity
     - $\mathrm{J}/(\mathrm{m}^3\cdot\mathrm{K})$
-    - volumetric specific heat capacity of the soil
+    - volumetric heat capacity of the soil
 
   * - criticalTemperatureDifference
     - Kelvin

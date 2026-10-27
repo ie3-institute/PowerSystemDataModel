@@ -54,7 +54,7 @@ class CableTypeParserTest {
   @DisplayName("Test parseConductor with missing id throws ParsingException")
   void testParseConductorWithMissingId() {
     String json =
-        "{\"uuid\":\"00000000-0000-0000-0000-000000000001\",\"material\":\"COPPER\",\"crossSection\":\"10\",\"diameter\":\"5\",\"thermalResistivity\":\"1\",\"specificHeatCapacity\":\"2\"}";
+        "{\"uuid\":\"00000000-0000-0000-0000-000000000001\",\"material\":\"COPPER\",\"crossSection\":\"10\",\"diameter\":\"5\",\"thermalResistivity\":\"1\",\"volumetricHeatCapacity\":\"2\"}";
     ParsingException ex = assertThrows(ParsingException.class, () -> parser.parseConductor(json));
     assertTrue(ex.getMessage().contains("missing id"));
   }
@@ -63,7 +63,7 @@ class CableTypeParserTest {
   @DisplayName("Test parseConductor with missing UUID throws ParsingException")
   void testParseConductorWithMissingUuid() {
     String json =
-        "{\"name\":\"C1\",\"material\":\"COPPER\",\"crossSection\":\"10\",\"diameter\":\"5\",\"thermalResistivity\":\"1\",\"specificHeatCapacity\":\"2\"}";
+        "{\"name\":\"C1\",\"material\":\"COPPER\",\"crossSection\":\"10\",\"diameter\":\"5\",\"thermalResistivity\":\"1\",\"volumetricHeatCapacity\":\"2\"}";
     ParsingException ex = assertThrows(ParsingException.class, () -> parser.parseConductor(json));
     assertTrue(ex.getMessage().contains("missing uuid"));
   }
@@ -72,7 +72,7 @@ class CableTypeParserTest {
   @DisplayName("Test parseLayerList element with missing UUID throws ParsingException")
   void testParseLayerListElementWithMissingUuid() {
     String json =
-        "[{\"name\":\"L1\",\"material\":\"XLPE\",\"innerDiameter\":\"10\",\"outerDiameter\":\"20\",\"thermalResistivity\":\"1\",\"specificHeatCapacity\":\"2\"}]";
+        "[{\"name\":\"L1\",\"material\":\"XLPE\",\"innerDiameter\":\"10\",\"outerDiameter\":\"20\",\"thermalResistivity\":\"1\",\"volumetricHeatCapacity\":\"2\"}]";
     ParsingException ex = assertThrows(ParsingException.class, () -> parser.parseLayerList(json));
     assertTrue(ex.getMessage().contains("missing uuid"));
   }
@@ -81,7 +81,7 @@ class CableTypeParserTest {
   @DisplayName("Test parseScreenLayer with missing UUID throws ParsingException")
   void testParseScreenLayerWithMissingUuid() {
     String json =
-        "{\"name\":\"S1\",\"material\":\"COPPER\",\"innerDiameter\":\"10\",\"outerDiameter\":\"20\",\"thermalResistivity\":\"1\",\"specificHeatCapacity\":\"2\",\"wiresNumber\":\"56\",\"wireDiameter\":\"0.9\",\"electricalResistivity\":\"1.7\"}";
+        "{\"name\":\"S1\",\"material\":\"COPPER\",\"innerDiameter\":\"10\",\"outerDiameter\":\"20\",\"thermalResistivity\":\"1\",\"volumetricHeatCapacity\":\"2\",\"wiresNumber\":\"56\",\"wireDiameter\":\"0.9\",\"electricalResistivity\":\"1.7\"}";
     ParsingException ex = assertThrows(ParsingException.class, () -> parser.parseScreenLayer(json));
     assertTrue(ex.getMessage().contains("missing uuid"));
   }
@@ -97,7 +97,7 @@ class CableTypeParserTest {
   @DisplayName("Test parseScreenLayer with wrapped screen object throws ParsingException")
   void testParseScreenLayerWithWrappedScreenObject() {
     String json =
-        "{\"screen\":{\"uuid\":\"00000000-0000-0000-0000-000000000001\",\"name\":\"S1\",\"material\":\"COPPER\",\"innerDiameter\":\"10\",\"outerDiameter\":\"20\",\"thermalResistivity\":\"1\",\"specificHeatCapacity\":\"2\",\"wiresNumber\":\"56\",\"wireDiameter\":\"0.9\",\"electricalResistivity\":\"1.7\"}}";
+        "{\"screen\":{\"uuid\":\"00000000-0000-0000-0000-000000000001\",\"name\":\"S1\",\"material\":\"COPPER\",\"innerDiameter\":\"10\",\"outerDiameter\":\"20\",\"thermalResistivity\":\"1\",\"volumetricHeatCapacity\":\"2\",\"wiresNumber\":\"56\",\"wireDiameter\":\"0.9\",\"electricalResistivity\":\"1.7\"}}";
     ParsingException ex = assertThrows(ParsingException.class, () -> parser.parseScreenLayer(json));
     assertTrue(ex.getMessage().contains("missing material"));
   }
@@ -106,7 +106,7 @@ class CableTypeParserTest {
   @DisplayName("Test parseConductor resolves common layer fields")
   void testParseConductorResolvesCommonLayerFields() throws ParsingException {
     String json =
-        "{\"uuid\":\"00000000-0000-0000-0000-000000000001\",\"name\":\"C1\",\"material\":\"COPPER\",\"crossSection\":\"10\",\"diameter\":\"5\",\"innerDiameter\":\"5\",\"outerDiameter\":\"7\",\"thermalResistivity\":\"0.0026\",\"specificHeatCapacity\":\"3449600\",\"area\":\"240\"}";
+        "{\"uuid\":\"00000000-0000-0000-0000-000000000001\",\"name\":\"C1\",\"material\":\"COPPER\",\"crossSection\":\"10\",\"diameter\":\"5\",\"innerDiameter\":\"5\",\"outerDiameter\":\"7\",\"thermalResistivity\":\"0.0026\",\"volumetricHeatCapacity\":\"3449600\",\"area\":\"240\"}";
     ConductorInput conductor = parser.parseConductor(json);
 
     assertNotNull(conductor);
@@ -117,8 +117,8 @@ class CableTypeParserTest {
         "thermalResistivity is resolved from the common layer fields");
     assertEquals(
         Quantities.getQuantity(3449600.0, PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN),
-        conductor.specificHeatCapacity(),
-        "specificHeatCapacity is resolved from the common layer fields");
+        conductor.volumetricHeatCapacity(),
+        "volumetricHeatCapacity is resolved from the common layer fields");
     assertEquals(
         Quantities.getQuantity(240.0, PowerSystemUnits.SQUARE_MILLIMETRE),
         conductor.area().orElse(null),
@@ -129,7 +129,7 @@ class CableTypeParserTest {
   @DisplayName("Test parseLayerList resolves common layer fields per element")
   void testParseLayerListResolvesCommonLayerFieldsPerElement() throws ParsingException {
     String json =
-        "[{\"uuid\":\"00000000-0000-0000-0000-000000000001\",\"name\":\"L1\",\"material\":\"XLPE\",\"innerDiameter\":\"18.4\",\"outerDiameter\":\"19.4\",\"thermalResistivity\":\"4.0\",\"specificHeatCapacity\":\"2.0E6\",\"area\":\"30\"}]";
+        "[{\"uuid\":\"00000000-0000-0000-0000-000000000001\",\"name\":\"L1\",\"material\":\"XLPE\",\"innerDiameter\":\"18.4\",\"outerDiameter\":\"19.4\",\"thermalResistivity\":\"4.0\",\"volumetricHeatCapacity\":\"2.0E6\",\"area\":\"30\"}]";
     List<LayerInput> layers = parser.parseLayerList(json);
 
     assertEquals(1, layers.size());
@@ -141,7 +141,7 @@ class CableTypeParserTest {
         layer.thermalResistivity());
     assertEquals(
         Quantities.getQuantity(2.0E6, PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN),
-        layer.specificHeatCapacity());
+        layer.volumetricHeatCapacity());
     assertEquals(
         Quantities.getQuantity(30.0, PowerSystemUnits.SQUARE_MILLIMETRE),
         layer.area().orElse(null));
@@ -149,19 +149,19 @@ class CableTypeParserTest {
 
   @Test
   @DisplayName(
-      "Test parseLayerList element with missing specificHeatCapacity throws ParsingException")
-  void testParseLayerListElementWithMissingSpecificHeatCapacity() {
+      "Test parseLayerList element with missing volumetricHeatCapacity throws ParsingException")
+  void testParseLayerListElementWithMissingVolumetricHeatCapacity() {
     String json =
         "[{\"uuid\":\"00000000-0000-0000-0000-000000000001\",\"name\":\"L1\",\"material\":\"XLPE\",\"innerDiameter\":\"18.4\",\"outerDiameter\":\"19.4\",\"thermalResistivity\":\"4.0\"}]";
     ParsingException ex = assertThrows(ParsingException.class, () -> parser.parseLayerList(json));
-    assertTrue(ex.getMessage().contains("missing specificHeatCapacity"));
+    assertTrue(ex.getMessage().contains("missing volumetricHeatCapacity"));
   }
 
   @Test
   @DisplayName("Test parseScreenLayer resolves common layer fields")
   void testParseScreenLayerResolvesCommonLayerFields() throws ParsingException {
     String json =
-        "{\"uuid\":\"00000000-0000-0000-0000-000000000001\",\"name\":\"S1\",\"material\":\"COPPER\",\"innerDiameter\":\"36.8\",\"outerDiameter\":\"38.6\",\"thermalResistivity\":\"0.0026\",\"specificHeatCapacity\":\"3449600\",\"area\":\"35.6\",\"wiresNumber\":\"56\",\"wireDiameter\":\"0.9\",\"electricalResistivity\":\"1.7241E-8\"}";
+        "{\"uuid\":\"00000000-0000-0000-0000-000000000001\",\"name\":\"S1\",\"material\":\"COPPER\",\"innerDiameter\":\"36.8\",\"outerDiameter\":\"38.6\",\"thermalResistivity\":\"0.0026\",\"volumetricHeatCapacity\":\"3449600\",\"area\":\"35.6\",\"wiresNumber\":\"56\",\"wireDiameter\":\"0.9\",\"electricalResistivity\":\"1.7241E-8\"}";
     ScreenLayerInput screen = parser.parseScreenLayer(json);
 
     assertNotNull(screen);
@@ -172,7 +172,7 @@ class CableTypeParserTest {
         screen.thermalResistivity());
     assertEquals(
         Quantities.getQuantity(3449600.0, PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN),
-        screen.specificHeatCapacity());
+        screen.volumetricHeatCapacity());
     assertEquals(
         Quantities.getQuantity(35.6, PowerSystemUnits.SQUARE_MILLIMETRE),
         screen.area().orElse(null));
@@ -200,15 +200,15 @@ class CableTypeParserTest {
     return Stream.of(
         Arguments.of(
             "layer",
-            "[{\"uuid\":\"00000000-0000-0000-0000-000000000001\",\"name\":\"L1\",\"material\":\"INVALID_MATTERIAL\",\"innerDiameter\":\"10\",\"outerDiameter\":\"20\",\"thermalResistivity\":\"1\",\"specificHeatCapacity\":\"2\"}]",
+            "[{\"uuid\":\"00000000-0000-0000-0000-000000000001\",\"name\":\"L1\",\"material\":\"INVALID_MATTERIAL\",\"innerDiameter\":\"10\",\"outerDiameter\":\"20\",\"thermalResistivity\":\"1\",\"volumetricHeatCapacity\":\"2\"}]",
             "invalid material"),
         Arguments.of(
             "screen layer",
-            "{\"uuid\":\"00000000-0000-0000-0000-000000000001\",\"name\":\"S1\",\"innerDiameter\":\"10\",\"outerDiameter\":\"20\",\"thermalResistivity\":\"1\",\"specificHeatCapacity\":\"2\",\"wiresNumber\":\"56\",\"wireDiameter\":\"0.9\",\"electricalResistivity\":\"1.7\"}",
+            "{\"uuid\":\"00000000-0000-0000-0000-000000000001\",\"name\":\"S1\",\"innerDiameter\":\"10\",\"outerDiameter\":\"20\",\"thermalResistivity\":\"1\",\"volumetricHeatCapacity\":\"2\",\"wiresNumber\":\"56\",\"wireDiameter\":\"0.9\",\"electricalResistivity\":\"1.7\"}",
             "missing material"),
         Arguments.of(
             "conductor",
-            "{\"uuid\":\"not-a-valid-uuid\",\"name\":\"C1\",\"material\":\"COPPER\",\"crossSection\":\"10\",\"diameter\":\"5\",\"thermalResistivity\":\"1\",\"specificHeatCapacity\":\"2\"}",
+            "{\"uuid\":\"not-a-valid-uuid\",\"name\":\"C1\",\"material\":\"COPPER\",\"crossSection\":\"10\",\"diameter\":\"5\",\"thermalResistivity\":\"1\",\"volumetricHeatCapacity\":\"2\"}",
             "invalid uuid"));
   }
 }

@@ -34,7 +34,7 @@ class SoilTypeInputFactoryTest extends Specification implements FactoryTestHelpe
       "id"                            : "loam",
       "thermalResistivityWet"         : "0.3",
       "thermalResistivityDry"         : "0.4",
-      "specificHeatCapacity"          : "0.0015",
+      "volumetricHeatCapacity"        : "0.0015",
       "criticalTemperatureDifference" : "15"
     ]
     def inputClass = SoilType
@@ -51,8 +51,7 @@ class SoilTypeInputFactoryTest extends Specification implements FactoryTestHelpe
       id == "loam"
       thermalResistivityWet == getQuant(parameter["thermalResistivityWet"], KELVIN_METRE_PER_WATT)
       thermalResistivityDry == getQuant(parameter["thermalResistivityDry"], KELVIN_METRE_PER_WATT)
-      specificHeatCapacity ==
-          getQuant(parameter["specificHeatCapacity"], KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE)
+      volumetricHeatCapacity == getQuant(parameter["volumetricHeatCapacity"], KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE)
       criticalTemperatureDifference == getQuant(parameter["criticalTemperatureDifference"], TEMPERATURE)
     }
   }
@@ -65,7 +64,7 @@ class SoilTypeInputFactoryTest extends Specification implements FactoryTestHelpe
       "id"                            : "loam",
       "thermalResistivityWet"         : "0.3",
       "thermalResistivityDry"         : "0.4",
-      "specificHeatCapacity"          : "0.0015",
+      "volumetricHeatCapacity"        : "0.0015",
       // criticalTemperatureDifference intentionally missing
     ]
 
@@ -86,7 +85,7 @@ class SoilTypeInputFactoryTest extends Specification implements FactoryTestHelpe
       "id"                            : "loam",
       "thermalResistivityWet"         : "0.3",
       "thermalResistivityDry"         : "0.4",
-      "specificHeatCapacity"          : "0.0015",
+      "volumetricHeatCapacity"        : "0.0015",
       "criticalTemperatureDifference" : "15"
     ]
 
@@ -107,7 +106,7 @@ class SoilTypeInputFactoryTest extends Specification implements FactoryTestHelpe
       "id"                            : "  ",
       "thermalResistivityWet"         : "0.3",
       "thermalResistivityDry"         : "0.4",
-      "specificHeatCapacity"          : "0.0015",
+      "volumetricHeatCapacity"        : "0.0015",
       "criticalTemperatureDifference" : "15"
     ]
 
@@ -129,7 +128,7 @@ class SoilTypeInputFactoryTest extends Specification implements FactoryTestHelpe
       "id"                            : "loam",
       "thermalResistivityWet"         : "0.3",
       "thermalResistivityDry"         : "0.4",
-      "specificHeatCapacity"          : "0.0015",
+      "volumetricHeatCapacity"          : "0.0015",
       "criticalTemperatureDifference" : "15",
       "extraField"                    : "extraValue"
     ]
