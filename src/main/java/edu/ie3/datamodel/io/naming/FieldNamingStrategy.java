@@ -7,16 +7,35 @@ package edu.ie3.datamodel.io.naming;
 
 import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.connector.ConnectorInput;
+import edu.ie3.util.StringUtils;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Stream;
 
 /** Class that contains all known field names. */
 public class FieldNamingStrategy {
+
+  private static final Map<String, String> specialFields =
+      new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+
+  /**
+   * Method for harmonizing the fields.
+   *
+   * @param field that was provided by the source
+   * @return the harmonized field
+   */
+  public static String harmonize(String field) {
+    String asSnakeCase = StringUtils.camelCaseToSnakeCase(field);
+    String converted = StringUtils.snakeCaseToCamelCase(asSnakeCase);
+    return specialFields.getOrDefault(converted, converted);
+  }
 
   // general
   public static final String ID = "id";
   public static final String OPERATOR = "operator";
   public static final String OPERATES_FROM = "operatesFrom";
   public static final String OPERATES_UNTIL = "operatesUntil";
-  public static final String UUID = UniqueEntity.UUID_FIELD_NAME;
+  public static final String UUID_FIELD = UniqueEntity.UUID_FIELD_NAME;
   public static final String GEO_POSITION = "geoPosition";
   public static final String NODE = "node";
 
@@ -63,7 +82,7 @@ public class FieldNamingStrategy {
   public static final String MATERIAL = "material";
   public static final String AREA = "area";
   public static final String THERMAL_RESISTIVITY = "thermalResistivity";
-  public static final String THERMAL_CAPACITANCE = "thermalCapacitance";
+  public static final String VOLUMETRIC_HEAT_CAPACITY = "volumetricHeatCapacity";
   public static final String WIRES_NUMBER = "wiresNumber";
   public static final String LENGTH_OF_LAY = "lengthOfLay";
   public static final String IS_COMPACTED = "isCompacted";
@@ -77,6 +96,15 @@ public class FieldNamingStrategy {
   public static final String ELECTRICAL_RESISTIVITY = "electricalResistivity";
   public static final String CROSS_SECTION = "crossSection";
   public static final String ADDITIONAL_INFORMATION = "additionalInformation";
+
+  // soil data
+  public static final String THERMAL_RESISTIVITY_WET = "thermalResistivityWet";
+  public static final String THERMAL_RESISTIVITY_DRY = "thermalResistivityDry";
+  public static final String CRITICAL_TEMPERATURE_DIFFERENCE = "criticalTemperatureDifference";
+  public static final String GEOMETRY = "geometry";
+  public static final String Z_FROM = "zFrom";
+  public static final String Z_TO = "zTo";
+  public static final String SOIL_TYPE = "soilType";
 
   /**
    * Attribute that _can_, but does not _have to_ be present for the creation of {@link
@@ -252,7 +280,6 @@ public class FieldNamingStrategy {
   public static final String MIN = "min";
   public static final String SOC = "soc";
   public static final String SUBGRID = "subgrid";
-  public static final String TAPPOS = "tapPos";
   public static final String TIME = "time";
   public static final String VALUE = "value";
 
@@ -304,4 +331,9 @@ public class FieldNamingStrategy {
   public static final String MARKOV_GMM_WEIGHTS = "data.gmms.buckets.states.weights";
   public static final String MARKOV_GMM_MEANS = "data.gmms.buckets.states.means";
   public static final String MARKOV_GMM_VARIANCES = "data.gmms.buckets.states.variances";
+
+  static {
+    // there are some fields that needs to some special treatment
+    Stream.of(S_RATED_DC).forEach(f -> specialFields.put(StringUtils.snakeCaseToCamelCase(f), f));
+  }
 }

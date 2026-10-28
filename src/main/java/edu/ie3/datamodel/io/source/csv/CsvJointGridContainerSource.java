@@ -20,7 +20,10 @@ import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.container.*;
 import edu.ie3.datamodel.utils.Try;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /** Convenience class for cases where all used data comes from CSV sources */
 public class CsvJointGridContainerSource {
@@ -53,6 +56,7 @@ public class CsvJointGridContainerSource {
     EnergyManagementSource emSource = new EnergyManagementSource(typeSource, dataSource);
     SystemParticipantSource systemParticipantSource =
         new SystemParticipantSource(typeSource, thermalSource, rawGridSource, emSource, dataSource);
+    SoilDataSource soilDataSource = new SoilDataSource(dataSource);
 
     /* validating sources */
     try {
@@ -61,6 +65,7 @@ public class CsvJointGridContainerSource {
       thermalSource.validate();
       emSource.validate();
       systemParticipantSource.validate();
+      soilDataSource.validate();
     } catch (ValidationException ve) {
       throw new SourceException("Could not read source because validation failed", ve);
     }
@@ -84,7 +89,10 @@ public class CsvJointGridContainerSource {
         Try.of(
             () -> new EnergyManagementUnits(new HashSet<>(emSource.getEmUnits(operators).values())),
             SourceException.class);
-    List<? extends Exception> exceptions = Try.getExceptions(rawGridElements, systemParticipants);
+    Try<SoilData, SourceException> soilData =
+        Try.of(soilDataSource::getSoilData, SourceException.class);
+    List<? extends Exception> exceptions =
+        Try.getExceptions(rawGridElements, systemParticipants, emUnits, soilData);
 
     if (!exceptions.isEmpty()) {
       throw new SourceException("Some exception(s) occurred while reading the grid.", exceptions);
@@ -95,7 +103,8 @@ public class CsvJointGridContainerSource {
           gridName,
           rawGridElements.getOrThrow(),
           systemParticipants.getOrThrow(),
-          emUnits.getOrThrow());
+          emUnits.getOrThrow(),
+          soilData.getOrThrow());
     }
   }
 }

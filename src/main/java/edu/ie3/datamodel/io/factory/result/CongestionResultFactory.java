@@ -9,7 +9,7 @@ import static tech.units.indriya.unit.Units.PERCENT;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ParsingException;
-import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.result.CongestionResult;
 import edu.ie3.datamodel.models.result.CongestionResult.InputModelType;
 import edu.ie3.datamodel.utils.Try;
@@ -18,16 +18,14 @@ import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.ComparableQuantity;
 
-public class CongestionResultFactory extends ResultEntityFactory<CongestionResult> {
+public class CongestionResultFactory
+    extends ResultEntityFactory<CongestionResult, CongestionResult> {
   public CongestionResultFactory() {
     super(CongestionResult.class);
   }
 
   @Override
-  protected CongestionResult buildModel(EntityData data) {
-    ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
-    UUID inputModel = data.getUUID(INPUT_MODEL);
-
+  protected CongestionResult buildModel(FieldMap data, ZonedDateTime time, UUID inputModel) {
     InputModelType type =
         Try.of(() -> InputModelType.parse(data.getField(TYPE)), ParsingException.class)
             .transformF(FactoryException::new)
@@ -39,6 +37,6 @@ public class CongestionResultFactory extends ResultEntityFactory<CongestionResul
     ComparableQuantity<Dimensionless> min = data.getQuantity(MIN, PERCENT);
     ComparableQuantity<Dimensionless> max = data.getQuantity(MAX, PERCENT);
 
-    return new CongestionResult(zdtTime, inputModel, type, subgrid, value, min, max);
+    return new CongestionResult(time, inputModel, type, subgrid, value, min, max);
   }
 }
