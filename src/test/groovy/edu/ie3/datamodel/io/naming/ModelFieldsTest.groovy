@@ -127,6 +127,63 @@ class ModelFieldsTest extends Specification {
     ] as Set
   }
 
+  def "ModelFields returns registered fields for ConductorInput correctly"() {
+    expect:
+    ModelFields.getMandatoryFields(ConductorInput) == [
+      [
+        FieldNamingStrategy.UUID_FIELD,
+        FieldNamingStrategy.ID,
+        FieldNamingStrategy.MATERIAL,
+        FieldNamingStrategy.CROSS_SECTION,
+        FieldNamingStrategy.DIAMETER,
+        FieldNamingStrategy.THERMAL_RESISTIVITY,
+        FieldNamingStrategy.VOLUMETRIC_HEAT_CAPACITY
+      ] as Set
+    ]
+    ModelFields.getOptionalFields(ConductorInput) == [
+      FieldNamingStrategy.AREA,
+      FieldNamingStrategy.IS_COMPACTED
+    ] as Set
+  }
+
+  def "ModelFields returns registered fields for LayerInput correctly"() {
+    expect:
+    ModelFields.getMandatoryFields(LayerInput) == [
+      [
+        FieldNamingStrategy.UUID_FIELD,
+        FieldNamingStrategy.ID,
+        FieldNamingStrategy.MATERIAL,
+        FieldNamingStrategy.INNER_DIAMETER,
+        FieldNamingStrategy.OUTER_DIAMETER,
+        FieldNamingStrategy.THERMAL_RESISTIVITY,
+        FieldNamingStrategy.VOLUMETRIC_HEAT_CAPACITY
+      ] as Set
+    ]
+    ModelFields.getOptionalFields(LayerInput) == [FieldNamingStrategy.AREA] as Set
+  }
+
+  def "ModelFields returns registered fields for ScreenLayerInput correctly"() {
+    expect:
+    ModelFields.getMandatoryFields(ScreenLayerInput) == [
+      [
+        FieldNamingStrategy.UUID_FIELD,
+        FieldNamingStrategy.ID,
+        FieldNamingStrategy.MATERIAL,
+        FieldNamingStrategy.INNER_DIAMETER,
+        FieldNamingStrategy.OUTER_DIAMETER,
+        FieldNamingStrategy.THERMAL_RESISTIVITY,
+        FieldNamingStrategy.VOLUMETRIC_HEAT_CAPACITY,
+        FieldNamingStrategy.WIRES_NUMBER,
+        FieldNamingStrategy.WIRE_DIAMETER,
+        FieldNamingStrategy.ELECTRICAL_RESISTIVITY
+      ] as Set
+    ]
+    ModelFields.getOptionalFields(ScreenLayerInput) == [
+      FieldNamingStrategy.AREA,
+      FieldNamingStrategy.LENGTH_OF_LAY
+    ] as Set
+  }
+
   def "getMandatoryFields returns registered fields for ThermalLineSegmentResult"() {
     when:
     def fields = ModelFields.getMandatoryFields(ThermalLineSegmentResult)
