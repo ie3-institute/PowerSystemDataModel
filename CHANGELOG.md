@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Energy scaling for Markov-based load models [#1696](https://github.com/ie3-institute/PowerSystemDataModel/issues/1696)
 - Expected values of Markov-based load models for forecasts [#1767](https://github.com/ie3-institute/PowerSystemDataModel/issues/1767)
 - Validate that every storage is controlled by an energy management unit [#1293](https://github.com/ie3-institute/PowerSystemDataModel/issues/1293)
+- Add 'SoilData' to enable the spatial modelling of soil and its parameters [#1783](https://github.com/ie3-institute/PowerSystemDataModel/issues/1783)
 
 ### Fixed
 - Fixed recurring `gradlew.bat` modifications [#1757](https://github.com/ie3-institute/PowerSystemDataModel/issues/1757)

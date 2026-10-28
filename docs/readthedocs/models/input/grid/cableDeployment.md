@@ -16,7 +16,7 @@ This model is represented by the Java class `edu.ie3.datamodel.models.input.conn
   * - Attribute
     - Unit
     - Remarks
-     
+   
   * - uuid
     - –
     - unique identifier for the cable deployment input
@@ -28,11 +28,11 @@ This model is represented by the Java class `edu.ie3.datamodel.models.input.conn
   * - layoutFormation
     - –
     - textual description of the cable layout (e.g., "trefoil-touching")
-     
+   
   * - depthCables
     - Metre
     - depth of the cable
-     
+   
   * - distanceCables
     - Metre
     - distance between cables 

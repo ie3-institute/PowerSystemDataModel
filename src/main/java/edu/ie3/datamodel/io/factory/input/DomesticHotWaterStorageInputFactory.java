@@ -34,7 +34,7 @@ public class DomesticHotWaterStorageInputFactory
         getStorageVolumeLvl(data),
         getInletTemp(data),
         getReturnTemp(data),
-        getSpecificHeatCapacity(data),
+        getVolumetricHeatCapacity(data),
         getMaxThermalPower(data),
         data.additionalInformation());
   }

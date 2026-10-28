@@ -13,8 +13,8 @@ import edu.ie3.datamodel.models.input.thermal.DomesticHotWaterStorageInput
 import edu.ie3.datamodel.models.input.thermal.ThermalHouseInput
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.quantities.interfaces.HeatCapacity
-import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity
 import edu.ie3.util.quantities.interfaces.ThermalConductance
+import edu.ie3.util.quantities.interfaces.VolumetricHeatCapacity
 import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
 
@@ -59,7 +59,7 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
   private static final ComparableQuantity<Volume> storageVolumeLvl = Quantities.getQuantity(100, StandardUnits.VOLUME)
   private static final ComparableQuantity<Temperature> inletTemp = Quantities.getQuantity(100, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<Temperature> returnTemp = Quantities.getQuantity(80, StandardUnits.TEMPERATURE)
-  private static final ComparableQuantity<SpecificHeatCapacity> c = Quantities.getQuantity(1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY)
+  private static final ComparableQuantity<VolumetricHeatCapacity> c = Quantities.getQuantity(1.05, StandardUnits.VOLUMETRIC_HEAT_CAPACITY)
   private static final ComparableQuantity<Power> pThermalMax = Quantities.getQuantity(20, StandardUnits.ACTIVE_POWER_IN)
 
   public static final cylindricalStorageInput = new CylindricalStorageInput(
