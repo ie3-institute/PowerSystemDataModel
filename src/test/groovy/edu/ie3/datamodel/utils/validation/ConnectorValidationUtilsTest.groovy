@@ -399,6 +399,29 @@ class ConnectorValidationUtilsTest extends Specification {
   }
 
 
+  def "ConnectorValidationUtils validates the cable bed group of a deployment"() {
+    when:
+    def results = ConnectorValidationUtils.checkCableDeployment(deployment, GridTestData.lineAtoB)
+
+    then:
+    results.count { it.failure } == failureCount
+    results.findAll {
+      it.failure
+    }.every {
+      it.exception.get().message.contains(expectedMessage)
+    }
+
+    where:
+    deployment || failureCount || expectedMessage
+    cableDeployment("TREFOIL", -0.5d, 0.1d) || 0 || ""
+    cableDeployment("TREFOIL", -0.5d, 0.1d, 0.8d, 0.3d, UUID.randomUUID()) || 0 || ""
+    withCableBedField("cableBedWidth", null) || 1 || "Cable bed width must be provided"
+    withCableBedField("cableBedSoilType", null) || 1 || "Cable bed soil type must be provided"
+    withCableBedField("cableBedWidth", length(0d)) || 1 || "Cable bed width must be finite and positive"
+    withCableBedField("cableBedHeight", length(-0.5d)) || 1 || "Cable bed height must be finite and positive"
+  }
+
+
   private static ConductorInput validConductor(Map overrides = [:]) {
     def areaParam = overrides.get("area", null)
     if (areaParam instanceof Optional) {
@@ -478,6 +501,38 @@ class ConnectorValidationUtilsTest extends Specification {
         layoutFormation,
         Quantities.getQuantity(depth, METRE),
         Quantities.getQuantity(distance, METRE))
+  }
+
+  private static CableDeploymentInput cableDeployment(
+      String layoutFormation, double depth, double distance, double width, double height, UUID soilType) {
+    new CableDeploymentInput(
+        UUID.randomUUID(),
+        GridTestData.lineAtoB.uuid,
+        layoutFormation,
+        Quantities.getQuantity(depth, METRE),
+        Quantities.getQuantity(distance, METRE),
+        Quantities.getQuantity(width, METRE),
+        Quantities.getQuantity(height, METRE),
+        soilType)
+  }
+
+  private static CableDeploymentInput withCableBedFields(Object... fieldValues) {
+    def deployment =
+        cableDeployment("FLAT", -0.5d, 0.1d, 0.8d, 0.3d, UUID.randomUUID())
+    for (int i = 0; i <fieldValues.length; i += 2) {
+      setField(deployment, fieldValues[i] as String, fieldValues[i + 1])
+    }
+    deployment
+  }
+
+  private static CableDeploymentInput withCableBedField(String fieldName, Object value) {
+    withCableBedFields(fieldName, value)
+  }
+
+  private static void setField(CableDeploymentInput deployment, String fieldName, Object value) {
+    def field = CableDeploymentInput.getDeclaredField(fieldName)
+    field.setAccessible(true)
+    field.set(deployment, value)
   }
 
   private static ComparableQuantity<Temperature> temperature(double value) {

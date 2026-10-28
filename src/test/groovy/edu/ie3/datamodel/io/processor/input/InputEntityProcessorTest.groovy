@@ -684,7 +684,10 @@ class InputEntityProcessorTest extends Specification {
         UUID.fromString("22222222-2222-2222-2222-222222222222"),
         "formationX",
         Quantities.getQuantity(0.1, StandardUnits.LINE_LENGTH),
-        Quantities.getQuantity(0.2, StandardUnits.LINE_LENGTH)
+        Quantities.getQuantity(0.2, StandardUnits.LINE_LENGTH),
+        Quantities.getQuantity(0.8, StandardUnits.LINE_LENGTH),
+        Quantities.getQuantity(0.3, StandardUnits.LINE_LENGTH),
+        UUID.fromString("33333333-3333-3333-3333-333333333333")
     )
 
     Map expected = [
@@ -692,7 +695,10 @@ class InputEntityProcessorTest extends Specification {
       "lineUuid" : "22222222-2222-2222-2222-222222222222",
       "layoutFormation" : "formationX",
       "depthCables" : "0.1",
-      "distanceCables" : "0.2"
+      "distanceCables" : "0.2",
+      "cableBedWidth" : "0.8",
+      "cableBedHeight" : "0.3",
+      "cableBedSoilType" : "33333333-3333-3333-3333-333333333333"
     ]
 
     when:

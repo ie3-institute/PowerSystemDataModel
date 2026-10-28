@@ -28,8 +28,21 @@ public class CableDeploymentInputFactory
     String layoutFormation = data.getField(LAYOUT_FORMATION);
     ComparableQuantity<Length> depthCables = data.getQuantity(DEPTH_CABLES, Units.METRE);
     ComparableQuantity<Length> distanceCables = data.getQuantity(DISTANCE_CABLES, Units.METRE);
+    ComparableQuantity<Length> cableBedWidth =
+        data.getQuantityOptional(CABLE_BED_WIDTH, Units.METRE).orElse(null);
+    ComparableQuantity<Length> cableBedHeight =
+        data.getQuantityOptional(CABLE_BED_HEIGHT, Units.METRE).orElse(null);
+    UUID cableBedSoilType = data.getOptional(CABLE_BED_SOIL_TYPE, UUID::fromString).orElse(null);
 
     return new CableDeploymentInput(
-        uuid, lineUuid, layoutFormation, depthCables, distanceCables, data.additionalInformation());
+        uuid,
+        lineUuid,
+        layoutFormation,
+        depthCables,
+        distanceCables,
+        cableBedWidth,
+        cableBedHeight,
+        cableBedSoilType,
+        data.additionalInformation());
   }
 }
