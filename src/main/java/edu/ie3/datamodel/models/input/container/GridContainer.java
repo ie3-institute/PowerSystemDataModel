@@ -6,11 +6,7 @@
 package edu.ie3.datamodel.models.input.container;
 
 import edu.ie3.datamodel.models.input.UniqueInputEntity;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public abstract class GridContainer implements InputContainer<UniqueInputEntity> {
   /** Name of this grid */
@@ -51,15 +47,13 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
 
   @Override
   public List<UniqueInputEntity> allEntitiesAsList() {
-    List<UniqueInputEntity> allEntities = new LinkedList<>();
-    allEntities.addAll(rawGrid.allEntitiesAsList());
+    List<UniqueInputEntity> allEntities = new LinkedList<>(rawGrid.allEntitiesAsList());
     rawGrid.getCableDeploymentsByLine().values().stream()
         .flatMap(Collection::stream)
         .forEach(allEntities::add);
     allEntities.addAll(systemParticipants.allEntitiesAsList());
     allEntities.addAll(emUnits.allEntitiesAsList());
-    allEntities.addAll(soilData.getSoilLayers());
-    allEntities.addAll(soilData.getSoilTypes());
+    allEntities.addAll(soilData.allEntitiesAsList());
     return Collections.unmodifiableList(allEntities);
   }
 

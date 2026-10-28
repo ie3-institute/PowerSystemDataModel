@@ -37,22 +37,14 @@ class SoilValidationUtilsTest extends Specification {
     new Coordinate(0d, 0d)
   ] as Coordinate[]))
 
-  def "Smoke Test: A valid soil type throws no exception"() {
+  def "Smoke Test: A valid soil type and soil layer throws no exception"() {
     when:
-    def tries = SoilValidationUtils.check(validSoilType())
-
+    def type = SoilValidationUtils.check(validSoilType())
+    def layer = SoilValidationUtils.check(validSoilLayer())
     then:
-    tries.every { it.success }
+    type.every { it.success }
+    layer.every { it.success }
   }
-
-  def "Smoke Test: A valid soil layer throws no exception"() {
-    when:
-    def tries = SoilValidationUtils.check(validSoilLayer())
-
-    then:
-    tries.every { it.success }
-  }
-
   def "The check method recognizes all potential errors for a soil type"() {
     when:
     def exceptions =
