@@ -40,6 +40,7 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
   private static final ComparableQuantity<Temperature> LOWER_TEMPERATURE_LIMIT = Quantities.getQuantity(15, StandardUnits.TEMPERATURE)
   private static final String HOUSING_TYPE = "house"
   private static final double NUMBER_INHABITANTS = 2.0
+  public static final Map<String, String> thiAdditionalInfo = ["source": "test", "note": "hello"]
 
   public static final thermalHouseInput = new ThermalHouseInput(
   thermalUnitUuid,
@@ -61,6 +62,7 @@ class ThermalUnitInputTestData extends SystemParticipantTestData {
   private static final ComparableQuantity<Temperature> returnTemp = Quantities.getQuantity(80, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<SpecificHeatCapacity> c = Quantities.getQuantity(1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY)
   private static final ComparableQuantity<Power> pThermalMax = Quantities.getQuantity(20, StandardUnits.ACTIVE_POWER_IN)
+  public static final Map<String, String> tcsiAdditionalInfo = ["source": "test", "note": "hello"]
 
   public static final cylindricalStorageInput = new CylindricalStorageInput(
   thermalUnitUuid,

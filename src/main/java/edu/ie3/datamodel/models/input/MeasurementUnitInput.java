@@ -214,7 +214,16 @@ public class MeasurementUnitInput extends AssetInput implements HasNodes {
     @Override
     public MeasurementUnitInput build() {
       return new MeasurementUnitInput(
-          getUuid(), getId(), getOperator(), getOperationTime(), node, vMag, vAng, p, q);
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          node,
+          vMag,
+          vAng,
+          p,
+          q,
+          getAdditionalInformation());
     }
 
     public MeasurementUnitInputCopyBuilder node(NodeInput node) {

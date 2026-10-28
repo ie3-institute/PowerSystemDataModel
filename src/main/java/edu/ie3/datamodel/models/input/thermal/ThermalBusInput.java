@@ -74,7 +74,8 @@ public class ThermalBusInput extends ThermalInput {
 
     @Override
     public ThermalBusInput build() {
-      return new ThermalBusInput(getUuid(), getId(), getOperator(), getOperationTime());
+      return new ThermalBusInput(
+          getUuid(), getId(), getOperator(), getOperationTime(), getAdditionalInformation());
     }
 
     @Override

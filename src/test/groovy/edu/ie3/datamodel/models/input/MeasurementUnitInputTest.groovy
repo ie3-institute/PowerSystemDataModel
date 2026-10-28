@@ -25,6 +25,7 @@ class MeasurementUnitInputTest extends Specification {
       operator == unit.operator
       id == unit.id
       node == GridTestData.nodeB
+      additionalInformation == unit.additionalInformation
       !getVMag()
       !getVAng()
       !getP()

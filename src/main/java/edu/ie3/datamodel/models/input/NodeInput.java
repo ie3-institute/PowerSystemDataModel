@@ -239,7 +239,8 @@ public class NodeInput extends AssetInput {
           slack,
           geoPosition,
           voltLvl,
-          subnet);
+          subnet,
+          getAdditionalInformation());
     }
 
     public NodeInputCopyBuilder vTarget(ComparableQuantity<Dimensionless> vTarget) {

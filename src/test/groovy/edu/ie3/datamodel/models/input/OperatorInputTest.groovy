@@ -23,6 +23,7 @@ class OperatorInputTest extends Specification {
     alteredUnit.with {
       uuid == alteredUuid
       id == "Univ.-Prof. Dr.-Ing. Christian Rehtanz"
+      additionalInformation == operator.additionalInformation
     }
   }
 }
