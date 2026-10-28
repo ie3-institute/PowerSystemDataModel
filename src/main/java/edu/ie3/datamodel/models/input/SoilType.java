@@ -186,7 +186,6 @@ public class SoilType extends UniqueInputEntity {
     private ComparableQuantity<ThermalResistivity> thermalResistivityDry;
     private ComparableQuantity<VolumetricHeatCapacity> volumetricHeatCapacity;
     private ComparableQuantity<Temperature> criticalTemperatureDifference;
-    private Map<String, String> additionalInformation;
 
     private SoilTypeCopyBuilder(SoilType entity) {
       super(entity);
@@ -195,7 +194,6 @@ public class SoilType extends UniqueInputEntity {
       this.thermalResistivityDry = entity.getThermalResistivityDry();
       this.volumetricHeatCapacity = entity.getVolumetricHeatCapacity();
       this.criticalTemperatureDifference = entity.getCriticalTemperatureDifference();
-      this.additionalInformation = entity.getAdditionalInformation();
     }
 
     public SoilTypeCopyBuilder id(String id) {
@@ -240,8 +238,7 @@ public class SoilType extends UniqueInputEntity {
           thermalResistivityWet,
           thermalResistivityDry,
           volumetricHeatCapacity,
-          criticalTemperatureDifference,
-          additionalInformation);
+          criticalTemperatureDifference);
     }
   }
 }

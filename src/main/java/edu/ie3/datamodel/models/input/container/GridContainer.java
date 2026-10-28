@@ -59,6 +59,7 @@ public abstract class GridContainer implements InputContainer<UniqueInputEntity>
     allEntities.addAll(systemParticipants.allEntitiesAsList());
     allEntities.addAll(emUnits.allEntitiesAsList());
     allEntities.addAll(soilData.getSoilLayers());
+    allEntities.addAll(soilData.getSoilTypes());
     return Collections.unmodifiableList(allEntities);
   }
 

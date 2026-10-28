@@ -132,7 +132,7 @@ public class StandardUnits {
   /** Heat capacity of a given mass or volume in kWh/K */
   public static final Unit<HeatCapacity> HEAT_CAPACITY = KILOWATTHOUR_PER_KELVIN;
 
-  /** Volumetric heat capacity per volume kWh*m³/K */
+  /** Volumetric heat capacity per volume kWh/K*m³ */
   public static final Unit<VolumetricHeatCapacity> VOLUMETRIC_HEAT_CAPACITY =
       KILOWATTHOUR_PER_KELVIN_TIMES_CUBICMETRE;
 
