@@ -245,7 +245,7 @@ public class LineInput extends ConnectorInput implements HasType {
           length,
           geoPosition,
           olmCharacteristic,
-              getAdditionalInformation());
+          getAdditionalInformation());
     }
 
     public LineInputCopyBuilder geoPosition(LineString geoPosition) {
