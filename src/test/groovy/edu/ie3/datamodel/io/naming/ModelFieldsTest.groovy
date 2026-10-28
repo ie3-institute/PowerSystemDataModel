@@ -8,11 +8,11 @@ package edu.ie3.datamodel.io.naming
 import edu.ie3.datamodel.models.input.SoilLayer
 import edu.ie3.datamodel.models.input.SoilType
 import edu.ie3.datamodel.models.input.connector.CableDeploymentInput
-import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel
-import edu.ie3.datamodel.models.result.thermal.ThermalLineSegmentResult
 import edu.ie3.datamodel.models.input.connector.type.ConductorInput
 import edu.ie3.datamodel.models.input.connector.type.LayerInput
 import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput
+import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel
+import edu.ie3.datamodel.models.result.thermal.ThermalLineSegmentResult
 import spock.lang.Specification
 
 class ModelFieldsTest extends Specification {
@@ -72,15 +72,17 @@ class ModelFieldsTest extends Specification {
 
   def "ModelFields returns registered fields for ConductorInput correctly"() {
     expect:
-    ModelFields.getMandatoryFields(ConductorInput) == [[
-      FieldNamingStrategy.UUID_FIELD,
-      FieldNamingStrategy.ID,
-      FieldNamingStrategy.MATERIAL,
-      FieldNamingStrategy.CROSS_SECTION,
-      FieldNamingStrategy.DIAMETER,
-      FieldNamingStrategy.THERMAL_RESISTIVITY,
-      FieldNamingStrategy.VOLUMETRIC_HEAT_CAPACITY
-    ] as Set]
+    ModelFields.getMandatoryFields(ConductorInput) == [
+      [
+        FieldNamingStrategy.UUID_FIELD,
+        FieldNamingStrategy.ID,
+        FieldNamingStrategy.MATERIAL,
+        FieldNamingStrategy.CROSS_SECTION,
+        FieldNamingStrategy.DIAMETER,
+        FieldNamingStrategy.THERMAL_RESISTIVITY,
+        FieldNamingStrategy.VOLUMETRIC_HEAT_CAPACITY
+      ] as Set
+    ]
     ModelFields.getOptionalFields(ConductorInput) == [
       FieldNamingStrategy.AREA,
       FieldNamingStrategy.IS_COMPACTED
@@ -89,32 +91,36 @@ class ModelFieldsTest extends Specification {
 
   def "ModelFields returns registered fields for LayerInput correctly"() {
     expect:
-    ModelFields.getMandatoryFields(LayerInput) == [[
-      FieldNamingStrategy.UUID_FIELD,
-      FieldNamingStrategy.ID,
-      FieldNamingStrategy.MATERIAL,
-      FieldNamingStrategy.INNER_DIAMETER,
-      FieldNamingStrategy.OUTER_DIAMETER,
-      FieldNamingStrategy.THERMAL_RESISTIVITY,
-      FieldNamingStrategy.VOLUMETRIC_HEAT_CAPACITY
-    ] as Set]
+    ModelFields.getMandatoryFields(LayerInput) == [
+      [
+        FieldNamingStrategy.UUID_FIELD,
+        FieldNamingStrategy.ID,
+        FieldNamingStrategy.MATERIAL,
+        FieldNamingStrategy.INNER_DIAMETER,
+        FieldNamingStrategy.OUTER_DIAMETER,
+        FieldNamingStrategy.THERMAL_RESISTIVITY,
+        FieldNamingStrategy.VOLUMETRIC_HEAT_CAPACITY
+      ] as Set
+    ]
     ModelFields.getOptionalFields(LayerInput) == [FieldNamingStrategy.AREA] as Set
   }
 
   def "ModelFields returns registered fields for ScreenLayerInput correctly"() {
     expect:
-    ModelFields.getMandatoryFields(ScreenLayerInput) == [[
-      FieldNamingStrategy.UUID_FIELD,
-      FieldNamingStrategy.ID,
-      FieldNamingStrategy.MATERIAL,
-      FieldNamingStrategy.INNER_DIAMETER,
-      FieldNamingStrategy.OUTER_DIAMETER,
-      FieldNamingStrategy.THERMAL_RESISTIVITY,
-      FieldNamingStrategy.VOLUMETRIC_HEAT_CAPACITY,
-      FieldNamingStrategy.WIRES_NUMBER,
-      FieldNamingStrategy.WIRE_DIAMETER,
-      FieldNamingStrategy.ELECTRICAL_RESISTIVITY
-    ] as Set]
+    ModelFields.getMandatoryFields(ScreenLayerInput) == [
+      [
+        FieldNamingStrategy.UUID_FIELD,
+        FieldNamingStrategy.ID,
+        FieldNamingStrategy.MATERIAL,
+        FieldNamingStrategy.INNER_DIAMETER,
+        FieldNamingStrategy.OUTER_DIAMETER,
+        FieldNamingStrategy.THERMAL_RESISTIVITY,
+        FieldNamingStrategy.VOLUMETRIC_HEAT_CAPACITY,
+        FieldNamingStrategy.WIRES_NUMBER,
+        FieldNamingStrategy.WIRE_DIAMETER,
+        FieldNamingStrategy.ELECTRICAL_RESISTIVITY
+      ] as Set
+    ]
     ModelFields.getOptionalFields(ScreenLayerInput) == [
       FieldNamingStrategy.AREA,
       FieldNamingStrategy.LENGTH_OF_LAY
