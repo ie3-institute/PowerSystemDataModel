@@ -94,7 +94,7 @@ public final class CableTypeJsonCodec {
     generator.writeName("isCompacted");
     generator.writeBoolean(conductor.isCompacted());
     writeQuantityField(generator, THERMAL_RESISTIVITY, conductor.thermalResistivity());
-    writeQuantityField(generator, THERMAL_CAPACITANCE, conductor.thermalCapacitance());
+    writeQuantityField(generator, VOLUMETRIC_HEAT_CAPACITY, conductor.volumetricHeatCapacity());
     writeQuantityField(generator, AREA, conductor.area().orElse(null));
     writeAdditionalInformation(generator, conductor.getAdditionalInformation());
     generator.writeEndObject();
@@ -110,7 +110,7 @@ public final class CableTypeJsonCodec {
     writeQuantityField(generator, INNER_DIAMETER, layer.innerDiameter());
     writeQuantityField(generator, OUTER_DIAMETER, layer.outerDiameter());
     writeQuantityField(generator, THERMAL_RESISTIVITY, layer.thermalResistivity());
-    writeQuantityField(generator, THERMAL_CAPACITANCE, layer.thermalCapacitance());
+    writeQuantityField(generator, VOLUMETRIC_HEAT_CAPACITY, layer.volumetricHeatCapacity());
     writeQuantityField(generator, AREA, layer.area().orElse(null));
     writeAdditionalInformation(generator, layer.getAdditionalInformation());
     generator.writeEndObject();
@@ -131,7 +131,7 @@ public final class CableTypeJsonCodec {
     writeQuantityField(generator, INNER_DIAMETER, screenLayer.innerDiameter());
     writeQuantityField(generator, OUTER_DIAMETER, screenLayer.outerDiameter());
     writeQuantityField(generator, THERMAL_RESISTIVITY, screenLayer.thermalResistivity());
-    writeQuantityField(generator, THERMAL_CAPACITANCE, screenLayer.thermalCapacitance());
+    writeQuantityField(generator, VOLUMETRIC_HEAT_CAPACITY, screenLayer.volumetricHeatCapacity());
     writeQuantityField(generator, AREA, screenLayer.area().orElse(null));
     generator.writeName("wiresNumber");
     generator.writeNumber(screenLayer.wiresNumber());

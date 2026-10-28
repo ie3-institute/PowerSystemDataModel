@@ -20,8 +20,8 @@ import edu.ie3.test.common.ThermalUnitInputTestData
 import edu.ie3.util.TimeUtil
 import edu.ie3.util.quantities.PowerSystemUnits
 import edu.ie3.util.quantities.interfaces.HeatCapacity
-import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity
 import edu.ie3.util.quantities.interfaces.ThermalConductance
+import edu.ie3.util.quantities.interfaces.VolumetricHeatCapacity
 import spock.lang.Specification
 import tech.units.indriya.ComparableQuantity
 import tech.units.indriya.quantity.Quantities
@@ -54,7 +54,7 @@ class ThermalValidationUtilsTest extends Specification {
   private static final ComparableQuantity<Volume> storageVolumeLvl = Quantities.getQuantity(100, StandardUnits.VOLUME)
   private static final ComparableQuantity<Temperature> inletTemp = Quantities.getQuantity(100, StandardUnits.TEMPERATURE)
   private static final ComparableQuantity<Temperature> returnTemp = Quantities.getQuantity(80, StandardUnits.TEMPERATURE)
-  private static final ComparableQuantity<SpecificHeatCapacity> c = Quantities.getQuantity(1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY)
+  private static final ComparableQuantity<VolumetricHeatCapacity> c = Quantities.getQuantity(1.05, StandardUnits.VOLUMETRIC_HEAT_CAPACITY)
   private static final ComparableQuantity<Power> pThermalMax = Quantities.getQuantity(10.2, StandardUnits.ACTIVE_POWER_IN)
 
   // Thermal House
@@ -123,8 +123,8 @@ class ThermalValidationUtilsTest extends Specification {
     invalidCylindricalStorage || expectedSize || expectedException
     new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, storageVolumeLvl, Quantities.getQuantity(100, StandardUnits.TEMPERATURE), Quantities.getQuantity(200, StandardUnits.TEMPERATURE), c, Quantities.getQuantity(20, PowerSystemUnits.KILOWATT)) || 1 || new InvalidEntityException("Inlet temperature of the cylindrical storage cannot be lower or equal than outlet temperature", invalidCylindricalStorage)
     new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, storageVolumeLvl, Quantities.getQuantity(100, StandardUnits.TEMPERATURE), Quantities.getQuantity(100, StandardUnits.TEMPERATURE), c, Quantities.getQuantity(20, PowerSystemUnits.KILOWATT)) || 1 || new InvalidEntityException("Inlet temperature of the cylindrical storage cannot be lower or equal than outlet temperature", invalidCylindricalStorage)
-    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-100, StandardUnits.VOLUME), inletTemp, returnTemp, Quantities.getQuantity(-1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY), Quantities.getQuantity(20, PowerSystemUnits.KILOWATT)) || 1 || new InvalidEntityException("The following quantities have to be positive: storageVolumeLvl=-100 m³, c=-1.05 kWh/K*m³", invalidCylindricalStorage)
-    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-100, StandardUnits.VOLUME), inletTemp, returnTemp, Quantities.getQuantity(-1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY), Quantities.getQuantity(-20, PowerSystemUnits.KILOWATT)) || 1 || new InvalidEntityException("The following quantities have to be positive: storageVolumeLvl=-100 m³, c=-1.05 kWh/K*m³, pThermalMax=-20 kW", invalidCylindricalStorage)
+    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-100, StandardUnits.VOLUME), inletTemp, returnTemp, Quantities.getQuantity(-1.05, StandardUnits.VOLUMETRIC_HEAT_CAPACITY), Quantities.getQuantity(20, PowerSystemUnits.KILOWATT)) || 1 || new InvalidEntityException("The following quantities have to be positive: storageVolumeLvl=-100 m³, c=-1.05 kWh/(m³*K)", invalidCylindricalStorage)
+    new CylindricalStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-100, StandardUnits.VOLUME), inletTemp, returnTemp, Quantities.getQuantity(-1.05, StandardUnits.VOLUMETRIC_HEAT_CAPACITY), Quantities.getQuantity(-20, PowerSystemUnits.KILOWATT)) || 1 || new InvalidEntityException("The following quantities have to be positive: storageVolumeLvl=-100 m³, c=-1.05 kWh/(m³*K), pThermalMax=-20 kW", invalidCylindricalStorage)
   }
 
   def "ThermalValidationUtils.checkDomesticHotWaterStorage() recognizes all potential errors for a domestic hot water storage"() {
@@ -143,8 +143,8 @@ class ThermalValidationUtilsTest extends Specification {
     invalidDomesticHotWaterStorage || expectedSize || expectedException
     new DomesticHotWaterStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, storageVolumeLvl, Quantities.getQuantity(100, StandardUnits.TEMPERATURE), Quantities.getQuantity(200, StandardUnits.TEMPERATURE), c, pThermalMax) || 1 || new InvalidEntityException("Inlet temperature of the domestic hot water storage cannot be lower or equal than outlet temperature", invalidDomesticHotWaterStorage)
     new DomesticHotWaterStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, storageVolumeLvl, Quantities.getQuantity(100, StandardUnits.TEMPERATURE), Quantities.getQuantity(100, StandardUnits.TEMPERATURE), c, pThermalMax) || 1 || new InvalidEntityException("Inlet temperature of the domestic hot water storage cannot be lower or equal than outlet temperature", invalidDomesticHotWaterStorage)
-    new DomesticHotWaterStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-100, StandardUnits.VOLUME), inletTemp, returnTemp, Quantities.getQuantity(-1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY), pThermalMax) || 1 || new InvalidEntityException("The following quantities have to be positive: storageVolumeLvl=-100 m³, c=-1.05 kWh/K*m³", invalidDomesticHotWaterStorage)
-    new DomesticHotWaterStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-100, StandardUnits.VOLUME), inletTemp, returnTemp, Quantities.getQuantity(-1.05, StandardUnits.SPECIFIC_HEAT_CAPACITY), Quantities.getQuantity(-20, PowerSystemUnits.KILOWATT)) || 1 || new InvalidEntityException("The following quantities have to be positive: storageVolumeLvl=-100 m³, c=-1.05 kWh/K*m³, pThermalMax=-20 kW", invalidDomesticHotWaterStorage)
+    new DomesticHotWaterStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-100, StandardUnits.VOLUME), inletTemp, returnTemp, Quantities.getQuantity(-1.05, StandardUnits.VOLUMETRIC_HEAT_CAPACITY), pThermalMax) || 1 || new InvalidEntityException("The following quantities have to be positive: storageVolumeLvl=-100 m³, c=-1.05 kWh/(m³*K)", invalidDomesticHotWaterStorage)
+    new DomesticHotWaterStorageInput(thermalUnitUuid, id, operator, operationTime, SystemParticipantTestData.thermalBus, Quantities.getQuantity(-100, StandardUnits.VOLUME), inletTemp, returnTemp, Quantities.getQuantity(-1.05, StandardUnits.VOLUMETRIC_HEAT_CAPACITY), Quantities.getQuantity(-20, PowerSystemUnits.KILOWATT)) || 1 || new InvalidEntityException("The following quantities have to be positive: storageVolumeLvl=-100 m³, c=-1.05 kWh/(m³*K), pThermalMax=-20 kW", invalidDomesticHotWaterStorage)
   }
 
   def "ThermalValidationUtils.check() works for complete ThermalGrid as well"() {
