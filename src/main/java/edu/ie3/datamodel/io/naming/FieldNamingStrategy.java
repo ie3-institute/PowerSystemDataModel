@@ -82,7 +82,7 @@ public class FieldNamingStrategy {
   public static final String MATERIAL = "material";
   public static final String AREA = "area";
   public static final String THERMAL_RESISTIVITY = "thermalResistivity";
-  public static final String THERMAL_CAPACITANCE = "thermalCapacitance";
+  public static final String VOLUMETRIC_HEAT_CAPACITY = "volumetricHeatCapacity";
   public static final String WIRES_NUMBER = "wiresNumber";
   public static final String LENGTH_OF_LAY = "lengthOfLay";
   public static final String IS_COMPACTED = "isCompacted";
@@ -96,6 +96,15 @@ public class FieldNamingStrategy {
   public static final String ELECTRICAL_RESISTIVITY = "electricalResistivity";
   public static final String CROSS_SECTION = "crossSection";
   public static final String ADDITIONAL_INFORMATION = "additionalInformation";
+
+  // soil data
+  public static final String THERMAL_RESISTIVITY_WET = "thermalResistivityWet";
+  public static final String THERMAL_RESISTIVITY_DRY = "thermalResistivityDry";
+  public static final String CRITICAL_TEMPERATURE_DIFFERENCE = "criticalTemperatureDifference";
+  public static final String GEOMETRY = "geometry";
+  public static final String Z_FROM = "zFrom";
+  public static final String Z_TO = "zTo";
+  public static final String SOIL_TYPE = "soilType";
 
   /**
    * Attribute that _can_, but does not _have to_ be present for the creation of {@link
@@ -147,6 +156,9 @@ public class FieldNamingStrategy {
   public static final String LAYOUT_FORMATION = "layoutFormation";
   public static final String DEPTH_CABLES = "depthCables";
   public static final String DISTANCE_CABLES = "distanceCables";
+  public static final String CABLE_BED_WIDTH = "cableBedWidth";
+  public static final String CABLE_BED_HEIGHT = "cableBedHeight";
+  public static final String CABLE_BED_SOIL_TYPE = "cableBedSoilType";
 
   // efficiency
   public static final String ETA = "eta";

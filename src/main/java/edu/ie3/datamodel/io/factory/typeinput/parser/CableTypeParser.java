@@ -12,8 +12,8 @@ import edu.ie3.datamodel.exceptions.ParsingException;
 import edu.ie3.datamodel.models.input.connector.type.*;
 import edu.ie3.util.quantities.PowerSystemUnits;
 import edu.ie3.util.quantities.interfaces.ElectricalResistivity;
-import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
+import edu.ie3.util.quantities.interfaces.VolumetricHeatCapacity;
 import java.util.*;
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -91,7 +91,7 @@ public class CableTypeParser {
                 innerDiameter,
                 outerDiameter,
                 fields.thermalResistivity(),
-                fields.thermalCapacitance(),
+                fields.volumetricHeatCapacity(),
                 fields.area()));
       }
 
@@ -164,7 +164,7 @@ public class CableTypeParser {
           innerDiameter,
           outerDiameter,
           fields.thermalResistivity(),
-          fields.thermalCapacitance(),
+          fields.volumetricHeatCapacity(),
           Optional.ofNullable(fields.area()),
           wiresNumber,
           wireDiameter,
@@ -219,7 +219,7 @@ public class CableTypeParser {
           diameter,
           isCompacted,
           fields.thermalResistivity(),
-          fields.thermalCapacitance(),
+          fields.volumetricHeatCapacity(),
           fields.area());
     } catch (RuntimeException e) {
       throw new ParsingException(
@@ -448,7 +448,7 @@ public class CableTypeParser {
 
   /**
    * Parses the fields that are shared by all cable layers: {@code thermalResistivity}, {@code
-   * thermalCapacitance} and the optional {@code area}.
+   * volumetricHeatCapacity} and the optional {@code area}.
    *
    * @param node node to read from
    * @param context logical name used in the error message
@@ -465,29 +465,29 @@ public class CableTypeParser {
             ThermalResistivity.class,
             PowerSystemUnits.KELVIN_METRE_PER_WATT,
             CANNOT_PARSE + context + MISSING + THERMAL_RESISTIVITY + " in " + source);
-    ComparableQuantity<ThermalCapacitance> thermalCapacitance =
+    ComparableQuantity<VolumetricHeatCapacity> volumetricHeatCapacity =
         parseQuantityField(
             node,
-            THERMAL_CAPACITANCE,
-            ThermalCapacitance.class,
+            VOLUMETRIC_HEAT_CAPACITY,
+            VolumetricHeatCapacity.class,
             PowerSystemUnits.JOULE_PER_CUBIC_METRE_KELVIN,
-            CANNOT_PARSE + context + MISSING + THERMAL_CAPACITANCE + " in " + source);
+            CANNOT_PARSE + context + MISSING + VOLUMETRIC_HEAT_CAPACITY + " in " + source);
     ComparableQuantity<Area> area =
         parseOptionalQuantityField(
             node, AREA, Area.class, PowerSystemUnits.SQUARE_MILLIMETRE, context);
 
-    return new CommonLayerFields(thermalResistivity, thermalCapacitance, area);
+    return new CommonLayerFields(thermalResistivity, volumetricHeatCapacity, area);
   }
 
   /**
    * Holds the parsed fields that are shared by all cable layers.
    *
    * @param thermalResistivity thermal resistivity of the layer
-   * @param thermalCapacitance thermal capacitance of the layer
+   * @param volumetricHeatCapacity volumetric heat capacity of the layer
    * @param area cross-sectional area of the layer, may be {@code null}
    */
   private record CommonLayerFields(
       ComparableQuantity<ThermalResistivity> thermalResistivity,
-      ComparableQuantity<ThermalCapacitance> thermalCapacitance,
+      ComparableQuantity<VolumetricHeatCapacity> volumetricHeatCapacity,
       ComparableQuantity<Area> area) {}
 }

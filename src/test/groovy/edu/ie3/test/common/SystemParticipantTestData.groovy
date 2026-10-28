@@ -175,8 +175,8 @@ class SystemParticipantTestData {
   public static final ComparableQuantity<Volume> storageVolumeLvl = Quantities.getQuantity(1.039154027, VOLUME)
   public static final ComparableQuantity<Temperature> inletTemp = Quantities.getQuantity(110, TEMPERATURE)
   public static final ComparableQuantity<Temperature> returnTemp = Quantities.getQuantity(80, TEMPERATURE)
-  public static final ComparableQuantity<SpecificHeatCapacity> c = Quantities.getQuantity(
-  1, SPECIFIC_HEAT_CAPACITY)
+  public static final ComparableQuantity<VolumetricHeatCapacity> c = Quantities.getQuantity(
+  1, VOLUMETRIC_HEAT_CAPACITY)
   public static final ComparableQuantity<Power> pThermalMax = Quantities.getQuantity(
   20, ACTIVE_POWER_IN)
 

@@ -7,7 +7,7 @@ package edu.ie3.datamodel.models.input.thermal;
 
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.util.quantities.interfaces.SpecificHeatCapacity;
+import edu.ie3.util.quantities.interfaces.VolumetricHeatCapacity;
 import java.util.Map;
 import java.util.UUID;
 import javax.measure.quantity.Power;
@@ -28,7 +28,7 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
    * @param storageVolumeLvl Available storage volume
    * @param inletTemp Temperature of the inlet
    * @param returnTemp Temperature of the outlet
-   * @param c Specific heat capacity of the storage medium
+   * @param c Volumetric heat capacity of the storage medium
    * @param pThermalMax Maximum thermal power of the storage
    */
   public DomesticHotWaterStorageInput(
@@ -40,7 +40,7 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
       ComparableQuantity<Volume> storageVolumeLvl,
       ComparableQuantity<Temperature> inletTemp,
       ComparableQuantity<Temperature> returnTemp,
-      ComparableQuantity<SpecificHeatCapacity> c,
+      ComparableQuantity<VolumetricHeatCapacity> c,
       ComparableQuantity<Power> pThermalMax) {
     super(
         uuid,
@@ -66,7 +66,7 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
    * @param storageVolumeLvl Available storage volume
    * @param inletTemp Temperature of the inlet
    * @param returnTemp Temperature of the outlet
-   * @param c Specific heat capacity of the storage medium
+   * @param c Volumetric heat capacity of the storage medium
    * @param pThermalMax Maximum thermal power of the storage
    * @param additionalInformation That were provided by the source
    */
@@ -79,7 +79,7 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
       ComparableQuantity<Volume> storageVolumeLvl,
       ComparableQuantity<Temperature> inletTemp,
       ComparableQuantity<Temperature> returnTemp,
-      ComparableQuantity<SpecificHeatCapacity> c,
+      ComparableQuantity<VolumetricHeatCapacity> c,
       ComparableQuantity<Power> pThermalMax,
       Map<String, String> additionalInformation) {
     super(
@@ -105,7 +105,7 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
    * @param storageVolumeLvl Available storage volume
    * @param inletTemp Temperature of the inlet
    * @param returnTemp Temperature of the outlet
-   * @param c Specific heat capacity of the storage medium
+   * @param c Volumetric heat capacity of the storage medium
    * @param pThermalMax Maximum thermal power of the storage
    */
   public DomesticHotWaterStorageInput(
@@ -115,7 +115,7 @@ public class DomesticHotWaterStorageInput extends AbstractStorageInput {
       ComparableQuantity<Volume> storageVolumeLvl,
       ComparableQuantity<Temperature> inletTemp,
       ComparableQuantity<Temperature> returnTemp,
-      ComparableQuantity<SpecificHeatCapacity> c,
+      ComparableQuantity<VolumetricHeatCapacity> c,
       ComparableQuantity<Power> pThermalMax) {
     super(uuid, id, bus, storageVolumeLvl, inletTemp, returnTemp, c, pThermalMax);
   }

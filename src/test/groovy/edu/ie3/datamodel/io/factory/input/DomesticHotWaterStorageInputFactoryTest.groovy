@@ -68,7 +68,7 @@ class DomesticHotWaterStorageInputFactoryTest extends Specification implements F
       storageVolumeLvl == getQuant(parameter["storageVolumeLvl"], StandardUnits.VOLUME)
       inletTemp == getQuant(parameter["inletTemp"], StandardUnits.TEMPERATURE)
       returnTemp == getQuant(parameter["returnTemp"], StandardUnits.TEMPERATURE)
-      c == getQuant(parameter["c"], StandardUnits.SPECIFIC_HEAT_CAPACITY)
+      c == getQuant(parameter["c"], StandardUnits.VOLUMETRIC_HEAT_CAPACITY)
       pThermalMax == getQuant(parameter["pThermalMax"], StandardUnits.ACTIVE_POWER_IN)
     }
   }

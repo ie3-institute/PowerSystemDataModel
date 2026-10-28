@@ -65,12 +65,34 @@ public class GridContainerValidationUtils extends ValidationUtils {
     exceptions.addAll(
         checkSystemParticipants(
             gridContainer.getSystemParticipants(), gridContainer.getRawGrid().getNodes()));
+    exceptions.addAll(checkSoilData(gridContainer.getSoilData()));
 
     if (gridContainer instanceof SubGridContainer subGridContainer) {
       exceptions.add(ConnectorValidationUtils.checkConnectivity(subGridContainer));
     }
 
     return exceptions;
+  }
+
+  /**
+   * Checks the validity of the given {@link SoilData}. This covers the per-entity checks for soil
+   * types and soil layers as well as the check that soil layers sharing the same geometry neither
+   * overlap nor leave gaps within their depth ranges.
+   *
+   * @param soilData the soil data to check
+   * @return a list of try objects either containing an {@link ValidationException} or an empty
+   *     Success
+   */
+  protected static List<Try<Void, ? extends ValidationException>> checkSoilData(SoilData soilData) {
+    Try<Void, InvalidEntityException> isNull = checkNonNull(soilData, "soil data");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
+    }
+
+    return List.of(
+        SoilValidationUtils.validateAll(
+            new ArrayList<>(soilData.getSoilLayers()), new ArrayList<>(soilData.getSoilTypes())));
   }
 
   /**
