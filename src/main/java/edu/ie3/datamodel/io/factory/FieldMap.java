@@ -105,6 +105,21 @@ public class FieldMap {
   }
 
   /**
+   * Returns the parsed value for the given field, or an empty Optional if the field is absent or
+   * blank.
+   *
+   * <p>Note: This method removes the field from the map.
+   *
+   * @param field field name
+   * @param builder function for parsing the field value
+   * @return parsed field value, or empty if the field is absent or blank
+   * @param <R> type of the parsed value
+   */
+  public <R> Optional<R> getOptional(String field, Function<String, R> builder) {
+    return getFieldOptional(field).filter(value -> !value.isBlank()).map(builder);
+  }
+
+  /**
    * Method to get a view of the uuid for at a given field
    *
    * @param field that contains an uuid

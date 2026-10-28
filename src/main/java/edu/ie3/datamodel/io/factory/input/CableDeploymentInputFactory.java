@@ -32,11 +32,7 @@ public class CableDeploymentInputFactory
         data.getQuantityOptional(CABLE_BED_WIDTH, Units.METRE).orElse(null);
     ComparableQuantity<Length> cableBedHeight =
         data.getQuantityOptional(CABLE_BED_HEIGHT, Units.METRE).orElse(null);
-    UUID cableBedSoilType =
-        data.getFieldOptional(CABLE_BED_SOIL_TYPE)
-            .filter(value -> !value.isBlank())
-            .map(java.util.UUID::fromString)
-            .orElse(null);
+    UUID cableBedSoilType = data.getOptional(CABLE_BED_SOIL_TYPE, UUID::fromString).orElse(null);
 
     return new CableDeploymentInput(
         uuid,
