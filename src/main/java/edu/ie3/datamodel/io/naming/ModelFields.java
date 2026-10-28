@@ -18,6 +18,9 @@ import edu.ie3.datamodel.models.input.SoilLayer;
 import edu.ie3.datamodel.models.input.SoilType;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
+import edu.ie3.datamodel.models.input.connector.type.ConductorInput;
+import edu.ie3.datamodel.models.input.connector.type.LayerInput;
+import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
@@ -289,6 +292,39 @@ public final class ModelFields extends FieldNamingStrategy {
         TAN_DELTA,
         CIRCULATING_LOSS_FACTOR,
         EDDY_CURRENT_LOSS_FACTOR);
+
+    registerMandatory(
+        ConductorInput.class,
+        assetFields,
+        MATERIAL,
+        CROSS_SECTION,
+        DIAMETER,
+        THERMAL_RESISTIVITY,
+        VOLUMETRIC_HEAT_CAPACITY);
+    registerOptional(ConductorInput.class, newSet(AREA, IS_COMPACTED));
+
+    registerMandatory(
+        LayerInput.class,
+        assetFields,
+        MATERIAL,
+        INNER_DIAMETER,
+        OUTER_DIAMETER,
+        THERMAL_RESISTIVITY,
+        VOLUMETRIC_HEAT_CAPACITY);
+    registerOptional(LayerInput.class, newSet(AREA));
+
+    registerMandatory(
+        ScreenLayerInput.class,
+        assetFields,
+        MATERIAL,
+        INNER_DIAMETER,
+        OUTER_DIAMETER,
+        THERMAL_RESISTIVITY,
+        VOLUMETRIC_HEAT_CAPACITY,
+        WIRES_NUMBER,
+        WIRE_DIAMETER,
+        ELECTRICAL_RESISTIVITY);
+    registerOptional(ScreenLayerInput.class, newSet(AREA, LENGTH_OF_LAY));
 
     Stream.of(Transformer2WTypeInput.class, Transformer3WTypeInput.class)
         .forEach(
