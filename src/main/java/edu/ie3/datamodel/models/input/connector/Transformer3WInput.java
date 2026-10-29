@@ -370,19 +370,22 @@ public class Transformer3WInput extends TransformerInput implements HasType {
     @Override
     public Transformer3WInput build() {
 
-      return new Transformer3WInput(
-          getUuid(),
-          getId(),
-          getOperator(),
-          getOperationTime(),
-          super.getNodeA(),
-          super.getNodeB(),
-          nodeC,
-          getParallelDevices(),
-          type,
-          getTapPos(),
-          isAutoTap(),
-          internalNode.copy().slack(internSlack).build());
+      Transformer3WInput result =
+          new Transformer3WInput(
+              getUuid(),
+              getId(),
+              getOperator(),
+              getOperationTime(),
+              super.getNodeA(),
+              super.getNodeB(),
+              nodeC,
+              getParallelDevices(),
+              type,
+              getTapPos(),
+              isAutoTap(),
+              internalNode.copy().slack(internSlack).build());
+      result.setAdditionalInformation(getAdditionalInformation());
+      return result;
     }
 
     public Transformer3WInputCopyBuilder type(Transformer3WTypeInput type) {

@@ -90,7 +90,7 @@ class SystemParticipantsTest extends Specification {
     modifiedSystemParticipants.wecPlants.first() == modifiedWecInput
   }
 
-  def "A Input copy builder should allow modifying additionalInformation"() {
+  def "An Input copy builder should allow modifying additionalInformation"() {
     given:
     def pvInput = SystemParticipantTestData.pvInput
     def newInfo = ["source": "modified", "note": "updated"]
