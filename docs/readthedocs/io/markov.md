@@ -26,8 +26,9 @@ During simulation, one step works as follows:
 
 Markov model files follow the naming convention {code}`markov_<profileKey>.json`, e.g. {code}`markov_h0.json`.
 A profile key consists of 1 to 11 letters, optionally followed by up to 3 digits.
-The profile key must be unique across all load-profile sources. Do not use the same key for both a CSV profile
-({code}`lpts_<key>.csv`) and a Markov profile ({code}`markov_<key>.json`).
+A load input references a Markov profile via {code}`markov_<profileKey>` in its {code}`loadProfile` field,
+e.g. {code}`markov_h0`. Since the type is part of the key, a CSV profile ({code}`lpts_<key>.csv`) and a Markov
+profile ({code}`markov_<key>.json`) can use the same key.
 
 ## JSON Schema
 
@@ -276,8 +277,23 @@ Markov models are loaded via {code}`JsonMarkovProfileSource`, which:
   it is not triggered automatically when the model is loaded
 - Is thread-safe ({code}`synchronized` lazy loading)
 
-Markov models do not support energy scaling: {code}`getProfileEnergyScaling()` always returns
-{code}`Optional.empty()`.
+## Energy Scaling
+
+Like other load profiles, a Markov model provides an energy scaling via {code}`getProfileEnergyScaling()`. It is
+the energy the model consumes on average within one year and allows to scale the model to the annual energy
+consumption of a load.
+
+The value is not sampled, but calculated from the trained model when it is built. For every time step of the year
+2019, the distribution over the states is propagated through the transitions of the respective bucket and weighted
+with the expected values of the GMMs, taking into account that samples are clamped to [0, 1]. Ahead of 2019, the
+chain runs through a warm-up week starting from a uniform distribution, so that the result does not depend on an
+initial state.
+
+## Expected Values
+
+For forecasts, {code}`getExpectedPowers(time, state, steps)` returns the expected power of the steps following the
+step at {code}`time`. Here, {code}`state` is the {code}`nextState` returned by that step. The distribution over the
+states is propagated in the same way as for the energy scaling.
 
 ## Simulation Input and Output
 

@@ -13,7 +13,10 @@ import edu.ie3.datamodel.io.source.TimeSeriesMappingSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.*
 import edu.ie3.datamodel.models.input.connector.*
-import edu.ie3.datamodel.models.input.connector.type.*
+import edu.ie3.datamodel.models.input.connector.type.CableTypeInput
+import edu.ie3.datamodel.models.input.connector.type.LineTypeInput
+import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput
+import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput
 import edu.ie3.datamodel.models.input.system.*
 import edu.ie3.datamodel.models.input.system.type.*
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput
@@ -30,6 +33,7 @@ import edu.ie3.datamodel.models.result.system.*
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult
 import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult
+import edu.ie3.datamodel.models.result.thermal.ThermalLineSegmentResult
 import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.TimeSeries
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry
@@ -63,11 +67,14 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
       /* - AssetInput */
       NodeInput,
       LineInput,
+      SoilType,
+      SoilLayer,
       Transformer2WInput,
       Transformer3WInput,
       SwitchInput,
       MeasurementUnitInput,
       ThermalBusInput,
+      ThermalLineSegmentResult,
       /* -- SystemParticipantInput */
       AcInput,
       BmInput,

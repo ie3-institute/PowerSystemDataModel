@@ -5,7 +5,12 @@
  */
 package edu.ie3.datamodel.io.naming
 
+import edu.ie3.datamodel.models.input.SoilLayer
+import edu.ie3.datamodel.models.input.SoilType
 import edu.ie3.datamodel.models.input.connector.CableDeploymentInput
+import edu.ie3.datamodel.models.input.connector.type.ConductorInput
+import edu.ie3.datamodel.models.input.connector.type.LayerInput
+import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel
 import edu.ie3.datamodel.models.result.thermal.ThermalLineSegmentResult
 import spock.lang.Specification
@@ -51,14 +56,75 @@ class ModelFieldsTest extends Specification {
     then:
     mandatoryFields == [
       [
-        FieldNamingStrategy.UUID,
+        FieldNamingStrategy.UUID_FIELD,
         FieldNamingStrategy.LINE_UUID,
         FieldNamingStrategy.LAYOUT_FORMATION,
         FieldNamingStrategy.DEPTH_CABLES,
         FieldNamingStrategy.DISTANCE_CABLES
       ] as Set
     ]
-    optionalFields == [] as Set
+    optionalFields == [
+      FieldNamingStrategy.CABLE_BED_WIDTH,
+      FieldNamingStrategy.CABLE_BED_HEIGHT,
+      FieldNamingStrategy.CABLE_BED_SOIL_TYPE
+    ] as Set
+  }
+
+  def "ModelFields returns registered fields for ConductorInput correctly"() {
+    expect:
+    ModelFields.getMandatoryFields(ConductorInput) == [
+      [
+        FieldNamingStrategy.UUID_FIELD,
+        FieldNamingStrategy.ID,
+        FieldNamingStrategy.MATERIAL,
+        FieldNamingStrategy.CROSS_SECTION,
+        FieldNamingStrategy.DIAMETER,
+        FieldNamingStrategy.THERMAL_RESISTIVITY,
+        FieldNamingStrategy.VOLUMETRIC_HEAT_CAPACITY
+      ] as Set
+    ]
+    ModelFields.getOptionalFields(ConductorInput) == [
+      FieldNamingStrategy.AREA,
+      FieldNamingStrategy.IS_COMPACTED
+    ] as Set
+  }
+
+  def "ModelFields returns registered fields for LayerInput correctly"() {
+    expect:
+    ModelFields.getMandatoryFields(LayerInput) == [
+      [
+        FieldNamingStrategy.UUID_FIELD,
+        FieldNamingStrategy.ID,
+        FieldNamingStrategy.MATERIAL,
+        FieldNamingStrategy.INNER_DIAMETER,
+        FieldNamingStrategy.OUTER_DIAMETER,
+        FieldNamingStrategy.THERMAL_RESISTIVITY,
+        FieldNamingStrategy.VOLUMETRIC_HEAT_CAPACITY
+      ] as Set
+    ]
+    ModelFields.getOptionalFields(LayerInput) == [FieldNamingStrategy.AREA] as Set
+  }
+
+  def "ModelFields returns registered fields for ScreenLayerInput correctly"() {
+    expect:
+    ModelFields.getMandatoryFields(ScreenLayerInput) == [
+      [
+        FieldNamingStrategy.UUID_FIELD,
+        FieldNamingStrategy.ID,
+        FieldNamingStrategy.MATERIAL,
+        FieldNamingStrategy.INNER_DIAMETER,
+        FieldNamingStrategy.OUTER_DIAMETER,
+        FieldNamingStrategy.THERMAL_RESISTIVITY,
+        FieldNamingStrategy.VOLUMETRIC_HEAT_CAPACITY,
+        FieldNamingStrategy.WIRES_NUMBER,
+        FieldNamingStrategy.WIRE_DIAMETER,
+        FieldNamingStrategy.ELECTRICAL_RESISTIVITY
+      ] as Set
+    ]
+    ModelFields.getOptionalFields(ScreenLayerInput) == [
+      FieldNamingStrategy.AREA,
+      FieldNamingStrategy.LENGTH_OF_LAY
+    ] as Set
   }
 
   def "getMandatoryFields returns registered fields for ThermalLineSegmentResult"() {
@@ -73,5 +139,38 @@ class ModelFieldsTest extends Specification {
       FieldNamingStrategy.LINE_SEGMENT_TEMPERATURE,
       FieldNamingStrategy.GROUND_TEMPERATURE
     ] as Set
+  }
+
+  def "getMandatoryFields returns registered fields for SoilType"() {
+    when:
+    def fields = ModelFields.getMandatoryFields(SoilType)
+
+    then:
+    fields == [
+      [
+        FieldNamingStrategy.UUID_FIELD,
+        FieldNamingStrategy.ID,
+        FieldNamingStrategy.THERMAL_RESISTIVITY_WET,
+        FieldNamingStrategy.THERMAL_RESISTIVITY_DRY,
+        FieldNamingStrategy.VOLUMETRIC_HEAT_CAPACITY,
+        FieldNamingStrategy.CRITICAL_TEMPERATURE_DIFFERENCE
+      ] as Set
+    ]
+  }
+
+  def "getMandatoryFields returns registered fields for SoilLayer"() {
+    when:
+    def fields = ModelFields.getMandatoryFields(SoilLayer)
+
+    then:
+    fields == [
+      [
+        FieldNamingStrategy.UUID_FIELD,
+        FieldNamingStrategy.GEOMETRY,
+        FieldNamingStrategy.Z_FROM,
+        FieldNamingStrategy.Z_TO,
+        FieldNamingStrategy.SOIL_TYPE
+      ] as Set
+    ]
   }
 }

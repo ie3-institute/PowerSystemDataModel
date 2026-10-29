@@ -7,90 +7,89 @@ package edu.ie3.datamodel.io.source
 
 import static edu.ie3.test.helper.EntityMap.map
 
-import edu.ie3.datamodel.exceptions.FactoryException
 import edu.ie3.datamodel.exceptions.SourceException
-import edu.ie3.datamodel.io.factory.input.AssetInputEntityData
+import edu.ie3.datamodel.io.factory.FieldMap
+import edu.ie3.datamodel.io.factory.input.EmInputFactory
 import edu.ie3.datamodel.models.input.EmInput
-import edu.ie3.datamodel.utils.Try
 import spock.lang.Specification
-
-import java.util.stream.Stream
 
 class EnergyManagementSourceTest extends Specification {
 
+  def "An EnergyManagementSource should not fail if no em data is present"() {
+    given:
+    def emUnits = new HashMap<>()
+    def emFactory = new EmInputFactory(Collections.emptyMap(), emUnits)
+
+    def assetData = []
+
+    when:
+    EnergyManagementSource.createEmsRecursively(assetData, emUnits, emFactory)
+
+    then:
+    emUnits.isEmpty()
+  }
+
   def "An EnergyManagementSource should construct hierarchical EmInputs with two branches as expected"() {
     given:
-    def assetEntityDataStream = Stream.of(
-        new AssetInputEntityData(
-            ["uuid": "0-0-0-0-0",
-              "id": "root",
-              "controllingem" : "",
-              "controlstrategy" : ""],
-            EmInput
-            ),
-        new AssetInputEntityData(
-            ["uuid": "0-0-0-0-1",
-              "id": "child 1",
-              "controllingem" : "0-0-0-0-0",
-              "controlstrategy" : ""],
-            EmInput
-            ),
-        new AssetInputEntityData(
-            ["uuid": "0-0-0-0-11",
-              "id": "child 1-1",
-              "controllingem" : "0-0-0-0-1",
-              "controlstrategy" : ""],
-            EmInput
-            ),
-        new AssetInputEntityData(
-            ["uuid": "0-0-0-0-2",
-              "id": "child 2",
-              "controllingem" : "0-0-0-0-0",
-              "controlstrategy" : ""],
-            EmInput
-            ),
-        new AssetInputEntityData(
-            ["uuid": "0-0-0-0-21",
-              "id": "child 2-1",
-              "controllingem" : "0-0-0-0-2",
-              "controlstrategy" : ""],
-            EmInput
-            ),
-        ).map(data -> Try.of(() -> data, SourceException))
+    def emUnits = new HashMap<>()
+    def emFactory = new EmInputFactory(Collections.emptyMap(), emUnits)
+
+    def assetData = [
+      new FieldMap(["uuid": "0-0-0-0-0",
+        "id": "root",
+        "controllingEm" : "",
+        "controlStrategy" : ""]),
+      new FieldMap(["uuid": "0-0-0-0-1",
+        "id": "child 1",
+        "controllingEm" : "0-0-0-0-0",
+        "controlStrategy" : ""]),
+      new FieldMap(["uuid": "0-0-0-0-11",
+        "id": "child 1-1",
+        "controllingEm" : "0-0-0-0-1",
+        "controlStrategy" : ""]),
+      new FieldMap(["uuid": "0-0-0-0-2",
+        "id": "child 2",
+        "controllingEm" : "0-0-0-0-0",
+        "controlStrategy" : ""]),
+      new FieldMap(["uuid": "0-0-0-0-21",
+        "id": "child 2-1",
+        "controllingEm" : "0-0-0-0-2",
+        "controlStrategy" : ""])
+    ]
 
     expect:
-    def emUnits = EnergyManagementSource.createEmInputs(assetEntityDataStream)
+    EnergyManagementSource.createEmsRecursively(assetData, emUnits, emFactory)
 
     def expectedRootEm = new EmInput(
         UUID.fromString("0-0-0-0-0"),
         "root",
         "",
         null
-        )
+    )
     def expectedEm1 = new EmInput(
         UUID.fromString("0-0-0-0-1"),
         "child 1",
         "",
         expectedRootEm
-        )
+    )
     def expectedEm11 = new EmInput(
         UUID.fromString("0-0-0-0-11"),
         "child 1-1",
         "",
         expectedEm1
-        )
+    )
     def expectedEm2 = new EmInput(
         UUID.fromString("0-0-0-0-2"),
         "child 2",
         "",
         expectedRootEm
-        )
+    )
     def expectedEm21 = new EmInput(
         UUID.fromString("0-0-0-0-21"),
         "child 2-1",
         "",
         expectedEm2
-        )
+    )
 
     expectedRootEm.additionalInformation.isEmpty()
     expectedEm1.additionalInformation.isEmpty()
@@ -109,51 +108,45 @@ class EnergyManagementSourceTest extends Specification {
 
   def "An EnergyManagementSource should construct flat EmInputs without hierarchy as expected"() {
     given:
-    def assetEntityDataStream = Stream.of(
-        new AssetInputEntityData(
-            ["uuid": "0-0-0-0-1",
-              "id": "em 1",
-              "controllingem" : "",
-              "controlstrategy" : ""],
-            EmInput
-            ),
-        new AssetInputEntityData(
-            ["uuid": "0-0-0-0-2",
-              "id": "em 2",
-              "controllingem" : "",
-              "controlstrategy" : "strat_b"],
-            EmInput
-            ),
-        new AssetInputEntityData(
-            ["uuid": "0-0-0-0-3",
-              "id": "em 3",
-              "controllingem" : "",
-              "controlstrategy" : "other"],
-            EmInput
-            ),
-        ).map(data -> Try.of(() -> data, SourceException))
+    def emUnits = new HashMap<>()
+    def emFactory = new EmInputFactory(Collections.emptyMap(), emUnits)
+
+    def assetData = [
+      new FieldMap(["uuid": "0-0-0-0-1",
+        "id": "em 1",
+        "controllingEm" : "",
+        "controlStrategy" : ""]),
+      new FieldMap(["uuid": "0-0-0-0-2",
+        "id": "em 2",
+        "controllingEm" : "",
+        "controlStrategy" : "strat_b"]),
+      new FieldMap(["uuid": "0-0-0-0-3",
+        "id": "em 3",
+        "controllingEm" : "",
+        "controlStrategy" : "other"])
+    ]
 
     expect:
-    def emUnits = EnergyManagementSource.createEmInputs(assetEntityDataStream)
+    EnergyManagementSource.createEmsRecursively(assetData, emUnits, emFactory)
 
     def expectedEm1 = new EmInput(
         UUID.fromString("0-0-0-0-1"),
         "em 1",
         "",
         null
-        )
+    )
     def expectedEm2 = new EmInput(
         UUID.fromString("0-0-0-0-2"),
         "em 2",
         "strat_b",
         null
-        )
+    )
     def expectedEm3 = new EmInput(
         UUID.fromString("0-0-0-0-3"),
         "em 3",
         "other",
         null
-        )
+    )
 
     emUnits == map([
       expectedEm1,
@@ -162,55 +155,24 @@ class EnergyManagementSourceTest extends Specification {
     ])
   }
 
-  def "An EnergyManagementSource should fail if any entity data already failed before"() {
-    given:
-    def assetEntityDataStream = Stream.of(
-        new Try.Success<AssetInputEntityData, SourceException>(new AssetInputEntityData(
-            ["uuid": "0-0-0-0-1",
-              "id": "em 1",
-              "controllingem" : "",
-              "controlstrategy" : ""],
-            EmInput
-            )),
-        new Try.Success<AssetInputEntityData, SourceException>(new AssetInputEntityData(
-            ["uuid": "0-0-0-0-2",
-              "id": "em 2",
-              "controllingem" : "",
-              "controlstrategy" : ""],
-            EmInput
-            )),
-        new Try.Failure<AssetInputEntityData, SourceException>(new SourceException("test failure abc"))
-        )
-
-    when:
-    EnergyManagementSource.createEmInputs(assetEntityDataStream)
-
-    then:
-    def exc = thrown(SourceException)
-    exc.message.contains("test failure abc")
-  }
-
   def "An EnergyManagementSource should fail if a parent EM UUID is malformed"() {
     given:
-    def assetEntityDataStream = Stream.of(
-        new AssetInputEntityData(
-            ["uuid": "0-0-0-0-1",
-              "id": "em 1",
-              "controllingem" : "",
-              "controlstrategy" : ""],
-            EmInput
-            ),
-        new AssetInputEntityData(
-            ["uuid": "0-0-0-0-2",
-              "id": "em 2",
-              "controllingem" : "not-a-uuid",
-              "controlstrategy" : ""],
-            EmInput
-            ),
-        ).map(data -> Try.of(() -> data, SourceException))
+    def emUnits = new HashMap<>()
+    def emFactory = new EmInputFactory(Collections.emptyMap(), emUnits)
+
+    def assetData = [
+      new FieldMap(["uuid": "0-0-0-0-1",
+        "id": "em 1",
+        "controllingEm" : "",
+        "controlStrategy" : ""]),
+      new FieldMap(["uuid": "0-0-0-0-2",
+        "id": "em 2",
+        "controllingEm" : "not-a-uuid",
+        "controlStrategy" : ""])
+    ]
 
     when:
-    EnergyManagementSource.createEmInputs(assetEntityDataStream)
+    EnergyManagementSource.createEmsRecursively(assetData, emUnits, emFactory)
 
     then:
     def exc = thrown(SourceException)
@@ -219,82 +181,73 @@ class EnergyManagementSourceTest extends Specification {
 
   def "An EnergyManagementSource should fail if the factory fails for one EM"() {
     given:
-    def assetEntityDataStream = Stream.of(
-        new AssetInputEntityData(
-            ["uuid": "0-0-0-0-1",
-              "id": "em 1",
-              "controllingem" : "",
-              "controlstrategy" : ""],
-            EmInput
-            ),
-        new AssetInputEntityData(
-            ["uuid": "0-0-0-0-2", // id is missing
-              "controllingem" : "",
-              "controlstrategy" : ""],
-            EmInput
-            ),
-        ).map(data -> Try.of(() -> data, SourceException))
+    def emUnits = new HashMap<>()
+    def emFactory = new EmInputFactory(Collections.emptyMap(), emUnits)
+
+    def assetData = [
+      new FieldMap(["uuid": "0-0-0-0-1",
+        "id": "em 1",
+        "controllingEm" : "",
+        "controlStrategy" : ""]),
+      new FieldMap(["uuid": "0-0-0-0-2", // id is missing
+        "controllingEm" : "",
+        "controlStrategy" : ""])
+    ]
 
     when:
-    EnergyManagementSource.createEmInputs(assetEntityDataStream)
+    EnergyManagementSource.createEmsRecursively(assetData, emUnits, emFactory)
 
     then:
     def exc = thrown(SourceException)
     exc.message == "1 exception(s) occurred within \"EmInput\" data: \n" +
-        "        An error occurred when creating instance of EmInput.class. Caused by: Field \"id\" not found in EntityData"
+        "        An error occurred in EmInputFactory. Caused by: Field \"id\" not found in source."
   }
 
   def "An EnergyManagementSource should fail if a parent em is not provided"() {
     given:
-    def assetEntityDataStream = Stream.of(
-        new AssetInputEntityData(
-            ["uuid": "0-0-0-0-1",
-              "id": "em 1",
-              "controllingem" : "",
-              "controlstrategy" : ""],
-            EmInput
-            ),
-        new AssetInputEntityData(
-            ["uuid": "0-0-0-0-2",
-              "id": "em 2",
-              "controllingem" : "1-2-3-4-5", // does not exist
-              "controlstrategy" : ""],
-            EmInput
-            ),
-        ).map(data -> Try.of(() -> data, SourceException))
+    def emUnits = new HashMap<>()
+    def emFactory = new EmInputFactory(Collections.emptyMap(), emUnits)
+
+    def assetData = [
+      new FieldMap(["uuid": "0-0-0-0-1",
+        "id": "em 1",
+        "controllingEm" : "",
+        "controlStrategy" : ""]),
+      new FieldMap(["uuid": "0-0-0-0-2",
+        "id": "em 2",
+        "controllingEm" : "1-2-3-4-5", // does not exist
+        "controlStrategy" : ""])
+    ]
 
     when:
-    EnergyManagementSource.createEmInputs(assetEntityDataStream)
+    EnergyManagementSource.createEmsRecursively(assetData, emUnits, emFactory)
 
     then:
     def exc = thrown(SourceException)
-    exc.message.contains("were assigned a parent EM that does not exist.")
+    exc.message == "There are em inputs, where controlling ems are assigned that don't exist. These are: 00000000-0000-0000-0000-000000000002"
   }
 
   def "An EnergyManagementSource should fail if no parent ems are provided"() {
     given:
-    def assetEntityDataStream = Stream.of(
-        new AssetInputEntityData(
-            ["uuid": "0-0-0-0-1",
-              "id": "em 1",
-              "controllingem" : "1-2-3-4-5", // does not exist
-              "controlstrategy" : ""],
-            EmInput
-            ),
-        new AssetInputEntityData(
-            ["uuid": "0-0-0-0-2",
-              "id": "em 2",
-              "controllingem" : "1-2-3-4-5", // does not exist
-              "controlstrategy" : ""],
-            EmInput
-            ),
-        ).map(data -> Try.of(() -> data, SourceException))
+    def emUnits = new HashMap<>()
+    def emFactory = new EmInputFactory(Collections.emptyMap(), emUnits)
+
+    def assetData = [
+      new FieldMap(["uuid": "0-0-0-0-1",
+        "id": "em 1",
+        "controllingEm" : "1-2-3-4-5", // does not exist
+        "controlStrategy" : ""]),
+      new FieldMap(["uuid": "0-0-0-0-2",
+        "id": "em 2",
+        "controllingEm" : "1-2-3-4-5", // does not exist
+        "controlStrategy" : ""])
+    ]
 
     when:
-    EnergyManagementSource.createEmInputs(assetEntityDataStream)
+    EnergyManagementSource.createEmsRecursively(assetData, emUnits, emFactory)
 
     then:
     def exc = thrown(SourceException)
-    exc.message.contains("were assigned a parent EM that does not exist.")
+    exc.message == "There are em inputs, where controlling ems are assigned that don't exist. These are: 00000000-0000-0000-0000-000000000001,00000000-0000-0000-0000-000000000002"
   }
 }

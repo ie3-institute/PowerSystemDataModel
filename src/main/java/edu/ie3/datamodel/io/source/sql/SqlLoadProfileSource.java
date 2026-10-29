@@ -7,8 +7,10 @@ package edu.ie3.datamodel.io.source.sql;
 
 import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
 
+import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.timeseries.LoadProfileFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
@@ -18,11 +20,11 @@ import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.Value;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
+import edu.ie3.datamodel.utils.Try.TrySupplier;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -88,20 +90,20 @@ public class SqlLoadProfileSource<V extends LoadValues> extends LoadProfileSourc
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   @Override
-  public Set<LoadProfileEntry<V>> getEntries() {
+  public Set<LoadProfileEntry<V>> getEntries() throws SourceException {
     return getEntries(queryFull, ps -> {});
   }
 
   @Override
-  public Supplier<TimeSeriesOutputValue> getValueSupplier(TimeSeriesInputValue data) {
+  public TrySupplier<TimeSeriesOutputValue, SourceException> getValueSupplier(
+      TimeSeriesInputValue data) {
     ZonedDateTime time = data.time();
-    Optional<LoadValues> loadValueOption = queryForValue(time);
     return TimeSeriesOutputValue.from(
-        () -> loadValueOption.map(v -> v.getValue(time, powerProfileKey)));
+        () -> queryForValue(time).map(v -> v.getValue(time, powerProfileKey)));
   }
 
   @Override
-  public Optional<ComparableQuantity<Power>> getMaxPower() {
+  public Optional<ComparableQuantity<Power>> getMaxPower() throws SourceException {
     // TODO: Improve this calculation
     return Optional.ofNullable(
         entryFactory.calculateMaxPower(powerProfileKey, getEntries(queryFull, ps -> {})));
@@ -121,7 +123,8 @@ public class SqlLoadProfileSource<V extends LoadValues> extends LoadProfileSourc
    * @param addParams additional parameters
    * @return a set of {@link LoadProfileEntry}
    */
-  private Set<LoadProfileEntry<V>> getEntries(String query, SqlDataSource.AddParams addParams) {
+  private Set<LoadProfileEntry<V>> getEntries(String query, SqlDataSource.AddParams addParams)
+      throws SourceException {
     return dataSource
         .executeQuery(query, addParams)
         .map(this::createEntity)
@@ -129,7 +132,7 @@ public class SqlLoadProfileSource<V extends LoadValues> extends LoadProfileSourc
         .collect(Collectors.toSet());
   }
 
-  private Optional<LoadValues> queryForValue(ZonedDateTime time) {
+  private Optional<LoadValues> queryForValue(ZonedDateTime time) throws SourceException {
     Set<LoadProfileEntry<V>> entries =
         getEntries(queryTime, ps -> ps.setInt(1, TimeSeriesUtils.calculateQuarterHourOfDay(time)));
     if (entries.isEmpty()) return Optional.empty();
@@ -147,7 +150,7 @@ public class SqlLoadProfileSource<V extends LoadValues> extends LoadProfileSourc
    */
   private Optional<LoadProfileEntry<V>> createEntity(Map<String, String> fieldToValues) {
     fieldToValues.remove("timeSeries");
-    return createEntries(fieldToValues).getData();
+    return entryFactory.get(new FieldMap(fieldToValues)).getData();
   }
 
   /**

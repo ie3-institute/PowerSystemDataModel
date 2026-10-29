@@ -4,3 +4,6 @@ src/test/resources/edu/ie3/datamodel/io/source/influxdb/_weather/cosmo/weather.t
 src/test/resources/edu/ie3/datamodel/io/source/influxdb/_weather/icon/weather.txt eol=lf
 
 gradlew eol=lf
+
+# These are explicitly windows files and should use crlf
+*.bat           text eol=crlf

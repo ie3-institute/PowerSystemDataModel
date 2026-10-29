@@ -55,11 +55,13 @@ authors:
     given-names: Simon
   - family-names: Petersmeier
     given-names: Pierre
+  - family-names: Uhlmann
+    given-names: Gina
 repository-code: https://github.com/ie3-institute/PowerSystemDataModel
 keywords:
   - power system data model
   - power system
   - energy system
 license: BSD-3-Clause
-version: 9.2.0
-date-released: 2026-09-30
+version: 9.3.0
+date-released: 2026-10-29

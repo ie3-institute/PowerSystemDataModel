@@ -5,7 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.typeinput;
 
-import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
@@ -19,7 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.units.indriya.ComparableQuantity;
 
-public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeInput> {
+public class LineTypeInputFactory
+    extends AssetTypeInputEntityFactory<LineTypeInput, LineTypeInput> {
 
   private static final Logger log = LoggerFactory.getLogger(LineTypeInputFactory.class);
 
@@ -35,8 +36,8 @@ public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeIn
   }
 
   @Override
-  protected LineTypeInput buildModel(EntityData data) {
-    UUID uuid = data.getUUID(UUID);
+  protected LineTypeInput buildModel(FieldMap data) {
+    UUID uuid = data.getUUID(UUID_FIELD);
     String id = data.getField(ID);
     ComparableQuantity<SpecificConductance> b =
         data.getQuantity(B, StandardUnits.SUSCEPTANCE_PER_LENGTH);
@@ -86,6 +87,6 @@ public class LineTypeInputFactory extends AssetTypeInputEntityFactory<LineTypeIn
     }
 
     return new LineTypeInput(
-        uuid, id, b, g, r, x, iMax, vRated, cableType, data.getFieldsToValues());
+        uuid, id, b, g, r, x, iMax, vRated, cableType, data.additionalInformation());
   }
 }

@@ -233,6 +233,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     // persist all entities
     Stream.of(
             rawGridElements.allEntitiesAsList(),
+            jointGridContainer.getSoilData().allEntitiesAsList(),
             cableDeployments,
             systemParticipants.allEntitiesAsList(),
             jointGridContainer.getEmUnits().getEmUnits().stream().toList(),
@@ -336,8 +337,8 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
   }
 
   /**
-   * Transforms a provided map of string to string to valid csv formatted strings (according to csv
-   * specification RFC 4180)
+   * Transforms a provided map of string to string into valid csv formatted strings (according to
+   * csv specification RFC 4180)
    *
    * @param entityFieldData a string to string map that should be processed
    * @return a new map with valid csv formatted keys and values strings

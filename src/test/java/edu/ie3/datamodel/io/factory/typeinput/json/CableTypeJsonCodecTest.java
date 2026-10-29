@@ -44,6 +44,7 @@ class CableTypeJsonCodecTest {
 
     assertTrue(json.contains("\"uuid\""));
     assertTrue(json.contains("\"name\":\"cond-1\""));
+    assertEquals(2.0, root.get("volumetricHeatCapacity").asDouble());
 
     JsonNode csNode = root.get("crossSection");
     assertNotNull(csNode);
@@ -83,6 +84,7 @@ class CableTypeJsonCodecTest {
 
     assertTrue(json.contains("\"uuid\""));
     assertTrue(json.contains("\"name\":\"cond-1\""));
+    assertEquals(2.0, root.get("volumetricHeatCapacity").asDouble());
 
     JsonNode csNode = root.get("crossSection");
     assertNotNull(csNode);
@@ -100,7 +102,7 @@ class CableTypeJsonCodecTest {
   }
 
   @Test
-  void layerSerializationProducesAnArrayInParserUnits() throws Exception {
+  void layerSerializationProducesAnArrayInParserUnits() {
     CableTypeJsonCodec codec = new CableTypeJsonCodec();
     ObjectMapper mapper = new ObjectMapper();
 
@@ -125,7 +127,7 @@ class CableTypeJsonCodecTest {
   }
 
   @Test
-  void screenLayerSerializationHandlesNull() throws Exception {
+  void screenLayerSerializationHandlesNull() {
     assertEquals("null", new CableTypeJsonCodec().writeScreenLayer(null));
   }
 

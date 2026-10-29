@@ -12,6 +12,7 @@ import edu.ie3.datamodel.exceptions.NoDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
@@ -34,7 +35,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.locationtech.jts.geom.Point;
@@ -208,17 +208,21 @@ public class CsvWeatherSource extends WeatherSource {
       CsvFileConnector connector)
       throws SourceException {
     final Map<Point, IndividualTimeSeries<WeatherValue>> weatherTimeSeries = new HashMap<>();
-    Function<Map<String, String>, Optional<TimeBasedValue<WeatherValue>>> fieldToValueFunction =
-        this::buildWeatherValue;
     /* Reading in weather time series */
     for (FileIndividualTimeSeriesMetaInformation data : weatherMetaInformation) {
       Path path = data.getFullFilePath();
 
       // we need a reader for each file
       try (BufferedReader reader = connector.initReader(path)) {
-        buildStreamWithFieldsToAttributesMap(reader, path.getFileName())
+        Try.scanStream(
+                buildStreamWithFieldsToAttributesMap(reader, path.getFileName())
+                    .getOrThrow()
+                    .map(
+                        fieldToValues ->
+                            Try.of(() -> buildWeatherValue(fieldToValues), SourceException.class)),
+                "weather value",
+                SourceException::new)
             .getOrThrow()
-            .map(fieldToValueFunction)
             .flatMap(Optional::stream)
             .collect(Collectors.groupingBy(tbv -> tbv.getValue().getCoordinate()))
             .forEach(
@@ -292,7 +296,7 @@ public class CsvWeatherSource extends WeatherSource {
    * @return Optional time based weather value
    */
   private Optional<TimeBasedValue<WeatherValue>> buildWeatherValue(
-      Map<String, String> fieldToValues) {
+      Map<String, String> fieldToValues) throws SourceException {
     /* Try to get the coordinate from entries */
     Optional<Point> maybeCoordinate = extractCoordinate(fieldToValues);
     return maybeCoordinate
@@ -303,7 +307,7 @@ public class CsvWeatherSource extends WeatherSource {
 
               /* Build factory data */
               TimeBasedWeatherValueData factoryData =
-                  new TimeBasedWeatherValueData(fieldToValues, coordinate);
+                  new TimeBasedWeatherValueData(new FieldMap(fieldToValues), coordinate);
               return weatherFactory.get(factoryData).getData();
             })
         .orElseGet(
@@ -320,7 +324,8 @@ public class CsvWeatherSource extends WeatherSource {
    * @param fieldToValues "flat " input information as a mapping from field to value
    * @return Optional time based weather value
    */
-  private Optional<Point> extractCoordinate(Map<String, String> fieldToValues) {
+  private Optional<Point> extractCoordinate(Map<String, String> fieldToValues)
+      throws SourceException {
     String coordinateString = fieldToValues.get(weatherFactory.getCoordinateIdFieldString());
     if (Objects.isNull(coordinateString) || coordinateString.isEmpty()) {
       log.error(

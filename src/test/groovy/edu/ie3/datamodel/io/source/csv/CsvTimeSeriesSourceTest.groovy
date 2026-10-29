@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.csv
 import static edu.ie3.datamodel.models.StandardUnits.ENERGY_PRICE
 
 import edu.ie3.datamodel.exceptions.SourceException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory
 import edu.ie3.datamodel.io.file.FileType
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
@@ -26,7 +27,6 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
   def "The csv time series source is able to build time based values from simple data"() {
     given:
     def factory = new TimeBasedSimpleValueFactory(EnergyPriceValue)
-    def source = new CsvTimeSeriesSource(";", timeSeriesFolderPath, new FileNamingStrategy(), UUID.fromString("2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), Path.of("its_c_2fcb3e53-b94a-4b96-bea4-c469e499f1a1"), EnergyPriceValue, factory)
     def time = TimeUtil.withDefaults.toZonedDateTime("2019-01-01T00:00:00Z")
     def timeUtil = TimeUtil.withDefaults
     def fieldToValue = [
@@ -37,10 +37,10 @@ class CsvTimeSeriesSourceTest extends Specification implements CsvTestDataMeta {
     def expected = new TimeBasedValue(
         time,
         new EnergyPriceValue(Quantities.getQuantity(52.4, ENERGY_PRICE))
-        )
+    )
 
     when:
-    def actual = source.createTimeBasedValue(fieldToValue)
+    def actual = factory.get(new FieldMap(fieldToValue))
 
     then:
     actual.success

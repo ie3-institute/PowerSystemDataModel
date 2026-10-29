@@ -149,4 +149,29 @@ class PowerProfileKeyTest extends Specification {
     then:
     thrown(IllegalArgumentException)
   }
+
+  def "Power profile keys are parsed correctly from input data"() {
+    expect:
+    PowerProfileKey.parse(key) == expected
+
+    where:
+    key || expected
+    "markov_household" || new PowerProfileKey("household", PowerProfileKey.Type.MARKOV)
+    "Markov_H0" || new PowerProfileKey("h0", PowerProfileKey.Type.MARKOV)
+    "h0" || BdewStandardLoadProfile.H0.key
+    "h_0" || BdewStandardLoadProfile.H0.key
+    "" || PowerProfileKey.NO_KEY_ASSIGNED
+    null || PowerProfileKey.NO_KEY_ASSIGNED
+  }
+
+  def "Power profile keys are serialized correctly"() {
+    expect:
+    key.serialize() == expected
+    PowerProfileKey.parse(key.serialize()) == key
+
+    where:
+    key || expected
+    new PowerProfileKey("household", PowerProfileKey.Type.MARKOV) || "markov_household"
+    BdewStandardLoadProfile.H0.key || "h0"
+  }
 }

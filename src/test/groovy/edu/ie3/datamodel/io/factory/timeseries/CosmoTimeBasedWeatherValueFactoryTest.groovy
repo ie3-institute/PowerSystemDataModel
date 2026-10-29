@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory.timeseries
 
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
@@ -33,7 +34,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
       "groundTemperatureLevel2" : ""
     ]
 
-    def data = new TimeBasedWeatherValueData(parameter, coordinate)
+    def data = new TimeBasedWeatherValueData(new FieldMap(parameter), coordinate)
 
     when:
     factory.buildModel(data)
@@ -61,7 +62,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
       "groundTemperatureLevel2": ""
     ]
 
-    def data = new TimeBasedWeatherValueData(parameter, coordinate)
+    def data = new TimeBasedWeatherValueData(new FieldMap(parameter), coordinate)
 
     def expectedResults = new TimeBasedValue(
         time, new WeatherValue(coordinate,
@@ -94,7 +95,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
       "windVelocity" : "1.66103506088257"
     ]
 
-    def data = new TimeBasedWeatherValueData(parameter, coordinate)
+    def data = new TimeBasedWeatherValueData(new FieldMap(parameter), coordinate)
 
     when:
     factory.buildModel(data)
@@ -118,7 +119,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
       "windVelocity" : "5.0"
     ]
 
-    def data = new TimeBasedWeatherValueData(parameter, coordinate)
+    def data = new TimeBasedWeatherValueData(new FieldMap(parameter), coordinate)
 
     def expectedResults = new TimeBasedValue(
         time, new WeatherValue(coordinate,

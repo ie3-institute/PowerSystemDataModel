@@ -19,28 +19,86 @@ public class JointGridContainer extends GridContainer {
 
   private static final Logger logger = LoggerFactory.getLogger(JointGridContainer.class);
 
+  /**
+   * Constructor that builds the sub grid topology graph and defaults to empty soil data.
+   *
+   * @param gridName name of the grid
+   * @param rawGrid raw grid elements
+   * @param systemParticipants system participants
+   * @param emUnits energy management units
+   * @throws InvalidGridException if the grid cannot be built
+   */
   public JointGridContainer(
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
       EnergyManagementUnits emUnits)
       throws InvalidGridException {
-    super(gridName, rawGrid, systemParticipants, emUnits);
+    this(gridName, rawGrid, systemParticipants, emUnits, SoilData.empty());
+  }
+
+  /**
+   * Constructor that builds the sub grid topology graph.
+   *
+   * @param gridName name of the grid
+   * @param rawGrid raw grid elements
+   * @param systemParticipants system participants
+   * @param emUnits energy management units
+   * @param soilData soil data; may be {@code null}
+   * @throws InvalidGridException if the grid cannot be built
+   */
+  public JointGridContainer(
+      String gridName,
+      RawGridElements rawGrid,
+      SystemParticipants systemParticipants,
+      EnergyManagementUnits emUnits,
+      SoilData soilData)
+      throws InvalidGridException {
+    super(gridName, rawGrid, systemParticipants, emUnits, soilData);
 
     /* Build sub grid dependency */
     this.subGridTopologyGraph =
         ContainerUtils.buildSubGridTopologyGraph(
-            this.gridName, this.rawGrid, this.systemParticipants, this.emUnits);
+            this.gridName, this.rawGrid, this.systemParticipants, this.emUnits, soilData);
     checkSubGridTopologyGraph(subGridTopologyGraph);
   }
 
+  /**
+   * Constructor accepting a pre-built sub grid topology graph, defaulting to empty soil data.
+   *
+   * @param gridName name of the grid
+   * @param rawGrid raw grid elements
+   * @param systemParticipants system participants
+   * @param emUnits energy management units
+   * @param subGridTopologyGraph pre-built sub grid topology graph
+   */
   public JointGridContainer(
       String gridName,
       RawGridElements rawGrid,
       SystemParticipants systemParticipants,
       EnergyManagementUnits emUnits,
       SubGridTopologyGraph subGridTopologyGraph) {
-    super(gridName, rawGrid, systemParticipants, emUnits);
+    this(gridName, rawGrid, systemParticipants, emUnits, subGridTopologyGraph, SoilData.empty());
+  }
+
+  /**
+   * Constructor accepting a pre-built sub grid topology graph.
+   *
+   * @param gridName name of the grid
+   * @param rawGrid raw grid elements
+   * @param systemParticipants system participants
+   * @param emUnits energy management units
+   * @param subGridTopologyGraph pre-built sub grid topology graph
+   * @param soilData soil data; may be {@code null}
+   */
+  public JointGridContainer(
+      String gridName,
+      RawGridElements rawGrid,
+      SystemParticipants systemParticipants,
+      EnergyManagementUnits emUnits,
+      SubGridTopologyGraph subGridTopologyGraph,
+      SoilData soilData) {
+    super(gridName, rawGrid, systemParticipants, emUnits, soilData);
     this.subGridTopologyGraph = subGridTopologyGraph;
     checkSubGridTopologyGraph(this.subGridTopologyGraph);
   }
@@ -114,7 +172,12 @@ public class JointGridContainer extends GridContainer {
     @Override
     public JointGridContainer build() {
       return new JointGridContainer(
-          getGridName(), getRawGrid(), getSystemParticipants(), getEmUnits(), subGridTopologyGraph);
+          getGridName(),
+          getRawGrid(),
+          getSystemParticipants(),
+          getEmUnits(),
+          subGridTopologyGraph,
+          getSoilData());
     }
   }
 }

@@ -14,8 +14,14 @@ import edu.ie3.datamodel.io.naming.timeseries.TimeSeriesMetaInformation;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.*;
+import edu.ie3.datamodel.models.input.SoilLayer;
+import edu.ie3.datamodel.models.input.SoilType;
 import edu.ie3.datamodel.models.input.connector.*;
+import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
+import edu.ie3.datamodel.models.input.connector.type.ConductorInput;
+import edu.ie3.datamodel.models.input.connector.type.LayerInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
+import edu.ie3.datamodel.models.input.connector.type.ScreenLayerInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
 import edu.ie3.datamodel.models.input.system.*;
@@ -201,7 +207,7 @@ public final class ModelFields extends FieldNamingStrategy {
   // code for registering the fields for known assets
 
   // basic asset fields
-  private static final Set<String> assetFields = newSet(UUID, ID);
+  private static final Set<String> assetFields = newSet(UUID_FIELD, ID);
   private static final Set<String> assetOptionalFields =
       newSet(OPERATOR, OPERATES_FROM, OPERATES_UNTIL);
 
@@ -211,6 +217,7 @@ public final class ModelFields extends FieldNamingStrategy {
     registerGridAssetFields();
     registerParticipantFields();
     registerThermalFields();
+    registerSoilFields();
     registerResultFields();
     registerTimeSeriesRelatedFields();
     registerValueFields();
@@ -266,6 +273,58 @@ public final class ModelFields extends FieldNamingStrategy {
     register(OperatorInput.class, assetFields);
 
     registerMandatory(LineTypeInput.class, assetFields, B, G, R, X, I_MAX, V_RATED);
+
+    registerMandatory(
+        CableTypeInput.class,
+        assetFields,
+        CORE_NUMBER,
+        CONDUCTOR,
+        ISOLATION_STRING,
+        SCREEN_STRING,
+        FILLER_STRING,
+        ARMOR_STRING,
+        JACK_STRING,
+        LIMIT_TEMPERATURE,
+        FREQUENCY,
+        SKIN_EFFECT_COEFFICIENT,
+        PROXIMITY_EFFECT_COEFFICIENT,
+        ELECTRICAL_CAPACITANCE,
+        TAN_DELTA,
+        CIRCULATING_LOSS_FACTOR,
+        EDDY_CURRENT_LOSS_FACTOR);
+
+    registerMandatory(
+        ConductorInput.class,
+        assetFields,
+        MATERIAL,
+        CROSS_SECTION,
+        DIAMETER,
+        THERMAL_RESISTIVITY,
+        VOLUMETRIC_HEAT_CAPACITY);
+    registerOptional(ConductorInput.class, newSet(AREA, IS_COMPACTED));
+
+    registerMandatory(
+        LayerInput.class,
+        assetFields,
+        MATERIAL,
+        INNER_DIAMETER,
+        OUTER_DIAMETER,
+        THERMAL_RESISTIVITY,
+        VOLUMETRIC_HEAT_CAPACITY);
+    registerOptional(LayerInput.class, newSet(AREA));
+
+    registerMandatory(
+        ScreenLayerInput.class,
+        assetFields,
+        MATERIAL,
+        INNER_DIAMETER,
+        OUTER_DIAMETER,
+        THERMAL_RESISTIVITY,
+        VOLUMETRIC_HEAT_CAPACITY,
+        WIRES_NUMBER,
+        WIRE_DIAMETER,
+        ELECTRICAL_RESISTIVITY);
+    registerOptional(ScreenLayerInput.class, newSet(AREA, LENGTH_OF_LAY));
 
     Stream.of(Transformer2WTypeInput.class, Transformer3WTypeInput.class)
         .forEach(
@@ -343,8 +402,8 @@ public final class ModelFields extends FieldNamingStrategy {
 
     register(
         CableDeploymentInput.class,
-        newSet(UUID, LINE_UUID, LAYOUT_FORMATION, DEPTH_CABLES, DISTANCE_CABLES),
-        Set.of());
+        newSet(UUID_FIELD, LINE_UUID, LAYOUT_FORMATION, DEPTH_CABLES, DISTANCE_CABLES),
+        newSet(CABLE_BED_WIDTH, CABLE_BED_HEIGHT, CABLE_BED_SOIL_TYPE));
 
     Stream.of(LineInput.class, Transformer2WInput.class, Transformer3WInput.class)
         .forEach(c -> addMandatory(c, NODE_A, NODE_B, PARALLEL_DEVICES, TYPE));
@@ -355,7 +414,7 @@ public final class ModelFields extends FieldNamingStrategy {
     addMandatory(MeasurementUnitInput.class, NODE, V_MAG, V_ANG, P, Q);
 
     // adding unsupported fields
-    ModelFields.unsupportedFields.put(SwitchInput.class, newSet(PARALLEL_DEVICES));
+    registerUnsupported(SwitchInput.class, newSet(PARALLEL_DEVICES));
 
     Stream.of(
             NodeInput.class,
@@ -393,7 +452,8 @@ public final class ModelFields extends FieldNamingStrategy {
 
     addMandatory(ChpInput.class, TYPE, THERMAL_BUS, THERMAL_STORAGE);
 
-    addMandatory(EvcsInput.class, TYPE, CHARGING_POINTS, COS_PHI_RATED, LOCATION_TYPE, V2G_SUPPORT);
+    addMandatory(
+        EvcsInput.class, TYPE, CHARGING_POINTS, COS_PHI_RATED, LOCATION_TYPES, V2G_SUPPORT);
 
     addMandatory(EvInput.class, TYPE, Q_CHARACTERISTICS);
 
@@ -437,6 +497,19 @@ public final class ModelFields extends FieldNamingStrategy {
                     c, STORAGE_VOLUME_LVL, INLET_TEMP, RETURN_TEMP, C, P_THERMAL_MAX, THERMAL_BUS));
   }
 
+  /** Method for registering all soil fields. */
+  private static void registerSoilFields() {
+    registerMandatory(
+        SoilType.class,
+        newSet(UUID_FIELD, ID),
+        THERMAL_RESISTIVITY_WET,
+        THERMAL_RESISTIVITY_DRY,
+        VOLUMETRIC_HEAT_CAPACITY,
+        CRITICAL_TEMPERATURE_DIFFERENCE);
+
+    registerMandatory(SoilLayer.class, newSet(UUID_FIELD), GEOMETRY, Z_FROM, Z_TO, SOIL_TYPE);
+  }
+
   /** Method for registering all result fields. */
   private static void registerResultFields() {
     Set<String> result = newSet(TIME, INPUT_MODEL);
@@ -448,9 +521,9 @@ public final class ModelFields extends FieldNamingStrategy {
 
     register(LineResult.class, connectorResultBase);
 
-    registerMandatory(Transformer2WResult.class, connectorResultBase, TAPPOS);
+    registerMandatory(Transformer2WResult.class, connectorResultBase, TAP_POS);
 
-    registerMandatory(Transformer3WResult.class, connectorResultBase, ICMAG, ICANG, TAPPOS);
+    registerMandatory(Transformer3WResult.class, connectorResultBase, ICMAG, ICANG, TAP_POS);
 
     registerMandatory(PowerLimitFlexOptionsResult.class, result, P_REF, P_MIN, P_MAX);
 

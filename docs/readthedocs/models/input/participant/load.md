@@ -77,6 +77,7 @@ For a load input a {code}`PowerProfileKey` can be specified. This key is used to
 during a simulation. The key is normally provided as a {code}`String`. If this key matches the {code}`PowerProfileKey` of
 one of the built-in load {code}`LoadProfile`, the corresponding load profile will be applied. If no profile should be used,
 for example when using primary data via a time series, the field needs to be left empty.
+A [Markov load profile](/io/markov) is referenced with the prefix {code}`markov_`, e.g. {code}`markov_h0`.
 
 
 ## Power Profiles

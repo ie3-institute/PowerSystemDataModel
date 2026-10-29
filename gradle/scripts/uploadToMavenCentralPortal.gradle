@@ -32,31 +32,31 @@ if (project.hasProperty('mavenCentralUser') && project.hasProperty('mavenCentral
         pom {
           description = 'Elaborated data model to model energy systems with a high granularity @ the Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3) @ TU Dortmund University'
           name = 'Power System Data Model'
-          url = 'https:github.com/ie3-institute/PowerSystemDatamodel'
+          url = 'https://github.com/ie3-institute/PowerSystemDatamodel'
           organization {
             name = 'Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University'
-            url = 'https:www.ie3.tu-dortmund.de/'
+            url = 'https://www.ie3.tu-dortmund.de/'
           }
           issueManagement {
             system = 'GitHub'
-            url = 'https:github.com/ie3-institute/PowerSystemDataModel/issues'
+            url = 'https://github.com/ie3-institute/PowerSystemDataModel/issues'
           }
           licenses {
             license {
               name = 'BSD 3-Clause License'
-              url = 'https:github.com/ie3-institute/PowerSystemDataModel/blob/master/LICENSE'
+              url = 'https://github.com/ie3-institute/PowerSystemDataModel/blob/master/LICENSE'
             }
           }
           developers {
             developer {
               organization = "Institute of Energy Systems, Energy Efficiency and Energy Economics (ie3)/TU Dortmund University"
-              organizationUrl = "https:ie3.etit.tu-dortmund.de"
+              organizationUrl = "https://ie3.etit.tu-dortmund.de"
             }
           }
           scm {
             connection = 'scm:git:git:github.com/ie3-institute/PowerSystemDataModel.git'
             developerConnection = 'scm:git:ssh:github.com:ie3-institute/PowerSystemDataModel.git'
-            url = 'https:github.com/ie3-institute/PowerSystemDataModel'
+            url = 'https://github.com/ie3-institute/PowerSystemDataModel'
           }
         }
 
@@ -65,6 +65,12 @@ if (project.hasProperty('mavenCentralUser') && project.hasProperty('mavenCentral
         artifactId = 'PowerSystemDataModel'
         version = versionString
 
+        // exclude the shadow (fat) jar variant from the publication
+        afterEvaluate {
+          components.java.withVariantsFromConfiguration(configurations.shadowRuntimeElements) {
+            skip()
+          }
+        }
         from components.java
         artifact sourcesJar
         artifact javadocJar
@@ -82,8 +88,8 @@ if (project.hasProperty('mavenCentralUser') && project.hasProperty('mavenCentral
     }
     signing {
       useInMemoryPgpKeys(
-      findProperty('signingKey') as String,
-      findProperty('signingPassword') as String
+          findProperty('signingKey') as String,
+          findProperty('signingPassword') as String
       )
       sign publications.mavenJava
     }

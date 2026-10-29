@@ -16,11 +16,16 @@ import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import java.util.Map;
 import java.util.UUID;
 
-public class AcInputFactory
-    extends ThermalSystemParticipantInputFactory<AcInput, AcTypeInput, AcInputEntityData> {
+/** Factory to create instances of {@link AcInput}s. */
+public class AcInputFactory extends ThermalSystemParticipantInputFactory<AcInput, AcTypeInput> {
 
-  public AcInputFactory() {
-    super(AcInput.class);
+  public AcInputFactory(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, EmInput> emUnits,
+      Map<UUID, AcTypeInput> types,
+      Map<UUID, ThermalBusInput> thermalBuses) {
+    super(operators, nodes, emUnits, types, thermalBuses, AcInput.class);
   }
 
   @Override

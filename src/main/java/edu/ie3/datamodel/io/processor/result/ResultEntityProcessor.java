@@ -20,10 +20,12 @@ import edu.ie3.datamodel.models.result.system.*;
 import edu.ie3.datamodel.models.result.thermal.CylindricalStorageResult;
 import edu.ie3.datamodel.models.result.thermal.DomesticHotWaterStorageResult;
 import edu.ie3.datamodel.models.result.thermal.ThermalHouseResult;
+import edu.ie3.datamodel.models.result.thermal.ThermalLineSegmentResult;
 import edu.ie3.datamodel.utils.Try;
-import edu.ie3.datamodel.utils.Try.*;
+import edu.ie3.datamodel.utils.Try.Failure;
+import edu.ie3.datamodel.utils.Try.Success;
 import edu.ie3.util.exceptions.QuantityException;
-import java.util.*;
+import java.util.List;
 import javax.measure.Quantity;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -64,7 +66,8 @@ public class ResultEntityProcessor extends EntityProcessor<ResultEntity> {
           EmResult.class,
           PowerLimitFlexOptionsResult.class,
           EnergyBoundariesFlexOptionsResult.class,
-          CongestionResult.class);
+          CongestionResult.class,
+          ThermalLineSegmentResult.class);
 
   public ResultEntityProcessor(Class<? extends ResultEntity> registeredClass)
       throws EntityProcessorException {

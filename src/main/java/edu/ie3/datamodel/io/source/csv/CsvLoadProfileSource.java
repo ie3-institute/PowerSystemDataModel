@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.timeseries.LoadProfileFactory;
 import edu.ie3.datamodel.io.naming.timeseries.FileLoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.LoadProfileSource;
@@ -15,12 +16,12 @@ import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.utils.Try;
+import edu.ie3.datamodel.utils.Try.TrySupplier;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
@@ -45,7 +46,8 @@ public class CsvLoadProfileSource<V extends LoadValues> extends LoadProfileSourc
 
     /* Read in the full time series */
     try {
-      this.loadProfileTimeSeries = buildLoadProfileTimeSeries(this::createEntries);
+      this.loadProfileTimeSeries =
+          buildLoadProfileTimeSeries(d -> entryFactory.get(new FieldMap(d)));
     } catch (SourceException e) {
       throw new IllegalArgumentException(
           "Unable to obtain load profile time series with profile '"
@@ -70,8 +72,9 @@ public class CsvLoadProfileSource<V extends LoadValues> extends LoadProfileSourc
   }
 
   @Override
-  public Supplier<TimeSeriesOutputValue> getValueSupplier(TimeSeriesInputValue data) {
-    return TimeSeriesOutputValue.from(loadProfileTimeSeries.supplyValue(data.time()));
+  public TrySupplier<TimeSeriesOutputValue, SourceException> getValueSupplier(
+      TimeSeriesInputValue data) {
+    return TimeSeriesOutputValue.from(loadProfileTimeSeries.supplyValue(data.time())::get);
   }
 
   @Override

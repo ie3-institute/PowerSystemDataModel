@@ -508,6 +508,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * Validates a StorageInput if:
    *
    * <ul>
+   *   <li>an energy management unit is controlling it
    *   <li>{@link SystemParticipantValidationUtils#checkStorageType(StorageTypeInput)} confirms a
    *       valid type properties
    * </ul>
@@ -517,7 +518,18 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    *     Success
    */
   private static List<Try<Void, InvalidEntityException>> checkStorage(StorageInput storageInput) {
-    return checkType(storageInput.getType());
+    List<Try<Void, InvalidEntityException>> exceptions = new ArrayList<>();
+
+    exceptions.add(
+        Try.ofVoid(
+            storageInput.getControllingEm().isEmpty(),
+            () ->
+                new InvalidEntityException(
+                    "No energy management unit controlling the storage", storageInput)));
+
+    exceptions.addAll(checkType(storageInput.getType()));
+
+    return exceptions;
   }
 
   /**
@@ -624,10 +636,19 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
                     + "'. At least one charging point is needed.",
                 evcsInput);
         };
+    Try.VoidSupplier<InvalidEntityException> locationTypeValidation =
+        () -> {
+          if (evcsInput.getLocationTypes() == null || evcsInput.getLocationTypes().isEmpty())
+            throw new InvalidEntityException(
+                evcsInput.getId()
+                    + " LocationType is empty. At least one location type must be provided.",
+                evcsInput);
+        };
 
     return Try.ofVoid(
         InvalidEntityException.class,
         chargingPointValidation,
+        locationTypeValidation,
         () -> checkRatedPowerFactor(evcsInput, evcsInput.getCosPhiRated()),
         () ->
             detectNegativeQuantities(quantities(S_RATED, evcsInput.getType().sRated()), evcsInput));

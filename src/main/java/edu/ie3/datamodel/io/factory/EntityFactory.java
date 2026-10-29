@@ -8,16 +8,13 @@ package edu.ie3.datamodel.io.factory;
 import edu.ie3.datamodel.models.Entity;
 
 /**
- * Universal factory class for creating entities with {@link EntityData} data objects.
+ * Universal factory class for creating entities.
  *
- * @param <T> Type of entity that this factory can create. Can be a subclass of the entities that
- *     this factory creates.
- * @param <D> Type of data class that is required for entity creation
- * @version 0.1
- * @since 28.01.20
+ * @param <T> Type of entity that this factory can create.
+ * @param <R> Type of actually created entity. Can be a subclass of the entities that this factory
+ *     creates.
  */
-public abstract class EntityFactory<T extends Entity, D extends EntityData>
-    extends Factory<T, D, T> {
+public abstract class EntityFactory<T extends Entity, R extends T> extends Factory<T, FieldMap, R> {
   /**
    * Constructor for an EntityFactory for given classes
    *

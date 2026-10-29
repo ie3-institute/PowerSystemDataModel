@@ -16,6 +16,7 @@ import edu.ie3.datamodel.models.input.connector.*
 import edu.ie3.datamodel.models.input.connector.type.*
 import edu.ie3.datamodel.models.input.system.*
 import edu.ie3.datamodel.models.input.system.type.*
+import edu.ie3.datamodel.models.profile.PowerProfileKey
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils
 import edu.ie3.test.common.GridTestData
 import edu.ie3.test.common.SystemParticipantTestData
@@ -248,7 +249,6 @@ class InputEntityProcessorTest extends Specification {
         entity.uuid.toString()
       }.orElse("")
     ]
-
     LoadInput | SystemParticipantTestData.loadInput || [
       "uuid" : SystemParticipantTestData.loadInput.uuid.toString(),
       "cosPhiRated" : SystemParticipantTestData.loadInput.cosPhiRated.toString(),
@@ -303,12 +303,26 @@ class InputEntityProcessorTest extends Specification {
       "type" : SystemParticipantTestData.evcsInput.type.toString(),
       "cosPhiRated" : SystemParticipantTestData.evcsInput.cosPhiRated.toString(),
       "chargingPoints" : SystemParticipantTestData.evcsInput.chargingPoints.toString(),
-      "locationType" : SystemParticipantTestData.evcsInput.locationType.name(),
+      "locationTypes" : SystemParticipantTestData.evcsInput.locationTypes.toString(),
       "v2gSupport" : SystemParticipantTestData.evcsInput.v2gSupport.toString(),
       "controllingEm" : SystemParticipantTestData.acInput.controllingEm.map{entity ->
         entity.uuid.toString()
       }.orElse("")
     ]
+  }
+
+  def "The InputEntityProcessor should serialize a Markov load profile of a LoadInput correctly"() {
+    given:
+    def processor = new InputEntityProcessor(LoadInput)
+    def loadInput = SystemParticipantTestData.loadInput.copy()
+        .loadProfile(new PowerProfileKey("h0", PowerProfileKey.Type.MARKOV))
+        .build()
+
+    when:
+    Map<String, String> actual = processor.handleEntity(loadInput)
+
+    then:
+    actual.get("loadProfile") == "markov_h0"
   }
 
   def "The InputEntityProcessor should serialize a provided OperatorInput correctly"() {
@@ -459,8 +473,8 @@ class InputEntityProcessorTest extends Specification {
       "filler" : "[]",
       "jack" : "[]",
       "screen" : "",
-      "conductor" : '{"uuid":"' + type.getConductor().getUuid() + '","name":"conductor","material":"COPPER","crossSection":"4.0E-4","diameter":"0.0225","isCompacted":false,"thermalResistivity":"0.0026041667","thermalCapacitance":"3449600.0","area":"1.0","additionalInformation":{}}',
-      "isolation" : '[{"uuid":"' + type.getIsolation().get(0).getUuid() + '","name":"Main insulation","material":"XLPE","innerDiameter":"0.0225","outerDiameter":"0.027","thermalResistivity":"3.5","thermalCapacitance":"2.4E6","area":"1.0","additionalInformation":{}}]'
+      "conductor" : '{"uuid":"' + type.getConductor().getUuid() + '","name":"conductor","material":"COPPER","crossSection":"4.0E-4","diameter":"0.0225","isCompacted":false,"thermalResistivity":"0.0026041667","volumetricHeatCapacity":"3449600.0","area":"1.0","additionalInformation":{}}',
+      "isolation" : '[{"uuid":"' + type.getIsolation().get(0).getUuid() + '","name":"Main insulation","material":"XLPE","innerDiameter":"0.0225","outerDiameter":"0.027","thermalResistivity":"3.5","volumetricHeatCapacity":"2.4E6","area":"1.0","additionalInformation":{}}]'
     ]
 
     when:
@@ -670,15 +684,21 @@ class InputEntityProcessorTest extends Specification {
         UUID.fromString("22222222-2222-2222-2222-222222222222"),
         "formationX",
         Quantities.getQuantity(0.1, StandardUnits.LINE_LENGTH),
-        Quantities.getQuantity(0.2, StandardUnits.LINE_LENGTH)
-        )
+        Quantities.getQuantity(0.2, StandardUnits.LINE_LENGTH),
+        Quantities.getQuantity(0.8, StandardUnits.LINE_LENGTH),
+        Quantities.getQuantity(0.3, StandardUnits.LINE_LENGTH),
+        UUID.fromString("33333333-3333-3333-3333-333333333333")
+    )
 
     Map expected = [
       "uuid" : "11111111-1111-1111-1111-111111111111",
       "lineUuid" : "22222222-2222-2222-2222-222222222222",
       "layoutFormation" : "formationX",
       "depthCables" : "0.1",
-      "distanceCables" : "0.2"
+      "distanceCables" : "0.2",
+      "cableBedWidth" : "0.8",
+      "cableBedHeight" : "0.3",
+      "cableBedSoilType" : "33333333-3333-3333-3333-333333333333"
     ]
 
     when:

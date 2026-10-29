@@ -5,17 +5,15 @@
 */
 package edu.ie3.datamodel.io.source;
 
-import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.SourceException;
-import edu.ie3.datamodel.io.factory.timeseries.SimpleTimeBasedValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedSimpleValueFactory;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
 import edu.ie3.datamodel.models.value.Value;
-import edu.ie3.datamodel.utils.Try;
 import edu.ie3.util.interval.ClosedInterval;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * The interface definition of a source, that is able to provide one specific time series for one
@@ -31,26 +29,12 @@ public abstract class TimeSeriesSource<V extends Value> extends EntitySource {
     this.valueClass = valueClass;
   }
 
-  /**
-   * Build a {@link TimeBasedValue} of type {@code V}, whereas the underlying {@link Value} does not
-   * need any additional information.
-   *
-   * @param fieldToValues Mapping from field id to values
-   * @return {@link Try} of simple time based value
-   */
-  protected Try<TimeBasedValue<V>, FactoryException> createTimeBasedValue(
-      Map<String, String> fieldToValues) {
-    SimpleTimeBasedValueData<V> factoryData =
-        new SimpleTimeBasedValueData<>(fieldToValues, valueClass);
-    return valueFactory.get(factoryData);
-  }
-
-  public abstract IndividualTimeSeries<V> getTimeSeries();
+  public abstract IndividualTimeSeries<V> getTimeSeries() throws SourceException;
 
   public abstract IndividualTimeSeries<V> getTimeSeries(ClosedInterval<ZonedDateTime> timeInterval)
       throws SourceException;
 
-  public abstract Optional<V> getValue(ZonedDateTime time);
+  public abstract Optional<V> getValue(ZonedDateTime time) throws SourceException;
 
   /**
    * Method to retrieve the value of the given time or the last timestamp before the given time.
@@ -58,7 +42,7 @@ public abstract class TimeSeriesSource<V extends Value> extends EntitySource {
    * @param time given time
    * @return an option for a value
    */
-  public Optional<V> getValueOrLast(ZonedDateTime time) {
+  public Optional<V> getValueOrLast(ZonedDateTime time) throws SourceException {
     Optional<V> value = getValue(time);
 
     if (value.isEmpty()) {
@@ -68,7 +52,8 @@ public abstract class TimeSeriesSource<V extends Value> extends EntitySource {
     return value;
   }
 
-  public abstract Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime time);
+  public abstract Optional<TimeBasedValue<V>> getPreviousTimeBasedValue(ZonedDateTime time)
+      throws SourceException;
 
   /**
    * Method to return all time keys after a given timestamp.
@@ -76,7 +61,7 @@ public abstract class TimeSeriesSource<V extends Value> extends EntitySource {
    * @param time given time
    * @return a list of time keys
    */
-  public abstract List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time);
+  public abstract List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time) throws SourceException;
 
   /**
    * Method to return all last known time keys before a given timestamp.
@@ -84,5 +69,6 @@ public abstract class TimeSeriesSource<V extends Value> extends EntitySource {
    * @param time given time
    * @return an option for the time key
    */
-  public abstract Optional<ZonedDateTime> getLastTimeKeyBefore(ZonedDateTime time);
+  public abstract Optional<ZonedDateTime> getLastTimeKeyBefore(ZonedDateTime time)
+      throws SourceException;
 }

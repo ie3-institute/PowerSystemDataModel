@@ -39,6 +39,15 @@ public final class PowerProfileKey implements Serializable {
     return type;
   }
 
+  /**
+   * Returns the key as it is written to input data, see {@link #parse(String)}.
+   *
+   * @return the serialized key
+   */
+  public String serialize() {
+    return type == Type.MARKOV ? MARKOV_PREFIX + value : value;
+  }
+
   public boolean equals(PowerProfile other) {
     return equals(other.getKey());
   }
@@ -77,6 +86,22 @@ public final class PowerProfileKey implements Serializable {
   // static
 
   public static final PowerProfileKey NO_KEY_ASSIGNED = new PowerProfileKey("", Type.TS);
+
+  private static final String MARKOV_PREFIX = "markov_";
+
+  /**
+   * Parses a key from input data. Keys with the prefix "markov_" refer to a Markov load profile,
+   * all other keys to a time series based load profile.
+   *
+   * @param key the key from input data
+   * @return the parsed key
+   */
+  public static PowerProfileKey parse(String key) {
+    if (key != null && key.toLowerCase().startsWith(MARKOV_PREFIX)) {
+      return new PowerProfileKey(key.substring(MARKOV_PREFIX.length()), Type.MARKOV);
+    }
+    return new PowerProfileKey(key);
+  }
 
   public static String toUniformKey(String key) {
     return key.toLowerCase().replaceAll("[-_]*", "");

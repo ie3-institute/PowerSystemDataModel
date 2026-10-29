@@ -10,7 +10,6 @@ import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.markov.MarkovLoadModelFactory;
-import edu.ie3.datamodel.io.factory.markov.MarkovModelData;
 import edu.ie3.datamodel.io.file.FileType;
 import edu.ie3.datamodel.io.naming.timeseries.FileLoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.DataSource;
@@ -18,10 +17,10 @@ import edu.ie3.datamodel.io.source.EntitySource;
 import edu.ie3.datamodel.io.source.PowerValueSource;
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.profile.markov.MarkovLoadModel;
+import edu.ie3.datamodel.utils.Try.TrySupplier;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Supplier;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -66,7 +65,7 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
   public synchronized MarkovLoadModel getModel() throws SourceException {
     if (cachedModel == null) {
       try {
-        cachedModel = factory.get(new MarkovModelData(readRoot())).getOrThrow();
+        cachedModel = factory.get(readRoot()).getOrThrow();
       } catch (FactoryException e) {
         throw new SourceException(
             "Unable to build Markov load model from '"
@@ -109,7 +108,7 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
 
   /** Delegates to the cached {@link MarkovLoadModel} for a single simulation step. */
   @Override
-  public Supplier<MarkovOutputValue> getValueSupplier(MarkovIdentifier data) {
+  public TrySupplier<MarkovOutputValue, SourceException> getValueSupplier(MarkovIdentifier data) {
     return getModelUnchecked().getValueSupplier(data);
   }
 

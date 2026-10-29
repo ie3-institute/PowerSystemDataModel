@@ -36,7 +36,7 @@ public class SqlTimeSeriesMappingSource extends TimeSeriesMappingSource {
   }
 
   @Override
-  public Stream<Map<String, String>> getMappingSourceData() {
+  public Stream<Map<String, String>> getMappingSourceData() throws SourceException {
     return dataSource.executeQuery(queryFull);
   }
 

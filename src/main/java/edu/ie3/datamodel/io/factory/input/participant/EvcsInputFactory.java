@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.factory.input.participant;
 import edu.ie3.datamodel.exceptions.ChargingPointTypeException;
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -18,33 +19,29 @@ import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTyp
 import edu.ie3.datamodel.models.input.system.type.chargingpoint.ChargingPointTypeUtils;
 import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationType;
 import edu.ie3.datamodel.models.input.system.type.evcslocation.EvcsLocationTypeUtils;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-/**
- * Factory to create instances of {@link EvcsInput}s based on {@link SystemParticipantEntityData}
- * and additional fields.
- *
- * @version 0.1
- * @since 26.07.20
- */
-public class EvcsInputFactory
-    extends SystemParticipantInputEntityFactory<EvcsInput, SystemParticipantEntityData> {
+/** Factory to create instances of {@link EvcsInput}s. */
+public class EvcsInputFactory extends SystemParticipantInputEntityFactory<EvcsInput> {
 
-  public EvcsInputFactory() {
-    super(EvcsInput.class);
+  public EvcsInputFactory(
+      Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits) {
+    super(operators, nodes, emUnits, EvcsInput.class);
   }
 
   @Override
   protected EvcsInput buildModel(
-      SystemParticipantEntityData data,
+      FieldMap data,
       UUID uuid,
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
-      OperationTime operationTime) {
-    final EmInput em = data.getControllingEm().orElse(null);
-    final ChargingPointType type;
+      OperationTime operationTime,
+      EmInput controllingEm) {
+    ChargingPointType type;
     String typeFieldValue = data.getField(TYPE);
 
     try {
@@ -56,22 +53,22 @@ public class EvcsInputFactory
               TYPE, typeFieldValue),
           e);
     }
-    final int chargingPoints = data.getInt(CHARGING_POINTS);
-    final double cosPhi = data.getDouble(COS_PHI_RATED);
+    int chargingPoints = data.getInt(CHARGING_POINTS);
+    double cosPhi = data.getDouble(COS_PHI_RATED);
 
-    final EvcsLocationType locationType;
-    String locationFieldValue = data.getField(LOCATION_TYPE);
+    List<EvcsLocationType> locationTypes;
+    String locationFieldValue = data.getField(LOCATION_TYPES);
     try {
-      locationType = EvcsLocationTypeUtils.parse(locationFieldValue);
+      locationTypes = EvcsLocationTypeUtils.parse(locationFieldValue);
     } catch (ParsingException e) {
       throw new FactoryException(
           String.format(
-              "Exception while trying to parse field \"%s\" with supposed int value \"%s\"",
-              LOCATION_TYPE, locationFieldValue),
+              "Exception while trying to parse field \"%s\" with supposed value \"%s\"",
+              LOCATION_TYPES, locationFieldValue),
           e);
     }
 
-    final boolean v2gSupport = data.getBoolean(V2G_SUPPORT);
+    boolean v2gSupport = data.getBoolean(V2G_SUPPORT);
 
     return new EvcsInput(
         uuid,
@@ -80,12 +77,12 @@ public class EvcsInputFactory
         operationTime,
         node,
         qCharacteristics,
-        em,
+        controllingEm,
         type,
         chargingPoints,
         cosPhi,
-        locationType,
+        locationTypes,
         v2gSupport,
-        data.getFieldsToValues());
+        data.additionalInformation());
   }
 }
