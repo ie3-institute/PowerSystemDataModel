@@ -17,14 +17,11 @@ references
 
 ## Contact the (Main) Maintainers
 
-If you feel, something this missing, wrong or misleading, please contact one of our main contributors:
+If you feel, something is missing, wrong or misleading, please contact one of our main contributors:
 
-> - [@sensarmad](https://github.com/sensarmad)
-> - [@t-ober](https://github.com/t-ober)
 > - [@danielfeismann](https://github.com/danielfeismann)
 > - [@sebastian-peter](https://github.com/sebastian-peter)
-> - [@jo-bao](https://github.com/jo-bao)
-> - [@julianhohmann](https://github.com/julianhohmann)
+> - [@staudtMarius](https://github.com/staudtMarius)
 
 Hat tip to all other contributors!
 
