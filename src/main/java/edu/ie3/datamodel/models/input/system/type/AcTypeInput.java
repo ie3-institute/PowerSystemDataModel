@@ -146,7 +146,14 @@ public class AcTypeInput extends SystemParticipantTypeInput {
     @Override
     public AcTypeInput build() {
       return new AcTypeInput(
-          getUuid(), getId(), getCapex(), getOpex(), getsRated(), getCosPhiRated(), pThermal);
+          getUuid(),
+          getId(),
+          getCapex(),
+          getOpex(),
+          getsRated(),
+          getCosPhiRated(),
+          pThermal,
+          getAdditionalInformation());
     }
 
     @Override

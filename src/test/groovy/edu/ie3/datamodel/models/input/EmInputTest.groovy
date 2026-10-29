@@ -3,9 +3,9 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
-package edu.ie3.datamodel.models.input.system
+package edu.ie3.datamodel.models.input
 
-import edu.ie3.datamodel.models.input.EmInput
+
 import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Specification
 
@@ -88,6 +88,7 @@ class EmInputTest extends Specification {
       id == emInput.id
       controlStrategy == newStrat
       controllingEm == Optional.of(givenParentEm)
+      additionalInformation == emInput.additionalInformation
     }
   }
 }

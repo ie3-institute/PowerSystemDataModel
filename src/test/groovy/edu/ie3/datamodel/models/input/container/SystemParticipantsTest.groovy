@@ -89,4 +89,17 @@ class SystemParticipantsTest extends Specification {
     modifiedSystemParticipants.storages.first() == modifiedStorageInput
     modifiedSystemParticipants.wecPlants.first() == modifiedWecInput
   }
+
+  def "An Input copy builder should allow modifying additionalInformation"() {
+    given:
+    def pvInput = SystemParticipantTestData.pvInput
+    def newInfo = ["source": "modified", "note": "updated"]
+
+    when:
+    def modified = pvInput.copy().additionalInformation(newInfo).build()
+
+    then:
+    modified.additionalInformation == newInfo
+    pvInput.additionalInformation == SystemParticipantTestData.pvInput.additionalInformation
+  }
 }

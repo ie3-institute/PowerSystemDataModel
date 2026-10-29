@@ -41,6 +41,7 @@ class PvInputTest extends Specification {
       kG == 10
       kT == 5
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == pvInput.additionalInformation
     }
   }
 
@@ -67,6 +68,7 @@ class PvInputTest extends Specification {
       kG == pvInput.kG
       kT == pvInput.kT
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == pvInput.additionalInformation
     }
   }
 }

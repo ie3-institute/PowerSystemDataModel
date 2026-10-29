@@ -158,7 +158,13 @@ public class EmInput extends AssetInput implements HasEm {
     @Override
     public EmInput build() {
       return new EmInput(
-          getUuid(), getId(), getOperator(), getOperationTime(), controlStrategy, parentEm);
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          controlStrategy,
+          parentEm,
+          getAdditionalInformation());
     }
 
     @Override

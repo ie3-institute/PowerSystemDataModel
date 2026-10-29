@@ -147,7 +147,14 @@ public class SwitchInput extends ConnectorInput {
     @Override
     public SwitchInput build() {
       return new SwitchInput(
-          getUuid(), getId(), getOperator(), getOperationTime(), getNodeA(), getNodeB(), closed);
+          getUuid(),
+          getId(),
+          getOperator(),
+          getOperationTime(),
+          getNodeA(),
+          getNodeB(),
+          closed,
+          getAdditionalInformation());
     }
 
     public SwitchInputCopyBuilder closed(boolean closed) {

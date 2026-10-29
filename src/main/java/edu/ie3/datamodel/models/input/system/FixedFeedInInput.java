@@ -211,7 +211,8 @@ public class FixedFeedInInput extends SystemParticipantInput {
           getqCharacteristics(),
           getEm(),
           sRated,
-          cosPhiRated);
+          cosPhiRated,
+          getAdditionalInformation());
     }
 
     @Override

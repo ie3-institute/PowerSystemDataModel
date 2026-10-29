@@ -238,7 +238,8 @@ public class SoilType extends UniqueInputEntity {
           thermalResistivityWet,
           thermalResistivityDry,
           volumetricHeatCapacity,
-          criticalTemperatureDifference);
+          criticalTemperatureDifference,
+          getAdditionalInformation());
     }
   }
 }

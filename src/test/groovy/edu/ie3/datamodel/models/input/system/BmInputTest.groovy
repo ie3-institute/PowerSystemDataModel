@@ -32,6 +32,7 @@ class BmInputTest extends Specification {
       feedInTariff == Quantities.getQuantity(15, EURO_PER_MEGAWATTHOUR)
       type == SystemParticipantTestData.bmTypeInput
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == bmInput.additionalInformation
     }
   }
 
@@ -54,6 +55,7 @@ class BmInputTest extends Specification {
       type.sRated == bmInput.type.sRated * 2d
       sRated() == bmInput.type.sRated * 2d
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == bmInput.additionalInformation
     }
   }
 }

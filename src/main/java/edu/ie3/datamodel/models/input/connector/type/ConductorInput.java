@@ -209,7 +209,8 @@ public class ConductorInput extends AssetInput implements Serializable {
         isCompacted,
         thermalResistivity,
         volumetricHeatCapacity,
-        area);
+        area,
+        getAdditionalInformation());
   }
 
   @Override

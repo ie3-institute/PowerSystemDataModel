@@ -96,7 +96,7 @@ public class OperatorInput extends UniqueInputEntity {
 
     @Override
     public OperatorInput build() {
-      return new OperatorInput(getUuid(), id);
+      return new OperatorInput(getUuid(), id, getAdditionalInformation());
     }
 
     public OperatorInputCopyBuilder id(String id) {

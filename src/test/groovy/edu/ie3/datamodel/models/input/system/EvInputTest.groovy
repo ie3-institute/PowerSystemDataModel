@@ -27,6 +27,7 @@ class EvInputTest extends Specification {
       qCharacteristics == ev.qCharacteristics
       type == SystemParticipantTestData.evTypeInput
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == ev.additionalInformation
     }
   }
 
@@ -50,6 +51,7 @@ class EvInputTest extends Specification {
       type.eStorage == ev.type.eStorage * 2d
       type.eCons == ev.type.eCons * 2d
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == ev.additionalInformation
     }
   }
 }
