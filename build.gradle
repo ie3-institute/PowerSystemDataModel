@@ -57,6 +57,7 @@ dependencies {
   implementation 'com.github.ie3-institute:PowerSystemUtils:3.3.0'
 
   implementation 'tech.units:indriya:2.2.4'
+  implementation "org.typelevel:squants_3:1.8.3"
 
   // JTS Topology Suite for GeoPositions, License: EPL 1.0 / EDL 1.0
   implementation('org.locationtech.jts:jts-core:1.20.0'){

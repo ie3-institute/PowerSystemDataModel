@@ -14,7 +14,10 @@ import edu.ie3.datamodel.models.Entity;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.voltagelevels.GermanVoltageLevelUtils;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
+import edu.ie3.datamodel.utils.QuantityFunction;
+import edu.ie3.util.NumericUtils;
 import java.util.*;
+import java.util.function.DoubleFunction;
 import java.util.function.Function;
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -289,6 +292,14 @@ public class FieldMap {
    */
   public <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(String field, Unit<Q> unit) {
     return Quantities.getQuantity(getDouble(field), unit);
+  }
+
+  public <Q extends squants.Quantity<Q>> Q getQuantity(String field, DoubleFunction<Q> fcn) {
+    return fcn.apply(getDouble(field));
+  }
+
+  public <Q extends squants.Quantity<Q>> Q getQuantity(String field, QuantityFunction<Q> fcn) {
+    return fcn.apply(getDouble(field), NumericUtils.Double());
   }
 
   /**
