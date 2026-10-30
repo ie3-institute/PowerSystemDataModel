@@ -50,7 +50,7 @@ Model of a cylindrical thermal storage using a fluid to store thermal energy.
 
    * - c
      - kWh / (K &middot; m³)
-     - Specific heat capacity of the storage medium
+     - Volumetric heat capacity of the storage medium
      
    * - pThermalMax
      - kW

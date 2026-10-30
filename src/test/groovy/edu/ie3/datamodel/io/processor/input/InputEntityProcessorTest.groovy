@@ -473,8 +473,8 @@ class InputEntityProcessorTest extends Specification {
       "filler" : "[]",
       "jack" : "[]",
       "screen" : "",
-      "conductor" : '{"uuid":"' + type.getConductor().getUuid() + '","name":"conductor","material":"COPPER","crossSection":"4.0E-4","diameter":"0.0225","isCompacted":false,"thermalResistivity":"0.0026041667","thermalCapacitance":"3449600.0","area":"1.0","additionalInformation":{}}',
-      "isolation" : '[{"uuid":"' + type.getIsolation().get(0).getUuid() + '","name":"Main insulation","material":"XLPE","innerDiameter":"0.0225","outerDiameter":"0.027","thermalResistivity":"3.5","thermalCapacitance":"2.4E6","area":"1.0","additionalInformation":{}}]'
+      "conductor" : '{"uuid":"' + type.getConductor().getUuid() + '","name":"conductor","material":"COPPER","crossSection":"4.0E-4","diameter":"0.0225","isCompacted":false,"thermalResistivity":"0.0026041667","volumetricHeatCapacity":"3449600.0","area":"1.0","additionalInformation":{}}',
+      "isolation" : '[{"uuid":"' + type.getIsolation().get(0).getUuid() + '","name":"Main insulation","material":"XLPE","innerDiameter":"0.0225","outerDiameter":"0.027","thermalResistivity":"3.5","volumetricHeatCapacity":"2.4E6","area":"1.0","additionalInformation":{}}]'
     ]
 
     when:
@@ -684,7 +684,10 @@ class InputEntityProcessorTest extends Specification {
         UUID.fromString("22222222-2222-2222-2222-222222222222"),
         "formationX",
         Quantities.getQuantity(0.1, StandardUnits.LINE_LENGTH),
-        Quantities.getQuantity(0.2, StandardUnits.LINE_LENGTH)
+        Quantities.getQuantity(0.2, StandardUnits.LINE_LENGTH),
+        Quantities.getQuantity(0.8, StandardUnits.LINE_LENGTH),
+        Quantities.getQuantity(0.3, StandardUnits.LINE_LENGTH),
+        UUID.fromString("33333333-3333-3333-3333-333333333333")
     )
 
     Map expected = [
@@ -692,7 +695,10 @@ class InputEntityProcessorTest extends Specification {
       "lineUuid" : "22222222-2222-2222-2222-222222222222",
       "layoutFormation" : "formationX",
       "depthCables" : "0.1",
-      "distanceCables" : "0.2"
+      "distanceCables" : "0.2",
+      "cableBedWidth" : "0.8",
+      "cableBedHeight" : "0.3",
+      "cableBedSoilType" : "33333333-3333-3333-3333-333333333333"
     ]
 
     when:

@@ -5,10 +5,13 @@
 */
 package edu.ie3.datamodel.io.source.influxdb;
 
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.TIME;
+
 import edu.ie3.datamodel.exceptions.NoDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
@@ -214,7 +217,10 @@ public class InfluxDbWeatherSource extends WeatherSource {
       values.add(
           idCoordinateSource
               .getCoordinate(coordinateId)
-              .map(point -> new TimeBasedWeatherValueData(flatCaseFields, point, coordinateId))
+              .map(
+                  point ->
+                      new TimeBasedWeatherValueData(
+                          new FieldMap(flatCaseFields), point, coordinateId))
               .map(weatherFactory::get)
               .flatMap(Try::getData));
     }
@@ -259,11 +265,11 @@ public class InfluxDbWeatherSource extends WeatherSource {
   }
 
   private String createTimeConstraint(ClosedInterval<ZonedDateTime> timeInterval) {
-    return weatherFactory.getTimeFieldString()
+    return TIME
         + " >= "
         + timeInterval.getLower().toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR
         + AND
-        + weatherFactory.getTimeFieldString()
+        + TIME
         + " <= "
         + timeInterval.getUpper().toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
   }
@@ -278,21 +284,15 @@ public class InfluxDbWeatherSource extends WeatherSource {
   }
 
   private String createTimeConstraint(ZonedDateTime date) {
-    return weatherFactory.getTimeFieldString()
-        + "="
-        + date.toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
+    return TIME + "=" + date.toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
   }
 
   private String createTimeConstraintBefore(ZonedDateTime date) {
-    return weatherFactory.getTimeFieldString()
-        + " < "
-        + date.toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
+    return TIME + " < " + date.toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
   }
 
   private String createTimeConstraintAfter(ZonedDateTime time) {
-    return weatherFactory.getTimeFieldString()
-        + " > "
-        + time.toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
+    return TIME + " > " + time.toInstant().toEpochMilli() * MILLI_TO_NANO_FACTOR;
   }
 
   private String createCoordinateConstraintString(int coordinateId) {

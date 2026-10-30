@@ -5,14 +5,14 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
-import edu.ie3.datamodel.models.value.WeatherValue;
-import java.util.Map;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import java.util.Optional;
 import org.locationtech.jts.geom.Point;
 
-public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> {
+public class TimeBasedWeatherValueData {
 
   private final Point coordinate;
+  private final FieldMap fieldsToAttributes;
 
   /**
    * Id of the coordinate, or {@code null} if it is not known. As it is only a different
@@ -27,7 +27,7 @@ public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> 
    * @param fieldsToAttributes attribute map: field name to value
    * @param coordinate coordinate for this WeatherValue
    */
-  public TimeBasedWeatherValueData(Map<String, String> fieldsToAttributes, Point coordinate) {
+  public TimeBasedWeatherValueData(FieldMap fieldsToAttributes, Point coordinate) {
     this(fieldsToAttributes, coordinate, null);
   }
 
@@ -39,14 +39,19 @@ public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> 
    * @param coordinateId id of that coordinate (can be null)
    */
   public TimeBasedWeatherValueData(
-      Map<String, String> fieldsToAttributes, Point coordinate, Integer coordinateId) {
-    super(fieldsToAttributes, WeatherValue.class);
+      FieldMap fieldsToAttributes, Point coordinate, Integer coordinateId) {
+    // this does the magic: case-insensitive get/set calls on keys
+    this.fieldsToAttributes = fieldsToAttributes;
     this.coordinate = coordinate;
     this.coordinateId = coordinateId;
   }
 
   public Point getCoordinate() {
     return coordinate;
+  }
+
+  public FieldMap getFieldsToAttributes() {
+    return fieldsToAttributes;
   }
 
   /**
@@ -62,15 +67,14 @@ public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> 
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
 
     TimeBasedWeatherValueData that = (TimeBasedWeatherValueData) o;
-    return coordinate.equals(that.coordinate);
+    return coordinate.equals(that.coordinate) && fieldsToAttributes.equals(that.fieldsToAttributes);
   }
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
+    int result = fieldsToAttributes.hashCode();
     result = 31 * result + (coordinate != null ? coordinate.hashCode() : 0);
     return result;
   }
@@ -79,9 +83,7 @@ public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> 
   public String toString() {
     return "TimeBasedWeatherValueData{"
         + "fieldsToAttributes="
-        + getFieldsToValues()
-        + ", targetClass="
-        + getTargetClass()
+        + fieldsToAttributes
         + ", coordinate="
         + coordinate
         + '}';

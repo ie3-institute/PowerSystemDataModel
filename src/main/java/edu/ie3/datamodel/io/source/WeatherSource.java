@@ -9,6 +9,7 @@ import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.WEATHER_COORDINATE
 
 import edu.ie3.datamodel.exceptions.NoDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.timeseries.CosmoTimeBasedWeatherValueFactory;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
@@ -256,7 +257,8 @@ public abstract class WeatherSource extends EntitySource {
       log.warn("Unable to match coordinate ID {} to a point", coordinateId);
       return Optional.empty();
     }
-    return Optional.of(new TimeBasedWeatherValueData(fieldMap, coordinate.get(), coordinateId));
+    return Optional.of(
+        new TimeBasedWeatherValueData(new FieldMap(fieldMap), coordinate.get(), coordinateId));
   }
 
   /**

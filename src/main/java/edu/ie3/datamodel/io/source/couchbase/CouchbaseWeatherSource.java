@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.couchbase;
 
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.TIME;
 import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.WEATHER_COORDINATE_ID;
 
 import com.couchbase.client.core.error.DecodingFailureException;
@@ -16,8 +17,10 @@ import edu.ie3.datamodel.exceptions.NoDataException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.CouchbaseConnector;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueData;
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory;
+import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.io.source.IdCoordinateSource;
 import edu.ie3.datamodel.io.source.WeatherSource;
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries;
@@ -117,7 +120,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
       String query = createQueryStringForIntervalAndCoordinate(timeInterval, coordinateId);
       CompletableFuture<QueryResult> futureResult = connector.query(query);
       QueryResult queryResult = futureResult.join();
-      List<JsonObject> jsonWeatherInputs = Collections.emptyList();
+      List<JsonObject> jsonWeatherInputs;
       try {
         jsonWeatherInputs = queryResult.rowsAsObject();
       } catch (DecodingFailureException ex) {
@@ -234,9 +237,9 @@ public class CouchbaseWeatherSource extends WeatherSource {
       List<Pair<Integer, ZonedDateTime>> timeKeys = new ArrayList<>();
 
       for (JsonObject json : jsonWeatherInputs) {
-        int coordinateId = json.getInt(WEATHER_COORDINATE_ID.toLowerCase());
+        int coordinateId = json.getInt(WEATHER_COORDINATE_ID);
         ZonedDateTime timestamp =
-            weatherFactory.toZonedDateTime(json.getString(weatherFactory.getTimeFieldString()));
+            weatherFactory.toZonedDateTime(json.getString(FieldNamingStrategy.TIME));
         timeKeys.add(Pair.of(coordinateId, timestamp));
       }
 
@@ -289,7 +292,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
     String query = createQueryStringForFollowingTimeKeysAndCoordinate(time, coordinateId.get());
     CompletableFuture<QueryResult> futureResult = connector.query(query);
     QueryResult queryResult = futureResult.join();
-    List<JsonObject> jsonInputs = Collections.emptyList();
+    List<JsonObject> jsonInputs;
     try {
       jsonInputs = queryResult.rowsAsObject();
     } catch (DecodingFailureException ex) {
@@ -300,9 +303,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
       return Collections.emptyList();
     }
     return jsonInputs.stream()
-        .map(
-            json ->
-                weatherFactory.toZonedDateTime(json.getString(weatherFactory.getTimeFieldString())))
+        .map(json -> weatherFactory.toZonedDateTime(json.getString(TIME)))
         .filter(Objects::nonNull)
         .filter(t -> t.isAfter(time))
         .sorted()
@@ -320,7 +321,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
   private String createQueryStringForFollowingTimeKeysAndCoordinate(
       ZonedDateTime time, int coordinateId) {
     return "SELECT a."
-        + weatherFactory.getTimeFieldString()
+        + TIME
         + " FROM "
         + connector.getBucketName()
         + " AS a WHERE a."
@@ -339,7 +340,14 @@ public class CouchbaseWeatherSource extends WeatherSource {
    * @return the query string
    */
   public String createQueryStringForFollowingTimeKeys(ZonedDateTime time) {
-    String basicQuery = "SELECT a.coordinateid, a.time FROM " + connector.getBucketName() + " AS a";
+    String basicQuery =
+        "SELECT a."
+            + coordinateIdColumnName
+            + ", a."
+            + TIME
+            + " FROM "
+            + connector.getBucketName()
+            + " AS a";
     String whereClause = " WHERE META().id > '" + generateWeatherKey(time, 0) + "'";
     return basicQuery + whereClause;
   }
@@ -366,7 +374,8 @@ public class CouchbaseWeatherSource extends WeatherSource {
                 Collectors.toMap(Map.Entry::getKey, entry -> String.valueOf(entry.getValue())));
     fieldToValueMap.putIfAbsent("uuid", UUID.randomUUID().toString());
     return Optional.of(
-        new TimeBasedWeatherValueData(fieldToValueMap, coordinate.get(), coordinateId));
+        new TimeBasedWeatherValueData(
+            new FieldMap(fieldToValueMap), coordinate.get(), coordinateId));
   }
 
   /**
