@@ -133,6 +133,9 @@ public abstract class WeatherSource extends EntitySource {
    * <p>Preferable over {@link #getWeather(ClosedInterval, Collection)}, as matching coordinates
    * relies on the hash code of {@link Point}.
    *
+   * <p>In contrast to {@link #getWeather(ClosedInterval, Collection)} this does not throw, if no
+   * data is found at all. Ids without data are simply missing from the returned map.
+   *
    * @param timeInterval the queried time interval
    * @param coordinateIds the queried coordinate ids
    * @return a map of coordinate id to time series
@@ -155,7 +158,7 @@ public abstract class WeatherSource extends EntitySource {
     if (coordinates.isEmpty())
       throw new NoDataException("No coordinates provided for weather data query.");
 
-    List<Integer> coordinateIds = new ArrayList<>();
+    Set<Integer> coordinateIds = new LinkedHashSet<>();
     List<Point> unknownCoordinates = new ArrayList<>();
 
     for (Point coordinate : coordinates) {
@@ -257,10 +260,11 @@ public abstract class WeatherSource extends EntitySource {
   }
 
   /**
-   * Maps a collection of TimeBasedValues into time series for each contained coordinate point
+   * Maps a collection of TimeBasedValues into time series for each contained coordinate id. Values
+   * whose coordinate id is unknown are logged and skipped.
    *
    * @param timeBasedValues the values to map
-   * @return a map of coordinate point to time series
+   * @return a map of coordinate id to time series
    */
   protected Map<Integer, IndividualTimeSeries<WeatherValue>> mapWeatherValuesToIds(
       Collection<TimeBasedValue<WeatherValue>> timeBasedValues) {
@@ -311,8 +315,8 @@ public abstract class WeatherSource extends EntitySource {
    * {@link Point}. Ids that cannot be matched to a coordinate are logged and dropped.
    *
    * @param byId the map keyed by coordinate id
-   * @return the same content, keyed by coordinate
    * @param <V> type of the mapped values
+   * @return the same content, keyed by coordinate
    * @throws SourceException if the coordinates cannot be read
    */
   protected <V> Map<Point, V> toCoordinateKeys(Map<Integer, V> byId) throws SourceException {
@@ -399,6 +403,7 @@ public abstract class WeatherSource extends EntitySource {
    * @param result the result map to validate
    * @param coordinates the requested coordinates
    * @param timeInterval the requested time interval
+   * @param <K> type of the key the results are mapped to
    * @return the result map if valid
    * @throws NoDataException if the result map is empty
    */

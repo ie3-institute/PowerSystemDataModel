@@ -10,6 +10,7 @@ import static edu.ie3.datamodel.models.value.load.BdewLoadValues.BdewScheme.*
 import edu.ie3.datamodel.exceptions.EntityProcessorException
 import edu.ie3.datamodel.io.processor.GetterMethod
 import edu.ie3.datamodel.io.processor.Processor
+import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
@@ -19,8 +20,11 @@ import edu.ie3.datamodel.models.value.*
 import edu.ie3.datamodel.models.value.load.BdewLoadValues
 import edu.ie3.test.common.TimeSeriesTestData
 import spock.lang.Specification
+import tech.units.indriya.quantity.Quantities
 
 import java.lang.reflect.Method
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestData {
   def "A TimeSeriesProcessor is instantiated correctly"() {
@@ -162,14 +166,28 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
   def "A TimeSeriesProcessor does not persist the coordinate id of a WeatherValue"() {
     given:
     TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, WeatherValue, WeatherValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, WeatherValue)
+    def valueWithId = new WeatherValue(
+        defaultLocation,
+        42,
+        new SolarIrradianceValue(Quantities.getQuantity(5d, StandardUnits.SOLAR_IRRADIANCE), Quantities.getQuantity(10d, StandardUnits.SOLAR_IRRADIANCE)),
+        new TemperatureValue(Quantities.getQuantity(5d, StandardUnits.TEMPERATURE)),
+        new WindValue(Quantities.getQuantity(5d, StandardUnits.WIND_DIRECTION), Quantities.getQuantity(10d, StandardUnits.WIND_VELOCITY)),
+        Optional.empty(),
+        Optional.empty())
+    def timeSeries = new IndividualTimeSeries<>(
+        UUID.randomUUID(),
+        [
+          new TimeBasedValue<>(ZonedDateTime.of(2020, 4, 2, 10, 0, 0, 0, ZoneId.of("UTC")), valueWithId)
+        ] as Set)
 
     when:
-    Set<Map<String, String>> actual = processor.handleTimeSeries(individualWeatherTimeSeries)
+    Set<Map<String, String>> actual = processor.handleTimeSeries(timeSeries)
 
     then:
     /* The coordinate id is deliberately exposed via coordinateId() instead of getCoordinateId(), so
      * that the JavaBeans Introspector used by Processor does not pick it up. Renaming that accessor
      * would silently add a column to every persisted weather time series. */
+    valueWithId.coordinateId() == Optional.of(42)
     actual.every { !it.containsKey("coordinateId") }
     actual.every { it.containsKey("coordinate") }
   }

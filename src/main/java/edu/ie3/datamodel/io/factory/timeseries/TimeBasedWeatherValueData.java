@@ -14,7 +14,11 @@ public class TimeBasedWeatherValueData extends TimeBasedValueData<WeatherValue> 
 
   private final Point coordinate;
 
-  /** Id of the coordinate, or {@code null} if it is not known */
+  /**
+   * Id of the coordinate, or {@code null} if it is not known. As it is only a different
+   * representation of the coordinate, it does not take part in {@link #equals(Object)} and {@link
+   * #hashCode()}.
+   */
   private final Integer coordinateId;
 
   /**

@@ -26,6 +26,10 @@ public sealed class WeatherValue implements Value {
    * edu.ie3.datamodel.io.processor.Processor} collects the fields to persist via the JavaBeans
    * {@link java.beans.Introspector}, so a bean-conformant getter would add this field to the
    * persisted output.
+   *
+   * <p>As the id is only a different representation of the coordinate, it does not take part in
+   * {@link #equals(Object)} and {@link #hashCode()}. Values read with and without the id therefore
+   * stay comparable.
    */
   private final Integer coordinateId;
 
