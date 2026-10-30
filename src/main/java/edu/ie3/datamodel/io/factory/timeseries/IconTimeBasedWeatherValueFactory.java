@@ -55,6 +55,7 @@ public class IconTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFacto
     WeatherValue weatherValue =
         new WeatherValue(
             coordinate,
+            tbd.coordinateId().orElse(null),
             solarIrradianceValue,
             temperatureValue,
             windValue,

@@ -64,7 +64,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
   }
 
   @Override
-  public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
+  public Map<Integer, IndividualTimeSeries<WeatherValue>> getWeatherById(
       ClosedInterval<ZonedDateTime> timeInterval) throws SourceException, NoDataException {
     try (InfluxDB session = connector.getSession()) {
       String query = createQueryStringForTimeInterval(timeInterval);
@@ -75,57 +75,28 @@ public class InfluxDbWeatherSource extends WeatherSource {
         throw new NoDataException(
             "No weather data found for the given time interval: " + timeInterval);
       }
-      Map<Point, Set<TimeBasedValue<WeatherValue>>> coordinateToValues =
-          timeBasedValues.stream()
-              .collect(
-                  Collectors.groupingBy(
-                      timeBasedWeatherValue -> timeBasedWeatherValue.getValue().getCoordinate(),
-                      Collectors.toSet()));
-      return coordinateToValues.entrySet().stream()
-          .collect(
-              Collectors.toMap(Map.Entry::getKey, e -> new IndividualTimeSeries<>(e.getValue())));
+      return mapWeatherValuesToIds(timeBasedValues);
     }
   }
 
   @Override
-  public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
+  public Map<Integer, IndividualTimeSeries<WeatherValue>> getWeatherById(
+      ClosedInterval<ZonedDateTime> timeInterval, Collection<Integer> coordinateIds)
       throws SourceException, NoDataException {
-    if (coordinates.isEmpty())
-      throw new NoDataException("No coordinates provided for weather data query.");
-    Map<Point, Optional<Integer>> coordinatesToId = new HashMap<>();
-    for (Point point : coordinates) {
-      coordinatesToId.put(point, idCoordinateSource.getId(point));
-    }
+    Map<Integer, IndividualTimeSeries<WeatherValue>> idToTimeSeries = new HashMap<>();
 
-    List<Point> unknownCoordinates =
-        coordinatesToId.entrySet().stream()
-            .filter(entry -> entry.getValue().isEmpty())
-            .map(Map.Entry::getKey)
-            .toList();
-
-    if (!unknownCoordinates.isEmpty())
-      log.warn(
-          "Unable to find coordinate IDs for the following coordinates, skipping: {}",
-          unknownCoordinates);
-
-    HashMap<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = new HashMap<>();
     try (InfluxDB session = connector.getSession()) {
-      for (Map.Entry<Point, Optional<Integer>> entry :
-          coordinatesToId.entrySet().stream().filter(e -> e.getValue().isPresent()).toList()) {
-        int coordinateId = entry.getValue().orElseThrow();
+      for (int coordinateId : coordinateIds) {
         String query = createQueryStringForCoordinateAndTimeInterval(timeInterval, coordinateId);
         QueryResult queryResult = session.query(new Query(query));
         Set<TimeBasedValue<WeatherValue>> timeBasedValues =
             toWeatherValues(queryResult).collect(Collectors.toSet());
         if (!timeBasedValues.isEmpty()) {
-          IndividualTimeSeries<WeatherValue> timeSeries =
-              new IndividualTimeSeries<>(timeBasedValues);
-          coordinateToTimeSeries.put(entry.getKey(), timeSeries);
+          idToTimeSeries.put(coordinateId, new IndividualTimeSeries<>(timeBasedValues));
         }
       }
     }
-    return validateAndWarnMissing(coordinateToTimeSeries, coordinates, timeInterval);
+    return idToTimeSeries;
   }
 
   @Override
@@ -156,25 +127,23 @@ public class InfluxDbWeatherSource extends WeatherSource {
   }
 
   @Override
-  public Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time)
+  public Map<Integer, List<ZonedDateTime>> getTimeKeysAfterById(ZonedDateTime time)
       throws SourceException {
     try (InfluxDB session = connector.getSession()) {
       String query = createQueryStringForTimeKeysAfter(time);
       QueryResult queryResult = session.query(new Query(query));
       Set<TimeBasedValue<WeatherValue>> timeBasedValues =
           toWeatherValues(queryResult).collect(Collectors.toSet());
-      Map<Point, Set<TimeBasedValue<WeatherValue>>> coordinateToValues =
-          timeBasedValues.stream()
-              .collect(
-                  Collectors.groupingBy(
-                      timeBasedWeatherValue -> timeBasedWeatherValue.getValue().getCoordinate(),
-                      Collectors.toSet()));
 
-      return coordinateToValues.entrySet().stream()
+      return mapWeatherValuesToIds(timeBasedValues).entrySet().stream()
           .collect(
               Collectors.toMap(
                   Map.Entry::getKey,
-                  e -> e.getValue().stream().map(TimeBasedValue::getTime).sorted().toList()));
+                  e ->
+                      e.getValue().getEntries().stream()
+                          .map(TimeBasedValue::getTime)
+                          .sorted()
+                          .toList()));
     }
   }
 
@@ -248,7 +217,10 @@ public class InfluxDbWeatherSource extends WeatherSource {
       values.add(
           idCoordinateSource
               .getCoordinate(coordinateId)
-              .map(point -> new TimeBasedWeatherValueData(new FieldMap(flatCaseFields), point))
+              .map(
+                  point ->
+                      new TimeBasedWeatherValueData(
+                          new FieldMap(flatCaseFields), point, coordinateId))
               .map(weatherFactory::get)
               .flatMap(Try::getData));
     }
