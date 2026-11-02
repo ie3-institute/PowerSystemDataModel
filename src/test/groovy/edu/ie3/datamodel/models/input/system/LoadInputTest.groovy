@@ -41,6 +41,7 @@ class LoadInputTest extends Specification {
       sRated == Quantities.getQuantity(0d, KILOVOLTAMPERE)
       cosPhiRated == 0.8d
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == loadInput.additionalInformation
     }
   }
 
@@ -64,6 +65,7 @@ class LoadInputTest extends Specification {
       sRated == loadInput.sRated * 2d
       cosPhiRated == loadInput.cosPhiRated
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == loadInput.additionalInformation
     }
   }
 }

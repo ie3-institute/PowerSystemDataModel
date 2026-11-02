@@ -247,7 +247,8 @@ public class BmInput extends SystemParticipantInput implements HasType {
           getEm(),
           type,
           costControlled,
-          feedInTariff);
+          feedInTariff,
+          getAdditionalInformation());
     }
 
     @Override

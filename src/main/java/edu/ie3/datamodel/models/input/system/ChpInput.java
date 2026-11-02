@@ -227,7 +227,8 @@ public class ChpInput extends SystemParticipantInput
           getqCharacteristics(),
           getEm(),
           type,
-          thermalStorage);
+          thermalStorage,
+          getAdditionalInformation());
     }
 
     public ChpInputCopyBuilder type(ChpTypeInput type) {

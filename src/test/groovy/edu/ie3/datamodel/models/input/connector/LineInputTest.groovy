@@ -76,6 +76,7 @@ class LineInputTest extends Specification {
       nodeA == GridTestData.nodeA
       nodeB == GridTestData.nodeC
       length == Quantities.getQuantity(10, Units.METRE)
+      additionalInformation == line.additionalInformation
     }
   }
 

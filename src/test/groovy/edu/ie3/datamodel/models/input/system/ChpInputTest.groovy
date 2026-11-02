@@ -29,6 +29,7 @@ class ChpInputTest extends Specification {
       thermalStorage == SystemParticipantTestData.thermalStorage
       type == SystemParticipantTestData.chpTypeInput
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == chpInput.additionalInformation
     }
   }
 
@@ -53,6 +54,7 @@ class ChpInputTest extends Specification {
       type.pThermal == chpInput.type.pThermal * 2d
       type.pOwn == chpInput.type.pOwn * 2d
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == chpInput.additionalInformation
     }
   }
 }

@@ -398,8 +398,22 @@ public class Transformer2WTypeInput extends AssetTypeInput {
     @Override
     public Transformer2WTypeInput build() {
       return new Transformer2WTypeInput(
-          getUuid(), getId(), rSc, xSc, sRated, vRatedA, vRatedB, gM, bM, dV, dPhi, tapSide,
-          tapNeutr, tapMin, tapMax);
+          getUuid(),
+          getId(),
+          rSc,
+          xSc,
+          sRated,
+          vRatedA,
+          vRatedB,
+          gM,
+          bM,
+          dV,
+          dPhi,
+          tapSide,
+          tapNeutr,
+          tapMin,
+          tapMax,
+          getAdditionalInformation());
     }
 
     @Override
