@@ -246,7 +246,7 @@ public class ScreenLayerInput extends AssetInput implements Serializable {
           wireDiameter,
           lengthOfLay,
           electricalResistivity,
-          null);
+          getAdditionalInformation());
     }
 
     @Override
