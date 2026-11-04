@@ -234,7 +234,8 @@ public class ChpTypeInput extends SystemParticipantTypeInput {
           getsRated(),
           getCosPhiRated(),
           pThermal,
-          pOwn);
+          pOwn,
+          getAdditionalInformation());
     }
 
     @Override

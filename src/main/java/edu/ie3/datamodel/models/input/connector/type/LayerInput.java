@@ -287,7 +287,8 @@ public class LayerInput extends AssetInput implements Serializable {
           outerDiameter,
           thermalResistivity,
           volumetricHeatCapacity,
-          area);
+          area,
+          getAdditionalInformation());
     }
 
     @Override

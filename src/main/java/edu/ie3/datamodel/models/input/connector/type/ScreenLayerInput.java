@@ -246,7 +246,7 @@ public class ScreenLayerInput extends AssetInput implements Serializable {
           wireDiameter,
           lengthOfLay,
           electricalResistivity,
-          null);
+          getAdditionalInformation());
     }
 
     @Override
@@ -369,6 +369,7 @@ public class ScreenLayerInput extends AssetInput implements Serializable {
         wiresNumber,
         wireDiameter,
         lengthOfLay,
-        electricalResistivity);
+        electricalResistivity,
+        getAdditionalInformation());
   }
 }

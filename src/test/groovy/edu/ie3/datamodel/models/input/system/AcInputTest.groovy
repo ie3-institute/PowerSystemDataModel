@@ -50,6 +50,7 @@ class AcInputTest extends Specification {
       type.sRated == acInput.type.sRated * 2d
       type.pThermal == acInput.type.pThermal * 2d
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == acInput.additionalInformation
     }
   }
 }

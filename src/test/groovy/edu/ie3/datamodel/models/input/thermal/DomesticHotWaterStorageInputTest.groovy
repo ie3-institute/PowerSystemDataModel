@@ -33,6 +33,7 @@ class DomesticHotWaterStorageInputTest extends Specification {
       inletTemp == ThermalUnitInputTestData.inletTemp
       returnTemp == ThermalUnitInputTestData.returnTemp
       c == ThermalUnitInputTestData.c
+      additionalInformation == domesticHotWaterStorageInput.additionalInformation
     }
   }
 
@@ -55,6 +56,7 @@ class DomesticHotWaterStorageInputTest extends Specification {
       returnTemp == domesticHotWaterStorageInput.returnTemp
       c == domesticHotWaterStorageInput.c
       pThermalMax == domesticHotWaterStorageInput.pThermalMax * 2d
+      additionalInformation == domesticHotWaterStorageInput.additionalInformation
     }
   }
 }

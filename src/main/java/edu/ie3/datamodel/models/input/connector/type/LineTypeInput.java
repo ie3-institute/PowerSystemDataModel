@@ -289,7 +289,16 @@ public class LineTypeInput extends AssetTypeInput {
     @Override
     public LineTypeInput build() {
       return new LineTypeInput(
-          getUuid(), getId(), b, g, r, x, iMax, vRated, Optional.ofNullable(cableType));
+          getUuid(),
+          getId(),
+          b,
+          g,
+          r,
+          x,
+          iMax,
+          vRated,
+          Optional.ofNullable(cableType),
+          getAdditionalInformation());
     }
 
     @Override

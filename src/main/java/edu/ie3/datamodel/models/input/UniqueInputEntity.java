@@ -50,6 +50,11 @@ public abstract class UniqueInputEntity extends UniqueEntity implements InputEnt
       this.additionalInformation = new HashMap<>(entity.getAdditionalInformation());
     }
 
+    public B additionalInformation(Map<String, String> additionalInformation) {
+      this.additionalInformation = additionalInformation;
+      return thisInstance();
+    }
+
     protected Map<String, String> getAdditionalInformation() {
       return additionalInformation;
     }

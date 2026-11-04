@@ -26,6 +26,7 @@ class SwitchInputTest extends Specification {
       operationTime == switchInput.operationTime
       operator == OperatorInput.NO_OPERATOR_ASSIGNED
       id == "switch_A_C"
+      additionalInformation == switchInput.additionalInformation
       !closed
     }
   }

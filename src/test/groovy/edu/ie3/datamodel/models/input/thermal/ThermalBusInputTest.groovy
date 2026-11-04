@@ -25,6 +25,7 @@ class ThermalBusInputTest extends Specification {
       id == thermalBusInput.id
       operator == thermalBusInput.operator
       operationTime == thermalBusInput.operationTime
+      additionalInformation == thermalBusInput.additionalInformation
     }
   }
 }

@@ -27,6 +27,7 @@ class WecInputTest extends Specification {
       qCharacteristics == wec.qCharacteristics
       type == SystemParticipantTestData.wecType
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == wec.additionalInformation
     }
   }
 
@@ -49,6 +50,7 @@ class WecInputTest extends Specification {
       type.rotorArea == wec.type.rotorArea * 2d
       type.hubHeight == wec.type.hubHeight
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == wec.additionalInformation
     }
   }
 }

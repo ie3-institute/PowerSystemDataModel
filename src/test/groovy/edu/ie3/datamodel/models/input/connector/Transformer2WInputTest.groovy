@@ -30,6 +30,7 @@ class Transformer2WInputTest extends Specification {
       nodeB == GridTestData.nodeB
       type == GridTestData.transformerTypeBtoD
       tapPos == 10
+      additionalInformation == trafo2w.additionalInformation
       !autoTap
     }
   }

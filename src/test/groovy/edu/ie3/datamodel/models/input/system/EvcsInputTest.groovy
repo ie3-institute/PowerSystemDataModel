@@ -41,6 +41,7 @@ class EvcsInputTest extends Specification {
       ]
       v2gSupport
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == evcsInput.additionalInformation
     }
   }
 
@@ -65,6 +66,7 @@ class EvcsInputTest extends Specification {
       locationTypes == evcsInput.locationTypes
       v2gSupport == evcsInput.v2gSupport
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == evcsInput.additionalInformation
     }
   }
 }

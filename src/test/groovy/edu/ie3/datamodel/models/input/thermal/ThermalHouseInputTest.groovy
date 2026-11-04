@@ -40,6 +40,7 @@ class ThermalHouseInputTest extends Specification {
       lowerTemperatureLimit == ThermalUnitInputTestData.LOWER_TEMPERATURE_LIMIT
       housingType == ThermalUnitInputTestData.HOUSING_TYPE
       numberOfInhabitants == ThermalUnitInputTestData.NUMBER_INHABITANTS
+      additionalInformation == thermalHouseInput.additionalInformation
     }
   }
 
@@ -103,6 +104,7 @@ class ThermalHouseInputTest extends Specification {
       lowerTemperatureLimit == thermalHouseInput.lowerTemperatureLimit
       housingType == thermalHouseInput.housingType
       numberOfInhabitants == thermalHouseInput.numberOfInhabitants * 2d
+      additionalInformation == thermalHouseInput.additionalInformation
     }
   }
 }

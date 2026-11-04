@@ -33,6 +33,7 @@ class CylindricalStorageInputTest extends Specification {
       inletTemp == ThermalUnitInputTestData.inletTemp
       returnTemp == ThermalUnitInputTestData.returnTemp
       c == ThermalUnitInputTestData.c
+      additionalInformation == cylindricalStorageInput.additionalInformation
     }
   }
 
@@ -55,6 +56,7 @@ class CylindricalStorageInputTest extends Specification {
       returnTemp == cylindricalStorageInput.returnTemp
       c == cylindricalStorageInput.c
       pThermalMax == cylindricalStorageInput.pThermalMax * 2d
+      additionalInformation == cylindricalStorageInput.additionalInformation
     }
   }
 }

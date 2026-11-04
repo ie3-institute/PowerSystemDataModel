@@ -30,6 +30,7 @@ class NodeInputTest extends Specification {
       slack
       subnet == 1
       voltLvl == GermanVoltageLevelUtils.EHV_220KV
+      additionalInformation == node.additionalInformation
     }
   }
 }
