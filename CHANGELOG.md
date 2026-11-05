@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Validate that every storage is controlled by an energy management unit [#1293](https://github.com/ie3-institute/PowerSystemDataModel/issues/1293)
 - Add 'SoilData' to enable the spatial modelling of soil and its parameters [#1783](https://github.com/ie3-institute/PowerSystemDataModel/issues/1783)
 - Add information on cable bedding to `CableDeploymentInput` [#1784](https://github.com/ie3-institute/PowerSystemDataModel/issues/1784)
+- Move input parameter node and controlling_em in new ExtendedSystemParticipant [#1386](https://github.com/ie3-institute/PowerSystemDataModel/issues/1386)
 
 ### Fixed
 - Fixed recurring `gradlew.bat` modifications [#1757](https://github.com/ie3-institute/PowerSystemDataModel/issues/1757)

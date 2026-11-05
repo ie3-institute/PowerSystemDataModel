@@ -367,7 +367,7 @@ public class ContainerUtils {
     Set<BmInput> bmPlants = filterParticipants(input.getBmPlants(), subnet);
     Set<ChpInput> chpPlants = filterParticipants(input.getChpPlants(), subnet);
     Set<EvcsInput> evcsInputs = filterParticipants(input.getEvcs(), subnet);
-    Set<EvInput> evs = filterParticipants(input.getEvs(), subnet);
+    Set<EvInput> evs = input.getEvs();
     Set<FixedFeedInInput> fixedFeedIns = filterParticipants(input.getFixedFeedIns(), subnet);
     Set<HpInput> heatpumps = filterParticipants(input.getHeatPumps(), subnet);
     Set<AcInput> airConditions = filterParticipants(input.getAirConditions(), subnet);
@@ -398,7 +398,7 @@ public class ContainerUtils {
    * @param <T> Type parameter of the system participant
    * @return A filtered set
    */
-  private static <T extends SystemParticipantInput> Set<T> filterParticipants(
+  private static <T extends ExtendedSystemParticipantInput> Set<T> filterParticipants(
       Set<T> systemParticipantInputs, int subnet) {
     return systemParticipantInputs.stream()
         .filter(entity -> entity.getNode().getSubnet() == subnet)

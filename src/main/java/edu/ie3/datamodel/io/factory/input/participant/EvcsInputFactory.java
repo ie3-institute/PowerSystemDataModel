@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /** Factory to create instances of {@link EvcsInput}s. */
-public class EvcsInputFactory extends SystemParticipantInputEntityFactory<EvcsInput> {
+public class EvcsInputFactory extends ExtendedSystemParticipantInputEntityFactory<EvcsInput> {
 
   public EvcsInputFactory(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits) {

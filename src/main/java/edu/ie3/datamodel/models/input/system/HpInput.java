@@ -21,7 +21,7 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /** Describes a heat pump */
-public class HpInput extends SystemParticipantInput implements HasType, HasThermalBus {
+public class HpInput extends ExtendedSystemParticipantInput implements HasType, HasThermalBus {
   /** Type of this heat pump, containing default values for heat pump of this kind */
   private final HpTypeInput type;
 
@@ -177,7 +177,7 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
    * @since 05.06.20
    */
   public static class HpInputCopyBuilder
-      extends SystemParticipantInputCopyBuilder<HpInputCopyBuilder> {
+      extends ExtendedSystemParticipantInputCopyBuilder<HpInputCopyBuilder> {
 
     private HpTypeInput type;
     private ThermalBusInput thermalBus;

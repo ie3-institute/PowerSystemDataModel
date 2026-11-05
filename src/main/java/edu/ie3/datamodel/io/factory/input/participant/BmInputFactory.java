@@ -20,7 +20,7 @@ import java.util.UUID;
 import tech.units.indriya.ComparableQuantity;
 
 /** Factory to create instances of {@link BmInput}s. */
-public class BmInputFactory extends SystemParticipantInputEntityFactory<BmInput> {
+public class BmInputFactory extends ExtendedSystemParticipantInputEntityFactory<BmInput> {
 
   private final Map<UUID, BmTypeInput> types;
 

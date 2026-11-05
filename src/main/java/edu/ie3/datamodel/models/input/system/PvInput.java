@@ -20,7 +20,7 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /** Describes a photovoltaic plant */
-public class PvInput extends SystemParticipantInput {
+public class PvInput extends ExtendedSystemParticipantInput {
 
   /** Albedo value (typically a value between 0 and 1) */
   private final double albedo;
@@ -291,7 +291,7 @@ public class PvInput extends SystemParticipantInput {
    * @since 05.06.20
    */
   public static class PvInputCopyBuilder
-      extends SystemParticipantInputCopyBuilder<PvInputCopyBuilder> {
+      extends ExtendedSystemParticipantInputCopyBuilder<PvInputCopyBuilder> {
 
     private double albedo;
     private ComparableQuantity<Angle> azimuth;

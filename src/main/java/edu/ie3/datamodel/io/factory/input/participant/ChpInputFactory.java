@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /** Factory to create instances of {@link ChpInput}s. */
-public class ChpInputFactory extends SystemParticipantInputEntityFactory<ChpInput> {
+public class ChpInputFactory extends ExtendedSystemParticipantInputEntityFactory<ChpInput> {
 
   private final Map<UUID, ChpTypeInput> types;
   private final Map<UUID, ThermalBusInput> thermalBuses;

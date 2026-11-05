@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /** Factory to create instances of {@link StorageInput}s. */
-public class StorageInputFactory extends SystemParticipantInputEntityFactory<StorageInput> {
+public class StorageInputFactory extends ExtendedSystemParticipantInputEntityFactory<StorageInput> {
 
   private final Map<UUID, StorageTypeInput> types;
 

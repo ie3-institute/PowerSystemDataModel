@@ -21,7 +21,7 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /** Describes an air condition */
-public class AcInput extends SystemParticipantInput implements HasType, HasThermalBus {
+public class AcInput extends ExtendedSystemParticipantInput implements HasType, HasThermalBus {
   /** Type of this air condition, containing default values for air condition of this kind */
   private final AcTypeInput type;
 
@@ -177,7 +177,7 @@ public class AcInput extends SystemParticipantInput implements HasType, HasTherm
    * @since 05.06.20
    */
   public static class AcInputCopyBuilder
-      extends SystemParticipantInputCopyBuilder<AcInputCopyBuilder> {
+      extends ExtendedSystemParticipantInputCopyBuilder<AcInputCopyBuilder> {
 
     private AcTypeInput type;
     private ThermalBusInput thermalBus;

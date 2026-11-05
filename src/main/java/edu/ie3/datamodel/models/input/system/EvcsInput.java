@@ -19,7 +19,7 @@ import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-public class EvcsInput extends SystemParticipantInput {
+public class EvcsInput extends ExtendedSystemParticipantInput {
 
   /** type of all installed charging points */
   private final ChargingPointType type;
@@ -288,7 +288,7 @@ public class EvcsInput extends SystemParticipantInput {
    * field values. For detailed field descriptions refer to java docs of {@link EvcsInput}
    */
   public static class EvcsInputCopyBuilder
-      extends SystemParticipantInputCopyBuilder<EvcsInputCopyBuilder> {
+      extends ExtendedSystemParticipantInputCopyBuilder<EvcsInputCopyBuilder> {
 
     private ChargingPointType type;
     private int chargingPoints;
