@@ -8,8 +8,7 @@ package edu.ie3.datamodel.io.factory.result;
 import static tech.units.indriya.unit.Units.PERCENT;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
-import edu.ie3.datamodel.io.factory.EntityData;
-import edu.ie3.datamodel.models.Entity;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.result.system.*;
 import java.time.ZonedDateTime;
@@ -18,13 +17,13 @@ import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/**
- * Factory class for creating {@link SystemParticipantResult} entities from provided {@link
- * EntityData} data objects.
- */
-public class SystemParticipantResultFactory extends ResultEntityFactory<SystemParticipantResult> {
+/** Factory class for creating {@link SystemParticipantResult} entities. */
+public class SystemParticipantResultFactory<R extends SystemParticipantResult>
+    extends ResultEntityFactory<SystemParticipantResult, R> {
 
-  public SystemParticipantResultFactory() {
+  private final Class<R> targetClass;
+
+  public SystemParticipantResultFactory(Class<R> targetClass) {
     super(
         LoadResult.class,
         FixedFeedInResult.class,
@@ -38,55 +37,88 @@ public class SystemParticipantResultFactory extends ResultEntityFactory<SystemPa
         EvResult.class,
         HpResult.class,
         EmResult.class);
+    this.targetClass = targetClass;
+
+    isSupportedClass(targetClass);
   }
 
   @Override
-  protected SystemParticipantResult buildModel(EntityData data) {
-    Class<? extends Entity> entityClass = data.getTargetClass();
-
-    ZonedDateTime zdtTime = timeUtil.toZonedDateTime(data.getField(TIME));
-    UUID inputModelUuid = data.getUUID(INPUT_MODEL);
+  protected R buildModel(FieldMap data, ZonedDateTime time, UUID inputModel) {
     ComparableQuantity<Power> p = data.getQuantity(POWER, StandardUnits.ACTIVE_POWER_RESULT);
     ComparableQuantity<Power> q =
         data.getQuantity(REACTIVE_POWER, StandardUnits.REACTIVE_POWER_RESULT);
 
-    if (entityClass.equals(LoadResult.class)) {
-      return new LoadResult(zdtTime, inputModelUuid, p, q);
-    } else if (entityClass.equals(FixedFeedInResult.class)) {
-      return new FixedFeedInResult(zdtTime, inputModelUuid, p, q);
-    } else if (entityClass.equals(BmResult.class)) {
-      return new BmResult(zdtTime, inputModelUuid, p, q);
-    } else if (entityClass.equals(PvResult.class)) {
-      return new PvResult(zdtTime, inputModelUuid, p, q);
-    } else if (entityClass.equals(EvcsResult.class)) {
-      return new EvcsResult(zdtTime, inputModelUuid, p, q);
-    } else if (entityClass.equals(EmResult.class)) {
-      return new EmResult(zdtTime, inputModelUuid, p, q);
-    } else if (SystemParticipantWithHeatResult.class.isAssignableFrom(entityClass)) {
-      /* The following classes all have a heat component as well */
-      ComparableQuantity<Power> qDot = data.getQuantity(Q_DOT, StandardUnits.Q_DOT_RESULT);
-
-      if (entityClass.equals(ChpResult.class)) {
-        return new ChpResult(zdtTime, inputModelUuid, p, q, qDot);
-      } else if (entityClass.equals(HpResult.class)) {
-        return new HpResult(zdtTime, inputModelUuid, p, q, qDot);
-      } else if (entityClass.equals(AcResult.class)) {
-        return new AcResult(zdtTime, inputModelUuid, p, q, qDot);
-      } else {
-        throw new FactoryException("Cannot process " + entityClass.getSimpleName() + ".class.");
-      }
-    } else if (entityClass.equals(WecResult.class)) {
-      return new WecResult(zdtTime, inputModelUuid, p, q);
-    } else if (entityClass.equals(EvResult.class)) {
-      ComparableQuantity<Dimensionless> socQuantity = data.getQuantity(SOC, PERCENT);
-
-      return new EvResult(zdtTime, inputModelUuid, p, q, socQuantity);
-    } else if (entityClass.equals(StorageResult.class)) {
-      ComparableQuantity<Dimensionless> socQuantity = data.getQuantity(SOC, PERCENT);
-
-      return new StorageResult(zdtTime, inputModelUuid, p, q, socQuantity);
+    if (SystemParticipantWithHeatResult.class.isAssignableFrom(targetClass)) {
+      return buildModelWithHeat(data, time, inputModel, p, q);
+    } else if (ElectricalEnergyStorageResult.class.isAssignableFrom(targetClass)) {
+      return buildModelWithSoc(data, time, inputModel, p, q);
     } else {
-      throw new FactoryException("Cannot process " + entityClass.getSimpleName() + ".class.");
+      return buildModel(time, inputModel, p, q);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private R buildModel(
+      ZonedDateTime time,
+      UUID inputModel,
+      ComparableQuantity<Power> p,
+      ComparableQuantity<Power> q) {
+    if (targetClass.equals(BmResult.class)) {
+      return (R) new BmResult(time, inputModel, p, q);
+    } else if (targetClass.equals(EmResult.class)) {
+      return (R) new EmResult(time, inputModel, p, q);
+    } else if (targetClass.equals(EvcsResult.class)) {
+      return (R) new EvcsResult(time, inputModel, p, q);
+    } else if (targetClass.equals(FixedFeedInResult.class)) {
+      return (R) new FixedFeedInResult(time, inputModel, p, q);
+    } else if (targetClass.equals(LoadResult.class)) {
+      return (R) new LoadResult(time, inputModel, p, q);
+    } else if (targetClass.equals(PvResult.class)) {
+      return (R) new PvResult(time, inputModel, p, q);
+    } else if (targetClass.equals(WecResult.class)) {
+      return (R) new WecResult(time, inputModel, p, q);
+    } else {
+      throw new FactoryException("Cannot process " + targetClass.getSimpleName() + ".class.");
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private R buildModelWithHeat(
+      FieldMap data,
+      ZonedDateTime time,
+      UUID inputModel,
+      ComparableQuantity<Power> p,
+      ComparableQuantity<Power> q) {
+    /* The following classes all have a heat component as well */
+    ComparableQuantity<Power> qDot = data.getQuantity(Q_DOT, StandardUnits.Q_DOT_RESULT);
+
+    if (targetClass.equals(ChpResult.class)) {
+      return (R) new ChpResult(time, inputModel, p, q, qDot);
+    } else if (targetClass.equals(HpResult.class)) {
+      return (R) new HpResult(time, inputModel, p, q, qDot);
+    } else if (targetClass.equals(AcResult.class)) {
+      return (R) new AcResult(time, inputModel, p, q, qDot);
+    } else {
+      throw new FactoryException("Cannot process " + targetClass.getSimpleName() + ".class.");
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private R buildModelWithSoc(
+      FieldMap data,
+      ZonedDateTime time,
+      UUID inputModel,
+      ComparableQuantity<Power> p,
+      ComparableQuantity<Power> q) {
+    /* The following classes all have a soc component as well */
+    ComparableQuantity<Dimensionless> socQuantity = data.getQuantity(SOC, PERCENT);
+
+    if (targetClass.equals(EvResult.class)) {
+      return (R) new EvResult(time, inputModel, p, q, socQuantity);
+    } else if (targetClass.equals(StorageResult.class)) {
+      return (R) new StorageResult(time, inputModel, p, q, socQuantity);
+    } else {
+      throw new FactoryException("Cannot process " + targetClass.getSimpleName() + ".class.");
     }
   }
 }

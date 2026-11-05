@@ -15,10 +15,9 @@ import java.util.Map;
 /**
  * Abstract class that is able to build {@link TimeBasedValue}s from "flat" information
  *
- * @param <D> Type of "flat" information as a subclass of {@link TimeBasedValue}.
  * @param <V> Type of the targeted inner {@link Value}, that is carried.
  */
-public abstract class TimeBasedValueFactory<D extends TimeBasedValueData<V>, V extends Value>
+public abstract class TimeBasedValueFactory<D, V extends Value>
     extends Factory<V, D, TimeBasedValue<V>> {
 
   protected final TimeUtil timeUtil;
@@ -30,22 +29,13 @@ public abstract class TimeBasedValueFactory<D extends TimeBasedValueData<V>, V e
   }
 
   /**
-   * Return the field name for the date time
-   *
-   * @return the field name for the date time
-   */
-  public String getTimeFieldString() {
-    return TIME;
-  }
-
-  /**
    * Method to extract a time string from a given map and convert into a {@link ZonedDateTime}.
    *
    * @param fieldsToAttributes map with time field
    * @return a {@link ZonedDateTime}
    */
   public ZonedDateTime extractTime(Map<String, String> fieldsToAttributes) {
-    return toZonedDateTime(fieldsToAttributes.get(getTimeFieldString()));
+    return toZonedDateTime(fieldsToAttributes.get(TIME));
   }
 
   /**

@@ -8,10 +8,7 @@ package edu.ie3.datamodel.io.source;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.SystemParticipantsException;
 import edu.ie3.datamodel.exceptions.ValidationException;
-import edu.ie3.datamodel.io.factory.EntityData;
-import edu.ie3.datamodel.io.factory.input.NodeAssetInputEntityData;
 import edu.ie3.datamodel.io.factory.input.participant.*;
-import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
@@ -26,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.BiFunction;
 
 /**
  * Provides the capability to build {@link SystemParticipantInput} entities and the {@link
@@ -34,6 +30,7 @@ import java.util.function.BiFunction;
  */
 public class SystemParticipantSource extends AssetEntitySource {
 
+  // general fields
   private static final String THERMAL_STORAGE = "thermalstorage";
   private static final String THERMAL_BUS = "thermalbus";
 
@@ -298,8 +295,7 @@ public class SystemParticipantSource extends AssetEntitySource {
     return getEntities(
             FixedFeedInInput.class,
             dataSource,
-            fixedFeedInInputFactory,
-            data -> participantEnricher.apply(data, operators, nodes, emUnits))
+            new FixedFeedInInputFactory(operators, nodes, emUnits))
         .collect(toSet());
   }
 
@@ -325,11 +321,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   public Set<PvInput> getPvPlants(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
       throws SourceException {
-    return getEntities(
-            PvInput.class,
-            dataSource,
-            pvInputFactory,
-            data -> participantEnricher.apply(data, operators, nodes, emUnits))
+    return getEntities(PvInput.class, dataSource, new PvInputFactory(operators, nodes, emUnits))
         .collect(toSet());
   }
 
@@ -355,11 +347,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   public Set<LoadInput> getLoads(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
       throws SourceException {
-    return getEntities(
-            LoadInput.class,
-            dataSource,
-            loadInputFactory,
-            data -> participantEnricher.apply(data, operators, nodes, emUnits))
+    return getEntities(LoadInput.class, dataSource, new LoadInputFactory(operators, nodes, emUnits))
         .collect(toSet());
   }
 
@@ -386,11 +374,7 @@ public class SystemParticipantSource extends AssetEntitySource {
   public Set<EvcsInput> getEvcs(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits)
       throws SourceException {
-    return getEntities(
-            EvcsInput.class,
-            dataSource,
-            evcsInputFactory,
-            data -> participantEnricher.apply(data, operators, nodes, emUnits))
+    return getEntities(EvcsInput.class, dataSource, new EvcsInputFactory(operators, nodes, emUnits))
         .collect(toSet());
   }
 
@@ -423,13 +407,7 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, BmTypeInput> types)
       throws SourceException {
     return getEntities(
-            BmInput.class,
-            dataSource,
-            bmInputFactory,
-            data ->
-                participantEnricher
-                    .andThen(enrichTypes(types))
-                    .apply(data, operators, nodes, emUnits))
+            BmInput.class, dataSource, new BmInputFactory(operators, nodes, emUnits, types))
         .collect(toSet());
   }
 
@@ -464,11 +442,7 @@ public class SystemParticipantSource extends AssetEntitySource {
     return getEntities(
             StorageInput.class,
             dataSource,
-            storageInputFactory,
-            data ->
-                participantEnricher
-                    .andThen(enrichTypes(types))
-                    .apply(data, operators, nodes, emUnits))
+            new StorageInputFactory(operators, nodes, emUnits, types))
         .collect(toSet());
   }
 
@@ -500,13 +474,7 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, WecTypeInput> types)
       throws SourceException {
     return getEntities(
-            WecInput.class,
-            dataSource,
-            wecInputFactory,
-            data ->
-                participantEnricher
-                    .andThen(enrichTypes(types))
-                    .apply(data, operators, nodes, emUnits))
+            WecInput.class, dataSource, new WecInputFactory(operators, nodes, emUnits, types))
         .collect(toSet());
   }
 
@@ -538,13 +506,7 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, EvTypeInput> types)
       throws SourceException {
     return getEntities(
-            EvInput.class,
-            dataSource,
-            evInputFactory,
-            data ->
-                participantEnricher
-                    .andThen(enrichTypes(types))
-                    .apply(data, operators, nodes, emUnits))
+            EvInput.class, dataSource, new EvInputFactory(operators, nodes, emUnits, types))
         .collect(toSet());
   }
 
@@ -582,21 +544,11 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, ThermalBusInput> thermalBuses,
       Map<UUID, ThermalStorageInput> thermalStorages)
       throws SourceException {
-
-    WrappedFunction<EntityData, ChpInputEntityData> builder =
-        data ->
-            participantEnricher
-                .andThen(enrichTypes(types))
-                .andThen(
-                    biEnrich(
-                        THERMAL_BUS,
-                        thermalBuses,
-                        THERMAL_STORAGE,
-                        thermalStorages,
-                        ChpInputEntityData::new))
-                .apply(data, operators, nodes, emUnits);
-
-    return getEntities(ChpInput.class, dataSource, chpInputFactory, builder).collect(toSet());
+    return getEntities(
+            ChpInput.class,
+            dataSource,
+            new ChpInputFactory(operators, nodes, emUnits, types, thermalBuses, thermalStorages))
+        .collect(toSet());
   }
 
   public Set<HpInput> getHeatPumps() throws SourceException {
@@ -629,6 +581,11 @@ public class SystemParticipantSource extends AssetEntitySource {
       Map<UUID, HpTypeInput> types,
       Map<UUID, ThermalBusInput> thermalBuses)
       throws SourceException {
+    return getEntities(
+            HpInput.class,
+            dataSource,
+            new HpInputFactory(operators, nodes, emUnits, types, thermalBuses))
+        .collect(toSet());
 
     WrappedFunction<EntityData, HpInputEntityData> builder =
         data ->
@@ -682,5 +639,10 @@ public class SystemParticipantSource extends AssetEntitySource {
     BiFunction<D, T, SystemParticipantTypedEntityData<T>> typeEnricher =
         SystemParticipantTypedEntityData::new;
     return entityData -> enrich(TYPE, types, typeEnricher).apply(entityData);
+    return getEntities(
+            AcInput.class,
+            dataSource,
+            new AcInputFactory(operators, nodes, emUnits, types, thermalBuses))
+        .collect(toSet());
   }
 }

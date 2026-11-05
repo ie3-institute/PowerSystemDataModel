@@ -96,6 +96,7 @@ class SystemParticipantTestData {
   static final ComparableQuantity<Angle> elevationAngle = Quantities.getQuantity(41.01871871948242d, SOLAR_ELEVATION_ANGLE)
   static double kT = 1d
   static double kG = 0.8999999761581421d
+  public static final Map<String, String> pvAdditionalInfo = ["source": "test", "note": "hello"]
   public static final PvInput pvInput = new PvInput(
   UUID.fromString("d56f15b7-8293-4b98-b5bd-58f6273ce229"),
   "test_pvInput",
@@ -111,7 +112,8 @@ class SystemParticipantTestData {
   kG,
   kT,
   sRated,
-  cosPhiRated
+  cosPhiRated,
+  pvAdditionalInfo
   )
 
 
@@ -170,8 +172,8 @@ class SystemParticipantTestData {
   public static final ComparableQuantity<Volume> storageVolumeLvl = Quantities.getQuantity(1.039154027, VOLUME)
   public static final ComparableQuantity<Temperature> inletTemp = Quantities.getQuantity(110, TEMPERATURE)
   public static final ComparableQuantity<Temperature> returnTemp = Quantities.getQuantity(80, TEMPERATURE)
-  public static final ComparableQuantity<SpecificHeatCapacity> c = Quantities.getQuantity(
-  1, SPECIFIC_HEAT_CAPACITY)
+  public static final ComparableQuantity<VolumetricHeatCapacity> c = Quantities.getQuantity(
+  1, VOLUMETRIC_HEAT_CAPACITY)
   public static final ComparableQuantity<Power> pThermalMax = Quantities.getQuantity(
   20, ACTIVE_POWER_IN)
 

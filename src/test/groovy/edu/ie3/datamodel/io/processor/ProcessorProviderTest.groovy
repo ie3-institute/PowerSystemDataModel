@@ -67,6 +67,8 @@ class ProcessorProviderTest extends Specification implements TimeSeriesTestData 
       /* - AssetInput */
       NodeInput,
       LineInput,
+      SoilType,
+      SoilLayer,
       Transformer2WInput,
       Transformer3WInput,
       SwitchInput,

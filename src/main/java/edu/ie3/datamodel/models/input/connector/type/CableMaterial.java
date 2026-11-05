@@ -8,8 +8,8 @@ package edu.ie3.datamodel.models.input.connector.type;
 import static edu.ie3.util.quantities.PowerSystemUnits.*;
 
 import edu.ie3.util.quantities.interfaces.ElectricalResistivity;
-import edu.ie3.util.quantities.interfaces.ThermalCapacitance;
 import edu.ie3.util.quantities.interfaces.ThermalResistivity;
+import edu.ie3.util.quantities.interfaces.VolumetricHeatCapacity;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
@@ -40,9 +40,9 @@ public enum CableMaterial {
   POLYPROPYLENE;
 
   /**
-   * Get the default thermal properties resistivity and capacitance for this material.
+   * Get the default thermal resistivity and volumetric heat capacity for this material.
    *
-   * @return A pair of thermal resistivity and thermal capacitance
+   * @return A pair of thermal resistivity and volumetric heat capacity
    */
   public ThermalProperties getThermalProperties() {
     return switch (this) {
@@ -126,7 +126,7 @@ public enum CableMaterial {
   /** Container class for thermal properties of a cable material. */
   public record ThermalProperties(
       ComparableQuantity<ThermalResistivity> resistivity,
-      ComparableQuantity<ThermalCapacitance> capacitance) {
+      ComparableQuantity<VolumetricHeatCapacity> volumetricHeatCapacity) {
 
     /**
      * Compact constructor for validation of record components.
@@ -134,7 +134,7 @@ public enum CableMaterial {
      * @throws IllegalArgumentException if any property is null
      */
     public ThermalProperties {
-      if (resistivity == null || capacitance == null) {
+      if (resistivity == null || volumetricHeatCapacity == null) {
         throw new IllegalArgumentException("Thermal properties must not be null.");
       }
     }

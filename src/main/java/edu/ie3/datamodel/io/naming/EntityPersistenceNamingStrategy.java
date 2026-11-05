@@ -14,6 +14,8 @@ import edu.ie3.datamodel.models.input.AssetInput;
 import edu.ie3.datamodel.models.input.AssetTypeInput;
 import edu.ie3.datamodel.models.input.InputEntity;
 import edu.ie3.datamodel.models.input.OperatorInput;
+import edu.ie3.datamodel.models.input.SoilLayer;
+import edu.ie3.datamodel.models.input.SoilType;
 import edu.ie3.datamodel.models.input.connector.CableDeploymentInput;
 import edu.ie3.datamodel.models.input.system.characteristic.CharacteristicInput;
 import edu.ie3.datamodel.models.result.ResultEntity;
@@ -213,7 +215,9 @@ public class EntityPersistenceNamingStrategy {
    * @return The entity name
    */
   public Optional<String> getInputEntityName(Class<? extends InputEntity> cls) {
-    if (CableDeploymentInput.class.isAssignableFrom(cls))
+    if (SoilLayer.class.isAssignableFrom(cls)
+        || SoilType.class.isAssignableFrom(cls)
+        || CableDeploymentInput.class.isAssignableFrom(cls))
       return Optional.of(addPrefixAndSuffix(camelCaseToSnakeCase(cls.getSimpleName())));
     if (AssetTypeInput.class.isAssignableFrom(cls))
       return getTypeEntityName(cls.asSubclass(AssetTypeInput.class));

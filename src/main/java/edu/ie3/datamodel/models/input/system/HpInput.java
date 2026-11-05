@@ -215,7 +215,8 @@ public class HpInput extends SystemParticipantInput implements HasType, HasTherm
           thermalBus,
           getqCharacteristics(),
           getEm(),
-          type);
+          type,
+          getAdditionalInformation());
     }
 
     @Override

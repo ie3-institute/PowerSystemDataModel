@@ -269,7 +269,8 @@ public class StorageTypeInput extends SystemParticipantTypeInput {
           getCosPhiRated(),
           pMax,
           activePowerGradient,
-          eta);
+          eta,
+          getAdditionalInformation());
     }
 
     @Override

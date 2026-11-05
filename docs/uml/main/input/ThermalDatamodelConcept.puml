@@ -119,7 +119,7 @@ package models {
                 - storageVolumeLvl: ComparableQuantity<Volume> [m³]
                 - inletTemp: ComparableQuantity<Temperature> [°C]
                 - returnTemp: ComparableQuantity<Temperature> [°C]
-                - c: ComparableQuantity<SpecificHeatCapacity> [kWh/(K*m³)]
+                - c: ComparableQuantity<VolumetricHeatCapacity> [kWh/(K*m³)]
                 - pThermalMax: ComparableQuantity<Power> [kW]
             }
             CylindricalStorageInput --|> AbstractStorageInput
@@ -128,7 +128,7 @@ package models {
                 - storageVolumeLvl: ComparableQuantity<Volume> [m³]
                 - inletTemp: ComparableQuantity<Temperature> [°C]
                 - returnTemp: ComparableQuantity<Temperature> [°C]
-                - c: ComparableQuantity<SpecificHeatCapacity> [kWh/(K*m³)]
+                - c: ComparableQuantity<VolumetricHeatCapacity> [kWh/(K*m³)]
                 - pThermalMax: ComparableQuantity<Power> [kW]
             }
             DomesticHotWaterStorageInput --|> AbstractStorageInput

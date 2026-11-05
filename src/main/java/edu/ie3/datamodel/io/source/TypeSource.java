@@ -25,24 +25,10 @@ import java.util.UUID;
  */
 public class TypeSource extends EntitySource {
   private static final String SUB_DIRECTORY = "/type";
-
-  // factories
-  private final OperatorInputFactory operatorInputFactory;
-  private final Transformer2WTypeInputFactory transformer2WTypeInputFactory;
-  private final CableTypeInputFactory cableTypeInputFactory;
-  private final Transformer3WTypeInputFactory transformer3WTypeInputFactory;
-  private final SystemParticipantTypeInputFactory systemParticipantTypeInputFactory;
-
   private final DataSource dataSource;
 
   public TypeSource(DataSource dataSource) {
     this.dataSource = dataSource;
-
-    this.operatorInputFactory = new OperatorInputFactory();
-    this.transformer2WTypeInputFactory = new Transformer2WTypeInputFactory();
-    this.cableTypeInputFactory = new CableTypeInputFactory();
-    this.transformer3WTypeInputFactory = new Transformer3WTypeInputFactory();
-    this.systemParticipantTypeInputFactory = new SystemParticipantTypeInputFactory();
   }
 
   @Override
@@ -102,7 +88,7 @@ public class TypeSource extends EntitySource {
   private Map<UUID, Transformer2WTypeInput> getTransformer2WTypes(boolean withBuildIn)
       throws SourceException {
     Map<UUID, Transformer2WTypeInput> types =
-        getEntities(Transformer2WTypeInput.class, dataSource, transformer2WTypeInputFactory);
+        getEntityMap(Transformer2WTypeInput.class, dataSource, new Transformer2WTypeInputFactory());
 
     if (withBuildIn) {
       Map<UUID, Transformer2WTypeInput> allTypes = getStandardTransformer2WTypes();
@@ -123,7 +109,7 @@ public class TypeSource extends EntitySource {
    * @return a map of UUID to object- and uuid-unique {@link OperatorInput} entities
    */
   public Map<UUID, OperatorInput> getOperators() throws SourceException {
-    return getEntities(OperatorInput.class, dataSource, operatorInputFactory);
+    return getEntityMap(OperatorInput.class, dataSource, new OperatorInputFactory());
   }
 
   /**
@@ -163,7 +149,7 @@ public class TypeSource extends EntitySource {
     Map<UUID, CableTypeInput> cableTypes = getCableTypes(true);
 
     Map<UUID, LineTypeInput> lineTypes =
-        getEntities(LineTypeInput.class, dataSource, new LineTypeInputFactory(cableTypes));
+        getEntityMap(LineTypeInput.class, dataSource, new LineTypeInputFactory(cableTypes));
 
     if (withBuildIn) {
       Map<UUID, LineTypeInput> allTypes = getStandardLineTypes();
@@ -197,7 +183,7 @@ public class TypeSource extends EntitySource {
    */
   public Map<UUID, CableTypeInput> getCableTypes(boolean withBuildIn) throws SourceException {
     Map<UUID, CableTypeInput> types =
-        getEntities(CableTypeInput.class, dataSource, cableTypeInputFactory);
+        getEntityMap(CableTypeInput.class, dataSource, new CableTypeInputFactory());
 
     if (withBuildIn) {
       Map<UUID, CableTypeInput> allTypes = getStandardCableTypes();
@@ -248,7 +234,7 @@ public class TypeSource extends EntitySource {
   private Map<UUID, Transformer3WTypeInput> getTransformer3WTypes(boolean withBuildIn)
       throws SourceException {
     Map<UUID, Transformer3WTypeInput> types =
-        getEntities(Transformer3WTypeInput.class, dataSource, transformer3WTypeInputFactory);
+        getEntityMap(Transformer3WTypeInput.class, dataSource, new Transformer3WTypeInputFactory());
 
     if (withBuildIn) {
       Map<UUID, Transformer3WTypeInput> allTypes = getStandardTransformer3WTypes();
@@ -269,7 +255,8 @@ public class TypeSource extends EntitySource {
    * @return a map of UUID to object- and uuid-unique {@link BmTypeInput} entities
    */
   public Map<UUID, BmTypeInput> getBmTypes() throws SourceException {
-    return getEntities(BmTypeInput.class, dataSource, systemParticipantTypeInputFactory);
+    return getEntityMap(
+        BmTypeInput.class, dataSource, new SystemParticipantTypeInputFactory<>(BmTypeInput.class));
   }
 
   /**
@@ -282,7 +269,10 @@ public class TypeSource extends EntitySource {
    * @return a map of UUID to object- and uuid-unique {@link ChpTypeInput} entities
    */
   public Map<UUID, ChpTypeInput> getChpTypes() throws SourceException {
-    return getEntities(ChpTypeInput.class, dataSource, systemParticipantTypeInputFactory);
+    return getEntityMap(
+        ChpTypeInput.class,
+        dataSource,
+        new SystemParticipantTypeInputFactory<>(ChpTypeInput.class));
   }
 
   /**
@@ -295,7 +285,8 @@ public class TypeSource extends EntitySource {
    * @return a map of UUID to object- and uuid-unique {@link HpTypeInput} entities
    */
   public Map<UUID, HpTypeInput> getHpTypes() throws SourceException {
-    return getEntities(HpTypeInput.class, dataSource, systemParticipantTypeInputFactory);
+    return getEntityMap(
+        HpTypeInput.class, dataSource, new SystemParticipantTypeInputFactory<>(HpTypeInput.class));
   }
 
   /**
@@ -308,7 +299,8 @@ public class TypeSource extends EntitySource {
    * @return a map of UUID to object- and uuid-unique {@link AcTypeInput} entities
    */
   public Map<UUID, AcTypeInput> getAcTypes() throws SourceException {
-    return getEntities(AcTypeInput.class, dataSource, systemParticipantTypeInputFactory);
+    return getEntityMap(
+        AcTypeInput.class, dataSource, new SystemParticipantTypeInputFactory<>(AcTypeInput.class));
   }
 
   /**
@@ -322,7 +314,10 @@ public class TypeSource extends EntitySource {
    * @return a map of UUID to object- and uuid-unique {@link StorageTypeInput} entities
    */
   public Map<UUID, StorageTypeInput> getStorageTypes() throws SourceException {
-    return getEntities(StorageTypeInput.class, dataSource, systemParticipantTypeInputFactory);
+    return getEntityMap(
+        StorageTypeInput.class,
+        dataSource,
+        new SystemParticipantTypeInputFactory<>(StorageTypeInput.class));
   }
 
   /**
@@ -335,7 +330,10 @@ public class TypeSource extends EntitySource {
    * @return a map of UUID to object- and uuid-unique {@link WecTypeInput} entities
    */
   public Map<UUID, WecTypeInput> getWecTypes() throws SourceException {
-    return getEntities(WecTypeInput.class, dataSource, systemParticipantTypeInputFactory);
+    return getEntityMap(
+        WecTypeInput.class,
+        dataSource,
+        new SystemParticipantTypeInputFactory<>(WecTypeInput.class));
   }
 
   /**
@@ -348,6 +346,7 @@ public class TypeSource extends EntitySource {
    * @return a map of UUID to object- and uuid-unique {@link EvTypeInput} entities
    */
   public Map<UUID, EvTypeInput> getEvTypes() throws SourceException {
-    return getEntities(EvTypeInput.class, dataSource, systemParticipantTypeInputFactory);
+    return getEntityMap(
+        EvTypeInput.class, dataSource, new SystemParticipantTypeInputFactory<>(EvTypeInput.class));
   }
 }

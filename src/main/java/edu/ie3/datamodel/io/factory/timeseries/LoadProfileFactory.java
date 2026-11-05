@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory.timeseries;
 
 import edu.ie3.datamodel.io.factory.Factory;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileTimeSeries;
@@ -21,14 +22,9 @@ import tech.units.indriya.ComparableQuantity;
  * @param <V> type of load values
  */
 public abstract class LoadProfileFactory<V extends LoadValues>
-    extends Factory<V, LoadProfileData<V>, LoadProfileEntry<V>> {
+    extends Factory<V, FieldMap, LoadProfileEntry<V>> {
 
   protected LoadProfileFactory(Class<? extends V> valueClass) {
-    super(valueClass);
-  }
-
-  @SafeVarargs
-  protected LoadProfileFactory(Class<? extends V>... valueClass) {
     super(valueClass);
   }
 

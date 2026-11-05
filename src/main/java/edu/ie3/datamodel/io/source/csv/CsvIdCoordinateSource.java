@@ -8,7 +8,7 @@ package edu.ie3.datamodel.io.source.csv;
 import edu.ie3.datamodel.exceptions.DuplicateEntitiesException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
-import edu.ie3.datamodel.io.factory.SimpleFactoryData;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.timeseries.CosmoIdCoordinateFactory;
 import edu.ie3.datamodel.io.factory.timeseries.IdCoordinateFactory;
 import edu.ie3.datamodel.io.source.DataSource;
@@ -77,10 +77,7 @@ public class CsvIdCoordinateSource extends IdCoordinateSource {
   private Map<Integer, Point> setupIdToCoordinateMap() throws SourceException {
     List<IdCoordinateInput> idCoordinates =
         buildStreamWithFieldsToAttributesMap()
-            .map(
-                data ->
-                    data.map(fieldToValues -> new SimpleFactoryData(fieldToValues, getInputClass()))
-                        .map(factory::get))
+            .map(data -> data.map(d -> factory.get(new FieldMap(d))))
             .flatMap(s -> Try.scanStream(s, "Pair<Integer, Point>", SourceException::new))
             .getOrThrow()
             .toList();

@@ -10,6 +10,7 @@ import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryStrin
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.io.factory.timeseries.LoadProfileFactory;
 import edu.ie3.datamodel.io.naming.DatabaseNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.LoadProfileMetaInformation;
@@ -149,7 +150,7 @@ public class SqlLoadProfileSource<V extends LoadValues> extends LoadProfileSourc
    */
   private Optional<LoadProfileEntry<V>> createEntity(Map<String, String> fieldToValues) {
     fieldToValues.remove("timeSeries");
-    return createEntries(fieldToValues).getData();
+    return entryFactory.get(new FieldMap(fieldToValues)).getData();
   }
 
   /**

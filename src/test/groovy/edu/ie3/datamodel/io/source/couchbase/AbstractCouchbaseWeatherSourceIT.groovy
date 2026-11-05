@@ -34,7 +34,7 @@ abstract class AbstractCouchbaseWeatherSourceIT extends Specification implements
   @Shared
   CouchbaseWeatherSource source
 
-  static String coordinateIdColumnName = "coordinateid"
+  static String coordinateIdColumnName = "coordinateId"
 
   abstract String getJsonResourcePath()
   abstract TimeBasedWeatherValueFactory getWeatherFactory()

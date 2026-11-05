@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.factory.input.participant;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.EmInput;
@@ -14,30 +15,36 @@ import edu.ie3.datamodel.models.input.system.BmInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.BmTypeInput;
 import edu.ie3.util.quantities.interfaces.EnergyPrice;
+import java.util.Map;
 import java.util.UUID;
 import tech.units.indriya.ComparableQuantity;
 
-public class BmInputFactory
-    extends SystemParticipantInputEntityFactory<
-        BmInput, SystemParticipantTypedEntityData<BmTypeInput>> {
+/** Factory to create instances of {@link BmInput}s. */
+public class BmInputFactory extends SystemParticipantInputEntityFactory<BmInput> {
 
-  public BmInputFactory() {
-    super(BmInput.class);
+  private final Map<UUID, BmTypeInput> types;
+
+  public BmInputFactory(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, EmInput> emUnits,
+      Map<UUID, BmTypeInput> types) {
+    super(operators, nodes, emUnits, BmInput.class);
+    this.types = types;
   }
 
   @Override
   protected BmInput buildModel(
-      SystemParticipantTypedEntityData<BmTypeInput> data,
+      FieldMap data,
       UUID uuid,
       String id,
       NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
       OperatorInput operator,
-      OperationTime operationTime) {
-    final EmInput em = data.getControllingEm().orElse(null);
-    final BmTypeInput typeInput = data.getTypeInput();
-    final boolean costControlled = data.getBoolean(COST_CONTROLLED);
-    final ComparableQuantity<EnergyPrice> feedInTariff =
+      OperationTime operationTime,
+      EmInput controllingEm) {
+    boolean costControlled = data.getBoolean(COST_CONTROLLED);
+    ComparableQuantity<EnergyPrice> feedInTariff =
         data.getQuantity(FEED_IN_TARIFF, StandardUnits.ENERGY_PRICE);
 
     return new BmInput(
@@ -47,10 +54,10 @@ public class BmInputFactory
         operationTime,
         node,
         qCharacteristics,
-        em,
-        typeInput,
+        controllingEm,
+        data.getEntity(TYPE, types),
         costControlled,
         feedInTariff,
-        data.getFieldsToValues());
+        data.additionalInformation());
   }
 }

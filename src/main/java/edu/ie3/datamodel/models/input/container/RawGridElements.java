@@ -62,7 +62,7 @@ public class RawGridElements implements InputContainer<AssetInput> {
     this.switches = switches;
     this.measurementUnits = measurementUnits;
 
-    Map<UUID, List<CableDeploymentInput>> tmp = new java.util.HashMap<>();
+    Map<UUID, List<CableDeploymentInput>> tmp = new HashMap<>();
     if (cableDeploymentsByLine != null) {
       cableDeploymentsByLine.forEach((k, v) -> tmp.put(k, List.copyOf(v)));
     }

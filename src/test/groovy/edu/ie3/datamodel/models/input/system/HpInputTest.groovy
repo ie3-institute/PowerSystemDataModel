@@ -29,6 +29,7 @@ class HpInputTest extends Specification {
       thermalBus == SystemParticipantTestData.thermalBus
       type == SystemParticipantTestData.hpTypeInput
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == hpInput.additionalInformation
     }
   }
 
@@ -51,6 +52,7 @@ class HpInputTest extends Specification {
       sRated() == hpInput.type.sRated * 2d
       type.pThermal == hpInput.type.pThermal * 2d
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == hpInput.additionalInformation
     }
   }
 }

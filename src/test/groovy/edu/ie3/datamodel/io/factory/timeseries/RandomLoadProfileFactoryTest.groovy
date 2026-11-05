@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.profile.LoadProfile
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry
@@ -25,7 +26,7 @@ class RandomLoadProfileFactoryTest extends Specification {
   def setupSpec() {
     factory = new RandomLoadProfileFactory()
 
-    def data0 = new LoadProfileData([
+    def data0 = [
       "kSa": "0.266806721687317",
       "kSu": "0.295997023582459",
       "kWd": "0.279087692499161",
@@ -36,9 +37,9 @@ class RandomLoadProfileFactoryTest extends Specification {
       "sigmaSu": "0.0370676517486572",
       "sigmaWd": "0.0293692331761122",
       "quarterHour": "0"
-    ] as Map, RandomLoadValues)
+    ]
 
-    def data1 = new LoadProfileData([
+    def data1 = [
       "kSa": "0.281179457902908",
       "kSu": "0.299608528614044",
       "kWd": "0.275292456150055",
@@ -49,9 +50,9 @@ class RandomLoadProfileFactoryTest extends Specification {
       "sigmaSu": "0.0334825366735458",
       "sigmaWd": "0.0265011098235846",
       "quarterHour": "1"
-    ] as Map, RandomLoadValues)
+    ]
 
-    def data2 = new LoadProfileData([
+    def data2 = [
       "kSa": "0.275563269853592",
       "kSu": "0.29670587182045",
       "kWd": "0.252942383289337",
@@ -62,12 +63,12 @@ class RandomLoadProfileFactoryTest extends Specification {
       "sigmaSu": "0.0310499873012304",
       "sigmaWd": "0.0245211906731129",
       "quarterHour": "2"
-    ] as Map, RandomLoadValues)
+    ]
 
     allEntries = [
-      factory.buildModel(data0),
-      factory.buildModel(data1),
-      factory.buildModel(data2)
+      factory.buildModel(new FieldMap(data0)),
+      factory.buildModel(new FieldMap(data1)),
+      factory.buildModel(new FieldMap(data2))
     ].flatten() as Set<LoadProfileEntry<RandomLoadValues>>
   }
 
@@ -124,7 +125,7 @@ class RandomLoadProfileFactoryTest extends Specification {
     ] as Map
 
     when:
-    def entry = factory.buildModel(new LoadProfileData<>(data, RandomLoadValues))
+    def entry = factory.buildModel(new FieldMap(data))
 
     then:
     entry.value.class == RandomLoadValues

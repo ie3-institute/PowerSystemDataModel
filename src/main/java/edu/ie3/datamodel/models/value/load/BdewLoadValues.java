@@ -229,7 +229,7 @@ public final class BdewLoadValues implements LoadValues {
 
     @Override
     public String getSeasonName() {
-      return season.toString().substring(0, 2);
+      return season.getKey();
     }
 
     @Override
@@ -241,8 +241,7 @@ public final class BdewLoadValues implements LoadValues {
   private record Bdew2025Key(Month season, DayType type) implements BdewKey {
     @Override
     public String getSeasonName() {
-      String seasonString = season.toString();
-      return seasonString.charAt(0) + seasonString.substring(1, 3).toLowerCase();
+      return season.toString().substring(0, 3).toLowerCase();
     }
 
     @Override
@@ -265,14 +264,14 @@ public final class BdewLoadValues implements LoadValues {
 
     public static BdewSeason parse(String key) throws ParsingException {
       return switch (key) {
-        case "Wi", "Winter" -> WINTER;
-        case "Su", "Summer" -> SUMMER;
-        case "Tr", "Transition" -> TRANSITION;
+        case "wi", "Wi", "Winter" -> WINTER;
+        case "su", "Su", "Summer" -> SUMMER;
+        case "tr", "Tr", "Transition" -> TRANSITION;
         default ->
             throw new ParsingException(
                 "There is no season for key:"
                     + key
-                    + ". Permissible keys: 'Wi', 'Winter', 'Su', 'Summer', 'Tr', 'Transition'");
+                    + ". Permissible keys: 'wi', 'Wi', 'Winter', 'su', 'Su', 'Summer', 'tr', 'Tr', 'Transition'");
       };
     }
 
@@ -320,7 +319,7 @@ public final class BdewLoadValues implements LoadValues {
     }
 
     public String getKey() {
-      return key;
+      return key.substring(0, 2).toLowerCase();
     }
 
     @Override

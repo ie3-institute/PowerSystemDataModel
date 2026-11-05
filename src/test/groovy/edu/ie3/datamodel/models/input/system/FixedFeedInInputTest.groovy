@@ -30,6 +30,7 @@ class FixedFeedInInputTest extends Specification {
       sRated == Quantities.getQuantity(10d, PowerSystemUnits.VOLTAMPERE)
       cosPhiRated == 0.8d
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == ffIn.additionalInformation
     }
   }
 
@@ -50,6 +51,7 @@ class FixedFeedInInputTest extends Specification {
       sRated == ffIn.sRated * 2d
       cosPhiRated == ffIn.cosPhiRated
       controllingEm == Optional.of(SystemParticipantTestData.emInput)
+      additionalInformation == ffIn.additionalInformation
     }
   }
 }

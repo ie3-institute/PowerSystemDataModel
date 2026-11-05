@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.factory.timeseries
 
+import edu.ie3.datamodel.io.factory.FieldMap
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.GeometryFactory
 import spock.lang.Specification
@@ -12,7 +13,7 @@ import spock.lang.Specification
 class TimeBasedWeatherValueDataTest extends Specification {
   def "equals returns true for identical objects"() {
     given:
-    def fields = ["foo": "bar"]
+    def fields = new FieldMap(["foo": "bar"])
     def point = new GeometryFactory().createPoint(new Coordinate(1, 2))
     def data1 = new TimeBasedWeatherValueData(fields, point)
     def data2 = new TimeBasedWeatherValueData(fields, point)
@@ -23,7 +24,7 @@ class TimeBasedWeatherValueDataTest extends Specification {
 
   def "equals returns false for different coordinates"() {
     given:
-    def fields = ["foo": "bar"]
+    def fields = new FieldMap(["foo": "bar"])
     def point1 = new GeometryFactory().createPoint(new Coordinate(1, 2))
     def point2 = new GeometryFactory().createPoint(new Coordinate(3, 4))
     def data1 = new TimeBasedWeatherValueData(fields, point1)
@@ -35,7 +36,7 @@ class TimeBasedWeatherValueDataTest extends Specification {
 
   def "hashCode returns same value for equal objects"() {
     given:
-    def fields = ["foo": "bar"]
+    def fields = new FieldMap(["foo": "bar"])
     def point = new GeometryFactory().createPoint(new Coordinate(1, 2))
     def data1 = new TimeBasedWeatherValueData(fields, point)
     def data2 = new TimeBasedWeatherValueData(fields, point)
@@ -46,7 +47,7 @@ class TimeBasedWeatherValueDataTest extends Specification {
 
   def "toString contains key fields"() {
     given:
-    def fields = ["foo": "bar"]
+    def fields = new FieldMap(["foo": "bar"])
     def point = new GeometryFactory().createPoint(new Coordinate(1, 2))
     def data = new TimeBasedWeatherValueData(fields, point)
 

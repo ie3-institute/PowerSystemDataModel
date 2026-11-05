@@ -16,11 +16,16 @@ import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
 import java.util.Map;
 import java.util.UUID;
 
-public class HpInputFactory
-    extends ThermalSystemParticipantInputFactory<HpInput, HpTypeInput, HpInputEntityData> {
+/** Factory to create instances of {@link HpInput}s. */
+public class HpInputFactory extends ThermalSystemParticipantInputFactory<HpInput, HpTypeInput> {
 
-  public HpInputFactory() {
-    super(HpInput.class);
+  public HpInputFactory(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, EmInput> emUnits,
+      Map<UUID, HpTypeInput> types,
+      Map<UUID, ThermalBusInput> thermalBuses) {
+    super(operators, nodes, emUnits, types, thermalBuses, HpInput.class);
   }
 
   @Override

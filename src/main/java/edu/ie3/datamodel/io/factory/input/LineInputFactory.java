@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.factory.input;
 
 import edu.ie3.datamodel.exceptions.FactoryException;
 import edu.ie3.datamodel.exceptions.ParsingException;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
@@ -15,34 +16,40 @@ import edu.ie3.datamodel.models.input.connector.LineInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.system.characteristic.OlmCharacteristicInput;
 import edu.ie3.datamodel.utils.GridAndGeoUtils;
+import java.util.Map;
 import java.util.UUID;
 import javax.measure.quantity.Length;
 import org.locationtech.jts.geom.LineString;
 import tech.units.indriya.ComparableQuantity;
 
-public class LineInputFactory
-    extends ConnectorInputEntityFactory<LineInput, TypedConnectorInputEntityData<LineTypeInput>> {
+public class LineInputFactory extends ConnectorInputEntityFactory<LineInput> {
 
-  public LineInputFactory() {
-    super(LineInput.class);
+  private final Map<UUID, LineTypeInput> types;
+
+  public LineInputFactory(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, LineTypeInput> types) {
+    super(operators, nodes, LineInput.class);
+    this.types = types;
   }
 
   @Override
   protected LineInput buildModel(
-      TypedConnectorInputEntityData<LineTypeInput> data,
+      FieldMap data,
       UUID uuid,
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
       OperatorInput operator,
       OperationTime operationTime) {
-    final int parallelDevices = data.getInt(PARALLEL_DEVICES);
-    final LineTypeInput type = data.getType();
-    final ComparableQuantity<Length> length = data.getQuantity(LENGTH, StandardUnits.LINE_LENGTH);
-    final LineString geoPosition =
+    int parallelDevices = data.getInt(PARALLEL_DEVICES);
+    LineTypeInput type = data.getType(types);
+    ComparableQuantity<Length> length = data.getQuantity(LENGTH, StandardUnits.LINE_LENGTH);
+    LineString geoPosition =
         data.getLineString(GEO_POSITION)
             .orElse(GridAndGeoUtils.buildSafeLineStringBetweenNodes(nodeA, nodeB));
-    final OlmCharacteristicInput olmCharacteristic;
+    OlmCharacteristicInput olmCharacteristic;
 
     if (!data.isFieldEmpty(OLM_CHARACTERISTIC)) {
       String value = data.getField(OLM_CHARACTERISTIC);
@@ -71,6 +78,6 @@ public class LineInputFactory
         length,
         geoPosition,
         olmCharacteristic,
-        data.getFieldsToValues());
+        data.additionalInformation());
   }
 }

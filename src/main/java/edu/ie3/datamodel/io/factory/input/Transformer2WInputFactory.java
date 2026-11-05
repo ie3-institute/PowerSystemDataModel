@@ -5,35 +5,40 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.connector.Transformer2WInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
+import java.util.Map;
 import java.util.UUID;
 
-public class Transformer2WInputFactory
-    extends ConnectorInputEntityFactory<
-        Transformer2WInput, TypedConnectorInputEntityData<Transformer2WTypeInput>> {
+public class Transformer2WInputFactory extends ConnectorInputEntityFactory<Transformer2WInput> {
 
-  public Transformer2WInputFactory() {
-    super(Transformer2WInput.class);
+  private final Map<UUID, Transformer2WTypeInput> types;
+
+  public Transformer2WInputFactory(
+      Map<UUID, OperatorInput> operators,
+      Map<UUID, NodeInput> nodes,
+      Map<UUID, Transformer2WTypeInput> types) {
+    super(operators, nodes, Transformer2WInput.class);
+    this.types = types;
   }
 
   @Override
   protected Transformer2WInput buildModel(
-      TypedConnectorInputEntityData<Transformer2WTypeInput> data,
+      FieldMap data,
       UUID uuid,
       String id,
       NodeInput nodeA,
       NodeInput nodeB,
       OperatorInput operator,
       OperationTime operationTime) {
-
-    final int parallelDevices = data.getInt(PARALLEL_DEVICES);
-    final Transformer2WTypeInput type = data.getType();
-    final int tapPos = data.getInt(TAP_POS);
-    final boolean autoTap = data.getBoolean(AUTO_TAP);
+    int parallelDevices = data.getInt(PARALLEL_DEVICES);
+    Transformer2WTypeInput type = data.getType(types);
+    int tapPos = data.getInt(TAP_POS);
+    boolean autoTap = data.getBoolean(AUTO_TAP);
 
     return new Transformer2WInput(
         uuid,
@@ -46,6 +51,6 @@ public class Transformer2WInputFactory
         type,
         tapPos,
         autoTap,
-        data.getFieldsToValues());
+        data.additionalInformation());
   }
 }

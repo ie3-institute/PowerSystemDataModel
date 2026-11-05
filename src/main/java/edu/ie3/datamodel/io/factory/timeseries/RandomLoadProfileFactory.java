@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.factory.timeseries;
 
 import static tech.units.indriya.unit.Units.WATT;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.timeseries.repetitive.LoadProfileEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.RandomLoadProfileTimeSeries;
@@ -25,7 +26,7 @@ public class RandomLoadProfileFactory extends LoadProfileFactory<RandomLoadValue
   }
 
   @Override
-  protected LoadProfileEntry<RandomLoadValues> buildModel(LoadProfileData<RandomLoadValues> data) {
+  protected LoadProfileEntry<RandomLoadValues> buildModel(FieldMap data) {
     int quarterHour = data.getInt(QUARTER_HOUR);
 
     return new LoadProfileEntry<>(

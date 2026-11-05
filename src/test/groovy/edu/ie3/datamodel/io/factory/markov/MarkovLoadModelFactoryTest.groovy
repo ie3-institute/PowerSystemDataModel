@@ -19,7 +19,7 @@ class MarkovLoadModelFactoryTest extends MarkovModelJsonTestSupport {
     def root = objectMapper.readTree(validModelJson())
 
     when:
-    def model = factory.get(new MarkovModelData(root)).getOrThrow()
+    def model = factory.get(root).getOrThrow()
 
     then:
     model.schema() == "markov.load.v1"
@@ -45,7 +45,7 @@ class MarkovLoadModelFactoryTest extends MarkovModelJsonTestSupport {
     def invalidJson = objectMapper.readTree(validModelJson().replace("\"shape\": [1,2,2]", "\"shape\": [2,2,2]"))
 
     when:
-    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+    factory.get(invalidJson).getOrThrow()
 
     then:
     thrown(FactoryException)
@@ -57,7 +57,7 @@ class MarkovLoadModelFactoryTest extends MarkovModelJsonTestSupport {
         .replace('[0.1, 0.9]', '[0.1, 0.8]'))
 
     when:
-    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+    factory.get(invalidJson).getOrThrow()
 
     then:
     thrown(FactoryException)
@@ -69,7 +69,7 @@ class MarkovLoadModelFactoryTest extends MarkovModelJsonTestSupport {
         .replace('"thresholds_right": [0.5]', '"thresholds_right": [0.3, 0.7]'))
 
     when:
-    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+    factory.get(invalidJson).getOrThrow()
 
     then:
     thrown(FactoryException)
@@ -81,7 +81,7 @@ class MarkovLoadModelFactoryTest extends MarkovModelJsonTestSupport {
         .replace('"schema": "markov.load.v1",', ''))
 
     when:
-    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+    factory.get(invalidJson).getOrThrow()
 
     then:
     thrown(FactoryException)
@@ -93,7 +93,7 @@ class MarkovLoadModelFactoryTest extends MarkovModelJsonTestSupport {
         .replace('"generated_at": "2025-01-01T00:00:00Z"', '"generated_at": "not-a-timestamp"'))
 
     when:
-    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+    factory.get(invalidJson).getOrThrow()
 
     then:
     thrown(FactoryException)
@@ -105,7 +105,7 @@ class MarkovLoadModelFactoryTest extends MarkovModelJsonTestSupport {
         .replace('"bucket_encoding": { "formula": "hour_of_day" }', '"bucket_encoding": {}'))
 
     when:
-    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+    factory.get(invalidJson).getOrThrow()
 
     then:
     thrown(FactoryException)
@@ -117,7 +117,7 @@ class MarkovLoadModelFactoryTest extends MarkovModelJsonTestSupport {
         .replace('"buckets":', '"not_buckets":'))
 
     when:
-    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+    factory.get(invalidJson).getOrThrow()
 
     then:
     thrown(FactoryException)
@@ -129,7 +129,7 @@ class MarkovLoadModelFactoryTest extends MarkovModelJsonTestSupport {
         .replace('"variances": [0.2]', '"variances": [0.2, 0.3]'))
 
     when:
-    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+    factory.get(invalidJson).getOrThrow()
 
     then:
     thrown(FactoryException)
@@ -141,7 +141,7 @@ class MarkovLoadModelFactoryTest extends MarkovModelJsonTestSupport {
     ((ObjectNode) root).remove("parameters")
 
     when:
-    def model = factory.get(new MarkovModelData(root)).getOrThrow()
+    def model = factory.get(root).getOrThrow()
 
     then:
     model.parameters().transitions().isEmpty()
@@ -154,7 +154,7 @@ class MarkovLoadModelFactoryTest extends MarkovModelJsonTestSupport {
         .replace('"max_power": { "value": 1.5, "unit": "kW" },', ''))
 
     when:
-    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+    factory.get(invalidJson).getOrThrow()
 
     then:
     thrown(FactoryException)
@@ -166,7 +166,7 @@ class MarkovLoadModelFactoryTest extends MarkovModelJsonTestSupport {
         .replace('"max_power": { "value": 1.5, "unit": "kW" }', '"max_power": { "value": 0.05, "unit": "kW" }'))
 
     when:
-    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+    factory.get(invalidJson).getOrThrow()
 
     then:
     thrown(FactoryException)
@@ -178,7 +178,7 @@ class MarkovLoadModelFactoryTest extends MarkovModelJsonTestSupport {
         .replace('"max_power": { "value": 1.5, "unit": "kW" }', '"max_power": { "value": 1500.0, "unit": "W" }'))
 
     when:
-    factory.get(new MarkovModelData(invalidJson)).getOrThrow()
+    factory.get(invalidJson).getOrThrow()
 
     then:
     thrown(FactoryException)

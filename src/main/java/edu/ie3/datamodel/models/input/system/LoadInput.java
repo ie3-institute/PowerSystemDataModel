@@ -357,7 +357,8 @@ public class LoadInput extends SystemParticipantInput {
           powerProfileKey,
           eConsAnnual,
           sRated,
-          cosPhiRated);
+          cosPhiRated,
+          getAdditionalInformation());
     }
 
     @Override

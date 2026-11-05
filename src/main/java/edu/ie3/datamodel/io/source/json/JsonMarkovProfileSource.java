@@ -10,7 +10,6 @@ import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.factory.markov.MarkovLoadModelFactory;
-import edu.ie3.datamodel.io.factory.markov.MarkovModelData;
 import edu.ie3.datamodel.io.file.FileType;
 import edu.ie3.datamodel.io.naming.timeseries.FileLoadProfileMetaInformation;
 import edu.ie3.datamodel.io.source.DataSource;
@@ -66,7 +65,7 @@ public class JsonMarkovProfileSource extends EntitySource implements PowerValueS
   public synchronized MarkovLoadModel getModel() throws SourceException {
     if (cachedModel == null) {
       try {
-        cachedModel = factory.get(new MarkovModelData(readRoot())).getOrThrow();
+        cachedModel = factory.get(readRoot()).getOrThrow();
       } catch (FactoryException e) {
         throw new SourceException(
             "Unable to build Markov load model from '"

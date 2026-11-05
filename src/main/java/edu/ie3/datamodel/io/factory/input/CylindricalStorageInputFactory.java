@@ -5,39 +5,37 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.thermal.CylindricalStorageInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
+import java.util.Map;
 import java.util.UUID;
 
 public class CylindricalStorageInputFactory
     extends AbstractThermalStorageInputFactory<CylindricalStorageInput> {
 
-  public CylindricalStorageInputFactory() {
-    super(CylindricalStorageInput.class);
+  public CylindricalStorageInputFactory(
+      Map<UUID, OperatorInput> operators, Map<UUID, ThermalBusInput> thermalBuses) {
+    super(operators, thermalBuses, CylindricalStorageInput.class);
   }
 
   @Override
   protected CylindricalStorageInput buildModel(
-      ThermalUnitInputEntityData data,
-      UUID uuid,
-      String id,
-      OperatorInput operator,
-      OperationTime operationTime) {
+      FieldMap data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
 
-    final ThermalBusInput bus = data.getBusInput();
     return new CylindricalStorageInput(
         uuid,
         id,
         operator,
         operationTime,
-        bus,
+        getBus(data),
         getStorageVolumeLvl(data),
         getInletTemp(data),
         getReturnTemp(data),
-        getSpecificHeatCapacity(data),
+        getVolumetricHeatCapacity(data),
         getMaxThermalPower(data),
-        data.getFieldsToValues());
+        data.additionalInformation());
   }
 }

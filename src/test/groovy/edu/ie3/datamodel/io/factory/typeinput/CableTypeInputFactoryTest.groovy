@@ -6,7 +6,7 @@
 package edu.ie3.datamodel.io.factory.typeinput
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.EntityData
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.input.connector.type.CableMaterial
 import edu.ie3.datamodel.models.input.connector.type.CableTypeInput
@@ -42,9 +42,9 @@ class CableTypeInputFactoryTest extends Specification implements FactoryTestHelp
       "uuid": "994dcc32-d6ec-4d0f-9941-7c25be942aa6",
       "id": "test cable type input",
       "coreNumber": "1",
-      "conductor": '{"id":"conductor","uuid":"fbf23859-b88f-58d5-8b54-4b9468c7ab60","material":"COPPER","crossSection":"240.0","diameter":"18.4","thermalResistivity":"0.0026","thermalCapacitance":"3.4e6","area":"240.0","isCompacted":false}',
-      "isolation": '[{"id":"insulation","uuid":"b13f4943-ab7c-53eb-a9d1-e4711f8ff4ba","material":"XLPE","innerDiameter":"19.4","outerDiameter":"34.8","thermalResistivity":"3.5","thermalCapacitance":"2.4e6","area":null}]',
-      "screen": '{"id":"screen","uuid":"73dde224-622d-52ec-9c58-2ea442720175","material":"COPPER","innerDiameter":"36.8","outerDiameter":"38.6","thermalResistivity":"0.0026","thermalCapacitance":"3.4e6","area":"35.62566","wiresNumber":56,"wireDiameter":"0.9","electricalResistivity":"1.7241e-8"}',
+      "conductor": '{"id":"conductor","uuid":"fbf23859-b88f-58d5-8b54-4b9468c7ab60","material":"COPPER","crossSection":"240.0","diameter":"18.4","thermalResistivity":"0.0026","volumetricHeatCapacity":"3.4e6","area":"240.0","isCompacted":false}',
+      "isolation": '[{"id":"insulation","uuid":"b13f4943-ab7c-53eb-a9d1-e4711f8ff4ba","material":"XLPE","innerDiameter":"19.4","outerDiameter":"34.8","thermalResistivity":"3.5","volumetricHeatCapacity":"2.4e6","area":null}]',
+      "screen": '{"id":"screen","uuid":"73dde224-622d-52ec-9c58-2ea442720175","material":"COPPER","innerDiameter":"36.8","outerDiameter":"38.6","thermalResistivity":"0.0026","volumetricHeatCapacity":"3.4e6","area":"35.62566","wiresNumber":56,"wireDiameter":"0.9","electricalResistivity":"1.7241e-8"}',
       "filler": "",
       "armor": "",
       "jack": "",
@@ -57,15 +57,13 @@ class CableTypeInputFactoryTest extends Specification implements FactoryTestHelp
       "circulatingLossFactor": "0.0435122656",
       "eddyCurrentLossFactor": "0.0",
     ]
-    def typeInputClass = CableTypeInput
 
     when:
-    Try<CableTypeInput, FactoryException> typeInput =
-        typeInputFactory.get(new EntityData(parameter, typeInputClass))
+    Try<CableTypeInput, FactoryException> typeInput = typeInputFactory.get(new FieldMap(parameter))
 
     then:
     typeInput.success
-    typeInput.data.get().getClass() == typeInputClass
+    typeInput.data.get().getClass() == CableTypeInput
     typeInput.data.get().with {
       uuid == UUID.fromString(parameter["uuid"])
       id == parameter["id"]
@@ -118,7 +116,7 @@ class CableTypeInputFactoryTest extends Specification implements FactoryTestHelp
     ]
 
     when:
-    typeInputFactory.get(new EntityData(parameter, CableTypeInput)).getOrThrow()
+    typeInputFactory.get(new FieldMap(parameter)).getOrThrow()
 
     then:
     FactoryException e = thrown()

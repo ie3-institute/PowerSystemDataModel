@@ -28,8 +28,7 @@ import tech.units.indriya.quantity.Quantities
 
 import java.util.stream.Collectors
 /**
- * //ToDo: Class Description
- *
+ * Provides sample joint-grid test data with low-, medium-, and high-voltage grid elements and system participants.
  */
 class SampleJointGrid extends SystemParticipantTestData {
 

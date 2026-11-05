@@ -285,7 +285,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     actual == null
     SourceException ex = thrown()
     ex.message == "1 exception(s) occurred within \"NodeInput\" data: \n" +
-        "        An error occurred when creating instance of NodeInput.class. Caused by: Exception while trying to parse UUID of field \"uuid\" with value \"bd837a25-58f3-44ac-aa90-c6b6e3 cd91b2\""
+        "        An error occurred in NodeInputFactory. Caused by: Exception while trying to parse UUID of field \"uuid\" with value \"bd837a25-58f3-44ac-aa90-c6b6e3 cd91b2\""
   }
 
   def "The CsvRawGridSource returns an empty grid, if the RawGridElements contain no single element"() {
@@ -326,7 +326,7 @@ class CsvRawGridSourceTest extends Specification implements CsvTestDataMeta {
     Exception ex = rawGridElements.exception.get()
     ex.class == SourceException
     ex.message == "2 exception(s) occurred within \"LineInput\" data: \n" +
-        "        Extracting UUID for field 'nodeA' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-        "        Extracting UUID for field 'nodeA' failed. Caused by: Entity with uuid bd837a25-58f3-44ac-aa90-c6b6e3cd91b2 was not provided."
+        "        An error occurred in LineInputFactory. Caused by: Extracting UUID for field 'nodeA' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
+        "        An error occurred in LineInputFactory. Caused by: Extracting UUID for field 'nodeA' failed. Caused by: Entity with uuid bd837a25-58f3-44ac-aa90-c6b6e3cd91b2 was not provided."
   }
 }

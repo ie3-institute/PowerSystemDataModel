@@ -5,24 +5,21 @@
 */
 package edu.ie3.datamodel.io.factory.typeinput;
 
-import edu.ie3.datamodel.io.factory.EntityData;
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
-import java.util.UUID;
 import javax.measure.quantity.*;
 import tech.units.indriya.ComparableQuantity;
 
 public class Transformer3WTypeInputFactory
-    extends AssetTypeInputEntityFactory<Transformer3WTypeInput> {
+    extends AssetTypeInputEntityFactory<Transformer3WTypeInput, Transformer3WTypeInput> {
 
   public Transformer3WTypeInputFactory() {
     super(Transformer3WTypeInput.class);
   }
 
   @Override
-  protected Transformer3WTypeInput buildModel(EntityData data) {
-    UUID uuid = data.getUUID(UUID);
-    String id = data.getField(ID);
+  protected Transformer3WTypeInput buildModel(FieldMap data) {
     ComparableQuantity<Power> sRatedA = data.getQuantity(S_RATED_A, StandardUnits.S_RATED);
     ComparableQuantity<Power> sRatedB = data.getQuantity(S_RATED_B, StandardUnits.S_RATED);
     ComparableQuantity<Power> sRatedC = data.getQuantity(S_RATED_C, StandardUnits.S_RATED);
@@ -50,8 +47,8 @@ public class Transformer3WTypeInputFactory
     int tapMax = data.getInt(TAP_MAX);
 
     return new Transformer3WTypeInput(
-        uuid,
-        id,
+        getUUID(data),
+        getID(data),
         sRatedA,
         sRatedB,
         sRatedC,
@@ -71,6 +68,6 @@ public class Transformer3WTypeInputFactory
         tapNeutr,
         tapMin,
         tapMax,
-        data.getFieldsToValues());
+        data.additionalInformation());
   }
 }

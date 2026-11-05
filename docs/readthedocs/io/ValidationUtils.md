@@ -86,6 +86,9 @@ The ValidationUtils include validation checks for...
     - GridContainer
     - RawGridElements
     - SystemParticipants
+- SoilValidationUtils
+    - SoilType
+    - SoilLayer
 
 ## What should be considered?
 - Due to many checks with if-conditions, the usage of the ValidationUtils for many objects might be runtime relevant.

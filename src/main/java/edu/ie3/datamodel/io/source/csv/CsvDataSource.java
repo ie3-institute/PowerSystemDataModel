@@ -9,6 +9,7 @@ import static edu.ie3.datamodel.io.file.FileType.CSV;
 
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.io.connectors.CsvFileConnector;
+import edu.ie3.datamodel.io.naming.FieldNamingStrategy;
 import edu.ie3.datamodel.io.naming.FileNamingStrategy;
 import edu.ie3.datamodel.io.naming.timeseries.*;
 import edu.ie3.datamodel.io.source.file.FileDataSource;
@@ -168,13 +169,12 @@ public class CsvDataSource extends FileDataSource {
               + "\n      - are you using a valid RFC 4180 formatted csv row?");
     }
 
-    TreeMap<String, String> insensitiveFieldsToAttributes =
-        new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    Map<String, String> fieldsToAttributes = new TreeMap<>();
 
     for (int i = 0; i < headline.length; i++) {
-      String key = StringUtils.snakeCaseToCamelCase(headline[i]);
+      String key = FieldNamingStrategy.harmonize(headline[i]);
 
-      if (insensitiveFieldsToAttributes.containsKey(key)) {
+      if (fieldsToAttributes.containsKey(key)) {
         throw new SourceException(
             "Headline element '"
                 + headline[i]
@@ -183,10 +183,10 @@ public class CsvDataSource extends FileDataSource {
                 + "'].\nPlease keep in mind that headlines are case-insensitive and underscores from snake case are ignored.");
       }
 
-      insensitiveFieldsToAttributes.put(key, fieldVals[i]);
+      fieldsToAttributes.put(key, fieldVals[i]);
     }
 
-    return insensitiveFieldsToAttributes;
+    return fieldsToAttributes;
   }
 
   /**

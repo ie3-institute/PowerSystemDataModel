@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.factory.timeseries
 
 import edu.ie3.datamodel.exceptions.FactoryException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
 import edu.ie3.datamodel.models.value.WeatherValue
@@ -21,14 +22,15 @@ import tech.units.indriya.unit.Units
 class IconTimeBasedWeatherValueFactoryTest extends Specification {
   def "A time based weather value factory for ICON column scheme determines wind velocity angle correctly"() {
     given:
-    def data = new TimeBasedWeatherValueData([
+    def factory = new IconTimeBasedWeatherValueFactory()
+    def data = [
       "u131m": u.toString(),
       "v131m": v.toString(),
-    ], Mock(Point))
+    ]
     def expected = Quantities.getQuantity(expectedValue, PowerSystemUnits.DEGREE_GEOM)
 
     when:
-    def actual = IconTimeBasedWeatherValueFactory.getWindValue(data).direction.get()
+    def actual = factory.getWindValue(new FieldMap(data)).direction.get()
 
     then:
     actual.getUnit() == StandardUnits.WIND_DIRECTION
@@ -48,14 +50,15 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
 
   def "A time based weather value factory for ICON column scheme determines wind velocity correctly"() {
     given:
-    def data = new TimeBasedWeatherValueData([
+    def factory = new IconTimeBasedWeatherValueFactory()
+    def data = [
       "u131m": u.toString(),
       "v131m": v.toString(),
-    ], Mock(Point))
+    ]
     def expected = Quantities.getQuantity(expectedValue, PowerSystemUnits.METRE_PER_SECOND)
 
     when:
-    def actual = IconTimeBasedWeatherValueFactory.getWindValue(data).velocity.get()
+    def actual = factory.getWindValue(new FieldMap(data)).velocity.get()
 
     then:
     actual.getUnit() == StandardUnits.WIND_VELOCITY
@@ -110,7 +113,7 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
       "sobsRad" : "",
       "t131m" : ""
     ]
-    def data = new TimeBasedWeatherValueData(parameter, coordinate)
+    def data = new TimeBasedWeatherValueData(new FieldMap(parameter), coordinate)
 
     when:
     def actual = factory.buildModel(data)
@@ -152,7 +155,7 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
       "coordinateId": "67775"
     ]
 
-    def data = new TimeBasedWeatherValueData(parameter, coordinate)
+    def data = new TimeBasedWeatherValueData(new FieldMap(parameter), coordinate)
 
     when:
     factory.buildModel(data)
@@ -177,7 +180,7 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
       "coordinateId": "50000"
     ]
 
-    def data = new TimeBasedWeatherValueData(parameter, coordinate)
+    def data = new TimeBasedWeatherValueData(new FieldMap(parameter), coordinate)
 
     def expectedResults = new TimeBasedValue(
         time, new WeatherValue(coordinate,
@@ -211,7 +214,7 @@ class IconTimeBasedWeatherValueFactoryTest extends Specification {
       "coordinateId": "67775"
     ]
 
-    def data = new TimeBasedWeatherValueData(parameter, coordinate)
+    def data = new TimeBasedWeatherValueData(new FieldMap(parameter), coordinate)
 
     when:
     factory.buildModel(data)

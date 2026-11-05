@@ -52,7 +52,7 @@ class CsvTimeSeriesSourceIT extends Specification implements CsvTestDataMeta {
 
     when:
     def actual = source.buildIndividualTimeSeries(tsUuid, filePath, {
-      source.createTimeBasedValue(it)
+      factory.get(it)
     })
 
     then:

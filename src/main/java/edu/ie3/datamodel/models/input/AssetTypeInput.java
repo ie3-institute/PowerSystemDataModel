@@ -50,9 +50,8 @@ public abstract class AssetTypeInput extends UniqueInputEntity {
    * Abstract class for all builder that build child entities of abstract class {@link
    * AssetTypeInput}
    */
-  public abstract static class AssetTypeInputCopyBuilder<
-          B extends AssetTypeInput.AssetTypeInputCopyBuilder<B>>
-      extends UniqueEntityCopyBuilder<B> {
+  public abstract static class AssetTypeInputCopyBuilder<B extends AssetTypeInputCopyBuilder<B>>
+      extends UniqueInputEntityCopyBuilder<B> {
 
     private String id;
 

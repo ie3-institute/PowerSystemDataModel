@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.factory.timeseries;
 import static edu.ie3.datamodel.models.profile.BdewStandardLoadProfile.*;
 import static tech.units.indriya.unit.Units.WATT;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.timeseries.TimeSeriesEntry;
 import edu.ie3.datamodel.models.timeseries.repetitive.BdewLoadProfileTimeSeries;
@@ -38,7 +39,7 @@ public class BdewLoadProfileFactory extends LoadProfileFactory<BdewLoadValues> {
   }
 
   @Override
-  protected LoadProfileEntry<BdewLoadValues> buildModel(LoadProfileData<BdewLoadValues> data) {
+  protected LoadProfileEntry<BdewLoadValues> buildModel(FieldMap data) {
     int quarterHour = data.getInt(QUARTER_HOUR);
 
     boolean is1999Scheme =

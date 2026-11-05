@@ -36,4 +36,30 @@ public abstract class UniqueInputEntity extends UniqueEntity implements InputEnt
   public Map<String, String> getAdditionalInformation() {
     return Collections.unmodifiableMap(additionalInformation);
   }
+
+  public abstract UniqueInputEntityCopyBuilder<?> copy();
+
+  public abstract static class UniqueInputEntityCopyBuilder<
+          B extends UniqueInputEntityCopyBuilder<B>>
+      extends UniqueEntityCopyBuilder<B> {
+
+    private Map<String, String> additionalInformation;
+
+    protected UniqueInputEntityCopyBuilder(UniqueInputEntity entity) {
+      super(entity);
+      this.additionalInformation = new HashMap<>(entity.getAdditionalInformation());
+    }
+
+    public B additionalInformation(Map<String, String> additionalInformation) {
+      this.additionalInformation = additionalInformation;
+      return thisInstance();
+    }
+
+    protected Map<String, String> getAdditionalInformation() {
+      return additionalInformation;
+    }
+
+    @Override
+    public abstract UniqueInputEntity build();
+  }
 }

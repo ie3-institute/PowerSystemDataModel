@@ -5,35 +5,34 @@
 */
 package edu.ie3.datamodel.io.factory.input;
 
+import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.voltagelevels.VoltageLevel;
+import java.util.Map;
 import java.util.UUID;
 import javax.measure.quantity.Dimensionless;
 import org.locationtech.jts.geom.Point;
 import tech.units.indriya.ComparableQuantity;
 
-public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetInputEntityData> {
+public class NodeInputFactory extends AssetInputEntityFactory<NodeInput> {
 
-  public NodeInputFactory() {
-    super(NodeInput.class);
+  public NodeInputFactory(Map<UUID, OperatorInput> operators) {
+    super(operators, NodeInput.class);
   }
 
   @Override
   protected NodeInput buildModel(
-      AssetInputEntityData data,
-      UUID uuid,
-      String id,
-      OperatorInput operator,
-      OperationTime operationTime) {
-    final ComparableQuantity<Dimensionless> vTarget =
+      FieldMap data, UUID uuid, String id, OperatorInput operator, OperationTime operationTime) {
+    ComparableQuantity<Dimensionless> vTarget =
         data.getQuantity(V_TARGET, StandardUnits.TARGET_VOLTAGE_MAGNITUDE);
-    final boolean slack = data.getBoolean(SLACK);
-    final Point geoPosition = data.getPoint(GEO_POSITION).orElse(NodeInput.DEFAULT_GEO_POSITION);
-    final VoltageLevel voltLvl = data.getVoltageLvl(VOLT_LVL.toLowerCase(), V_RATED.toLowerCase());
-    final int subnet = data.getInt(SUBNET);
+    boolean slack = data.getBoolean(SLACK);
+    Point geoPosition = data.getPoint(GEO_POSITION).orElse(NodeInput.DEFAULT_GEO_POSITION);
+    VoltageLevel voltLvl = data.getVoltageLvl(VOLT_LVL, V_RATED);
+    int subnet = data.getInt(SUBNET);
+
     return new NodeInput(
         uuid,
         id,
@@ -44,6 +43,6 @@ public class NodeInputFactory extends AssetInputEntityFactory<NodeInput, AssetIn
         geoPosition,
         voltLvl,
         subnet,
-        data.getFieldsToValues());
+        data.additionalInformation());
   }
 }

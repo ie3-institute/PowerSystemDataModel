@@ -44,6 +44,7 @@ class CableTypeJsonCodecTest {
 
     assertTrue(json.contains("\"uuid\""));
     assertTrue(json.contains("\"name\":\"cond-1\""));
+    assertEquals(2.0, root.get("volumetricHeatCapacity").asDouble());
 
     JsonNode csNode = root.get("crossSection");
     assertNotNull(csNode);
@@ -83,6 +84,7 @@ class CableTypeJsonCodecTest {
 
     assertTrue(json.contains("\"uuid\""));
     assertTrue(json.contains("\"name\":\"cond-1\""));
+    assertEquals(2.0, root.get("volumetricHeatCapacity").asDouble());
 
     JsonNode csNode = root.get("crossSection");
     assertNotNull(csNode);

@@ -9,6 +9,8 @@ import edu.ie3.datamodel.exceptions.EntityProcessorException;
 import edu.ie3.datamodel.io.processor.EntityProcessor;
 import edu.ie3.datamodel.io.source.TimeSeriesMappingSource;
 import edu.ie3.datamodel.models.input.*;
+import edu.ie3.datamodel.models.input.SoilLayer;
+import edu.ie3.datamodel.models.input.SoilType;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
@@ -46,6 +48,8 @@ public class InputEntityProcessor extends EntityProcessor<InputEntity> {
           SwitchInput.class,
           MeasurementUnitInput.class,
           ThermalBusInput.class,
+          SoilType.class,
+          SoilLayer.class,
           /* -- SystemParticipantInput */
           AcInput.class,
           ChpInput.class,

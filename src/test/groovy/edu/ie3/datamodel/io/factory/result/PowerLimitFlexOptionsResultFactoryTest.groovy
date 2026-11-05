@@ -6,7 +6,8 @@
 package edu.ie3.datamodel.io.factory.result
 
 import edu.ie3.datamodel.exceptions.FactoryException
-import edu.ie3.datamodel.io.factory.EntityData
+import edu.ie3.datamodel.exceptions.ValidationException
+import edu.ie3.datamodel.io.factory.FieldMap
 import edu.ie3.datamodel.io.source.DataSource
 import edu.ie3.datamodel.models.StandardUnits
 import edu.ie3.datamodel.models.result.system.PowerLimitFlexOptionsResult
@@ -32,21 +33,21 @@ class PowerLimitFlexOptionsResultFactoryTest extends Specification implements Fa
     Map<String, String> parameter = [
       "time" : "2020-01-30T17:26:44Z",
       "inputModel": "91ec3bcf-1897-4d38-af67-0bf7c9fa73c7",
-      "pref" : "2",
-      "pmin" : "-1",
-      "pmax" : "10",
+      "pRef" : "2",
+      "pMin" : "-1",
+      "pMax" : "10",
     ]
 
     when:
-    Try<? extends PowerLimitFlexOptionsResult, FactoryException> result = resultFactory.get(new EntityData(parameter, PowerLimitFlexOptionsResult))
+    Try<? extends PowerLimitFlexOptionsResult, FactoryException> result = resultFactory.get(new FieldMap(parameter))
 
     then:
     result.success
     result.data.get().getClass() == PowerLimitFlexOptionsResult
     ((PowerLimitFlexOptionsResult) result.data.get()).with {
-      pRef == getQuant(parameter["pref"], StandardUnits.ACTIVE_POWER_RESULT)
-      pMin == getQuant(parameter["pmin"], StandardUnits.ACTIVE_POWER_RESULT)
-      pMax == getQuant(parameter["pmax"], StandardUnits.ACTIVE_POWER_RESULT)
+      pRef == getQuant(parameter["pRef"], StandardUnits.ACTIVE_POWER_RESULT)
+      pMin == getQuant(parameter["pMin"], StandardUnits.ACTIVE_POWER_RESULT)
+      pMax == getQuant(parameter["pMax"], StandardUnits.ACTIVE_POWER_RESULT)
       time == TIME_UTIL.toZonedDateTime(parameter["time"])
       inputModel == UUID.fromString(parameter["inputModel"])
     }
@@ -57,7 +58,7 @@ class PowerLimitFlexOptionsResultFactoryTest extends Specification implements Fa
     def actualFields = CollectionUtils.newSet("time", "input_model", "p_ref", "p_min")
 
     when:
-    Try<Void, FactoryException> input = DataSource.validate(actualFields, PowerLimitFlexOptionsResult)
+    Try<Void, ValidationException> input = DataSource.validate(actualFields, PowerLimitFlexOptionsResult)
 
     then:
     input.failure

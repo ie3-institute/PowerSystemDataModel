@@ -131,6 +131,7 @@ public class ThermalValidationUtils extends ValidationUtils {
    *
    * <ul>
    *   <li>it is not null
+   *   <li>its volumetric heat capacity is positive
    * </ul>
    *
    * A "distribution" method, that forwards the check request to specific implementations to fulfill
@@ -248,7 +249,7 @@ public class ThermalValidationUtils extends ValidationUtils {
    *   <li>it is not null
    *   <li>its available storage volume is positive
    *   <li>its inlet temperature is equal/greater than the outlet temperature
-   *   <li>its specific heat capacity is positive
+   *   <li>its volumetric heat capacity is positive
    * </ul>
    *
    * @param cylindricalStorageInput CylindricalStorageInput to validate
@@ -301,7 +302,7 @@ public class ThermalValidationUtils extends ValidationUtils {
    *   <li>it is not null
    *   <li>its available storage volume is positive
    *   <li>its inlet temperature is equal/greater than the outlet temperature
-   *   <li>its specific heat capacity is positive
+   *   <li>its volumetric heat capacity is positive
    * </ul>
    *
    * @param domesticHotWaterStorageInput DomesticHotWaterStorageInput to validate

@@ -424,7 +424,17 @@ class SystemParticipantValidationUtilsTest extends Specification {
     noExceptionThrown()
   }
 
-  // No tests for "SystemParticipantValidationUtils.checkStorage() recognizes all potential errors for a storage"
+  def "SystemParticipantValidationUtils.checkStorage() recognizes a storage without a controlling em"() {
+    given:
+    def invalidStorage = SystemParticipantTestData.storageInput.copy().em(null).build()
+
+    when:
+    ValidationUtils.check(invalidStorage)
+
+    then:
+    Throwable ex = thrown()
+    ex.message.contains("No energy management unit controlling the storage")
+  }
 
   def "Smoke Test: Correct storage type throws no exception"() {
     given:

@@ -40,4 +40,17 @@ class SystemParticipantsTest extends Specification {
     then:
     modifiedSystemParticipants.evs == Set.of(modifiedEvInput)
   }
+
+  def "An Input copy builder should allow modifying additionalInformation"() {
+    given:
+    def pvInput = SystemParticipantTestData.pvInput
+    def newInfo = ["source": "modified", "note": "updated"]
+
+    when:
+    def modified = pvInput.copy().additionalInformation(newInfo).build()
+
+    then:
+    modified.additionalInformation == newInfo
+    pvInput.additionalInformation == SystemParticipantTestData.pvInput.additionalInformation
+  }
 }

@@ -117,6 +117,8 @@ public class ContainerNodeUpdateUtil {
         grid.getSubnet(),
         updatedEntities.rawGridElements(),
         updatedEntities.systemParticipants(),
+        grid.getEmUnits(),
+        grid.getSoilData());
         updatedEntities.extendedSystemParticipants(),
         grid.getEmUnits());
   }

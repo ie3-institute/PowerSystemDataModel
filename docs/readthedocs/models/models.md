@@ -127,6 +127,7 @@ input/grid/gridcontainer
 input/grid/cableMaterial
 input/grid/cableType
 input/grid/cableDeployment
+input/grid/soilData
 ```
 
 #### Thermal Grid

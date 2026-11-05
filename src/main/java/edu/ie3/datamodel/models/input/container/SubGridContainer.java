@@ -33,6 +33,19 @@ public class SubGridContainer extends GridContainer {
     this.predominantVoltageLevel = ContainerUtils.determinePredominantVoltLvl(rawGrid, subnet);
   }
 
+  public SubGridContainer(
+      String gridName,
+      int subnet,
+      RawGridElements rawGrid,
+      SystemParticipants systemParticipants,
+      EnergyManagementUnits emUnits,
+      SoilData soilData)
+      throws InvalidGridException {
+    super(gridName, rawGrid, systemParticipants, emUnits, soilData);
+    this.subnet = subnet;
+    this.predominantVoltageLevel = ContainerUtils.determinePredominantVoltLvl(rawGrid, subnet);
+  }
+
   public int getSubnet() {
     return subnet;
   }
@@ -120,6 +133,12 @@ public class SubGridContainer extends GridContainer {
           getSystemParticipants(),
           getExtendedSystemParticipants(),
           getEmUnits());
+          getGridName(),
+          subnet,
+          getRawGrid(),
+          getSystemParticipants(),
+          getEmUnits(),
+          getSoilData());
     }
   }
 }

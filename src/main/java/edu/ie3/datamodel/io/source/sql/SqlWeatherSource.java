@@ -5,6 +5,7 @@
 */
 package edu.ie3.datamodel.io.source.sql;
 
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.TIME;
 import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
 
 import edu.ie3.datamodel.exceptions.NoDataException;
@@ -66,8 +67,7 @@ public class SqlWeatherSource extends WeatherSource {
     this.dataSource = new SqlDataSource(connector, schemaName, new DatabaseNamingStrategy());
     this.tableName = weatherTableName;
 
-    String dbTimeColumnName =
-        dataSource.getDbColumnName(weatherFactory.getTimeFieldString(), weatherTableName);
+    String dbTimeColumnName = dataSource.getDbColumnName(TIME, weatherTableName);
     String dbCoordinateIdColumnName =
         dataSource.getDbColumnName(factoryCoordinateFieldName, weatherTableName);
 
