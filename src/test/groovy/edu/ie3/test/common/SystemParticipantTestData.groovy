@@ -55,6 +55,8 @@ class SystemParticipantTestData {
   private static final ComparableQuantity<Currency> capex = Quantities.getQuantity(100d, CAPEX)
   private static final ComparableQuantity<EnergyPrice> opex = Quantities.getQuantity(50d, ENERGY_PRICE)
   static final ComparableQuantity<Dimensionless> etaConv = Quantities.getQuantity(98d, EFFICIENCY)
+  private static final ComparableQuantity<Dimensionless> etaCharging = Quantities.getQuantity(95, EFFICIENCY)
+  private static final ComparableQuantity<Dimensionless> etaDischarging = Quantities.getQuantity(92, EFFICIENCY)
 
   // EmInput
   public static final String emControlStrategy = "self_optimization"
@@ -233,8 +235,6 @@ class SystemParticipantTestData {
   private static final ComparableQuantity<Energy> eStorage = Quantities.getQuantity(100, ENERGY_IN)
   private static final ComparableQuantity<SpecificEnergy> eCons = Quantities.getQuantity(5, ENERGY_PER_DISTANCE)
   private static final ComparableQuantity<Power> sRatedDC = Quantities.getQuantity(20, ACTIVE_POWER_IN)
-  private static final ComparableQuantity<Dimensionless> etaCharging = Quantities.getQuantity(95, EFFICIENCY)
-  private static final ComparableQuantity<Dimensionless> etaDischarging = Quantities.getQuantity(92, EFFICIENCY)
   public static final EvTypeInput evTypeInput = new EvTypeInput(
   typeUuid,
   "test_evTypeInput",
@@ -277,7 +277,6 @@ class SystemParticipantTestData {
 
   // Storage
   private static final ComparableQuantity<Power> pMax = Quantities.getQuantity(15, ACTIVE_POWER_IN)
-  private static final ComparableQuantity<Dimensionless> eta = Quantities.getQuantity(95, EFFICIENCY)
   private static final ComparableQuantity<DimensionlessRate> cpRate = Quantities.getQuantity(100, ACTIVE_POWER_GRADIENT)
   public static final StorageTypeInput storageTypeInput = new StorageTypeInput(
   typeUuid,
@@ -289,7 +288,8 @@ class SystemParticipantTestData {
   cosPhiRated,
   pMax,
   cpRate,
-  eta,
+  etaCharging,
+  etaDischarging
   )
   public static final StorageInput storageInput = new StorageInput(
   UUID.fromString("06b58276-8350-40fb-86c0-2414aa4a0452"),

@@ -243,7 +243,8 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
       "eStorage" : "6",
       "pMax" : "8",
       "activePowerGradient" : "1",
-      "eta" : "9"
+      "etaCharging" : "95",
+      "etaDischarging" : "92",
     ]
 
     when:
@@ -264,7 +265,8 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
       eStorage == getQuant(parameter["eStorage"], StandardUnits.ENERGY_IN)
       pMax == getQuant(parameter["pMax"], StandardUnits.ACTIVE_POWER_IN)
       activePowerGradient == getQuant(parameter["activePowerGradient"], StandardUnits.ACTIVE_POWER_GRADIENT)
-      eta == getQuant(parameter["eta"], StandardUnits.EFFICIENCY)
+      etaCharging == getQuant(parameter["etaCharging"], StandardUnits.EFFICIENCY)
+      etaDischarging == getQuant(parameter["etaDischarging"], StandardUnits.EFFICIENCY)
     }
   }
 
@@ -279,6 +281,6 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
     input.failure
     input.exception.get().message == "The provided fields [capex, cosPhiRated, estorage, eta, id, opex, pmax, pmin, srated, uuid] are invalid for instance of 'StorageTypeInput'. \n" +
         "The following fields (without complex objects e.g. nodes, operators, ...) to be passed to a constructor of 'StorageTypeInput' are possible (NOT case-sensitive!):\n" +
-        "0: [activePowerGradient, capex, cosPhiRated, eStorage, eta, id, opex, pMax, sRated, uuid] or [active_power_gradient, capex, cos_phi_rated, e_storage, eta, id, opex, p_max, s_rated, uuid]\n"
+        "0: [activePowerGradient, capex, cosPhiRated, eStorage, etaCharging, etaDischarging, id, opex, pMax, sRated, uuid] or [active_power_gradient, capex, cos_phi_rated, e_storage, eta_charging, eta_discharging, id, opex, p_max, s_rated, uuid]\n"
   }
 }

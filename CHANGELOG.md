@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased/Snapshot]
 
 ### Added
+- Split efficiency of `StorageTypeInput` for charging and discharging operations [#1806](https://github.com/ie3-institute/PowerSystemDataModel/issues/1806)
 - Added efficiency parameters for `EvTypeInput` [#1805](https://github.com/ie3-institute/PowerSystemDataModel/issues/1805)
 
 ### Fixed
