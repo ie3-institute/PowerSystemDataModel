@@ -35,7 +35,8 @@ class StorageTypeInputTest extends Specification {
       cosPhiRated == storageTypeInput.cosPhiRated
       pMax == Quantities.getQuantity(15, ACTIVE_POWER_IN)
       activePowerGradient == storageTypeInput.activePowerGradient
-      eta == storageTypeInput.eta
+      etaCharging == storageTypeInput.etaCharging
+      etaDischarging == storageTypeInput.etaDischarging
     }
   }
 
@@ -57,7 +58,8 @@ class StorageTypeInputTest extends Specification {
       cosPhiRated == storageTypeInput.cosPhiRated
       pMax == storageTypeInput.pMax * 2d
       activePowerGradient == storageTypeInput.activePowerGradient
-      eta == storageTypeInput.eta
+      etaCharging == storageTypeInput.etaCharging
+      etaDischarging == storageTypeInput.etaDischarging
     }
   }
 }
