@@ -161,7 +161,7 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
     } else if (ChpTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
       exceptions.addAll(checkChpType((ChpTypeInput) systemParticipantTypeInput));
     } else if (EvTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
-      exceptions.add(checkEvType((EvTypeInput) systemParticipantTypeInput));
+      exceptions.addAll(checkEvType((EvTypeInput) systemParticipantTypeInput));
     } else if (HpTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
       exceptions.add(checkHpType((HpTypeInput) systemParticipantTypeInput));
     } else if (AcTypeInput.class.isAssignableFrom(systemParticipantTypeInput.getClass())) {
@@ -289,13 +289,19 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
    * @param evTypeInput EvTypeInput to validate
    * @return a try object either containing an {@link InvalidEntityException} or an empty Success
    */
-  private static Try<Void, InvalidEntityException> checkEvType(EvTypeInput evTypeInput) {
+  private static List<Try<Void, InvalidEntityException>> checkEvType(EvTypeInput evTypeInput) {
     return Try.ofVoid(
+        InvalidEntityException.class,
         () ->
             detectZeroOrNegativeQuantities(
                 quantities(E_STORAGE, evTypeInput.geteStorage(), E_CONS, evTypeInput.geteCons()),
                 evTypeInput),
-        InvalidEntityException.class);
+        () ->
+            isBetweenZeroAndHundredPercent(
+                evTypeInput, evTypeInput.getEtaCharging(), "Charging efficiency"),
+        () ->
+            isBetweenZeroAndHundredPercent(
+                evTypeInput, evTypeInput.getEtaDischarging(), "Discharging efficiency"));
   }
 
   /**

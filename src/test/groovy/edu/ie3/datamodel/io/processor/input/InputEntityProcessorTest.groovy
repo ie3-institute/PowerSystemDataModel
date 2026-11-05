@@ -525,6 +525,8 @@ class InputEntityProcessorTest extends Specification {
       "sRated" : "22.0",
       "cosPhiRated": "0.9",
       "sRatedDC" : "20.0",
+      "etaCharging" : "95.0",
+      "etaDischarging" : "92.0"
     ]
 
     when:

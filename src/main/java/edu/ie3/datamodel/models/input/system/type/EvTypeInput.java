@@ -12,6 +12,7 @@ import edu.ie3.util.quantities.interfaces.SpecificEnergy;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -27,6 +28,12 @@ public class EvTypeInput extends SystemParticipantTypeInput {
   /** power for DC (typically in kW) */
   private final ComparableQuantity<Power> sRatedDC;
 
+  /** Efficiency of charging operations (typically in %) */
+  private final ComparableQuantity<Dimensionless> etaCharging;
+
+  /** Efficiency of discharging operations (typically in %) */
+  private final ComparableQuantity<Dimensionless> etaDischarging;
+
   /**
    * @param uuid of the input entity
    * @param id of this type of EV
@@ -37,6 +44,8 @@ public class EvTypeInput extends SystemParticipantTypeInput {
    * @param sRated Rated apparent power for this type of EV (typically in kVA)
    * @param cosPhiRated Power factor for this type of EV
    * @param sRatedDC power for DC (typically in kW)
+   * @param etaCharging efficiency of charging operations
+   * @param etaDischarging efficiency of discharging operations
    */
   public EvTypeInput(
       UUID uuid,
@@ -47,11 +56,15 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       ComparableQuantity<SpecificEnergy> eCons,
       ComparableQuantity<Power> sRated,
       double cosPhiRated,
-      ComparableQuantity<Power> sRatedDC) {
+      ComparableQuantity<Power> sRatedDC,
+      ComparableQuantity<Dimensionless> etaCharging,
+      ComparableQuantity<Dimensionless> etaDischarging) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
     this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
     this.eCons = eCons.to(StandardUnits.ENERGY_PER_DISTANCE);
     this.sRatedDC = sRatedDC.to(StandardUnits.ACTIVE_POWER_IN);
+    this.etaCharging = etaCharging.to(StandardUnits.EFFICIENCY);
+    this.etaDischarging = etaDischarging.to(StandardUnits.EFFICIENCY);
   }
 
   /**
@@ -64,6 +77,8 @@ public class EvTypeInput extends SystemParticipantTypeInput {
    * @param sRated Rated apparent power for this type of EV (typically in kVA)
    * @param cosPhiRated Power factor for this type of EV
    * @param sRatedDC power for DC (typically in kW)
+   * @param etaCharging efficiency of charging operations
+   * @param etaDischarging efficiency of discharging operations
    * @param additionalInformation Of the input
    */
   public EvTypeInput(
@@ -76,11 +91,15 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       ComparableQuantity<Power> sRated,
       double cosPhiRated,
       ComparableQuantity<Power> sRatedDC,
+      ComparableQuantity<Dimensionless> etaCharging,
+      ComparableQuantity<Dimensionless> etaDischarging,
       Map<String, String> additionalInformation) {
     super(uuid, id, capex, opex, sRated.to(StandardUnits.S_RATED), cosPhiRated);
     this.eStorage = eStorage.to(StandardUnits.ENERGY_IN);
     this.eCons = eCons.to(StandardUnits.ENERGY_PER_DISTANCE);
     this.sRatedDC = sRatedDC.to(StandardUnits.ACTIVE_POWER_IN);
+    this.etaCharging = etaCharging.to(StandardUnits.EFFICIENCY);
+    this.etaDischarging = etaDischarging.to(StandardUnits.EFFICIENCY);
     setAdditionalInformation(additionalInformation);
   }
 
@@ -96,6 +115,14 @@ public class EvTypeInput extends SystemParticipantTypeInput {
     return sRatedDC;
   }
 
+  public ComparableQuantity<Dimensionless> getEtaCharging() {
+    return etaCharging;
+  }
+
+  public ComparableQuantity<Dimensionless> getEtaDischarging() {
+    return etaDischarging;
+  }
+
   @Override
   public EvTypeInputCopyBuilder copy() {
     return new EvTypeInputCopyBuilder(this);
@@ -108,12 +135,14 @@ public class EvTypeInput extends SystemParticipantTypeInput {
     if (!super.equals(o)) return false;
     return eStorage.equals(that.eStorage)
         && eCons.equals(that.eCons)
-        && sRatedDC.equals(that.sRatedDC);
+        && sRatedDC.equals(that.sRatedDC)
+        && etaCharging.equals(that.etaCharging)
+        && etaDischarging.equals(that.etaDischarging);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), eStorage, eCons, sRatedDC);
+    return Objects.hash(super.hashCode(), eStorage, eCons, sRatedDC, etaCharging, etaDischarging);
   }
 
   @Override
@@ -137,6 +166,10 @@ public class EvTypeInput extends SystemParticipantTypeInput {
         + eCons
         + ", sRatedDC="
         + sRatedDC
+        + ", etaCharging="
+        + etaCharging
+        + ", etaDischarging="
+        + etaDischarging
         + ", additionalInformation="
         + getAdditionalInformation()
         + '}';
@@ -152,12 +185,16 @@ public class EvTypeInput extends SystemParticipantTypeInput {
     private ComparableQuantity<Energy> eStorage;
     private ComparableQuantity<SpecificEnergy> eCons;
     private ComparableQuantity<Power> sRatedDC;
+    private ComparableQuantity<Dimensionless> etaCharging;
+    private ComparableQuantity<Dimensionless> etaDischarging;
 
     private EvTypeInputCopyBuilder(EvTypeInput entity) {
       super(entity);
       this.eStorage = entity.geteStorage();
       this.eCons = entity.geteCons();
       this.sRatedDC = entity.getsRatedDC();
+      this.etaCharging = entity.getEtaCharging();
+      this.etaDischarging = entity.getEtaDischarging();
     }
 
     public EvTypeInputCopyBuilder seteStorage(ComparableQuantity<Energy> eStorage) {
@@ -175,6 +212,17 @@ public class EvTypeInput extends SystemParticipantTypeInput {
       return thisInstance();
     }
 
+    public EvTypeInputCopyBuilder setEtaCharging(ComparableQuantity<Dimensionless> etaCharging) {
+      this.etaCharging = etaCharging;
+      return thisInstance();
+    }
+
+    public EvTypeInputCopyBuilder setEtaDischarging(
+        ComparableQuantity<Dimensionless> etaDischarging) {
+      this.etaDischarging = etaDischarging;
+      return thisInstance();
+    }
+
     public ComparableQuantity<Energy> geteStorage() {
       return eStorage;
     }
@@ -185,6 +233,14 @@ public class EvTypeInput extends SystemParticipantTypeInput {
 
     public ComparableQuantity<Power> getsRatedDC() {
       return sRatedDC;
+    }
+
+    public ComparableQuantity<Dimensionless> getEtaCharging() {
+      return etaCharging;
+    }
+
+    public ComparableQuantity<Dimensionless> getEtaDischarging() {
+      return etaDischarging;
     }
 
     @Override
@@ -209,6 +265,8 @@ public class EvTypeInput extends SystemParticipantTypeInput {
           getsRated(),
           getCosPhiRated(),
           getsRatedDC(),
+          etaCharging,
+          etaDischarging,
           getAdditionalInformation());
     }
 

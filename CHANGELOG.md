@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased/Snapshot]
 
+### Added
+- Added efficiency parameters for `EvTypeInput` [#1805](https://github.com/ie3-institute/PowerSystemDataModel/issues/1805)
+
 ### Fixed
 - Consider additional parameters in copy builders [#1685](https://github.com/ie3-institute/PowerSystemDataModel/issues/1685)
 

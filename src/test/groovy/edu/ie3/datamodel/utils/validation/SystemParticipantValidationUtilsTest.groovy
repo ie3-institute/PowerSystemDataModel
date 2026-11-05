@@ -229,7 +229,8 @@ class SystemParticipantValidationUtilsTest extends Specification {
 
     where:
     invalidEvType || expectedException
-    new EvTypeInput(uuid, id, capex, opex, Quantities.getQuantity(0, ENERGY_IN), Quantities.getQuantity(0, ENERGY_PER_DISTANCE), sRated, cosPhiRated, Quantities.getQuantity(20, ACTIVE_POWER_IN)) || new InvalidEntityException("The following quantities have to be positive: eStorage=0 kWh, eCons=0 kWh/km", invalidEvType)
+    new EvTypeInput(uuid, id, capex, opex, Quantities.getQuantity(0, ENERGY_IN), Quantities.getQuantity(0, ENERGY_PER_DISTANCE), sRated, cosPhiRated, Quantities.getQuantity(20, ACTIVE_POWER_IN), eta, eta) || new InvalidEntityException("The following quantities have to be positive: eStorage=0 kWh, eCons=0 kWh/km", invalidEvType)
+    new EvTypeInput(uuid, id, capex, opex, Quantities.getQuantity(0, ENERGY_IN), Quantities.getQuantity(0, ENERGY_PER_DISTANCE), sRated, cosPhiRated, Quantities.getQuantity(20, ACTIVE_POWER_IN), Quantities.getQuantity(110, EFFICIENCY), Quantities.getQuantity(100, EFFICIENCY)) || new InvalidEntityException("Charging efficiency of EvTypeInput must be between 0% and 100%", invalidEvType)
   }
 
   // Fixed Feed In
