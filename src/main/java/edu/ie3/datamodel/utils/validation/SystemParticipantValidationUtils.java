@@ -553,8 +553,13 @@ public class SystemParticipantValidationUtils extends ValidationUtils {
         () ->
             isBetweenZeroAndHundredPercent(
                 storageTypeInput,
-                storageTypeInput.getEta(),
-                "Efficiency of the electrical converter"),
+                storageTypeInput.getEtaCharging(),
+                "Charging efficiency of the electrical converter"),
+        () ->
+            isBetweenZeroAndHundredPercent(
+                storageTypeInput,
+                storageTypeInput.getEtaDischarging(),
+                "Discharging efficiency of the electrical converter"),
         () ->
             detectNegativeQuantities(
                 quantities(

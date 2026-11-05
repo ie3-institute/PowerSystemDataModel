@@ -217,7 +217,10 @@ public class SystemParticipantTypeInputFactory<T extends SystemParticipantTypeIn
     ComparableQuantity<Power> pMax = data.getQuantity(P_MAX, StandardUnits.ACTIVE_POWER_IN);
     ComparableQuantity<DimensionlessRate> activePowerGradient =
         data.getQuantity(ACTIVE_POWER_GRADIENT, StandardUnits.ACTIVE_POWER_GRADIENT);
-    ComparableQuantity<Dimensionless> eta = data.getQuantity(ETA, StandardUnits.EFFICIENCY);
+    ComparableQuantity<Dimensionless> etaCharging =
+        data.getQuantity(ETA_CHARGING, StandardUnits.EFFICIENCY);
+    ComparableQuantity<Dimensionless> etaDischarging =
+        data.getQuantity(ETA_DISCHARGING, StandardUnits.EFFICIENCY);
 
     return new StorageTypeInput(
         uuid,
@@ -229,7 +232,8 @@ public class SystemParticipantTypeInputFactory<T extends SystemParticipantTypeIn
         cosPhi,
         pMax,
         activePowerGradient,
-        eta,
+        etaCharging,
+        etaDischarging,
         data.additionalInformation());
   }
 }
