@@ -1,5 +1,5 @@
 /*
- * © 2026. TU Dortmund University,
+ * © 2021. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
@@ -16,13 +16,22 @@ import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes an electric vehicle. */
+/** Describes an electric vehicle */
 public class EvInput extends SystemParticipantInput implements HasType {
 
-  /** Type of this EV, containing default values for EVs of this kind. */
+  /** Type of this EV, containing default values for EVs of this kind */
   private final EvTypeInput type;
 
-  /** Constructor for an operated electric vehicle. */
+  /**
+   * Constructor for an operated electric vehicle
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param type of EV
+   */
   public EvInput(
       UUID uuid,
       String id,
@@ -34,7 +43,17 @@ public class EvInput extends SystemParticipantInput implements HasType {
     this.type = type;
   }
 
-  /** Constructor for an operated electric vehicle with additional source information. */
+  /**
+   * Constructor for an operated electric vehicle
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param operator of the asset
+   * @param operationTime Time for which the entity is operated
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param type of EV
+   * @param additionalInformation That were provided by the source
+   */
   public EvInput(
       UUID uuid,
       String id,
@@ -48,7 +67,14 @@ public class EvInput extends SystemParticipantInput implements HasType {
     setAdditionalInformation(additionalInformation);
   }
 
-  /** Constructor for an operated, always-on electric vehicle. */
+  /**
+   * Constructor for an operated, always on electric vehicle
+   *
+   * @param uuid of the input entity
+   * @param id of the asset
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param type of EV
+   */
   public EvInput(
       UUID uuid, String id, ReactivePowerCharacteristic qCharacteristics, EvTypeInput type) {
     super(uuid, id, qCharacteristics);

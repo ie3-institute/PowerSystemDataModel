@@ -51,7 +51,7 @@ public abstract class SystemParticipantInputEntityFactory<T extends SystemPartic
   }
 
   /**
-   * Creates a system participant entity with the common participant parameters.
+   * Creates a SystemParticipantInput entity with the given participant parameters.
    *
    * @param data field data
    * @param uuid UUID of the entity
@@ -59,7 +59,7 @@ public abstract class SystemParticipantInputEntityFactory<T extends SystemPartic
    * @param qCharacteristics reactive power characteristic
    * @param operator operator of the asset
    * @param operationTime time in which the entity is operated
-   * @return newly created entity
+   * @return newly created asset object
    */
   protected abstract T buildModel(
       FieldMap data,

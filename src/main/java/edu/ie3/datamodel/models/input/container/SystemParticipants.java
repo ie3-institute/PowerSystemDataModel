@@ -493,6 +493,6 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
     return allEntitiesAsList().stream()
         .filter(ExtendedSystemParticipantInput.class::isInstance)
         .map(ExtendedSystemParticipantInput.class::cast)
-        .collect(Collectors.toUnmodifiableList());
+        .toList();
   }
 }
