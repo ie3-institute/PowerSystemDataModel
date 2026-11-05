@@ -20,7 +20,8 @@ import java.util.UUID;
  * Abstract factory class for creating {@link SystemParticipantInput} entities that do not
  * necessarily require a node or an EM.
  *
- * @param <T> Type of entity that this factory can create
+ * @param <T> Type of entity that this factory can create. Must be a subclass of {@link
+ *     SystemParticipantInput}
  */
 public abstract class SystemParticipantInputEntityFactory<T extends SystemParticipantInput>
     extends AssetInputEntityFactory<T> {
@@ -54,10 +55,10 @@ public abstract class SystemParticipantInputEntityFactory<T extends SystemPartic
    * Creates a SystemParticipantInput entity with the given participant parameters.
    *
    * @param data field data
-   * @param uuid UUID of the entity
-   * @param id ID of the entity
-   * @param qCharacteristics reactive power characteristic
-   * @param operator operator of the asset
+   * @param uuid UUID of the input entity
+   * @param id ID
+   * @param qCharacteristics Description of a reactive power characteristic
+   * @param operator Operator of the asset
    * @param operationTime time in which the entity is operated
    * @return newly created asset object
    */
