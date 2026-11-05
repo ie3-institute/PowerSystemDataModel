@@ -511,8 +511,8 @@ public class ContainerUtils {
             rawGrid,
             systemParticipants,
             extendedSystemParticipants,
-            energyManagementUnits);
-            gridName, subnetNumbers, rawGrid, systemParticipants, energyManagementUnits, soilData);
+            energyManagementUnits,
+            soilData);
 
     /* Build the graph structure denoting the topology of the grid */
     return buildSubGridTopologyGraph(subGrids, rawGrid);
@@ -590,7 +590,6 @@ public class ContainerUtils {
               rawGridElements,
               systemParticipantElements,
               extendedSystemParticipantElements,
-              energyManagementUnits));
               energyManagementUnits,
               soilData));
     }
@@ -942,9 +941,8 @@ public class ContainerUtils {
             subGridContainer.getRawGrid().getMeasurementUnits(),
             subGridContainer.getRawGrid().getCableDeploymentsByLine()),
         subGridContainer.getSystemParticipants(),
+        subGridContainer.getExtendedSystemParticipants(),
         subGridContainer.getEmUnits(),
         subGridContainer.getSoilData());
-        subGridContainer.getExtendedSystemParticipants(),
-        subGridContainer.getEmUnits());
   }
 }

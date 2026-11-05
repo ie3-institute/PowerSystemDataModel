@@ -132,11 +132,6 @@ public class SubGridContainer extends GridContainer {
           getRawGrid(),
           getSystemParticipants(),
           getExtendedSystemParticipants(),
-          getEmUnits());
-          getGridName(),
-          subnet,
-          getRawGrid(),
-          getSystemParticipants(),
           getEmUnits(),
           getSoilData());
     }

@@ -306,7 +306,7 @@ class ContainerUtilsTest extends Specification {
         rawGrid,
         systemParticipants,
         energyManagementUnits,
-        SoilData.empty())
+        SoilData.empty(),
         extendedSystemParticipants,
         energyManagementUnits)
 
@@ -338,7 +338,7 @@ class ContainerUtilsTest extends Specification {
         rawGridInput,
         systemParticipantsInput,
         energyManagementUnits,
-        SoilData.empty())
+        SoilData.empty(),
         extendedSystemParticipantsInput,
         energyManagementUnits)
 
@@ -366,7 +366,9 @@ class ContainerUtilsTest extends Specification {
         }
 
         // all adapted trafo2w nodes must be part of the nodes set
-        rawGrid.nodes.containsAll(rawGrid.transformer2Ws.collect{it.nodeA})
+        rawGrid.nodes.containsAll(rawGrid.transformer2Ws.collect{
+          it.nodeA
+        })
 
         // 3 winding transformer slack nodes must be mapped correctly
         rawGrid.transformer3Ws.each {

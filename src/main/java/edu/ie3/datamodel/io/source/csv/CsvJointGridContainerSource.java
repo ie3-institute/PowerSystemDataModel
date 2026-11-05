@@ -96,9 +96,8 @@ public class CsvJointGridContainerSource {
     Try<SoilData, SourceException> soilData =
         Try.of(soilDataSource::getSoilData, SourceException.class);
     List<? extends Exception> exceptions =
-        Try.getExceptions(rawGridElements, systemParticipants, emUnits, soilData);
-    List<? extends Exception> exceptions =
-        Try.getExceptions(rawGridElements, systemParticipants, extendedSystemParticipants);
+        Try.getExceptions(
+            rawGridElements, systemParticipants, emUnits, soilData, extendedSystemParticipants);
 
     if (!exceptions.isEmpty()) {
       throw new SourceException("Some exception(s) occurred while reading the grid.", exceptions);
@@ -110,7 +109,7 @@ public class CsvJointGridContainerSource {
           rawGridElements.getOrThrow(),
           systemParticipants.getOrThrow(),
           emUnits.getOrThrow(),
-          soilData.getOrThrow());
+          soilData.getOrThrow(),
           extendedSystemParticipants.getOrThrow(),
           emUnits.getOrThrow());
     }

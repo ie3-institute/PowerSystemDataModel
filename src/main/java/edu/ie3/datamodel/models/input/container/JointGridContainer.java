@@ -35,8 +35,13 @@ public class JointGridContainer extends GridContainer {
       ExtendedSystemParticipants extendedSystemParticipants,
       EnergyManagementUnits emUnits)
       throws InvalidGridException {
-    super(gridName, rawGrid, systemParticipants, extendedSystemParticipants, emUnits);
-    this(gridName, rawGrid, systemParticipants, emUnits, SoilData.empty());
+    this(
+        gridName,
+        rawGrid,
+        systemParticipants,
+        extendedSystemParticipants,
+        emUnits,
+        SoilData.empty());
   }
 
   /**
@@ -65,8 +70,8 @@ public class JointGridContainer extends GridContainer {
             this.rawGrid,
             this.systemParticipants,
             this.extendedSystemParticipants,
-            this.emUnits);
-            this.gridName, this.rawGrid, this.systemParticipants, this.emUnits, soilData);
+            this.emUnits,
+            soilData);
     checkSubGridTopologyGraph(subGridTopologyGraph);
   }
 
@@ -86,8 +91,14 @@ public class JointGridContainer extends GridContainer {
       ExtendedSystemParticipants extendedSystemParticipants,
       EnergyManagementUnits emUnits,
       SubGridTopologyGraph subGridTopologyGraph) {
-    super(gridName, rawGrid, systemParticipants, extendedSystemParticipants, emUnits);
-    this(gridName, rawGrid, systemParticipants, emUnits, subGridTopologyGraph, SoilData.empty());
+    this(
+        gridName,
+        rawGrid,
+        systemParticipants,
+        extendedSystemParticipants,
+        emUnits,
+        subGridTopologyGraph,
+        SoilData.empty());
   }
 
   /**
