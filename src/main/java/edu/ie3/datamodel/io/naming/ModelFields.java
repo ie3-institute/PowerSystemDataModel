@@ -375,7 +375,13 @@ public final class ModelFields extends FieldNamingStrategy {
 
     Stream.of(AcTypeInput.class, HpTypeInput.class).forEach(c -> addMandatory(c, P_THERMAL));
 
-    addMandatory(StorageTypeInput.class, E_STORAGE, P_MAX, ACTIVE_POWER_GRADIENT, ETA);
+    addMandatory(
+        StorageTypeInput.class,
+        E_STORAGE,
+        P_MAX,
+        ACTIVE_POWER_GRADIENT,
+        ETA_CHARGING,
+        ETA_DISCHARGING);
 
     addMandatory(WecTypeInput.class, CP_CHARACTERISTIC, ETA_CONV, ROTOR_AREA, HUB_HEIGHT);
   }

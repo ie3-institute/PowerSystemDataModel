@@ -158,7 +158,8 @@ class CsvTypeSourceTest extends Specification implements CsvTestDataMeta {
       cosPhiRated == sptd.storageTypeInput.cosPhiRated
       pMax == sptd.storageTypeInput.pMax
       activePowerGradient == sptd.storageTypeInput.activePowerGradient
-      eta == sptd.storageTypeInput.eta
+      etaCharging == sptd.storageTypeInput.etaCharging
+      etaDischarging == sptd.storageTypeInput.etaDischarging
     }
   }
 

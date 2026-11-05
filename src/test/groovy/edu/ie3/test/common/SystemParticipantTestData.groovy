@@ -271,7 +271,8 @@ class SystemParticipantTestData {
 
   // Storage
   private static final ComparableQuantity<Power> pMax = Quantities.getQuantity(15, ACTIVE_POWER_IN)
-  private static final ComparableQuantity<Dimensionless> eta = Quantities.getQuantity(95, EFFICIENCY)
+  private static final ComparableQuantity<Dimensionless> etaCharging = Quantities.getQuantity(95, EFFICIENCY)
+  private static final ComparableQuantity<Dimensionless> etaDischarging = Quantities.getQuantity(92, EFFICIENCY)
   private static final ComparableQuantity<DimensionlessRate> cpRate = Quantities.getQuantity(100, ACTIVE_POWER_GRADIENT)
   public static final StorageTypeInput storageTypeInput = new StorageTypeInput(
   typeUuid,
@@ -283,7 +284,8 @@ class SystemParticipantTestData {
   cosPhiRated,
   pMax,
   cpRate,
-  eta,
+  etaCharging,
+  etaDischarging
   )
   public static final StorageInput storageInput = new StorageInput(
   UUID.fromString("06b58276-8350-40fb-86c0-2414aa4a0452"),

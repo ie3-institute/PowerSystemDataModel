@@ -69,7 +69,8 @@ class TypeTestData extends GridTestData {
   0.997,
   Quantities.getQuantity(12.961, KILOWATT),
   Quantities.getQuantity(0.03, PU_PER_HOUR),
-  Quantities.getQuantity(0.92, PU),
+  Quantities.getQuantity(95, PERCENT),
+  Quantities.getQuantity(92, PERCENT),
   )
 
   public static final WecCharacteristicInput wecCharacteristicInput = new WecCharacteristicInput("cP:{(10.00,0.05),(15.00,0.10),(20.00,0.20)}")
