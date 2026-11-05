@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.models.input.container
 
+import edu.ie3.datamodel.models.input.system.ExtendedSystemParticipantInput
 import edu.ie3.test.common.SystemParticipantTestData
 import spock.lang.Specification
 
@@ -101,5 +102,37 @@ class SystemParticipantsTest extends Specification {
     then:
     modified.additionalInformation == newInfo
     pvInput.additionalInformation == SystemParticipantTestData.pvInput.additionalInformation
+  }
+  def "Extended system participants should exclude EVs while EVs remain in SystemParticipants"() {
+    given:
+    def systemParticipants = new SystemParticipants(
+        Collections.singleton(SystemParticipantTestData.bmInput),
+        Collections.singleton(SystemParticipantTestData.chpInput),
+        Collections.singleton(SystemParticipantTestData.evcsInput),
+        Collections.singleton(SystemParticipantTestData.evInput),
+        Collections.singleton(SystemParticipantTestData.fixedFeedInInput),
+        Collections.singleton(SystemParticipantTestData.hpInput),
+        Collections.singleton(SystemParticipantTestData.acInput),
+        Collections.singleton(SystemParticipantTestData.loadInput),
+        Collections.singleton(SystemParticipantTestData.pvInput),
+        Collections.singleton(SystemParticipantTestData.storageInput),
+        Collections.singleton(SystemParticipantTestData.wecInput)
+    )
+
+    when:
+    def extendedParticipants = systemParticipants.getExtendedSystemParticipants()
+
+    then:
+    systemParticipants.evs == Set.of(SystemParticipantTestData.evInput)
+    extendedParticipants.size() == 10
+    !extendedParticipants.contains(SystemParticipantTestData.evInput)
+    extendedParticipants.every {
+      it instanceof ExtendedSystemParticipantInput
+    }
+    extendedParticipants as Set ==
+        systemParticipants.allEntitiesAsList()
+        .findAll {
+          it instanceof ExtendedSystemParticipantInput
+        } as Set
   }
 }

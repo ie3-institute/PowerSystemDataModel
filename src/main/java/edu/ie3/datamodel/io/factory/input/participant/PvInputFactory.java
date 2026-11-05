@@ -21,7 +21,7 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /** Factory to create instances of {@link PvInput}s. */
-public class PvInputFactory extends SystemParticipantInputEntityFactory<PvInput> {
+public class PvInputFactory extends ExtendedSystemParticipantInputEntityFactory<PvInput> {
 
   public PvInputFactory(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits) {

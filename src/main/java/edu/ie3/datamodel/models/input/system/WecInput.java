@@ -19,7 +19,7 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /** Describes a Wind Energy Converter */
-public class WecInput extends SystemParticipantInput implements HasType {
+public class WecInput extends ExtendedSystemParticipantInput implements HasType {
 
   /** Type of this WEC, containing default values for WEC assets of this kind */
   private final WecTypeInput type;
@@ -157,7 +157,7 @@ public class WecInput extends SystemParticipantInput implements HasType {
    * @since 05.06.20
    */
   public static class WecInputCopyBuilder
-      extends SystemParticipantInputCopyBuilder<WecInputCopyBuilder> {
+      extends ExtendedSystemParticipantInputCopyBuilder<WecInputCopyBuilder> {
 
     private WecTypeInput type;
 

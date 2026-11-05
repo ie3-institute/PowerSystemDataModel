@@ -1,112 +1,61 @@
 /*
- * © 2021. TU Dortmund University,
+ * © 2026. TU Dortmund University,
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
 */
 package edu.ie3.datamodel.models.input.system;
 
-import edu.ie3.datamodel.io.extractor.HasEm;
-import edu.ie3.datamodel.io.extractor.HasNodes;
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.UniqueEntity;
 import edu.ie3.datamodel.models.input.AssetInput;
-import edu.ie3.datamodel.models.input.EmInput;
-import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
-import java.util.*;
+import java.util.Objects;
+import java.util.UUID;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
-/** Describes a system asset that is connected to a node */
-public abstract class SystemParticipantInput extends AssetInput implements HasNodes, HasEm {
+/** Describes a system participant. */
+public abstract class SystemParticipantInput extends AssetInput {
 
-  /** The node that the asset is connected to */
-  private final NodeInput node;
-
-  /** Description of a reactive power characteristic. For details see further documentation */
+  /** Description of a reactive power characteristic. */
   private final ReactivePowerCharacteristic qCharacteristics;
 
   /**
-   * Optional {@link EmInput} that is controlling this system participant. If null, this system
-   * participant is not em-controlled.
-   */
-  private final EmInput controllingEm;
-
-  /**
-   * Constructor for an operated system participant
+   * Constructor for an operated system participant.
    *
-   * @param uuid of the input entity
-   * @param id of the asset
-   * @param operator of the asset
-   * @param operationTime Time for which the entity is operated
-   * @param node that the asset is connected to
-   * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param uuid UUID of the input entity
+   * @param id ID of the asset
+   * @param operator operator of the asset
+   * @param operationTime time for which the entity is operated
+   * @param qCharacteristics description of a reactive power characteristic
    */
   protected SystemParticipantInput(
       UUID uuid,
       String id,
       OperatorInput operator,
       OperationTime operationTime,
-      NodeInput node,
-      ReactivePowerCharacteristic qCharacteristics,
-      EmInput em) {
+      ReactivePowerCharacteristic qCharacteristics) {
     super(uuid, id, operator, operationTime);
-    this.node = node;
     this.qCharacteristics = qCharacteristics;
-    this.controllingEm = em;
   }
 
   /**
-   * Constructor for an operated, always on system participant
+   * Constructor for an operated, always-on system participant.
    *
-   * @param uuid of the input entity
-   * @param id of the asset
-   * @param node that the asset is connected to
-   * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
+   * @param uuid UUID of the input entity
+   * @param id ID of the asset
+   * @param qCharacteristics description of a reactive power characteristic
    */
   protected SystemParticipantInput(
-      UUID uuid,
-      String id,
-      NodeInput node,
-      ReactivePowerCharacteristic qCharacteristics,
-      EmInput em) {
+      UUID uuid, String id, ReactivePowerCharacteristic qCharacteristics) {
     super(uuid, id);
-    this.node = node;
     this.qCharacteristics = qCharacteristics;
-    this.controllingEm = em;
   }
 
-  /**
-   * Returns the rated apparent power of the system participant, which is either stored within the
-   * {@link SystemParticipantInput} or linked {@link
-   * edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput}.
-   *
-   * <p>Note: This cannot be a getter, because the accompanying field might not be present in
-   * subclasses.
-   *
-   * @return The rated apparent power.
-   */
   public abstract ComparableQuantity<Power> sRated();
-
-  public NodeInput getNode() {
-    return node;
-  }
 
   public ReactivePowerCharacteristic getqCharacteristics() {
     return qCharacteristics;
-  }
-
-  @Override
-  public List<NodeInput> allNodes() {
-    return Collections.singletonList(node);
-  }
-
-  @Override
-  public Optional<EmInput> getControllingEm() {
-    return Optional.ofNullable(controllingEm);
   }
 
   @Override
@@ -117,14 +66,12 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
     if (this == o) return true;
     if (!(o instanceof SystemParticipantInput that)) return false;
     if (!super.equals(o)) return false;
-    return Objects.equals(node, that.node)
-        && Objects.equals(qCharacteristics, that.qCharacteristics)
-        && Objects.equals(controllingEm, that.controllingEm);
+    return Objects.equals(qCharacteristics, that.qCharacteristics);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), node, qCharacteristics, controllingEm);
+    return Objects.hash(super.hashCode(), qCharacteristics);
   }
 
   @Override
@@ -138,40 +85,25 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
         + getOperator().getUuid()
         + ", operationTime="
         + getOperationTime()
-        + ", node="
-        + node.getUuid()
         + ", qCharacteristics='"
         + qCharacteristics
-        + "', controllingEm="
-        + getControllingEm().map(UniqueEntity::getUuid).map(UUID::toString).orElse("")
-        + '}';
+        + "'}";
   }
 
   /**
-   * Abstract class for all builder that build child entities of abstract class {@link
-   * SystemParticipantInput}
+   * Base copy builder for subclasses of {@link SystemParticipantInput}.
    *
-   * @version 0.1
-   * @since 05.06.20
+   * @param <B> concrete builder type
    */
   public abstract static class SystemParticipantInputCopyBuilder<
           B extends SystemParticipantInputCopyBuilder<B>>
       extends AssetInputCopyBuilder<B> {
 
-    private NodeInput node;
     private ReactivePowerCharacteristic qCharacteristics;
-    private EmInput em;
 
     protected SystemParticipantInputCopyBuilder(SystemParticipantInput entity) {
       super(entity);
-      this.node = entity.getNode();
       this.qCharacteristics = entity.getqCharacteristics();
-      this.em = entity.getControllingEm().orElse(null);
-    }
-
-    public B node(NodeInput node) {
-      this.node = node;
-      return thisInstance();
     }
 
     public B qCharacteristics(ReactivePowerCharacteristic qCharacteristics) {
@@ -179,33 +111,15 @@ public abstract class SystemParticipantInput extends AssetInput implements HasNo
       return thisInstance();
     }
 
-    public B em(EmInput em) {
-      this.em = em;
-      return thisInstance();
-    }
-
-    protected NodeInput getNode() {
-      return node;
-    }
-
     protected ReactivePowerCharacteristic getqCharacteristics() {
       return qCharacteristics;
     }
 
     /**
-     * @return The {@link EmInput} controlling this system participant. CAN BE NULL.
-     */
-    public EmInput getEm() {
-      return em;
-    }
-
-    /**
-     * Scales the input entity in a way that tries to preserve proportions that are related to
-     * power. This means that capacity, consumption etc. are scaled with the same factor. Related
-     * properties associated with the input type (if applicable) are scaled as well.
+     * Scales relevant power-related properties.
      *
-     * @param factor The factor to scale with
-     * @return A copy builder with scaled relevant properties
+     * @param factor scaling factor
+     * @return this builder
      */
     public abstract B scale(Double factor);
 
