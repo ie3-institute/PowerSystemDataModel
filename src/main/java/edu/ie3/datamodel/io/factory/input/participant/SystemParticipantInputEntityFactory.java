@@ -52,7 +52,7 @@ public abstract class SystemParticipantInputEntityFactory<T extends SystemPartic
   }
 
   /**
-   * Creates a SystemParticipantInput entity with the given participant parameters.
+   * Creates SystemParticipantInput entity with given parameters.
    *
    * @param data field data
    * @param uuid UUID of the input entity
