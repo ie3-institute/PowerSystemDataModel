@@ -55,6 +55,7 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
     WeatherValue weatherValue =
         new WeatherValue(
             coordinate,
+            tbd.coordinateId().orElse(null),
             directIrradiance,
             diffuseIrradiance,
             temperature,

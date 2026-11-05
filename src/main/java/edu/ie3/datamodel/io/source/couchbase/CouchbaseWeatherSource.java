@@ -95,38 +95,28 @@ public class CouchbaseWeatherSource extends WeatherSource {
   }
 
   @Override
-  public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
+  public Map<Integer, IndividualTimeSeries<WeatherValue>> getWeatherById(
       ClosedInterval<ZonedDateTime> timeInterval) throws SourceException, NoDataException {
     log.warn(
         "By not providing coordinates you are forcing couchbase to check all possible coordinates one by one."
             + " This is not very performant. Please consider providing specific coordinates instead.");
-    return getWeather(timeInterval, idCoordinateSource.getAllCoordinates());
+
+    List<Integer> allIds = new ArrayList<>();
+    for (Point coordinate : idCoordinateSource.getAllCoordinates()) {
+      idCoordinateSource.getId(coordinate).ifPresent(allIds::add);
+    }
+
+    return getWeatherById(timeInterval, allIds);
   }
 
   @Override
-  public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
+  public Map<Integer, IndividualTimeSeries<WeatherValue>> getWeatherById(
+      ClosedInterval<ZonedDateTime> timeInterval, Collection<Integer> coordinateIds)
       throws SourceException, NoDataException {
 
-    if (coordinates.isEmpty())
-      throw new NoDataException("No coordinates provided for weather data query.");
+    HashMap<Integer, IndividualTimeSeries<WeatherValue>> idToTimeSeries = new HashMap<>();
 
-    List<Point> unknownCoordinates = new ArrayList<>();
-    for (Point coordinate : coordinates) {
-      if (idCoordinateSource.getId(coordinate).isEmpty()) {
-        unknownCoordinates.add(coordinate);
-      }
-    }
-
-    if (!unknownCoordinates.isEmpty())
-      log.warn(
-          "Unable to find coordinate IDs for the following coordinates, skipping: {}",
-          unknownCoordinates);
-
-    HashMap<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries = new HashMap<>();
-    for (Point coordinate :
-        coordinates.stream().filter(c -> !unknownCoordinates.contains(c)).toList()) {
-      int coordinateId = idCoordinateSource.getId(coordinate).orElseThrow();
+    for (int coordinateId : coordinateIds) {
       String query = createQueryStringForIntervalAndCoordinate(timeInterval, coordinateId);
       CompletableFuture<QueryResult> futureResult = connector.query(query);
       QueryResult queryResult = futureResult.join();
@@ -134,7 +124,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
       try {
         jsonWeatherInputs = queryResult.rowsAsObject();
       } catch (DecodingFailureException ex) {
-        log.warn("Failed to decode weather data for coordinate {}, skipping.", coordinate, ex);
+        log.warn("Failed to decode weather data for coordinate id {}, skipping.", coordinateId, ex);
         continue;
       }
       if (jsonWeatherInputs != null && !jsonWeatherInputs.isEmpty()) {
@@ -142,12 +132,10 @@ public class CouchbaseWeatherSource extends WeatherSource {
         for (JsonObject jsonWeatherInput : jsonWeatherInputs) {
           toTimeBasedWeatherValue(jsonWeatherInput).ifPresent(weatherInputs::add);
         }
-        IndividualTimeSeries<WeatherValue> weatherTimeSeries =
-            new IndividualTimeSeries<>(weatherInputs);
-        coordinateToTimeSeries.put(coordinate, weatherTimeSeries);
+        idToTimeSeries.put(coordinateId, new IndividualTimeSeries<>(weatherInputs));
       }
     }
-    return validateAndWarnMissing(coordinateToTimeSeries, coordinates, timeInterval);
+    return idToTimeSeries;
   }
 
   @Override
@@ -234,7 +222,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
   }
 
   @Override
-  public Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time)
+  public Map<Integer, List<ZonedDateTime>> getTimeKeysAfterById(ZonedDateTime time)
       throws SourceException {
     String query = createQueryStringForFollowingTimeKeys(time);
     CompletableFuture<QueryResult> futureResult = connector.query(query);
@@ -246,17 +234,13 @@ public class CouchbaseWeatherSource extends WeatherSource {
       log.error("Querying weather inputs failed!", ex);
     }
     if (jsonWeatherInputs != null && !jsonWeatherInputs.isEmpty()) {
-      List<Pair<Optional<Point>, ZonedDateTime>> timeKeys = new ArrayList<>();
+      List<Pair<Integer, ZonedDateTime>> timeKeys = new ArrayList<>();
 
       for (JsonObject json : jsonWeatherInputs) {
         int coordinateId = json.getInt(WEATHER_COORDINATE_ID);
-        Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
         ZonedDateTime timestamp =
             weatherFactory.toZonedDateTime(json.getString(FieldNamingStrategy.TIME));
-        if (coordinate.isEmpty()) {
-          log.warn("Unable to match coordinate ID {} to a point", coordinateId);
-        }
-        timeKeys.add(Pair.of(coordinate, timestamp));
+        timeKeys.add(Pair.of(coordinateId, timestamp));
       }
 
       return groupTime(timeKeys.stream().filter(value -> value.getValue().isAfter(time)));
@@ -390,7 +374,8 @@ public class CouchbaseWeatherSource extends WeatherSource {
                 Collectors.toMap(Map.Entry::getKey, entry -> String.valueOf(entry.getValue())));
     fieldToValueMap.putIfAbsent("uuid", UUID.randomUUID().toString());
     return Optional.of(
-        new TimeBasedWeatherValueData(new FieldMap(fieldToValueMap), coordinate.get()));
+        new TimeBasedWeatherValueData(
+            new FieldMap(fieldToValueMap), coordinate.get(), coordinateId));
   }
 
   /**
