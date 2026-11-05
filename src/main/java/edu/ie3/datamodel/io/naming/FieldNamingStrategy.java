@@ -161,7 +161,8 @@ public class FieldNamingStrategy {
   public static final String CABLE_BED_SOIL_TYPE = "cableBedSoilType";
 
   // efficiency
-  public static final String ETA = "eta";
+  public static final String ETA_CHARGING = "etaCharging";
+  public static final String ETA_DISCHARGING = "etaDischarging";
   public static final String ETA_CONV = "etaConv";
   public static final String ETA_EL = "etaEl";
   public static final String ETA_THERMAL = "etaThermal";
