@@ -55,6 +55,8 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
       "eStorage": "7",
       "eCons": "8",
       "sRatedDC": "9",
+      "etaCharging" : "95",
+      "etaDischarging" : "92",
     ]
 
     when:
@@ -75,6 +77,8 @@ class SystemParticipantTypeInputFactoryTest extends Specification implements Fac
       eStorage == getQuant(parameter["eStorage"], StandardUnits.ENERGY_IN)
       eCons == getQuant(parameter["eCons"], StandardUnits.ENERGY_PER_DISTANCE)
       sRatedDC == getQuant(parameter["sRatedDC"], StandardUnits.ACTIVE_POWER_IN)
+      etaCharging == getQuant(parameter["etaCharging"], StandardUnits.EFFICIENCY)
+      etaDischarging == getQuant(parameter["etaDischarging"], StandardUnits.EFFICIENCY)
     }
   }
 

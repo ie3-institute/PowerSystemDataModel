@@ -371,7 +371,7 @@ public final class ModelFields extends FieldNamingStrategy {
 
     addMandatory(ChpTypeInput.class, ETA_EL, ETA_THERMAL, P_THERMAL, P_OWN);
 
-    addMandatory(EvTypeInput.class, E_STORAGE, E_CONS, S_RATED_DC);
+    addMandatory(EvTypeInput.class, E_STORAGE, E_CONS, S_RATED_DC, ETA_CHARGING, ETA_DISCHARGING);
 
     Stream.of(AcTypeInput.class, HpTypeInput.class).forEach(c -> addMandatory(c, P_THERMAL));
 

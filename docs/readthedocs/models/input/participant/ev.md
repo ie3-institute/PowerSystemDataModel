@@ -53,8 +53,15 @@ Model of an electric vehicle, that is occasionally connected to the grid via an 
 
    * - cosPhiRated
      -
-     - Rated power factor
+     - Rated power factor for operation with AC
      
+   * - etaCharging
+     - %
+     - Total charging efficiency, including converter efficiency for both AC and DC mode
+
+   * - etaDischarging
+     - %
+     - Total discharging efficiency, including converter efficiency for both AC and DC mode
 ```
 
 ### Entity Model
