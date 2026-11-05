@@ -56,9 +56,13 @@ Model of an ideal electrical battery energy storage.
      - % / h
      - Maximum permissible rate of change of power
 
-   * - eta
+   * - etaCharging
      - %
-     - Efficiency of the electrical inverter
+     - Total charging efficiency
+
+   * - etaDischarging
+     - %
+     - Total discharging efficiency
 
 ```
 
