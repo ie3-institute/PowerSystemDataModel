@@ -133,7 +133,8 @@ public class SqlWeatherSource extends WeatherSource {
                   ps.setTimestamp(3, Timestamp.from(timeInterval.getUpper().toInstant()));
                 }));
 
-    return mapWeatherValuesToIds(timeBasedValues);
+    return validateAndWarnMissing(
+        mapWeatherValuesToIds(timeBasedValues), coordinateIds, timeInterval);
   }
 
   @Override

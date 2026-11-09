@@ -5,8 +5,10 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import static edu.ie3.datamodel.models.value.WeatherValue.UNKNOWN_COORDINATE_ID;
+
 import edu.ie3.datamodel.io.factory.FieldMap;
-import java.util.Optional;
+import java.util.OptionalInt;
 import org.locationtech.jts.geom.Point;
 
 public class TimeBasedWeatherValueData {
@@ -14,12 +16,8 @@ public class TimeBasedWeatherValueData {
   private final Point coordinate;
   private final FieldMap fieldsToAttributes;
 
-  /**
-   * Id of the coordinate, or {@code null} if it is not known. As it is only a different
-   * representation of the coordinate, it does not take part in {@link #equals(Object)} and {@link
-   * #hashCode()}.
-   */
-  private final Integer coordinateId;
+  /** Id of the coordinate, or {@link WeatherValue#UNKNOWN_COORDINATE_ID} if it is not known */
+  private final int coordinateId;
 
   /**
    * Creates a new TimeBasedEntryData object
@@ -28,7 +26,7 @@ public class TimeBasedWeatherValueData {
    * @param coordinate coordinate for this WeatherValue
    */
   public TimeBasedWeatherValueData(FieldMap fieldsToAttributes, Point coordinate) {
-    this(fieldsToAttributes, coordinate, null);
+    this(fieldsToAttributes, coordinate, UNKNOWN_COORDINATE_ID);
   }
 
   /**
@@ -36,10 +34,11 @@ public class TimeBasedWeatherValueData {
    *
    * @param fieldsToAttributes attribute map: field name to value
    * @param coordinate coordinate for this WeatherValue
-   * @param coordinateId id of that coordinate (can be null)
+   * @param coordinateId id of that coordinate ({@link WeatherValue#UNKNOWN_COORDINATE_ID} if
+   *     unknown)
    */
   public TimeBasedWeatherValueData(
-      FieldMap fieldsToAttributes, Point coordinate, Integer coordinateId) {
+      FieldMap fieldsToAttributes, Point coordinate, int coordinateId) {
     // this does the magic: case-insensitive get/set calls on keys
     this.fieldsToAttributes = fieldsToAttributes;
     this.coordinate = coordinate;
@@ -59,8 +58,10 @@ public class TimeBasedWeatherValueData {
    *
    * @return an option on the coordinate id
    */
-  public Optional<Integer> coordinateId() {
-    return Optional.ofNullable(coordinateId);
+  public OptionalInt getCoordinateId() {
+    return coordinateId == UNKNOWN_COORDINATE_ID
+        ? OptionalInt.empty()
+        : OptionalInt.of(coordinateId);
   }
 
   @Override
@@ -69,13 +70,16 @@ public class TimeBasedWeatherValueData {
     if (o == null || getClass() != o.getClass()) return false;
 
     TimeBasedWeatherValueData that = (TimeBasedWeatherValueData) o;
-    return coordinate.equals(that.coordinate) && fieldsToAttributes.equals(that.fieldsToAttributes);
+    return coordinate.equals(that.coordinate)
+        && coordinateId == that.coordinateId
+        && fieldsToAttributes.equals(that.fieldsToAttributes);
   }
 
   @Override
   public int hashCode() {
     int result = fieldsToAttributes.hashCode();
     result = 31 * result + (coordinate != null ? coordinate.hashCode() : 0);
+    result = 31 * result + coordinateId;
     return result;
   }
 
@@ -86,6 +90,8 @@ public class TimeBasedWeatherValueData {
         + fieldsToAttributes
         + ", coordinate="
         + coordinate
+        + ", coordinateId="
+        + coordinateId
         + '}';
   }
 }

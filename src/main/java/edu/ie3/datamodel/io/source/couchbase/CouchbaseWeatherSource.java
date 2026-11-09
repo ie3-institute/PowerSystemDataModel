@@ -135,7 +135,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
         idToTimeSeries.put(coordinateId, new IndividualTimeSeries<>(weatherInputs));
       }
     }
-    return idToTimeSeries;
+    return validateAndWarnMissing(idToTimeSeries, coordinateIds, timeInterval);
   }
 
   @Override

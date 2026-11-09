@@ -8,6 +8,7 @@ package edu.ie3.datamodel.models.value;
 import edu.ie3.util.quantities.interfaces.Irradiance;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 import javax.measure.quantity.Angle;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
@@ -19,19 +20,18 @@ public sealed class WeatherValue implements Value {
   /** The coordinate of this weather value set */
   private final Point coordinate;
 
+  /** Default for {@link #coordinateId}, denoting that the id of the coordinate is not known */
+  public static final int UNKNOWN_COORDINATE_ID = Integer.MIN_VALUE;
+
   /**
-   * The id of the coordinate of this weather value set, or {@code null} if it is not known.
+   * The id of the coordinate of this weather value set, or {@link #UNKNOWN_COORDINATE_ID} if it is
+   * not known.
    *
-   * <p>Deliberately not exposed via a {@code getXxx} accessor: {@link
-   * edu.ie3.datamodel.io.processor.Processor} collects the fields to persist via the JavaBeans
-   * {@link java.beans.Introspector}, so a bean-conformant getter would add this field to the
-   * persisted output.
-   *
-   * <p>As the id is only a different representation of the coordinate, it does not take part in
-   * {@link #equals(Object)} and {@link #hashCode()}. Values read with and without the id therefore
-   * stay comparable.
+   * <p>Not part of the persisted output: {@link
+   * edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessor} explicitly ignores this field
+   * when it collects the fields to persist.
    */
-  private final Integer coordinateId;
+  private final int coordinateId;
 
   /** solar irradiance values for this coordinate */
   private final SolarIrradianceValue solarIrradiance;
@@ -65,7 +65,7 @@ public sealed class WeatherValue implements Value {
       Optional<GroundTemperatureValue> groundTemperatureLevel2) {
     this(
         coordinate,
-        null,
+        UNKNOWN_COORDINATE_ID,
         solarIrradiance,
         temperature,
         wind,
@@ -78,7 +78,7 @@ public sealed class WeatherValue implements Value {
    * Optional, Optional)}, but additionally retaining the id of the coordinate.
    *
    * @param coordinate of this weather value set
-   * @param coordinateId id of that coordinate (can be null)
+   * @param coordinateId id of that coordinate ({@link #UNKNOWN_COORDINATE_ID} if unknown)
    * @param solarIrradiance values for this coordinate
    * @param temperature values for this coordinate
    * @param wind values for this coordinate
@@ -87,7 +87,7 @@ public sealed class WeatherValue implements Value {
    */
   public WeatherValue(
       Point coordinate,
-      Integer coordinateId,
+      int coordinateId,
       SolarIrradianceValue solarIrradiance,
       TemperatureValue temperature,
       WindValue wind,
@@ -126,7 +126,7 @@ public sealed class WeatherValue implements Value {
       Optional<ComparableQuantity<Temperature>> groundTempValTwo) {
     this(
         coordinate,
-        null,
+        UNKNOWN_COORDINATE_ID,
         directSolarIrradiance,
         diffuseSolarIrradiance,
         temperature,
@@ -142,7 +142,7 @@ public sealed class WeatherValue implements Value {
    * of the coordinate.
    *
    * @param coordinate of this weather value set
-   * @param coordinateId id of that coordinate (can be null)
+   * @param coordinateId id of that coordinate ({@link #UNKNOWN_COORDINATE_ID} if unknown)
    * @param directSolarIrradiance Direct sun irradiance for this coordinate (typically in W/m²)
    * @param diffuseSolarIrradiance Diffuse sun irradiance for this coordinate (typically in W/m²)
    * @param temperature for this coordinate (typically in K)
@@ -153,7 +153,7 @@ public sealed class WeatherValue implements Value {
    */
   public WeatherValue(
       Point coordinate,
-      Integer coordinateId,
+      int coordinateId,
       ComparableQuantity<Irradiance> directSolarIrradiance,
       ComparableQuantity<Irradiance> diffuseSolarIrradiance,
       ComparableQuantity<Temperature> temperature,
@@ -180,13 +180,12 @@ public sealed class WeatherValue implements Value {
   /**
    * Returns the id of this value's coordinate, if it is known.
    *
-   * <p>Intentionally named without a {@code get} prefix, so that the field is not picked up as a
-   * bean property and therefore not persisted.
-   *
    * @return an option on the coordinate id
    */
-  public Optional<Integer> coordinateId() {
-    return Optional.ofNullable(coordinateId);
+  public OptionalInt getCoordinateId() {
+    return coordinateId == UNKNOWN_COORDINATE_ID
+        ? OptionalInt.empty()
+        : OptionalInt.of(coordinateId);
   }
 
   public SolarIrradianceValue getSolarIrradiance() {
@@ -215,6 +214,7 @@ public sealed class WeatherValue implements Value {
     if (o == null || getClass() != o.getClass()) return false;
     WeatherValue that = (WeatherValue) o;
     return coordinate.equals(that.coordinate)
+        && coordinateId == that.coordinateId
         && solarIrradiance.equals(that.solarIrradiance)
         && temperature.equals(that.temperature)
         && wind.equals(that.wind)
@@ -226,6 +226,7 @@ public sealed class WeatherValue implements Value {
   public int hashCode() {
     return Objects.hash(
         coordinate,
+        coordinateId,
         solarIrradiance,
         temperature,
         wind,
@@ -238,6 +239,8 @@ public sealed class WeatherValue implements Value {
     return "WeatherValue{"
         + "coordinate="
         + coordinate
+        + ", coordinateId="
+        + coordinateId
         + ", solarIrradiance="
         + solarIrradiance
         + ", temperature="

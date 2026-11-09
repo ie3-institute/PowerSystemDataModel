@@ -93,7 +93,8 @@ public class CsvWeatherSource extends WeatherSource {
 
   @Override
   public Map<Integer, IndividualTimeSeries<WeatherValue>> getWeatherById(
-      ClosedInterval<ZonedDateTime> timeInterval, Collection<Integer> coordinateIds) {
+      ClosedInterval<ZonedDateTime> timeInterval, Collection<Integer> coordinateIds)
+      throws NoDataException {
 
     Map<Integer, IndividualTimeSeries<WeatherValue>> result = new HashMap<>();
 
@@ -109,7 +110,7 @@ public class CsvWeatherSource extends WeatherSource {
       }
     }
 
-    return result;
+    return validateAndWarnMissing(result, coordinateIds, timeInterval);
   }
 
   @Override
@@ -232,7 +233,7 @@ public class CsvWeatherSource extends WeatherSource {
                 SourceException::new)
             .getOrThrow()
             .flatMap(Optional::stream)
-            .collect(Collectors.groupingBy(tbv -> tbv.getValue().coordinateId()))
+            .collect(Collectors.groupingBy(tbv -> tbv.getValue().getCoordinateId()))
             .forEach(
                 (coordinateId, timeBasedValues) -> {
                   if (coordinateId.isEmpty()) {
@@ -248,7 +249,7 @@ public class CsvWeatherSource extends WeatherSource {
                   IndividualTimeSeries<WeatherValue> timeSeries =
                       new IndividualTimeSeries<>(UUID.randomUUID(), new TreeSet<>(timeBasedValues));
                   weatherTimeSeries.merge(
-                      coordinateId.get(), timeSeries, IndividualTimeSeries::add);
+                      coordinateId.getAsInt(), timeSeries, IndividualTimeSeries::add);
                 });
       } catch (FileNotFoundException e) {
         throw new SourceException(
@@ -317,7 +318,7 @@ public class CsvWeatherSource extends WeatherSource {
               /* Remove coordinate entry from fields, but retain its id */
               String coordinateValue =
                   fieldToValues.remove(weatherFactory.getCoordinateIdFieldString());
-              Integer coordinateId = Integer.parseInt(coordinateValue);
+              int coordinateId = Integer.parseInt(coordinateValue);
 
               /* Build factory data */
               TimeBasedWeatherValueData factoryData =

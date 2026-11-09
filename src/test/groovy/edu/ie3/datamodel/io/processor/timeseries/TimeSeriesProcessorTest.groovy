@@ -184,10 +184,10 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
     Set<Map<String, String>> actual = processor.handleTimeSeries(timeSeries)
 
     then:
-    /* The coordinate id is deliberately exposed via coordinateId() instead of getCoordinateId(), so
-     * that the JavaBeans Introspector used by Processor does not pick it up. Renaming that accessor
-     * would silently add a column to every persisted weather time series. */
-    valueWithId.coordinateId() == Optional.of(42)
+    /* The coordinate id is known to the value, but must not be persisted: it is listed among the
+     * ignored fields in TimeSeriesProcessor.buildFieldToSource. Dropping it from that list would
+     * silently add a column to every persisted weather time series. */
+    valueWithId.coordinateId == OptionalInt.of(42)
     actual.every { !it.containsKey("coordinateId") }
     actual.every { it.containsKey("coordinate") }
   }

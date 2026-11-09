@@ -134,8 +134,8 @@ public abstract class WeatherSource extends EntitySource {
    * <p>Preferable over {@link #getWeather(ClosedInterval, Collection)}, as matching coordinates
    * relies on the hash code of {@link Point}.
    *
-   * <p>In contrast to {@link #getWeather(ClosedInterval, Collection)} this does not throw, if no
-   * data is found at all. Ids without data are simply missing from the returned map.
+   * <p>Ids without data are logged and missing from the returned map. If none of the ids has data
+   * at all, a {@link NoDataException} is thrown.
    *
    * @param timeInterval the queried time interval
    * @param coordinateIds the queried coordinate ids
@@ -177,8 +177,7 @@ public abstract class WeatherSource extends EntitySource {
           "Unable to find coordinate IDs for the following coordinates, skipping: {}",
           unknownCoordinates);
 
-    return validateAndWarnMissing(
-        toCoordinateKeys(getWeatherById(timeInterval, coordinateIds)), coordinates, timeInterval);
+    return toCoordinateKeys(getWeatherById(timeInterval, coordinateIds));
   }
 
   /**
@@ -273,14 +272,16 @@ public abstract class WeatherSource extends EntitySource {
     Map<Integer, Set<TimeBasedValue<WeatherValue>>> idToValues = new HashMap<>();
 
     for (TimeBasedValue<WeatherValue> timeBasedValue : timeBasedValues) {
-      Optional<Integer> coordinateId = timeBasedValue.getValue().coordinateId();
+      OptionalInt coordinateId = timeBasedValue.getValue().getCoordinateId();
 
       if (coordinateId.isEmpty()) {
         log.warn(
             "Skipping weather value at {} because its coordinate id is unknown",
             timeBasedValue.getTime());
       } else {
-        idToValues.computeIfAbsent(coordinateId.get(), id -> new HashSet<>()).add(timeBasedValue);
+        idToValues
+            .computeIfAbsent(coordinateId.getAsInt(), id -> new HashSet<>())
+            .add(timeBasedValue);
       }
     }
 

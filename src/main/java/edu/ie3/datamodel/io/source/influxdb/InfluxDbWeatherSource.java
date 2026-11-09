@@ -96,7 +96,7 @@ public class InfluxDbWeatherSource extends WeatherSource {
         }
       }
     }
-    return idToTimeSeries;
+    return validateAndWarnMissing(idToTimeSeries, coordinateIds, timeInterval);
   }
 
   @Override

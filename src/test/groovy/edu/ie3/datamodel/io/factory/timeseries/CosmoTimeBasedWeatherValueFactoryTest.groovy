@@ -160,7 +160,7 @@ class CosmoTimeBasedWeatherValueFactoryTest extends Specification {
     def withoutId = factory.buildModel(new TimeBasedWeatherValueData(new FieldMap(parameter), coordinate))
 
     then:
-    withId.value.coordinateId() == Optional.of(193186)
-    withoutId.value.coordinateId() == Optional.empty()
+    withId.value.coordinateId == OptionalInt.of(193186)
+    withoutId.value.coordinateId == OptionalInt.empty()
   }
 }
