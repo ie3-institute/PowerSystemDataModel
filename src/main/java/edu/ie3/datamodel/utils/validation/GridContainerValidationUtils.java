@@ -65,6 +65,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
     exceptions.addAll(
         checkSystemParticipants(
             gridContainer.getSystemParticipants(), gridContainer.getRawGrid().getNodes()));
+    exceptions.addAll(checkEnergyManagementUnits(gridContainer.getEmUnits()));
     exceptions.addAll(checkSoilData(gridContainer.getSoilData()));
 
     if (gridContainer instanceof SubGridContainer subGridContainer) {
@@ -125,7 +126,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
 
     /* Checking nodes */
     Set<NodeInput> nodes = rawGridElements.getNodes();
-    nodes.forEach(NodeValidationUtils::check);
+    nodes.forEach(node -> exceptions.addAll(NodeValidationUtils.check(node)));
 
     /* Checking lines */
     rawGridElements
@@ -298,8 +299,32 @@ public class GridContainerValidationUtils extends ValidationUtils {
   }
 
   /**
-   * Checks the validity of each and every system participant. Moreover, it checks, if the systems
-   * are connected to a node that is not in the provided set
+   * Checks the validity and uniqueness of each and every system participant without checking if
+   * they are connected to a known node.
+   *
+   * @param systemParticipants The system participants
+   * @return a list of try objects either containing an {@link ValidationException} or an empty
+   *     Success
+   */
+  protected static List<Try<Void, ? extends ValidationException>> checkSystemParticipants(
+      SystemParticipants systemParticipants) {
+    Try<Void, InvalidEntityException> isNull =
+        checkNonNull(systemParticipants, "system participants");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
+    }
+
+    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
+    participantsByType(systemParticipants)
+        .forEach(participants -> exceptions.addAll(checkSystemParticipants(participants)));
+
+    return exceptions;
+  }
+
+  /**
+   * Checks the validity and uniqueness of each and every system participant. Moreover, it checks,
+   * if the systems are connected to a node that is not in the provided set
    *
    * @param systemParticipants The system participants
    * @param nodes Set of already known nodes
@@ -315,43 +340,80 @@ public class GridContainerValidationUtils extends ValidationUtils {
       return List.of(isNull);
     }
 
-    /* sanity check to ensure uniqueness */
-    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
+    List<Try<Void, ? extends ValidationException>> exceptions =
+        new ArrayList<>(checkSystemParticipants(systemParticipants));
 
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getAirConditions(), nodes));
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getBmPlants(), nodes));
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getChpPlants(), nodes));
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getEvcs(), nodes));
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getFixedFeedIns(), nodes));
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getHeatPumps(), nodes));
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getLoads(), nodes));
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getPvPlants(), nodes));
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getStorages(), nodes));
-    exceptions.addAll(checkSystemParticipants(systemParticipants.getWecPlants(), nodes));
+    participantsByType(systemParticipants).stream()
+        .flatMap(Set::stream)
+        .forEach(participant -> exceptions.add(checkNodeAvailability(participant, nodes)));
 
     return exceptions;
   }
 
   /**
-   * Checks the validity and uniqueness of specific system participant. Moreover, it checks, if the
-   * systems are connected to a node that is not in the provided set
+   * Checks the validity and uniqueness of specific system participants.
    *
    * @param participants a set of specific system participants
-   * @param nodes Set of already known nodes
    * @return a list of try objects either containing an {@link ValidationException} or an empty
    *     Success
    */
   protected static List<Try<Void, ? extends ValidationException>> checkSystemParticipants(
-      Set<? extends SystemParticipantInput> participants, Set<NodeInput> nodes) {
+      Set<? extends SystemParticipantInput> participants) {
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
     exceptions.add(
         Try.ofVoid(() -> checkAssetUniqueness(participants), DuplicateEntitiesException.class));
 
     participants.forEach(
-        participant -> {
-          exceptions.add(checkNodeAvailability(participant, nodes));
-          exceptions.addAll(SystemParticipantValidationUtils.check(participant));
-        });
+        participant -> exceptions.addAll(SystemParticipantValidationUtils.check(participant)));
+
+    return exceptions;
+  }
+
+  /**
+   * Returns the sets of system participants that are validated.
+   *
+   * @param systemParticipants The system participants
+   * @return a list with one set of system participants per type
+   */
+  private static List<Set<? extends SystemParticipantInput>> participantsByType(
+      SystemParticipants systemParticipants) {
+    return List.of(
+        systemParticipants.getAirConditions(),
+        systemParticipants.getBmPlants(),
+        systemParticipants.getChpPlants(),
+        systemParticipants.getEvcs(),
+        systemParticipants.getFixedFeedIns(),
+        systemParticipants.getHeatPumps(),
+        systemParticipants.getLoads(),
+        systemParticipants.getPvPlants(),
+        systemParticipants.getStorages(),
+        systemParticipants.getWecPlants());
+  }
+
+  /**
+   * Checks the validity and uniqueness of each and every energy management unit.
+   *
+   * @param emUnits The energy management units
+   * @return a list of try objects either containing an {@link ValidationException} or an empty
+   *     Success
+   */
+  protected static List<Try<Void, ? extends ValidationException>> checkEnergyManagementUnits(
+      EnergyManagementUnits emUnits) {
+    Try<Void, InvalidEntityException> isNull = checkNonNull(emUnits, "energy management units");
+
+    if (isNull.isFailure()) {
+      return List.of(isNull);
+    }
+
+    /* sanity check to ensure uniqueness */
+    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
+    exceptions.add(
+        Try.ofVoid(
+            () -> checkAssetUniqueness(emUnits.getEmUnits()), DuplicateEntitiesException.class));
+
+    emUnits
+        .getEmUnits()
+        .forEach(emUnit -> exceptions.addAll(EnergyManagementValidationUtils.check(emUnit)));
 
     return exceptions;
   }

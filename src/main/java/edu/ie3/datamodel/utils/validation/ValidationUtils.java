@@ -21,7 +21,11 @@ import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
+import edu.ie3.datamodel.models.input.container.EnergyManagementUnits;
 import edu.ie3.datamodel.models.input.container.GridContainer;
+import edu.ie3.datamodel.models.input.container.RawGridElements;
+import edu.ie3.datamodel.models.input.container.SoilData;
+import edu.ie3.datamodel.models.input.container.SystemParticipants;
 import edu.ie3.datamodel.models.input.container.ThermalGrid;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
@@ -102,6 +106,16 @@ public class ValidationUtils {
       exceptions.addAll(checkAsset((AssetInput) obj));
     } else if (GridContainer.class.isAssignableFrom(obj.getClass())) {
       exceptions.addAll(GridContainerValidationUtils.check((GridContainer) obj));
+    } else if (RawGridElements.class.isAssignableFrom(obj.getClass())) {
+      exceptions.addAll(GridContainerValidationUtils.checkRawGridElements((RawGridElements) obj));
+    } else if (SystemParticipants.class.isAssignableFrom(obj.getClass())) {
+      exceptions.addAll(
+          GridContainerValidationUtils.checkSystemParticipants((SystemParticipants) obj));
+    } else if (EnergyManagementUnits.class.isAssignableFrom(obj.getClass())) {
+      exceptions.addAll(
+          GridContainerValidationUtils.checkEnergyManagementUnits((EnergyManagementUnits) obj));
+    } else if (SoilData.class.isAssignableFrom(obj.getClass())) {
+      exceptions.addAll(GridContainerValidationUtils.checkSoilData((SoilData) obj));
     } else if (AssetTypeInput.class.isAssignableFrom(obj.getClass())) {
       exceptions.addAll(checkAssetType((AssetTypeInput) obj));
     } else if (ThermalGrid.class.isAssignableFrom(obj.getClass())) {
