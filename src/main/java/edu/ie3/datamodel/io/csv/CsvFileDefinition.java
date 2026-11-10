@@ -48,12 +48,9 @@ public record CsvFileDefinition(Path filePath, String[] headLineElements, String
         FileUtils.ofCsv(
             fileNamingStrategy
                 .getEntityName(clz)
-                .orElseThrow(
-                    () ->
-                        new FileException(
-                            "Cannot determine the file name for class '"
-                                + clz.getSimpleName()
-                                + "'.")),
+                .orElseThrow(() ->
+                    new FileException(
+                        "Cannot determine the file name for class '" + clz.getSimpleName() + "'.")),
             fileNamingStrategy.getDirectoryPath(clz).orElse(Path.of(""))),
         headLineElements,
         csvSep);
@@ -83,12 +80,9 @@ public record CsvFileDefinition(Path filePath, String[] headLineElements, String
         FileUtils.ofCsv(
             fileNamingStrategy
                 .getEntityName(timeSeries)
-                .orElseThrow(
-                    () ->
-                        new FileException(
-                            "Cannot determine the file name for time series '"
-                                + timeSeries
-                                + "'.")),
+                .orElseThrow(() ->
+                    new FileException(
+                        "Cannot determine the file name for time series '" + timeSeries + "'.")),
             fileNamingStrategy.getDirectoryPath(timeSeries).orElse(Path.of(""))),
         headLineElements,
         csvSep);

@@ -96,19 +96,17 @@ public abstract class EntitySource {
       Class<? extends C> clazz,
       Try.TrySupplier<Optional<Set<String>>, SourceException> sourceFields) {
     return Try.of(sourceFields, SourceException.class)
-        .transformF(
-            se ->
-                (ValidationException)
-                    new FailedValidationException(
-                        "Validation for class "
-                            + clazz
-                            + " failed because of an error related to its source.",
-                        se))
-        .flatMap(
-            fieldsOpt ->
-                fieldsOpt
-                    .map(fields -> DataSource.validate(fields, clazz))
-                    .orElse(Try.Success.empty()));
+        .transformF(se ->
+            (ValidationException)
+                new FailedValidationException(
+                    "Validation for class "
+                        + clazz
+                        + " failed because of an error related to its source.",
+                    se))
+        .flatMap(fieldsOpt ->
+            fieldsOpt
+                .map(fields -> DataSource.validate(fields, clazz))
+                .orElse(Try.Success.empty()));
   }
 
   /**

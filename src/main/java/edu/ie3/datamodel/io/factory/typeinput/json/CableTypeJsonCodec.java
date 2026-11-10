@@ -53,12 +53,11 @@ public final class CableTypeJsonCodec {
    * @throws JacksonException if the JSON cannot be written
    */
   public String writeLayers(List<LayerInput> layers) throws JacksonException {
-    return write(
-        generator -> {
-          generator.writeStartArray();
-          for (LayerInput layer : layers) writeLayer(generator, layer);
-          generator.writeEndArray();
-        });
+    return write(generator -> {
+      generator.writeStartArray();
+      for (LayerInput layer : layers) writeLayer(generator, layer);
+      generator.writeEndArray();
+    });
   }
 
   /**

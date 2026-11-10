@@ -106,10 +106,9 @@ public class CsvLoadProfileSource<V extends LoadValues> extends LoadProfileSourc
     Set<LoadProfileEntry<V>> entries =
         dataSource
             .buildStreamWithFieldsToAttributesMap(filePath, false)
-            .flatMap(
-                stream ->
-                    Try.scanStream(
-                        stream.map(fieldToValueFunction), "LoadProfileEntry", SourceException::new))
+            .flatMap(stream ->
+                Try.scanStream(
+                    stream.map(fieldToValueFunction), "LoadProfileEntry", SourceException::new))
             .getOrThrow()
             .collect(Collectors.toSet());
 

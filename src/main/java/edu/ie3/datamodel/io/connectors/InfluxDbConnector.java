@@ -190,19 +190,18 @@ public class InfluxDbConnector implements DataConnector {
     HashMap<String, Set<Map<String, String>>> measurementToFields = new HashMap<>();
     queryResult.getResults().stream()
         .map(result -> parseResult(result, measurementNames))
-        .forEach(
-            measurementMap -> {
-              for (Map.Entry<String, Set<Map<String, String>>> measurementEntry :
-                  measurementMap.entrySet()) {
-                if (measurementToFields.containsKey(measurementEntry.getKey())) {
-                  measurementToFields
-                      .get(measurementEntry.getKey())
-                      .addAll(measurementEntry.getValue());
-                } else {
-                  measurementToFields.put(measurementEntry.getKey(), measurementEntry.getValue());
-                }
-              }
-            });
+        .forEach(measurementMap -> {
+          for (Map.Entry<String, Set<Map<String, String>>> measurementEntry :
+              measurementMap.entrySet()) {
+            if (measurementToFields.containsKey(measurementEntry.getKey())) {
+              measurementToFields
+                  .get(measurementEntry.getKey())
+                  .addAll(measurementEntry.getValue());
+            } else {
+              measurementToFields.put(measurementEntry.getKey(), measurementEntry.getValue());
+            }
+          }
+        });
     return measurementToFields;
   }
 

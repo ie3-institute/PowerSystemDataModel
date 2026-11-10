@@ -53,12 +53,10 @@ public abstract class FileDataSource implements DataSource {
     try (Stream<Path> pathStream = Files.walk(baseDirectory)) {
       return pathStream
           .map(baseDirectory::relativize)
-          .filter(
-              path -> {
-                Path withoutEnding =
-                    Path.of(FileNamingStrategy.removeFileNameEnding(path.toString()));
-                return pattern.matcher(withoutEnding.toString()).matches();
-              })
+          .filter(path -> {
+            Path withoutEnding = Path.of(FileNamingStrategy.removeFileNameEnding(path.toString()));
+            return pattern.matcher(withoutEnding.toString()).matches();
+          })
           .collect(Collectors.toSet());
     } catch (IOException e) {
       throw new SourceException(
@@ -71,20 +69,18 @@ public abstract class FileDataSource implements DataSource {
     return getTimeSeriesFilePaths(fileNamingStrategy.getIndividualTimeSeriesPattern())
         .parallelStream()
         .map(filePath -> resolveFileInformation(filePath, "individual time series"))
-        .map(
-            fileMeta -> {
-              IndividualTimeSeriesMetaInformation metaInformation =
-                  fileNamingStrategy.individualTimeSeriesMetaInformation(
-                      fileMeta.filePath().toString());
-              return new FileIndividualTimeSeriesMetaInformation(
-                  metaInformation, fileMeta.pathWithoutEnding(), fileMeta.fileType());
-            })
-        .filter(
-            metaInformation ->
-                columnSchemes == null
-                    || columnSchemes.length == 0
-                    || Stream.of(columnSchemes)
-                        .anyMatch(scheme -> scheme.equals(metaInformation.getColumnScheme())));
+        .map(fileMeta -> {
+          IndividualTimeSeriesMetaInformation metaInformation =
+              fileNamingStrategy.individualTimeSeriesMetaInformation(
+                  fileMeta.filePath().toString());
+          return new FileIndividualTimeSeriesMetaInformation(
+              metaInformation, fileMeta.pathWithoutEnding(), fileMeta.fileType());
+        })
+        .filter(metaInformation ->
+            columnSchemes == null
+                || columnSchemes.length == 0
+                || Stream.of(columnSchemes)
+                    .anyMatch(scheme -> scheme.equals(metaInformation.getColumnScheme())));
   }
 
   /**
@@ -98,20 +94,18 @@ public abstract class FileDataSource implements DataSource {
     return getTimeSeriesFilePaths(fileNamingStrategy.getLoadProfileTimeSeriesPattern())
         .parallelStream()
         .map(filePath -> resolveFileInformation(filePath, "load profile"))
-        .map(
-            fileMeta -> {
-              LoadProfileMetaInformation metaInformation =
-                  fileNamingStrategy.loadProfileTimeSeriesMetaInformation(
-                      fileMeta.filePath().toString());
-              return new FileLoadProfileMetaInformation(
-                  metaInformation, fileMeta.pathWithoutEnding(), fileMeta.fileType());
-            })
-        .filter(
-            metaInformation ->
-                profiles == null
-                    || profiles.length == 0
-                    || Stream.of(profiles)
-                        .anyMatch(profile -> metaInformation.getProfileKey().equals(profile)));
+        .map(fileMeta -> {
+          LoadProfileMetaInformation metaInformation =
+              fileNamingStrategy.loadProfileTimeSeriesMetaInformation(
+                  fileMeta.filePath().toString());
+          return new FileLoadProfileMetaInformation(
+              metaInformation, fileMeta.pathWithoutEnding(), fileMeta.fileType());
+        })
+        .filter(metaInformation ->
+            profiles == null
+                || profiles.length == 0
+                || Stream.of(profiles)
+                    .anyMatch(profile -> metaInformation.getProfileKey().equals(profile)));
   }
 
   private FileMetaDetails resolveFileInformation(Path filePath, String metaType) {

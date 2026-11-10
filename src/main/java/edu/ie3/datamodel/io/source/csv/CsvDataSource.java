@@ -198,11 +198,10 @@ public class CsvDataSource extends FileDataSource {
    */
   protected String[] parseCsvRow(String csvRow, String csvSep) {
     return Arrays.stream(csvRow.split(csvSep + "(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1))
-        .map(
-            maybeStartEndQuotedString ->
-                StringUtils.unquoteStartEnd(maybeStartEndQuotedString.trim())
-                    .replaceAll("\"{2}", "\"")
-                    .trim())
+        .map(maybeStartEndQuotedString ->
+            StringUtils.unquoteStartEnd(maybeStartEndQuotedString.trim())
+                .replaceAll("\"{2}", "\"")
+                .trim())
         .toArray(String[]::new);
   }
 
@@ -266,11 +265,8 @@ public class CsvDataSource extends FileDataSource {
             reader
                 .lines()
                 .parallel()
-                .map(
-                    csvRow ->
-                        Try.of(
-                            () -> buildFieldsToAttributes(csvRow, headline),
-                            SourceException.class)),
+                .map(csvRow ->
+                    Try.of(() -> buildFieldsToAttributes(csvRow, headline), SourceException.class)),
             fileName.toString(),
             SourceException::new)
         .transformS(stream -> stream.filter(map -> !map.isEmpty()));

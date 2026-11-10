@@ -87,25 +87,24 @@ public class EnergyManagementSource extends AssetEntitySource {
     List<FieldMap> currentLevel = new ArrayList<>();
     List<FieldMap> others = new ArrayList<>();
 
-    rawData.forEach(
-        t -> {
-          try {
-            if (!t.isFieldBlank(CONTROLLING_EM)) {
-              UUID controllingEm = t.viewUUID(CONTROLLING_EM);
+    rawData.forEach(t -> {
+      try {
+        if (!t.isFieldBlank(CONTROLLING_EM)) {
+          UUID controllingEm = t.viewUUID(CONTROLLING_EM);
 
-              if (emUnits.containsKey(controllingEm)) {
-                currentLevel.add(t);
-              } else {
-                others.add(t);
-              }
-            } else {
-              currentLevel.add(t);
-            }
-          } catch (FactoryException fe) {
-            // save exception
-            exceptions.add(fe);
+          if (emUnits.containsKey(controllingEm)) {
+            currentLevel.add(t);
+          } else {
+            others.add(t);
           }
-        });
+        } else {
+          currentLevel.add(t);
+        }
+      } catch (FactoryException fe) {
+        // save exception
+        exceptions.add(fe);
+      }
+    });
 
     exceptions.addAll(processData(currentLevel, emUnits, factory));
     checkData(exceptions, currentLevel.isEmpty(), others);
@@ -131,15 +130,14 @@ public class EnergyManagementSource extends AssetEntitySource {
 
     Try.scanStream(currentLevel.stream().map(factory::get), "EmInput", SourceException::new)
         .getOrThrow()
-        .forEach(
-            em -> {
-              UUID uuid = em.getUuid();
-              if (!emUnits.containsKey(uuid)) {
-                emUnits.put(em.getUuid(), em);
-              } else {
-                exceptions.add(new FactoryException("Duplicate em uuid: " + uuid));
-              }
-            });
+        .forEach(em -> {
+          UUID uuid = em.getUuid();
+          if (!emUnits.containsKey(uuid)) {
+            emUnits.put(em.getUuid(), em);
+          } else {
+            exceptions.add(new FactoryException("Duplicate em uuid: " + uuid));
+          }
+        });
 
     return exceptions;
   }

@@ -65,10 +65,9 @@ public class ValidationUtils {
       throw new IllegalArgumentException("Uneven number of arguments – must be name/value pairs");
 
     return IntStream.range(0, nameValuePairs.length / 2)
-        .mapToObj(
-            i ->
-                new NamedQuantity(
-                    (String) nameValuePairs[i * 2], (Quantity<?>) nameValuePairs[i * 2 + 1]));
+        .mapToObj(i ->
+            new NamedQuantity(
+                (String) nameValuePairs[i * 2], (Quantity<?>) nameValuePairs[i * 2 + 1]));
   }
 
   /** Private Constructor as this class is not meant to be instantiated */
@@ -165,20 +164,18 @@ public class ValidationUtils {
         assetInput
             .getOperationTime()
             .getEndDate()
-            .ifPresent(
-                endDate ->
-                    assetInput
-                        .getOperationTime()
-                        .getStartDate()
-                        .ifPresent(
-                            startDate -> {
-                              if (endDate.isBefore(startDate))
-                                exceptions.add(
-                                    new Failure<>(
-                                        new InvalidEntityException(
-                                            "Operation start time of the asset has to be before end time",
-                                            assetInput)));
-                            }));
+            .ifPresent(endDate ->
+                assetInput
+                    .getOperationTime()
+                    .getStartDate()
+                    .ifPresent(startDate -> {
+                      if (endDate.isBefore(startDate))
+                        exceptions.add(
+                            new Failure<>(
+                                new InvalidEntityException(
+                                    "Operation start time of the asset has to be before end time",
+                                    assetInput)));
+                    }));
       }
     }
 
