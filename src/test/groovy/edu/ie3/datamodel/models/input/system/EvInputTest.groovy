@@ -24,6 +24,7 @@ class EvInputTest extends Specification {
       operationTime == ev.operationTime
       operator == ev.operator
       id == ev.id
+      qCharacteristics == ev.qCharacteristics
       type == SystemParticipantTestData.evTypeInput
       additionalInformation == ev.additionalInformation
     }
@@ -42,6 +43,7 @@ class EvInputTest extends Specification {
       operationTime == ev.operationTime
       operator == ev.operator
       id == ev.id
+      qCharacteristics == ev.qCharacteristics
       type.sRated == ev.type.sRated * 2d
       sRated() == ev.type.sRated * 2d
       type.sRatedDC == ev.type.sRatedDC * 2d
