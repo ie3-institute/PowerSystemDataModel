@@ -21,7 +21,7 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /** Factory to create instances of {@link LoadInput}s. */
-public class LoadInputFactory extends SystemParticipantInputEntityFactory<LoadInput> {
+public class LoadInputFactory extends ExtendedSystemParticipantInputEntityFactory<LoadInput> {
 
   public LoadInputFactory(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits) {

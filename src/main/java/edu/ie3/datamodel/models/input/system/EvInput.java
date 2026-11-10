@@ -7,8 +7,6 @@ package edu.ie3.datamodel.models.input.system;
 
 import edu.ie3.datamodel.io.extractor.HasType;
 import edu.ie3.datamodel.models.OperationTime;
-import edu.ie3.datamodel.models.input.EmInput;
-import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.EvTypeInput;
@@ -20,6 +18,7 @@ import tech.units.indriya.ComparableQuantity;
 
 /** Describes an electric vehicle */
 public class EvInput extends SystemParticipantInput implements HasType {
+
   /** Type of this EV, containing default values for EVs of this kind */
   private final EvTypeInput type;
 
@@ -30,9 +29,7 @@ public class EvInput extends SystemParticipantInput implements HasType {
    * @param id of the asset
    * @param operator of the asset
    * @param operationTime Time for which the entity is operated
-   * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type of EV
    */
   public EvInput(
@@ -40,11 +37,9 @@ public class EvInput extends SystemParticipantInput implements HasType {
       String id,
       OperatorInput operator,
       OperationTime operationTime,
-      NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
       EvTypeInput type) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    super(uuid, id, operator, operationTime, qCharacteristics);
     this.type = type;
   }
 
@@ -55,9 +50,7 @@ public class EvInput extends SystemParticipantInput implements HasType {
    * @param id of the asset
    * @param operator of the asset
    * @param operationTime Time for which the entity is operated
-   * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type of EV
    * @param additionalInformation That were provided by the source
    */
@@ -66,12 +59,10 @@ public class EvInput extends SystemParticipantInput implements HasType {
       String id,
       OperatorInput operator,
       OperationTime operationTime,
-      NodeInput node,
       ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
       EvTypeInput type,
       Map<String, String> additionalInformation) {
-    super(uuid, id, operator, operationTime, node, qCharacteristics, em);
+    super(uuid, id, operator, operationTime, qCharacteristics);
     this.type = type;
     setAdditionalInformation(additionalInformation);
   }
@@ -81,19 +72,12 @@ public class EvInput extends SystemParticipantInput implements HasType {
    *
    * @param uuid of the input entity
    * @param id of the asset
-   * @param node the asset is connected to
    * @param qCharacteristics Description of a reactive power characteristic
-   * @param em The {@link EmInput} controlling this system participant. Null, if not applicable.
    * @param type of EV
    */
   public EvInput(
-      UUID uuid,
-      String id,
-      NodeInput node,
-      ReactivePowerCharacteristic qCharacteristics,
-      EmInput em,
-      EvTypeInput type) {
-    super(uuid, id, node, qCharacteristics, em);
+      UUID uuid, String id, ReactivePowerCharacteristic qCharacteristics, EvTypeInput type) {
+    super(uuid, id, qCharacteristics);
     this.type = type;
   }
 
@@ -104,9 +88,10 @@ public class EvInput extends SystemParticipantInput implements HasType {
 
   @Override
   public ComparableQuantity<Power> sRated() {
-    return this.type.getsRated();
+    return type.getsRated();
   }
 
+  @Override
   public EvInputCopyBuilder copy() {
     return new EvInputCopyBuilder(this);
   }
@@ -135,26 +120,15 @@ public class EvInput extends SystemParticipantInput implements HasType {
         + getOperator().getUuid()
         + ", operationTime="
         + getOperationTime()
-        + ", node="
-        + getNode().getUuid()
         + ", qCharacteristics='"
         + getqCharacteristics()
-        + "', em="
-        + getControllingEm()
-        + ", type="
+        + "', type="
         + type.getUuid()
         + ", additionalInformation="
         + getAdditionalInformation()
         + '}';
   }
 
-  /**
-   * A builder pattern based approach to create copies of {@link EvInput} entities with altered
-   * field values. For detailed field descriptions refer to java docs of {@link EvInput}
-   *
-   * @version 0.1
-   * @since 05.06.20
-   */
   public static class EvInputCopyBuilder
       extends SystemParticipantInputCopyBuilder<EvInputCopyBuilder> {
 
@@ -183,9 +157,7 @@ public class EvInput extends SystemParticipantInput implements HasType {
           getId(),
           getOperator(),
           getOperationTime(),
-          getNode(),
           getqCharacteristics(),
-          getEm(),
           type,
           getAdditionalInformation());
     }

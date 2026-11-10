@@ -18,6 +18,7 @@ import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.container.*;
+import edu.ie3.datamodel.models.input.system.ExtendedSystemParticipantInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
@@ -345,6 +346,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
 
     participantsByType(systemParticipants).stream()
         .flatMap(Set::stream)
+        .filter(ExtendedSystemParticipantInput.class::isInstance)
         .forEach(participant -> exceptions.add(checkNodeAvailability(participant, nodes)));
 
     return exceptions;
@@ -382,6 +384,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
         systemParticipants.getBmPlants(),
         systemParticipants.getChpPlants(),
         systemParticipants.getEvcs(),
+        systemParticipants.getEvs(),
         systemParticipants.getFixedFeedIns(),
         systemParticipants.getHeatPumps(),
         systemParticipants.getLoads(),
@@ -439,7 +442,8 @@ public class GridContainerValidationUtils extends ValidationUtils {
                       transformer.getNodeA(), transformer.getNodeB(), transformer.getNodeC()));
       case ConnectorInput connector ->
           available = !nodes.containsAll(Arrays.asList(connector.getNodeA(), connector.getNodeB()));
-      case SystemParticipantInput participant -> available = !nodes.contains(participant.getNode());
+      case ExtendedSystemParticipantInput participant ->
+          available = !nodes.contains(participant.getNode());
       case MeasurementUnitInput measurementUnit ->
           available = !nodes.contains(measurementUnit.getNode());
       default -> {

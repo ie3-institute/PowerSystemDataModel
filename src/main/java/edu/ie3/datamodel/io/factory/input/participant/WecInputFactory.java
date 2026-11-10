@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /** Factory to create instances of {@link WecInput}s. */
-public class WecInputFactory extends SystemParticipantInputEntityFactory<WecInput> {
+public class WecInputFactory extends ExtendedSystemParticipantInputEntityFactory<WecInput> {
 
   private final Map<UUID, WecTypeInput> types;
 

@@ -10,6 +10,7 @@ import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.container.*;
+import edu.ie3.datamodel.models.input.system.ExtendedSystemParticipantInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -153,11 +154,14 @@ public class ContainerNodeUpdateUtil {
         systemParticipants.allEntitiesAsList().parallelStream()
             .map(
                 sysPart -> {
-                  if (oldToNewNodes.containsKey(sysPart.getNode())) {
-                    return sysPart.copy().node(oldToNewNodes.get(sysPart.getNode())).build();
-                  } else {
-                    return sysPart;
+                  if (sysPart instanceof ExtendedSystemParticipantInput extendedSysPart) {
+                    NodeInput oldNode = extendedSysPart.getNode();
+
+                    if (oldToNewNodes.containsKey(oldNode)) {
+                      return extendedSysPart.copy().node(oldToNewNodes.get(oldNode)).build();
+                    }
                   }
+                  return sysPart;
                 })
             .toList();
     return new SystemParticipants(sysParts);

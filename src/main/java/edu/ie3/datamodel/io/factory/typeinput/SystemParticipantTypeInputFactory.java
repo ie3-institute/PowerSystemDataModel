@@ -81,6 +81,10 @@ public class SystemParticipantTypeInputFactory<T extends SystemParticipantTypeIn
         data.getQuantity(E_CONS, StandardUnits.ENERGY_PER_DISTANCE);
     ComparableQuantity<Power> sRatedDC =
         data.getQuantity(S_RATED_DC, StandardUnits.ACTIVE_POWER_IN);
+    ComparableQuantity<Dimensionless> etaCharging =
+        data.getQuantity(ETA_CHARGING, StandardUnits.EFFICIENCY);
+    ComparableQuantity<Dimensionless> etaDischarging =
+        data.getQuantity(ETA_DISCHARGING, StandardUnits.EFFICIENCY);
 
     return new EvTypeInput(
         uuid,
@@ -92,6 +96,8 @@ public class SystemParticipantTypeInputFactory<T extends SystemParticipantTypeIn
         sRated,
         cosPhi,
         sRatedDC,
+        etaCharging,
+        etaDischarging,
         data.additionalInformation());
   }
 
