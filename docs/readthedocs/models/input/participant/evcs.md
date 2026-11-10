@@ -80,6 +80,8 @@ time) equal for all manufacturers. Hence, to simplify the type model handling, t
 literal of their id or by providing a custom one. See [Charging point types](evcs.md#charging-point-types) for details of on
 available standard types and how to use custom types.
 
+The efficiency of charging and (for V2X) discharging operations is defined by the connected [electric vehicle](ev.md).
+
 The actual model definition for charging point types looks as follows:
 
 ```{list-table}
