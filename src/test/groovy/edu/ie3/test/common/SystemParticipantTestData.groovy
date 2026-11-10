@@ -252,9 +252,7 @@ class SystemParticipantTestData {
   "test_evInput",
   operator,
   operationTime,
-  participantNode,
   cosPhiFixed,
-  emInput,
   evTypeInput
   )
 

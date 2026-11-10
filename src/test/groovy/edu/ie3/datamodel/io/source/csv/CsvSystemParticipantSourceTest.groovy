@@ -77,7 +77,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 
     Exception ex = systemParticipants.exception.get()
     ex.class == SystemParticipantsException
-    ex.message == "Exception(s) occurred in 11 input file(s) while initializing system participants.\n" +
+    ex.message == "Exception(s) occurred in 10 input file(s) while initializing system participants.\n" +
         "        1 exception(s) occurred within \"FixedFeedInInput\" data: \n" +
         "               An error occurred in FixedFeedInInputFactory. Caused by: Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
         "        1 exception(s) occurred within \"PvInput\" data: \n" +
@@ -90,8 +90,6 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
         "               An error occurred in StorageInputFactory. Caused by: Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
         "        1 exception(s) occurred within \"WecInput\" data: \n" +
         "               An error occurred in WecInputFactory. Caused by: Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
-        "        1 exception(s) occurred within \"EvInput\" data: \n" +
-        "               An error occurred in EvInputFactory. Caused by: Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
         "        1 exception(s) occurred within \"EvcsInput\" data: \n" +
         "               An error occurred in EvcsInputFactory. Caused by: Extracting UUID for field 'node' failed. Caused by: Entity with uuid 4ca90220-74c2-4369-9afa-a18bf068840d was not provided.\n" +
         "        1 exception(s) occurred within \"ChpInput\" data: \n" +
@@ -129,7 +127,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     chpUnits.success
     chpUnits.data.get() == [sptd.chpInput] as Set
 
-    def evs = Try.of(() -> csvSystemParticipantSource.getEvs(operatorMap, nodeMap, emUnitsMap, map([sptd.evTypeInput])), SourceException)
+    def evs = Try.of(() -> csvSystemParticipantSource.getEvs(operatorMap, map([sptd.evTypeInput])), SourceException)
     evs.success
     evs.data.get() == [sptd.evInput] as Set
 
@@ -247,7 +245,7 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
     def emUnitsMap = map([sptd.emInput])
 
     expect:
-    def sysParts = Try.of(() -> csvSystemParticipantSource.getEvs(map(operators), nodeMap, emUnitsMap, map(types)), SourceException)
+    def sysParts = Try.of(() -> csvSystemParticipantSource.getEvs(map(operators), map(types)), SourceException)
 
     sysParts.failure
     sysParts.exception.get().class == SourceException

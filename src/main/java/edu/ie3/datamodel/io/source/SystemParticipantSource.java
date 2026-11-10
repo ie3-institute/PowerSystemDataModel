@@ -150,7 +150,7 @@ public class SystemParticipantSource extends AssetEntitySource {
     Try<Set<WecInput>, SourceException> wecInputs =
         Try.of(() -> getWecPlants(operators, nodes, emUnits, wecTypes), SourceException.class);
     Try<Set<EvInput>, SourceException> evs =
-        Try.of(() -> getEvs(operators, nodes, emUnits, evTypes), SourceException.class);
+        Try.of(() -> getEvs(operators, evTypes), SourceException.class);
     Try<Set<EvcsInput>, SourceException> evcs =
         Try.of(() -> getEvcs(operators, nodes, emUnits), SourceException.class);
     Try<Set<ChpInput>, SourceException> chpInputs =
@@ -529,8 +529,7 @@ public class SystemParticipantSource extends AssetEntitySource {
    */
   public Set<EvInput> getEvs() throws SourceException {
     Map<UUID, OperatorInput> operators = typeSource.getOperators();
-    Map<UUID, EmInput> emUnits = energyManagementSource.getEmUnits(operators);
-    return getEvs(operators, rawGridSource.getNodes(operators), emUnits, typeSource.getEvTypes());
+    return getEvs(operators, typeSource.getEvTypes());
   }
 
   /**
@@ -540,27 +539,20 @@ public class SystemParticipantSource extends AssetEntitySource {
    * on the uuid of {@link EvInput}.
    *
    * <p>In contrast to {@link #getEvs()} this method provides the ability to pass in an already
-   * existing set of {@link NodeInput}, {@link EvTypeInput} and {@link OperatorInput} entities, the
-   * {@link EvInput} instances depend on. Doing so, already loaded nodes can be recycled to improve
-   * performance and prevent unnecessary loading operations.
+   * existing set of {@link EvTypeInput} and {@link OperatorInput} entities, the {@link EvInput}
+   * instances depend on. Doing so, already loaded nodes can be recycled to improve performance and
+   * prevent unnecessary loading operations.
    *
    * <p>If something fails during the creation process a {@link SourceException} is thrown, else a
    * set with all entities that has been able to be build is returned.
    *
    * @param operators a map of UUID to object- and uuid-unique {@link OperatorInput} entities
-   * @param nodes a map of UUID to object- and uuid-unique {@link NodeInput} entities
-   * @param emUnits a map of UUID to object- and uuid-unique {@link EmInput} entities
    * @param types a map of UUID to object- and uuid-unique {@link EvTypeInput} entities
    * @return a set of object- and uuid-unique {@link EvInput} entities
    */
-  public Set<EvInput> getEvs(
-      Map<UUID, OperatorInput> operators,
-      Map<UUID, NodeInput> nodes,
-      Map<UUID, EmInput> emUnits,
-      Map<UUID, EvTypeInput> types)
+  public Set<EvInput> getEvs(Map<UUID, OperatorInput> operators, Map<UUID, EvTypeInput> types)
       throws SourceException {
-    return getEntities(
-            EvInput.class, dataSource, new EvInputFactory(operators, nodes, emUnits, types))
+    return getEntities(EvInput.class, dataSource, new EvInputFactory(operators, types))
         .collect(toSet());
   }
 

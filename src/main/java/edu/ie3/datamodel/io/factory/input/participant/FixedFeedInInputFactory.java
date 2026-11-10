@@ -19,7 +19,8 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /** Factory to create instances of {@link FixedFeedInInput}s. */
-public class FixedFeedInInputFactory extends SystemParticipantInputEntityFactory<FixedFeedInInput> {
+public class FixedFeedInInputFactory
+    extends ExtendedSystemParticipantInputEntityFactory<FixedFeedInInput> {
 
   public FixedFeedInInputFactory(
       Map<UUID, OperatorInput> operators, Map<UUID, NodeInput> nodes, Map<UUID, EmInput> emUnits) {

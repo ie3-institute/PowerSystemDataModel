@@ -18,6 +18,7 @@ import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.container.*;
+import edu.ie3.datamodel.models.input.system.ExtendedSystemParticipantInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
@@ -322,6 +323,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
     exceptions.addAll(checkSystemParticipants(systemParticipants.getBmPlants(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getChpPlants(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getEvcs(), nodes));
+    exceptions.addAll(checkSystemParticipants(systemParticipants.getEvs(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getFixedFeedIns(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getHeatPumps(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getLoads(), nodes));
@@ -349,7 +351,9 @@ public class GridContainerValidationUtils extends ValidationUtils {
 
     participants.forEach(
         participant -> {
-          exceptions.add(checkNodeAvailability(participant, nodes));
+          if (participant instanceof ExtendedSystemParticipantInput) {
+            exceptions.add(checkNodeAvailability(participant, nodes));
+          }
           exceptions.addAll(SystemParticipantValidationUtils.check(participant));
         });
 
@@ -377,7 +381,8 @@ public class GridContainerValidationUtils extends ValidationUtils {
                       transformer.getNodeA(), transformer.getNodeB(), transformer.getNodeC()));
       case ConnectorInput connector ->
           available = !nodes.containsAll(Arrays.asList(connector.getNodeA(), connector.getNodeB()));
-      case SystemParticipantInput participant -> available = !nodes.contains(participant.getNode());
+      case ExtendedSystemParticipantInput participant ->
+          available = !nodes.contains(participant.getNode());
       case MeasurementUnitInput measurementUnit ->
           available = !nodes.contains(measurementUnit.getNode());
       default -> {

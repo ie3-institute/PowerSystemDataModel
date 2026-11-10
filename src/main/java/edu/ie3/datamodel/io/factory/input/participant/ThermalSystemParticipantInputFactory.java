@@ -10,7 +10,7 @@ import edu.ie3.datamodel.models.OperationTime;
 import edu.ie3.datamodel.models.input.EmInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.OperatorInput;
-import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
+import edu.ie3.datamodel.models.input.system.ExtendedSystemParticipantInput;
 import edu.ie3.datamodel.models.input.system.characteristic.ReactivePowerCharacteristic;
 import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
 import edu.ie3.datamodel.models.input.thermal.ThermalBusInput;
@@ -24,8 +24,8 @@ import java.util.UUID;
  * @param <T> The type input type (AcTypeInput, HpTypeInput, etc.)
  */
 public abstract class ThermalSystemParticipantInputFactory<
-        M extends SystemParticipantInput, T extends SystemParticipantTypeInput>
-    extends SystemParticipantInputEntityFactory<M> {
+        M extends ExtendedSystemParticipantInput, T extends SystemParticipantTypeInput>
+    extends ExtendedSystemParticipantInputEntityFactory<M> {
 
   private final Map<UUID, T> types;
   private final Map<UUID, ThermalBusInput> thermalBuses;
