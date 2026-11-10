@@ -33,6 +33,8 @@ class EvTypeInputTest extends Specification {
       sRated == evTypeInput.sRated
       sRatedDC == evTypeInput.sRatedDC
       cosPhiRated == evTypeInput.cosPhiRated
+      etaCharging == evTypeInput.etaCharging
+      etaDischarging == evTypeInput.etaDischarging
     }
   }
 
@@ -54,6 +56,8 @@ class EvTypeInputTest extends Specification {
       sRated == evTypeInput.sRated * 2d
       sRatedDC == evTypeInput.sRatedDC * 2d
       cosPhiRated == evTypeInput.cosPhiRated
+      etaCharging == evTypeInput.etaCharging
+      etaDischarging == evTypeInput.etaDischarging
     }
   }
 }
