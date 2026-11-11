@@ -134,14 +134,13 @@ public class ChargingPointTypeUtils {
                   TeslaSuperChargerV1,
                   TeslaSuperChargerV2,
                   TeslaSuperChargerV3)
-              .flatMap(
-                  type ->
-                      Stream.concat(
-                          Stream.of(type.id().toLowerCase()),
-                          type.synonymousIds().stream().map(String::toLowerCase))
-                          .collect(Collectors.toMap(Function.identity(), v -> type))
-                          .entrySet()
-                          .stream())
+              .flatMap(type ->
+                  Stream.concat(
+                      Stream.of(type.id().toLowerCase()),
+                      type.synonymousIds().stream().map(String::toLowerCase))
+                      .collect(Collectors.toMap(Function.identity(), v -> type))
+                      .entrySet()
+                      .stream())
               .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 
   /**
@@ -186,44 +185,41 @@ public class ChargingPointTypeUtils {
       String currentTypeString = matcher.group(3);
       ElectricCurrentType currentType =
           ElectricCurrentType.parse(currentTypeString)
-              .orElseThrow(
-                  () ->
-                      new ChargingPointTypeException(
-                          "Cannot parse '"
-                              + parsableString
-                              + "' to charging point: "
-                              + "Invalid electric current type value '"
-                              + currentTypeString
-                              + "' provided!"));
+              .orElseThrow(() ->
+                  new ChargingPointTypeException(
+                      "Cannot parse '"
+                          + parsableString
+                          + "' to charging point: "
+                          + "Invalid electric current type value '"
+                          + currentTypeString
+                          + "' provided!"));
 
       // search for common type that is equal to the input or build a custom one
       res =
           fromIdString(id)
-              .flatMap(
-                  commonType -> {
-                    if (commonType.sRated().equals(sRated)
-                        && commonType.electricCurrentType().equals(currentType)) {
-                      return Optional.of(commonType);
-                    } else {
-                      return Optional.empty();
-                    }
-                  })
+              .flatMap(commonType -> {
+                if (commonType.sRated().equals(sRated)
+                    && commonType.electricCurrentType().equals(currentType)) {
+                  return Optional.of(commonType);
+                } else {
+                  return Optional.empty();
+                }
+              })
               .orElseGet(() -> new ChargingPointType(id, sRated, currentType));
     } else {
       // is it only the name of a pre-defined type?
       res =
           fromIdString(parsableString)
-              .orElseThrow(
-                  () ->
-                      new ChargingPointTypeException(
-                          "Provided charging point type string '"
-                              + parsableString
-                              + "' is neither a valid custom type string "
-                              + "nor can a common charging point type with id '"
-                              + parsableString
-                              + "' be found! "
-                              + "Please either provide a valid custom string in the format '<Name>(<kVA Value>|<AC|DC>)' "
-                              + "(e.g. 'FastCharger(50|DC)') or a common type id (see docs for all available common types)."));
+              .orElseThrow(() ->
+                  new ChargingPointTypeException(
+                      "Provided charging point type string '"
+                          + parsableString
+                          + "' is neither a valid custom type string "
+                          + "nor can a common charging point type with id '"
+                          + parsableString
+                          + "' be found! "
+                          + "Please either provide a valid custom string in the format '<Name>(<kVA Value>|<AC|DC>)' "
+                          + "(e.g. 'FastCharger(50|DC)') or a common type id (see docs for all available common types)."));
     }
 
     return res;

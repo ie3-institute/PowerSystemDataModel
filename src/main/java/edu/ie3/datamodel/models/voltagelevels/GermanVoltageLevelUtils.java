@@ -98,12 +98,11 @@ public class GermanVoltageLevelUtils {
     return germanVoltageLevels.stream()
         .filter(voltLvl -> voltLvl.covers(vRated))
         .findFirst()
-        .orElseThrow(
-            () ->
-                new VoltageLevelException(
-                    "The rated voltage "
-                        + vRated
-                        + " is not covered by none of the commonly known german voltage levels."));
+        .orElseThrow(() ->
+            new VoltageLevelException(
+                "The rated voltage "
+                    + vRated
+                    + " is not covered by none of the commonly known german voltage levels."));
   }
 
   /**
@@ -119,22 +118,20 @@ public class GermanVoltageLevelUtils {
   public static CommonVoltageLevel parse(String id, ComparableQuantity<ElectricPotential> vRated)
       throws VoltageLevelException {
     return germanVoltageLevels.stream()
-        .filter(
-            voltLvl -> {
-              try {
-                return voltLvl.covers(id, vRated);
-              } catch (VoltageLevelException e) {
-                return false;
-              }
-            })
+        .filter(voltLvl -> {
+          try {
+            return voltLvl.covers(id, vRated);
+          } catch (VoltageLevelException e) {
+            return false;
+          }
+        })
         .findFirst()
-        .orElseThrow(
-            () ->
-                new VoltageLevelException(
-                    "The id "
-                        + id
-                        + " in combination with the rated voltage "
-                        + vRated
-                        + " is not covered by none of the commonly known german voltage levels."));
+        .orElseThrow(() ->
+            new VoltageLevelException(
+                "The id "
+                    + id
+                    + " in combination with the rated voltage "
+                    + vRated
+                    + " is not covered by none of the commonly known german voltage levels."));
   }
 }
