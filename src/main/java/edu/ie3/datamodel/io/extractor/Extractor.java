@@ -73,19 +73,18 @@ public final class Extractor {
 
     resultingList.stream()
         .parallel()
-        .forEach(
-            element -> {
-              if (element instanceof NestedEntity nestedElement) {
-                try {
-                  resultingList.addAll(extractElements(nestedElement));
-                } catch (ExtractorException e) {
-                  log.error(
-                      "An error occurred during extraction of nested entity '{}':{}",
-                      element.getClass().getSimpleName(),
-                      e);
-                }
-              }
-            });
+        .forEach(element -> {
+          if (element instanceof NestedEntity nestedElement) {
+            try {
+              resultingList.addAll(extractElements(nestedElement));
+            } catch (ExtractorException e) {
+              log.error(
+                  "An error occurred during extraction of nested entity '{}':{}",
+                  element.getClass().getSimpleName(),
+                  e);
+            }
+          }
+        });
 
     return Set.copyOf(resultingList);
   }

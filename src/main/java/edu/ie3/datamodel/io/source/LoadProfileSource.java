@@ -89,10 +89,9 @@ public abstract class LoadProfileSource<V extends LoadValues> extends EntitySour
         .getCsvLoadProfileMetaInformation(BdewStandardLoadProfile.values())
         .values()
         .stream()
-        .map(
-            metaInformation ->
-                new CsvLoadProfileSource<>(
-                    buildInSource, metaInformation, BdewLoadValues.class, factory))
+        .map(metaInformation ->
+            new CsvLoadProfileSource<>(
+                buildInSource, metaInformation, BdewLoadValues.class, factory))
         .collect(Collectors.toMap(CsvLoadProfileSource::getProfileKey, Function.identity()));
   }
 

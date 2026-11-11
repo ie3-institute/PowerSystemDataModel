@@ -77,10 +77,9 @@ public class ProcessorProvider {
       Try<LinkedHashMap<String, String>, ProcessorProviderException> handleEntity(T entity) {
     return Try.of(() -> getEntityProcessor(entity.getClass()), ProcessorProviderException.class)
         .flatMap(ProcessorProvider::castProcessor)
-        .flatMap(
-            processor ->
-                Try.of(() -> processor.handleEntity(entity), EntityProcessorException.class)
-                    .transformF(ProcessorProviderException::new));
+        .flatMap(processor ->
+            Try.of(() -> processor.handleEntity(entity), EntityProcessorException.class)
+                .transformF(ProcessorProviderException::new));
   }
 
   public <T extends Entity> Set<LinkedHashMap<String, String>> handleEntities(List<T> entities)
@@ -138,10 +137,9 @@ public class ProcessorProvider {
     TimeSeriesProcessorKey key = new TimeSeriesProcessorKey(timeSeries);
     return Try.of(
             () -> this.<T, E, V, R>getTimeSeriesProcessor(key), ProcessorProviderException.class)
-        .flatMap(
-            processor ->
-                Try.of(() -> processor.handleTimeSeries(timeSeries), EntityProcessorException.class)
-                    .transformF(ProcessorProviderException::new))
+        .flatMap(processor ->
+            Try.of(() -> processor.handleTimeSeries(timeSeries), EntityProcessorException.class)
+                .transformF(ProcessorProviderException::new))
         .getOrThrow();
   }
 
@@ -314,17 +312,16 @@ public class ProcessorProvider {
       allTimeSeriesProcessors() throws EntityProcessorException {
     return Try.scanStream(
             TimeSeriesProcessor.eligibleKeys.stream()
-                .map(
-                    key ->
-                        Try.of(
-                            () ->
-                                new TimeSeriesProcessor<>(
-                                    (Class<TimeSeries<TimeSeriesEntry<Value>, Value, Value>>)
-                                        key.getTimeSeriesClass(),
-                                    (Class<TimeSeriesEntry<Value>>) key.getEntryClass(),
-                                    (Class<Value>) key.getValueClass(),
-                                    key.getScheme()),
-                            EntityProcessorException.class)),
+                .map(key ->
+                    Try.of(
+                        () ->
+                            new TimeSeriesProcessor<>(
+                                (Class<TimeSeries<TimeSeriesEntry<Value>, Value, Value>>)
+                                    key.getTimeSeriesClass(),
+                                (Class<TimeSeriesEntry<Value>>) key.getEntryClass(),
+                                (Class<Value>) key.getValueClass(),
+                                key.getScheme()),
+                        EntityProcessorException.class)),
             "time series processors",
             EntityProcessorException::new)
         .getOrThrow()
@@ -336,11 +333,10 @@ public class ProcessorProvider {
       Try<EntityProcessor<T>, ProcessorProviderException> castProcessor(
           EntityProcessor<? extends Entity> processor) {
     return Try.of(() -> (EntityProcessor<T>) processor, ClassCastException.class)
-        .transformF(
-            e ->
-                new ProcessorProviderException(
-                    "Cannot cast processor with registered class '"
-                        + processor.getRegisteredClass().getSimpleName()
-                        + "'. This indicates a fatal problem with the processor mapping!"));
+        .transformF(e ->
+            new ProcessorProviderException(
+                "Cannot cast processor with registered class '"
+                    + processor.getRegisteredClass().getSimpleName()
+                    + "'. This indicates a fatal problem with the processor mapping!"));
   }
 }

@@ -92,20 +92,16 @@ public class SqlSink {
   public <C extends Entity> void persistAll(Collection<C> entities, DbGridMetadata identifier) {
     // Extract nested entities and add them to the set of entities
     Set<C> entitiesToAdd = new HashSet<>(entities); // entities to persist
-    entities.forEach(
-        entity -> {
-          if (entity instanceof NestedEntity nestedEntity) {
-            try {
-              entitiesToAdd.addAll(
-                  (List<C>) Extractor.extractElements(nestedEntity).stream().toList());
-            } catch (ExtractorException e) {
-              log.error(
-                  "An error occurred during extraction of nested entity'{}': ",
-                  entity.getClass(),
-                  e);
-            }
-          }
-        });
+    entities.forEach(entity -> {
+      if (entity instanceof NestedEntity nestedEntity) {
+        try {
+          entitiesToAdd.addAll((List<C>) Extractor.extractElements(nestedEntity).stream().toList());
+        } catch (ExtractorException e) {
+          log.error(
+              "An error occurred during extraction of nested entity'{}': ", entity.getClass(), e);
+        }
+      }
+    });
 
     // Persist the entities in hierarchic order to avoid failure because of foreign keys
     for (Class<?> cls : hierarchicInsert()) {
@@ -168,18 +164,17 @@ public class SqlSink {
   private <C extends Entity> void persistMixedList(List<C> entities, DbGridMetadata identifier) {
     Map<Class<C>, List<C>> entitiesPerClass =
         entities.stream().collect(groupingBy(entity -> (Class<C>) entity.getClass()));
-    entitiesPerClass.forEach(
-        (cls, ent) -> {
-          try {
-            persistList(ent, cls, identifier);
-          } catch (SQLException e) {
-            throw new RuntimeException(
-                String.format(
-                    "An error occurred during extraction of entity '%s', SQLReason: '%s'",
-                    cls.getSimpleName(), e.getMessage()),
-                e);
-          }
-        });
+    entitiesPerClass.forEach((cls, ent) -> {
+      try {
+        persistList(ent, cls, identifier);
+      } catch (SQLException e) {
+        throw new RuntimeException(
+            String.format(
+                "An error occurred during extraction of entity '%s', SQLReason: '%s'",
+                cls.getSimpleName(), e.getMessage()),
+            e);
+      }
+    });
   }
 
   /**
@@ -270,13 +265,12 @@ public class SqlSink {
       query =
           query
               + entityFieldData.stream()
-                  .map(
-                      data ->
-                          queryTimeSeriesValueLine(
-                              sqlEntityFieldData(data),
-                              headerElements,
-                              identifier,
-                              timeSeriesIdentifier))
+                  .map(data ->
+                      queryTimeSeriesValueLine(
+                          sqlEntityFieldData(data),
+                          headerElements,
+                          identifier,
+                          timeSeriesIdentifier))
                   .collect(Collectors.joining(",\n", "", ";"));
       executeQueryToPersist(query);
     } catch (ProcessorProviderException e) {

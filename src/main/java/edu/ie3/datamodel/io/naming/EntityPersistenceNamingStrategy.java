@@ -147,10 +147,9 @@ public class EntityPersistenceNamingStrategy {
     String columnSchemeKey = matcher.group("columnScheme");
     ColumnScheme columnScheme =
         ColumnScheme.parse(columnSchemeKey)
-            .orElseThrow(
-                () ->
-                    new IllegalArgumentException(
-                        "Cannot parse '" + columnSchemeKey + "' to valid column scheme."));
+            .orElseThrow(() ->
+                new IllegalArgumentException(
+                    "Cannot parse '" + columnSchemeKey + "' to valid column scheme."));
 
     return new IndividualTimeSeriesMetaInformation(
         UUID.fromString(matcher.group("uuid")), columnScheme);
