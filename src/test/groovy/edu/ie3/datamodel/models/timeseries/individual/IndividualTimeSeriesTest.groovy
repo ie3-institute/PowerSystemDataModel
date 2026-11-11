@@ -3,10 +3,9 @@
  * Institute of Energy Systems, Energy Efficiency and Energy Economics,
  * Research group Distribution grid planning and operation
  */
-package edu.ie3.datamodel.models.timeseries
+package edu.ie3.datamodel.models.timeseries.individual
 
-import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
-import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue
+import edu.ie3.datamodel.models.timeseries.IntValue
 import edu.ie3.test.common.TimeSeriesTestData
 import spock.lang.Specification
 

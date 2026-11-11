@@ -47,17 +47,15 @@ public interface DataSource {
   default Try<Void, ValidationException> validate(Class<? extends Entity> entityClass)
       throws SourceException {
     return Try.of(() -> getSourceFields(entityClass), SourceException.class)
-        .transformF(
-            se ->
-                (ValidationException)
-                    new FailedValidationException(
-                        "Validation for entity "
-                            + entityClass
-                            + " failed because of an error related to its source.",
-                        se))
-        .flatMap(
-            fieldsOpt ->
-                fieldsOpt.map(fields -> validate(fields, entityClass)).orElse(Try.Success.empty()));
+        .transformF(se ->
+            (ValidationException)
+                new FailedValidationException(
+                    "Validation for entity "
+                        + entityClass
+                        + " failed because of an error related to its source.",
+                    se))
+        .flatMap(fieldsOpt ->
+            fieldsOpt.map(fields -> validate(fields, entityClass)).orElse(Try.Success.empty()));
   }
 
   /**
@@ -211,13 +209,12 @@ public interface DataSource {
     // checking for additional fields
     // and returning the set with the least additional fields
     return validFieldSets.stream()
-        .map(
-            s -> {
-              Set<String> set = new HashSet<>(actualFields);
-              set.removeAll(s);
-              set.removeAll(optionalFields);
-              return set;
-            })
+        .map(s -> {
+          Set<String> set = new HashSet<>(actualFields);
+          set.removeAll(s);
+          set.removeAll(optionalFields);
+          return set;
+        })
         .min(Comparator.comparing(Collection::size))
         .orElse(Collections.emptySet());
   }

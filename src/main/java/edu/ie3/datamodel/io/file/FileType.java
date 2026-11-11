@@ -24,14 +24,13 @@ public enum FileType {
     return Arrays.stream(fileTypes)
         .filter(f -> fileName.endsWith(f.fileEnding))
         .findFirst()
-        .orElseThrow(
-            () ->
-                new ParsingException(
-                    "No file ending found for file '"
-                        + fileName
-                        + "'. Only supports file types: "
-                        + Arrays.stream(fileTypes)
-                            .map(t -> t.fileEnding)
-                            .collect(Collectors.joining(", "))));
+        .orElseThrow(() ->
+            new ParsingException(
+                "No file ending found for file '"
+                    + fileName
+                    + "'. Only supports file types: "
+                    + Arrays.stream(fileTypes)
+                        .map(t -> t.fileEnding)
+                        .collect(Collectors.joining(", "))));
   }
 }

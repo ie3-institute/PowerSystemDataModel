@@ -276,16 +276,15 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
     try {
       Set<LinkedHashMap<String, String>> entityFieldData =
           processorProvider.handleTimeSeries(timeSeries);
-      entityFieldData.forEach(
-          data -> {
-            try {
-              writer.write(csvEntityFieldData(data));
-            } catch (IOException e) {
-              log.error("Cannot write the following entity data: '{}'. Exception: {}", data, e);
-            } catch (SinkException e) {
-              log.error("Exception occurred during processing the provided data fields: ", e);
-            }
-          });
+      entityFieldData.forEach(data -> {
+        try {
+          writer.write(csvEntityFieldData(data));
+        } catch (IOException e) {
+          log.error("Cannot write the following entity data: '{}'. Exception: {}", data, e);
+        } catch (SinkException e) {
+          log.error("Exception occurred during processing the provided data fields: ", e);
+        }
+      });
     } catch (ProcessorProviderException e) {
       throw new ProcessorProviderException("Exception occurred during processor request: ", e);
     }
@@ -347,11 +346,10 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
       LinkedHashMap<String, String> entityFieldData) {
 
     return entityFieldData.entrySet().stream()
-        .map(
-            mapEntry ->
-                new AbstractMap.SimpleEntry<>(
-                    StringUtils.csvString(mapEntry.getKey(), csvSep),
-                    StringUtils.csvString(mapEntry.getValue(), csvSep)))
+        .map(mapEntry ->
+            new AbstractMap.SimpleEntry<>(
+                StringUtils.csvString(mapEntry.getKey(), csvSep),
+                StringUtils.csvString(mapEntry.getValue(), csvSep)))
         .collect(
             Collectors.toMap(
                 AbstractMap.SimpleEntry::getKey,

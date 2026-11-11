@@ -93,13 +93,12 @@ public class CsvThermalGridSource {
               .collect(Collectors.groupingBy(ThermalUnitInput::getThermalBus, Collectors.toSet()));
 
       return buses.values().stream()
-          .map(
-              bus -> {
-                Set<ThermalHouseInput> h = houseInputs.getOrDefault(bus, emptySet());
-                Set<ThermalStorageInput> hs = heatStorageInputs.getOrDefault(bus, emptySet());
-                Set<ThermalStorageInput> ws = waterStorageInputs.getOrDefault(bus, emptySet());
-                return new ThermalGrid(bus, h, hs, ws);
-              })
+          .map(bus -> {
+            Set<ThermalHouseInput> h = houseInputs.getOrDefault(bus, emptySet());
+            Set<ThermalStorageInput> hs = heatStorageInputs.getOrDefault(bus, emptySet());
+            Set<ThermalStorageInput> ws = waterStorageInputs.getOrDefault(bus, emptySet());
+            return new ThermalGrid(bus, h, hs, ws);
+          })
           .toList();
     }
   }

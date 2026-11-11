@@ -138,11 +138,10 @@ public final class BdewLoadValues implements LoadValues {
 
   private String valueString() {
     return values.entrySet().stream()
-        .map(
-            entry -> {
-              double value = entry.getValue();
-              return entry.getKey().getName() + "=" + value + ", ";
-            })
+        .map(entry -> {
+          double value = entry.getValue();
+          return entry.getKey().getName() + "=" + value + ", ";
+        })
         .reduce("", (a, b) -> a + b);
   }
 
@@ -217,10 +216,8 @@ public final class BdewLoadValues implements LoadValues {
     private static <S, K extends BdewKey> Collection<K> getKeys(
         S[] seasons, BiFunction<S, DayType, K> function) {
       return Arrays.stream(seasons)
-          .flatMap(
-              m ->
-                  Arrays.stream(BdewLoadValues.DayType.values())
-                      .map(type -> function.apply(m, type)))
+          .flatMap(m ->
+              Arrays.stream(BdewLoadValues.DayType.values()).map(type -> function.apply(m, type)))
           .toList();
     }
   }

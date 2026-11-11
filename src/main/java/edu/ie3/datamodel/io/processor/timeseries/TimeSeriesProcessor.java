@@ -181,16 +181,10 @@ public class TimeSeriesProcessor<
       mapFieldNameToGetter(TemperatureValue.class).forEach(addFunction.apply(WEATHER_TEMPERATURE));
       mapFieldNameToGetter(WindValue.class).forEach(addFunction.apply(WEATHER_WIND));
       Map<String, GetterMethod> groundTempMap = mapFieldNameToGetter(GroundTemperatureValue.class);
-      groundTempMap.forEach(
-          (fieldName, getter) ->
-              addFunction
-                  .apply(GROUND_TEMPERATURE_LEVEL_1)
-                  .accept("groundTemperatureLevel1", getter));
-      groundTempMap.forEach(
-          (fieldName, getter) ->
-              addFunction
-                  .apply(GROUND_TEMPERATURE_LEVEL_2)
-                  .accept("groundTemperatureLevel2", getter));
+      groundTempMap.forEach((fieldName, getter) ->
+          addFunction.apply(GROUND_TEMPERATURE_LEVEL_1).accept("groundTemperatureLevel1", getter));
+      groundTempMap.forEach((fieldName, getter) ->
+          addFunction.apply(GROUND_TEMPERATURE_LEVEL_2).accept("groundTemperatureLevel2", getter));
 
     } else if (valueClass.equals(BdewLoadValues.class)) {
 

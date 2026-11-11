@@ -181,10 +181,9 @@ public class DefaultDirectoryHierarchy implements FileHierarchy {
     /* Go through all sub directories and check, if the given class belongs to one of the classes mapped to the sub directories. */
     Optional<SubDirectories> maybeSubDirectory =
         Arrays.stream(SubDirectories.values())
-            .filter(
-                subDirectory ->
-                    subDirectory.getRelevantClasses().stream()
-                        .anyMatch(definedClass -> definedClass.isAssignableFrom(cls)))
+            .filter(subDirectory ->
+                subDirectory.getRelevantClasses().stream()
+                    .anyMatch(definedClass -> definedClass.isAssignableFrom(cls)))
             .findFirst();
 
     if (maybeSubDirectory.isEmpty()) {

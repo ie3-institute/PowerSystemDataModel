@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Consider additional parameters in copy builders [#1685](https://github.com/ie3-institute/PowerSystemDataModel/issues/1685)
+- Consider time zone in BDEW load profiles [#1813](https://github.com/ie3-institute/PowerSystemDataModel/issues/1813)
 
 ## [9.3.0] - 2026-10-29
 

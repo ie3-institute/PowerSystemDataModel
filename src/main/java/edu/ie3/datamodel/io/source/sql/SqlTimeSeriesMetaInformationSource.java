@@ -84,17 +84,15 @@ public class SqlTimeSeriesMetaInformationSource extends TimeSeriesMetaInformatio
 
     List<String> selectQueries =
         dataSource.getDbTables(schemaName, namingStrategy.getTimeSeriesPrefix() + "%").stream()
-            .map(
-                tableName ->
-                    Optional.ofNullable(acceptedTableNames.get(tableName))
-                        .map(
-                            columnScheme ->
-                                "SELECT DISTINCT time_series, '"
-                                    + columnScheme.getScheme()
-                                    + "' as column_scheme FROM "
-                                    + schemaName
-                                    + "."
-                                    + tableName))
+            .map(tableName ->
+                Optional.ofNullable(acceptedTableNames.get(tableName))
+                    .map(columnScheme ->
+                        "SELECT DISTINCT time_series, '"
+                            + columnScheme.getScheme()
+                            + "' as column_scheme FROM "
+                            + schemaName
+                            + "."
+                            + tableName))
             .flatMap(Optional::stream)
             .toList();
 
