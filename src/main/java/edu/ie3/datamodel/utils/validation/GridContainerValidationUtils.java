@@ -338,13 +338,12 @@ public class GridContainerValidationUtils extends ValidationUtils {
     exceptions.add(
         Try.ofVoid(() -> checkAssetUniqueness(participants), DuplicateEntitiesException.class));
 
-    participants.forEach(
-        participant -> {
-          if (participant instanceof ExtendedSystemParticipantInput) {
-            exceptions.add(checkNodeAvailability(participant, nodes));
-          }
-          exceptions.addAll(SystemParticipantValidationUtils.check(participant));
-        });
+    participants.forEach(participant -> {
+      if (participant instanceof ExtendedSystemParticipantInput) {
+        exceptions.add(checkNodeAvailability(participant, nodes));
+      }
+      exceptions.addAll(SystemParticipantValidationUtils.check(participant));
+    });
 
     return exceptions;
   }

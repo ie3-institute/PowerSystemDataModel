@@ -152,17 +152,16 @@ public class ContainerNodeUpdateUtil {
 
     List<SystemParticipantInput> sysParts =
         systemParticipants.allEntitiesAsList().parallelStream()
-            .map(
-                sysPart -> {
-                  if (sysPart instanceof ExtendedSystemParticipantInput extendedSysPart) {
-                    NodeInput oldNode = extendedSysPart.getNode();
+            .map(sysPart -> {
+              if (sysPart instanceof ExtendedSystemParticipantInput extendedSysPart) {
+                NodeInput oldNode = extendedSysPart.getNode();
 
-                    if (oldToNewNodes.containsKey(oldNode)) {
-                      return extendedSysPart.copy().node(oldToNewNodes.get(oldNode)).build();
-                    }
-                  }
-                  return sysPart;
-                })
+                if (oldToNewNodes.containsKey(oldNode)) {
+                  return extendedSysPart.copy().node(oldToNewNodes.get(oldNode)).build();
+                }
+              }
+              return sysPart;
+            })
             .toList();
     return new SystemParticipants(sysParts);
   }
