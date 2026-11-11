@@ -9,6 +9,7 @@ import de.lmu.ifi.dbs.elki.math.statistics.distribution.GeneralizedExtremeValueD
 import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.value.load.RandomLoadValues;
 import java.util.Set;
+import java.util.TimeZone;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -24,7 +25,14 @@ public class RandomLoadProfileTimeSeries extends LoadProfileTimeSeries<RandomLoa
       Set<LoadProfileEntry<RandomLoadValues>> entries,
       ComparableQuantity<Power> maxPower,
       ComparableQuantity<Energy> profileEnergyScaling) {
-    super(powerProfileKey, entries, RandomLoadValues.class, maxPower, profileEnergyScaling);
+    super(
+        powerProfileKey,
+        entries,
+        RandomLoadValues.class,
+        maxPower,
+        profileEnergyScaling,
+        // assuming this work with German time zone
+        TimeZone.getTimeZone("Europe/Berlin").toZoneId());
   }
 
   @Override

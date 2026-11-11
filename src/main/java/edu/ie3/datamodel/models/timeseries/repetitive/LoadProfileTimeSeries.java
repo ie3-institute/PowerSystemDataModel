@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.value.PValue;
 import edu.ie3.datamodel.models.value.load.LoadValues;
 import edu.ie3.datamodel.utils.TimeSeriesUtils;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Supplier;
@@ -24,6 +25,12 @@ public class LoadProfileTimeSeries<V extends LoadValues>
   protected final PowerProfileKey powerProfileKey;
 
   /**
+   * Load profiles work with a specific time zone. {@link ZonedDateTime} objects for which time is
+   * requested thus need to be converted to this zone first.
+   */
+  protected final ZoneId timeZone;
+
+  /**
    * The maximum average power consumption per quarter-hour calculated over all seasons and weekday
    * types of given load profile.
    */
@@ -37,11 +44,13 @@ public class LoadProfileTimeSeries<V extends LoadValues>
       Set<LoadProfileEntry<V>> entries,
       Class<V> valueClass,
       ComparableQuantity<Power> maxPower,
-      ComparableQuantity<Energy> profileEnergyScaling) {
+      ComparableQuantity<Energy> profileEnergyScaling,
+      ZoneId timeZone) {
     super(entries, valueClass, LoadProfileEntry::getQuarterHour);
     this.powerProfileKey = powerProfileKey;
     this.maxPower = maxPower;
     this.profileEnergyScaling = profileEnergyScaling;
+    this.timeZone = timeZone;
   }
 
   /**
@@ -86,8 +95,10 @@ public class LoadProfileTimeSeries<V extends LoadValues>
 
   @Override
   protected PValue calc(ZonedDateTime time) {
-    int quarterHour = TimeSeriesUtils.calculateQuarterHourOfDay(time);
-    return get(quarterHour).getValue(time, powerProfileKey);
+    ZonedDateTime adaptedTime = time.withZoneSameInstant(timeZone);
+
+    int quarterHour = TimeSeriesUtils.calculateQuarterHourOfDay(adaptedTime);
+    return get(quarterHour).getValue(adaptedTime, powerProfileKey);
   }
 
   @Override
