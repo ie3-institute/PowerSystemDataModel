@@ -34,6 +34,21 @@ class TimeBasedWeatherValueDataTest extends Specification {
     data1 != data2
   }
 
+  def "equals returns false for different coordinate ids"() {
+    given:
+    def fields = new FieldMap(["foo": "bar"])
+    def point = new GeometryFactory().createPoint(new Coordinate(1, 2))
+    def data1 = new TimeBasedWeatherValueData(fields, point, 1)
+    def data2 = new TimeBasedWeatherValueData(fields, point, 2)
+    def withoutId = new TimeBasedWeatherValueData(fields, point)
+
+    expect:
+    data1 != data2
+    data1 != withoutId
+    data1.coordinateId == OptionalInt.of(1)
+    withoutId.coordinateId == OptionalInt.empty()
+  }
+
   def "hashCode returns same value for equal objects"() {
     given:
     def fields = new FieldMap(["foo": "bar"])

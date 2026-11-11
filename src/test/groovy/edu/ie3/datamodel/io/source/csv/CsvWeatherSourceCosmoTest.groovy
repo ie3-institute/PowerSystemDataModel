@@ -25,6 +25,7 @@ import org.locationtech.jts.geom.Point
 import spock.lang.Shared
 import spock.lang.Specification
 import tech.units.indriya.quantity.Quantities
+import tech.units.indriya.unit.Units
 
 class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta {
 
@@ -133,21 +134,22 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
         TimeUtil.withDefaults.toZonedDateTime("2020-10-16T12:40:42Z"),
         new WeatherValue(
             defaultCoordinate,
+            5,
             new SolarIrradianceValue(
                 Quantities.getQuantity(1.234, SOLAR_IRRADIANCE),
                 Quantities.getQuantity(5.678, SOLAR_IRRADIANCE)
                 ),
             new TemperatureValue(
-                Quantities.getQuantity(9.1011, TEMPERATURE)
+                Quantities.getQuantity(9.1011, Units.KELVIN)
                 ),
             new WindValue(
-                Quantities.getQuantity(12.1314, WIND_DIRECTION),
-                Quantities.getQuantity(15.1617, WIND_VELOCITY)),
+                Quantities.getQuantity(15.1617, WIND_DIRECTION),
+                Quantities.getQuantity(12.1314, WIND_VELOCITY)),
             Optional.of(new GroundTemperatureValue(
-                Quantities.getQuantity(8.0, TEMPERATURE)
+                Quantities.getQuantity(8.0, Units.KELVIN)
                 )),
             Optional.of(new GroundTemperatureValue(
-                Quantities.getQuantity(9.5, TEMPERATURE)
+                Quantities.getQuantity(9.5, Units.KELVIN)
                 )))
     )
 
@@ -156,7 +158,11 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
 
     then:
     actual.present
-    actual.get() == expectedValue
+    /* TimeBasedValue is Comparable, so a plain == would only compare the time stamps. The helper
+     * compares the weather fields unit aware, the coordinate and its id are checked explicitly. */
+    WeatherSourceTestHelper.equalsIgnoreUUID(actual.get(), expectedValue)
+    actual.get().value.coordinate == defaultCoordinate
+    actual.get().value.coordinateId == OptionalInt.of(5)
   }
 
   def "The CsvWeatherSource returns no WeatherValue, if the coordinate field is empty"() {
@@ -297,6 +303,88 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     result.keySet().size() == 1
     result.containsKey(CosmoWeatherTestData.COORDINATE_193186)
     !result.containsKey(phantomPoint)
+  }
+
+  def "A CsvWeatherSource can read all weather data in a given time interval mapped to the coordinate ids"() {
+    given:
+    def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.TIME_17H)
+
+    when:
+    Map<Integer, IndividualTimeSeries<WeatherValue>> idToTimeSeries = source.getWeatherById(timeInterval)
+
+    then:
+    idToTimeSeries.keySet() == [193186, 193187, 193188] as Set
+    idToTimeSeries.get(193186).entries.size() == 3
+    idToTimeSeries.get(193187).entries.size() == 2
+    idToTimeSeries.get(193188).entries.size() == 1
+  }
+
+  def "A CsvWeatherSource can read multiple time series values for multiple coordinate ids"() {
+    given:
+    def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.TIME_17H)
+    def timeSeries193186 = new IndividualTimeSeries(null,
+        [
+          new TimeBasedValue(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.WEATHER_VALUE_193186_16H),
+          new TimeBasedValue(CosmoWeatherTestData.TIME_17H, CosmoWeatherTestData.WEATHER_VALUE_193186_17H)
+        ] as Set<TimeBasedValue>)
+    def timeSeries193187 = new IndividualTimeSeries(null,
+        [
+          new TimeBasedValue(CosmoWeatherTestData.TIME_16H, CosmoWeatherTestData.WEATHER_VALUE_193187_16H)
+        ] as Set<TimeBasedValue>)
+
+    when:
+    Map<Integer, IndividualTimeSeries<WeatherValue>> idToTimeSeries = source.getWeatherById(timeInterval, [193186, 193187])
+
+    then:
+    idToTimeSeries.keySet() == [193186, 193187] as Set
+    WeatherSourceTestHelper.equalsIgnoreUUID(idToTimeSeries.get(193186), timeSeries193186)
+    WeatherSourceTestHelper.equalsIgnoreUUID(idToTimeSeries.get(193187), timeSeries193187)
+  }
+
+  def "A CsvWeatherSource returns partial results for coordinate ids without data"() {
+    given:
+    def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.TIME_17H)
+
+    when:
+    def actual = source.getWeatherById(timeInterval, [193186, 99999])
+
+    then:
+    actual.keySet() == [193186] as Set
+  }
+
+  def "A CsvWeatherSource throws an exception if none of the queried coordinate ids has data"() {
+    given:
+    def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.TIME_17H)
+
+    when:
+    source.getWeatherById(timeInterval, [99998, 99999])
+
+    then:
+    thrown(NoDataException)
+  }
+
+  def "The CsvWeatherSource returns all time keys after a given time for a specific coordinate id"() {
+    when:
+    def actual = source.getTimeKeysAfterById(CosmoWeatherTestData.TIME_15H, 193186)
+
+    then:
+    actual == [
+      CosmoWeatherTestData.TIME_16H,
+      CosmoWeatherTestData.TIME_17H
+    ]
+  }
+
+  def "The CsvWeatherSource returns all time keys after a given time key mapped to the coordinate ids"() {
+    when:
+    def actual = source.getTimeKeysAfterById(CosmoWeatherTestData.TIME_15H)
+
+    then:
+    actual.keySet() == [193186, 193187] as Set
+    actual.get(193186) == [
+      CosmoWeatherTestData.TIME_16H,
+      CosmoWeatherTestData.TIME_17H
+    ]
+    actual.get(193187) == [CosmoWeatherTestData.TIME_16H]
   }
 
   def "The CsvWeatherSource returns all time keys after a given time for a specific coordinate"() {

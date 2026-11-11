@@ -5,6 +5,8 @@
 */
 package edu.ie3.datamodel.io.factory.timeseries;
 
+import static edu.ie3.datamodel.models.value.WeatherValue.UNKNOWN_COORDINATE_ID;
+
 import edu.ie3.datamodel.io.factory.FieldMap;
 import edu.ie3.datamodel.models.StandardUnits;
 import edu.ie3.datamodel.models.timeseries.individual.TimeBasedValue;
@@ -55,6 +57,7 @@ public class CosmoTimeBasedWeatherValueFactory extends TimeBasedWeatherValueFact
     WeatherValue weatherValue =
         new WeatherValue(
             coordinate,
+            tbd.getCoordinateId().orElse(UNKNOWN_COORDINATE_ID),
             directIrradiance,
             diffuseIrradiance,
             temperature,
