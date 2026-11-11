@@ -9,6 +9,7 @@ import edu.ie3.datamodel.models.profile.PowerProfileKey;
 import edu.ie3.datamodel.models.value.load.BdewLoadValues;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
@@ -24,7 +25,15 @@ public class BdewLoadProfileTimeSeries extends LoadProfileTimeSeries<BdewLoadVal
       Set<LoadProfileEntry<BdewLoadValues>> values,
       ComparableQuantity<Power> maxPower,
       ComparableQuantity<Energy> profileEnergyScaling) {
-    super(powerProfileKey, values, BdewLoadValues.class, maxPower, profileEnergyScaling);
+    super(
+        powerProfileKey,
+        values,
+        BdewLoadValues.class,
+        maxPower,
+        profileEnergyScaling,
+        // BDEW profiles work with German time zone, including daylight saving time shifts in spring
+        // and autumn
+        TimeZone.getTimeZone("Europe/Berlin").toZoneId());
   }
 
   @Override
