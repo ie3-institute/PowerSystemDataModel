@@ -100,31 +100,26 @@ public class ValidationUtils {
   public static void check(Object obj) throws ValidationException {
     checkNonNull(obj, "an object").getOrThrow();
 
-    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
-
-    if (obj instanceof AssetInput asset) {
-      exceptions.addAll(checkAsset(asset));
-    } else if (obj instanceof GridContainer gridContainer) {
-      exceptions.addAll(GridContainerValidationUtils.check(gridContainer));
-    } else if (obj instanceof RawGridElements rawGridElements) {
-      exceptions.addAll(GridContainerValidationUtils.checkRawGridElements(rawGridElements));
-    } else if (obj instanceof SystemParticipants systemParticipants) {
-      exceptions.addAll(GridContainerValidationUtils.checkSystemParticipants(systemParticipants));
-    } else if (obj instanceof EnergyManagementUnits emUnits) {
-      exceptions.addAll(GridContainerValidationUtils.checkEnergyManagementUnits(emUnits));
-    } else if (obj instanceof SoilData soilData) {
-      exceptions.addAll(GridContainerValidationUtils.checkSoilData(soilData));
-    } else if (obj instanceof AssetTypeInput assetType) {
-      exceptions.addAll(checkAssetType(assetType));
-    } else if (obj instanceof ThermalGrid thermalGrid) {
-      exceptions.addAll(ThermalValidationUtils.check(thermalGrid));
-    } else if (obj instanceof SoilType soilType) {
-      exceptions.addAll(SoilValidationUtils.check(soilType));
-    } else if (obj instanceof SoilLayer soilLayer) {
-      exceptions.addAll(SoilValidationUtils.check(soilLayer));
-    } else {
-      logNotImplemented(obj);
-    }
+    List<Try<Void, ? extends ValidationException>> exceptions =
+        switch (obj) {
+          case AssetInput asset -> checkAsset(asset);
+          case GridContainer gridContainer -> GridContainerValidationUtils.check(gridContainer);
+          case RawGridElements rawGridElements ->
+              GridContainerValidationUtils.checkRawGridElements(rawGridElements);
+          case SystemParticipants systemParticipants ->
+              GridContainerValidationUtils.checkSystemParticipants(systemParticipants);
+          case EnergyManagementUnits emUnits ->
+              GridContainerValidationUtils.checkEnergyManagementUnits(emUnits);
+          case SoilData soilData -> GridContainerValidationUtils.checkSoilData(soilData);
+          case AssetTypeInput assetType -> checkAssetType(assetType);
+          case ThermalGrid thermalGrid -> ThermalValidationUtils.check(thermalGrid);
+          case SoilType soilType -> SoilValidationUtils.check(soilType);
+          case SoilLayer soilLayer -> SoilValidationUtils.check(soilLayer);
+          default -> {
+            logNotImplemented(obj);
+            yield List.of();
+          }
+        };
 
     List<? extends ValidationException> list =
         exceptions.stream()
