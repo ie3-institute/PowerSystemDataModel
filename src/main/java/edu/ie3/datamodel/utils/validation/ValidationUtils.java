@@ -102,28 +102,26 @@ public class ValidationUtils {
 
     List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
 
-    if (AssetInput.class.isAssignableFrom(obj.getClass())) {
-      exceptions.addAll(checkAsset((AssetInput) obj));
-    } else if (GridContainer.class.isAssignableFrom(obj.getClass())) {
-      exceptions.addAll(GridContainerValidationUtils.check((GridContainer) obj));
-    } else if (RawGridElements.class.isAssignableFrom(obj.getClass())) {
-      exceptions.addAll(GridContainerValidationUtils.checkRawGridElements((RawGridElements) obj));
-    } else if (SystemParticipants.class.isAssignableFrom(obj.getClass())) {
-      exceptions.addAll(
-          GridContainerValidationUtils.checkSystemParticipants((SystemParticipants) obj));
-    } else if (EnergyManagementUnits.class.isAssignableFrom(obj.getClass())) {
-      exceptions.addAll(
-          GridContainerValidationUtils.checkEnergyManagementUnits((EnergyManagementUnits) obj));
-    } else if (SoilData.class.isAssignableFrom(obj.getClass())) {
-      exceptions.addAll(GridContainerValidationUtils.checkSoilData((SoilData) obj));
-    } else if (AssetTypeInput.class.isAssignableFrom(obj.getClass())) {
-      exceptions.addAll(checkAssetType((AssetTypeInput) obj));
-    } else if (ThermalGrid.class.isAssignableFrom(obj.getClass())) {
-      exceptions.addAll(ThermalValidationUtils.check((ThermalGrid) obj));
-    } else if (SoilType.class.isAssignableFrom(obj.getClass())) {
-      exceptions.addAll(SoilValidationUtils.check((SoilType) obj));
-    } else if (SoilLayer.class.isAssignableFrom(obj.getClass())) {
-      exceptions.addAll(SoilValidationUtils.check((SoilLayer) obj));
+    if (obj instanceof AssetInput asset) {
+      exceptions.addAll(checkAsset(asset));
+    } else if (obj instanceof GridContainer gridContainer) {
+      exceptions.addAll(GridContainerValidationUtils.check(gridContainer));
+    } else if (obj instanceof RawGridElements rawGridElements) {
+      exceptions.addAll(GridContainerValidationUtils.checkRawGridElements(rawGridElements));
+    } else if (obj instanceof SystemParticipants systemParticipants) {
+      exceptions.addAll(GridContainerValidationUtils.checkSystemParticipants(systemParticipants));
+    } else if (obj instanceof EnergyManagementUnits emUnits) {
+      exceptions.addAll(GridContainerValidationUtils.checkEnergyManagementUnits(emUnits));
+    } else if (obj instanceof SoilData soilData) {
+      exceptions.addAll(GridContainerValidationUtils.checkSoilData(soilData));
+    } else if (obj instanceof AssetTypeInput assetType) {
+      exceptions.addAll(checkAssetType(assetType));
+    } else if (obj instanceof ThermalGrid thermalGrid) {
+      exceptions.addAll(ThermalValidationUtils.check(thermalGrid));
+    } else if (obj instanceof SoilType soilType) {
+      exceptions.addAll(SoilValidationUtils.check(soilType));
+    } else if (obj instanceof SoilLayer soilLayer) {
+      exceptions.addAll(SoilValidationUtils.check(soilLayer));
     } else {
       logNotImplemented(obj);
     }
