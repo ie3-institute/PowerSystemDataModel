@@ -217,10 +217,8 @@ public class InfluxDbWeatherSource extends WeatherSource {
       values.add(
           idCoordinateSource
               .getCoordinate(coordinateId)
-              .map(
-                  point ->
-                      new TimeBasedWeatherValueData(
-                          new FieldMap(flatCaseFields), point, coordinateId))
+              .map(point ->
+                  new TimeBasedWeatherValueData(new FieldMap(flatCaseFields), point, coordinateId))
               .map(weatherFactory::get)
               .flatMap(Try::getData));
     }

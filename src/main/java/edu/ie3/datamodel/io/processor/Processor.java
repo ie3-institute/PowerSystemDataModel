@@ -143,31 +143,29 @@ public abstract class Processor<T> {
           // filter out properties with setters only
           .filter(pd -> Objects.nonNull(pd.getReadMethod()))
           .filter(pd -> !ignoreFields.contains(pd.getName()))
-          .filter(
-              pd ->
-                  // switches can never be parallel but have this field due to inheritance -> filter
-                  // it out as it cannot be passed into the constructor
-                  !(registeredClass.equals(SwitchInput.class)
-                      && pd.getName().equalsIgnoreCase(PARALLEL_DEVICES)))
-          .forEach(
-              pd -> {
-                String fieldName = pd.getName();
-                GetterMethod method = new GetterMethod(pd.getReadMethod());
+          .filter(pd ->
+              // switches can never be parallel but have this field due to inheritance -> filter
+              // it out as it cannot be passed into the constructor
+              !(registeredClass.equals(SwitchInput.class)
+                  && pd.getName().equalsIgnoreCase(PARALLEL_DEVICES)))
+          .forEach(pd -> {
+            String fieldName = pd.getName();
+            GetterMethod method = new GetterMethod(pd.getReadMethod());
 
-                // OperationTime needs to be replaced by operatesFrom and operatesUntil
-                if (fieldName.equalsIgnoreCase(OPERATION_TIME_FIELD_NAME)) {
-                  fieldName = OPERATES_FROM;
-                  resFieldNameToMethod.put(OPERATES_UNTIL, method);
-                }
+            // OperationTime needs to be replaced by operatesFrom and operatesUntil
+            if (fieldName.equalsIgnoreCase(OPERATION_TIME_FIELD_NAME)) {
+              fieldName = OPERATES_FROM;
+              resFieldNameToMethod.put(OPERATES_UNTIL, method);
+            }
 
-                // VoltageLevel needs to be replaced by id and nominalVoltage
-                if (fieldName.equalsIgnoreCase(VOLT_LVL_FIELD_NAME)) {
-                  fieldName = V_RATED;
-                  resFieldNameToMethod.put(VOLT_LVL, method);
-                }
+            // VoltageLevel needs to be replaced by id and nominalVoltage
+            if (fieldName.equalsIgnoreCase(VOLT_LVL_FIELD_NAME)) {
+              fieldName = V_RATED;
+              resFieldNameToMethod.put(VOLT_LVL, method);
+            }
 
-                resFieldNameToMethod.put(fieldName, method);
-              });
+            resFieldNameToMethod.put(fieldName, method);
+          });
 
       return putUuidFirst(resFieldNameToMethod);
     } catch (Exception e) {
@@ -252,29 +250,28 @@ public abstract class Processor<T> {
           // an empty string as by convention null == missing value == "" when persisting data
           resultStringBuilder.append(
               ((Optional<?>) methodReturnObject)
-                  .map(
-                      o -> {
-                        if (o instanceof Quantity<?> quantity) {
-                          return Try.of(
-                              () -> handleQuantity(quantity, fieldName),
-                              EntityProcessorException.class);
-                        }
+                  .map(o -> {
+                    if (o instanceof Quantity<?> quantity) {
+                      return Try.of(
+                          () -> handleQuantity(quantity, fieldName),
+                          EntityProcessorException.class);
+                    }
 
-                        if (o instanceof ScreenLayerInput screenLayer) {
-                          return Try.of(
-                              () -> serializeCableToJson(screenLayer, fieldName),
-                              EntityProcessorException.class);
-                        }
+                    if (o instanceof ScreenLayerInput screenLayer) {
+                      return Try.of(
+                          () -> serializeCableToJson(screenLayer, fieldName),
+                          EntityProcessorException.class);
+                    }
 
-                        if (o instanceof UniqueEntity entity) {
-                          return Try.of(entity::getUuid, EntityProcessorException.class);
-                        }
-                        return Failure.of(
-                            new EntityProcessorException(
-                                "Handling of "
-                                    + o.getClass().getSimpleName()
-                                    + ".class instance wrapped into Optional is currently not supported by entity processors!"));
-                      })
+                    if (o instanceof UniqueEntity entity) {
+                      return Try.of(entity::getUuid, EntityProcessorException.class);
+                    }
+                    return Failure.of(
+                        new EntityProcessorException(
+                            "Handling of "
+                                + o.getClass().getSimpleName()
+                                + ".class instance wrapped into Optional is currently not supported by entity processors!"));
+                  })
                   .orElse(Success.of("")) // (in case of empty optional)
                   .getOrThrow());
       case "ZonedDateTime" ->
@@ -383,15 +380,14 @@ public abstract class Processor<T> {
     }
 
     return optQuant
-        .transformF(
-            e ->
-                new EntityProcessorException(
-                    "Unable to process quantity value for attribute '"
-                        + fieldName
-                        + "' in entity "
-                        + getRegisteredClass().getSimpleName()
-                        + ".class.",
-                    e))
+        .transformF(e ->
+            new EntityProcessorException(
+                "Unable to process quantity value for attribute '"
+                    + fieldName
+                    + "' in entity "
+                    + getRegisteredClass().getSimpleName()
+                    + ".class.",
+                e))
         .getOrThrow();
   }
 

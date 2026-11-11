@@ -70,23 +70,21 @@ public record ChargingPointType(
   @Override
   public String toString() {
     return ChargingPointTypeUtils.fromIdString(id)
-        .flatMap(
-            commonType -> {
-              if (commonType.sRated().equals(sRated)
-                  && commonType.electricCurrentType().equals(electricCurrentType)) {
-                return Optional.of(commonType.id);
-              } else {
-                return Optional.empty();
-              }
-            })
-        .orElseGet(
-            () ->
-                id
-                    + "("
-                    + sRated.to(PowerSystemUnits.KILOVOLTAMPERE).getValue().doubleValue()
-                    + "|"
-                    + electricCurrentType
-                    + ")");
+        .flatMap(commonType -> {
+          if (commonType.sRated().equals(sRated)
+              && commonType.electricCurrentType().equals(electricCurrentType)) {
+            return Optional.of(commonType.id);
+          } else {
+            return Optional.empty();
+          }
+        })
+        .orElseGet(() ->
+            id
+                + "("
+                + sRated.to(PowerSystemUnits.KILOVOLTAMPERE).getValue().doubleValue()
+                + "|"
+                + electricCurrentType
+                + ")");
   }
 
   /**

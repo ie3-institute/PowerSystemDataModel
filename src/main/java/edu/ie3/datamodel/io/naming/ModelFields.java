@@ -327,20 +327,19 @@ public final class ModelFields extends FieldNamingStrategy {
     registerOptional(ScreenLayerInput.class, newSet(AREA, LENGTH_OF_LAY));
 
     Stream.of(Transformer2WTypeInput.class, Transformer3WTypeInput.class)
-        .forEach(
-            c ->
-                registerMandatory(
-                    c,
-                    assetFields,
-                    V_RATED_A,
-                    V_RATED_B,
-                    G_M,
-                    B_M,
-                    D_V,
-                    D_PHI,
-                    TAP_NEUTR,
-                    TAP_MIN,
-                    TAP_MAX));
+        .forEach(c ->
+            registerMandatory(
+                c,
+                assetFields,
+                V_RATED_A,
+                V_RATED_B,
+                G_M,
+                B_M,
+                D_V,
+                D_PHI,
+                TAP_NEUTR,
+                TAP_MIN,
+                TAP_MAX));
 
     addMandatory(Transformer2WTypeInput.class, R_SC, X_SC, S_RATED, TAP_SIDE);
 
@@ -371,7 +370,7 @@ public final class ModelFields extends FieldNamingStrategy {
 
     addMandatory(ChpTypeInput.class, ETA_EL, ETA_THERMAL, P_THERMAL, P_OWN);
 
-    addMandatory(EvTypeInput.class, E_STORAGE, E_CONS, S_RATED_DC);
+    addMandatory(EvTypeInput.class, E_STORAGE, E_CONS, S_RATED_DC, ETA_CHARGING, ETA_DISCHARGING);
 
     Stream.of(AcTypeInput.class, HpTypeInput.class).forEach(c -> addMandatory(c, P_THERMAL));
 
@@ -446,11 +445,10 @@ public final class ModelFields extends FieldNamingStrategy {
             PvInput.class,
             StorageInput.class,
             WecInput.class)
-        .forEach(
-            c -> {
-              registerMandatory(c, assetFields, NODE, Q_CHARACTERISTICS, CONTROLLING_EM);
-              registerOptional(c, assetOptionalFields);
-            });
+        .forEach(c -> {
+          registerMandatory(c, assetFields, NODE, Q_CHARACTERISTICS, CONTROLLING_EM);
+          registerOptional(c, assetOptionalFields);
+        });
 
     Stream.of(AcInput.class, HpInput.class).forEach(c -> addMandatory(c, TYPE, THERMAL_BUS));
 
@@ -480,11 +478,10 @@ public final class ModelFields extends FieldNamingStrategy {
             ThermalHouseInput.class,
             CylindricalStorageInput.class,
             DomesticHotWaterStorageInput.class)
-        .forEach(
-            c -> {
-              register(c, assetFields);
-              registerOptional(c, assetOptionalFields);
-            });
+        .forEach(c -> {
+          register(c, assetFields);
+          registerOptional(c, assetOptionalFields);
+        });
     addMandatory(
         ThermalHouseInput.class,
         ETH_LOSSES,
@@ -497,10 +494,9 @@ public final class ModelFields extends FieldNamingStrategy {
         THERMAL_BUS);
 
     Stream.of(CylindricalStorageInput.class, DomesticHotWaterStorageInput.class)
-        .forEach(
-            c ->
-                addMandatory(
-                    c, STORAGE_VOLUME_LVL, INLET_TEMP, RETURN_TEMP, C, P_THERMAL_MAX, THERMAL_BUS));
+        .forEach(c ->
+            addMandatory(
+                c, STORAGE_VOLUME_LVL, INLET_TEMP, RETURN_TEMP, C, P_THERMAL_MAX, THERMAL_BUS));
   }
 
   /** Method for registering all soil fields. */

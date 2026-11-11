@@ -169,12 +169,11 @@ public class CsvTimeSeriesSource<V extends Value> extends TimeSeriesSource<V> {
     Try<Stream<TimeBasedValue<V>>, SourceException> timeBasedValues =
         dataSource
             .buildStreamWithFieldsToAttributesMap(filePath, false)
-            .flatMap(
-                stream ->
-                    Try.scanStream(
-                        stream.map(d -> fieldToValueFunction.apply(new FieldMap(d))),
-                        "TimeBasedValue<V>",
-                        SourceException::new));
+            .flatMap(stream ->
+                Try.scanStream(
+                    stream.map(d -> fieldToValueFunction.apply(new FieldMap(d))),
+                    "TimeBasedValue<V>",
+                    SourceException::new));
     return new IndividualTimeSeries<>(
         timeSeriesUuid, new HashSet<>(timeBasedValues.getOrThrow().toList()));
   }

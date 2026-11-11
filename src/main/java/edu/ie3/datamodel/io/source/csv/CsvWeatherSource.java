@@ -184,15 +184,13 @@ public class CsvWeatherSource extends WeatherSource {
     // decided against parallel mode here as it likely wouldn't pay off as the expected coordinate
     // count is too low
     Map<Integer, IndividualTimeSeries<WeatherValue>> trimmed = new HashMap<>();
-    map.forEach(
-        (coordinateId, timeSeries) -> {
-          IndividualTimeSeries<WeatherValue> trimmedSeries =
-              timeSeries.getSubTimeSeries(timeInterval);
+    map.forEach((coordinateId, timeSeries) -> {
+      IndividualTimeSeries<WeatherValue> trimmedSeries = timeSeries.getSubTimeSeries(timeInterval);
 
-          if (trimmedSeries.nonEmpty()) {
-            trimmed.put(coordinateId, trimmedSeries);
-          }
-        });
+      if (trimmedSeries.nonEmpty()) {
+        trimmed.put(coordinateId, trimmedSeries);
+      }
+    });
     return trimmed;
   }
 
@@ -226,31 +224,29 @@ public class CsvWeatherSource extends WeatherSource {
         Try.scanStream(
                 buildStreamWithFieldsToAttributesMap(reader, path.getFileName())
                     .getOrThrow()
-                    .map(
-                        fieldToValues ->
-                            Try.of(() -> buildWeatherValue(fieldToValues), SourceException.class)),
+                    .map(fieldToValues ->
+                        Try.of(() -> buildWeatherValue(fieldToValues), SourceException.class)),
                 "weather value",
                 SourceException::new)
             .getOrThrow()
             .flatMap(Optional::stream)
             .collect(Collectors.groupingBy(tbv -> tbv.getValue().getCoordinateId()))
-            .forEach(
-                (coordinateId, timeBasedValues) -> {
-                  if (coordinateId.isEmpty()) {
-                    log.warn(
-                        "Skipping {} weather values with unknown coordinate id",
-                        timeBasedValues.size());
-                    return;
-                  }
+            .forEach((coordinateId, timeBasedValues) -> {
+              if (coordinateId.isEmpty()) {
+                log.warn(
+                    "Skipping {} weather values with unknown coordinate id",
+                    timeBasedValues.size());
+                return;
+              }
 
-                  // We have to generate a random UUID as we'd risk running into duplicate key
-                  // issues
-                  // otherwise
-                  IndividualTimeSeries<WeatherValue> timeSeries =
-                      new IndividualTimeSeries<>(UUID.randomUUID(), new TreeSet<>(timeBasedValues));
-                  weatherTimeSeries.merge(
-                      coordinateId.getAsInt(), timeSeries, IndividualTimeSeries::add);
-                });
+              // We have to generate a random UUID as we'd risk running into duplicate key
+              // issues
+              // otherwise
+              IndividualTimeSeries<WeatherValue> timeSeries =
+                  new IndividualTimeSeries<>(UUID.randomUUID(), new TreeSet<>(timeBasedValues));
+              weatherTimeSeries.merge(
+                  coordinateId.getAsInt(), timeSeries, IndividualTimeSeries::add);
+            });
       } catch (FileNotFoundException e) {
         throw new SourceException(
             "Cannot read file " + data.getFullFilePath() + ". File not found!", e);
@@ -265,11 +261,10 @@ public class CsvWeatherSource extends WeatherSource {
     List<DuplicateEntitiesException> exceptions =
         Try.getExceptions(
             weatherTimeSeries.values().stream()
-                .map(
-                    ts ->
-                        Try.ofVoid(
-                            () -> checkWeatherUniqueness(ts.getEntries()),
-                            DuplicateEntitiesException.class)));
+                .map(ts ->
+                    Try.ofVoid(
+                        () -> checkWeatherUniqueness(ts.getEntries()),
+                        DuplicateEntitiesException.class)));
 
     if (exceptions.isEmpty()) {
       return weatherTimeSeries;
@@ -313,24 +308,21 @@ public class CsvWeatherSource extends WeatherSource {
     /* Try to get the coordinate from entries */
     Optional<Point> maybeCoordinate = extractCoordinate(fieldToValues);
     return maybeCoordinate
-        .map(
-            coordinate -> {
-              /* Remove coordinate entry from fields, but retain its id */
-              String coordinateValue =
-                  fieldToValues.remove(weatherFactory.getCoordinateIdFieldString());
-              int coordinateId = Integer.parseInt(coordinateValue);
+        .map(coordinate -> {
+          /* Remove coordinate entry from fields, but retain its id */
+          String coordinateValue =
+              fieldToValues.remove(weatherFactory.getCoordinateIdFieldString());
+          int coordinateId = Integer.parseInt(coordinateValue);
 
-              /* Build factory data */
-              TimeBasedWeatherValueData factoryData =
-                  new TimeBasedWeatherValueData(
-                      new FieldMap(fieldToValues), coordinate, coordinateId);
-              return weatherFactory.get(factoryData).getData();
-            })
-        .orElseGet(
-            () -> {
-              log.error("Unable to find coordinate for entry '{}'.", fieldToValues);
-              return Optional.empty();
-            });
+          /* Build factory data */
+          TimeBasedWeatherValueData factoryData =
+              new TimeBasedWeatherValueData(new FieldMap(fieldToValues), coordinate, coordinateId);
+          return weatherFactory.get(factoryData).getData();
+        })
+        .orElseGet(() -> {
+          log.error("Unable to find coordinate for entry '{}'.", fieldToValues);
+          return Optional.empty();
+        });
   }
 
   /**

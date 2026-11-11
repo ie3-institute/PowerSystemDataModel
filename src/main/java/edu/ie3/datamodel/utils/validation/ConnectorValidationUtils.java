@@ -792,18 +792,16 @@ public class ConnectorValidationUtils extends ValidationUtils {
     subGridContainer
         .getRawGrid()
         .getTransformer3Ws()
-        .forEach(
-            trafor3w -> {
-              graph.addEdge(trafor3w.getNodeA().getUuid(), trafor3w.getNodeInternal().getUuid());
-              graph.addEdge(trafor3w.getNodeInternal().getUuid(), trafor3w.getNodeB().getUuid());
-              graph.addEdge(trafor3w.getNodeInternal().getUuid(), trafor3w.getNodeC().getUuid());
-            });
+        .forEach(trafor3w -> {
+          graph.addEdge(trafor3w.getNodeA().getUuid(), trafor3w.getNodeInternal().getUuid());
+          graph.addEdge(trafor3w.getNodeInternal().getUuid(), trafor3w.getNodeB().getUuid());
+          graph.addEdge(trafor3w.getNodeInternal().getUuid(), trafor3w.getNodeC().getUuid());
+        });
     subGridContainer
         .getRawGrid()
         .getSwitches()
-        .forEach(
-            switches ->
-                graph.addEdge(switches.getNodeA().getUuid(), switches.getNodeB().getUuid()));
+        .forEach(switches ->
+            graph.addEdge(switches.getNodeA().getUuid(), switches.getNodeB().getUuid()));
 
     ConnectivityInspector<UUID, DefaultEdge> inspector = new ConnectivityInspector<>(graph);
 

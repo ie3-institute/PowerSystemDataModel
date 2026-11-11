@@ -18,7 +18,7 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /** Dummy class to represent a constant feed in regardless of its type */
-public class FixedFeedInInput extends SystemParticipantInput {
+public class FixedFeedInInput extends ExtendedSystemParticipantInput {
   /** Rated apparent power (typically in kVA) */
   private final ComparableQuantity<Power> sRated;
 
@@ -173,7 +173,7 @@ public class FixedFeedInInput extends SystemParticipantInput {
    * @since 05.06.20
    */
   public static class FixedFeedInInputCopyBuilder
-      extends SystemParticipantInputCopyBuilder<FixedFeedInInputCopyBuilder> {
+      extends ExtendedSystemParticipantInputCopyBuilder<FixedFeedInInputCopyBuilder> {
 
     private ComparableQuantity<Power> sRated;
     private double cosPhiRated;

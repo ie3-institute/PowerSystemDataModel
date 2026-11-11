@@ -297,17 +297,16 @@ public abstract class WeatherSource extends EntitySource {
       throws SourceException {
     return groupTime(
         Try.scanStream(
-                fieldMaps.map(
-                    fieldMap ->
-                        Try.of(
-                            () -> {
-                              String coordinateValue = fieldMap.get(WEATHER_COORDINATE_ID);
-                              int coordinateId = Integer.parseInt(coordinateValue);
-                              ZonedDateTime time = factory.extractTime(fieldMap);
+                fieldMaps.map(fieldMap ->
+                    Try.of(
+                        () -> {
+                          String coordinateValue = fieldMap.get(WEATHER_COORDINATE_ID);
+                          int coordinateId = Integer.parseInt(coordinateValue);
+                          ZonedDateTime time = factory.extractTime(fieldMap);
 
-                              return Pair.of(coordinateId, time);
-                            },
-                            SourceException.class)),
+                          return Pair.of(coordinateId, time);
+                        },
+                        SourceException.class)),
                 "time key",
                 SourceException::new)
             .getOrThrow());
@@ -440,30 +439,27 @@ public abstract class WeatherSource extends EntitySource {
       TimeBasedWeatherValueFactory factory, Stream<Map<String, String>> inputStream)
       throws SourceException {
     return Try.scanStream(
-            inputStream.map(
-                fieldsToAttributes ->
-                    Try.of(
-                        () -> {
-                          fieldsToAttributes.remove("tid");
-                          return toTimeBasedWeatherValueData(fieldsToAttributes);
-                        },
-                        SourceException.class)),
+            inputStream.map(fieldsToAttributes ->
+                Try.of(
+                    () -> {
+                      fieldsToAttributes.remove("tid");
+                      return toTimeBasedWeatherValueData(fieldsToAttributes);
+                    },
+                    SourceException.class)),
             "weather value data",
             SourceException::new)
         .getOrThrow()
         .flatMap(Optional::stream)
         .map(factory::get)
-        .map(
-            tryResult -> {
-              if (tryResult.isFailure()) {
-                tryResult
-                    .getException()
-                    .ifPresent(
-                        e -> log.warn("Skipping malformed weather value: {}", e.getMessage()));
-                return Optional.<TimeBasedValue<WeatherValue>>empty();
-              }
-              return tryResult.getData();
-            })
+        .map(tryResult -> {
+          if (tryResult.isFailure()) {
+            tryResult
+                .getException()
+                .ifPresent(e -> log.warn("Skipping malformed weather value: {}", e.getMessage()));
+            return Optional.<TimeBasedValue<WeatherValue>>empty();
+          }
+          return tryResult.getData();
+        })
         .flatMap(Optional::stream)
         .toList();
   }

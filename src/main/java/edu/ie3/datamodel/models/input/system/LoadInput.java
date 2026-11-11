@@ -21,7 +21,7 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /** Describes a load */
-public class LoadInput extends SystemParticipantInput {
+public class LoadInput extends ExtendedSystemParticipantInput {
   /**
    * Reference to a load profile to use for the model. If you intend to assign specific values,
    * create an {@link IndividualTimeSeries} or {@link RepetitiveTimeSeries} and assign it via an
@@ -302,7 +302,7 @@ public class LoadInput extends SystemParticipantInput {
    * field values. For detailed field descriptions refer to Javadocs of {@link LoadInput}
    */
   public static class LoadInputCopyBuilder
-      extends SystemParticipantInputCopyBuilder<LoadInputCopyBuilder> {
+      extends ExtendedSystemParticipantInputCopyBuilder<LoadInputCopyBuilder> {
 
     private PowerProfileKey powerProfileKey;
     private ComparableQuantity<Energy> eConsAnnual;

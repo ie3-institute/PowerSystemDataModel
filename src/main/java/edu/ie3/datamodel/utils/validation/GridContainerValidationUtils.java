@@ -18,6 +18,7 @@ import edu.ie3.datamodel.models.input.MeasurementUnitInput;
 import edu.ie3.datamodel.models.input.NodeInput;
 import edu.ie3.datamodel.models.input.connector.*;
 import edu.ie3.datamodel.models.input.container.*;
+import edu.ie3.datamodel.models.input.system.ExtendedSystemParticipantInput;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.utils.Try;
 import edu.ie3.datamodel.utils.Try.Failure;
@@ -130,72 +131,65 @@ public class GridContainerValidationUtils extends ValidationUtils {
     /* Checking lines */
     rawGridElements
         .getLines()
-        .forEach(
-            line -> {
-              exceptions.add(checkNodeAvailability(line, nodes));
-              exceptions.addAll(ConnectorValidationUtils.check(line));
-            });
+        .forEach(line -> {
+          exceptions.add(checkNodeAvailability(line, nodes));
+          exceptions.addAll(ConnectorValidationUtils.check(line));
+        });
 
     /* Checking two winding transformers */
     rawGridElements
         .getTransformer2Ws()
-        .forEach(
-            transformer -> {
-              exceptions.add(checkNodeAvailability(transformer, nodes));
-              exceptions.addAll(ConnectorValidationUtils.check(transformer));
-            });
+        .forEach(transformer -> {
+          exceptions.add(checkNodeAvailability(transformer, nodes));
+          exceptions.addAll(ConnectorValidationUtils.check(transformer));
+        });
 
     /* Checking three winding transformers */
     rawGridElements
         .getTransformer3Ws()
-        .forEach(
-            transformer -> {
-              exceptions.add(checkNodeAvailability(transformer, nodes));
-              exceptions.addAll(ConnectorValidationUtils.check(transformer));
-            });
+        .forEach(transformer -> {
+          exceptions.add(checkNodeAvailability(transformer, nodes));
+          exceptions.addAll(ConnectorValidationUtils.check(transformer));
+        });
 
     /* Checking switches */
     rawGridElements
         .getSwitches()
-        .forEach(
-            switcher -> {
-              exceptions.add(checkNodeAvailability(switcher, nodes));
-              exceptions.addAll(ConnectorValidationUtils.check(switcher));
-            });
+        .forEach(switcher -> {
+          exceptions.add(checkNodeAvailability(switcher, nodes));
+          exceptions.addAll(ConnectorValidationUtils.check(switcher));
+        });
 
     /* Checking measurement units */
     rawGridElements
         .getMeasurementUnits()
-        .forEach(
-            measurement -> {
-              exceptions.add(checkNodeAvailability(measurement, nodes));
-              exceptions.add(MeasurementUnitValidationUtils.check(measurement));
-            });
+        .forEach(measurement -> {
+          exceptions.add(checkNodeAvailability(measurement, nodes));
+          exceptions.add(MeasurementUnitValidationUtils.check(measurement));
+        });
 
     /* Checking cable deployments */
     Map<UUID, LineInput> linesByUuid =
         rawGridElements.getLines().stream().collect(Collectors.toMap(LineInput::getUuid, l -> l));
     rawGridElements
         .getCableDeploymentsByLine()
-        .forEach(
-            (lineUuid, deployments) -> {
-              LineInput line = linesByUuid.get(lineUuid);
+        .forEach((lineUuid, deployments) -> {
+          LineInput line = linesByUuid.get(lineUuid);
 
-              for (CableDeploymentInput deployment : deployments) {
-                if (line == null) {
-                  exceptions.add(
-                      Try.ofVoid(
-                          true,
-                          () ->
-                              new InvalidEntityException(
-                                  "Cable deployment references unknown line with uuid " + lineUuid,
-                                  deployment)));
-                } else {
-                  exceptions.addAll(
-                      ConnectorValidationUtils.checkCableDeployment(deployment, line));
-                }
-              }
-            });
+          for (CableDeploymentInput deployment : deployments) {
+            if (line == null) {
+              exceptions.add(
+                  Try.ofVoid(
+                      true,
+                      () ->
+                          new InvalidEntityException(
+                              "Cable deployment references unknown line with uuid " + lineUuid,
+                              deployment)));
+            } else {
+              exceptions.addAll(ConnectorValidationUtils.checkCableDeployment(deployment, line));
+            }
+          }
+        });
 
     exceptions.addAll(checkConnectivity(rawGridElements));
 
@@ -254,25 +248,21 @@ public class GridContainerValidationUtils extends ValidationUtils {
         .forEach(node -> graph.addVertex(node.getUuid()));
     rawGridElements.getLines().stream()
         .filter(isInOperation)
-        .forEach(
-            connector ->
-                graph.addEdge(connector.getNodeA().getUuid(), connector.getNodeB().getUuid()));
+        .forEach(connector ->
+            graph.addEdge(connector.getNodeA().getUuid(), connector.getNodeB().getUuid()));
     rawGridElements.getTransformer2Ws().stream()
         .filter(isInOperation)
-        .forEach(
-            connector ->
-                graph.addEdge(connector.getNodeA().getUuid(), connector.getNodeB().getUuid()));
+        .forEach(connector ->
+            graph.addEdge(connector.getNodeA().getUuid(), connector.getNodeB().getUuid()));
     rawGridElements.getTransformer3Ws().stream()
         .filter(isInOperation)
-        .forEach(
-            connector ->
-                graph.addEdge(connector.getNodeA().getUuid(), connector.getNodeB().getUuid()));
+        .forEach(connector ->
+            graph.addEdge(connector.getNodeA().getUuid(), connector.getNodeB().getUuid()));
     rawGridElements.getSwitches().stream()
         .filter(isInOperation)
         .filter(SwitchInput::isClosed)
-        .forEach(
-            connector ->
-                graph.addEdge(connector.getNodeA().getUuid(), connector.getNodeB().getUuid()));
+        .forEach(connector ->
+            graph.addEdge(connector.getNodeA().getUuid(), connector.getNodeB().getUuid()));
 
     ConnectivityInspector<UUID, DefaultEdge> inspector = new ConnectivityInspector<>(graph);
 
@@ -322,6 +312,7 @@ public class GridContainerValidationUtils extends ValidationUtils {
     exceptions.addAll(checkSystemParticipants(systemParticipants.getBmPlants(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getChpPlants(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getEvcs(), nodes));
+    exceptions.addAll(checkSystemParticipants(systemParticipants.getEvs(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getFixedFeedIns(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getHeatPumps(), nodes));
     exceptions.addAll(checkSystemParticipants(systemParticipants.getLoads(), nodes));
@@ -347,11 +338,12 @@ public class GridContainerValidationUtils extends ValidationUtils {
     exceptions.add(
         Try.ofVoid(() -> checkAssetUniqueness(participants), DuplicateEntitiesException.class));
 
-    participants.forEach(
-        participant -> {
-          exceptions.add(checkNodeAvailability(participant, nodes));
-          exceptions.addAll(SystemParticipantValidationUtils.check(participant));
-        });
+    participants.forEach(participant -> {
+      if (participant instanceof ExtendedSystemParticipantInput) {
+        exceptions.add(checkNodeAvailability(participant, nodes));
+      }
+      exceptions.addAll(SystemParticipantValidationUtils.check(participant));
+    });
 
     return exceptions;
   }
@@ -377,7 +369,8 @@ public class GridContainerValidationUtils extends ValidationUtils {
                       transformer.getNodeA(), transformer.getNodeB(), transformer.getNodeC()));
       case ConnectorInput connector ->
           available = !nodes.containsAll(Arrays.asList(connector.getNodeA(), connector.getNodeB()));
-      case SystemParticipantInput participant -> available = !nodes.contains(participant.getNode());
+      case ExtendedSystemParticipantInput participant ->
+          available = !nodes.contains(participant.getNode());
       case MeasurementUnitInput measurementUnit ->
           available = !nodes.contains(measurementUnit.getNode());
       default -> {

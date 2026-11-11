@@ -77,12 +77,10 @@ public class ContainerUtils {
     try {
       rawGridElements
           .getLines()
-          .forEach(
-              line -> {
-                graph.addEdge(line.getNodeA(), line.getNodeB());
-                graph.setEdgeWeight(
-                    graph.getEdge(line.getNodeA(), line.getNodeB()), line.getLength());
-              });
+          .forEach(line -> {
+            graph.addEdge(line.getNodeA(), line.getNodeB());
+            graph.setEdgeWeight(graph.getEdge(line.getNodeA(), line.getNodeB()), line.getLength());
+          });
     } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException ex) {
       log.error("Error adding line edges to graph: ", ex);
       return Optional.empty();
@@ -91,9 +89,8 @@ public class ContainerUtils {
     try {
       rawGridElements
           .getSwitches()
-          .forEach(
-              switchInput ->
-                  addDistanceGraphEdge(graph, switchInput.getNodeA(), switchInput.getNodeB()));
+          .forEach(switchInput ->
+              addDistanceGraphEdge(graph, switchInput.getNodeA(), switchInput.getNodeB()));
     } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException ex) {
       log.error("Error adding switch edges to graph: ", ex);
       return Optional.empty();
@@ -111,11 +108,10 @@ public class ContainerUtils {
     try {
       rawGridElements
           .getTransformer3Ws()
-          .forEach(
-              trafo3w -> {
-                addDistanceGraphEdge(graph, trafo3w.getNodeA(), trafo3w.getNodeB());
-                addDistanceGraphEdge(graph, trafo3w.getNodeA(), trafo3w.getNodeC());
-              });
+          .forEach(trafo3w -> {
+            addDistanceGraphEdge(graph, trafo3w.getNodeA(), trafo3w.getNodeB());
+            addDistanceGraphEdge(graph, trafo3w.getNodeA(), trafo3w.getNodeC());
+          });
     } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException ex) {
       log.error("Error adding 3 winding transformer edges to graph: ", ex);
       return Optional.empty();
@@ -182,10 +178,9 @@ public class ContainerUtils {
     try {
       rawGridElements
           .getSwitches()
-          .forEach(
-              switchInput -> {
-                if (switchInput.isClosed()) addImpedanceGraphEdge(graph, switchInput);
-              });
+          .forEach(switchInput -> {
+            if (switchInput.isClosed()) addImpedanceGraphEdge(graph, switchInput);
+          });
     } catch (NullPointerException | IllegalArgumentException | UnsupportedOperationException ex) {
       log.error("Error adding switch edges to graph: ", ex);
       return Optional.empty();
@@ -319,19 +314,16 @@ public class ContainerUtils {
 
     Set<Transformer3WInput> transformer3w =
         input.getTransformer3Ws().stream()
-            .filter(
-                transformer ->
-                    transformer.getNodeA().getSubnet() == subnet
-                        || transformer.getNodeB().getSubnet() == subnet
-                        || transformer.getNodeC().getSubnet() == subnet)
+            .filter(transformer ->
+                transformer.getNodeA().getSubnet() == subnet
+                    || transformer.getNodeB().getSubnet() == subnet
+                    || transformer.getNodeC().getSubnet() == subnet)
             .collect(Collectors.toSet());
     /* Add all nodes of a three winding transformer node to the set of nodes */
     nodes.addAll(
         transformer3w.stream()
-            .flatMap(
-                transformer ->
-                    Stream.of(
-                        transformer.getNodeA(), transformer.getNodeB(), transformer.getNodeC()))
+            .flatMap(transformer ->
+                Stream.of(transformer.getNodeA(), transformer.getNodeB(), transformer.getNodeC()))
             .collect(Collectors.toSet()));
 
     Set<SwitchInput> switches =
@@ -367,7 +359,7 @@ public class ContainerUtils {
     Set<BmInput> bmPlants = filterParticipants(input.getBmPlants(), subnet);
     Set<ChpInput> chpPlants = filterParticipants(input.getChpPlants(), subnet);
     Set<EvcsInput> evcsInputs = filterParticipants(input.getEvcs(), subnet);
-    Set<EvInput> evs = filterParticipants(input.getEvs(), subnet);
+    Set<EvInput> evs = input.getEvs();
     Set<FixedFeedInInput> fixedFeedIns = filterParticipants(input.getFixedFeedIns(), subnet);
     Set<HpInput> heatpumps = filterParticipants(input.getHeatPumps(), subnet);
     Set<AcInput> airConditions = filterParticipants(input.getAirConditions(), subnet);
@@ -398,7 +390,7 @@ public class ContainerUtils {
    * @param <T> Type parameter of the system participant
    * @return A filtered set
    */
-  private static <T extends SystemParticipantInput> Set<T> filterParticipants(
+  private static <T extends ExtendedSystemParticipantInput> Set<T> filterParticipants(
       Set<T> systemParticipantInputs, int subnet) {
     return systemParticipantInputs.stream()
         .filter(entity -> entity.getNode().getSubnet() == subnet)
@@ -437,14 +429,13 @@ public class ContainerUtils {
     return voltageLevelCount.entrySet().stream()
         .max(Map.Entry.comparingByValue())
         .map(Map.Entry::getKey)
-        .orElseThrow(
-            () ->
-                new InvalidGridException(
-                    "Cannot determine the predominant voltage level. Following voltage levels are present: "
-                        + voltageLevelCount.keySet().stream()
-                            .sorted(Comparator.comparing(VoltageLevel::getNominalVoltage))
-                            .map(VoltageLevel::toString)
-                            .collect(Collectors.joining(", "))));
+        .orElseThrow(() ->
+            new InvalidGridException(
+                "Cannot determine the predominant voltage level. Following voltage levels are present: "
+                    + voltageLevelCount.keySet().stream()
+                        .sorted(Comparator.comparing(VoltageLevel::getNominalVoltage))
+                        .map(VoltageLevel::toString)
+                        .collect(Collectors.joining(", "))));
   }
 
   /**
@@ -618,14 +609,13 @@ public class ContainerUtils {
             SubGridGate.fromTransformer3W(transformer, ConnectorPort.B));
         mutableGraph.addEdge(
             subGridContainers.containerA,
-            subGridContainers.maybeContainerC.orElseThrow(
-                () ->
-                    new InvalidGridException(
-                        "Cannot build sub grid topology graph, as the sub grid, that is connected to port C of transformer '"
-                            + transformer.getId()
-                            + "' ("
-                            + transformer.getUuid()
-                            + ") cannot be determined.")),
+            subGridContainers.maybeContainerC.orElseThrow(() ->
+                new InvalidGridException(
+                    "Cannot build sub grid topology graph, as the sub grid, that is connected to port C of transformer '"
+                        + transformer.getId()
+                        + "' ("
+                        + transformer.getUuid()
+                        + ") cannot be determined.")),
             SubGridGate.fromTransformer3W(transformer, ConnectorPort.C));
       } catch (TopologyException e) {
         throw new InvalidGridException(
@@ -740,10 +730,9 @@ public class ContainerUtils {
         subGridContainers.stream()
             .map(SubGridContainer::getGridName)
             .findFirst()
-            .orElseThrow(
-                () ->
-                    new InvalidGridException(
-                        "Cannot determine a joint name of the provided sub grid models."));
+            .orElseThrow(() ->
+                new InvalidGridException(
+                    "Cannot determine a joint name of the provided sub grid models."));
 
     RawGridElements rawGrid =
         new RawGridElements(
@@ -811,43 +800,42 @@ public class ContainerUtils {
     Map<NodeInput, NodeInput> oldToNewTrafo3WANodes = new HashMap<>();
     Map<Transformer3WInput, NodeInput> newTrafos3wToInternalNode =
         subGridContainer.getRawGrid().getTransformer3Ws().stream()
-            .map(
-                oldTrafo3w -> {
-                  AbstractMap.SimpleEntry<Transformer3WInput, NodeInput> resTrafo3wToInternal;
-                  if (oldTrafo3w.getNodeA().getSubnet() == subGridContainer.getSubnet()) {
-                    // node A is part of this subgrid -> no slack needed
-                    // internal node is needed for node admittance matrix and will be added
+            .map(oldTrafo3w -> {
+              AbstractMap.SimpleEntry<Transformer3WInput, NodeInput> resTrafo3wToInternal;
+              if (oldTrafo3w.getNodeA().getSubnet() == subGridContainer.getSubnet()) {
+                // node A is part of this subgrid -> no slack needed
+                // internal node is needed for node admittance matrix and will be added
 
-                    // add the same transformer again to the new transformer set as nothing has
-                    // changed for this transformer
-                    resTrafo3wToInternal =
-                        new AbstractMap.SimpleEntry<>(oldTrafo3w, oldTrafo3w.getNodeInternal());
+                // add the same transformer again to the new transformer set as nothing has
+                // changed for this transformer
+                resTrafo3wToInternal =
+                    new AbstractMap.SimpleEntry<>(oldTrafo3w, oldTrafo3w.getNodeInternal());
 
-                  } else {
-                    // node B or C is part of this subgrid -> internal node becomes the new slack
+              } else {
+                // node B or C is part of this subgrid -> internal node becomes the new slack
 
-                    // if node A is marked as slack, unmark it as slack
-                    NodeInput oldTrafo3wNodeA = oldTrafo3w.getNodeA();
-                    NodeInput newNodeA =
-                        oldTrafo3wNodeA.isSlack()
-                            ? oldTrafo3wNodeA.copy().slack(false).build()
-                            : oldTrafo3w.getNodeA();
+                // if node A is marked as slack, unmark it as slack
+                NodeInput oldTrafo3wNodeA = oldTrafo3w.getNodeA();
+                NodeInput newNodeA =
+                    oldTrafo3wNodeA.isSlack()
+                        ? oldTrafo3wNodeA.copy().slack(false).build()
+                        : oldTrafo3w.getNodeA();
 
-                    // we need to take care for this node in our node sets afterward
-                    // (needs to be replaced by the new nodeA which might have been a slack before)
-                    oldToNewTrafo3WANodes.put(oldTrafo3w.getNodeA(), newNodeA);
+                // we need to take care for this node in our node sets afterward
+                // (needs to be replaced by the new nodeA which might have been a slack before)
+                oldToNewTrafo3WANodes.put(oldTrafo3w.getNodeA(), newNodeA);
 
-                    // create an update version of this transformer with internal node as slack and
-                    // add it to the newTrafos3wToInternalNode set
-                    Transformer3WInput newTrafo3w =
-                        oldTrafo3w.copy().nodeA(newNodeA).internalSlack(true).build();
+                // create an update version of this transformer with internal node as slack and
+                // add it to the newTrafos3wToInternalNode set
+                Transformer3WInput newTrafo3w =
+                    oldTrafo3w.copy().nodeA(newNodeA).internalSlack(true).build();
 
-                    // add the slack
-                    resTrafo3wToInternal =
-                        new AbstractMap.SimpleEntry<>(newTrafo3w, newTrafo3w.getNodeInternal());
-                  }
-                  return resTrafo3wToInternal;
-                })
+                // add the slack
+                resTrafo3wToInternal =
+                    new AbstractMap.SimpleEntry<>(newTrafo3w, newTrafo3w.getNodeInternal());
+              }
+              return resTrafo3wToInternal;
+            })
             .collect(
                 Collectors.toMap(
                     AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
@@ -855,13 +843,12 @@ public class ContainerUtils {
     // get old transformer2w high voltage nodes (nodeA)
     Map<NodeInput, NodeInput> oldToNewTrafo2WANodes =
         subGridContainer.getRawGrid().getTransformer2Ws().stream()
-            .map(
-                oldTrafo2w -> {
-                  NodeInput oldNodeA = oldTrafo2w.getNodeA();
-                  NodeInput newNodeA = oldNodeA.copy().slack(true).build();
+            .map(oldTrafo2w -> {
+              NodeInput oldNodeA = oldTrafo2w.getNodeA();
+              NodeInput newNodeA = oldNodeA.copy().slack(true).build();
 
-                  return new AbstractMap.SimpleEntry<>(oldNodeA, newNodeA);
-                })
+              return new AbstractMap.SimpleEntry<>(oldNodeA, newNodeA);
+            })
             .distinct()
             .collect(
                 Collectors.toMap(
@@ -870,11 +857,10 @@ public class ContainerUtils {
     // build the updated 2w transformer with nodeA as slack and add it to our new set
     Set<Transformer2WInput> newTrafos2w =
         subGridContainer.getRawGrid().getTransformer2Ws().stream()
-            .map(
-                oldTrafo2w -> {
-                  NodeInput newNodeA = oldToNewTrafo2WANodes.get(oldTrafo2w.getNodeA());
-                  return oldTrafo2w.copy().nodeA(newNodeA).build();
-                })
+            .map(oldTrafo2w -> {
+              NodeInput newNodeA = oldToNewTrafo2WANodes.get(oldTrafo2w.getNodeA());
+              return oldTrafo2w.copy().nodeA(newNodeA).build();
+            })
             .collect(Collectors.toSet());
 
     // update nodes in raw grid by removing the old transformer nodes and add all new ones

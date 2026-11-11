@@ -166,14 +166,13 @@ public class CsvFileConnector extends FileConnector {
   public void shutdown() {
     Stream.of(entityWriters.values(), timeSeriesWriters.values())
         .flatMap(Collection::stream)
-        .forEach(
-            bufferedWriter -> {
-              try {
-                bufferedWriter.close();
-              } catch (IOException e) {
-                log.error("Error during CsvFileConnector shutdown process.", e);
-              }
-            });
+        .forEach(bufferedWriter -> {
+          try {
+            bufferedWriter.close();
+          } catch (IOException e) {
+            log.error("Error during CsvFileConnector shutdown process.", e);
+          }
+        });
   }
 
   @Override

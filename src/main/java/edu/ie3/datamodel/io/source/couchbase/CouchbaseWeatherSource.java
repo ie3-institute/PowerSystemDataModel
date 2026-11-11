@@ -151,10 +151,9 @@ public class CouchbaseWeatherSource extends WeatherSource {
       GetResult getResult = futureResult.join();
       JsonObject jsonWeatherInput = getResult.contentAsObject();
       return toTimeBasedWeatherValue(jsonWeatherInput)
-          .orElseThrow(
-              () ->
-                  new NoDataException(
-                      "No valid weather data found for the given date and coordinate."));
+          .orElseThrow(() ->
+              new NoDataException(
+                  "No valid weather data found for the given date and coordinate."));
     } catch (DecodingFailureException ex) {
       throw new SourceException(
           "Failed to decode weather data for coordinate " + coordinate + " and date " + date, ex);

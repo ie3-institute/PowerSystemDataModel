@@ -483,4 +483,16 @@ public class SystemParticipants implements InputContainer<SystemParticipantInput
           wecPlants);
     }
   }
+
+  /**
+   * Returns all system participants that have a node and a controlling EM.
+   *
+   * @return unmodifiable list of extended system participants
+   */
+  public List<ExtendedSystemParticipantInput> getExtendedSystemParticipants() {
+    return allEntitiesAsList().stream()
+        .filter(ExtendedSystemParticipantInput.class::isInstance)
+        .map(ExtendedSystemParticipantInput.class::cast)
+        .toList();
+  }
 }

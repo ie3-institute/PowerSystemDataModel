@@ -21,7 +21,7 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /** Describes a biomass plant */
-public class BmInput extends SystemParticipantInput implements HasType {
+public class BmInput extends ExtendedSystemParticipantInput implements HasType {
   /** Type of this BM plant, containing default values for BM plants of this kind */
   private final BmTypeInput type;
 
@@ -201,7 +201,7 @@ public class BmInput extends SystemParticipantInput implements HasType {
    * @since 05.06.20
    */
   public static class BmInputCopyBuilder
-      extends SystemParticipantInputCopyBuilder<BmInputCopyBuilder> {
+      extends ExtendedSystemParticipantInputCopyBuilder<BmInputCopyBuilder> {
 
     private BmTypeInput type;
     private boolean costControlled;

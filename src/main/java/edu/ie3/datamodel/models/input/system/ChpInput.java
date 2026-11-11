@@ -23,7 +23,7 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /** Describes a combined heat and power plant */
-public class ChpInput extends SystemParticipantInput
+public class ChpInput extends ExtendedSystemParticipantInput
     implements HasType, HasThermalBus, HasThermalStorage {
   /** The thermal bus, this model is connected to */
   private final ThermalBusInput thermalBus;
@@ -202,7 +202,7 @@ public class ChpInput extends SystemParticipantInput
    * @since 05.06.20
    */
   public static class ChpInputCopyBuilder
-      extends SystemParticipantInputCopyBuilder<ChpInputCopyBuilder> {
+      extends ExtendedSystemParticipantInputCopyBuilder<ChpInputCopyBuilder> {
 
     private ChpTypeInput type;
     private ThermalBusInput thermalBus;
