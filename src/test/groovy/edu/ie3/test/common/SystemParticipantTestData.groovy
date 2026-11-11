@@ -55,6 +55,8 @@ class SystemParticipantTestData {
   private static final ComparableQuantity<Currency> capex = Quantities.getQuantity(100d, CAPEX)
   private static final ComparableQuantity<EnergyPrice> opex = Quantities.getQuantity(50d, ENERGY_PRICE)
   static final ComparableQuantity<Dimensionless> etaConv = Quantities.getQuantity(98d, EFFICIENCY)
+  private static final ComparableQuantity<Dimensionless> etaCharging = Quantities.getQuantity(95, EFFICIENCY)
+  private static final ComparableQuantity<Dimensionless> etaDischarging = Quantities.getQuantity(92, EFFICIENCY)
 
   // EmInput
   public static final String emControlStrategy = "self_optimization"
@@ -242,15 +244,15 @@ class SystemParticipantTestData {
   eCons,
   sRated,
   cosPhiRated,
-  sRatedDC)
+  sRatedDC,
+  etaCharging,
+  etaDischarging)
   public static final EvInput evInput = new EvInput(
   UUID.fromString("a17be20f-c7a7-471d-8ffe-015487c9d022"),
   "test_evInput",
   operator,
   operationTime,
-  participantNode,
   cosPhiFixed,
-  emInput,
   evTypeInput
   )
 
@@ -273,8 +275,6 @@ class SystemParticipantTestData {
 
   // Storage
   private static final ComparableQuantity<Power> pMax = Quantities.getQuantity(15, ACTIVE_POWER_IN)
-  private static final ComparableQuantity<Dimensionless> etaCharging = Quantities.getQuantity(95, EFFICIENCY)
-  private static final ComparableQuantity<Dimensionless> etaDischarging = Quantities.getQuantity(92, EFFICIENCY)
   private static final ComparableQuantity<DimensionlessRate> cpRate = Quantities.getQuantity(100, ACTIVE_POWER_GRADIENT)
   public static final StorageTypeInput storageTypeInput = new StorageTypeInput(
   typeUuid,

@@ -239,15 +239,11 @@ class InputEntityProcessorTest extends Specification {
     EvInput | SystemParticipantTestData.evInput || [
       "uuid" : SystemParticipantTestData.evInput.uuid.toString(),
       "id" : SystemParticipantTestData.evInput.id,
-      "node" : SystemParticipantTestData.evInput.node.uuid.toString(),
       "operatesUntil" : SystemParticipantTestData.evInput.operationTime.endDate.orElse(ZonedDateTime.now()).toString(),
       "operatesFrom" : SystemParticipantTestData.evInput.operationTime.startDate.orElse(ZonedDateTime.now()).toString(),
       "operator" : SystemParticipantTestData.evInput.operator.getUuid().toString(),
       "qCharacteristics": SystemParticipantTestData.cosPhiFixedSerialized,
-      "type" : SystemParticipantTestData.evInput.type.getUuid().toString(),
-      "controllingEm" : SystemParticipantTestData.acInput.controllingEm.map{entity ->
-        entity.uuid.toString()
-      }.orElse("")
+      "type" : SystemParticipantTestData.evInput.type.getUuid().toString()
     ]
     LoadInput | SystemParticipantTestData.loadInput || [
       "uuid" : SystemParticipantTestData.loadInput.uuid.toString(),
@@ -525,6 +521,8 @@ class InputEntityProcessorTest extends Specification {
       "sRated" : "22.0",
       "cosPhiRated": "0.9",
       "sRatedDC" : "20.0",
+      "etaCharging" : "95.0",
+      "etaDischarging" : "92.0"
     ]
 
     when:

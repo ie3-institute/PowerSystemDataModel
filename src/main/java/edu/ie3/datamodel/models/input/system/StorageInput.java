@@ -19,7 +19,7 @@ import javax.measure.quantity.Power;
 import tech.units.indriya.ComparableQuantity;
 
 /** Describes a battery storage */
-public class StorageInput extends SystemParticipantInput implements HasType {
+public class StorageInput extends ExtendedSystemParticipantInput implements HasType {
   /** Type of this storage, containing default values for storages of this kind */
   private final StorageTypeInput type;
 
@@ -156,7 +156,7 @@ public class StorageInput extends SystemParticipantInput implements HasType {
    * @since 05.06.20
    */
   public static class StorageInputCopyBuilder
-      extends SystemParticipantInputCopyBuilder<StorageInputCopyBuilder> {
+      extends ExtendedSystemParticipantInputCopyBuilder<StorageInputCopyBuilder> {
 
     private StorageTypeInput type;
 
