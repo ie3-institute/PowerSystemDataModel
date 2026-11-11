@@ -10,15 +10,21 @@ import static edu.ie3.util.quantities.PowerSystemUnits.JOULE_PER_CUBIC_METRE_KEL
 import static edu.ie3.util.quantities.PowerSystemUnits.KELVIN_METRE_PER_WATT
 import static tech.units.indriya.unit.Units.METRE
 
+import edu.ie3.datamodel.exceptions.FailedValidationException
 import edu.ie3.datamodel.exceptions.InvalidGridException
 import edu.ie3.datamodel.models.OperationTime
 import edu.ie3.datamodel.models.input.SoilLayer
 import edu.ie3.datamodel.models.input.SoilType
 import edu.ie3.datamodel.models.input.connector.CableDeploymentInput
+import edu.ie3.datamodel.models.input.container.EnergyManagementUnits
+import edu.ie3.datamodel.models.input.container.JointGridContainer
 import edu.ie3.datamodel.models.input.container.RawGridElements
 import edu.ie3.datamodel.models.input.container.SoilData
+import edu.ie3.datamodel.models.input.container.SystemParticipants
 import edu.ie3.datamodel.utils.Try
 import edu.ie3.test.common.GridTestData as GTD
+import edu.ie3.test.common.SampleJointGrid
+import edu.ie3.test.common.SystemParticipantTestData as SPTD
 import edu.ie3.util.quantities.interfaces.ThermalResistivity
 import edu.ie3.util.quantities.interfaces.VolumetricHeatCapacity
 import org.locationtech.jts.geom.Coordinate
@@ -39,8 +45,12 @@ class GridContainerValidationUtilsTest extends Specification {
   @Shared
   private RawGridElements limitedElements
 
+  @Shared
+  private JointGridContainer sampleGrid
+
   def setupSpec() {
     start = ZonedDateTime.now()
+    sampleGrid = SampleJointGrid.grid()
 
     def operationTimeFrame1 = OperationTime.builder().withStart(start).withEnd(start.plusHours(2)).build()
     def operationTimeFrame2 = OperationTime.builder().withStart(start.plusHours(1)).withEnd(start.plusHours(3)).build()
@@ -175,6 +185,124 @@ class GridContainerValidationUtilsTest extends Specification {
     GTD.lineAtoB.uuid || "TREFOIL" || false || "Cable deployment"
     GTD.lineAtoB.uuid || "" || true || "Layout formation cannot be empty"
     UUID.randomUUID() || "TREFOIL" || true || "Cable deployment references unknown line"
+  }
+
+  def "The GridContainerValidationUtils should report invalid nodes when checking raw grid elements"() {
+    given:
+    def invalidNode = GTD.nodeF.copy().subnet(0).build()
+    def rawGrid = new RawGridElements([invalidNode] as Set, [] as Set, [] as Set, [] as Set, [] as Set, [] as Set)
+
+    when:
+    def failures = GridContainerValidationUtils.checkRawGridElements(rawGrid).findAll {
+      it.failure
+    }
+
+    then:
+    failures.size() == 1
+    failures.first().exception.get().message.contains("Subnet can't be zero or negative")
+  }
+
+  def "The GridContainerValidationUtils should only check the node availability of system participants if nodes are given"() {
+    given:
+    def participants = sampleGrid.systemParticipants
+
+    when:
+    def withoutNodes = GridContainerValidationUtils.checkSystemParticipants(participants)
+    def withNodes = GridContainerValidationUtils.checkSystemParticipants(participants, [GTD.nodeA] as Set)
+
+    then:
+    withoutNodes.every { it.success }
+
+    def failures = withNodes.findAll { it.failure }
+    failures.size() == participants.allEntitiesAsList().size()
+    failures.every {
+      it.exception.get().message.contains("is connected to a node that is not in the set of nodes.")
+    }
+  }
+
+  def "The GridContainerValidationUtils should report missing system participants"() {
+    when:
+    def withoutNodes = GridContainerValidationUtils.checkSystemParticipants((SystemParticipants) null)
+    def withNodes = GridContainerValidationUtils.checkSystemParticipants(null, [GTD.nodeA] as Set)
+
+    then:
+    [withoutNodes, withNodes].every { results ->
+      results.size() == 1 && results.first().exception.get().message.contains("Expected system participants")
+    }
+  }
+
+  def "The GridContainerValidationUtils should check energy management units"() {
+    when:
+    def failures = GridContainerValidationUtils.checkEnergyManagementUnits(emUnits).findAll {
+      it.failure
+    }
+
+    then:
+    failures.size() == expectedFailures
+    failures.every { it.exception.get().message.contains(expectedMessage) }
+
+    where:
+    emUnits || expectedFailures || expectedMessage
+    new EnergyManagementUnits([GTD.energyManagementInput] as Set) || 0 || ""
+    new EnergyManagementUnits([
+      GTD.energyManagementInput.copy().controlStrategy(null).build()
+    ] as Set) || 1 || "No control strategy of energy management defined for"
+    new EnergyManagementUnits([
+      GTD.energyManagementInput,
+      GTD.energyManagementInput.copy().uuid(UUID.randomUUID()).build()
+    ] as Set) || 1 || "duplicated"
+    null || 1 || "Expected energy management units"
+  }
+
+  def "The GridContainerValidationUtils should consider the energy management units when checking a complete grid container"() {
+    given:
+    def invalidEm = sampleGrid.emUnits.emUnits.first().copy().controlStrategy(null).build()
+    def invalidGrid = sampleGrid.copy().emUnits(new EnergyManagementUnits([invalidEm] as Set)).build()
+
+    when:
+    def failures = GridContainerValidationUtils.check(invalidGrid).findAll {
+      it.failure
+    }
+
+    then:
+    failures.size() == 1
+    failures.first().exception.get().message.contains("No control strategy of energy management defined for")
+  }
+
+  def "Smoke Test: The sub-containers of a correct grid container can be validated separately"() {
+    when:
+    ValidationUtils.check(sampleGrid)
+    ValidationUtils.check(sampleGrid.rawGrid)
+    ValidationUtils.check(sampleGrid.systemParticipants)
+    ValidationUtils.check(sampleGrid.emUnits)
+    ValidationUtils.check(sampleGrid.soilData)
+
+    then:
+    noExceptionThrown()
+  }
+
+  def "The validation check method recognizes errors within the sub-containers of a grid container"() {
+    when:
+    ValidationUtils.check(invalidContainer)
+
+    then:
+    FailedValidationException ex = thrown()
+    ex.message.contains(expectedMessage)
+
+    where:
+    invalidContainer || expectedMessage
+    new RawGridElements([
+      GTD.nodeF.copy().subnet(0).build()
+    ] as Set, [] as Set, [] as Set, [] as Set, [] as Set, [] as Set) || "Subnet can't be zero or negative"
+    new SystemParticipants([
+      SPTD.bmInput.copy().qCharacteristics(null).build()
+    ] as List) || "Reactive power characteristics of system participant is not defined"
+    new EnergyManagementUnits([
+      GTD.energyManagementInput.copy().controlStrategy(null).build()
+    ] as Set) || "No control strategy of energy management defined for"
+    new SoilData([
+      validSoilType().copy().id(null).build()
+    ] as Set, [] as Set) || "No ID assigned"
   }
 
   def "checkSoilData accepts consistent, gap-free and non-overlapping soil data"() {

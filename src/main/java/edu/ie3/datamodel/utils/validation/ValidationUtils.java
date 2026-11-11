@@ -21,7 +21,11 @@ import edu.ie3.datamodel.models.input.connector.type.CableTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.LineTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer2WTypeInput;
 import edu.ie3.datamodel.models.input.connector.type.Transformer3WTypeInput;
+import edu.ie3.datamodel.models.input.container.EnergyManagementUnits;
 import edu.ie3.datamodel.models.input.container.GridContainer;
+import edu.ie3.datamodel.models.input.container.RawGridElements;
+import edu.ie3.datamodel.models.input.container.SoilData;
+import edu.ie3.datamodel.models.input.container.SystemParticipants;
 import edu.ie3.datamodel.models.input.container.ThermalGrid;
 import edu.ie3.datamodel.models.input.system.SystemParticipantInput;
 import edu.ie3.datamodel.models.input.system.type.SystemParticipantTypeInput;
@@ -95,23 +99,26 @@ public class ValidationUtils {
   public static void check(Object obj) throws ValidationException {
     checkNonNull(obj, "an object").getOrThrow();
 
-    List<Try<Void, ? extends ValidationException>> exceptions = new ArrayList<>();
-
-    if (AssetInput.class.isAssignableFrom(obj.getClass())) {
-      exceptions.addAll(checkAsset((AssetInput) obj));
-    } else if (GridContainer.class.isAssignableFrom(obj.getClass())) {
-      exceptions.addAll(GridContainerValidationUtils.check((GridContainer) obj));
-    } else if (AssetTypeInput.class.isAssignableFrom(obj.getClass())) {
-      exceptions.addAll(checkAssetType((AssetTypeInput) obj));
-    } else if (ThermalGrid.class.isAssignableFrom(obj.getClass())) {
-      exceptions.addAll(ThermalValidationUtils.check((ThermalGrid) obj));
-    } else if (SoilType.class.isAssignableFrom(obj.getClass())) {
-      exceptions.addAll(SoilValidationUtils.check((SoilType) obj));
-    } else if (SoilLayer.class.isAssignableFrom(obj.getClass())) {
-      exceptions.addAll(SoilValidationUtils.check((SoilLayer) obj));
-    } else {
-      logNotImplemented(obj);
-    }
+    List<Try<Void, ? extends ValidationException>> exceptions =
+        switch (obj) {
+          case AssetInput asset -> checkAsset(asset);
+          case GridContainer gridContainer -> GridContainerValidationUtils.check(gridContainer);
+          case RawGridElements rawGridElements ->
+              GridContainerValidationUtils.checkRawGridElements(rawGridElements);
+          case SystemParticipants systemParticipants ->
+              GridContainerValidationUtils.checkSystemParticipants(systemParticipants);
+          case EnergyManagementUnits emUnits ->
+              GridContainerValidationUtils.checkEnergyManagementUnits(emUnits);
+          case SoilData soilData -> GridContainerValidationUtils.checkSoilData(soilData);
+          case AssetTypeInput assetType -> checkAssetType(assetType);
+          case ThermalGrid thermalGrid -> ThermalValidationUtils.check(thermalGrid);
+          case SoilType soilType -> SoilValidationUtils.check(soilType);
+          case SoilLayer soilLayer -> SoilValidationUtils.check(soilLayer);
+          default -> {
+            logNotImplemented(obj);
+            yield List.of();
+          }
+        };
 
     List<? extends ValidationException> list =
         exceptions.stream()
