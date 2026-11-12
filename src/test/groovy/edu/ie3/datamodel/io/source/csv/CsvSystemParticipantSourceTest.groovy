@@ -31,6 +31,10 @@ class CsvSystemParticipantSourceTest extends Specification implements CsvTestDat
 
     when:
     typeSource.validate()
+    thermalSource.validate()
+    rawGridSource.validate()
+    energyManagementSource.validate()
+    csvSystemParticipantSource.validate()
     def systemParticipants = csvSystemParticipantSource.systemParticipants
 
     then:

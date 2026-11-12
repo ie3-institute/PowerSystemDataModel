@@ -439,7 +439,6 @@ public final class ModelFields extends FieldNamingStrategy {
             BmInput.class,
             ChpInput.class,
             EvcsInput.class,
-            EvInput.class,
             FixedFeedInInput.class,
             LoadInput.class,
             PvInput.class,
@@ -449,6 +448,9 @@ public final class ModelFields extends FieldNamingStrategy {
           registerMandatory(c, assetFields, NODE, Q_CHARACTERISTICS, CONTROLLING_EM);
           registerOptional(c, assetOptionalFields);
         });
+
+    registerMandatory(EvInput.class, assetFields, Q_CHARACTERISTICS);
+    registerOptional(EvInput.class, assetOptionalFields);
 
     Stream.of(AcInput.class, HpInput.class).forEach(c -> addMandatory(c, TYPE, THERMAL_BUS));
 
