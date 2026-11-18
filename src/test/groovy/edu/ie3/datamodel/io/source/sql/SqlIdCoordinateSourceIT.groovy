@@ -164,7 +164,7 @@ class SqlIdCoordinateSourceIT extends Specification implements TestContainerHelp
 
     then:
     for(CoordinateDistance coordinateDistance : receivedValues){
-      expectedValues.contains(coordinateDistance.coordinateB)
+      assert expectedValues.contains(coordinateDistance.coordinateB)
     }
   }
 
@@ -184,7 +184,7 @@ class SqlIdCoordinateSourceIT extends Specification implements TestContainerHelp
 
     then:
     for(CoordinateDistance coordinateDistance : receivedValues){
-      expectedValues.contains(coordinateDistance.coordinateB)
+      assert expectedValues.contains(coordinateDistance.coordinateB)
     }
   }
 
