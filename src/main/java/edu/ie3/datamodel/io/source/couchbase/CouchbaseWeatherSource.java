@@ -61,7 +61,8 @@ public class CouchbaseWeatherSource extends WeatherSource {
       CouchbaseConnector connector,
       IdCoordinateSource coordinateSource,
       String coordinateIdColumnName,
-      TimeBasedWeatherValueFactory weatherFactory) {
+      TimeBasedWeatherValueFactory weatherFactory)
+      throws SourceException {
     this(connector, coordinateSource, coordinateIdColumnName, DEFAULT_KEY_PREFIX, weatherFactory);
   }
 
@@ -82,16 +83,49 @@ public class CouchbaseWeatherSource extends WeatherSource {
       IdCoordinateSource idCoordinateSource,
       String coordinateIdColumnName,
       String keyPrefix,
-      TimeBasedWeatherValueFactory weatherFactory) {
+      TimeBasedWeatherValueFactory weatherFactory)
+      throws SourceException {
     super(idCoordinateSource, weatherFactory);
     this.connector = connector;
     this.coordinateIdColumnName = coordinateIdColumnName;
     this.keyPrefix = keyPrefix;
+
+    checkCoordinateCompleteness();
   }
 
   @Override
   public void validate() throws ValidationException {
     validate(getInputClass(), connector::getSourceFields);
+  }
+
+  @Override
+  public Collection<Integer> getCoordinateIds() throws SourceException {
+    CompletableFuture<QueryResult> futureResult =
+        connector.query(createQueryStringForCoordinateIds());
+
+    try {
+      return futureResult.join().rowsAsObject().stream()
+          .map(json -> json.getInt(coordinateIdColumnName))
+          .distinct()
+          .toList();
+    } catch (DecodingFailureException ex) {
+      throw new SourceException("Unable to read the coordinate ids of the weather data.", ex);
+    }
+  }
+
+  /**
+   * Creates a query that hands back the distinct coordinate ids of all weather entries.
+   *
+   * @return the query string
+   */
+  private String createQueryStringForCoordinateIds() {
+    return "SELECT DISTINCT a."
+        + coordinateIdColumnName
+        + " FROM "
+        + connector.getBucketName()
+        + " AS a WHERE META().id LIKE '"
+        + keyPrefix
+        + "%'";
   }
 
   @Override
@@ -101,12 +135,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
         "By not providing coordinates you are forcing couchbase to check all possible coordinates one by one."
             + " This is not very performant. Please consider providing specific coordinates instead.");
 
-    List<Integer> allIds = new ArrayList<>();
-    for (Point coordinate : idCoordinateSource.getAllCoordinates()) {
-      idCoordinateSource.getId(coordinate).ifPresent(allIds::add);
-    }
-
-    return getWeatherById(timeInterval, allIds);
+    return getWeatherById(timeInterval, getCoordinateIds());
   }
 
   @Override
@@ -141,13 +170,10 @@ public class CouchbaseWeatherSource extends WeatherSource {
   @Override
   public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
       throws SourceException, NoDataException {
-    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
-    if (coordinateId.isEmpty()) {
-      throw new NoDataException("No coordinate ID found for the given point: " + coordinate);
-    }
+    int coordinateId = idCoordinateSource.getId(coordinate);
     try {
       CompletableFuture<GetResult> futureResult =
-          connector.get(generateWeatherKey(date, coordinateId.get()));
+          connector.get(generateWeatherKey(date, coordinateId));
       GetResult getResult = futureResult.join();
       JsonObject jsonWeatherInput = getResult.contentAsObject();
       return toTimeBasedWeatherValue(jsonWeatherInput)
@@ -158,10 +184,10 @@ public class CouchbaseWeatherSource extends WeatherSource {
       throw new SourceException(
           "Failed to decode weather data for coordinate " + coordinate + " and date " + date, ex);
     } catch (DocumentNotFoundException ex) {
-      return getLastKnownWeather(date, coordinate, coordinateId.get());
+      return getLastKnownWeather(date, coordinate, coordinateId);
     } catch (CompletionException ex) {
       if (ex.getCause() instanceof DocumentNotFoundException) {
-        return getLastKnownWeather(date, coordinate, coordinateId.get());
+        return getLastKnownWeather(date, coordinate, coordinateId);
       }
       throw new SourceException(
           "Unexpected completion exception while retrieving weather data for coordinate "
@@ -284,11 +310,8 @@ public class CouchbaseWeatherSource extends WeatherSource {
   @Override
   public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time, Point coordinate)
       throws SourceException {
-    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
-    if (coordinateId.isEmpty()) {
-      return Collections.emptyList();
-    }
-    String query = createQueryStringForFollowingTimeKeysAndCoordinate(time, coordinateId.get());
+    int coordinateId = idCoordinateSource.getId(coordinate);
+    String query = createQueryStringForFollowingTimeKeysAndCoordinate(time, coordinateId);
     CompletableFuture<QueryResult> futureResult = connector.query(query);
     QueryResult queryResult = futureResult.join();
     List<JsonObject> jsonInputs;
@@ -358,23 +381,17 @@ public class CouchbaseWeatherSource extends WeatherSource {
    * @param jsonObj the JsonObject to convert
    * @return the Data object
    */
-  private Optional<TimeBasedWeatherValueData> toTimeBasedWeatherValueData(JsonObject jsonObj)
+  private TimeBasedWeatherValueData toTimeBasedWeatherValueData(JsonObject jsonObj)
       throws SourceException {
-    Integer coordinateId = jsonObj.getInt(coordinateIdColumnName);
+    int coordinateId = jsonObj.getInt(coordinateIdColumnName);
     jsonObj.removeKey(coordinateIdColumnName);
-    Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
-    if (coordinate.isEmpty()) {
-      log.warn("Unable to match coordinate ID {} to a coordinate", coordinateId);
-      return Optional.empty();
-    }
+    Point coordinate = idCoordinateSource.getCoordinate(coordinateId);
     Map<String, String> fieldToValueMap =
         jsonObj.toMap().entrySet().stream()
             .collect(
                 Collectors.toMap(Map.Entry::getKey, entry -> String.valueOf(entry.getValue())));
     fieldToValueMap.putIfAbsent("uuid", UUID.randomUUID().toString());
-    return Optional.of(
-        new TimeBasedWeatherValueData(
-            new FieldMap(fieldToValueMap), coordinate.get(), coordinateId));
+    return new TimeBasedWeatherValueData(new FieldMap(fieldToValueMap), coordinate, coordinateId);
   }
 
   /**
@@ -387,12 +404,6 @@ public class CouchbaseWeatherSource extends WeatherSource {
    */
   private Optional<TimeBasedValue<WeatherValue>> toTimeBasedWeatherValue(JsonObject jsonObj)
       throws SourceException {
-    Optional<TimeBasedWeatherValueData> data = toTimeBasedWeatherValueData(jsonObj);
-    if (data.isEmpty()) {
-      log.warn("Unable to parse json object");
-      log.debug("The following json could not be parsed:\n{}", jsonObj);
-      return Optional.empty();
-    }
-    return weatherFactory.get(data.get()).getData();
+    return weatherFactory.get(toTimeBasedWeatherValueData(jsonObj)).getData();
   }
 }

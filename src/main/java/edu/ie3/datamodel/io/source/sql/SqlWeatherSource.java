@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.sql;
 
 import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.TIME;
+import static edu.ie3.datamodel.io.naming.FieldNamingStrategy.WEATHER_COORDINATE_ID;
 import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
 
 import edu.ie3.datamodel.exceptions.NoDataException;
@@ -45,6 +46,7 @@ public class SqlWeatherSource extends WeatherSource {
   private final String queryLastBeforeAndCoordinate;
   private final String queryTimeIntervalAndCoordinates;
   private final String queryTimeKeysAfter;
+  private final String queryCoordinateIds;
   private final String getQueryTimeKeysAfterAndCoordinate;
 
   /**
@@ -61,7 +63,8 @@ public class SqlWeatherSource extends WeatherSource {
       IdCoordinateSource idCoordinateSource,
       String schemaName,
       String weatherTableName,
-      TimeBasedWeatherValueFactory weatherFactory) {
+      TimeBasedWeatherValueFactory weatherFactory)
+      throws SourceException {
     super(idCoordinateSource, weatherFactory);
     String factoryCoordinateFieldName = weatherFactory.getCoordinateIdFieldString();
     this.dataSource = new SqlDataSource(connector, schemaName, new DatabaseNamingStrategy());
@@ -89,6 +92,18 @@ public class SqlWeatherSource extends WeatherSource {
     this.getQueryTimeKeysAfterAndCoordinate =
         createQueryStringForTimeKeysAfterAndCoordinate(
             schemaName, weatherTableName, dbTimeColumnName, dbCoordinateIdColumnName);
+    this.queryCoordinateIds =
+        createQueryStringForCoordinateIds(schemaName, weatherTableName, dbCoordinateIdColumnName);
+
+    checkCoordinateCompleteness();
+  }
+
+  @Override
+  public Collection<Integer> getCoordinateIds() throws SourceException {
+    return dataSource
+        .executeQuery(queryCoordinateIds)
+        .map(fieldMap -> Integer.parseInt(fieldMap.get(WEATHER_COORDINATE_ID)))
+        .toList();
   }
 
   @Override
@@ -140,10 +155,7 @@ public class SqlWeatherSource extends WeatherSource {
   @Override
   public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
       throws SourceException, NoDataException {
-    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
-    if (coordinateId.isEmpty()) {
-      throw new NoDataException("No coordinate ID found for the given point: " + coordinate);
-    }
+    int coordinateId = idCoordinateSource.getId(coordinate);
 
     List<TimeBasedValue<WeatherValue>> timeBasedValues =
         buildTimeBasedValues(
@@ -151,7 +163,7 @@ public class SqlWeatherSource extends WeatherSource {
             dataSource.executeQuery(
                 queryTimeAndCoordinate,
                 ps -> {
-                  ps.setInt(1, coordinateId.get());
+                  ps.setInt(1, coordinateId);
                   ps.setTimestamp(2, Timestamp.from(date.toInstant()));
                 }));
 
@@ -168,7 +180,7 @@ public class SqlWeatherSource extends WeatherSource {
             dataSource.executeQuery(
                 queryLastBeforeAndCoordinate,
                 ps -> {
-                  ps.setInt(1, coordinateId.get());
+                  ps.setInt(1, coordinateId);
                   ps.setTimestamp(2, Timestamp.from(date.toInstant()));
                 }));
 
@@ -187,17 +199,13 @@ public class SqlWeatherSource extends WeatherSource {
   @Override
   public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time, Point coordinate)
       throws SourceException {
-    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
-    if (coordinateId.isEmpty()) {
-      log.warn("Unable to match coordinate {} to a coordinate ID", coordinate);
-      return Collections.emptyList();
-    }
+    int coordinateId = idCoordinateSource.getId(coordinate);
 
     return dataSource
         .executeQuery(
             getQueryTimeKeysAfterAndCoordinate,
             ps -> {
-              ps.setInt(1, coordinateId.get());
+              ps.setInt(1, coordinateId);
               ps.setTimestamp(2, Timestamp.from(time.toInstant()));
             })
         .map(fieldMap -> weatherFactory.extractTime(fieldMap))
@@ -235,6 +243,25 @@ public class SqlWeatherSource extends WeatherSource {
    * @param timeColumnName the name of the column holding the timestamp info
    * @return the query string
    */
+  /**
+   * Creates a query that hands back the distinct coordinate ids the weather data refers to.
+   *
+   * @param schemaName the name of the database schema
+   * @param weatherTableName the name of the table holding the weather data
+   * @param coordinateIdColumnName the name of the column holding the coordinate id
+   * @return the query string
+   */
+  private static String createQueryStringForCoordinateIds(
+      String schemaName, String weatherTableName, String coordinateIdColumnName) {
+    return "SELECT DISTINCT "
+        + coordinateIdColumnName
+        + " FROM "
+        + schemaName
+        + "."
+        + weatherTableName
+        + ";";
+  }
+
   private static String createQueryStringForTimeKeysAfter(
       String schemaName, String weatherTableName, String timeColumnName) {
     return "SELECT coordinate_id, time FROM "

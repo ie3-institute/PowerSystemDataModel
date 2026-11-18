@@ -8,6 +8,7 @@ package edu.ie3.datamodel.io.source.csv
 import static edu.ie3.datamodel.models.StandardUnits.*
 
 import edu.ie3.datamodel.exceptions.NoDataException
+import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.factory.timeseries.CosmoTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
@@ -113,8 +114,10 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     given:
     def defaultCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
     def coordinateSource = Mock(IdCoordinateSource)
-    coordinateSource.getCoordinate(_) >> { args ->
-      args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty()
+    /* The weather files refer to their own coordinate ids, which have to resolve as well now */
+    coordinateSource.getCoordinate(_) >> defaultCoordinate
+    coordinateSource.getCoordinatesById(_) >> { args ->
+      args[0].collectEntries { id -> [(id): defaultCoordinate] }
     }
     def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
@@ -165,12 +168,14 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     actual.get().value.coordinateId == OptionalInt.of(5)
   }
 
-  def "The CsvWeatherSource returns no WeatherValue, if the coordinate field is empty"() {
+  def "The CsvWeatherSource throws an exception, if the coordinate field is empty"() {
     given:
     def defaultCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
     def coordinateSource = Mock(IdCoordinateSource)
-    coordinateSource.getCoordinate(_) >> { args ->
-      args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty()
+    /* The weather files refer to their own coordinate ids, which have to resolve as well now */
+    coordinateSource.getCoordinate(_) >> defaultCoordinate
+    coordinateSource.getCoordinatesById(_) >> { args ->
+      args[0].collectEntries { id -> [(id): defaultCoordinate] }
     }
     def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
@@ -186,18 +191,20 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     ]
 
     when:
-    def actual = source.buildWeatherValue(fieldToValues)
+    source.buildWeatherValue(fieldToValues)
 
     then:
-    actual.empty
+    thrown(SourceException)
   }
 
-  def "The CsvWeatherSource returns no WeatherValue, if the coordinate field is missing"() {
+  def "The CsvWeatherSource throws an exception, if the coordinate field is missing"() {
     given:
     def defaultCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
     def coordinateSource = Mock(IdCoordinateSource)
-    coordinateSource.getCoordinate(_) >> { args ->
-      args[0] == 5 ? Optional.of(defaultCoordinate) : Optional.empty()
+    /* The weather files refer to their own coordinate ids, which have to resolve as well now */
+    coordinateSource.getCoordinate(_) >> defaultCoordinate
+    coordinateSource.getCoordinatesById(_) >> { args ->
+      args[0].collectEntries { id -> [(id): defaultCoordinate] }
     }
     def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
@@ -212,16 +219,25 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     ]
 
     when:
-    def actual = source.buildWeatherValue(fieldToValues)
+    source.buildWeatherValue(fieldToValues)
 
     then:
-    actual.empty
+    thrown(SourceException)
   }
 
-  def "The CsvWeatherSource returns no WeatherValue, if the coordinate cannot be obtained"() {
+  def "The CsvWeatherSource throws an exception, if the coordinate cannot be obtained"() {
     given:
     def coordinateSource = Mock(IdCoordinateSource)
-    coordinateSource.getCoordinate(_) >> Optional.empty()
+    /* Resolves the ids of the weather files, but not the one used in the field map below */
+    coordinateSource.getCoordinate(_) >> { args ->
+      if (args[0] == 6) throw new SourceException("No coordinate found for the following coordinate ids: [6]")
+      return GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
+    }
+    coordinateSource.getCoordinatesById(_) >> { args ->
+      args[0].collectEntries { id ->
+        [(id): GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))]
+      }
+    }
     def weatherFactory = new CosmoTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
     def fieldToValues = [
@@ -236,10 +252,10 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     ]
 
     when:
-    def actual = source.buildWeatherValue(fieldToValues)
+    source.buildWeatherValue(fieldToValues)
 
     then:
-    actual.empty
+    thrown(SourceException)
   }
 
   def "A CsvWeatherSource falls back to the last known value when no exact weather data is found for a coordinate at a specific time"() {
@@ -285,9 +301,19 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     given:
     def phantomPoint = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(99d, 99d))
     def extendedSource = new WeatherTestData.DummyIdCoordinateSource() {
-          Optional<Integer> getId(Point point) {
-            if (point == phantomPoint) return Optional.of(99999)
+          int getId(Point point) throws SourceException {
+            if (point == phantomPoint) return 99999
             return super.getId(point)
+          }
+
+          @Override
+          Map<Integer, Point> getCoordinatesById(Collection<Integer> ids) throws SourceException {
+            if (ids.contains(99999)) {
+              Map<Integer, Point> resolved = new HashMap<>(super.getCoordinatesById(ids - 99999))
+              resolved.put(99999, phantomPoint)
+              return resolved
+            }
+            return super.getCoordinatesById(ids)
           }
         }
     def partialSource = new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), extendedSource, new CosmoTimeBasedWeatherValueFactory())
@@ -339,6 +365,30 @@ class CsvWeatherSourceCosmoTest extends Specification implements CsvTestDataMeta
     idToTimeSeries.keySet() == [193186, 193187] as Set
     WeatherSourceTestHelper.equalsIgnoreUUID(idToTimeSeries.get(193186), timeSeries193186)
     WeatherSourceTestHelper.equalsIgnoreUUID(idToTimeSeries.get(193187), timeSeries193187)
+  }
+
+  def "A CsvWeatherSource hands back the distinct coordinate ids present in its data"() {
+    when:
+    def actual = source.coordinateIds
+
+    then:
+    actual as Set == [193186, 193187, 193188] as Set
+  }
+
+  def "A CsvWeatherSource rejects weather data referencing an unknown coordinate id"() {
+    given: "a coordinate source that does not know the ids used in the weather files"
+    def emptyCoordinateSource = new WeatherTestData.DummyIdCoordinateSource() {
+          @Override
+          Map<Integer, Point> getCoordinatesById(Collection<Integer> ids) throws SourceException {
+            throw new SourceException("No coordinate found for the following coordinate ids: " + ids)
+          }
+        }
+
+    when:
+    new CsvWeatherSource(";", weatherCosmoFolderPath, new FileNamingStrategy(), emptyCoordinateSource, new CosmoTimeBasedWeatherValueFactory())
+
+    then: "the incompleteness surfaces while the source is set up, not in the middle of a run"
+    thrown(SourceException)
   }
 
   def "A CsvWeatherSource returns partial results for coordinate ids without data"() {

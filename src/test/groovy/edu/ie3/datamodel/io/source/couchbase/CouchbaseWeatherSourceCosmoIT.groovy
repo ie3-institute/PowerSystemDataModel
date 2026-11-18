@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.couchbase
 
 import edu.ie3.datamodel.exceptions.NoDataException
+import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.factory.timeseries.CosmoTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory
 import edu.ie3.datamodel.io.source.IdCoordinateSource
@@ -170,7 +171,7 @@ class CouchbaseWeatherSourceCosmoIT extends AbstractCouchbaseWeatherSourceIT {
     ]
   }
 
-  def "A CouchbaseWeatherSource throws NoDataException for invalid coordinate"() {
+  def "A CouchbaseWeatherSource throws a SourceException for an invalid coordinate"() {
     given:
     def invalidCoordinate = GeoUtils.buildPoint(999d, 999d)
 
@@ -178,26 +179,23 @@ class CouchbaseWeatherSourceCosmoIT extends AbstractCouchbaseWeatherSourceIT {
     source.getWeather(CosmoWeatherTestData.TIME_15H, invalidCoordinate)
 
     then:
-    def ex = thrown(NoDataException)
-    ex.message.contains("No coordinate ID found for the given point")
+    def ex = thrown(SourceException)
     ex.message.contains(invalidCoordinate.toString())
   }
 
-  def "A CouchbaseWeatherSource returns partial results for mixed valid and invalid coordinates"() {
+  def "A CouchbaseWeatherSource rejects a coordinate that cannot be matched to an id"() {
     given:
     def validCoordinate = CosmoWeatherTestData.COORDINATE_193186
     def invalidCoordinate = GeoUtils.buildPoint(999d, 999d)
     def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.TIME_17H)
 
     when:
-    def result = source.getWeather(timeInterval, [
+    source.getWeather(timeInterval, [
       validCoordinate,
       invalidCoordinate
     ])
 
-    then:
-    result.size() == 1
-    result.containsKey(validCoordinate)
-    !result.containsKey(invalidCoordinate)
+    then: "the unknown coordinate is an error instead of a silently skipped one"
+    thrown(SourceException)
   }
 }

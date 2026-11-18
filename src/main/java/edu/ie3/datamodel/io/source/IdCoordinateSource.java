@@ -32,24 +32,64 @@ public abstract class IdCoordinateSource extends EntitySource {
    *
    * @param id the ID to look up
    * @return matching coordinate
+   * @throws SourceException if the ID is not known to this source
    */
-  public abstract Optional<Point> getCoordinate(int id) throws SourceException;
+  public abstract Point getCoordinate(int id) throws SourceException;
+
+  /**
+   * Get the matching coordinates for the given IDs, mapped against the IDs they belong to.
+   *
+   * <p>Resolves all IDs at once, which saves a round trip per ID for sources that query a database.
+   *
+   * @param ids the IDs to look up
+   * @return the matching coordinates, mapped against their ID
+   * @throws SourceException if at least one of the IDs is not known to this source. The exception
+   *     names all of them, instead of reporting the first one only.
+   */
+  public abstract Map<Integer, Point> getCoordinatesById(Collection<Integer> ids)
+      throws SourceException;
 
   /**
    * Get the matching coordinates for the given IDs
    *
    * @param ids the IDs to look up
    * @return the matching coordinates
+   * @throws SourceException if at least one of the IDs is not known to this source
    */
-  public abstract Collection<Point> getCoordinates(int... ids) throws SourceException;
+  public Collection<Point> getCoordinates(int... ids) throws SourceException {
+    return getCoordinatesById(Arrays.stream(ids).boxed().distinct().toList()).values();
+  }
 
   /**
    * Get the ID for the coordinate point
    *
    * @param coordinate the coordinate to look up
    * @return the matching ID
+   * @throws SourceException if the coordinate is not known to this source
    */
-  public abstract Optional<Integer> getId(Point coordinate) throws SourceException;
+  public abstract int getId(Point coordinate) throws SourceException;
+
+  /**
+   * Checks that every requested ID could be resolved and hands back the resolved mapping.
+   *
+   * <p>Meant for the implementations of {@link #getCoordinatesById(Collection)}, so that all of
+   * them report missing IDs the same way.
+   *
+   * @param requested the IDs that were looked up
+   * @param resolved the mapping that was found for them
+   * @return the resolved mapping
+   * @throws SourceException if at least one of the requested IDs is missing from the mapping
+   */
+  protected static Map<Integer, Point> checkForMissingIds(
+      Collection<Integer> requested, Map<Integer, Point> resolved) throws SourceException {
+    Set<Integer> missing = new TreeSet<>(requested);
+    missing.removeAll(resolved.keySet());
+
+    if (!missing.isEmpty())
+      throw new SourceException("No coordinate found for the following coordinate ids: " + missing);
+
+    return resolved;
+  }
 
   /**
    * Returns all the coordinates of this source

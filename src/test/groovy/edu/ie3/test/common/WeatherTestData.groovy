@@ -27,30 +27,36 @@ abstract class WeatherTestData {
       return Optional.empty()
     }
 
-    Optional<Point> getCoordinate(int id) {
-      switch (id) {
-        case 193186: return Optional.of(GeoUtils.buildPoint(7d, 49d))
-        case 193187: return Optional.of(GeoUtils.buildPoint(8d, 49d))
-        case 193188: return Optional.of(GeoUtils.buildPoint(7d, 50d))
-        case 67775: return Optional.of(GeoUtils.buildPoint(8d, 50d))
-        case 67776: return Optional.of(GeoUtils.buildPoint(7d, 51d))
+    private static final Map<Integer, Point> MAPPING = [
+      (193186): GeoUtils.buildPoint(7d, 49d),
+      (193187): GeoUtils.buildPoint(8d, 49d),
+      (193188): GeoUtils.buildPoint(7d, 50d),
+      (67775) : GeoUtils.buildPoint(8d, 50d),
+      (67776) : GeoUtils.buildPoint(7d, 51d)
+    ]
+
+    @Override
+    Point getCoordinate(int id) throws SourceException {
+      return getCoordinatesById([id]).get(id)
+    }
+
+    @Override
+    Map<Integer, Point> getCoordinatesById(Collection<Integer> ids) throws SourceException {
+      Map<Integer, Point> resolved = [:]
+      ids.each { id ->
+        if (MAPPING.containsKey(id)) resolved.put(id, MAPPING.get(id))
       }
-      return Optional.empty()
+      return checkForMissingIds(ids, resolved)
     }
+
     @Override
-    Collection<Point> getCoordinates(int... ids) {
-      return Stream.of(ids).map(this.&getCoordinate).filter({ c ->
-        c != null
-      }).collect(Collectors.toSet())
-    }
-    @Override
-    Optional<Integer> getId(Point coordinate) {
-      if (coordinate.x == 49 && coordinate.y == 7) return Optional.of(193186)
-      if (coordinate.x == 49 && coordinate.y == 8) return Optional.of(193187)
-      if (coordinate.x == 50 && coordinate.y == 7) return Optional.of(193188)
-      if (coordinate.x == 50 && coordinate.y == 8) return Optional.of(67775)
-      if (coordinate.x == 51 && coordinate.y == 7) return Optional.of(67776)
-      return Optional.empty()
+    int getId(Point coordinate) throws SourceException {
+      if (coordinate.x == 49 && coordinate.y == 7) return 193186
+      if (coordinate.x == 49 && coordinate.y == 8) return 193187
+      if (coordinate.x == 50 && coordinate.y == 7) return 193188
+      if (coordinate.x == 50 && coordinate.y == 8) return 67775
+      if (coordinate.x == 51 && coordinate.y == 7) return 67776
+      throw new SourceException("No coordinate id found for the point " + coordinate)
     }
 
     @Override
@@ -86,9 +92,9 @@ abstract class WeatherTestData {
 
   public static final IdCoordinateSource coordinateSource = new DummyIdCoordinateSource()
 
-  public static final Point COORDINATE_193186 = coordinateSource.getCoordinate(193186).get()
-  public static final Point COORDINATE_193187 = coordinateSource.getCoordinate(193187).get()
-  public static final Point COORDINATE_193188 = coordinateSource.getCoordinate(193188).get()
-  public static final Point COORDINATE_67775 = coordinateSource.getCoordinate(67775).get()
-  public static final Point COORDINATE_67776 = coordinateSource.getCoordinate(67776).get()
+  public static final Point COORDINATE_193186 = coordinateSource.getCoordinate(193186)
+  public static final Point COORDINATE_193187 = coordinateSource.getCoordinate(193187)
+  public static final Point COORDINATE_193188 = coordinateSource.getCoordinate(193188)
+  public static final Point COORDINATE_67775 = coordinateSource.getCoordinate(67775)
+  public static final Point COORDINATE_67776 = coordinateSource.getCoordinate(67776)
 }

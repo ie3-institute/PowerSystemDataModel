@@ -67,6 +67,8 @@ public class CsvWeatherSource extends WeatherSource {
     super(idCoordinateSource, weatherFactory);
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
     this.idToTimeSeries = getWeatherTimeSeries();
+
+    checkCoordinateCompleteness();
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -74,6 +76,11 @@ public class CsvWeatherSource extends WeatherSource {
   @Override
   public void validate() throws ValidationException {
     DataSource.validate(headlineFields, getInputClass());
+  }
+
+  @Override
+  public Collection<Integer> getCoordinateIds() {
+    return idToTimeSeries.keySet();
   }
 
   @Override
@@ -116,12 +123,9 @@ public class CsvWeatherSource extends WeatherSource {
   @Override
   public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
       throws SourceException, NoDataException {
-    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
+    int coordinateId = idCoordinateSource.getId(coordinate);
 
-    if (coordinateId.isEmpty())
-      throw new NoDataException("No coordinate ID found for the given point: " + coordinate);
-
-    IndividualTimeSeries<WeatherValue> timeSeries = idToTimeSeries.get(coordinateId.get());
+    IndividualTimeSeries<WeatherValue> timeSeries = idToTimeSeries.get(coordinateId);
 
     if (timeSeries == null) {
       throw new NoDataException("No weather data found for the given coordinate: " + coordinate);
@@ -164,9 +168,7 @@ public class CsvWeatherSource extends WeatherSource {
   @Override
   public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time, Point coordinate)
       throws SourceException {
-    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
-    if (coordinateId.isEmpty()) return Collections.emptyList();
-    return getTimeKeysAfterById(time, coordinateId.get());
+    return getTimeKeysAfterById(time, idCoordinateSource.getId(coordinate));
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -305,24 +307,17 @@ public class CsvWeatherSource extends WeatherSource {
    */
   private Optional<TimeBasedValue<WeatherValue>> buildWeatherValue(
       Map<String, String> fieldToValues) throws SourceException {
-    /* Try to get the coordinate from entries */
-    Optional<Point> maybeCoordinate = extractCoordinate(fieldToValues);
-    return maybeCoordinate
-        .map(coordinate -> {
-          /* Remove coordinate entry from fields, but retain its id */
-          String coordinateValue =
-              fieldToValues.remove(weatherFactory.getCoordinateIdFieldString());
-          int coordinateId = Integer.parseInt(coordinateValue);
+    /* Get the coordinate from entries */
+    Point coordinate = extractCoordinate(fieldToValues);
 
-          /* Build factory data */
-          TimeBasedWeatherValueData factoryData =
-              new TimeBasedWeatherValueData(new FieldMap(fieldToValues), coordinate, coordinateId);
-          return weatherFactory.get(factoryData).getData();
-        })
-        .orElseGet(() -> {
-          log.error("Unable to find coordinate for entry '{}'.", fieldToValues);
-          return Optional.empty();
-        });
+    /* Remove coordinate entry from fields, but retain its id */
+    String coordinateValue = fieldToValues.remove(weatherFactory.getCoordinateIdFieldString());
+    int coordinateId = Integer.parseInt(coordinateValue);
+
+    /* Build factory data */
+    TimeBasedWeatherValueData factoryData =
+        new TimeBasedWeatherValueData(new FieldMap(fieldToValues), coordinate, coordinateId);
+    return weatherFactory.get(factoryData).getData();
   }
 
   /**
@@ -332,16 +327,16 @@ public class CsvWeatherSource extends WeatherSource {
    * @param fieldToValues "flat " input information as a mapping from field to value
    * @return Optional time based weather value
    */
-  private Optional<Point> extractCoordinate(Map<String, String> fieldToValues)
-      throws SourceException {
+  private Point extractCoordinate(Map<String, String> fieldToValues) throws SourceException {
     String coordinateString = fieldToValues.get(weatherFactory.getCoordinateIdFieldString());
-    if (Objects.isNull(coordinateString) || coordinateString.isEmpty()) {
-      log.error(
-          "Cannot parse weather value. Unable to find field '{}' in data: {}",
-          weatherFactory.getCoordinateIdFieldString(),
-          fieldToValues);
-      return Optional.empty();
-    }
+
+    if (Objects.isNull(coordinateString) || coordinateString.isEmpty())
+      throw new SourceException(
+          "Cannot parse weather value. Unable to find field '"
+              + weatherFactory.getCoordinateIdFieldString()
+              + "' in data: "
+              + fieldToValues);
+
     int coordinateId = Integer.parseInt(coordinateString);
     return idCoordinateSource.getCoordinate(coordinateId);
   }

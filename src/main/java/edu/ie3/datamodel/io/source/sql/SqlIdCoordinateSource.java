@@ -7,6 +7,7 @@ package edu.ie3.datamodel.io.source.sql;
 
 import static edu.ie3.datamodel.io.source.sql.SqlDataSource.createBaseQueryString;
 
+import edu.ie3.datamodel.exceptions.FailedValidationException;
 import edu.ie3.datamodel.exceptions.SourceException;
 import edu.ie3.datamodel.exceptions.ValidationException;
 import edu.ie3.datamodel.io.connectors.SqlConnector;
@@ -20,6 +21,7 @@ import edu.ie3.util.geo.CoordinateDistance;
 import edu.ie3.util.geo.GeoUtils;
 import java.sql.Array;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.measure.quantity.Length;
 import org.locationtech.jts.geom.Envelope;
@@ -41,6 +43,7 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
   private final String queryForId;
   private final String queryForBoundingBox;
   private final String queryForNearestPoints;
+  private final String queryForUniqueness;
 
   private final String coordinateTableName;
   private final SqlDataSource dataSource;
@@ -66,6 +69,9 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
     this.queryForNearestPoints =
         createQueryForNearestPoints(
             dataSource.schemaName, coordinateTableName, dbIdColumnName, dbPointColumnName);
+    this.queryForUniqueness =
+        createQueryForUniqueness(
+            dataSource.schemaName, coordinateTableName, dbIdColumnName, dbPointColumnName);
   }
 
   /**
@@ -90,6 +96,41 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
   @Override
   public void validate() throws ValidationException {
     validate(IdCoordinateInput.SqlIdCoordinateInput.class, this::getSourceFields);
+
+    try {
+      checkUniqueness();
+    } catch (SourceException e) {
+      throw new FailedValidationException(
+          "The coordinates of table '" + coordinateTableName + "' are not unique.", e);
+    }
+  }
+
+  /**
+   * Checks that the source is consistent with itself, meaning that neither a coordinate id nor a
+   * coordinate occurs twice.
+   *
+   * <p>Uses a single aggregate query, so the table does not have to be read.
+   *
+   * @throws SourceException if an id or a coordinate occurs more than once
+   */
+  public void checkUniqueness() throws SourceException {
+    Map<String, String> counts =
+        dataSource
+            .executeQuery(queryForUniqueness)
+            .findFirst()
+            .orElseThrow(() -> new SourceException("Unable to count the entries of the source."));
+
+    int total = Integer.parseInt(counts.get("total"));
+    int ids = Integer.parseInt(counts.get("ids"));
+    int points = Integer.parseInt(counts.get("points"));
+
+    if (total != ids)
+      throw new SourceException(
+          "The source holds " + total + " entries, but only " + ids + " distinct coordinate ids.");
+
+    if (total != points)
+      throw new SourceException(
+          "The source holds " + total + " entries, but only " + points + " distinct coordinates.");
   }
 
   @Override
@@ -98,33 +139,35 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
   }
 
   @Override
-  public Optional<Point> getCoordinate(int id) throws SourceException {
+  public Point getCoordinate(int id) throws SourceException {
     List<CoordinateValue> values =
         executeQueryToStream(queryForPoint, ps -> ps.setInt(1, id)).toList();
 
-    if (values.isEmpty()) {
-      return Optional.empty();
-    } else {
-      return Optional.of(values.getFirst().coordinate);
-    }
+    if (values.isEmpty())
+      throw new SourceException(
+          "No coordinate found for the following coordinate ids: [" + id + "]");
+
+    return values.getFirst().coordinate;
   }
 
   @Override
-  public Collection<Point> getCoordinates(int... ids) throws SourceException {
-    Object[] idSet = Arrays.stream(ids).boxed().distinct().toArray();
+  public Map<Integer, Point> getCoordinatesById(Collection<Integer> ids) throws SourceException {
+    Object[] idSet = ids.stream().distinct().toArray();
 
-    return executeQueryToStream(
-            queryForPoints,
-            ps -> {
-              Array sqlArray = ps.getConnection().createArrayOf("int", idSet);
-              ps.setArray(1, sqlArray);
-            })
-        .map(value -> value.coordinate)
-        .toList();
+    Map<Integer, Point> resolved =
+        executeQueryToStream(
+                queryForPoints,
+                ps -> {
+                  Array sqlArray = ps.getConnection().createArrayOf("int", idSet);
+                  ps.setArray(1, sqlArray);
+                })
+            .collect(Collectors.toMap(value -> value.id, value -> value.coordinate));
+
+    return checkForMissingIds(ids, resolved);
   }
 
   @Override
-  public Optional<Integer> getId(Point coordinate) throws SourceException {
+  public int getId(Point coordinate) throws SourceException {
     double latitude = coordinate.getY();
     double longitude = coordinate.getX();
 
@@ -137,11 +180,10 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
                 })
             .toList();
 
-    if (values.isEmpty()) {
-      return Optional.empty();
-    } else {
-      return Optional.of(values.getFirst().id);
-    }
+    if (values.isEmpty())
+      throw new SourceException("No coordinate id found for the point " + coordinate);
+
+    return values.getFirst().id;
   }
 
   @Override
@@ -256,6 +298,29 @@ public class SqlIdCoordinateSource extends IdCoordinateSource {
    * @param pointColumn the name of the column holding the geometry information
    * @return the query string
    */
+  /**
+   * Creates a query that counts the entries of the table as well as the distinct coordinate ids and
+   * the distinct coordinates, so that duplicates can be spotted without reading the table.
+   *
+   * @param schemaName the name of the database schema
+   * @param tableName the name of the table holding the coordinates
+   * @param idColumn the name of the column holding the id info
+   * @param pointColumn the name of the column holding the geometry information
+   * @return the query string
+   */
+  private String createQueryForUniqueness(
+      String schemaName, String tableName, String idColumn, String pointColumn) {
+    return "SELECT COUNT(*) AS total, COUNT(DISTINCT "
+        + idColumn
+        + ") AS ids, COUNT(DISTINCT ST_AsText("
+        + pointColumn
+        + ")) AS points FROM "
+        + schemaName
+        + "."
+        + tableName
+        + "; ";
+  }
+
   private String createQueryForBoundingBox(String pointColumn) {
     return basicQuery
         + WHERE

@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.csv
 
 import edu.ie3.datamodel.exceptions.NoDataException
+import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.factory.timeseries.IconTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.io.naming.FileNamingStrategy
 import edu.ie3.datamodel.io.source.IdCoordinateSource
@@ -104,8 +105,9 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta 
     given:
     def expectedCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(7.4116482, 51.4843281))
     def coordinateSource = Mock(IdCoordinateSource)
-    coordinateSource.getCoordinate(_) >> { args ->
-      args[0] == 67775 ? Optional.of(expectedCoordinate) : Optional.empty()
+    coordinateSource.getCoordinate(_) >> expectedCoordinate
+    coordinateSource.getCoordinatesById(_) >> { args ->
+      args[0].collectEntries { id -> [(id): expectedCoordinate] }
     }
     def weatherFactory = new IconTimeBasedWeatherValueFactory()
     def source = new CsvWeatherSource(",", weatherIconFolderPath, new FileNamingStrategy(), coordinateSource, weatherFactory)
@@ -148,11 +150,10 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta 
     def actual = source.extractCoordinate(fieldToValues)
 
     then:
-    actual.present
-    actual.get() == expectedCoordinate
+    actual == expectedCoordinate
   }
 
-  def "The CsvWeatherSource returns no WeatherValue, if the coordinate field is empty"() {
+  def "The CsvWeatherSource throws an exception, if the coordinate field is empty"() {
     given:
     def coordinateSource = new WeatherTestData.DummyIdCoordinateSource()
     def weatherFactory = new IconTimeBasedWeatherValueFactory()
@@ -191,13 +192,13 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta 
     ]
 
     when:
-    def actual = source.buildWeatherValue(fieldToValues)
+    source.buildWeatherValue(fieldToValues)
 
     then:
-    actual.empty
+    thrown(SourceException)
   }
 
-  def "The CsvWeatherSource returns no WeatherValue, if the coordinate field is missing"() {
+  def "The CsvWeatherSource throws an exception, if the coordinate field is missing"() {
     given:
     def coordinateSource = new WeatherTestData.DummyIdCoordinateSource()
     def weatherFactory = new IconTimeBasedWeatherValueFactory()
@@ -235,13 +236,13 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta 
     ]
 
     when:
-    def actual = source.buildWeatherValue(fieldToValues)
+    source.buildWeatherValue(fieldToValues)
 
     then:
-    actual.empty
+    thrown(SourceException)
   }
 
-  def "The CsvWeatherSource returns no WeatherValue, if the coordinate cannot be obtained"() {
+  def "The CsvWeatherSource throws an exception, if the coordinate cannot be obtained"() {
     given:
     def coordinateSource = new WeatherTestData.DummyIdCoordinateSource()
     def weatherFactory = new IconTimeBasedWeatherValueFactory()
@@ -280,10 +281,10 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta 
     ]
 
     when:
-    def actual = source.buildWeatherValue(fieldToValues)
+    source.buildWeatherValue(fieldToValues)
 
     then:
-    actual.empty
+    thrown(SourceException)
   }
 
   def "The CsvWeatherSource returns all time keys after a given time key correctly"() {
@@ -303,7 +304,7 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta 
     actual.get(IconWeatherTestData.COORDINATE_67776) == [IconWeatherTestData.TIME_16H]
   }
 
-  def "A CsvWeatherSource throws NoDataException when no weather data is found for coordinate"() {
+  def "A CsvWeatherSource throws a SourceException for an unknown coordinate"() {
     given:
     def unknownCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(0.0, 0.0))
 
@@ -311,8 +312,7 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta 
     source.getWeather(IconWeatherTestData.TIME_15H, unknownCoordinate)
 
     then:
-    def ex = thrown(NoDataException)
-    ex.message.contains("No coordinate ID found for the given point")
+    def ex = thrown(SourceException)
     ex.message.contains(unknownCoordinate.toString())
   }
 
@@ -359,9 +359,19 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta 
     given:
     def phantomPoint = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(99d, 99d))
     def extendedSource = new WeatherTestData.DummyIdCoordinateSource() {
-          Optional<Integer> getId(Point point) {
-            if (point == phantomPoint) return Optional.of(99999)
+          int getId(Point point) throws SourceException {
+            if (point == phantomPoint) return 99999
             return super.getId(point)
+          }
+
+          @Override
+          Map<Integer, Point> getCoordinatesById(Collection<Integer> ids) throws SourceException {
+            if (ids.contains(99999)) {
+              Map<Integer, Point> resolved = new HashMap<>(super.getCoordinatesById(ids - 99999))
+              resolved.put(99999, phantomPoint)
+              return resolved
+            }
+            return super.getCoordinatesById(ids)
           }
         }
     def partialSource = new CsvWeatherSource(",", weatherIconFolderPath, new FileNamingStrategy(), extendedSource, new IconTimeBasedWeatherValueFactory())
@@ -393,21 +403,19 @@ class CsvWeatherSourceIconTest extends Specification implements CsvTestDataMeta 
     ]
   }
 
-  def "A CsvWeatherSource returns partial results for mixed valid and invalid coordinates"() {
+  def "A CsvWeatherSource rejects a coordinate that cannot be matched to an id"() {
     given:
     def validCoordinate = IconWeatherTestData.COORDINATE_67775
     def invalidCoordinate = GeoUtils.DEFAULT_GEOMETRY_FACTORY.createPoint(new Coordinate(999d, 999d))
     def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H, IconWeatherTestData.TIME_17H)
 
     when:
-    def result = source.getWeather(timeInterval, [
+    source.getWeather(timeInterval, [
       validCoordinate,
       invalidCoordinate
     ])
 
-    then:
-    result.size() == 1
-    result.containsKey(validCoordinate)
-    !result.containsKey(invalidCoordinate)
+    then: "the unknown coordinate is an error instead of a silently skipped one"
+    thrown(SourceException)
   }
 }

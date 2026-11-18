@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.csv
 
+import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.factory.timeseries.IconIdCoordinateFactory
 import edu.ie3.util.geo.CoordinateDistance
 import edu.ie3.util.geo.GeoUtils
@@ -41,23 +42,24 @@ class CsvIdCoordinateSourceIconIT extends Specification implements CsvTestDataMe
     actualStream.data.get().toList() == expectedStream.toList()
   }
 
-  def "The CsvIdCoordinateSource is able to look up a specific point or an empty Optional otherwise" () {
+  def "The CsvIdCoordinateSource is able to look up a specific point" () {
     given:
     def knownCoordinateId = 551525
-    def expectedPointA = Optional.of(GeoUtils.buildPoint(51.438, 7.438))
-    def unknownCoordinateId = 42
 
-    when: "looking up a known coordinate id"
-    def actualPointA = source.getCoordinate(knownCoordinateId)
+    when:
+    def actualPoint = source.getCoordinate(knownCoordinateId)
 
-    then: "we get the expected point"
-    actualPointA == expectedPointA
+    then:
+    actualPoint == GeoUtils.buildPoint(51.438, 7.438)
+  }
 
-    when: "looking up an unknown coordinate id"
-    def actualPointB = source.getCoordinate(unknownCoordinateId)
+  def "The CsvIdCoordinateSource throws an exception if a coordinate id is unknown" () {
+    when:
+    source.getCoordinate(42)
 
-    then: "we get an empty optional"
-    actualPointB == Optional.empty()
+    then:
+    def ex = thrown(SourceException)
+    ex.message.contains("42")
   }
 
   def "The CsvIdCoordinateSource is able to look up specified points" () {
@@ -72,25 +74,26 @@ class CsvIdCoordinateSourceIconIT extends Specification implements CsvTestDataMe
     def actualCoordinates = source.getCoordinates(ids)
 
     then:
-    actualCoordinates == expectedCoordinates
+    actualCoordinates.toSet() == expectedCoordinates
   }
 
-  def "The CsvIdCoordinateSource is able to return a specific ID or an empty Optional otherwise" () {
+  def "The CsvIdCoordinateSource is able to return a specific ID" () {
+    given:
     def knownCoordinate = GeoUtils.buildPoint(51.438, 7.438)
-    def expectedIdForA = Optional.of(551525)
-    def unknownCoordinate = GeoUtils.buildPoint(48.035011, 14.39335)
 
-    when: "looking up an id of a known coordinate"
-    def actualIdForA = source.getId(knownCoordinate)
+    when:
+    def actualId = source.getId(knownCoordinate)
 
-    then: "we get the matching id"
-    actualIdForA == expectedIdForA
+    then:
+    actualId == 551525
+  }
 
-    when: "looking up an unknown coordinate"
-    def actualIdForB = source.getId(unknownCoordinate)
+  def "The CsvIdCoordinateSource throws an exception if a coordinate is unknown" () {
+    when:
+    source.getId(GeoUtils.buildPoint(48.035011, 14.39335))
 
-    then: "we get nothing"
-    actualIdForB == Optional.empty()
+    then:
+    thrown(SourceException)
   }
 
   def "The CsvIdCoordinateSource is able to return a count of all available coordinates" () {

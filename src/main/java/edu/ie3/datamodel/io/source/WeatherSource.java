@@ -146,12 +146,13 @@ public abstract class WeatherSource extends EntitySource {
       throws SourceException, NoDataException;
 
   /**
-   * Returns the weather for the given time interval and coordinates. Coordinates that cannot be
-   * matched to an id are logged and skipped.
+   * Returns the weather for the given time interval and coordinates.
    *
    * @param timeInterval the queried time interval
    * @param coordinates the queried coordinates
    * @return a map of coordinate to time series
+   * @throws SourceException if one of the coordinates is not known to the {@link
+   *     IdCoordinateSource}
    */
   public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
@@ -160,22 +161,10 @@ public abstract class WeatherSource extends EntitySource {
       throw new NoDataException("No coordinates provided for weather data query.");
 
     Set<Integer> coordinateIds = new LinkedHashSet<>();
-    List<Point> unknownCoordinates = new ArrayList<>();
 
     for (Point coordinate : coordinates) {
-      Optional<Integer> id = idCoordinateSource.getId(coordinate);
-
-      if (id.isPresent()) {
-        coordinateIds.add(id.get());
-      } else {
-        unknownCoordinates.add(coordinate);
-      }
+      coordinateIds.add(idCoordinateSource.getId(coordinate));
     }
-
-    if (!unknownCoordinates.isEmpty())
-      log.warn(
-          "Unable to find coordinate IDs for the following coordinates, skipping: {}",
-          unknownCoordinates);
 
     return toCoordinateKeys(getWeatherById(timeInterval, coordinateIds));
   }
@@ -199,6 +188,28 @@ public abstract class WeatherSource extends EntitySource {
    */
   public abstract TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
       throws SourceException, NoDataException;
+
+  /**
+   * Returns the distinct coordinate ids the data of this source refers to.
+   *
+   * @return all coordinate ids occurring in the data
+   */
+  public abstract Collection<Integer> getCoordinateIds() throws SourceException;
+
+  /**
+   * Checks that every coordinate id occurring in the data of this source can be matched to a
+   * coordinate.
+   *
+   * <p>Meant to be called when the source is set up, so that incomplete data surfaces right away
+   * instead of in the middle of a run. Resolves all ids in one batch, so the check costs one query
+   * instead of one per id.
+   *
+   * @throws SourceException if at least one coordinate id cannot be matched. The exception names
+   *     all of them.
+   */
+  protected void checkCoordinateCompleteness() throws SourceException {
+    idCoordinateSource.getCoordinatesById(getCoordinateIds());
+  }
 
   /**
    * Returns all time keys after the given timestamp, mapped against the coordinate ids.
@@ -245,19 +256,16 @@ public abstract class WeatherSource extends EntitySource {
    *
    * @param fieldMap the field to value map for one TimeBasedValue
    * @return the TimeBasedWeatherValueData
+   * @throws SourceException if the coordinate id is not known to the {@link IdCoordinateSource}
    */
-  protected Optional<TimeBasedWeatherValueData> toTimeBasedWeatherValueData(
-      Map<String, String> fieldMap) throws SourceException {
+  protected TimeBasedWeatherValueData toTimeBasedWeatherValueData(Map<String, String> fieldMap)
+      throws SourceException {
     String coordinateValue = fieldMap.remove(WEATHER_COORDINATE_ID);
     fieldMap.putIfAbsent("uuid", UUID.randomUUID().toString());
     int coordinateId = Integer.parseInt(coordinateValue);
-    Optional<Point> coordinate = idCoordinateSource.getCoordinate(coordinateId);
-    if (coordinate.isEmpty()) {
-      log.warn("Unable to match coordinate ID {} to a point", coordinateId);
-      return Optional.empty();
-    }
-    return Optional.of(
-        new TimeBasedWeatherValueData(new FieldMap(fieldMap), coordinate.get(), coordinateId));
+    Point coordinate = idCoordinateSource.getCoordinate(coordinateId);
+
+    return new TimeBasedWeatherValueData(new FieldMap(fieldMap), coordinate, coordinateId);
   }
 
   /**
@@ -314,25 +322,21 @@ public abstract class WeatherSource extends EntitySource {
 
   /**
    * Translates a map that is keyed by coordinate id into one that is keyed by the corresponding
-   * {@link Point}. Ids that cannot be matched to a coordinate are logged and dropped.
+   * {@link Point}.
+   *
+   * <p>Resolves all ids in one batch, so that sources querying a database do not need a round trip
+   * per id.
    *
    * @param byId the map keyed by coordinate id
    * @param <V> type of the mapped values
    * @return the same content, keyed by coordinate
-   * @throws SourceException if the coordinates cannot be read
+   * @throws SourceException if the coordinates cannot be read or one of the ids is unknown
    */
   protected <V> Map<Point, V> toCoordinateKeys(Map<Integer, V> byId) throws SourceException {
+    Map<Integer, Point> coordinates = idCoordinateSource.getCoordinatesById(byId.keySet());
     Map<Point, V> result = new HashMap<>();
 
-    for (Map.Entry<Integer, V> entry : byId.entrySet()) {
-      Optional<Point> coordinate = idCoordinateSource.getCoordinate(entry.getKey());
-
-      if (coordinate.isEmpty()) {
-        log.warn("Unable to match coordinate ID {} to a point", entry.getKey());
-      } else {
-        result.put(coordinate.get(), entry.getValue());
-      }
-    }
+    byId.forEach((coordinateId, value) -> result.put(coordinates.get(coordinateId), value));
 
     return result;
   }
@@ -449,7 +453,6 @@ public abstract class WeatherSource extends EntitySource {
             "weather value data",
             SourceException::new)
         .getOrThrow()
-        .flatMap(Optional::stream)
         .map(factory::get)
         .map(tryResult -> {
           if (tryResult.isFailure()) {

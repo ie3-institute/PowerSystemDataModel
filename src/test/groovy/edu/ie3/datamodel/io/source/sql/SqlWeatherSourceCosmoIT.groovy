@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.sql
 
 import edu.ie3.datamodel.exceptions.NoDataException
+import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.factory.timeseries.CosmoTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
@@ -61,7 +62,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     WeatherSourceTestHelper.equalsIgnoreUUID(optTimeBasedValue, expectedTimeBasedValue)
   }
 
-  def "A SqlWeatherSource throws NoDataException for an invalid coordinate"() {
+  def "A SqlWeatherSource throws a SourceException for an invalid coordinate"() {
     given:
     def invalidCoordinate = GeoUtils.buildPoint(89d, 88d)
 
@@ -69,8 +70,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     source.getWeather(CosmoWeatherTestData.TIME_15H, invalidCoordinate)
 
     then:
-    def ex = thrown(NoDataException)
-    ex.message.contains("No coordinate ID found for the given point")
+    def ex = thrown(SourceException)
     ex.message.contains(invalidCoordinate.toString())
   }
 
@@ -101,7 +101,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193187), timeSeries193187)
   }
 
-  def "A SqlWeatherSource throws NoDataException for invalid coordinates"() {
+  def "A SqlWeatherSource throws a SourceException for an invalid coordinates"() {
     given:
     def coordinates = [
       GeoUtils.buildPoint(89d, 88d),
@@ -113,8 +113,7 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     source.getWeather(timeInterval, coordinates)
 
     then:
-    def ex = thrown(NoDataException)
-    ex.message.contains("No weather data found for any of the requested coordinates in the given time interval")
+    thrown(SourceException)
   }
 
   def "A SqlWeatherSource can read all weather data in a given time interval"() {
@@ -202,21 +201,19 @@ class SqlWeatherSourceCosmoIT extends Specification implements TestContainerHelp
     actual.get(CosmoWeatherTestData.COORDINATE_193187) == [CosmoWeatherTestData.TIME_16H]
   }
 
-  def "A SqlWeatherSource returns partial results for mixed valid and invalid coordinates"() {
+  def "A SqlWeatherSource rejects a coordinate that cannot be matched to an id"() {
     given:
     def validCoordinate = CosmoWeatherTestData.COORDINATE_193186
     def invalidCoordinate = GeoUtils.buildPoint(999d, 999d)
     def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.TIME_17H)
 
     when:
-    def result = source.getWeather(timeInterval, [
+    source.getWeather(timeInterval, [
       validCoordinate,
       invalidCoordinate
     ])
 
-    then:
-    result.size() == 1
-    result.containsKey(validCoordinate)
-    !result.containsKey(invalidCoordinate)
+    then: "the unknown coordinate is an error instead of a silently skipped one"
+    thrown(SourceException)
   }
 }

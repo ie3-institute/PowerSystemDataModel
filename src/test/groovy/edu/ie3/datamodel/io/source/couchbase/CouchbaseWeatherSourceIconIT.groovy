@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.couchbase
 
 import edu.ie3.datamodel.exceptions.NoDataException
+import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.factory.timeseries.IconTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.io.factory.timeseries.TimeBasedWeatherValueFactory
 import edu.ie3.datamodel.io.source.IdCoordinateSource
@@ -128,7 +129,7 @@ class CouchbaseWeatherSourceIconIT extends AbstractCouchbaseWeatherSourceIT {
     ]
   }
 
-  def "A CouchbaseWeatherSource throws NoDataException for invalid coordinate"() {
+  def "A CouchbaseWeatherSource throws a SourceException for an invalid coordinate"() {
     given:
     def invalidCoordinate = GeoUtils.buildPoint(999d, 999d)
 
@@ -136,8 +137,7 @@ class CouchbaseWeatherSourceIconIT extends AbstractCouchbaseWeatherSourceIT {
     source.getWeather(IconWeatherTestData.TIME_15H, invalidCoordinate)
 
     then:
-    def ex = thrown(NoDataException)
-    ex.message.contains("No coordinate ID found for the given point")
+    def ex = thrown(SourceException)
     ex.message.contains(invalidCoordinate.toString())
   }
 
@@ -180,21 +180,19 @@ class CouchbaseWeatherSourceIconIT extends AbstractCouchbaseWeatherSourceIT {
     ex.message.contains("exceeds the maximum fallback")
   }
 
-  def "A CouchbaseWeatherSource returns partial results for mixed valid and invalid coordinates"() {
+  def "A CouchbaseWeatherSource rejects a coordinate that cannot be matched to an id"() {
     given:
     def validCoordinate = IconWeatherTestData.COORDINATE_67775
     def invalidCoordinate = GeoUtils.buildPoint(999d, 999d)
     def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H, IconWeatherTestData.TIME_17H)
 
     when:
-    def result = source.getWeather(timeInterval, [
+    source.getWeather(timeInterval, [
       validCoordinate,
       invalidCoordinate
     ])
 
-    then:
-    result.size() == 1
-    result.containsKey(validCoordinate)
-    !result.containsKey(invalidCoordinate)
+    then: "the unknown coordinate is an error instead of a silently skipped one"
+    thrown(SourceException)
   }
 }

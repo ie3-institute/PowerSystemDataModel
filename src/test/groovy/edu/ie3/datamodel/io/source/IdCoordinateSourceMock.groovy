@@ -21,18 +21,18 @@ class IdCoordinateSourceMock extends IdCoordinateSource {
   }
 
   @Override
-  Optional<Point> getCoordinate(int id) {
-    return Optional.empty()
+  Point getCoordinate(int id) throws SourceException {
+    throw new SourceException("No coordinate found for the following coordinate ids: [" + id + "]")
   }
 
   @Override
-  Collection<Point> getCoordinates(int ... ids) {
-    return Collections.emptyList()
+  Map<Integer, Point> getCoordinatesById(Collection<Integer> ids) throws SourceException {
+    return checkForMissingIds(ids, Collections.emptyMap())
   }
 
   @Override
-  Optional<Integer> getId(Point coordinate) {
-    return Optional.empty()
+  int getId(Point coordinate) throws SourceException {
+    throw new SourceException("No coordinate id found for the point " + coordinate)
   }
 
   @Override

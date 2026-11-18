@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.influxdb
 
 import edu.ie3.datamodel.exceptions.NoDataException
+import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.connectors.InfluxDbConnector
 import edu.ie3.datamodel.io.factory.timeseries.CosmoTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
@@ -126,7 +127,7 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
     WeatherSourceTestHelper.equalsIgnoreUUID(coordinateToTimeSeries.get(CosmoWeatherTestData.COORDINATE_193188).entries, timeseries_193188.entries)
   }
 
-  def "An InfluxDbWeatherSource will throw NoDataException when being unable to map a coordinate to its ID"() {
+  def "An InfluxDbWeatherSource will throw a SourceException when being unable to map a coordinate to its ID"() {
     given:
     def validCoordinate = CosmoWeatherTestData.COORDINATE_193186
     def invalidCoordinate = GeoUtils.buildPoint(7d, 48d)
@@ -135,29 +136,25 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
     when: "requesting weather for an invalid coordinate at a specific date"
     source.getWeather(time, invalidCoordinate)
 
-    then: "NoDataException is thrown"
-    def ex1 = thrown(NoDataException)
-    ex1.message.contains("No coordinate ID found for the given point")
+    then: "a SourceException is thrown"
+    def ex1 = thrown(SourceException)
     ex1.message.contains(invalidCoordinate.toString())
 
     when: "requesting weather for an invalid coordinate in a time interval"
     source.getWeather(timeInterval, invalidCoordinate)
 
-    then: "NoDataException is thrown"
-    def ex2 = thrown(NoDataException)
-    ex2.message.contains("No coordinate ID found for the given point")
+    then: "a SourceException is thrown"
+    def ex2 = thrown(SourceException)
     ex2.message.contains(invalidCoordinate.toString())
 
     when: "requesting weather for mixed valid and invalid coordinates"
-    def result = source.getWeather(timeInterval, [
+    source.getWeather(timeInterval, [
       validCoordinate,
       invalidCoordinate
     ])
 
-    then: "only the valid coordinate's data is returned"
-    result.size() == 1
-    result.containsKey(validCoordinate)
-    !result.containsKey(invalidCoordinate)
+    then: "the unknown coordinate is an error instead of a silently skipped one"
+    thrown(SourceException)
   }
 
   def "A InfluxDbWeatherSource falls back to the last known value when no exact weather data is found at a specific time"() {
@@ -216,21 +213,19 @@ class InfluxDbWeatherSourceCosmoIT extends Specification implements TestContaine
     actual.get(CosmoWeatherTestData.COORDINATE_193187) == [CosmoWeatherTestData.TIME_16H]
   }
 
-  def "A InfluxDbWeatherSource returns partial results for mixed valid and invalid coordinates"() {
+  def "A InfluxDbWeatherSource rejects a coordinate that cannot be matched to an id"() {
     given:
     def validCoordinate = CosmoWeatherTestData.COORDINATE_193186
     def invalidCoordinate = GeoUtils.buildPoint(999d, 999d)
     def timeInterval = new ClosedInterval(CosmoWeatherTestData.TIME_15H, CosmoWeatherTestData.TIME_17H)
 
     when:
-    def result = source.getWeather(timeInterval, [
+    source.getWeather(timeInterval, [
       validCoordinate,
       invalidCoordinate
     ])
 
-    then:
-    result.size() == 1
-    result.containsKey(validCoordinate)
-    !result.containsKey(invalidCoordinate)
+    then: "the unknown coordinate is an error instead of a silently skipped one"
+    thrown(SourceException)
   }
 }

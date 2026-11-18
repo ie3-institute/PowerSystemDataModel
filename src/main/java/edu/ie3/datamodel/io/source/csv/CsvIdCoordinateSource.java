@@ -114,21 +114,35 @@ public class CsvIdCoordinateSource extends IdCoordinateSource {
   }
 
   @Override
-  public Optional<Point> getCoordinate(int id) {
-    return Optional.ofNullable(idToCoordinate.get(id));
+  public Point getCoordinate(int id) throws SourceException {
+    Point coordinate = idToCoordinate.get(id);
+
+    if (coordinate == null)
+      throw new SourceException(
+          "No coordinate found for the following coordinate ids: [" + id + "]");
+
+    return coordinate;
   }
 
   @Override
-  public Collection<Point> getCoordinates(int... ids) {
-    return Arrays.stream(ids)
-        .mapToObj(this::getCoordinate)
-        .flatMap(Optional::stream)
-        .collect(Collectors.toSet());
+  public Map<Integer, Point> getCoordinatesById(Collection<Integer> ids) throws SourceException {
+    Map<Integer, Point> resolved = new HashMap<>();
+
+    for (int id : ids) {
+      Point coordinate = idToCoordinate.get(id);
+      if (coordinate != null) resolved.put(id, coordinate);
+    }
+
+    return checkForMissingIds(ids, resolved);
   }
 
   @Override
-  public Optional<Integer> getId(Point coordinate) {
-    return Optional.ofNullable(coordinateToId.get(coordinate));
+  public int getId(Point coordinate) throws SourceException {
+    Integer id = coordinateToId.get(coordinate);
+
+    if (id == null) throw new SourceException("No coordinate id found for the point " + coordinate);
+
+    return id;
   }
 
   @Override

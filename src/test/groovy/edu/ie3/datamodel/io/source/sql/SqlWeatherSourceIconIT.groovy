@@ -6,6 +6,7 @@
 package edu.ie3.datamodel.io.source.sql
 
 import edu.ie3.datamodel.exceptions.NoDataException
+import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.factory.timeseries.IconTimeBasedWeatherValueFactory
 import edu.ie3.datamodel.models.timeseries.individual.IndividualTimeSeries
@@ -150,22 +151,20 @@ class SqlWeatherSourceIconIT extends Specification implements TestContainerHelpe
     ex.message.contains("exceeds the maximum fallback")
   }
 
-  def "A NativeSqlWeatherSource returns partial results for mixed valid and invalid coordinates"() {
+  def "A NativeSqlWeatherSource rejects a coordinate that cannot be matched to an id"() {
     given:
     def validCoordinate = IconWeatherTestData.COORDINATE_67775
     def invalidCoordinate = GeoUtils.buildPoint(999d, 999d)
     def timeInterval = new ClosedInterval(IconWeatherTestData.TIME_15H, IconWeatherTestData.TIME_17H)
 
     when:
-    def result = source.getWeather(timeInterval, [
+    source.getWeather(timeInterval, [
       validCoordinate,
       invalidCoordinate
     ])
 
-    then:
-    result.size() == 1
-    result.containsKey(validCoordinate)
-    !result.containsKey(invalidCoordinate)
+    then: "the unknown coordinate is an error instead of a silently skipped one"
+    thrown(SourceException)
   }
 
   def "A NativeSqlWeatherSource returns all time keys after a given time key correctly"() {

@@ -5,6 +5,7 @@
  */
 package edu.ie3.datamodel.io.source.sql
 
+import edu.ie3.datamodel.exceptions.SourceException
 import edu.ie3.datamodel.io.connectors.SqlConnector
 import edu.ie3.datamodel.io.factory.timeseries.SqlIdCoordinateFactory
 import edu.ie3.test.helper.TestContainerHelper
@@ -54,16 +55,16 @@ class SqlIdCoordinateSourceIT extends Specification implements TestContainerHelp
     def receivedValue = source.getCoordinate(67775)
 
     then:
-    def coordinate = receivedValue.get().coordinate
-    coordinate == expectedValue
+    receivedValue.coordinate == expectedValue
   }
 
-  def "A SqlIdCoordinateSource will return nothing if an id is not present"(){
-    given:
-    def receivedValue = source.getCoordinate(0)
+  def "A SqlIdCoordinateSource throws an exception if an id is not present"(){
+    when:
+    source.getCoordinate(0)
 
-    expect:
-    receivedValue.isEmpty()
+    then:
+    def ex = thrown(SourceException)
+    ex.message.contains("0")
   }
 
   def "A SqlIdCoordinateSource can read a list of coordinates"(){
@@ -80,9 +81,7 @@ class SqlIdCoordinateSourceIT extends Specification implements TestContainerHelp
     def receivedValues = source.getCoordinates(arr)
 
     then:
-    ArrayList<Coordinate> points = receivedValues.coordinate
-
-    points == expectedValues
+    receivedValues.coordinate.toSet() == expectedValues.toSet()
   }
 
   def "A SqlIdCoordinateSource can return the id of a point"(){
@@ -93,18 +92,32 @@ class SqlIdCoordinateSourceIT extends Specification implements TestContainerHelp
     def receivedValue = source.getId(GeoUtils.buildPoint(51.5, 7.438))
 
     then:
-    receivedValue.get() == id
+    receivedValue == id
   }
 
-  def "A SqlIdCoordinateSource will return nothing if a coordinate is not present"(){
-    given:
-    def coordinate = GeoUtils.buildPoint(0.0,0.0)
-
+  def "A SqlIdCoordinateSource throws an exception if a coordinate is not present"(){
     when:
-    def receivedValue = source.getId(coordinate)
+    source.getId(GeoUtils.buildPoint(0.0, 0.0))
 
     then:
-    receivedValue.isEmpty()
+    thrown(SourceException)
+  }
+
+  def "A SqlIdCoordinateSource resolves coordinate ids in a batch"(){
+    when:
+    def received = source.getCoordinatesById([67775, 531137])
+
+    then:
+    received.keySet() == [67775, 531137] as Set
+    received.get(67775).coordinate == new Coordinate(7.438, 51.5)
+  }
+
+  def "A SqlIdCoordinateSource accepts a consistent source"(){
+    when:
+    source.checkUniqueness()
+
+    then:
+    noExceptionThrown()
   }
 
   def "A SqlIdCoordinateSource can return all coordinates"() {

@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Get weather by coordinate id [#265](https://github.com/ie3-institute/PowerSystemDataModel/issues/265)
+- Validate the completeness of the id coordinate source and drop the optionals [#1825](https://github.com/ie3-institute/PowerSystemDataModel/issues/1825)
 
 ## [9.3.0] - 2026-10-29
 
