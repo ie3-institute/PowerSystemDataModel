@@ -73,11 +73,11 @@ class SystemParticipantResultFactoryTest extends Specification implements Factor
     }
 
     if (modelClass == EvResult) {
-      (((EvResult) result.data.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
+      assert (((EvResult) result.data.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
     }
 
     if (modelClass == StorageResult) {
-      (((StorageResult) result.data.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
+      assert (((StorageResult) result.data.get()).soc == getQuant(parameter["soc"], Units.PERCENT))
     }
 
     if (modelClass == HpResult) {

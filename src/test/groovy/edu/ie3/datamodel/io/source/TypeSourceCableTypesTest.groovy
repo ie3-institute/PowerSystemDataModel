@@ -28,7 +28,7 @@ class TypeSourceCableTypesTest extends Specification {
     then:
     result.keySet().every { it == it }
     result.each { uuid, cableType ->
-      cableType.uuid == uuid
+      assert cableType.uuid == uuid
     }
   }
 

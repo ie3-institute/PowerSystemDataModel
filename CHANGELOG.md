@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Consider time zone in BDEW load profiles [#1813](https://github.com/ie3-institute/PowerSystemDataModel/issues/1813)
 - Fixed transitive dependency inclusion [#1826](https://github.com/ie3-institute/PowerSystemDataModel/issues/1826)
 - Fixed validation of EV fields [#1818](https://github.com/ie3-institute/PowerSystemDataModel/issues/1818)
+- Assert Spock conditions in tests that were silently skipped inside closures, loops, `if` and `try` blocks [#1828](https://github.com/ie3-institute/PowerSystemDataModel/issues/1828)
 
 ## [9.3.0] - 2026-10-29
 
