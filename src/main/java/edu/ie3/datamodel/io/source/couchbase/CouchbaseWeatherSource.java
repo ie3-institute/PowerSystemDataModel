@@ -143,7 +143,7 @@ public class CouchbaseWeatherSource extends WeatherSource {
       ClosedInterval<ZonedDateTime> timeInterval, Collection<Integer> coordinateIds)
       throws SourceException, NoDataException {
 
-    HashMap<Integer, IndividualTimeSeries<WeatherValue>> idToTimeSeries = new HashMap<>();
+    Map<Integer, IndividualTimeSeries<WeatherValue>> idToTimeSeries = new HashMap<>();
 
     for (int coordinateId : coordinateIds) {
       String query = createQueryStringForIntervalAndCoordinate(timeInterval, coordinateId);
