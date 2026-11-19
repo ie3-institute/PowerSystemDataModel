@@ -47,16 +47,16 @@ class DefaultDirectoryHierarchyTest extends Specification {
 
     then:
     try {
-      connector.baseDirectory == basePath
-      dfh.subDirectories.size() == 9
-      dfh.subDirectories.get(basePath.resolve(Path.of("input", "grid"))) == true
-      dfh.subDirectories.get(basePath.resolve(Path.of("input", "participants"))) == true
-      dfh.subDirectories.get(basePath.resolve(Path.of("input", "participants", "time_series"))) == false
-      dfh.subDirectories.get(basePath.resolve(Path.of("input", "global"))) == true
-      dfh.subDirectories.get(basePath.resolve(Path.of("input", "thermal"))) == false
-      dfh.subDirectories.get(basePath.resolve(Path.of("results", "grid"))) == false
-      dfh.subDirectories.get(basePath.resolve(Path.of("results", "participants"))) == false
-      dfh.subDirectories.get(basePath.resolve(Path.of("results", "thermal"))) == false
+      assert connector.baseDirectory == basePath
+      assert dfh.subDirectories.size() == 8
+      assert dfh.subDirectories.get(basePath.resolve(Path.of("input", "grid"))) == true
+      assert dfh.subDirectories.get(basePath.resolve(Path.of("input", "participants"))) == true
+      assert dfh.subDirectories.get(basePath.resolve(Path.of("input", "participants", "time_series"))) == false
+      assert dfh.subDirectories.get(basePath.resolve(Path.of("input", "global"))) == true
+      assert dfh.subDirectories.get(basePath.resolve(Path.of("input", "thermal"))) == false
+      assert dfh.subDirectories.get(basePath.resolve(Path.of("results", "grid"))) == false
+      assert dfh.subDirectories.get(basePath.resolve(Path.of("results", "participants"))) == false
+      assert dfh.subDirectories.get(basePath.resolve(Path.of("results", "thermal"))) == false
     } catch (TestFailedException e) {
       FileIOUtils.deleteRecursively(tmpDirectory)
       throw e

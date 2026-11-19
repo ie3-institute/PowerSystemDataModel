@@ -314,7 +314,7 @@ class ContainerUtilsTest extends Specification {
       SubGridContainer actualSubGrid = entry.value
       SubGridContainer expectedSubGrid = expectedSubGrids.get(subnetNo)
 
-      actualSubGrid == expectedSubGrid
+      assert actualSubGrid == expectedSubGrid
     }
   }
 
@@ -348,19 +348,21 @@ class ContainerUtilsTest extends Specification {
       SubGridContainer unmodifiedSubGrid = unmodifiedSubGrids.get(it.key)
 
       computableSubGrid.with {
-        subnet == unmodifiedSubGrid.subnet
-        predominantVoltageLevel == unmodifiedSubGrid.predominantVoltageLevel
+        assert subnet == unmodifiedSubGrid.subnet
+        assert predominantVoltageLevel == unmodifiedSubGrid.predominantVoltageLevel
 
         // 2 winding transformer hv nodes must be marked as slacks
         rawGrid.transformer2Ws.each {
           def trafo2w = it
           trafo2w.with {
-            nodeA.slack
+            assert nodeA.slack
           }
         }
 
         // all adapted trafo2w nodes must be part of the nodes set
-        rawGrid.nodes.containsAll(rawGrid.transformer2Ws.collect{it.nodeA})
+        assert rawGrid.nodes.containsAll(rawGrid.transformer2Ws.collect{
+          it.nodeA
+        })
 
         // 3 winding transformer slack nodes must be mapped correctly
         rawGrid.transformer3Ws.each {
@@ -368,18 +370,18 @@ class ContainerUtilsTest extends Specification {
           if(trafo3w.nodeA.subnet == subnet) {
             // subnet 1 is highest grid in test set + trafo 3w -> nodeA must be slack
             subnet == 1 ? trafo3w.nodeA.slack : !trafo3w.nodeA.slack
-            !trafo3w.nodeInternal.slack
-            rawGrid.nodes.contains(trafo3w.nodeInternal)
+            assert !trafo3w.nodeInternal.slack
+            assert rawGrid.nodes.contains(trafo3w.nodeInternal)
           } else {
-            trafo3w.nodeInternal.slack
-            !trafo3w.nodeA.slack
-            !trafo3w.nodeB.slack
-            !trafo3w.nodeC.slack
-            rawGrid.nodes.contains(trafo3w.nodeInternal)
+            assert trafo3w.nodeInternal.slack
+            assert !trafo3w.nodeA.slack
+            assert !trafo3w.nodeB.slack
+            assert !trafo3w.nodeC.slack
+            assert rawGrid.nodes.contains(trafo3w.nodeInternal)
           }
         }
 
-        systemParticipants == unmodifiedSubGrid.systemParticipants
+        assert systemParticipants == unmodifiedSubGrid.systemParticipants
       }
     }
   }

@@ -68,14 +68,14 @@ class ConnectorResultFactoryTest extends Specification implements FactoryTestHel
     }
 
     if (result.data.get().getClass() == Transformer2WResult) {
-      ((Transformer2WResult) result.data.get()).tapPos == Integer.parseInt(parameter["tapPos"])
+      assert ((Transformer2WResult) result.data.get()).tapPos == Integer.parseInt(parameter["tapPos"])
     }
 
     if (result.data.get().getClass() == Transformer3WResult) {
       Transformer3WResult transformer3WResult = ((Transformer3WResult) result.data.get())
-      transformer3WResult.tapPos == Integer.parseInt(parameter["tapPos"])
-      transformer3WResult.iCAng == getQuant(parameter["iCAng"], StandardUnits.ELECTRIC_CURRENT_ANGLE)
-      transformer3WResult.iCMag == getQuant(parameter["iCMag"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
+      assert transformer3WResult.tapPos == Integer.parseInt(parameter["tapPos"])
+      assert transformer3WResult.iCAng == getQuant(parameter["iCAng"], StandardUnits.ELECTRIC_CURRENT_ANGLE)
+      assert transformer3WResult.iCMag == getQuant(parameter["iCMag"], StandardUnits.ELECTRIC_CURRENT_MAGNITUDE)
     }
 
 
