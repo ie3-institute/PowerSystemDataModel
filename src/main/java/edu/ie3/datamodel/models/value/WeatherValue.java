@@ -24,14 +24,13 @@ public sealed class WeatherValue implements Value {
   public static final int UNKNOWN_COORDINATE_ID = Integer.MIN_VALUE;
 
   /**
-   * The id of the coordinate of this weather value set, or {@link #UNKNOWN_COORDINATE_ID} if it is
-   * not known.
+   * The id of the coordinate of this weather value set, empty if it is not known.
    *
    * <p>Not part of the persisted output: {@link
    * edu.ie3.datamodel.io.processor.timeseries.TimeSeriesProcessor} explicitly ignores this field
    * when it collects the fields to persist.
    */
-  private final int coordinateId;
+  private final OptionalInt coordinateId;
 
   /** solar irradiance values for this coordinate */
   private final SolarIrradianceValue solarIrradiance;
@@ -94,7 +93,8 @@ public sealed class WeatherValue implements Value {
       Optional<GroundTemperatureValue> groundTemperatureLevel1,
       Optional<GroundTemperatureValue> groundTemperatureLevel2) {
     this.coordinate = coordinate;
-    this.coordinateId = coordinateId;
+    this.coordinateId =
+        coordinateId == UNKNOWN_COORDINATE_ID ? OptionalInt.empty() : OptionalInt.of(coordinateId);
     this.solarIrradiance = solarIrradiance;
     this.temperature = temperature;
     this.wind = wind;
@@ -183,9 +183,7 @@ public sealed class WeatherValue implements Value {
    * @return an option on the coordinate id
    */
   public OptionalInt getCoordinateId() {
-    return coordinateId == UNKNOWN_COORDINATE_ID
-        ? OptionalInt.empty()
-        : OptionalInt.of(coordinateId);
+    return coordinateId;
   }
 
   public SolarIrradianceValue getSolarIrradiance() {
@@ -214,7 +212,7 @@ public sealed class WeatherValue implements Value {
     if (o == null || getClass() != o.getClass()) return false;
     WeatherValue that = (WeatherValue) o;
     return coordinate.equals(that.coordinate)
-        && coordinateId == that.coordinateId
+        && coordinateId.equals(that.coordinateId)
         && solarIrradiance.equals(that.solarIrradiance)
         && temperature.equals(that.temperature)
         && wind.equals(that.wind)
