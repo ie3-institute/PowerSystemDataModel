@@ -201,6 +201,72 @@ class CsvFileSinkTest extends Specification implements TimeSeriesTestData {
     !testBaseFolderPath.resolve("ev_res.csv").toFile().exists()
   }
 
+  def "A valid CsvFileSink persists every element of a bulk of entities of the same type"() {
+    given: "more elements than the common pool has threads, so the parallel path is actually used"
+    CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
+        new ProcessorProvider([
+          new ResultEntityProcessor(PvResult)
+        ], [:] as Map),
+        new FileNamingStrategy(),
+        ",")
+    def results = (1..500).collect { i ->
+      new PvResult(
+          TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"),
+          UUID.randomUUID(),
+          Quantities.getQuantity(i as double, StandardUnits.ACTIVE_POWER_RESULT),
+          Quantities.getQuantity(i as double, StandardUnits.REACTIVE_POWER_RESULT))
+    }
+
+    when:
+    csvFileSink.persistAll(results)
+
+    then: "the batch has been flushed, so the file is complete even before the shutdown"
+    def lines = testBaseFolderPath.resolve("pv_res.csv").toFile().readLines()
+    lines.size() == results.size() + 1
+    lines.findAll { it == lines.first() }.size() == 1
+    lines.tail().toSet().size() == results.size()
+
+    cleanup:
+    csvFileSink.shutdown()
+  }
+
+  def "A valid CsvFileSink writes the head line of a file exactly once"() {
+    given: "entities of two types, so two writers are initialised concurrently"
+    CsvFileSink csvFileSink = new CsvFileSink(testBaseFolderPath,
+        new ProcessorProvider([
+          new ResultEntityProcessor(PvResult),
+          new ResultEntityProcessor(WecResult)
+        ], [:] as Map),
+        new FileNamingStrategy(),
+        ",")
+    def results = (1..200).collect { i ->
+      i % 2 == 0 ?
+          new PvResult(
+          TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"),
+          UUID.randomUUID(),
+          Quantities.getQuantity(i as double, StandardUnits.ACTIVE_POWER_RESULT),
+          Quantities.getQuantity(i as double, StandardUnits.REACTIVE_POWER_RESULT)) :
+          new WecResult(
+          TimeUtil.withDefaults.toZonedDateTime("2020-01-30T17:26:44Z"),
+          UUID.randomUUID(),
+          Quantities.getQuantity(i as double, StandardUnits.ACTIVE_POWER_RESULT),
+          Quantities.getQuantity(i as double, StandardUnits.REACTIVE_POWER_RESULT))
+    }
+
+    when:
+    csvFileSink.persistAll(results)
+    csvFileSink.shutdown()
+
+    then: "a second writer for the same file would have appended another head line"
+    def pvLines = testBaseFolderPath.resolve("pv_res.csv").toFile().readLines()
+    def wecLines = testBaseFolderPath.resolve("wec_res.csv").toFile().readLines()
+
+    pvLines.findAll { it == pvLines.first() }.size() == 1
+    wecLines.findAll { it == wecLines.first() }.size() == 1
+    pvLines.size() == 101
+    wecLines.size() == 101
+  }
+
   def "A valid CsvFileSink should persist a time series correctly"() {
     given:
     TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue, EnergyPriceValue> timeSeriesProcessor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)

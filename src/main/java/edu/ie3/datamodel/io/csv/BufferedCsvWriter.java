@@ -11,6 +11,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -79,6 +80,36 @@ public class BufferedCsvWriter extends BufferedWriter {
    */
   public synchronized void write(Map<String, String> entityFieldData)
       throws IOException, SinkException {
+    writeLine(entityFieldData);
+    flush();
+  }
+
+  /**
+   * Persisting the provided entity field data of several entities, flushing only once at the end.
+   *
+   * <p>Preferable over calling {@link #write(Map)} repeatedly, as flushing after every single line
+   * subverts the concept of a buffered writer.
+   *
+   * @param entityFieldData mappings of entity instance fields to their values
+   * @throws IOException If writing has failed
+   * @throws SinkException If one of the mappings does not meet the pre-defined headline
+   */
+  public synchronized void write(Collection<Map<String, String>> entityFieldData)
+      throws IOException, SinkException {
+    for (Map<String, String> fieldData : entityFieldData) {
+      writeLine(fieldData);
+    }
+    flush();
+  }
+
+  /**
+   * Writes one line of entity field data, without flushing.
+   *
+   * @param entityFieldData a mapping of an entity instance fields to their values
+   * @throws IOException If writing has failed
+   * @throws SinkException If the data does not meet the pre-defined headline
+   */
+  private void writeLine(Map<String, String> entityFieldData) throws IOException, SinkException {
     /* Check against eligible headline elements */
     if (entityFieldData.size() != headLineElements.length
         || !entityFieldData.keySet().containsAll(Arrays.asList(headLineElements)))
@@ -97,6 +128,7 @@ public class BufferedCsvWriter extends BufferedWriter {
    */
   public final synchronized void writeFileHeader() throws IOException {
     writeOneLine(StringUtils.camelCaseToSnakeCase(headLineElements));
+    flush();
   }
 
   /**
@@ -118,7 +150,6 @@ public class BufferedCsvWriter extends BufferedWriter {
   private void writeOneLine(Stream<String> entries) throws IOException {
     super.append(entries.collect(Collectors.joining(csvSep)));
     super.append("\n");
-    flush();
   }
 
   @Override

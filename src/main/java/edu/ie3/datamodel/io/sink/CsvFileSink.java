@@ -99,9 +99,28 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
 
   @Override
   public <T extends Entity> void persistAll(Collection<T> entities) {
-    for (T entity : entities) {
-      persist(entity);
+    /* Time series bring their own writer per series and are therefore handled one by one */
+    Map<Boolean, List<T>> partitioned =
+        entities.stream().collect(Collectors.partitioningBy(TimeSeries.class::isInstance));
+
+    partitioned.get(true).forEach(this::persist);
+
+    List<InputEntity> inputEntities = new ArrayList<>();
+    List<ResultEntity> resultEntities = new ArrayList<>();
+
+    for (T entity : partitioned.get(false)) {
+      switch (entity) {
+        case InputEntity inputEntity -> inputEntities.add(inputEntity);
+        case ResultEntity resultEntity -> resultEntities.add(resultEntity);
+        default ->
+            log.error(
+                "I don't know how to handle an entity of class {}",
+                entity.getClass().getSimpleName());
+      }
     }
+
+    persistAllIncludeNested(inputEntities);
+    writeAll(resultEntities);
   }
 
   @Override
@@ -125,7 +144,7 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
 
   @Override
   public <C extends InputEntity> void persistAllIgnoreNested(Collection<C> entities) {
-    entities.parallelStream().forEach(this::persistIgnoreNested);
+    writeAll(entities);
   }
 
   @Override
@@ -149,7 +168,77 @@ public class CsvFileSink implements InputDataSink, OutputDataSink {
 
   @Override
   public <C extends InputEntity> void persistAllIncludeNested(Collection<C> entities) {
-    entities.parallelStream().forEach(this::persistIncludeNested);
+    List<InputEntity> all = new ArrayList<>(entities);
+
+    for (C entity : entities) {
+      if (entity instanceof NestedEntity nestedEntity) {
+        try {
+          all.addAll(Extractor.extractElements(nestedEntity));
+        } catch (ExtractorException e) {
+          log.error(
+              "An error occurred during extraction of nested entity'{}': ",
+              entity.getClass().getSimpleName(),
+              e);
+        }
+      }
+    }
+
+    writeAll(all);
+  }
+
+  /**
+   * Writes all given entities, grouped by their class.
+   *
+   * <p>The groups are treated concurrently, the elements within a group are not: a writer is the
+   * place where concurrency ends anyway. This way each file is written by one thread only and needs
+   * to be flushed once per group instead of once per line.
+   *
+   * @param entities the entities to write
+   * @param <C> bounded to be all entities
+   */
+  private <C extends Entity> void writeAll(Collection<C> entities) {
+    entities.stream().collect(Collectors.groupingBy(Entity::getClass)).entrySet().parallelStream()
+        .forEach(entry -> writeAll(entry.getKey(), entry.getValue()));
+  }
+
+  /**
+   * Writes all given entities of one class into the corresponding CSV file. Does <b>not</b> include
+   * any nested entities.
+   *
+   * @param clz the class all entities belong to
+   * @param entities the entities to write
+   */
+  private void writeAll(Class<? extends Entity> clz, List<? extends Entity> entities) {
+    List<Map<String, String>> entityFieldData = new ArrayList<>(entities.size());
+
+    for (Entity entity : entities) {
+      try {
+        entityFieldData.add(
+            processorProvider.handleEntity(entity).map(this::csvEntityFieldData).getOrThrow());
+      } catch (ProcessorProviderException e) {
+        log.error("Cannot persist provided entity '{}'. Exception: {}", clz.getSimpleName(), e);
+      }
+    }
+
+    if (entityFieldData.isEmpty()) return;
+
+    try {
+      String[] headerElements = processorProvider.getHeaderElements(clz);
+      BufferedCsvWriter writer =
+          connector.getOrInitWriter(
+              clz, new CsvFileDefinition(clz, headerElements, csvSep, fileNamingStrategy));
+      writer.write(entityFieldData);
+    } catch (ProcessorProviderException e) {
+      log.error(
+          "Exception occurred during receiving of header elements. Cannot write these elements.",
+          e);
+    } catch (ConnectorException | FileException e) {
+      log.error("Exception occurred during retrieval of writer. Cannot write these elements.", e);
+    } catch (IOException e) {
+      log.error("Exception occurred during writing of these elements.", e);
+    } catch (SinkException e) {
+      log.error("Cannot persist provided entities of '{}'. Exception: {}", clz.getSimpleName(), e);
+    }
   }
 
   @Override
