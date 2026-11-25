@@ -24,6 +24,7 @@ For example `AssetInputs` needs to be unique in their `uuid` and in their `id` w
 ## How to use?
 - To use the general validation the user should call the method `ValidationUtils.check(Object)`.
 - To use the uniqueness validation the user should call a method of `UniquenessValidationUtils` to check the uniqueness.
+- The sub-containers of a `GridContainer` (`RawGridElements`, `SystemParticipants`, `EnergyManagementUnits` and `SoilData`) can also be checked separately with `ValidationUtils.check(Object)`. Checks that need more than one sub-container, e.g. if the system participants are connected to nodes of the raw grid, are only done when checking the whole `GridContainer`.
 
 ## How does the general validation work?
 
@@ -86,6 +87,8 @@ The ValidationUtils include validation checks for...
     - GridContainer
     - RawGridElements
     - SystemParticipants
+    - EnergyManagementUnits
+    - SoilData
 - SoilValidationUtils
     - SoilType
     - SoilLayer

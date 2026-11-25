@@ -4,12 +4,12 @@ plugins {
   id 'maven-publish'
   id 'signing'
   id 'pmd' // code check, working on source code
-  id 'com.diffplug.spotless' version '8.11.0' //code format
+  id 'com.diffplug.spotless' version '8.12.0' //code format
   id 'com.github.spotbugs' version '6.5.13' // code check, working on byte code
   id 'de.undercouch.download' version '5.7.0'
   id 'kr.motd.sphinx' version '2.10.1' // documentation generation
   id 'jacoco' // java code coverage plugin
-  id "org.sonarqube" version "7.5.0.8588" // sonarqube
+  id "org.sonarqube" version "7.6.0.18749" // sonarqube
   id 'net.thauvin.erik.gradle.semver' version '1.0.4' // semantic versioning
   id 'com.gradleup.shadow' version '9.6.1' // fat jar
 }
@@ -66,7 +66,7 @@ dependencies {
   implementation 'org.locationtech.jts.io:jts-io-common:1.20.0'
 
   // parsing json
-  implementation 'tools.jackson.core:jackson-databind:3.2.4'
+  implementation 'tools.jackson.core:jackson-databind:3.3.0'
 
   // Graphs
   implementation 'org.jgrapht:jgrapht-core:1.5.3'
@@ -99,7 +99,7 @@ dependencies {
 
   // Databases
   implementation 'org.influxdb:influxdb-java:2.25'
-  implementation 'com.couchbase.client:java-client:3.13.0'
+  implementation 'com.couchbase.client:java-client:3.13.1'
   runtimeOnly 'org.postgresql:postgresql:42.7.14' // postgresql jdbc driver required during runtime
 
   implementation 'commons-io:commons-io:2.22.0' // I/O functionalities
