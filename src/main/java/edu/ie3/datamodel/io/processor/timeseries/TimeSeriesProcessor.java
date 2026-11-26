@@ -169,6 +169,7 @@ public class TimeSeriesProcessor<
       mapFieldNameToGetter(
               valueClass,
               Arrays.asList(
+                  "coordinateId",
                   "solarIrradiance",
                   "temperature",
                   "wind",

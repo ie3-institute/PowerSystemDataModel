@@ -42,7 +42,7 @@ import org.locationtech.jts.geom.Point;
 /** Implements a WeatherSource for CSV files by using the CsvTimeSeriesSource as a base */
 public class CsvWeatherSource extends WeatherSource {
   private Set<String> headlineFields = Collections.emptySet();
-  private final Map<Point, IndividualTimeSeries<WeatherValue>> coordinateToTimeSeries;
+  private final Map<Integer, IndividualTimeSeries<WeatherValue>> idToTimeSeries;
 
   private final CsvDataSource dataSource;
 
@@ -66,7 +66,7 @@ public class CsvWeatherSource extends WeatherSource {
       throws SourceException {
     super(idCoordinateSource, weatherFactory);
     this.dataSource = new CsvDataSource(csvSep, folderPath, fileNamingStrategy);
-    this.coordinateToTimeSeries = getWeatherTimeSeries();
+    this.idToTimeSeries = getWeatherTimeSeries();
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -77,11 +77,11 @@ public class CsvWeatherSource extends WeatherSource {
   }
 
   @Override
-  public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
+  public Map<Integer, IndividualTimeSeries<WeatherValue>> getWeatherById(
       ClosedInterval<ZonedDateTime> timeInterval) throws NoDataException {
 
-    Map<Point, IndividualTimeSeries<WeatherValue>> result =
-        trimMapToInterval(coordinateToTimeSeries, timeInterval);
+    Map<Integer, IndividualTimeSeries<WeatherValue>> result =
+        trimMapToInterval(idToTimeSeries, timeInterval);
 
     if (result.isEmpty()) {
       throw new NoDataException(
@@ -92,37 +92,38 @@ public class CsvWeatherSource extends WeatherSource {
   }
 
   @Override
-  public Map<Point, IndividualTimeSeries<WeatherValue>> getWeather(
-      ClosedInterval<ZonedDateTime> timeInterval, Collection<Point> coordinates)
+  public Map<Integer, IndividualTimeSeries<WeatherValue>> getWeatherById(
+      ClosedInterval<ZonedDateTime> timeInterval, Collection<Integer> coordinateIds)
       throws NoDataException {
 
-    if (coordinates.isEmpty())
-      throw new NoDataException("No coordinates provided for weather data query.");
+    Map<Integer, IndividualTimeSeries<WeatherValue>> result = new HashMap<>();
 
-    Map<Point, IndividualTimeSeries<WeatherValue>> result = new HashMap<>();
+    for (int coordinateId : coordinateIds) {
+      IndividualTimeSeries<WeatherValue> timeSeries = idToTimeSeries.get(coordinateId);
 
-    for (Point coordinate : coordinates) {
-      if (coordinateToTimeSeries.containsKey(coordinate)) {
-        IndividualTimeSeries<WeatherValue> ts =
-            coordinateToTimeSeries.get(coordinate).getSubTimeSeries(timeInterval);
+      if (timeSeries != null) {
+        IndividualTimeSeries<WeatherValue> ts = timeSeries.getSubTimeSeries(timeInterval);
 
         if (ts.nonEmpty()) {
-          result.put(coordinate, ts);
+          result.put(coordinateId, ts);
         }
       }
     }
 
-    return validateAndWarnMissing(result, coordinates, timeInterval);
+    return validateAndWarnMissing(result, coordinateIds, timeInterval);
   }
 
   @Override
   public TimeBasedValue<WeatherValue> getWeather(ZonedDateTime date, Point coordinate)
       throws SourceException, NoDataException {
-    IndividualTimeSeries<WeatherValue> timeSeries = coordinateToTimeSeries.get(coordinate);
+    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
+
+    if (coordinateId.isEmpty())
+      throw new NoDataException("No coordinate ID found for the given point: " + coordinate);
+
+    IndividualTimeSeries<WeatherValue> timeSeries = idToTimeSeries.get(coordinateId.get());
 
     if (timeSeries == null) {
-      if (idCoordinateSource.getId(coordinate).isEmpty())
-        throw new NoDataException("No coordinate ID found for the given point: " + coordinate);
       throw new NoDataException("No weather data found for the given coordinate: " + coordinate);
     }
 
@@ -144,8 +145,8 @@ public class CsvWeatherSource extends WeatherSource {
   }
 
   @Override
-  public Map<Point, List<ZonedDateTime>> getTimeKeysAfter(ZonedDateTime time) {
-    return coordinateToTimeSeries.entrySet().stream()
+  public Map<Integer, List<ZonedDateTime>> getTimeKeysAfterById(ZonedDateTime time) {
+    return idToTimeSeries.entrySet().stream()
         .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getTimeKeysAfter(time)))
         .entrySet()
         .stream()
@@ -154,10 +155,18 @@ public class CsvWeatherSource extends WeatherSource {
   }
 
   @Override
-  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time, Point coordinate) {
-    IndividualTimeSeries<WeatherValue> series = coordinateToTimeSeries.get(coordinate);
+  public List<ZonedDateTime> getTimeKeysAfterById(ZonedDateTime time, int coordinateId) {
+    IndividualTimeSeries<WeatherValue> series = idToTimeSeries.get(coordinateId);
     if (series == null) return Collections.emptyList();
     return series.getTimeKeysAfter(time);
+  }
+
+  @Override
+  public List<ZonedDateTime> getTimeKeysAfter(ZonedDateTime time, Point coordinate)
+      throws SourceException {
+    Optional<Integer> coordinateId = idCoordinateSource.getId(coordinate);
+    if (coordinateId.isEmpty()) return Collections.emptyList();
+    return getTimeKeysAfterById(time, coordinateId.get());
   }
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -169,17 +178,17 @@ public class CsvWeatherSource extends WeatherSource {
    * @param timeInterval the interval to trim the data to
    * @return a map with trimmed time series
    */
-  private Map<Point, IndividualTimeSeries<WeatherValue>> trimMapToInterval(
-      Map<Point, IndividualTimeSeries<WeatherValue>> map,
+  private Map<Integer, IndividualTimeSeries<WeatherValue>> trimMapToInterval(
+      Map<Integer, IndividualTimeSeries<WeatherValue>> map,
       ClosedInterval<ZonedDateTime> timeInterval) {
     // decided against parallel mode here as it likely wouldn't pay off as the expected coordinate
     // count is too low
-    Map<Point, IndividualTimeSeries<WeatherValue>> trimmed = new HashMap<>();
-    map.forEach((point, timeSeries) -> {
+    Map<Integer, IndividualTimeSeries<WeatherValue>> trimmed = new HashMap<>();
+    map.forEach((coordinateId, timeSeries) -> {
       IndividualTimeSeries<WeatherValue> trimmedSeries = timeSeries.getSubTimeSeries(timeInterval);
 
       if (trimmedSeries.nonEmpty()) {
-        trimmed.put(point, trimmedSeries);
+        trimmed.put(coordinateId, trimmedSeries);
       }
     });
     return trimmed;
@@ -187,7 +196,7 @@ public class CsvWeatherSource extends WeatherSource {
 
   // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  private Map<Point, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries()
+  private Map<Integer, IndividualTimeSeries<WeatherValue>> getWeatherTimeSeries()
       throws SourceException {
     /* Get only weather time series meta information */
     Collection<FileIndividualTimeSeriesMetaInformation> weatherCsvMetaInformation =
@@ -196,16 +205,16 @@ public class CsvWeatherSource extends WeatherSource {
   }
 
   /**
-   * Reads weather data to time series and maps them coordinate wise
+   * Reads weather data to time series and maps them coordinate id wise
    *
    * @param weatherMetaInformation Data needed for reading
-   * @return time series mapped to the represented coordinate
+   * @return time series mapped to the id of the represented coordinate
    */
-  private Map<Point, IndividualTimeSeries<WeatherValue>> readWeatherTimeSeries(
+  private Map<Integer, IndividualTimeSeries<WeatherValue>> readWeatherTimeSeries(
       Set<FileIndividualTimeSeriesMetaInformation> weatherMetaInformation,
       CsvFileConnector connector)
       throws SourceException {
-    final Map<Point, IndividualTimeSeries<WeatherValue>> weatherTimeSeries = new HashMap<>();
+    final Map<Integer, IndividualTimeSeries<WeatherValue>> weatherTimeSeries = new HashMap<>();
     /* Reading in weather time series */
     for (FileIndividualTimeSeriesMetaInformation data : weatherMetaInformation) {
       Path path = data.getFullFilePath();
@@ -221,18 +230,22 @@ public class CsvWeatherSource extends WeatherSource {
                 SourceException::new)
             .getOrThrow()
             .flatMap(Optional::stream)
-            .collect(Collectors.groupingBy(tbv -> tbv.getValue().getCoordinate()))
-            .forEach((point, timeBasedValues) -> {
+            .collect(Collectors.groupingBy(tbv -> tbv.getValue().getCoordinateId()))
+            .forEach((coordinateId, timeBasedValues) -> {
+              if (coordinateId.isEmpty()) {
+                log.warn(
+                    "Skipping {} weather values with unknown coordinate id",
+                    timeBasedValues.size());
+                return;
+              }
+
               // We have to generate a random UUID as we'd risk running into duplicate key
               // issues
               // otherwise
               IndividualTimeSeries<WeatherValue> timeSeries =
                   new IndividualTimeSeries<>(UUID.randomUUID(), new TreeSet<>(timeBasedValues));
-              if (weatherTimeSeries.containsKey(point)) {
-                weatherTimeSeries.put(point, weatherTimeSeries.get(point).add(timeSeries));
-              } else {
-                weatherTimeSeries.put(point, timeSeries);
-              }
+              weatherTimeSeries.merge(
+                  coordinateId.getAsInt(), timeSeries, IndividualTimeSeries::add);
             });
       } catch (FileNotFoundException e) {
         throw new SourceException(
@@ -296,12 +309,14 @@ public class CsvWeatherSource extends WeatherSource {
     Optional<Point> maybeCoordinate = extractCoordinate(fieldToValues);
     return maybeCoordinate
         .map(coordinate -> {
-          /* Remove coordinate entry from fields */
-          fieldToValues.remove(weatherFactory.getCoordinateIdFieldString());
+          /* Remove coordinate entry from fields, but retain its id */
+          String coordinateValue =
+              fieldToValues.remove(weatherFactory.getCoordinateIdFieldString());
+          int coordinateId = Integer.parseInt(coordinateValue);
 
           /* Build factory data */
           TimeBasedWeatherValueData factoryData =
-              new TimeBasedWeatherValueData(new FieldMap(fieldToValues), coordinate);
+              new TimeBasedWeatherValueData(new FieldMap(fieldToValues), coordinate, coordinateId);
           return weatherFactory.get(factoryData).getData();
         })
         .orElseGet(() -> {
