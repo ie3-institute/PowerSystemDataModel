@@ -449,7 +449,7 @@ public final class ModelFields extends FieldNamingStrategy {
           registerOptional(c, assetOptionalFields);
         });
 
-    registerMandatory(EvInput.class, assetFields, Q_CHARACTERISTICS);
+    registerMandatory(EvInput.class, assetFields, TYPE, Q_CHARACTERISTICS);
     registerOptional(EvInput.class, assetOptionalFields);
 
     Stream.of(AcInput.class, HpInput.class).forEach(c -> addMandatory(c, TYPE, THERMAL_BUS));
