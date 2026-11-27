@@ -38,8 +38,8 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
       processor.registeredKey == new TimeSeriesProcessorKey(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
       processor.fieldToSource.size() == expectedSourceMapping.size()
       processor.fieldToSource.each { key, value ->
-        expectedSourceMapping.containsKey(key)
-        expectedSourceMapping.get(key) == value.source()
+        assert expectedSourceMapping.containsKey(key)
+        assert expectedSourceMapping.get(key) == value.source()
       }
       /* Also test the logic of TimeSeriesProcessor#buildFieldToSource, because it is invoked during instantiation */
       processor.headerElements == [
@@ -79,7 +79,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
     then:
     actual.size() == expectedFieldNames.size()
-    actual.each { entry -> expectedFieldNames.contains(entry.key) }
+    actual.each { entry -> assert expectedFieldNames.contains(entry.key) }
 
     where:
     source || expectedFieldNames
@@ -92,7 +92,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
     TimeSeriesProcessor<IndividualTimeSeries, TimeBasedValue, EnergyPriceValue, EnergyPriceValue> processor = new TimeSeriesProcessor<>(IndividualTimeSeries, TimeBasedValue, EnergyPriceValue)
     Map<String, String> expected = Processor.putUuidFirst([
       "price": "5.0",
-      "time" : "2020-04-02 10:00:00"
+      "time" : "2020-04-02T10:00:00Z"
     ]
     )
 
@@ -101,7 +101,7 @@ class TimeSeriesProcessorTest extends Specification implements TimeSeriesTestDat
 
     then:
     actual.size() == expected.size()
-    actual.each { key, value -> expected.get(key) == value }
+    actual.each { key, value -> assert expected.get(key) == value }
   }
 
   def "A TimeSeriesProcessors handles a complete time series with EnergyPriceValues correctly"() {

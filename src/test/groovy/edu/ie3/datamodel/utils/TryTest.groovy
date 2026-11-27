@@ -118,7 +118,7 @@ class TryTest extends Specification {
     actual.failure == expected
 
     if (expected) {
-      actual.exception.get() == ex
+      assert actual.exception.get() == ex
     }
 
     where:
